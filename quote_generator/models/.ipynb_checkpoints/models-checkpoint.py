@@ -4,8 +4,8 @@ from odoo import models, fields, api
 
 
 class guote_generator(models.Model):
-    _name = 'guote_generator.guote_generator'
-    _description = 'guote_generator.guote_generator'
+    _name = 'quote_generator.quote_generator'
+    _description = 'quote_generator.quote_generator'
 
     name = fields.Char()
     value = fields.Integer()
