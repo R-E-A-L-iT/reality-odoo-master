@@ -6,7 +6,7 @@
         A module to Create a Quality Quotation""",
 
     'description': """
-        Long description of module's purpose
+        No Long Description
     """,
 
     'author': "Ty Cyr",
