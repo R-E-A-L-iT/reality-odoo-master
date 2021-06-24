@@ -1,7 +1,7 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-
+    <!--
     <record model="ir.ui.view" id="guote_generator.list">
       <field name="name">guoteGenerator list</field>
       <field name="model">guote_generator.guote_generator</field>
@@ -13,7 +13,7 @@
         </tree>
       </field>
     </record>
-
+    -->
 
     <!-- actions opening views on models -->
 
