@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 
 
-class guote_generator(models.Model):
+class quote_generator(models.Model):
     _name = 'quote_generator.quote_generator'
     _description = 'quote_generator.quote_generator'
 
@@ -11,8 +11,10 @@ class guote_generator(models.Model):
     value = fields.Integer()
     value2 = fields.Float(compute="_value_pc", store=True)
     description = fields.Text()
+    
 
     @api.depends('value')
     def _value_pc(self):
         for record in self:
             record.value2 = float(record.value) / 100
+            
