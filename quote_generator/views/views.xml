@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="guote_generator.list">
+      <field name="name">guoteGenerator list</field>
+      <field name="model">guote_generator.guote_generator</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="guote_generator.action_window">
+      <field name="name">guoteGenerator window</field>
+      <field name="res_model">guote_generator.guote_generator</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+
+    <record model="ir.actions.server" id="guote_generator.action_server">
+      <field name="name">guoteGenerator server</field>
+      <field name="model_id" ref="model_guote_generator_guote_generator"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+
+
+    <!-- Top menu item -->
+
+    <menuitem name="guoteGenerator" id="guote_generator.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Menu 1" id="guote_generator.menu_1" parent="guote_generator.menu_root"/>
+    <menuitem name="Menu 2" id="guote_generator.menu_2" parent="guote_generator.menu_root"/>
+
+    <!-- actions -->
+
+    <menuitem name="List" id="guote_generator.menu_1_list" parent="guote_generator.menu_1"
+              action="guote_generator.action_window"/>
+    <menuitem name="Server to list" id="guote_generator" parent="guote_generator.menu_2"
+              action="guote_generator.action_server"/>
+
+  </data>
+</odoo>
