@@ -3,7 +3,7 @@
     'name': "quoteGenerator",
 
     'summary': """
-        A module to Create a Quality Quotation""",
+        A module to Create a Quality Quotation!""",
 
     'description': """
         No Long Description At the Moment
