@@ -6,7 +6,7 @@
         A module to Create a Quality Quotation""",
 
     'description': """
-        No Long Description
+        No Long Description At the Moment
     """,
 
     'author': "Ty Cyr",
