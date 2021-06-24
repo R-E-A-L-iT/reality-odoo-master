@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "guoteGenerator",
+    'name': "quoteGenerator",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -34,5 +34,5 @@
     ],
     
     'installable': True,
-    'auto_install': False
+    'auto_install': True
 }
