@@ -4,10 +4,7 @@ from odoo import models, fields, api
 
 class quote_generator(models.Model):
     _name = "quote_generator.model"
-    _inherit = "sale.order"
-    
-    transaction_ids = fields.Many2many('payment.transaction', 'sale_order_transaction_rel', 'sale_order_id', 'transaction_id',
-                                       string='Transactions', copy=True, readonly=True)
+    _inherit = "sale.order.model"
     #def action_quotation_sent(self):
      #   if self.filtered(lambda so: so.state != 'draft'):
       #      raise UserError(_('Custom Error Message to Prove Sucsess'))
