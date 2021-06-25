@@ -18,7 +18,7 @@
     'version': '1.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale'],
+    'depends': ['base', 'sale','sales_team', 'payment', 'portal', 'utm'],
 
     # always loaded
     'data': [
