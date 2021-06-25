@@ -4,9 +4,9 @@ from odoo import models, fields, api
 
 class quote_generator(models.Model):
 
-    _name = "quote_generator.quote_generator"
-    #_inherit = 'sale.order'
-    #_description = 'quote_generator.quote_generator'
+    _name = "sale.order"
+    _inherit = 'sale.order'
+    _description = 'quote_generator.quote_generator'
     
 
 
