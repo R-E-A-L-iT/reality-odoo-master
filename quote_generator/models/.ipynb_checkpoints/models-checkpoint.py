@@ -4,7 +4,7 @@ from odoo import models, fields, api
 
 class quote_generator(models.Model):
     _name = 'quote_generator.quote_generator'
-    _inherit = "sale.order"
+    _inherit = ["sale.order"]
     _description = 'quote_generator.quote_generator'
     
     transaction_ids = fields.Many2many('payment.transactionQ', 'sale_order_transaction_rel', 'sale_order_id', 'transaction_id', string='Transactions', copy=True, readonly=True)
@@ -25,4 +25,5 @@ class quote_generator(models.Model):
        # for order in self:
         #    order.message_subscribe(partner_ids=order.partner_id.ids)
         #self.write({'state': 'sent'})
+            
             
