@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from openerp import http
+from openerp imports models, fields,api
 
 
 class quote_generator(models.Model):
