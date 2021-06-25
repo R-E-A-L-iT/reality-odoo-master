@@ -6,6 +6,8 @@ class quote_generator(models.Model):
     _name = 'quote_generator.quote_generator'
     _inherit = "sale.order"
     _description = 'quote_generator.quote_generator'
+    
+    transaction_ids = fields.Many2many('payment.transactionQ', 'sale_order_transaction_rel', 'sale_order_id', 'transaction_id', string='Transactions', copy=False, readonly=True)
 
     name = fields.Char()
     description = fields.Text()
