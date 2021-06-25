@@ -21,9 +21,8 @@ class quote_generator(models.Model):
         for record in self:
             record.value2 = float(record.value) / 100
 
-    def action_quotation_sent(self):
-        if self.filtered(lambda so: so.state != 'draft'):
-            raise UserError(_('Custom Error Message to Prove Sucsess'))
+    def unlink(self):
         for order in self:
-            order.message_subscribe(partner_ids=order.partner_id.ids)
-        self.write({'state': 'sent'})
+            if order.state not in ('draft', 'cancel'):
+                raise UserError(_('I succsess.'))
+        return super(SaleOrder, self).unlink()
