@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 class quote_generator(models.Model):
 
