@@ -7,7 +7,7 @@ class quote_generator(models.Model):
     _inherit = ["sale.order"]
     _description = 'quote_generator.quote_generator'
     
-    transaction_ids = fields.Many2many('payment.transactionQ', 'sale_order_transaction_rel', 'sale_order_id', 'transaction_id', string='Transactions', copy=True, readonly=True)
+    transaction_ids = none
     tag_ids = fields.Many2many('crm.tagQ', 'sale_order_tag_rel', 'order_id', 'tag_id', string='Tags')
 
     name = fields.Char()
