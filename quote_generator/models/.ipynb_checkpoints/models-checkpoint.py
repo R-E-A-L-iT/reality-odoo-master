@@ -3,7 +3,8 @@
 from odoo import models, fields, api
 
 class quote_generator(models.Model):
-    #_inherit = "sale.order"
+    _name = "quote_generator.model"
+    _inherit = "sale.order"
     #def action_quotation_sent(self):
      #   if self.filtered(lambda so: so.state != 'draft'):
       #      raise UserError(_('Custom Error Message to Prove Sucsess'))
