@@ -8,6 +8,7 @@ class quote_generator(models.Model):
     _description = 'quote_generator.quote_generator'
     
     transaction_ids = fields.Many2many('payment.transactionQ', 'sale_order_transaction_rel', 'sale_order_id', 'transaction_id', string='Transactions', copy=False, readonly=True)
+    tag_ids = fields.Many2many('crm.tagQ', 'sale_order_tag_rel', 'order_id', 'tag_id', string='Tags')
 
     name = fields.Char()
     description = fields.Text()
