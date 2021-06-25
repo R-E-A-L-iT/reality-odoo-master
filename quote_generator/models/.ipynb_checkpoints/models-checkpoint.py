@@ -7,7 +7,7 @@ class quote_generator(models.Model):
     _name = "quote_generator"
     
     transaction_ids = fields.Many2many('sale_order_id', 'transaction_id',
-                                       string='TransactionsInherited', copy=False, readonly=True)
+                                       string='TransactionsInherited', copy=True, readonly=True)
     #def action_quotation_sent(self):
      #   if self.filtered(lambda so: so.state != 'draft'):
       #      raise UserError(_('Custom Error Message to Prove Sucsess'))
