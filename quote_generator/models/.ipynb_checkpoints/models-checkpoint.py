@@ -4,11 +4,10 @@ from odoo import models, fields, api
 
 class quote_generator(models.Model):
     _name = 'quote_generator.quote_generator'
-    _inherit = ["sale.order"]
+    _inherit = "sale.order"
     _description = 'quote_generator.quote_generator'
     
-    transaction_ids = none
-    tag_ids = fields.Many2many('crm.tagQ', 'sale_order_tag_rel', 'order_id', 'tag_id', string='Tags')
+
 
     name = fields.Char()
     description = fields.Text()
