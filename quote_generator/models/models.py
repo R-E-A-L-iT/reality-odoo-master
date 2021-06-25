@@ -4,8 +4,9 @@ from odoo import models, fields, api
 
 class quote_generator(models.Model):
     _inherit = "sale.order"
+    _name = "quote_generator"
     
-    quote_Generator_transaction_ids = fields.Many2many('sale_order_id', 'transaction_id',
+    transaction_ids = fields.Many2many('sale_order_id', 'transaction_id',
                                        string='Transactions', copy=False, readonly=True)
     #def action_quotation_sent(self):
      #   if self.filtered(lambda so: so.state != 'draft'):
