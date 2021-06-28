@@ -3,7 +3,7 @@
       <record model="ir.ui.view" id="proQuote">
           <field name="name">proQuotes</field>
           <field name="model">sale.order.template</field>
-          <field name="inherit_id" ref="sale_order_portal_content_inherit_sale_management"></field>
+          <field name="inherit_id" ref="sale.sale_order_portal_content_inherit_sale_management"></field>
           <field name="arch" type="xml">
               <xpath expr="//h3[0]" position="after">
                   <h3>Custom Title</h3>
