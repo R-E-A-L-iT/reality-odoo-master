@@ -1,5 +1,5 @@
 <odoo>
-  <template id="proQuote" name="Pro Quotes" inherit_id="sale_order_portal_content_inherit_sale_management">
+  <template id="proQuote" name="Pro Quotes" inherit_id="sale_manegment.sale_order_portal_content_inherit_sale_management">
       <xpath expr="//h3[0]" position="after">
           <h3>Custom</h3>
       </xpath>
