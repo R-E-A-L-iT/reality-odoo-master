@@ -1,7 +1,10 @@
 <odoo>
+<!--
   <template id="proQuote" name="Pro Quotes" inherit_id="sale.sale_order_portal_content_inherit_sale_management">
       <xpath expr="//h3[0]" position="after">
           <h3>Custom</h3>
       </xpath>
-  </template>
+  </template><!---->
+    <template id="proQuote" name="Pro Quotes">
+    </template>  <!---->
 </odoo>
