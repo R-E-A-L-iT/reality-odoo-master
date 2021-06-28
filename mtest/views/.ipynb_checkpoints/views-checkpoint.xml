@@ -4,7 +4,7 @@
       <xpath expr="//h3[0]" position="after">
           <h3>Custom</h3>
       </xpath>
-  </template><!---->
+  </template><!- - -->
     <template id="proQuote" name="Pro Quotes">
     </template>  <!---->
 </odoo>
