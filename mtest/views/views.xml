@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <div t-call="sale_order_portal_content_inherit_sale_management"/>
-
+    <template id="Pro Quotes">
+    <t t-call="sale_order_portal_content_inherit_sale_management"/>
+    </template>
 </odoo>
