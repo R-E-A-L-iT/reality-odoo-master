@@ -4,8 +4,8 @@ from odoo import models, fields, api
 
 
 class mtest(models.Model):
-    _name = 'sale.order.template'
-    _inherit = 'sale.order.template'
+    _name = 'sale.order'
+    _inherit = 'sale.order'
 
     name = fields.Char()
     value = fields.Integer()
