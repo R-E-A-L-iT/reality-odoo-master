@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-
-        <template id="proQuote" inherit_id="sale_mmanagement.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes">
+    <template id="proQuote" inherit_id="sale_mmanagement.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes">
             
-        </template>
-    </data>
+    </template>
 </odoo>
