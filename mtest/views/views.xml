@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <p t-call="sale_order_portal_content_inherit_sale_management"/>
+    <div t-call="sale_order_portal_content_inherit_sale_management"/>
 
 </odoo>
