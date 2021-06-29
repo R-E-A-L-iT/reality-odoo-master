@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale.sale_order_portal_content" inherit_id="sale.sale_order_portal_content">
-        <!--<xpath expr="//*" position="replace">
-        </xpath>-->
+    <template id="pro" inherit_id="sale.sale_order_portal_content">
+
     </template>
-    <!--<record id="sale.sale_order_portal_content" model="ir.ui.view">
-        <field name="name">Pro Quotes</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.sale_order_portal_content"></field>
-        <field name="arch" type="xml">
-            <xpath expr="//h3" position="replace">
-                <h3>Custom</h3>
-            </xpath>
-        </field>
-    </record>-->
 </odoo>
 
