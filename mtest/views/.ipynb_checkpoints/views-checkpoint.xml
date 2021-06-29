@@ -7,11 +7,11 @@
         </xpath>
     </template>-->
     <record id="sale_management.sale_order_portal_content_inherit_sale_management" model="ir.ui.view">
-        <field name="Name">Pro Quotes</field>
+        <field name="name">Pro Quotes</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_management.sale_order_portal_content_inherit_sale_management"></field>
         <field name="arch" type="xml">
-            <xpath expr="h3" position="replace">
+            <xpath expr="//h3" position="replace">
                 <h3>Custom Change</h3>
             </xpath>
         </field>
