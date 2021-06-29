@@ -2,7 +2,7 @@
 <odoo>
     
     <template id="sale_management.sale_order_portal_content_inherit_sale_management" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes" priority="17">
-        <xpath expr="//*" postition="after">
+        <xpath expr="//h3" postition="after">
             <h3>Custom Change</h3>
         </xpath>
     </template>
