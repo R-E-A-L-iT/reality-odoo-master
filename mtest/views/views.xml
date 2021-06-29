@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!--<template id="sale_management.sale_order_portal_content_inherit_sale_management" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes" priority="17">
-        <xpath expr="//h3" xml:space="preserve">
-            <h3>Custom Change</h3>
+    <template id="sale.sale_order_portal_content" inherit_id="sale.sale_order_portal_content" name="Pro_Quotes" priority="17">
+        <xpath expr="//*" position="replace">
         </xpath>
-    </template>-->
-    <record id="sale.sale_order_portal_content" model="ir.ui.view">
+    </template>
+    <!--<record id="sale.sale_order_portal_content" model="ir.ui.view">
         <field name="name">Pro Quotes</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.sale_order_portal_content"></field>
         <field name="arch" type="xml">
             <xpath expr="//h3" position="replace">
-                <h3>Custom Change</h3>
+                <h3>Custom</h3>
             </xpath>
         </field>
-    </record>
+    </record>-->
 </odoo>
