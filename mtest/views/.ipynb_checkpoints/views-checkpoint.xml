@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale.sale_order_portal_content" inherit_id="sale.sale_order_portal_content" priority="17">
+    <template id="sale.sale_order_portal_content" inherit_id="sale.sale_order_portal_content">
         <!--<xpath expr="//*" position="replace">
         </xpath>-->
     </template>
@@ -15,3 +15,4 @@
         </field>
     </record>-->
 </odoo>
+
