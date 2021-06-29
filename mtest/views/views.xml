@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="proQuote" inherit_id="sale.order.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes">
+    <template id="proQuote" inherit_id="sale.order.sale_order_portal_content_inherit_sale_management" name="Pro_Quotes" priority="17">
             
     </template>
 </odoo>
