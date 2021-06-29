@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="pro" inherit_id="sale.sale_order_portal_content">
+    <template id="sale.sale_order_portal_content" inherit_id="sale.sale_order_portal_content">
 
     </template>
 </odoo>
