@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--
     <template id="Pro Quotes">
         <t t-call="sale_order_portal_content_inherit_sale_management">
             
         </t>
-    </template>-->
+    </template>
     </data>
 </odoo>
