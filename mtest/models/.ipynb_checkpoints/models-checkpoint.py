@@ -13,7 +13,7 @@ from odoo import models, fields, api
 
 
 class mtest(models.Model):
-    _inherit = 'sale.order'
+    _inherits = 'sale.order'
     _description = 'mtest.mtest'
 
     name = fields.Char()
