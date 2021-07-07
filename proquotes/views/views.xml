@@ -8,7 +8,7 @@
                 <span t-field="line.name"/>
             </label>
             <input t-attf-id="{{line}}{{line_index}}" type="checkbox" value="checked" style=""/>
-            <div t-attf-id="secion{{line}}{{line_index}}" style="width: 100px; height: 100px; background-color: red;">
+            <div t-attf-id="section{{line}}{{line_index}}" style="width: 100px; height: 100px; background-color: red;">
             </div>
             
         </xpath>
