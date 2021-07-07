@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="before">
-            <![CDATA[
-                <label for="sectionDisplay" style="width: 100%; height: 100%; position: absolute; display: block;">
-            ]]>
-	</xpath>
-
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
-	    <![CDATA[
-		</label>
-	    ]]>
-        </xpath>
-        
+<odoo>        
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="inside">
             <![CDATA[
-                <input type="checkbox" id="sectionDisplay" name="sectionDisplay">
+                <label style="display: block; background-color: red; width: 100%; height: 100%;">
+                <input type="checkbox">
+                </label>
             ]]>       
         </xpath>
     </template>
