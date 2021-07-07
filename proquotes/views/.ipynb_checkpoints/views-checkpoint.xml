@@ -3,7 +3,7 @@
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="before">
             <![CDATA[
-                <label for="sectionDisplay">
+                <label for="sectionDisplay" style="width: 100%; height: 100%; position: relative">
                 <div style="width: 100%; height: 100%; position: relative"></div>
                 </label>
             ]]>
