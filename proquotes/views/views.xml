@@ -2,14 +2,17 @@
 <!--<?xml-stylesheet type="text/css" href="../static/src/CSS/quoteStyle.css"?>-->
 <odoo>
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
-            <htmlData>
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="before">
             <![CDATA[
-                <input style="width: 100%" id="sectionDisplay" name="sectionDisplay">
+                <label for="sectionDisplay">
             ]]>
-            </htmlData>
-
+        </xpath>
         
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
+            <![CDATA[
+                </label>
+                <input style="" id="sectionDisplay" name="sectionDisplay type="checkbox">
+            ]]>       
         </xpath>
     </template>
 </odoo>
