@@ -7,20 +7,18 @@
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]" position="after">
             <t t-set="idNum" t-value="idNum + 1"/>
         </xpath>
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="before">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
             
-            <![CDATA[
-                <label for="sectionDisplay" style="display: inline-block; width: 100%; height: 100%;">
-            ]]>
+            
+            <label t-attf-for="sectionDisplay line_index" style="display: inline-block; width: 100%; height: 100%;">
+                <span t-field="line.name"/>
+            </label>
 
             
         </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
             
-            <![CDATA[
-                </label>
-                <input id="sectionDisplay" type="checkbox">
-            ]]>
+                <input t-attf-id="sectionDisplay line_index" type="checkbox"/>
             
             <t t-esc="line_index"/>
             
