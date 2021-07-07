@@ -8,14 +8,9 @@
             <label t-attf-for="sectionDisplay line_index" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
             </label>
-
-            
-        </xpath>
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
-            
-                <input t-attf-id="sectionDisplay line_index" type="checkbox"/>
-            
+            <input t-attf-id="sectionDisplay line_index" type="checkbox"/>
             <t t-esc="line_index"/>
+
             
         </xpath>
     </template>
