@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<?xml-stylesheet type="text/css" href="../static/src/CSS/quoteStyle.css"?>-->
 <odoo>
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="before">
@@ -7,7 +6,11 @@
                 <label for="sectionDisplay">
             ]]>
         </xpath>
-        
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
+            <![CDATA[
+                <input id="sectionDisplay" name="sectionDisplay type="checkbox">
+            ]]>
+        </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
             <![CDATA[
                 </label>
