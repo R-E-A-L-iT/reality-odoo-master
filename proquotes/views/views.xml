@@ -6,7 +6,7 @@
         </xpath>
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]" position="after">
             <t t-set="idNum" t-value="idNum + 1"/>
-                <p t-esc="idNum"></p>
+            <span t-esc="idNum"></span>
         </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="before">
             
