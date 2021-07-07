@@ -4,8 +4,8 @@
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         <xpath expr="//strong[@class='d-block mb-1']" position="replace">
         
-        <strong t-if="sale_order.partner_shipping_id == sale_order.partner_invoice_id" class="d-block mb-1">Custom Words:</strong>
-            <html><![CDATA[<p>Hello World</p>]]></html>
+        <strong t-if="sale_order.partner_shipping_id == sale_order.partner_invoice_id" class="d-block mb-1">Something Else:</strong>
+            <htmlData><![CDATA[<p>Hello World</p>]]></htmlData>
         
         </xpath>
     </template>
