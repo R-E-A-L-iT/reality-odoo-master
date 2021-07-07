@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="before">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="before">
             <![CDATA[
                 <label for="sectionDisplay">
             ]]>
@@ -13,9 +13,8 @@
             ]]>       
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="inside">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="inside">
             <![CDATA[
-                </label>
                 <input type="checkbox" id="sectionDisplay" name="sectionDisplay">
             ]]>       
         </xpath>
