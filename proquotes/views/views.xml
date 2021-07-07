@@ -7,13 +7,13 @@
             ]]>
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
             <![CDATA[
                 </label>
             ]]>       
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="inside">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="inside">
             <![CDATA[
                 <input type="checkbox" id="sectionDisplay" name="sectionDisplay">
             ]]>       
