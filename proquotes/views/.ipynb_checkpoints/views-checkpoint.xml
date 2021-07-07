@@ -18,7 +18,7 @@
             
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="before">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="after">
             <![CDATA[
                 </t>
             ]]>
