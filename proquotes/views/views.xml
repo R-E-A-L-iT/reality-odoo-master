@@ -12,7 +12,7 @@
             <![CDATA[
                 <label for="sectionDisplay" style="display: inline-block; width: 100%; height: 100%;">
             ]]>
-            <t t-esc="idNum"/>
+
             
         </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
@@ -21,6 +21,8 @@
                 </label>
                 <input id="sectionDisplay" type="checkbox">
             ]]>
+            
+            <t t-esc="idNum"/>
             
         </xpath>
     </template>
