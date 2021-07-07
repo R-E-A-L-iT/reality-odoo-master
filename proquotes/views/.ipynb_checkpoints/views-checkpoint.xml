@@ -14,7 +14,8 @@
         </xpath>
         
         <xpath t-attf-expr="//div[@id=@quot;section{{line}}{{line_index}}@quot;]" position="inside">
-            <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="move"></xpath>
+            <span>Hello</span>
+            <!--<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="move"></xpath>-->
         </xpath>
         <!--<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="before">
             <![CDATA[

@@ -13,9 +13,10 @@
             
         </xpath>
         
-        <!--<xpath t-attf-expr="//div[@id=@quot;section{{line}}{{line_index}}@quot;]" position="inside">
-            <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="move"></xpath>
-        </xpath>-->
+        <xpath t-attf-expr="//div[@id=@quot;section{{line}}{{line_index}}@quot;]" position="inside">
+            <span>Hello</span>
+            <!--<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="move"></xpath>-->
+        </xpath>
         <!--<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="before">
             <![CDATA[
                 <t t-attf-t-if="not {{line}}{{line_index}}.value == 'checked'">
