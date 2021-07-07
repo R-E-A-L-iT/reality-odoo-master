@@ -5,7 +5,7 @@
         <xpath expr="//strong[@class='d-block mb-1']" position="replace">
         
         <strong t-if="sale_order.partner_shipping_id == sale_order.partner_invoice_id" class="d-block mb-1">Something Else:</strong>
-            <htmlData><![CDATA[<p>Bye Bye</p>]]></htmlData>
+             <htmlData><![CDATA[<p>Bye Bye</p>]]></htmlData>
         
         </xpath>
     </template>
