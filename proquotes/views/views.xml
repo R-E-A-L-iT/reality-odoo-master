@@ -12,15 +12,20 @@
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="before">
+            <style>
+               :checked + .section {
+                    display: none;
+                }
+            </style>
             <![CDATA[
-                <t t-attf-t-if="not {{line}}{{line_index}}.checked">
+                <div class="section">
             ]]>
             
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="before">
             <![CDATA[
-                </t>
+                </div>
             ]]>
             
         </xpath>
