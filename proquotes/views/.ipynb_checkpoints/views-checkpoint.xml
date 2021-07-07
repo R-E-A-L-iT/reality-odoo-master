@@ -5,7 +5,7 @@
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
             <htmlData>
             <![CDATA[
-                <h1>Hello World</h1>
+                <input style="width: 100%" id="sectionDisplay" name="sectionDisplay">
             ]]>
             </htmlData>
 
