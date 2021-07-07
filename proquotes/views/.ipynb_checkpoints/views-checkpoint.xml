@@ -2,15 +2,19 @@
 <odoo>
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="before">
+            <htmlData>
             <![CDATA[
-                <label style="display: inline-block; background-color: red; width: 100%; height: 100%;">
+                <label style="display: inline-block; width: 100%; height: 100%;">
                 <input type="checkbox">
-            ]]>       
+            ]]>
+            </htmlData>
         </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="after">
+            <htmlData>
             <![CDATA[
                 </label>
-            ]]>       
+            ]]>
+            </htmlData>
         </xpath>
     </template>
 </odoo>
