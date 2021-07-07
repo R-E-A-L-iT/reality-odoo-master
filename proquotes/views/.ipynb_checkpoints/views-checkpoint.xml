@@ -22,7 +22,7 @@
                 <input id="sectionDisplay" type="checkbox">
             ]]>
             
-            <t t-esc="idNum"/>
+            <t t-esc="line_index"/>
             
         </xpath>
     </template>
