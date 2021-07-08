@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--Add Custom Javascript-->
-    <template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
-        <!--<xpath expr="." position="inside">
+    <!--<template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
+        <xpath expr="." position="inside">
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
-        </xpath>-->
-    </template>
+        </xpath>
+    </template>-->
     
     <!--Add Checkboxes to hide/display Products-->
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
