@@ -6,8 +6,8 @@
             <?xml-stylesheet type="text/css" href="/proquotes/static/src/CSS/quoteStyle.css"?>
         </xpath>
         <xpath expr="." position="inside">
-            <!--<style type="text/css" src="/proquotes/static/src/CSS/quoteStyle.css"></style>-->
-            <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
+            <link rel="stylesheet" href="cubeCentral.css"/>
+            <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"/>
         </xpath>
     </template>
     
