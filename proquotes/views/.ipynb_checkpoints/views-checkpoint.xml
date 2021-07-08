@@ -16,7 +16,7 @@
             <t t-set="sectionClass" t-value="noSection0"/>
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="after">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
@@ -26,7 +26,7 @@
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
             <span t-esc="sectionClass"/>
-            <t t-set="sectionClass" t-value="123"/>
+            <t t-set="sectionClass" t-value="Hello_World"/>
             <t t-set="test" t-value="(sectionClass)"/>
             <span t-esc="test"/>
         </xpath>
