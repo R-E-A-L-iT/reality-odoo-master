@@ -18,7 +18,7 @@
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="attributes">
             <t t-set="sectionsClass" t-value="1"/>
-            <attribute name="class" t-esc="sectionsClass"></attribute>
+            <attribute name="class"><t t-esc="sectionsClass"/></attribute>
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
