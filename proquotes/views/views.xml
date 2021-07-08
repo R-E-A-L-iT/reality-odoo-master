@@ -2,9 +2,9 @@
 <odoo>
     <!--Add Custom Javascript-->
     <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Quote frontend assets">
-        <xpath expr="." position="inside">
+        <!--<xpath expr="." position="inside">
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
-        </xpath>
+        </xpath>-->
     </template>
     
     <!--Add Checkboxes to hide/display Products-->
