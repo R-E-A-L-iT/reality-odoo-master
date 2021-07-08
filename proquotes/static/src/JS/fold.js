@@ -20,12 +20,14 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         }
         alert("click");
         var x = cb.currentTarget.parentNode.parentNode;
+        var y = x.nextSibling;
         while(y != undefined){
-            if(x.firstChild.firstChild.class=="foldLabel"){
+            if(y.firstChild.firstChild.class=="foldLabel"){
                 break;
             } else {
-                x.style.display = style;
+                y.style.display = style;
             }
+            y = y.nextSibling
         }
     },
 });
