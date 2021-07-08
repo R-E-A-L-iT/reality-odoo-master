@@ -12,10 +12,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (c) {
         console.log(c.currentTarget);
+        var classSearch = c.currentTarget.attributes.id.nodeValue;
+        var x = document.getElementsByClassName(classSearch);
         if(c.currentTarget.checked){
             alert("checked!");
-            var classSearch = c.currentTarget.attributes.id.nodeValue;
-            var x = document.getElementsByClassName(classSearch);
             for(var i = 0; i < x.length; i++){
                 x[i].style.display = "none";
             }
