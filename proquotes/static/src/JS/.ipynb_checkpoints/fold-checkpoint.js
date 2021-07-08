@@ -13,15 +13,19 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     _onChange: function (c) {
         var classSearch = c.currentTarget.attributes.id.nodeValue;
         var x = document.getElementsByClassName(classSearch);
+        var style;
         if(c.currentTarget.checked){
-            for(var i = 0; i < x.length; i++){
-                x[i].style.display = "none";
-            }
+            style="none";
         } else {
-            for(var i = 0; i < x.length; i++){
-                x[i].style.display = "table-cell";
-            }
+            style="table-cell"
         }
+        console.log(x.parent())
+        var y = x.parent().parent();
+        /*while(y != null){
+            var i = y.firstChild()
+            if(i.firstChild())
+            y = y.nextSibling()
+        }*/
     },
 });
 });
