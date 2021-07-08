@@ -25,7 +25,9 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
-            <span><t t-esc="sectionClass"/></span>
+            <span t-esc="sectionClass"/>
+            <t t-set="test" t-value="5"/>
+            <span t-esc="test"/>
         </xpath>
         
         
