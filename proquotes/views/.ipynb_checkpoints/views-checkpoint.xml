@@ -21,7 +21,11 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td" position="attributes">
-            <attribute name="name"><t t-esc="sectionClass"/></attribute>
+            <attribute name="class">CustomClass</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td" position="after">
+            <td><span><t t-esc="sectionClass"/></span></td>
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
