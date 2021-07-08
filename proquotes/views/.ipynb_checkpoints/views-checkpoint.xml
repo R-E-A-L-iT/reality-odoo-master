@@ -2,8 +2,11 @@
 <odoo>
     <!--Add Custom Javascript-->
     <template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
+        <xpath expr="." position="before">
+            <?xml-stylesheet type="text/css" href="/proquotes/static/src/CSS/quoteStyle.css"?>
+        </xpath>
         <xpath expr="." position="inside">
-            <style type="text/css" src="/proquotes/static/src/CSS/quoteStyle.css"></style>
+            <!--<style type="text/css" src="/proquotes/static/src/CSS/quoteStyle.css"></style>-->
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
         </xpath>
     </template>
