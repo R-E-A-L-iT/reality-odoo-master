@@ -10,10 +10,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     init: function (parent, value) {
         this._super(parent);
         this.count = value;
+        alert("init");
     },
     _onChange: function () {
-        alert("Clicked");
-        console.log("Clicked");
+        
     },
 });
 });
