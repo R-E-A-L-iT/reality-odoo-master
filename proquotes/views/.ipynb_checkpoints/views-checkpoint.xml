@@ -20,29 +20,10 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[1]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[1]" position="replace">
+            <td id="product_name" t-attf-class="{{sectionClass}}"><span t-field="line.name"/></td>
         </xpath>
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
-        </xpath>
-        
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
-        </xpath>
-        
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]//td[4]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
-        </xpath>
-        
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
-        </xpath>
-        
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]//td[6]" position="attributes">
-            <attribute name="class">CustomClass</attribute>
-        </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
