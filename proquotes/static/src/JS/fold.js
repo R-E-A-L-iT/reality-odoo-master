@@ -11,7 +11,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         this._super(parent);
     },
     _onChange: function (c) {
-        console.log(c.currentTarget.attributes.id.nodeValue);
+        if(true){        
+            var classSearch = c.currentTarget.attributes.id.nodeValue);
+            var x = document.getElementsByClassName(classSearch);
+            for(var i = 0; i < x.length; i++){
+                x[i].style.display = "none";
+            }
+        }
     },
 });
 });
