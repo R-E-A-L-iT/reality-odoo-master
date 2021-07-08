@@ -17,8 +17,7 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="attributes">
-            <t t-set="sectionsClass" t-value="1"/>
-            <attribute name="t-attf-class">{{line_index}}</attribute>
+            <attribute name="t-attf-class">{{sectionClass}}</attribute>
         </xpath>
         
         
