@@ -12,10 +12,6 @@
     <!--Add Checkboxes to hide/display Products-->
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]" position="before">
-            <t t-set="sectionClass" t-value="noSection0"/>
-        </xpath>
-        
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
             <t t-set="sectionClass" t-attf-value="{{line_index}}"/>
         </xpath>
@@ -27,8 +23,8 @@
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
             <span t-esc="sectionClass"/>
-            <t t-set="test" t-value="HI"/>
-            <span t-esc="testfsdaa"/>
+            <t t-set="test" t-value="12345"/>
+            <span t-esc="test"/>
         </xpath>
         
         
