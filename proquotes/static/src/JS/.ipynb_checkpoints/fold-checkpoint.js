@@ -13,7 +13,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     _onChange: function (c) {
         alert("Click");
         console.log(this);
-        console.log(e);
+        console.log(c);
     },
 });
 });
