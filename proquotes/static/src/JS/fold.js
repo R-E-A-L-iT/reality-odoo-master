@@ -21,6 +21,9 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             }
         } else {
             alert("unchecked!");
+            for(var i = 0; i < x.length; i++){
+                x[i].style.display = "table-row";
+            }
         }
     },
 });
