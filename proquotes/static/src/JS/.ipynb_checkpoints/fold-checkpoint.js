@@ -19,8 +19,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         } else {
             style="table-cell"
         }
-        console.log(x.parent())
-        var y = x.parent().parent();
+        console.log(x.parentNode)
+        //var y = x.parent().parent();
         /*while(y != null){
             var i = y.firstChild()
             if(i.firstChild())
