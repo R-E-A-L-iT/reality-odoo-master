@@ -10,8 +10,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     init: function (parent) {
         this._super(parent);
     },
-    _onChange: function (c) {
-        var classSearch = c.currentTarget.attributes.id.nodeValue;
+    _onChange: function (cb) {
+        var classSearch = cb.currentTarget.attributes.id.nodeValue;
         var x = document.getElementsByClassName(classSearch);
         var style;
         if(c.currentTarget.checked){
@@ -19,7 +19,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         } else {
             style="table-cell"
         }
-        console.log(x.nodeName);
+        console.log(cb.parentNode);
         //var y = x.parent().parent();
         /*while(y != null){
             var i = y.firstChild()
