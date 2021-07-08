@@ -3,7 +3,6 @@
     <!--Add Custom Javascript-->
     <template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
         <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/proquotes/static/src/CSS/quoteStyle.css"/>
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"/>
         </xpath>
     </template>
@@ -13,7 +12,7 @@
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
-            <label t-attf-for="{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+            <label t-attf-for="{{line}}{{line_index}}" class="fold" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
             </label>
             

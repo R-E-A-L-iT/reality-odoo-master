@@ -1,3 +1,5 @@
+odoo.define('sale_management.sale_management', function (require) {
+'use strict';
 var Widget = require(web.widget)
 
 var fold = Widget.extend({
@@ -12,4 +14,5 @@ var fold = Widget.extend({
     _onChange: function () {
         alert("Clicked");
     },
+});
 });
