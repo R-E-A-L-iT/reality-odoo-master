@@ -15,7 +15,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var classSearch = c.currentTarget.attributes.id.nodeValue);
             var x = document.getElementsByClassName(classSearch);
             for(var i = 0; i < x.length; i++){
-                x[i].style.display = "none";
+                x[i].style.backgroundColor = "red";
             }
         }
     },
