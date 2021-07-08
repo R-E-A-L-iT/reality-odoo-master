@@ -27,13 +27,12 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             } else {
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
-                    if(z[i].type == 1){
+                    if(z[i].nodeType == 1){
                         z[i].style.display = style;                        
                     }
                 }
             }
             y = y.nextElementSibling;
-            console.log(y);
         }
     },
 });
