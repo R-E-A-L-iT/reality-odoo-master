@@ -12,7 +12,6 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
-        var x = document.getElementsByClassName(classSearch);
         var style;
         if(cb.currentTarget.checked){
             style="none";
@@ -20,12 +19,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             style="table-cell"
         }
         console.log(cb.currentTarget.parentNode);
-        //var y = x.parent().parent();
-        /*while(y != null){
-            var i = y.firstChild()
-            if(i.firstChild())
-            y = y.nextSibling()
-        }*/
+        var x = cb.parentNode.parentNode;
+        while(y != undefined){
+            break;
+        }
     },
 });
 });
