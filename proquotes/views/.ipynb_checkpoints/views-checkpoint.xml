@@ -21,11 +21,11 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="attributes">
-            <attribute name="class">custom</attribute>
+            <attribute name="t-attf-class">custom</attribute>
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
-            <span t-raw="sectionClass">Hello</span>
+            <span>Hello</span>
         </xpath>
         
         
