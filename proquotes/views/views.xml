@@ -20,9 +20,9 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <xpath expr="" position="attributes">
+        <!--<xpath expr="" position="attributes">
             <attribute name="class">0</attribute>
-        </xpath>
+        </xpath>-->
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
@@ -31,7 +31,7 @@
             </label>
             
             <!--<input t-attf-id="{{line}}{{line_index}}" t-attf-class="fold {{line}}{{line_index}}" type="checkbox" style=""/>-->
-           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput {{line}}{{line_index}}" type="checkbox"/>
+           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput" type="checkbox"/>
         </xpath>
         
     </template>
