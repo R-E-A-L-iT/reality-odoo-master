@@ -12,7 +12,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (c) {
         alert("Swiched!");
-        console.log(c.currentTarget);
+        /*console.log(c.currentTarget);*/
     },
 });
 });
