@@ -20,6 +20,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         }
         alert("click");
         var x = cb.currentTarget.parentNode.parentNode;
+        console.log(x);
         var y = x.nextSibling;
         while(y != null && y != undefined){
             console.log(y);
