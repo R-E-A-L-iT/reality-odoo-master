@@ -24,6 +24,10 @@
             <attribute name="class">custom</attribute>
         </xpath>
         
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
+            <span><t t-esc="sectionClass"/></span>
+        </xpath>
+        
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
