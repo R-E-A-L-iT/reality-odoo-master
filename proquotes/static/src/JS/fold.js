@@ -11,6 +11,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         this._super(parent);
     },
     _onChange: function (c) {
+        console.log(c.currentTarget);
         if(true){        
             var classSearch = c.currentTarget.attributes.id.nodeValue;
             var x = document.getElementsByClassName(classSearch);

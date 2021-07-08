@@ -20,9 +20,9 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <!--<xpath expr="" position="attribute">
-            
-        </xpath>-->
+        <xpath expr="" position="attributes">
+            <attribute name="class">0</attribute>
+        </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
