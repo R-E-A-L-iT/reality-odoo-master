@@ -20,8 +20,8 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;/tr/t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-            <attribute name="class"><t t-esc="sectionClass"/></attribute>
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;/tr/t[@t-if=&quot;not line.display_type&quot;]" position="before">
+            <!--<attribute name="class"><t t-esc="sectionClass"/></attribute>-->
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
@@ -35,6 +35,9 @@
         
     </template>
 </odoo>
+
+
+
 
 
 
