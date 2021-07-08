@@ -20,8 +20,8 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[1]" position="replace">
-            <td id="product_name" t-attf-class="{{sectionClass}}"><span t-field="line.name"/></td>
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td[1]" position="attributes">
+            <attribute name="class" t-field="sectionClass"></attribute>
         </xpath>
         
         
