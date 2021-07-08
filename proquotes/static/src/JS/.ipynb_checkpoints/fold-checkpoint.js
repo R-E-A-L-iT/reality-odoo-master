@@ -1,4 +1,4 @@
-var Widget = require(web.widget)
+/*var Widget = require(web.widget)
 
 var Counter = Widget.extend({
     template: 'proquotes.sale_order_portal_content',
@@ -12,4 +12,4 @@ var Counter = Widget.extend({
     _onChange: function () {
         alert("Clicked");
     },
-});
+});*/
