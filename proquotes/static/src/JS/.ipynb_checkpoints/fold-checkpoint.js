@@ -21,7 +21,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         alert("click");
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextSibling;
-        while(y != undefined){
+        while(y != null && y != undefined){
             if(y.firstChild.firstChild.class=="foldLabel"){
                 break;
             } else {
