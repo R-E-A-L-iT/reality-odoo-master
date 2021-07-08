@@ -30,8 +30,7 @@
                 <span t-field="line.name"/>
             </label>
             
-            <!--<input t-attf-id="{{line}}{{line_index}}" t-attf-class="fold {{line}}{{line_index}}" type="checkbox" style=""/>-->
-           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput" type="checkbox"/>
+           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput" type="checkbox" style=""/>
         </xpath>
         
     </template>
