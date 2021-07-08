@@ -11,7 +11,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         this._super(parent);
     },
     _onChange: function (c) {
-        console.log(c);
+        console.log(c.target.value);
     },
 });
 });
