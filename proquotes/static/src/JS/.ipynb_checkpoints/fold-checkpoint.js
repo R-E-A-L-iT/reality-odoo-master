@@ -27,7 +27,9 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             } else {
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
-                    z[i].style.display = style;
+                    if(z[i].type == 1){
+                        z[i].style.display = style;                        
+                    }
                 }
             }
             y = y.nextElementSibling;
