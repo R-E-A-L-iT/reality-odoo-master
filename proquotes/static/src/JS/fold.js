@@ -18,8 +18,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         } else {
             style="table-cell"
         }
-        console.log(cb.currentTarget.parentNode);
-        var x = cb.parentNode.parentNode;
+        alert("click");
+        var x = cb.currentTarget.parentNode.parentNode;
         while(y != undefined){
             if(x.firstChild.firstChild.class=="foldLabel"){
                 break;
