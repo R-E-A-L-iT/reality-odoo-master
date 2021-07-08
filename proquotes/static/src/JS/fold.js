@@ -1,9 +1,9 @@
 var Widget = require(web.widget)
 
-var Counter = Widget.extend({
+var fold = Widget.extend({
     template: 'proquotes.sale_order_portal_content',
     events: {
-        'fold': '_onChange',
+        'change .fold': '_onChange',
     },
     init: function (parent, value) {
         this._super(parent);
