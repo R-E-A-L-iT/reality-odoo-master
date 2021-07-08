@@ -1,6 +1,6 @@
 odoo.define('proquotes.proquotes', function (require) {
 'use strict';
-var publicWidget = require(web.publicWidget)
+var publicWidget = require('web.public.widget')
 
 publicWidget.registry.fold = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
