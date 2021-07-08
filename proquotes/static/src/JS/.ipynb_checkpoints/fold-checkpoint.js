@@ -21,7 +21,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         console.log(cb.currentTarget.parentNode);
         var x = cb.parentNode.parentNode;
         while(y != undefined){
-            break;
+            if(x.firstChild.firstChild.class=="foldLabel"){
+                break;
+            } else {
+                x.style.display = style;
+            }
         }
     },
 });

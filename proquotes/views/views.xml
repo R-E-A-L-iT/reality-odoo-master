@@ -24,7 +24,7 @@
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
-            <label t-attf-for="{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+            <label t-attf-for="{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
             </label>
             
