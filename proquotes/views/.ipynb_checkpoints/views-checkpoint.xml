@@ -12,13 +12,13 @@
     <!--Add Checkboxes to hide/display Products-->
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]" position="before">
+        <!--<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]" position="before">
             <t t-set="sectionClass" t-value="noSection0"/>
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="after">
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
-        </xpath>
+        </xpath>-->
         
         <!--<xpath expr="" position="attribute">
             
