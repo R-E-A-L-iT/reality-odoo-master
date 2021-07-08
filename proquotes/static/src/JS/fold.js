@@ -29,7 +29,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             } else {
                 y.style.display = style;
             }
-            y = y.nextSibling;
+            y = y.nextElementSibling;
             console.log(y);
         }
     },
