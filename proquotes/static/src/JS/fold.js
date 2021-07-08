@@ -20,16 +20,14 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         }
         alert("click");
         var x = cb.currentTarget.parentNode.parentNode;
-        console.log(x);
         var y = x.nextElementSibling;
-        console.log(y);
         while(y != null && y != undefined){
             if(y.class=="is-subtotal"){
                 break;
             } else {
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
-                    y[i].style.display = style;
+                    z[i].style.display = style;
                 }
             }
             y = y.nextElementSibling;
