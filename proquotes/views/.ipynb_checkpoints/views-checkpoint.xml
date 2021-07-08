@@ -17,7 +17,7 @@
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
-            <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
+            <t t-set="sectionClass" t-attf-value="{{line_index}}"/>
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="attributes">
@@ -26,7 +26,6 @@
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//tr//t[@t-if=&quot;not line.display_type&quot;]//td" position="inside">
             <span t-esc="sectionClass"/>
-            <t t-set="sectionClass" t-value="Hello_World"/>
             <t t-set="test" t-value="(sectionClass)"/>
             <span t-esc="test"/>
         </xpath>
@@ -38,7 +37,7 @@
                 <span t-field="line.name"/>
             </label>
             
-           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput {{line}}{{line_index}}" type="checkbox" checked="true" style="display: none;"/>
+           <input t-attf-id="{{line_index}}" t-attf-class="foldInput {{line_index}}" type="checkbox" checked="true" style="display: none;"/>
         </xpath>
         
     </template>
