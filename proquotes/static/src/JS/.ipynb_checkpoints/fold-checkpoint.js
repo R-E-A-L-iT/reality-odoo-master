@@ -14,7 +14,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
         var x = document.getElementsByClassName(classSearch);
         var style;
-        if(c.currentTarget.checked){
+        if(cb.currentTarget.checked){
             style="none";
         } else {
             style="table-cell"
