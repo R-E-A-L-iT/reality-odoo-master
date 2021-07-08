@@ -12,7 +12,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (c) {
         console.log(c.currentTarget);
-        if(true){        
+        if(c.currentTarget.checked){        
             var classSearch = c.currentTarget.attributes.id.nodeValue;
             var x = document.getElementsByClassName(classSearch);
             for(var i = 0; i < x.length; i++){
