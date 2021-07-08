@@ -12,7 +12,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (c) {
         if(true){        
-            var classSearch = c.currentTarget.attributes.id.nodeValue);
+            var classSearch = c.currentTarget.attributes.id.nodeValue;
             var x = document.getElementsByClassName(classSearch);
             for(var i = 0; i < x.length; i++){
                 x[i].style.backgroundColor = "red";
