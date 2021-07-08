@@ -21,7 +21,7 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/td" position="attributes">
-            <attribute name="class"><t t-esc="sectionClass"/></attribute>
+            <attribute name="name"><t t-esc="sectionClass"/></attribute>
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
@@ -30,7 +30,7 @@
                 <span t-field="line.name"/>
             </label>
             
-           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput {{line}}{{line_index}}" type="checkbox" style="display: none;"/>
+           <input t-attf-id="{{line}}{{line_index}}" t-attf-class="foldInput {{line}}{{line_index}}" type="checkbox" checked="true" style="display: none;"/>
         </xpath>
         
     </template>
