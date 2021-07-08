@@ -20,7 +20,7 @@
             <t t-set="sectionClass" t-attf-value="{{line}}{{line_index}}"/>
         </xpath>
         
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]/*" position="attributes">
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr/t[@t-if=&quot;not line.display_type&quot;]//td" position="attributes">
             <attribute name="class">CustomClass</attribute>
         </xpath>
         
