@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--Add Custom Javascript-->
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Quote frontend assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="~/src/user/proquotes/static/src/JS/sectionHide.js"></script>
+        </xpath>
+    </template>
+    
+    <!--Add Checkboxes to hide/display Products-->
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
@@ -8,9 +16,7 @@
                 <span t-field="line.name"/>
             </label>
             <input t-attf-id="{{line}}{{line_index}}" type="checkbox" value="checked" style=""/>
-            <div t-attf-id="section{{line}}{{line_index}}" style="width: 100px; height: 100px; background-color: red;">
-            </div>
-            
+           
         </xpath>
         
     </template>
