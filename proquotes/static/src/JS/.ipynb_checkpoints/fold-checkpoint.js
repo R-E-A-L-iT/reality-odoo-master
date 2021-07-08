@@ -27,7 +27,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             if(y.class=="is-subtotal"){
                 break;
             } else {
-                y.style.display = style;
+                var z = y.childNodes
+                for(int i = 0; i < z.length; i++){
+                    y[i].style.display = style;
+                }
             }
             y = y.nextElementSibling;
             console.log(y);
