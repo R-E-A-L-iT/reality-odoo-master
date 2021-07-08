@@ -1,4 +1,4 @@
-odoo.define('sale_management.sale_management', function (require) {
+odoo.define('proquotes.proquotes', function (require) {
 'use strict';
 var Widget = require(web.widget)
 
