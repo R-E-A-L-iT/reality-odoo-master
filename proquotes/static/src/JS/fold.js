@@ -7,12 +7,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     events: {
         'change .fold': '_onChange',
     },
-    init: function (parent, value) {ss
+    init: function (parent, value) {
         this._super(parent);
         this.count = value;
     },
     _onChange: function () {
         alert("Clicked");
+        console.log("Clicked");
     },
 });
 });
