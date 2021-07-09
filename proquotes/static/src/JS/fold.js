@@ -16,12 +16,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var DIVstyle;
         var TRstyle
         if(cb.currentTarget.checked){
-            TDstyle="none";
-            DIVstyle = "none";
             TRstyle = "none";
         } else {
-            TDstyle="table-cell";
-            DIVstyle = "block";
             TRstyle = "table-row";
         }
         var x = cb.currentTarget.parentNode.parentNode;
@@ -33,23 +29,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 if(y.style != undefined && y.style != null){
                     y.style.display = TRstyle;
                 }
-                /*var z = y.childNodes
-                for(var i = 0; i < z.length; i++){
-                    if(z[i].tagName == "TD"){
-                        z[i].style.display = TDstyle;
-                        var w = z[i].childNodes;
-                        if(w != undefined && w != null){
-                            for(var j = 0; j < w.length; j++){
-                                if(w[j].tagName == "DIV"){
-                                    w[j].style.display = DIVstyle;
-                                }
-                            }
-                        }
-                    }
-                }*/
             }
             y = y.nextElementSibling;
-            
         }
     },
 });
