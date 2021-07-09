@@ -13,7 +13,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onload: function () {
         alert(load);
-    }
+    },
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
         var TDstyle;
