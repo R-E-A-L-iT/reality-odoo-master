@@ -10,7 +10,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     init: function (parent) {
         this._super(parent);
-        this.onLoad();
+        this._onLoad();
     },
     
     _onLoad: function () {
