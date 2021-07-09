@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale_order_form_inherit" inherit_id="sale_account_taxcloud.view_order_form_inherit">
+    <template id="view_order_form_inherit" inherit_id="sale_account_taxcloud.view_order_form_inherit">
         
         <xpath expr="//create" position="replace">
             <create name="custom" string="Custom_Section_Type"/>
