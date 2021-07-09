@@ -7,11 +7,11 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             
-            <xpath expr="//create[2]" position="after">
+            <xpath expr="//create[1]" position="after">
                 <create name="optional_product" string="Add Optional Product"/>
             </xpath>
             
-            <xpath expr="//create[2]" position="after">
+            <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Secion"/>
                 <create name="optional_Section" string="Add an Optional Section"/> 
             </xpath>
