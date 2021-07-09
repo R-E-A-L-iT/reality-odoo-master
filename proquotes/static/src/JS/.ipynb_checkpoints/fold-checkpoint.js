@@ -6,7 +6,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .foldInput': '_onChange',
-        'load body':'onLoad',
+        'onLoad body':'onLoad',
     },
     init: function (parent) {
         this._super(parent);
