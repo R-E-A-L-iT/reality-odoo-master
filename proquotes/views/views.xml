@@ -42,9 +42,10 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names-->
-        <xpath expr="//td[id=&quot;product_name&quot;]" position="after">
+        <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <!--<t t-set="nameDescription" t-field="line.name"></t>
             <span t-raw="nameDescription"></span>-->
+            <span>Custom Name</span>
         </xpath>
         
     </template>
