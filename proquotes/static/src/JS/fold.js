@@ -13,13 +13,16 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
         var TDstyle;
-        var innerStyle;
+        var DIVstyle;
+        var TRstyle
         if(cb.currentTarget.checked){
             TDstyle="none";
-            innerStyle = "none";
+            DIVstyle = "none";
+            TRstyle = "none";
         } else {
-            TDstyle="table-cell"
-            innerStyle = "block"
+            TDstyle="table-cell";
+            DIVstyle = "block";
+            TRstyle = "table-row";
         }
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
@@ -27,6 +30,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             if(y.className.includes("is-subtotal")){
                 break;
             } else {
+                console.log(y.style);
+                if(y.style != undefined && y.style != null){
+                    y.style.display = TRstyle;
+                }
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
                     if(z[i].tagName == "TD"){
@@ -35,7 +42,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                         if(w != undefined && w != null){
                             for(var j = 0; j < w.length; j++){
                                 if(w[j].tagName == "DIV"){
-                                    w[j].style.display = innerStyle;
+                                    w[j].style.display = DIVstyle;
                                 }
                             }
                         }
