@@ -28,8 +28,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 for(var i = 0; i < z.length; i++){
                     if(z[i].tagName == "TD"){
                         z[i].style.display = style;
-                        for(var j = 0; j < z.childNodes.length; j++){
-                            console.log(z.childNodes[j].tagName);
+                        var w = z[i].childNodes;
+                        if(w != undefined && w != null){
+                            for(var j = 0; j < w.length; j++){
+                                console.log(w[j].tagName);
+                            }
                         }
                     }
                 }
