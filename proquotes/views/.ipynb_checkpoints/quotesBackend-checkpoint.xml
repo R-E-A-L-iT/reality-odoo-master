@@ -12,6 +12,9 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//create" position="replace">
+                <span class="o_stat_text">Custom</span>
+            </xpath>
         </field>
     </record>
 </odoo>
