@@ -15,7 +15,7 @@
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
-            <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
+            <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
             </label>
             
@@ -24,7 +24,7 @@
         <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
             <td>
-            <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
+            <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
                 <span class="subtotal-destination text-right" style="float: right; font-weight: 400 !important;"></span>
                 <strong class="text-right" style="float: left; font-weight: bolder">Subtotal</strong>
             </label>
@@ -43,7 +43,7 @@
         
         <!--Apply HTML tags to description and Names-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
-            <t t-set="nameDescription" t-field="line.name"></t>
+            <t t-set="nameDescription" t-value="line.name"></t>
             <span t-raw="nameDescription"></span>
         </xpath>
         
