@@ -6,14 +6,14 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .foldInput': '_onChange',
-        'load body': '_onload',
+        /*'load body': '_onload',*/
     },
     init: function (parent) {
         this._super(parent);
     },
-    _onload: function () {
+    /*_onload: function () {
         alert(load);
-    },
+    },*/
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
         var TDstyle;
