@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_frontend" inherit_id="sale.view_order_form" priority="17">
+    <template id="assets_frontend" inherit_id="sale.view_order_form" priority="16">
         <xpath expr="//create" position="before">
             <create name="custom" string="Custom_Section_Type"/>
         </xpath>
