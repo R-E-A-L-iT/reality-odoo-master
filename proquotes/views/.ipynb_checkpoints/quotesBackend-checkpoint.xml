@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             
-            <xpath expr="//label[@string=&quot;Section Name (eg. Products, Services)&quot;]" position="after">
+            <xpath expr="//label" position="after">
                 <!--<label for="name" string="Section Name" attrs="{'invisible': [('display_type', '!=', 'line_option_section')]}"/>
                 <label for="name" string="Section Name" attrs="{'invisible': [('display_type', '!=', 'line_multiple_section')]}"/>-->
             </xpath>
