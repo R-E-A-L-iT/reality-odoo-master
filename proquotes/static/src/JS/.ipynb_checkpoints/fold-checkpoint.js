@@ -9,15 +9,15 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         'onLoad body':'onLoad',
     },
     init: function (parent) {
+        alert("start");
         this._super(parent);
-        console.log("start");
     },
     
     _onLoad: function () {
         console.log("Loaded");
     },
     _onChange: function (cb) {
-        var classSearch = cb.currentTarget.attributes.id.nodeValue;
+        console.log(cb.currentTarget.checked)
         var TRstyle
         if(cb.currentTarget.checked){
             TRstyle = "none";
