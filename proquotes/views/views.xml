@@ -9,21 +9,19 @@
         </xpath>
     </template>
     
-    <!--Add Checkboxes to hide/display Products-->
+    
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
-              
+        
+        <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
             <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
-                <!--<span class="subtotal-destination text-right" style="float: right; font-weight: 400 !important;"></span>
-                <strong class="mr16 text-right" style="float: right; font-weight: bolder">Subtotal</strong>-->
-
             </label>
             
            <input t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="false" style="display: none;"/>
         </xpath>
-        
+        <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
             <td>
             <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
@@ -38,6 +36,7 @@
             <attribute name="style">display: none;</attribute>
         </xpath>
         
+        <!--Mark Original Subtotal locations-->
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
             <attribute name="class">subtotal-source</attribute>
         </xpath>
