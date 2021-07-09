@@ -21,5 +21,9 @@
            <input t-attf-id="fold{{line}}{{line_index}}" type="checkbox" checked="false" style="display: none;"/>
         </xpath>
         
+        <xpath expr="//t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
+            <attribute name="style">background-color: red;</attribute>
+        </xpath>
+        
     </template>
 </odoo>
