@@ -6,7 +6,6 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .foldInput': '_onChange',
-        'onLoad body':'onLoad',
     },
     init: function (parent) {
         this._super(parent);
@@ -14,6 +13,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
+        var TRstyle;
         var cbl = document.getElementsByClassName("foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
