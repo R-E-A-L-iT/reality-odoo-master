@@ -21,7 +21,7 @@
                 <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_multiple_section'}"/> 
             </xpath>
             
-            <xpath expr="[@t-if=&quot;record.display_type.raw_value === 'line_section' || record.display_type.raw_value === 'line_note'&quot;]" position="attributes">
+            <xpath expr="//t[@t-if=&quot;record.display_type.raw_value === 'line_section' || record.display_type.raw_value === 'line_note'&quot;]" position="attributes">
                 <attribute name="t-if">
                     record.display_type.raw_value === 'line_section' ||
                     record.display_type.raw_value === 'line_note'||
