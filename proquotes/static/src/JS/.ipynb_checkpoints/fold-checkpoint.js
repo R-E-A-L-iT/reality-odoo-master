@@ -17,8 +17,6 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
-        var TDstyle;
-        var DIVstyle;
         var TRstyle
         if(cb.currentTarget.checked){
             TRstyle = "none";
