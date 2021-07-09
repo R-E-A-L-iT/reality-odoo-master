@@ -22,7 +22,7 @@
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-            <attribute name="class">Custom</attribute>
+            <attribute name="class">Customs</attribute>
         </xpath>
         
     </template>
