@@ -21,12 +21,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
-            console.log(y.className);
+            console.log(y.className.includes("is-subtotal"));
             if(y.className.includes("is-subtotal")){
                 break;
             } else {
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
+                    console.log(z);
                     if(z[i].nodeType == 1){
                         z[i].style.display = style;                        
                     }
