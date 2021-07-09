@@ -41,7 +41,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var sourceRow = getElementsByClassName("is-subtotal")[i];
             var sourceCell = sourceRow.firstChild;
             var sourceSpan = sourceCell.getElementsByTagName("SPAN");
-            subTotal.innerHTML = sourceSpan.html;
+            subTotal.innerHTML = "Test";
             
         }
     },
