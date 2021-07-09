@@ -16,14 +16,17 @@
         
             <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
+                <div class="text-right">
+                    <strong class="mr16">Subtotal</strong>
+                        <span class="subtotal-destination"/>
+                </div>
             </label>
             
            <input t-attf-id="fold{{line}}{{line_index}}" type="checkbox" checked="false" style="display: none;"/>
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-            <attribute name="id">Custom</attribute>
-            <attribute name="style">background-color: red;</attribute>
+            <!--<attribute name="style">display: none;</attribute>-->
         </xpath>
         
     </template>
