@@ -21,6 +21,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
+            console.log(y.class);
             if(y.class=="foldEnd"){
                 break;
             } else {
@@ -32,7 +33,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 }
             }
             y = y.nextElementSibling;
-            console.log(y);
+            
         }
     },
 });
