@@ -2,9 +2,9 @@
 <odoo>
     <template inherit_id="sale.view_order_form">
         
-        <xpath expr="//create" position="replace">
+        <!--<xpath expr="//create" position="replace">
             <create name="custom" string="Custom_Section_Type"/>
-        </xpath>
+        </xpath>-->
     
     </template>
     <!--<record id="proquotes_view_order_form_inherit" model="ir.ui.view">
