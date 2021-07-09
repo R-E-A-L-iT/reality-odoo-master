@@ -17,7 +17,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var cbl = document.getElementsByClassName("foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
-            if(cb.currentTarget.checked){
+            if(cb.checked){
             TRstyle = "none";
             } else {
             TRstyle = "table-row";
