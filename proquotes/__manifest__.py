@@ -26,7 +26,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/quotes.xml',
-        'views/views/quotesBackend',
+        'views/quotesBackend',
     ],
     # only loaded in demonstration mode
     'demo': [
