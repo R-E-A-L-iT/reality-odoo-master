@@ -28,7 +28,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
                     console.log(z);
-                    if(z[i].nodeType == 1){
+                    if(z[i].tagName == "td"){
                         z[i].style.display = style;                        
                     }
                 }
