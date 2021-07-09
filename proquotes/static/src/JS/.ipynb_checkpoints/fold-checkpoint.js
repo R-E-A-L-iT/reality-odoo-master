@@ -18,11 +18,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         } else {
             style="table-cell"
         }
-        alert("click");
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
-            if(y.class=="is-subtotal"){
+            if(y.class=="foldEnd"){
+                console.log(y);
                 break;
             } else {
                 var z = y.childNodes
