@@ -9,12 +9,12 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         'onLoad body':'onLoad',
     },
     init: function (parent) {
-        alert("start");
         this._super(parent);
+        this.onLoad();
     },
     
     _onLoad: function () {
-        console.log("Loaded");
+        alert("start");
     },
     _onChange: function (cb) {
         console.log(cb.currentTarget.checked)
