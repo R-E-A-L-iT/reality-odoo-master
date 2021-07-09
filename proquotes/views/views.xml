@@ -19,7 +19,7 @@
                 <span t-field="line.name"/>
             </label>
             
-           <input t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="false" style="display: none;"/>
+           <input t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="true" style="display: none;"/>
         </xpath>
         <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
