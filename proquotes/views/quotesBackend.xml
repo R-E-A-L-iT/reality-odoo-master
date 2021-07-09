@@ -12,8 +12,8 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//create" position="replace">
-                <span class="o_stat_text">Custom</span>
+            <xpath expr="//create" position="after">
+                <create name="Custom" string="Custom Section Type"/> 
             </xpath>
         </field>
     </record>
