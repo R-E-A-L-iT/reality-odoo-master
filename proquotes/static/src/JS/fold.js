@@ -40,7 +40,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var subTotal = subTotalList[i];
             var sourceRow = document.getElementsByClassName("is-subtotal")[i];
             console.log(sourceRow);
-            var sourceCell = sourceRow.childNodes[0];
+            var sourceCell = sourceRow.childNodes[1];
             console.log(sourceCell);
             var sourceSpan = sourceCell.childNodes[1];
             console.log(sourceSpan);
