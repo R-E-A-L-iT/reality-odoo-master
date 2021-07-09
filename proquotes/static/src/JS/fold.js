@@ -22,7 +22,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
             console.log(y.className);
-            if(y.className.includes("is-subtotal"){
+            if(y.className.includes("is-subtotal")){
                 break;
             } else {
                 var z = y.childNodes
