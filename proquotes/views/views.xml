@@ -22,7 +22,8 @@
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-            <attribute name="id">custom</attribute>
+            <attribute name="id">Custom</attribute>
+            <attribute name="style">background-color: red;</attribute>
         </xpath>
         
     </template>
