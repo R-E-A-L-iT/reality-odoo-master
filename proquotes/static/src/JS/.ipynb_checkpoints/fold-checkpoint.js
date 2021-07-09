@@ -19,7 +19,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             innerStyle = "none";
         } else {
             TDstyle="table-cell"
-            innerStyle = "flex"
+            innerStyle = "block"
         }
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
@@ -34,7 +34,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                         var w = z[i].childNodes;
                         if(w != undefined && w != null){
                             for(var j = 0; j < w.length; j++){
-                                if(w[j].tagName == "DIV" || z[i].tagName== "SPAN"){
+                                if(w[j].tagName == "DIV"){
                                     w[j].style.display = innerStyle;
                                 }
                             }
