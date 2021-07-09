@@ -2,8 +2,9 @@
 <odoo>
     <template id="view_order_form" inherit_id="sale.view_order_form" priority="17">
         
-        <xpath expr="//create" position="before">
-            <create name="custom" string="Custom_Section_Type"/>
+        <xpath expr="//div" position="before">
+            <p>Cukjfdsafjkdsa;jfkdsajfdsk;a</p>
+            <!--<create name="custom" string="Custom_Section_Type"/>-->
         </xpath>
     
     </template>
