@@ -44,8 +44,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             console.log(sourceCell);
             var sourceSpan = sourceCell.childNodes[2];
             console.log(sourceSpan);
-            console.log(sourceSpan.childNods[3]);
-            console.log(sourceSpan.childNods[4]);
+            console.log(sourceSpan.childNodes[3]);
+            console.log(sourceSpan.childNodes[4]);
             //subTotal.innerHTML = sourceSpan.innerHTML;
             
         }
