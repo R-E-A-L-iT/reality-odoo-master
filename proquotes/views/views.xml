@@ -16,12 +16,21 @@
         
             <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
-                <span class="subtotal-destination text-right" style="float: right; font-weight: 400 !important;">100.00</span>
-                <strong class="mr16 text-right" style="float: right; font-weight: bolder">Subtotal</strong>
+                <!--<span class="subtotal-destination text-right" style="float: right; font-weight: 400 !important;"></span>
+                <strong class="mr16 text-right" style="float: right; font-weight: bolder">Subtotal</strong>-->
 
             </label>
             
            <input t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="false" style="display: none;"/>
+        </xpath>
+        
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/" position="after">
+            <td>
+            <label t-attf-for="fold{{line}}{{line_index}}" class="foldLabel" style="display: inline-block; width: 100%; height: 100%;">
+                <span class="subtotal-destination text-right" style="float: right; font-weight: 400 !important;"></span>
+                <strong class="mr16 text-right" style="float: right; font-weight: bolder">Subtotal</strong>
+            </label>
+            </td>
         </xpath>
         
         <!--Hide Default Subtotal-->
