@@ -12,11 +12,14 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var classSearch = cb.currentTarget.attributes.id.nodeValue;
-        var style;
+        var TDstyle;
+        var innerStyle;
         if(cb.currentTarget.checked){
-            style="none";
+            TDstyle="none";
+            innerStyle = "none";
         } else {
-            style="table-cell"
+            TDstyle="table-cell"
+            innerStyle = "flex"
         }
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
@@ -27,12 +30,12 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
                     if(z[i].tagName == "TD"){
-                        z[i].style.display = style;
+                        z[i].style.display = TDstyle;
                         var w = z[i].childNodes;
                         if(w != undefined && w != null){
                             for(var j = 0; j < w.length; j++){
                                 if(w[j].tagName == "DIV" || z[i].tagName== "SPAN"){
-                                    w[j].style.display = style;
+                                    w[j].style.display = innerStyle;
                                 }
                             }
                         }
