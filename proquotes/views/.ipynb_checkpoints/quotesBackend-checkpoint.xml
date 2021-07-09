@@ -12,8 +12,8 @@
             </xpath>
             
             <xpath expr="//create[3]" position="after">
-                <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_section'}"/>
-                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section'}"/> 
+                <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_option_section'}"/>
+                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_multiple_section'}"/> 
             </xpath>
         </field>
         
