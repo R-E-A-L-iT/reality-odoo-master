@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--<template name="view_order_form" id="view_order_form" inherit_id="sale.view_order_form">
-        
-        <xpath expr="//create" position="replace">
-            <span class="o_stat_text">Custom</span>
-        </xpath>
     
-    </template>-->
     <record id="view_order_form" model="ir.ui.view">
         <field name="name">sale.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//create" position="after">
-                <create name="Custom" string="Custom Section Type"/> 
+            
+            <xpath expr="//create[2]" position="after">
+                <create name="optional_product" string="Add Optional Product"/>
+            </xpath>
+            
+            <xpath expr="//create[2]" position="after">
+                <create name="multiple_choice" string="Add Multiple Choice Secion"/>
+                <create name="optional_Section" string="Add an Optional Section"/> 
             </xpath>
         </field>
+        
     </record>
 </odoo>
