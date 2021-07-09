@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="special_sections" model="ir.ui.view" priority="17">
+    <template id="assets_frontend" inherit_id="sale.view_order_form" priority="17"></template>
+    <!--<record id="special_sections" model="ir.ui.view" priority="17">
         <field name="name">specialSections</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             
         </field>
-    </record>
+    </record>-->
 </odoo>
