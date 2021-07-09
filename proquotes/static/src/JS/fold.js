@@ -35,10 +35,18 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             y = y.nextElementSibling;
             }
         }
+        var subTotalList = document.getElementsByClassName("subtotal-destination");
+        for(var i = 0; i < subTotalList; i++){
+            var subTotal = subTotalList[i];
+            var sourceRow = getElementsByClassName("is-subtotal")[i];
+            var sourceCell = sourceRow.firstChild;
+            var sourceSpan = sourceCell.getElementsByTagName("SPAN");
+            subTotal.innerHTML = sourceSpan.html;
+            
+        }
     },
     _onChange: function (cb) {
-        console.log(cb.currentTarget.checked)
-        var TRstyle
+        var TRstyle;
         if(cb.currentTarget.checked){
             TRstyle = "none";
         } else {
