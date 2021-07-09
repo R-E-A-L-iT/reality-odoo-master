@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="special_sections" model="ir.ui.view">
+    <record id="special_sections" model="ir.ui.view" priority="17">
         <field name="name">specialSections</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml"></field>
+        <field name="arch" type="xml">
+            
+        </field>
     </record>
 </odoo>
