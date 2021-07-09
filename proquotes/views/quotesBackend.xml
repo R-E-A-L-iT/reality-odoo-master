@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--<template id="view_order_form" inherit_id="sale.view_order_form">
+    <template name="sale.view_order_form" id="view_order_form" inherit_id="sale.view_order_form" primary="True">
         
         <xpath expr="//create" position="replace">
             <create name="custom" string="Custom_Section_Type"/>
         </xpath>
     
-    </template>-->
-    <record id="view_order_form" model="ir.ui.view">
+    </template>
+    <!--<record id="view_order_form" model="ir.ui.view">
         <field name="name">sale.view_order_form</field>
-        <!--<field name="model">sale.order</field>-->
+        <!--<field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
         </field>
-    </record>
+    </record>-->
 </odoo>
