@@ -42,7 +42,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             alert("Test");
             console.log("Test");
             var subTotal = subTotalList[i];
-            var sourceRow = getElementsByClassName("is-subtotal")[i];
+            var sourceRow = document.getElementsByClassName("is-subtotal")[i];
             var sourceCell = sourceRow.firstChild;
             var sourceSpan = sourceCell.getElementsByTagName("SPAN");
             subTotal.innerHTML = "Test";
