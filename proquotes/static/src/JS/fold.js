@@ -31,7 +31,9 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                         var w = z[i].childNodes;
                         if(w != undefined && w != null){
                             for(var j = 0; j < w.length; j++){
-                                console.log(w[j].tagName);
+                                if(w[j].tagName == "DIV" || z[i].tagName== "SPAN"){
+                                    w[j].style.display = style;
+                                }
                             }
                         }
                     }
