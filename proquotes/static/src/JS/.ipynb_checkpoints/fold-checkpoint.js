@@ -30,11 +30,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             if(y.className.includes("is-subtotal")){
                 break;
             } else {
-                console.log(y.style);
                 if(y.style != undefined && y.style != null){
                     y.style.display = TRstyle;
                 }
-                var z = y.childNodes
+                /*var z = y.childNodes
                 for(var i = 0; i < z.length; i++){
                     if(z[i].tagName == "TD"){
                         z[i].style.display = TDstyle;
@@ -47,7 +46,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                             }
                         }
                     }
-                }
+                }*/
             }
             y = y.nextElementSibling;
             
