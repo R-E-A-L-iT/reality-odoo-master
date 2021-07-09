@@ -14,7 +14,27 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        alert("start");
+        var cbl = document.getElementsByClassName("foldInput");
+        for(var i = 0; i < cbl.length; i++){
+            var cb = cbl[i];
+            if(cb.currentTarget.checked){
+            TRstyle = "none";
+            } else {
+            TRstyle = "table-row";
+            }
+            var x = cb.parentNode.parentNode;
+            var y = x.nextElementSibling;
+            while(y != null && y != undefined){
+                if(y.className.includes("is-subtotal")){
+                    break;
+                } else {
+                    if(y.style != undefined && y.style != null){
+                        y.style.display = TRstyle;
+                    }
+                }
+            y = y.nextElementSibling;
+            }
+        }
     },
     _onChange: function (cb) {
         console.log(cb.currentTarget.checked)
