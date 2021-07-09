@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="view_order_form" inherit_id="sale.view_order_form" priority="17">
+    <template id="view_order_form" inherit_id="sale.view_order_form" priority="15">
         
         <xpath expr="//div" position="before">
             <p>Cukjfdsafjkdsa;jfkdsajfdsk;a</p>
