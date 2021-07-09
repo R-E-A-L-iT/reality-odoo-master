@@ -41,8 +41,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var sourceRow = document.getElementsByClassName("is-subtotal")[i];
             console.log(sourceRow);
             var sourceCell = sourceRow.firstChild;
+            console.log(sourceCell);
             var sourceSpan = sourceCell.childNodes[1];
-            subTotal.innerHTML = sourceSpan.innerHTML;
+            console.log(sourceSpan);
+            //subTotal.innerHTML = sourceSpan.innerHTML;
             
         }
     },
