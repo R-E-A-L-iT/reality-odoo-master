@@ -37,6 +37,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         }
         var subTotalList = document.getElementsByClassName("subtotal-destination");
         for(var i = 0; i < subTotalList; i++){
+            alert("Test");
+            console.log("Test");
             var subTotal = subTotalList[i];
             var sourceRow = getElementsByClassName("is-subtotal")[i];
             var sourceCell = sourceRow.firstChild;
