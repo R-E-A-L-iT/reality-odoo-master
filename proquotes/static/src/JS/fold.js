@@ -37,12 +37,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         }
         var subTotalList = document.getElementsByClassName("subtotal-destination");
         for(var i = 0; i < subTotalList.length; i++){
-            console.log("Test");
             var subTotal = subTotalList[i];
             var sourceRow = document.getElementsByClassName("is-subtotal")[i];
             var sourceCell = sourceRow.firstChild;
             var sourceSpan = sourceCell.childNodes[1];
-            subTotal.innerHTML = "Test";
+            subTotal.innerHTML = sourceSpan.innerHTML;
             
         }
     },
