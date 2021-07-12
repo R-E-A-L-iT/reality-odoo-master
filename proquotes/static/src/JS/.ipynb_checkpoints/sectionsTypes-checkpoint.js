@@ -26,7 +26,7 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
         var is_multiple_section = record.data.display_type === 'line_multiple_section';
         var is_option_section = record.data.display_type === 'line_option_section';
 
-        if (is_multiple_section || is_option_section) {
+        if (is_multiple_section || is_option_section || is_section || is_note) {
             if (node.attrs.widget === "handle") {
                 return $cell;
             } else if (node.attrs.name === "name") {
