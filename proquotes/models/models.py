@@ -14,7 +14,4 @@ from odoo import models, fields, api
 
 class mtest(models.Model):
     _inherit = 'sale.order.line'
-    
-    def __init__(self):
-        super.__init__()
-        #self.special = context.get('special');
+    special = context.get('special')
