@@ -21,6 +21,7 @@ class proquotes(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         
-        print(vals_list)
+        x = 5 - 5
+        y = x/x
         lines = super().create(vals_list)
         return lines
