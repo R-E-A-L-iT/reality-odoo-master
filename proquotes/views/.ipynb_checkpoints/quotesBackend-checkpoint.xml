@@ -23,8 +23,8 @@
             </xpath>
             
             <xpath expr="//create[3]" position="after">
-                <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_section'}"/>
-                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section'}"/> 
+                <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
+                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special: optional'}"/> 
             </xpath>
             
             <!--<xpath expr="//t[@t-if=&quot;record.display_type.raw_value === 'line_section' || record.display_type.raw_value === 'line_note'&quot;]" position="attributes">
