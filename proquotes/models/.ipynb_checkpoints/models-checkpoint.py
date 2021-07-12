@@ -17,3 +17,10 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        
+        print vals_list
+        lines = super().create(vals_list)
+        return lines
