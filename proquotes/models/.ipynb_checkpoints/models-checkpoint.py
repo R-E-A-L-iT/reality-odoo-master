@@ -14,6 +14,6 @@ from odoo import models, fields, api
 
 class mtest(models.Model):
     _inherit = 'sale.order.line'
-    special = display_type = fields.Selection([
+    special = fields.Selection([
         ('multiple', "Multiple"),
         ('multiple', "Optional")], default=False, help="Technical field for UX purpose.")
