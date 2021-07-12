@@ -21,6 +21,8 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
     _renderBodyCell: function (record, node, index, options) {
         var $cell = this._super.apply(this, arguments);
 
+        var is_section = record.data.display_type === 'line_section';
+        var is_note = record.data.display_type === 'line_note';
         var is_multiple_section = record.data.display_type === 'line_multiple_section';
         var is_option_section = record.data.display_type === 'line_option_section';
 
