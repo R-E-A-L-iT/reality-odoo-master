@@ -1,5 +1,5 @@
-odoo.define('section_and_note_backend', function (require) {
-    var CustomSectionRenderer = SectionAndNoteListRenderer.extend({
+odoo.define('account.section_and_note_backend', function (require) {
+    var CustomSectionRenderer = account.SectionAndNoteListRenderer.extend({
         _renderBodyCell: function (record, node, index, options) {
         var $cell = this._super.apply(this, arguments);
 
