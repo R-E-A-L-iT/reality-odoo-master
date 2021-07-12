@@ -1,5 +1,5 @@
-odoo.define('account.section_and_note_backend', function (require) {
-    var CustomSectionRenderer = account.SectionAndNoteListRenderer.extend({
+odoo.define('proquotes.section_types_backend', function (require) {
+    var CustomSectionRenderer = SectionAndNoteListRenderer.extend({
         _renderBodyCell: function (record, node, index, options) {
         var $cell = this._super.apply(this, arguments);
 
