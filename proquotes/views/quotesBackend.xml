@@ -3,7 +3,6 @@
     
     <template id="assets_backend" inherit_id="web.assets_backend" priority="17">
         <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/proquotes/static/src/CSS/quoteStyle.css"/>
             <script type="text/javascript" src="/proquotes/static/src/JS/sectionTypes.js"/>
         </xpath>
     </template>
