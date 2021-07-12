@@ -1,4 +1,4 @@
-odoo.define('proquotes.section_and_note_backend', function (require) {
+/*odoo.define('proquotes.section_and_note_backend', function (require) {
 // The goal of this file is to contain JS hacks related to allowing
 // section and note on sale order and invoice.
 
@@ -12,12 +12,7 @@ var ListFieldText = require('web.basic_fields').ListFieldText;
 var ListRenderer = require('web.ListRenderer');
 
 var SectionAndNoteListRenderer = ListRenderer.extend({
-    /**
-     * We want section and note to take the whole line (except handle and trash)
-     * to look better and to hide the unnecessary fields.
-     *
-     * @override
-     */
+
     _renderBodyCell: function (record, node, index, options) {
         var $cell = this._super.apply(this, arguments);
 
@@ -46,11 +41,7 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
 
         return $cell;
     },
-    /**
-     * We add the o_is_{display_type} class to allow custom behaviour both in JS and CSS.
-     *
-     * @override
-     */
+
     _renderRow: function (record, index) {
         var $row = this._super.apply(this, arguments);
 
@@ -60,12 +51,6 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
 
         return $row;
     },
-    /**
-     * We want to add .o_section_and_note_list_view on the table to have stronger CSS.
-     *
-     * @override
-     * @private
-     */
     _renderView: function () {
         var self = this;
         return this._super.apply(this, arguments).then(function () {
@@ -78,11 +63,6 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
 // to be sure this custom code will only impact selected fields having the widget
 // and not applied to any other existing ListRenderer.
 var SectionAndNoteFieldOne2Many = FieldOne2Many.extend({
-    /**
-     * We want to use our custom renderer for the list.
-     *
-     * @override
-     */
     _getRenderer: function () {
         if (this.view.arch.tag === 'tree') {
             return SectionAndNoteListRenderer;
@@ -104,4 +84,4 @@ fieldRegistry.add('section_and_note_one2many', SectionAndNoteFieldOne2Many);
 fieldRegistry.add('section_and_note_text', SectionAndNoteFieldText);
 
 return SectionAndNoteListRenderer;
-});
+});*/
