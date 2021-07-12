@@ -17,7 +17,7 @@
                 <create name="optional_product" string="Add Optional Product"/>
             </xpath>
             
-            <xpath expr="//field[@name=&quot;display_type&quot;][2]" position="after">
+            <xpath expr="//field[@name=&quot;display_type&quot;]" position="after">
                 <field name="special"/>
             </xpath>
             
