@@ -35,4 +35,4 @@ odoo.define('proquotes.section_types_backend', function (require) {
         },
     
     }
-}
+});
