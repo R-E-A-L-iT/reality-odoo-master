@@ -34,8 +34,8 @@
                     record.display_type.raw_value === 'line_option_section' ||
                     record.display_type.raw_value === 'line_multiple_section'
                 </attribute>
-            </xpath>
-        </field>-->
+            </xpath>-->
+        </field>
         
     </record>
 </odoo>
