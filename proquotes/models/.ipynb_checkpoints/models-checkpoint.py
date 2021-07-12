@@ -16,4 +16,4 @@ class mtest(models.Model):
     _inherit = 'sale.order.line'
     special = fields.Selection([
         ('multiple', "Multiple"),
-        ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+        ('optional', "Optional")], default='multiple', help="Technical field for UX purpose.")
