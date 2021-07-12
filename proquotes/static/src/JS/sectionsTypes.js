@@ -1,6 +1,6 @@
 odoo.define('proquotes.section_types_backend', function (require) {
     
-    "use strict";
+    /*"use strict";
     var FieldChar = require('web.basic_fields').FieldChar;
     var FieldOne2Many = require('web.relational_fields').FieldOne2Many;
     var fieldRegistry = require('web.field_registry');
@@ -34,5 +34,5 @@ odoo.define('proquotes.section_types_backend', function (require) {
             return $cell;
         },
     
-    });
+    });*/
 });
