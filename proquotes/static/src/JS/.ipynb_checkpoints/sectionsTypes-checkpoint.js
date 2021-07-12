@@ -6,7 +6,7 @@ odoo.define('proquotes.section_types_backend', function (require) {
     var fieldRegistry = require('web.field_registry');
     var ListFieldText = require('web.basic_fields').ListFieldText;
     var ListRenderer = require('web.ListRenderer');
-    var CustomSectionRenderer = SectionAndNoteListRenderer.extend({
+    var CustomSectionRenderer = account.SectionAndNoteListRenderer.extend({
         _renderBodyCell: function (record, node, index, options) {
             var $cell = this._super.apply(this, arguments);
 

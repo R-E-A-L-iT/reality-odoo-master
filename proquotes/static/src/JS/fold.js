@@ -1,4 +1,4 @@
-odoo.define('proquotes.proquotes', function (require) {
+odoo.define('proquotes.fold', function (require) {
 'use strict';
 var publicWidget = require('web.public.widget')
 
