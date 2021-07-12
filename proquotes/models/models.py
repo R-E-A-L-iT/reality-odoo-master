@@ -14,4 +14,5 @@ from odoo import models, fields, api
 
 class mtest(models.Model):
     _inherit = 'sale.order.line'
-    special = None
+    special = fields.many2one('special', 'multiple', 'optional')
+    #special = 'multiple'
