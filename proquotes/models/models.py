@@ -14,6 +14,7 @@ from odoo import models, fields, api
 
 class mtest(models.Model):
     _inherit = 'sale.order.line'
+    special = 'multiple'
 
 
 #    name = fields.Char()
