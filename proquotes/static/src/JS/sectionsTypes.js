@@ -1,5 +1,4 @@
-alert("Hello");
-/*odoo.define('proquotes.section_types_backend', function (require) {
+odoo.define('proquotes.section_types_backend', function (require) {
     
     "use strict";
     var FieldChar = require('web.basic_fields').FieldChar;
@@ -36,4 +35,4 @@ alert("Hello");
         },
     
     });
-});*/
+});
