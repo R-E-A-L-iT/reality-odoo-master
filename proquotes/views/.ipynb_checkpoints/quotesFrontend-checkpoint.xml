@@ -14,7 +14,7 @@
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
         
-        <xpath expr="">
+        <xpath expr="//t[@t-foreach=&quotsale_order.order_line;&quot;]/tr" position="after">
             <label for="multiple{{line}}{{line_index}}"></label>
             <input id="multiple{{line}}{{line_index}}"></input>
         </xpath>
