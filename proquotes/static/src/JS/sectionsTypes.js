@@ -14,7 +14,6 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
 
         var is_section = record.data.display_type === 'line_section';
         var is_note = record.data.display_type === 'line_note';
-        console.log(record.data)
 
         if (is_section || is_note) {
             if (node.attrs.widget === "handle") {
