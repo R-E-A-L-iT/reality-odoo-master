@@ -15,8 +15,10 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
         var is_section = record.data.display_type === 'line_section';
         var is_note = record.data.display_type === 'line_note';
 
-        /*if (is_section || is_note) {
+        if (is_section || is_note) {
             if (node.attrs.widget === "handle") {
+                return $cell;
+            else if(node.attrs.name === "special") {
                 return $cell;
             } else if (node.attrs.name === "name") {
                 var nbrColumns = this._getNumberOfCols();
@@ -31,7 +33,7 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
                 $cell.removeClass('o_invisible_modifier');
                 return $cell.addClass('o_hidden');
             }
-        }*/
+        }
 
         return $cell;
     },
