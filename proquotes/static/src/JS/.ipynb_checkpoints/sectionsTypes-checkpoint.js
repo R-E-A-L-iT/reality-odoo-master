@@ -1,4 +1,4 @@
-odoo.define('proquotes.section_and_note_backend', function (require) {
+/*odoo.define('proquotes.section_and_note_backend', function (require) {
 
 "use strict";
 var FieldChar = require('web.basic_fields').FieldChar;
@@ -78,4 +78,4 @@ fieldRegistry.add('section_and_note_one2many', SectionAndNoteFieldOne2Many);
 fieldRegistry.add('section_and_note_text', SectionAndNoteFieldText);
 
 return SectionAndNoteListRenderer;
-});
+});*/
