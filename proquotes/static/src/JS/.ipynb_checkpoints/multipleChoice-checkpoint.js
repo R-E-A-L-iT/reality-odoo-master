@@ -30,7 +30,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     
                     
                     var l = document.createElement("label");
-                    l.for = ("multipleChoice" + i.toString() + "R" + k.toString());
+                    l.setAttribute = ("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
                     l.style.backgroundColor = "red";
                     l.style.display = "inline-block";
                     l.style.width = "100%";
