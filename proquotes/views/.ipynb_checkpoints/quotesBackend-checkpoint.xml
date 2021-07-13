@@ -18,7 +18,7 @@
             </xpath>
             
             <xpath expr="//control" position="after">
-                <field name="special" invisible="1"/>
+                <field name="special" invisible="0"/>
             </xpath>
             
             <xpath expr="//create[3]" position="after">
