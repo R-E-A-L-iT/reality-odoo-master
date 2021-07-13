@@ -18,7 +18,7 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
         if (is_section || is_note) {
             if (node.attrs.widget === "handle") {
                 return $cell;
-            else if(node.attrs.name === "special") {
+            } else if(node.attrs.name === "special") {
                 return $cell;
             } else if (node.attrs.name === "name") {
                 var nbrColumns = this._getNumberOfCols();
