@@ -13,17 +13,14 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        alert("Fold");
         var TRstyle;
         var cbl = document.querySelector(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             if(cb.checked == true){
                 TRstyle = "none";
-                console.log("Hide");
             } else {
                 TRstyle = "table-row";
-                console.log("Show");
             }
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
@@ -49,10 +46,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var TRstyle;
         if(cb.currentTarget.checked == true){
             TRstyle = "none";
-            console.log("Hide")
         } else {
             TRstyle = "table-row";
-            console.log("show");
         }
         var x = cb.currentTarget.parentNode.parentNode;
         var y = x.nextElementSibling;
