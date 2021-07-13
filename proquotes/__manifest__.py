@@ -20,8 +20,8 @@
     'version': '0.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website', 'sale_management', 'sale', 'digest'],
-
+#    'depends': ['base', 'website', 'sale_management', 'sale', 'digest'],
+    'depends' : ['base', 'sale'],
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
