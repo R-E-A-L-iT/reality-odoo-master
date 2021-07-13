@@ -1,4 +1,4 @@
-odoo.define('proquotes.fold', function (require) {
+odoo.define('proquotes.multipleChoice', function (require) {
 'use strict';
 var publicWidget = require('web.public.widget')
 
@@ -13,7 +13,8 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     
     _onLoad: function () {
         var TRstyle;
-        var cbl = document.getElementsByClassName("multipleSection");
+        var cbl = document.getElementsByClassName("multipleChoice");
+        console.trace();
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             var x = cb.parentNode.parentNode;
