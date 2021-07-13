@@ -18,5 +18,5 @@ class proquotes(models.Model):
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
     
     def write(self, values):
-        raise UserError(_(values.get('special')))
+        raise UserError(_('multiple' == values.get('special')))
         super().write(values);
