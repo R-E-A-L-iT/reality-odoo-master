@@ -21,7 +21,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'sale_management', 'sale', 'digest'],
-
+    
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
