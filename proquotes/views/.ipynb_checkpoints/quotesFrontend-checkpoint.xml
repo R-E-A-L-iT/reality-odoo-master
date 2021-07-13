@@ -21,9 +21,9 @@
             </label>
             
             <!--Apply Custom Class to Special Section Types if needed-->
-            <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" checked="false" style="display: none;"/>
-            <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" checked="false" style="display: none"/> 
-            <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="false" style="display: none;"/>
+            <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
+            <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none"/> 
+            <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
             
         </xpath>
         <!--Move Subtitle display-->
