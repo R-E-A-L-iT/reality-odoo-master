@@ -13,8 +13,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
     
     _onLoad: function () {
         var TRstyle;
-        var cbl = document.querySelector(".multipleChoice");
-        console.log(cbl);
+        var cbl = document.querySelectorAll(".multipleChoice");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             var x = cb.parentNode.parentNode;
