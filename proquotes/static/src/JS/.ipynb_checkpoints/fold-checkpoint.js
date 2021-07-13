@@ -47,6 +47,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         if(cb.currentTarget.checked == "true"){
             TRstyle = "none";
         } else {
+            console.log(cb.currentTarget.checked);
             TRstyle = "table-row";
         }
         var x = cb.currentTarget.parentNode.parentNode;
