@@ -1,8 +1,4 @@
-/*odoo.define('proquotes.section_and_note_backend', function (require) {
-// The goal of this file is to contain JS hacks related to allowing
-// section and note on sale order and invoice.
-
-// [UPDATED] now also allows configuring products on sale order.
+odoo.define('proquotes.section_and_note_backend', function (require) {
 
 "use strict";
 var FieldChar = require('web.basic_fields').FieldChar;
@@ -18,10 +14,9 @@ var SectionAndNoteListRenderer = ListRenderer.extend({
 
         var is_section = record.data.display_type === 'line_section';
         var is_note = record.data.display_type === 'line_note';
-        var is_multiple_section = record.data.display_type === 'line_multiple_section';
-        var is_option_section = record.data.display_type === 'line_option_section';
+        alert(record.data.special);
 
-        if (is_multiple_section || is_option_section || is_section || is_note) {
+        if (is_section || is_note) {
             if (node.attrs.widget === "handle") {
                 return $cell;
             } else if (node.attrs.name === "name") {
@@ -84,4 +79,4 @@ fieldRegistry.add('section_and_note_one2many', SectionAndNoteFieldOne2Many);
 fieldRegistry.add('section_and_note_text', SectionAndNoteFieldText);
 
 return SectionAndNoteListRenderer;
-});*/
+});
