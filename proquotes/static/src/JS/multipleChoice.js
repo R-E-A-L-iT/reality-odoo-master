@@ -24,8 +24,9 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 } else {
                     var childTD = [];
                     for(var j = 0; j < y.childNodes.length; j++){
-                        childTD[j] = y.childNodes.shift();
+                        childTD[j] = y.childNodes[j]
                     }
+                    
                     var z = document.createElement("input");
                     z.type = "radio";
                     z.name = ("multipleChoice" + i);
@@ -36,7 +37,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     l.childNodes = childTD;
                     l.childNodes[1].prepend(z);
 
-                    
+                    y.childNodes=[l];
                 }
             y = y.nextElementSibling;
             }
