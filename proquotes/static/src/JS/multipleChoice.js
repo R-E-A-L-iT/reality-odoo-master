@@ -22,8 +22,11 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
-                    y.appendChild(document.createElement("input"));
-                    y.childNodes[y.childNodes.length - 1].type = "radio";
+                    var z = document.createElement("input"));
+                    y.appendChild(z);
+                    z.type = "radio";
+                    z.name = ("multipleChoice" + i)
+                    
                 }
             y = y.nextElementSibling;
             }
