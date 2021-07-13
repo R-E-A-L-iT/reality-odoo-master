@@ -19,8 +19,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var cb = cbl[i];
             if(cb.checked == true){
                 TRstyle = "none";
+                console.log("Hide");
             } else {
                 TRstyle = "table-row";
+                console.log("Show");
             }
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
