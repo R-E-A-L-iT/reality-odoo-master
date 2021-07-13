@@ -2,7 +2,7 @@ odoo.define('proquotes.multipleChoice', function (require) {
 'use strict';
 var publicWidget = require('web.public.widget')
 
-publicWidget.registry.fold = publicWidget.Widget.extend({
+publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
     },
