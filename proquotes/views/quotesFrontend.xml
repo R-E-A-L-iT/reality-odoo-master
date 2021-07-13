@@ -15,7 +15,7 @@
         
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line;&quot;]/tr[1]" position="after">
-            <tr><td><span>Hello</span></td></tr>
+            <td><span>Hello</span></td>
             <!--<label t-attf-for="multiple{{line}}{{line_index}}"></label>
             <input t-attf-id="multiple{{line}}{{line_index}}" type="radio"></input>-->
         </xpath>
