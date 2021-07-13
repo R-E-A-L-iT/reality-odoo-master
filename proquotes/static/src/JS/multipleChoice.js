@@ -23,15 +23,12 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     break;
                 } else {
                     var z = document.createElement("input");
-                    z.type = "radio";
-                    z.name = ("multipleChoice" + i);
-                    
                     var l = document.createElement("label")
-                    l.for = ("multipleChoice" + i);
-                    y.prepend(l);
-                    
+                    l.for = ("multipleChoice" + i)
+                    y.childNodes[1].prepend(l);
                     y.childNodes[1].prepend(z);
-
+                    z.type = "radio";
+                    z.name = ("multipleChoice" + i)
                     
                 }
             y = y.nextElementSibling;
