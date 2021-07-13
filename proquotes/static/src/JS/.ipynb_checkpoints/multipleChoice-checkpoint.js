@@ -22,7 +22,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
-                    var childTD = {};
+                    var childTD = [];
                     for(int j = 0; j < y.childNodes.length){
                         childTD[j] = y.childNodes.shift();
                     }
