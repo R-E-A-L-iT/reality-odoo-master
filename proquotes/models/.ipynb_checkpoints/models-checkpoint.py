@@ -16,3 +16,7 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+    
+    def write(self, values):
+        line.special = values.get('special')
+        super().write(values);
