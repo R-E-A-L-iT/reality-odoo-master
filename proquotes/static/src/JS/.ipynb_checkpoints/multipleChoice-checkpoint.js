@@ -17,6 +17,15 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             var x = cb.parentNode.parentNode;
+            var y = x.nextElementSibling;
+            while(y != null && y != undefined){
+                if(y.className.includes("is-subtotal")){
+                    break;
+                } else {
+                    y.appendChild(document.createElement("input"));
+                }
+            y = y.nextElementSibling;
+            }
         }
     },
 });
