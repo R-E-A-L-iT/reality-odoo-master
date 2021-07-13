@@ -13,6 +13,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
+        alert("Fold");
         var TRstyle;
         var cbl = document.querySelector(".foldInput");
         for(var i = 0; i < cbl.length; i++){
