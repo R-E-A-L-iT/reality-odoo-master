@@ -17,7 +17,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var cbl = document.querySelector(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
-            if(cb.checked){
+            if(cb.checked == true){
                 TRstyle = "none";
             } else {
                 TRstyle = "table-row";
@@ -44,7 +44,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var TRstyle;
-        if(cb.currentTarget.checked){
+        if(cb.currentTarget.checked == true){
             TRstyle = "none";
             console.log("Hide")
         } else {
