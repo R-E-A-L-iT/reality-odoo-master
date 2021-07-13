@@ -23,7 +23,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     break;
                 } else {
                     var childTD = [];
-                    for(var j = 0; j < y.childNodes.length){
+                    for(var j = 0; j < y.childNodes.length; j++){
                         childTD[j] = y.childNodes.shift();
                     }
                     var z = document.createElement("input");
