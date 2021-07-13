@@ -14,7 +14,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     
     _onLoad: function () {
         var TRstyle;
-        var cbl = document.getElementsByClassName("foldInput");
+        var cbl = document.querySelector(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             if(cb.checked){

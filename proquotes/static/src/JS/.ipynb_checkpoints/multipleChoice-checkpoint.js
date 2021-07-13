@@ -13,7 +13,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     
     _onLoad: function () {
         var TRstyle;
-        var cbl = document.getElementsByClassName("multipleChoice");
+        var cbl = document.querySelector(.multipleChoice);
         console.trace();
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
