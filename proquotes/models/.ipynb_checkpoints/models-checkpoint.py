@@ -17,3 +17,10 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+    
+    def create(self, vals_list):
+        for values in vals_list:
+            if values.get('special', self.default_get(['special'])['special']):
+                raise UserError(_('Evidence of Sucsess'))
+        lines = super().create(vals_list)
+    
