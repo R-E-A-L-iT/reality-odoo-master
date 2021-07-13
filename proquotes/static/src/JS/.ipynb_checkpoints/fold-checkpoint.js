@@ -18,9 +18,9 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             if(cb.checked){
-            TRstyle = "none";
+                TRstyle = "none";
             } else {
-            TRstyle = "table-row";
+                TRstyle = "table-row";
             }
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
