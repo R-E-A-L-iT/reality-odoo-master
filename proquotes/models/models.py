@@ -16,10 +16,3 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
-    
-    def write(self, values):
-        if(values.get('special') == 'multiple'):
-            raise UserError(_("MULTIPLE"))
-        else:
-            raise UserError(_("OTHER"))
-        super().write(values)
