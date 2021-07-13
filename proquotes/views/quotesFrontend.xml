@@ -13,6 +13,11 @@
     
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
+        
+        <xpath expr="">
+            <label for="multiple{{line}}{{line_index}}"></label>
+            <input id="multiple{{line}}{{line_index}}"></input>
+        </xpath>
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
