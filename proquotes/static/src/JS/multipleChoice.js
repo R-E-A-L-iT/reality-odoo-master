@@ -23,6 +23,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     break;
                 } else {
                     y.appendChild(document.createElement("input"));
+                    y.childNodes[y.childNodes.length - 1].type = "radio";
                 }
             y = y.nextElementSibling;
             }
