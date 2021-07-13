@@ -28,6 +28,6 @@ class proquotes(models.Model):
     def write(self, values):
         if(values.get('special') == 'multiple'):
             raise UserError(_("MULTIPLE"))
-        else
+        else:
             raise UserError(_("OTHER"))
-        super().write(values);
+        super().write(values)
