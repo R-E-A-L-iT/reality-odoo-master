@@ -21,11 +21,8 @@
                 <span t-field="line.name"/>
             </label>
             
-            <t t-set="isMultiple" t-value=""/>
-            <t t-if="line.special == 'multiple'">
-                <t t-set="isMultiple" t-value=" isMultiple"/>
-            </t>
-            <input t-attf-id="fold{{line}}{{line_index}}" t-attf-class="foldInput {{isMultiple}}" type="checkbox" checked="true" style="display: none;"/>
+            <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" checked="true" style="display: none;"/>
+            <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" checked="true" style="display: none;"/>
         </xpath>
         <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
