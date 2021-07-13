@@ -11,7 +11,7 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
-
+@api.model_create_multi
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
     special = fields.Selection([
@@ -19,6 +19,7 @@ class proquotes(models.Model):
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
     
     def create(self, vals_list):
+        raise UserError(_("Hello World"))
         for values in vals_list:
             if not values.get('special', self.default_get(['special'])['special']):
                 raise UserError(_('Evidence of Sucsess'))
