@@ -24,12 +24,12 @@
         </xpath>
         <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
-            <div style="float: right">
+            <td>
             <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
                 <strong class="text-right" style="font-weight: bolder">Subtotal</strong>
                 <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
             </label>
-            </div>
+            </td>
         </xpath>
         
         <!--Hide Default Subtotal-->
