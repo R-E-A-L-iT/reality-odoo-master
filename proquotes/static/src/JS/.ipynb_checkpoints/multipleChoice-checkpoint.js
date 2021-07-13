@@ -26,6 +26,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     y.appendChild(z);
                     z.type = "radio";
                     z.name = ("multipleChoice" + i)
+                    z.style.float = "left";
                     
                 }
             y = y.nextElementSibling;
