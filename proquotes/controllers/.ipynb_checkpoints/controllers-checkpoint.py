@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
-# from odoo import http
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import binascii
 
-# class Mtest(http.Controller):
-#     @http.route('/mtest/mtest/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+from odoo import fields, http, _
+from odoo.exceptions import AccessError, MissingError
+from odoo.http import request
+from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.portal.controllers.mail import _message_post_helper
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from odoo.osv import expression
 
-#     @http.route('/mtest/mtest/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('mtest.listing', {
-#             'root': '/mtest/mtest',
-#             'objects': http.request.env['mtest.mtest'].search([]),
-#         })
-
-#     @http.route('/mtest/mtest/objects/<model("mtest.mtest"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('mtest.object', {
-#             'object': obj
-#         })
+class CustomerPortal(CustomerPortal):
+    
