@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from . import priceController
+from . import controllers
 from . import models
