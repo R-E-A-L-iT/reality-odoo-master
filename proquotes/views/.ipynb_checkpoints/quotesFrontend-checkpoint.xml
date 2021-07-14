@@ -16,9 +16,12 @@
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr" position="after">
             <label t-attf-for="multiple{{line}}{{line_index}}">
-                <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr" position="move"/>
             </label>
             <input t-attf-id="multiple{{line}}{{line_index}}" type="radio"></input>
+        </xpath>
+        
+        <xpath expr="//label[@t-attf-for=&quot;multiple{{line}}{{line_index}}&quot;]" position="inside">
+            <span>Test</span>
         </xpath>
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">

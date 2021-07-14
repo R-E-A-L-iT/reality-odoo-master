@@ -8,11 +8,11 @@
         <field name="arch" type="xml">
             
             <xpath expr="//create[1]" position="after">
-                <create name="optional_product" string="Add Optional Product" context="{'optional': 'true'}"/>
+                <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'true'}"/>
             </xpath>
             
             <xpath expr="//control" position="after">
-                <field name="special" invisible="0"/>
+                <field name="special" invisible="1"/>
                 <field name="optional" invisible="0"/>
             </xpath>
             
