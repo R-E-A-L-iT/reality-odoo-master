@@ -32,7 +32,8 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     
                     if(y.children.length > 0){
                         y.children[0].prepend(z);
-                    }                 
+                    }
+                    console.log(y);
                 }
             k++;
             y = y.nextElementSibling;
