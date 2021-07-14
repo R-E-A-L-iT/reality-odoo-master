@@ -17,7 +17,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updatePriceTotals: function () {
-        alert("Price Total Changed");
         console.log("Change");
         
     },
