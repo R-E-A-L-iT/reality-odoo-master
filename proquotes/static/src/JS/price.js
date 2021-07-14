@@ -21,17 +21,16 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        this._updatePriceTotals();
+        //this._updatePriceTotals();
     },
     
     _updatePriceTotals: function () {
         //Find All Products that Might Change the Price
         var vpList = document.querySelectorAll(".priceChange");
         
-        for(var i = 0; i < vpList.length; i++){
-            console.log(vpList[i].checked);
-        }
-        console.log("Change");
+        this._rpc({
+            route: "/my/orders/" + this.orderDetail.orderId + "/select/" + 1,
+            params: {access_token: this.orderDetail.token}})
         
     },
     
