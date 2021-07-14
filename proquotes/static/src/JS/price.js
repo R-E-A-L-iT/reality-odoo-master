@@ -21,16 +21,17 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
+        //Find All Products that Might Change the Price
         var vpList = document.querySelectorAll(".priceChange");
         //this._updatePriceTotals();
     },
     
     _updatePriceTotalsEvent: function (ev) {
-        //ev.preventDefault();
-        //console.log(ev.preventDefault);
-        /*var target = ev.currentTarget;
+        ev.preventDefault();
+        console.log(ev.preventDefault);
+        var target = ev.currentTarget;
         console.log(target.data);
-        //Find All Products that Might Change the Price
+
         
         
         this._rpc({
