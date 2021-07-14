@@ -12,7 +12,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        /*var TRstyle;
+        var TRstyle;
         var cbl = document.querySelectorAll(".multipleChoice");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
@@ -31,19 +31,15 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     
                     var l = document.createElement("label");
                     l.setAttribute = ("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
-                    l.style.backgroundColor = "red";
-                    l.style.display = "inline-block";
-                    l.style.width = "100%";
-                    l.style.height = "50px";
-                    y.childNodes[1].prepend(l);
-                    y.childNodes[1].prepend(z);
+                    y.children[0].prepend(l);
+                    y.children[0].prepend(z);
                     
                     
                 }
             k++;
             y = y.nextElementSibling;
             }
-        }*/
+        }
     },
 });
 });
