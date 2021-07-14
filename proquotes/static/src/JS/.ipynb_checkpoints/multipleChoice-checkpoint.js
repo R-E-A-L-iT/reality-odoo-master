@@ -34,11 +34,12 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                         y.children[0].prepend(z);
                     }
                     var tdList = y.querySelectorAll("td");
-                    console.log(tdList);
+
                     for(var j = 0; j < tdList.length; j++){
                         var inner = tdList[j].innerHTML;
                         var l = document.createElement("label");
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
+                        l.style.backgroundColor = "red";
                         l.innerHTML = inner;
                         tdList[j].innerHTML = "";
                         tdList[j].append(l);
