@@ -21,7 +21,7 @@ class CustomerPortal(CustomerPortal):
             return request.redirect('/my')
         
         raise UserError(_('NO!' + str(order_id) + "S" + str(option_id)))
-        option_sudo = request.env['sale.order.option'].sudo().browse(option_id)
+        option_sudo = request.env['sale.order.line'].sudo().browse(option_id)
 
         if order_sudo != option_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
