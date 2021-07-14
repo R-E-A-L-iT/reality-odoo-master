@@ -29,11 +29,19 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     z.id = ("multipleChoice" + i.toString() + "R" + k.toString());
                     
                     
-                    var l = document.createElement("label");
-                    l.appendChild(z);
-                    l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()))
-                    y.children[0].prepend(z);
-                    y.children[0].prepend(l);
+                    
+                    if(y.children.length > 0){
+                        y.children[0].prepend[0];
+                    }
+                    for(var m = 0; m < y.children.length; m++){
+                        var l = document.createElement("label");
+                        l.appendChild(z);
+                        l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()))
+                        for(var n = 0; n < y.children[m].children.length; n++){
+                            l.prepend(y.children[m][n]);
+                        }
+                        y.children[m].prepend(l);
+                    }
                     /*for(var j = 0; j < y.children.length; j++){
                         l.appendChild(y.children[j]);
                         console.log(y.children[j]);
