@@ -26,7 +26,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updatePriceTotalsEvent: function (ev) {
-        ev.preventDefault();
+        //ev.preventDefault();
         console.log(ev.preventDefault);
         var target = ev.currentTarget;
         console.log(target.data);
