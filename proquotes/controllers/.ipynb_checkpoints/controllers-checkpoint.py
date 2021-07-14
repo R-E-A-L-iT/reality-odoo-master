@@ -18,9 +18,9 @@ class CustomerPortal(CustomerPortal):
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
-            raise UserError(_('NO!' + str(order_id) + "S" + str(option_id)))
             return request.redirect('/my')
-
+        
+        raise UserError(_('NO!' + str(order_id) + "S" + str(option_id)))
         option_sudo = request.env['sale.order.option'].sudo().browse(option_id)
 
         if order_sudo != option_sudo.order_id:
