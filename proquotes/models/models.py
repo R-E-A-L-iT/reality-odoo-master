@@ -16,3 +16,6 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+    optional = fields.Selection([
+        ("yes", "Yes"),
+        ("no", "No")], default="no". help="Field to Mark Product as Optional")
