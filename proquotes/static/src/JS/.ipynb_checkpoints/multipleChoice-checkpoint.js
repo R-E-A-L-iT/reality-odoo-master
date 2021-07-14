@@ -36,6 +36,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     var spanList = y.getElementsByTagName("SPAN");
                     for(var j = 0; j < spanList.length; j++){
                         var l = spanList[j].parent.createElement("label");
+                        console.log(spanList[j].parent);
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
                         l.append(spanList[j])
                     }
