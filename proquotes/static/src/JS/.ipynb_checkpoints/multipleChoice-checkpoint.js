@@ -32,7 +32,8 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     var l = document.createElement("label");
                     l.setAttribute = ("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
                     for(var j = 0; j < y.children.length; j++){
-                        y.children[0].appendTo(l);
+                        l.appendChild(y.children[j]);
+                        console.log(y.children[j]);
                     }
                     y.children[0].prepend(l);
                     y.children[0].prepend(z);
