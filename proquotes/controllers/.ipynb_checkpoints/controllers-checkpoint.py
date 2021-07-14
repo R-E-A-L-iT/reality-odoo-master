@@ -34,15 +34,15 @@ class CustomerPortal(CustomerPortal):
         })
         return results
     
-    @http.route(["/my/orders/<int:order_id>/add_option/<int:option_id>"], type='json', auth="public", website=True)
-    def add(self, order_id, option_id, access_token=None, **post):
+    @http.route(["/my/orders/<int:order_id>/add_option/<int:line_id>"], type='json', auth="public", website=True)
+    def add(self, order_id, line_id, access_token=None, **post):
         raise UserError(_("Option ID:" + str(option_id)))
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        option_sudo = request.env['sale.order.option'].sudo().browse(option_id)
+        option_sudo = request.env['sale.order.option'].sudo().browse(line_id)
 
         if order_sudo != option_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())

@@ -30,12 +30,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         ev.preventDefault();
         console.log(ev.preventDefault);
         var target = ev.currentTarget;
+        line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeid"];
         console.log(target.parentNode.parentNode.parentNode.querySelector("div").dataset);
 
         
         
         this._rpc({
-            route: "/my/orders/" + this.orderDetail.orderId + "/select/" + 1,
+            route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token}})
         
     },
