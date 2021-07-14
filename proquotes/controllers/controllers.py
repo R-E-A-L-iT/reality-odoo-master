@@ -33,5 +33,4 @@ class CustomerPortal(CustomerPortal):
             'report_type': "html"
         })
         
-        raise UserError(_("Got Through!!!"))
         return results
