@@ -21,7 +21,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var vpList = document.querySelectorAll(".priceChange");
         
         for(var i = 0; i < vpList.length; i++){
-            console.log(vpList[i]);
+            console.log(vpList[i].checked);
         }
         console.log("Change");
         
