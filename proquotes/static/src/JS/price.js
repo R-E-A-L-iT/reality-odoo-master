@@ -7,6 +7,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     events: {
         'change .priceChange': '_updatePriceTotals',
     },
+    
+    async start() {
+        await this._super(...arguments);
+        this.orderDetail = this.$el.find('table#sales_order_table').data();
+        this.elems = this._getUpdatableElements();
+    },
+    
     init: function (parent) {
         this._super(parent);
         this._onLoad();
