@@ -25,11 +25,12 @@ class CustomerPortal(CustomerPortal):
         
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
-        raise UserError(_("Here"))
-        option_sudo.add_option_to_order()
-        results = self._get_portal_order_details(order_sudo)
-        results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+
+        
+        results['sale_template'] = request.env['ir.ui.view']._render_template("sale_management.sale_order_portal_content_inherit_sale_management", {
             'sale_order': select_sudo.order_id,
             'report_type': "html"
         })
+        
+        raise UserError(_("Got Through!!"))
         return results
