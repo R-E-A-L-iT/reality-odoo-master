@@ -12,38 +12,17 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
-    @http.route(["/my/orders/<int:order_id>/select/<int:option_id>"], type='json', auth="public", website=True)
-    def select(self, order_id, option_id, access_token=None, **post):
+    @http.route(["/my/orders/<int:order_id>/select/<int:line_id>"], type='json', auth="public", website=True)
+    def select(self, order_id, line_id, access_token=None, **post):
 
         try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+            order_sudo = self._document_check_access('sale.order', line_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
         
-        raise UserError(_('NO!' + str(order_id) + "S" + str(option_id)))
-        option_sudo = request.env['sale.order.line'].sudo().browse(option_id)
-
-        if order_sudo != option_sudo.order_id:
-            return request.redirect(order_sudo.get_portal_url())
-
-        option_sudo.add_option_to_order()
-        results = self._get_portal_order_details(order_sudo)
-        results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': option_sudo.order_id,
-            'report_type': "html"
-        })
-        return results
-    
-    @http.route(["/my/orders/<int:order_id>/add_option/<int:line_id>"], type='json', auth="public", website=True)
-    def add(self, order_id, line_id, access_token=None, **post):
-        raise UserError(_("Option ID:" + str(option_id)))
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
-
-        option_sudo = request.env['sale.order.option'].sudo().browse(line_id)
-
+        #raise UserError(_('NO!' + str(order_id) + "S" + str(line_id)))
+        option_sudo = request.env['sale.order.option'].sudo().browse(lines_id)
+        raise UserError(_('NO!' + str(order_id) + "S" + str(line_id)))
         if order_sudo != option_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
 
