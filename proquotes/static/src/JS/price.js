@@ -13,7 +13,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        //this._updatePriceTotals();
+        this._updatePriceTotals();
     },
     
     _updatePriceTotals: function () {
