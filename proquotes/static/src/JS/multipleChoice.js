@@ -41,7 +41,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
                         l.innerHTML = inner;
                         tdList[0].innerHTML = "";
-                        tdList.appendChild(l);
+                        tdList[0].append(l);
                     }
                 }
             k++;
