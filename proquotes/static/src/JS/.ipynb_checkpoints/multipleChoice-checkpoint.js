@@ -33,7 +33,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     if(y.children.length > 0){
                         y.children[0].prepend(z);
                     }
-                    var tdList = y.getElementsByTagName("TD");
+                    var tdList = y.querySelectorAll("td");
                     for(var j = 0; j < tdList.length; j++){
                         var inner = tdList[0].innerHTML;
                         console.log(tdList[j]);
