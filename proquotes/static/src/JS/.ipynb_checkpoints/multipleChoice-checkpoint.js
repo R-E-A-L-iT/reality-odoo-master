@@ -39,7 +39,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                         var inner = tdList[j].innerHTML;
                         var l = document.createElement("label");
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
-                        l.style.backgroundColor = "red";
+                        l.style.width = "100%";
                         l.innerHTML = inner;
                         tdList[j].innerHTML = "";
                         tdList[j].append(l);
