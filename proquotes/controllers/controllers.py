@@ -12,4 +12,5 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
-    
+    def somethifsdajfs():
+        print("Hello")
