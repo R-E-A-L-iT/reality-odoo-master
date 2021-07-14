@@ -33,5 +33,23 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         console.log("Change");
         
     },
+    
+    _getUpdatableElements() {
+        let $orderAmountUntaxed = $('[data-id="total_untaxed"]').find('span, b'),
+            $orderAmountTotal = $('[data-id="total_amount"]').find('span, b'),
+            $orderAmountUndiscounted = $('[data-id="amount_undiscounted"]').find('span, b');
+
+        if (!$orderAmountUntaxed.length) {
+            $orderAmountUntaxed = $orderAmountTotal.eq(1);
+            $orderAmountTotal = $orderAmountTotal.eq(0).add($orderAmountTotal.eq(2));
+        }
+
+        return {
+            $orderAmountUntaxed: $orderAmountUntaxed,
+            $orderAmountTotal: $orderAmountTotal,
+            $orderTotalsTable: $('#total'),
+            $orderAmountUndiscounted: $orderAmountUndiscounted,
+        };
+    },
 });
 });
