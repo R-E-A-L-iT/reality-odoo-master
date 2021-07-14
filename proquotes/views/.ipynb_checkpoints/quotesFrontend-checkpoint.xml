@@ -51,7 +51,7 @@
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
-            <span t-field="line.line_id"></span>
+            <span t-field="line_id"></span>
         </xpath>
         
     </template>
