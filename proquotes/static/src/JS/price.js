@@ -5,7 +5,7 @@ var publicWidget = require('web.public.widget')
 publicWidget.registry.price = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
-        'click .priceChange': '_updatePriceTotals',
+        'change .priceChange': '_updatePriceTotals',
     },
     init: function (parent) {
         this._super(parent);
