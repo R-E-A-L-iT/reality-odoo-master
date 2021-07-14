@@ -33,7 +33,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     if(y.children.length > 0){
                         y.children[0].prepend(z);
                     }
-                    var spanList = y.getElementsByTagName("SPAN");
+                    var spanList = y.getElementsByTagName("SPAN, DIV");
                     for(var j = 0; j < spanList.length; j++){
                         console.log(spanList[j].parentNode);
                         var l = document.createElement("label")
