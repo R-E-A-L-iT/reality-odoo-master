@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             
             <xpath expr="//create[1]" position="after">
-                <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes'}"/>
+                <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'no'}"/>
             </xpath>
             
             <xpath expr="//control" position="after">
@@ -17,6 +17,7 @@
             
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
                 <field name="optional" invisible="0"/>
+                <field name="selected" invisible="1"/>
             </xpath>
             
             <xpath expr="//create[3]" position="after">

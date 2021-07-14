@@ -13,6 +13,10 @@ from odoo import models, fields, api
 
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
+    
+    selected = fields.Selection([
+        ('yes', "Yes"),
+        ('no', "No")], default="Yes", required=True, help="Field to Mark Wether Customer as Selected Product")
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
