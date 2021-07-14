@@ -16,13 +16,14 @@ class CustomerPortal(CustomerPortal):
     def select(self, order_id, line_id, access_token=None, **post):
 
         try:
-            order_sudo = self._document_check_access('sale.order', line_id, access_token=access_token)
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
         
-        #raise UserError(_('NO!' + str(order_id) + "S" + str(line_id)))
-        option_sudo = request.env['sale.order.option'].sudo().browse(lines_id)
+
+        option_sudo = request.env['sale.order.option'].sudo().browse(line_id)
         raise UserError(_('NO!' + str(order_id) + "S" + str(line_id)))
+
         if order_sudo != option_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
 
