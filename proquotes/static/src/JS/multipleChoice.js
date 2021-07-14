@@ -23,7 +23,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     break;
                 } else {
                     var z = document.createElement("input");
-                    z.class = "priceChange";
+                    z.className = "priceChange";
                     z.type = "radio";
                     z.name = ("multipleChoice" + i.toString());
                     z.id = ("multipleChoice" + i.toString() + "R" + k.toString());
