@@ -5,7 +5,7 @@ var publicWidget = require('web.public.widget')
 publicWidget.registry.price = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
-        'change .priceChange': '_updatePriceTotals',
+        'change .priceChange': '_updatePriceTotalsEvent',
     },
     
     async start() {
@@ -21,12 +21,17 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
+        var vpList = document.querySelectorAll(".priceChange");
         //this._updatePriceTotals();
     },
     
-    _updatePriceTotals: function () {
+    _updatePriceTotalsEvent: function (ev) {
+        ev.preventDefault();
+        console.log(ev.preventDefault);
+        var target = ev.currentTarget;
+        console.log(target.data);
         //Find All Products that Might Change the Price
-        var vpList = document.querySelectorAll(".priceChange");
+        
         
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + 1,
