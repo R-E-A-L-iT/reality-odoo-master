@@ -14,7 +14,7 @@ from odoo.osv import expression
 class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/select/<int:option_id>"], type='json', auth="public", website=True)
     def select(self, order_id, option_id, access_token=None, **post):
-        raise UserError(_('NO!'))
+        raise UserError(_('NO!' + order_id + "S" + option_id))
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
