@@ -34,9 +34,9 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                         y.children[0].prepend(z);
                     }
                     var tdList = y.querySelectorAll("td");
+                    console.log(tdList);
                     for(var j = 0; j < tdList.length; j++){
                         var inner = tdList[0].innerHTML;
-                        console.log(tdList[j]);
                         var l = document.createElement("label");
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
                         l.innerHTML = inner;
