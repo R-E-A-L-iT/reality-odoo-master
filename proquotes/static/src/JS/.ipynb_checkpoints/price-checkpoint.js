@@ -30,7 +30,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         ev.preventDefault();
         console.log(ev.preventDefault);
         var target = ev.currentTarget;
-        console.log(target.data);
+        console.log(target.parentNode.querySelector("div").data);
 
         
         
