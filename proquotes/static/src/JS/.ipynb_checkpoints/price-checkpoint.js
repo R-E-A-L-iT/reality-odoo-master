@@ -11,6 +11,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find('table#sales_order_table').data();
+        console.log(this.orderDetail);
         this.elems = this._getUpdatableElements();
     },
     
