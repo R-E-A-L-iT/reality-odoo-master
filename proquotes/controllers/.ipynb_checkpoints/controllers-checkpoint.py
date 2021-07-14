@@ -23,7 +23,7 @@ class CustomerPortal(CustomerPortal):
 
         select_sudo = request.env['sale.order.line'].sudo().browse(line_id)
         
-        if order_sudo != select_sudo.line_id:
+        if order_sudo != select_sudo.option_id:
             return request.redirect(order_sudo.get_portal_url())
 
         raise UserError(_("HERE"))
