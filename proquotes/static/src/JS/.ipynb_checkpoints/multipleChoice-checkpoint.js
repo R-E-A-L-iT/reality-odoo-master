@@ -33,13 +33,16 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     if(y.children.length > 0){
                         y.children[0].prepend(z);
                     }
-                    var spanList = y.querySelectorAll("span, div");
-                    for(var j = 0; j < spanList.length; j++){
+                    var tdList = y.getElementsByTagName("TD");
+                    for(var j = 0; j < tdList.length; j++){
+                        var inner = tdList[0].innerHTML;
                         console.log(spanList[j].parentNode);
                         var l = document.createElement("label")
                         spanList[j].parentNode.append(l);
                         l.setAttribute("for", ("multipleChoice" + i.toString() + "R" + k.toString()));
-                        l.append(spanList[j])
+                        l.innerHTML = inner;
+                        tdList[0].innerHTML = "";
+                        tdList.append(l);
                     }
                 }
             k++;
