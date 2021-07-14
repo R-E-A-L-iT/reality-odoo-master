@@ -36,7 +36,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + 1,
-            params: {access_token: this.orderDetail.token}})*/
+            params: {access_token: this.orderDetail.token}})
         
     },
     
