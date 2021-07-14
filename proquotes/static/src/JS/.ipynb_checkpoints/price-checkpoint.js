@@ -20,6 +20,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         alert("Price Total Changed");
         console.log("Change");
         
-    }
+    },
 });
 });
