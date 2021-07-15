@@ -22,17 +22,15 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
-                    var z = document.createElement("input");
+                    var z = y.querySelector("radio");
                     z.className = "priceChange";
                     z.type = "radio";
                     z.name = ("multipleChoice" + i.toString());
                     z.id = ("multipleChoice" + i.toString() + "R" + k.toString());
+                    z.style.display="";
                     
                     
                     
-                    if(y.children.length > 0){
-                        y.children[0].prepend(z);
-                    }
                     var tdList = y.querySelectorAll("td");
 
                     for(var j = 0; j < tdList.length; j++){
