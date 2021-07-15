@@ -18,12 +18,21 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
             var k = 0;
+            var firstChecked;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
                     var z = y.querySelector("input[type='radio']");
-                    console.log(z);
+                    radioList.push(z);
+                    if(z.checked){
+                        if(firstChecked == undefined || firstChecked == null){
+                            firstChecked = z;
+                        } else {
+                            firstChecked.checked = false;
+                            z.checked = false;
+                        }
+                    }
                     z.className = "priceChange";
                     z.type = "radio";
                     z.name = ("multipleChoice" + i.toString());
