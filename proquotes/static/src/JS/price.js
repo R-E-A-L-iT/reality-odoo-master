@@ -11,8 +11,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find('table#sales_order_table').data();
-        console.log(this._rpc);
-        this.elems = this._getUpdatableElements();
     },
     
     init: function (parent) {
@@ -44,24 +42,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'select': target.checked ? 'yes' : 'no'}})
-    }
-    
-    _getUpdatableElements: function () {
-        let $orderAmountUntaxed = $('[data-id="total_untaxed"]').find('span, b'),
-            $orderAmountTotal = $('[data-id="total_amount"]').find('span, b'),
-            $orderAmountUndiscounted = $('[data-id="amount_undiscounted"]').find('span, b');
-
-        if (!$orderAmountUntaxed.length) {
-            $orderAmountUntaxed = $orderAmountTotal.eq(1);
-            $orderAmountTotal = $orderAmountTotal.eq(0).add($orderAmountTotal.eq(2));
-        }
-
-        return {
-            $orderAmountUntaxed: $orderAmountUntaxed,
-            $orderAmountTotal: $orderAmountTotal,
-            $orderTotalsTable: $('#total'),
-            $orderAmountUndiscounted: $orderAmountUndiscounted,
-        };
     },
 });
 });
