@@ -13,7 +13,7 @@ from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
-    def select(self, order_id, line_id, selected,  access_token=None, **post):
+    def select(self, order_id, line_ids, selected,  access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
@@ -33,7 +33,6 @@ class CustomerPortal(CustomerPortal):
         results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
             'sale_order': select_sudo.order_id,
             'report_type': "html",
-            'tag': "ready"
         })
         
         return results
