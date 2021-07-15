@@ -30,7 +30,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         let self = this;
         var vpList = document.querySelectorAll(".priceChange");
         for(var i = 0; i < vpList.length; i++){
-            self._updatePriceTotals(vpList[i])
+            console.log(self._updatePriceTotals(vpList[i]));
         }
         this._updateView();
     },
@@ -41,12 +41,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
-            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then((data) => {
-            if (data) {
-                console.log(data);
-                //self.$el.html(data);
-            }
-        });
+            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}});
     },
     
     _updateView: function () {
