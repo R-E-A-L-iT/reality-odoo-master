@@ -43,7 +43,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then((data) => {
             if (data) {
-                self.$el.html(data);
+                console.log(self.$el);
+                //self.$el.html(data);
             }
         });
     },
