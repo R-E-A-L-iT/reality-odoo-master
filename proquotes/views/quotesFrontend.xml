@@ -51,7 +51,7 @@
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
-            <input type="radio" t-attf-checked="{{line.selected == 'yes' ? true: false}}"/>
+            <input type="radio" t-attf-checked="{{line.selected}}"/>
         </xpath>
         
     </template>

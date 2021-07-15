@@ -15,8 +15,8 @@ class proquotes(models.Model):
     _inherit = 'sale.order.line'
     
     selected = fields.Selection([
-        ('yes', "Yes"),
-        ('no', "No")], default="yes", required=True, help="Field to Mark Wether Customer as Selected Product")
+        ('true', "Yes"),
+        ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer as Selected Product")
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
