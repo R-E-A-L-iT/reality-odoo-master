@@ -14,13 +14,14 @@ from odoo.osv import expression
 class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
     def select(self, order_id, line_ids, selected,  access_token=None, **post):
-        raise UserError(_("Here"))
+
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
         
         i = 0
+        raise UserError(_("Here"))
         while(i < len(line_ids)):
             select_sudo = request.env['sale.order.line'].sudo().browse(line_ids[i])
             if(selected[i]):
