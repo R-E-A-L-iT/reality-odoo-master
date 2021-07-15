@@ -24,7 +24,6 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     break;
                 } else {
                     var z = y.querySelector("input[type='radio']");
-                    radioList.push(z);
                     if(z.checked){
                         if(firstChecked == undefined || firstChecked == null){
                             firstChecked = z;
