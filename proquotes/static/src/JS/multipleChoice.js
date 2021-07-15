@@ -53,6 +53,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             y = y.nextElementSibling;
             }
             if(firstChecked != null || firstChecked != undefined){
+                console.log(firstChecked);
                 firstChecked.checked = true;
             }
         }
