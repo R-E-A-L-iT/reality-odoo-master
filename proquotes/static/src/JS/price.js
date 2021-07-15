@@ -130,6 +130,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     _updateView: function () {
         this._multipleChoiceView();
         this._optionalView();
+        this._updateSubtotalDisplay();
     },
 });
 });
