@@ -49,9 +49,9 @@
         
         <!--Apply HTML tags to description and Names-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
+            <input type="radio" t-if="line.selected == 'true'" checked="true"/>
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
-            <input type="radio" t-attf-checked="{{line.selected}}"/>
         </xpath>
         
     </template>
