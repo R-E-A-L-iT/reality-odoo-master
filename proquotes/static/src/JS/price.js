@@ -43,8 +43,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then((data) => {
             if (data) {
-                this.$el.html(QWeb.render('sale.sale_order_portal_content', {
-                value: data.value}));
+                this.$el.html(data);
             }
         });
     },
