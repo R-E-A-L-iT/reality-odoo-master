@@ -5,8 +5,8 @@
         <xpath expr="." position="inside">
 
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
-            <script type="text/javascript" src="/proquotes/static/src/JS/multipleChoice.js"></script>
-            <script type="text/javascript" src="/proquotes/static/src/JS/optional.js"></script>
+            <!--<script type="text/javascript" src="/proquotes/static/src/JS/multipleChoice.js"></script>
+            <script type="text/javascript" src="/proquotes/static/src/JS/optional.js"></script>-->
             <script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
 
         </xpath>
