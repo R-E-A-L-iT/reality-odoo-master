@@ -27,10 +27,6 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     if(z.checked){
                         if(firstChecked == undefined || firstChecked == null){
                             firstChecked = z;
-                        } else {
-                            console.log(z);
-                            firstChecked.removeAttribute("checked");
-                            z.checked.removeAttribute("checked");
                         }
                     }
                     z.className = "priceChange";
@@ -55,6 +51,9 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 }
             k++;
             y = y.nextElementSibling;
+            }
+            if(firstChecked != null || firstChecked != undefined){
+                firstChecked.checked = true;
             }
         }
     },
