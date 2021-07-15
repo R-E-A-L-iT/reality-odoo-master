@@ -28,9 +28,6 @@ class CustomerPortal(CustomerPortal):
             return request.redirect(order_sudo.get_portal_url())
         
         results = self._get_portal_order_details(order_sudo)
-        results.update({
-            'selected': selected
-        })
         results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
             'sale_order': select_sudo.order_id,
             'report_type': "html"
