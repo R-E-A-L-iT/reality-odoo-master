@@ -48,7 +48,7 @@
             <attribute name="class">subtotal-source</attribute>
         </xpath>
         
-        <!--Apply HTML tags to description and Names-->
+        <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-if="line.optional == 'yes'">
                 <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
@@ -60,6 +60,15 @@
             </t>
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+        </xpath>
+        
+        <!--Ensure Subtotal is only calculated if Item is selected-->
+        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]/t[1]" position="attributes">
+            <attribute name="t-if">line.selected == 'true'</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]/t[2]" position="attributes">
+            <attribute name="t-if">line.selected == 'true'</attribute>
         </xpath>
         
     </template>

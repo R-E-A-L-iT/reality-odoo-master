@@ -54,7 +54,6 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             }
             if(firstChecked != null){
                 document.getElementById(firstChecked).checked = true;
-                console.log(firstChecked);
             }
         }
     },
