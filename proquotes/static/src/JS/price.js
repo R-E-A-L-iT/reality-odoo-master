@@ -38,7 +38,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateView: function () {
-        console.log("Here")
+        console.log(document.querySelector("[data-id='total_untaxed']"));
     },
 });
 });
