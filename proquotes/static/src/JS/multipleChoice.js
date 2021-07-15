@@ -28,6 +28,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                         if(firstChecked == undefined || firstChecked == null){
                             firstChecked = z;
                         } else {
+                            console.log("Multiple");
                             firstChecked.checked = false;
                             z.checked = false;
                         }
