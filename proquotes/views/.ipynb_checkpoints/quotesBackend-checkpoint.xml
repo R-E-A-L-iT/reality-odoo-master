@@ -22,14 +22,14 @@
             
             <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
-                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/> 
+                <!--<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/>--> 
             </xpath>
             
         </field>
         
     </record>
     
-    <!--<record id="hide_view_order_form" model="ir.ui.view">
+    <record id="hide_view_order_form" model="ir.ui.view">
         <field name="name">sale.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
@@ -37,5 +37,5 @@
             <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace">
             </xpath>
         </field>
-    </record>-->
+    </record>
 </odoo>
