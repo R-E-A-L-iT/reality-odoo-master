@@ -41,7 +41,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateView: function () {
-        location.reload();
+        //location.reload();
     },
 });
 });
