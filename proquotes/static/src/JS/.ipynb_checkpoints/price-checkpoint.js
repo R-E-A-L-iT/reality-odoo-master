@@ -35,10 +35,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         
     },
     
-    _updatePriceTotals: function (ev){
-        ev.preventDefault();
-        console.log(ev.preventDefault);
-        var target = ev.currentTarget;
+    _updatePriceTotals: function (target){
         var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];
         console.log(target.parentNode.parentNode.parentNode.querySelector("div").dataset);
 
