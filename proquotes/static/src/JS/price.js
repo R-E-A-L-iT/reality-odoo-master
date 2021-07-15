@@ -31,7 +31,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var vpList = document.querySelectorAll(".priceChange");
         var result = null;
         for(var i = 0; i < vpList.length; i++){
-            result = await self._updatePriceTotals(vpList[i]).then(result => result.data);
+            result = self._updatePriceTotals(vpList[i]).then(result => result.data);
         }
         if(result != null){
             console.log(result);
