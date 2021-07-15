@@ -30,24 +30,24 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         let self = this;
         var vpList = document.querySelectorAll(".priceChange");
         var result = null;
+        var line_ids = [];
         for(var i = 0; i < vpList.length; i++){
-            result = self._updatePriceTotals(vpList[i]).then();
+            line_ids.push(vpList[i].parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];);
         }
-        return result.then((data) => {
-            if (data) {
-                self.$('#portal_sale_content').html($(data['sale_template']));
-            }
-        });
-        //this._updateView();
+        this._updatePriceTotals(vpList, line_ids);
     },
     
-    _updatePriceTotals: function (target){
+    _updatePriceTotals: function (targets, line_ids){
         let self = this;
         var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];        
         
         return this._rpc({
-            route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
-            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}});
+            route: "/my/orders/" + this.orderDetail.orderId + "/select",
+            params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targets}}).then((data) => {
+            if (data) {
+                self.$('#portal_sale_content').html($(data['sale_template']));
+            }
+        });
     },
     
     _updateView: function () {
