@@ -27,7 +27,7 @@ class CustomerPortal(CustomerPortal):
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
         
-        return
+        return self._get_portal_order_details(order_sudo)
     
     @http.route(["/my/orders/<int:order_id>/render"], type='json', auth="public", website=True)
     def render(self, order_id,  access_token=None, **post):
