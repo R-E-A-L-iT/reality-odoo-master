@@ -119,6 +119,14 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
     },
     
+    _updateSubtotalDisplay: function () {
+        var subTotalList = document.getElementsByClassName("subtotal-destination");
+        for(var i = 0; i < subTotalList.length; i++){
+            var subTotal = subTotalList[i];
+            subTotal.innerHTML = document.getElementsByClassName("subtotal-source")[i].innerHTML;
+        }
+    },
+    
     _updateView: function () {
         this._multipleChoiceView();
         this._optionalView();
