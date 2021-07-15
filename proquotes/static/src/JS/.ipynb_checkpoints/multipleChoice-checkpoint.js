@@ -54,6 +54,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             }
             if(firstChecked != null || firstChecked != undefined){
                 console.log(firstChecked);
+                firstChecked.style.width="50%";
                 firstChecked.checked = true;
             }
         }
