@@ -33,8 +33,9 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         for(var i = 0; i < vpList.length; i++){
             result = self._updatePriceTotals(vpList[i]);
         }
-        
-        
+        if(result){
+            self.$('#portal_sale_content').html($(result['sale_template']));
+        }
         //this._updateView();
     },
     
@@ -44,11 +45,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
-            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then((data) => {
-            if (data) {
-                self.$('#portal_sale_content').html($(data['sale_template']));
-            }
-        });
+            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}});
     },
     
     _updateView: function () {
