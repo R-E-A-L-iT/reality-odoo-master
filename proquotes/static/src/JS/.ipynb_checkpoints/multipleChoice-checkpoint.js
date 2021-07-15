@@ -18,14 +18,14 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
             var k = 0;
-            var firstChecked;
+            var firstChecked = null;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
                     var z = y.querySelector("input[type='radio']");
                     if(z.checked){
-                        if(firstChecked == undefined || firstChecked == null){
+                        if(firstChecked == null){
                             firstChecked = ("multipleChoice" + i.toString() + "R" + k.toString());
                         }
                     }
@@ -52,8 +52,9 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             k++;
             y = y.nextElementSibling;
             }
-            if(firstChecked != null || firstChecked != undefined){
+            if(firstChecked != null){
                 document.getElementById(firstChecked).checked = true;
+                console.log(firstChecked);
             }
         }
     },
