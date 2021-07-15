@@ -12,7 +12,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
-    @http.route(["/my/orders/<int:order_id>/select/<int:line_id>"], type='json', auth="public", website=True)
+    @http.route(["/my/orders/<int:order_id>/select/<int:line_id>"], type='http', auth="public", website=True)
     def select(self, order_id, line_id, selected,  access_token=None, **post):
 
         try:
