@@ -24,9 +24,10 @@ class CustomerPortal(CustomerPortal):
         while(i < len(line_ids)):
             select_sudo = request.env['sale.order.line'].sudo().browse(line_ids[i])
             select_sudo.selected = selected[i]
+            i++
         
-        if order_sudo != select_sudo.order_id:
-            return request.redirect(order_sudo.get_portal_url())
+            if order_sudo != select_sudo.order_id:
+                return request.redirect(order_sudo.get_portal_url())
         
         order_sudo._amount_all()
         results = self._get_portal_order_details(order_sudo)
