@@ -39,7 +39,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _updatePriceTotals: function (targets, line_ids){
         let self = this;
-        var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];        
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select",
