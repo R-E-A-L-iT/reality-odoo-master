@@ -32,11 +32,11 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     _updatePriceTotals: function (target){
         var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];        
         
-        this._rpc({
+        var res = this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
-            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then(function (data){
-            this.$el.html(QWeb.render('sale.sale_order_portal_content',{value: data.value}))
-        });
+            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}})
+        
+            this.$el.html(QWeb.render('sale.sale_order_portal_content', {data: res.data}));
     },
     
     _updateView: function () {
