@@ -21,7 +21,7 @@ class CustomerPortal(CustomerPortal):
             return request.redirect('/my')
         
         i = 0
-        while(i < line_ids.length):
+        while(i < len(line_ids)):
             select_sudo = request.env['sale.order.line'].sudo().browse(line_ids[i])
             select_sudo.selected = selected[i]
         
