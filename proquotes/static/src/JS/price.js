@@ -31,12 +31,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var vpList = document.querySelectorAll(".priceChange");
         var result = null;
         for(var i = 0; i < vpList.length; i++){
-            result = self._updatePriceTotals(vpList[i]).then(result => result.data);
+            result = self._updatePriceTotals(vpList[i])
         }
-        if(result != null){
-            console.log(result);
-            self.$('#portal_sale_content').html($(result['sale_template']));
-        }
+        return result.then((data) => {
+            if (data) {
+                self.$('#portal_sale_content').html($(data['sale_template']));
+            }
+        });
         //this._updateView();
     },
     
