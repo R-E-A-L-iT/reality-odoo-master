@@ -29,10 +29,14 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         //Find All Products that Might Change the Price
         let self = this;
         var vpList = document.querySelectorAll(".priceChange");
+        var result;
         for(var i = 0; i < vpList.length; i++){
-            console.log(self._updatePriceTotals(vpList[i]));
+            result = self._updatePriceTotals(vpList[i]);
         }
-        setTimeout(this._updateView, 3000);
+        while(result.tag != "ready"){
+            
+        }
+        _updateView();
     },
     
     _updatePriceTotals: function (target){
