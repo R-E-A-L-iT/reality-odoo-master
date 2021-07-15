@@ -30,7 +30,7 @@ class order(models.Model):
         for order in self:
             total = 0.0
             for line in order.order_line:
-                if(line.selected = 'true'):
+                if(line.selected == 'true'):
                     total += line.price_subtotal + line.price_unit * ((line.discount or 0.0) / 100.0) * line.product_uom_qty  # why is there a discount in a field named amount_undiscounted ??
             order.amount_undiscounted = total 
     def _amount_by_group(self):
