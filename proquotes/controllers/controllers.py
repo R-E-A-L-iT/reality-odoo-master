@@ -18,6 +18,7 @@ class CustomerPortal(CustomerPortal):
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
+            raise UserError(_("Here"))
             return request.redirect('/my')
         
         i = 0
@@ -30,7 +31,6 @@ class CustomerPortal(CustomerPortal):
             i = i + 1
         
             if order_sudo != select_sudo.order_id:
-                raise UserError(_("Here"))
                 return request.redirect(order_sudo.get_portal_url())
         
         order_sudo._amount_all()
