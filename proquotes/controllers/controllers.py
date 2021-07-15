@@ -27,19 +27,9 @@ class CustomerPortal(CustomerPortal):
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
         
-        return self._get_portal_order_details(order_sudo)
-    
-    @http.route(["/my/orders/<int:order_id>/render"], type='json', auth="public", website=True)
-    def render(self, order_id,  access_token=None, **post):
-
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
-        
         results = self._get_portal_order_details(order_sudo)
         results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': order_id,
+            'sale_order': select_sudo.order_id,
             'report_type': "html"
         })
         
