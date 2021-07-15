@@ -35,7 +35,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var res = this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}})
-        console.log(res);
     },
 });
 });

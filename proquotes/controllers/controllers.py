@@ -27,6 +27,7 @@ class CustomerPortal(CustomerPortal):
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
         
+        order_sudo._amount_all()
         results = self._get_portal_order_details(order_sudo)
         results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
             'sale_order': select_sudo.order_id,
