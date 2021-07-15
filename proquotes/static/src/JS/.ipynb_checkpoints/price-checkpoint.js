@@ -26,7 +26,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         for(var i = 0; i < vpList.length; i++){
             this._updatePriceTotals(vpList[i])
         }
-        
+        location.reload();
     },
     
     _updatePriceTotals: function (target){
