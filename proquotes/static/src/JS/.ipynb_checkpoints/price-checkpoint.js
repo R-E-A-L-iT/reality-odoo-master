@@ -35,11 +35,11 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var res = this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}})
+        console.log(res);
     },
     
     _updateView: function () {
-        var subtotal = document.querySelector("[data-id='total_untaxed']");
-        subtotal.querySelector("span").innerHTML = "500";
+    
     },
 });
 });
