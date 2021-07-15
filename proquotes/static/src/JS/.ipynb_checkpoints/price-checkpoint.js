@@ -35,6 +35,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
         if(result != null){
             console.log(result);
+            console.log($(result['PromiseResult']));
+            console.log($(result['sale_template']));
             console.log(result['sale_template']);
             self.$('#portal_sale_content').html($(result['sale_template']));
         }
