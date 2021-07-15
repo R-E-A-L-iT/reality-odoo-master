@@ -32,7 +32,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var result = null;
         var line_ids = [];
         for(var i = 0; i < vpList.length; i++){
-            line_ids.push(vpList[i].parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];);
+            line_ids.push(vpList[i].parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"]);
         }
         this._updatePriceTotals(vpList, line_ids);
     },
