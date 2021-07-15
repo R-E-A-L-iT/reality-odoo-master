@@ -37,17 +37,14 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updatePriceTotals: function (target){
-        var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];
-        console.log(target.parentNode.parentNode.parentNode.querySelector("div").dataset);
-
-        
+        var line_id = target.parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"];        
         
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'yes' : 'no'}})
         
         this._rpc({
-            route: "/my/orders/" + this.orderDetail.orderId + "render",
+            route: "/my/orders/" + this.orderDetail.orderId + "/render",
             params: {access_token: this.orderDetail.token}
         })
     },
