@@ -38,7 +38,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateView: function () {
-        console.log(document.querySelector("[data-id='total_untaxed']"));
+        var subtotal = document.querySelector("[data-id='total_untaxed']");
+        subtotal.querySelector("span").innerHTML = "500";
     },
 });
 });
