@@ -7,8 +7,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     events: {
         'change .foldInput': '_onChange',
     },
-    init: function (parent) {
-        this._super(parent);
+    
+    async start() {
+        await this._super(...arguments);
+        this.orderDetail = this.$el.find('table#sales_order_table').data();
         this._onLoad();
     },
     
@@ -61,6 +63,15 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             }
             y = y.nextElementSibling;
         }
+        this._saveFoldStatus(cb.currentTarget);
+    },
+    
+    _saveFoldStatus: function (target) {
+        var s = target.dataset["oeId"];
+        
+        return this._rpc({
+            route: "/my/orders/" + this.orderDetail.orderId + "/fold/" + s,
+            params: {access_token: this.orderDetail.token, checked: target.checked}});
     },
 });
 });

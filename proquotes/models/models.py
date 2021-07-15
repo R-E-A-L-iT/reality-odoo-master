@@ -66,6 +66,11 @@ class proquotes(models.Model):
     special = fields.Selection([
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+    
+    hiddenSection = fields.Selection([
+        ('yes', "Yes"),
+        ('no', "No")], default=False, help="Field To Track if Sections are folded")
+    
     optional = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")

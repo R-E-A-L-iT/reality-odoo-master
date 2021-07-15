@@ -40,3 +40,28 @@ class CustomerPortal(CustomerPortal):
         })
         
         return results
+    
+    @http.route(["/my/orders/<int:order_id>/fold/<int:line_id>"], type='json', auth="public", website=True)
+    def select(self, order_id, line_id, checked,  access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+        
+        select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id))
+        if(checked):
+            select_sudo.selected = 'yes'
+        else:
+            select_sudo.selected = 'no'
+        
+        if order_sudo != select_sudo.order_id:
+            return request.redirect(order_sudo.get_portal_url())
+        
+        results = self._get_portal_order_details(order_sudo)
+        results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+            'sale_order': order_sudo,
+            'report_type': "html",
+        })
+        
+        return results
