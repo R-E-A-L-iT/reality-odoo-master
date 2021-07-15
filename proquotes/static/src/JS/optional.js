@@ -24,7 +24,7 @@ publicWidget.registry.optional = publicWidget.Widget.extend({
             for(var j = 0; j < tdList.length; j++){
                 var inner = tdList[j].innerHTML;
                 var l = document.createElement("label");
-                l.setAttribute("for", ("multipleChoice" + i.toString() + "O"));
+                l.setAttribute("for", ("optional" + i.toString() + "O"));
                 l.style.width = "100%";
                 l.innerHTML = inner;
                 tdList[j].innerHTML = "";
