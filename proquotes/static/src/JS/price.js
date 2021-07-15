@@ -37,7 +37,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'true' : 'false'}}).then(function (data){
             this.$el.html(QWeb.render('sale.sale_order_portal_content',{value: data.value}))
         });
-        console.log(this.$el.html(QWEB.render))
     },
     
     _updateView: function () {
