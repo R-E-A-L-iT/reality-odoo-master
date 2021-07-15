@@ -67,7 +67,7 @@
             <attribute name="t-if">line.selected == 'true'</attribute>
         </xpath>
         
-        <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;" position="attributes">
+        <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
             <attribute name="t-if">line.selected == 'true'</attribute>
         </xpath>
         
