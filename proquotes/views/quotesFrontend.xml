@@ -49,7 +49,7 @@
         
         <!--Apply HTML tags to description and Names-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
-            <t t-if="line.special == 'optional'">
+            <t t-if="line.optional == 'yes'">
                 <input t-if="line.selected == 'true'" type="checkbox"  checked="true"/>
                 <input t-else="" type="checkbox"/>
             </t>
