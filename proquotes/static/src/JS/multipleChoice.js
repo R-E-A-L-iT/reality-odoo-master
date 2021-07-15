@@ -22,7 +22,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                 if(y.className.includes("is-subtotal")){
                     break;
                 } else {
-                    var z = y.querySelector("radio");
+                    var z = y.querySelector("input[type='radio']");
                     console.log(z);
                     z.className = "priceChange";
                     z.type = "radio";
