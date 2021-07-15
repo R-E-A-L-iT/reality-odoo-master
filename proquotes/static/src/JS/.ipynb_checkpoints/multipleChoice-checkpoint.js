@@ -29,8 +29,8 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                             firstChecked = z;
                         } else {
                             console.log(z);
-                            firstChecked.checked = false;
-                            z.checked = false;
+                            firstChecked.removeAttribute("checked");
+                            z.checked.removeAttribute("checked");
                         }
                     }
                     z.className = "priceChange";
