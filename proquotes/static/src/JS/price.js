@@ -27,10 +27,12 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var vpList = document.querySelectorAll(".priceChange");
         var result = null;
         var line_ids = [];
+        var targets = [];
         for(var i = 0; i < vpList.length; i++){
+            targets.push(vpList[i].checked)
             line_ids.push(vpList[i].parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"]);
         }
-        this._updatePriceTotals(vpList, line_ids);
+        this._updatePriceTotals(targets, line_ids);
     },
     
     _updatePriceTotals: function (targets, line_ids){

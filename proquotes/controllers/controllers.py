@@ -23,7 +23,10 @@ class CustomerPortal(CustomerPortal):
         i = 0
         while(i < len(line_ids)):
             select_sudo = request.env['sale.order.line'].sudo().browse(line_ids[i])
-            select_sudo.selected = selected[i]
+            if(selected[i]):
+                select_sudo.selected = 'true'
+            else:
+                select_sudo.selected = 'false'
             i = i + 1
         
         if order_sudo != select_sudo.order_id:
