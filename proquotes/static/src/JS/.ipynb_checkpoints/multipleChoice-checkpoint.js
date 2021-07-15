@@ -26,7 +26,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     var z = y.querySelector("input[type='radio']");
                     if(z.checked){
                         if(firstChecked == undefined || firstChecked == null){
-                            firstChecked = z;
+                            firstChecked = ("multipleChoice" + i.toString() + "r" + k.toString());
                         }
                     }
                     z.className = "priceChange";
@@ -53,9 +53,8 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
             y = y.nextElementSibling;
             }
             if(firstChecked != null || firstChecked != undefined){
-                console.log(firstChecked);
-                firstChecked.style.width="50%";
-                firstChecked.checked = true;
+                document.getElementById(firstChecked).checked = true;
+                console.log(document.getElementById(firstChecked));
             }
         }
     },
