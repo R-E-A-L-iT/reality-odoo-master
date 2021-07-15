@@ -21,12 +21,21 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        //Find All Products that Might Change the Price
-        var vpList = document.querySelectorAll(".priceChange");
-        //this._updatePriceTotals();
+               
+        this._updatePriceTotalsEvent();
     },
     
-    _updatePriceTotalsEvent: function (ev) {
+    _updatePriceTotalsEvent: function () {
+        
+        //Find All Products that Might Change the Price
+        var vpList = document.querySelectorAll(".priceChange");
+        for(var i = 0; i < vpList; i++){
+            this._updatePriceTotals(vpList[i])
+        }
+        
+    },
+    
+    _updatePriceTotals: function (ev){
         ev.preventDefault();
         console.log(ev.preventDefault);
         var target = ev.currentTarget;
@@ -38,10 +47,9 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
             params: {access_token: this.orderDetail.token, 'select': target.checked ? 'yes' : 'no'}})
-        
-    },
+    }
     
-    _getUpdatableElements() {
+    _getUpdatableElements: function () {
         let $orderAmountUntaxed = $('[data-id="total_untaxed"]').find('span, b'),
             $orderAmountTotal = $('[data-id="total_amount"]').find('span, b'),
             $orderAmountUndiscounted = $('[data-id="amount_undiscounted"]').find('span, b');
