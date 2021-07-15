@@ -15,7 +15,17 @@ class order(models.Model):
     _inherit = 'sale.order'
     
     def _amount_all(self):
-        raise UserError(_("NO!!"))
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                if(line.selected == 'true'):
+                    amount_untaxed += line.price_subtotal
+                    amount_tax += line.price_tax
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
 
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
@@ -29,20 +39,3 @@ class proquotes(models.Model):
     optional = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
-    
-    def _amount_all(self):
-        """
-        Compute the total amounts of the SO.
-        """
-        raise UserError(_("No Update"))
-        for order in self:
-            amount_untaxed = amount_tax = 0.0
-            for line in order.order_line:
-                if(line.selected == 'true'):
-                    amount_untaxed += line.price_subtotal
-                    amount_tax += line.price_tax
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax,
-            })
