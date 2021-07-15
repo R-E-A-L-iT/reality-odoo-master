@@ -11,6 +11,12 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+class order(models.Model):
+    _inherit = 'sale.order'
+    
+    def _amount_all(self):
+        raise UserError(_("NO!!"))
+
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
     
@@ -32,8 +38,9 @@ class proquotes(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
-                amount_untaxed += line.price_subtotal
-                amount_tax += line.price_tax
+                if(line.selected == 'true'):
+                    amount_untaxed += line.price_subtotal
+                    amount_tax += line.price_tax
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
