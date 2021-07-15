@@ -29,8 +29,8 @@ class CustomerPortal(CustomerPortal):
                 select_sudo.selected = 'false'
             i = i + 1
         
-        if order_sudo != select_sudo.order_id:
-            return request.redirect(order_sudo.get_portal_url())
+            if order_sudo != select_sudo.order_id:
+                return request.redirect(order_sudo.get_portal_url())
         
         order_sudo._amount_all()
         results = self._get_portal_order_details(order_sudo)
