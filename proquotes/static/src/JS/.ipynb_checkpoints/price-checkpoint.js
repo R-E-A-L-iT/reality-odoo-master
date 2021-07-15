@@ -34,6 +34,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             result = self._updatePriceTotals(vpList[i]);
         }
         if(result != null){
+            console.log(result);
             console.log(result['sale_template']);
             self.$('#portal_sale_content').html($(result['sale_template']));
         }
