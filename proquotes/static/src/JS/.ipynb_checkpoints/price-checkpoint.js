@@ -44,7 +44,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         
         this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select/" + line_id,
-            params: {access_token: this.orderDetail.token, 'select': target.checked ? 'yes' : 'no'}})
+            params: {access_token: this.orderDetail.token, 'selected': target.checked ? 'yes' : 'no'}})
     },
     
     _getUpdatableElements: function () {
