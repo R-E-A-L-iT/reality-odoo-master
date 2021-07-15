@@ -33,7 +33,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         for(var i = 0; i < vpList.length; i++){
             result = self._updatePriceTotals(vpList[i]);
         }
-        console.log(result.PromiseResult);
+        console.log(result);
         //this._updateView();
     },
     
