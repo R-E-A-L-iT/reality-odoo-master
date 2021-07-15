@@ -13,7 +13,7 @@ from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/select/<int:line_id>"], type='json', auth="public", website=True)
-    def select(self, order_id, line_id, select,  access_token=None, **post):
+    def select(self, order_id, line_id, selected,  access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
@@ -22,7 +22,7 @@ class CustomerPortal(CustomerPortal):
         
 
         select_sudo = request.env['sale.order.line'].sudo().browse(line_id)
-        select_sudo.selected = select
+        select_sudo.selected = selected
         
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
