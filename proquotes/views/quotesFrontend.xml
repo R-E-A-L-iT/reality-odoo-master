@@ -55,8 +55,8 @@
                 <input t-else="" type="checkbox" class="priceChange"/>
             </t>
             <t t-else="">
-                <input t-if="line.selected == 'true'" type="radio"  checked="true"/>
-                <input t-else="" type="radio"/>
+                <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
+                <input t-else="" type="radio" style="display: none;"/>
             </t>
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
