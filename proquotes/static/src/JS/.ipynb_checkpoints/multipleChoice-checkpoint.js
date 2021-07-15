@@ -26,7 +26,7 @@ publicWidget.registry.multipleChoice = publicWidget.Widget.extend({
                     var z = y.querySelector("input[type='radio']");
                     if(z.checked){
                         if(firstChecked == undefined || firstChecked == null){
-                            firstChecked = ("multipleChoice" + i.toString() + "r" + k.toString());
+                            firstChecked = ("multipleChoice" + i.toString() + "R" + k.toString());
                         }
                     }
                     z.className = "priceChange";
