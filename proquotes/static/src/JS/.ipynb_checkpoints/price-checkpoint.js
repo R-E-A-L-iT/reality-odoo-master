@@ -16,7 +16,10 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _onLoad: function () {
                
-        this._updatePriceTotalsEvent();
+        var vpList = document.querySelectorAll(".priceChange");
+        for(var i = 0; i < vpList.length; i++){
+            this._updatePriceTotals(vpList[i])
+        }
     },
     
     _updatePriceTotalsEvent: function () {
@@ -38,7 +41,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateView: function () {
-    
+        location.reload();
     },
 });
 });
