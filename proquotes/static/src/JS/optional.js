@@ -15,34 +15,22 @@ publicWidget.registry.optional = publicWidget.Widget.extend({
         var cbl = document.querySelectorAll("input[type=checkbox].priceChange");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
-            var x = cb.parentNode.parentNode;
-            var y = x.nextElementSibling;
-            var k = 0;
-            while(y != null && y != undefined){
-                if(y.className.includes("is-subtotal")){
-                    break;
-                } else {
-                    var z = y.querySelector("input[type='radio']");
-                    z.name = ("optional" + i.toString());
-                    z.id = ("optional" + i.toString() + "O");
-                    
-                    
-                    
-                    var tdList = y.querySelectorAll("td");
+            var row = cb.parentNode.parentNode;
+            cb.name = ("optional" + i.toString());
+            cb.id = ("optional" + i.toString() + "O");
+            
+            var tdList = row.querySelectorAll("td");
 
-                    for(var j = 0; j < tdList.length; j++){
-                        var inner = tdList[j].innerHTML;
-                        var l = document.createElement("label");
-                        l.setAttribute("for", ("optional" + i.toString() + "O"));
-                        l.style.width = "100%";
-                        l.innerHTML = inner;
-                        tdList[j].innerHTML = "";
-                        tdList[j].append(l);
-                    }
-                }
-            k++;
-            y = y.nextElementSibling;
+            for(var j = 0; j < tdList.length; j++){
+                var inner = tdList[j].innerHTML;
+                var l = document.createElement("label");
+                l.setAttribute("for", ("multipleChoice" + i.toString() + "O"));
+                l.style.width = "100%";
+                l.innerHTML = inner;
+                tdList[j].innerHTML = "";
+                tdList[j].append(l);
             }
+            
         }
     },
 });
