@@ -25,6 +25,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             } else {
                 TRstyle = "table-row";
             }
+            console.log(TRstyle);
             var x = cb.parentNode.parentNode;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
