@@ -32,6 +32,4 @@
     'demo': [
         'demo/demo.xml',
     ],
-    
-    #'qweb': 'static/src/XML/proQuote.xml'
 }

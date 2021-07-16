@@ -70,6 +70,7 @@ class proquotes(models.Model):
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer as Selected Product")
     special = fields.Selection([
         ('multiple', "Multiple"),
+        ('variant', "Variant"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
     
     hiddenSection = fields.Selection([

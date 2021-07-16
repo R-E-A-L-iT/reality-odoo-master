@@ -9,6 +9,7 @@
             
             <xpath expr="//create[1]" position="after">
                 <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'false'}"/>
+                <create name="product_variant" string="Add Product Variant" context="{'default_special': 'variant'}"/>
             </xpath>
             
             <xpath expr="//control" position="after">
@@ -22,7 +23,7 @@
             </xpath>
             
             <xpath expr="//create[3]" position="after">
-                <create name="multiple_choice" string="Add Multiple Choice Secion" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
+                <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
                 <!--<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/>--> 
             </xpath>
             
