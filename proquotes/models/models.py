@@ -65,8 +65,6 @@ class order(models.Model):
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
     
-    varients = fields.Many2one('proquotes.varient', string="Varients")
-    
     selected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer as Selected Product")
@@ -81,11 +79,3 @@ class proquotes(models.Model):
     optional = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
-    
-class varient(models.Model):
-    _name = 'proquotes.varient'
-    _description = 'Multi Level Choices'
-    
-    @api.model
-    def create(self, args):
-        raise UserError(_("Not Implemented"))
