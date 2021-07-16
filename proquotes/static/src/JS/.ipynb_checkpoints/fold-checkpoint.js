@@ -15,11 +15,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     
     _onLoad: function () {
-        console.log("Load");
         var TRstyle;
         var cbl = document.querySelectorAll(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
+            console.log(cb);
             if(cb.checked == true){
                 TRstyle = "none";
             } else {
