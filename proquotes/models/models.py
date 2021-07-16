@@ -65,6 +65,8 @@ class order(models.Model):
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
     
+    variant = fields.Many2one('proquotes.variant', string="Variant Group")
+    
     selected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
@@ -85,7 +87,7 @@ class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
     
-    name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, states={'draft': [('readonly', False)]}, index=True, default="New")
+    name = fields.Char(string='Variant Group', required=True, copy=False, readonly=True, states={'draft': [('readonly', False)]}, index=True, default="New")
     
     @api.model
     def create(self, args):
