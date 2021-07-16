@@ -26,20 +26,20 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var vpList = document.querySelectorAll(".priceChange");
         var result = null;
         var line_ids = [];
-        var targets = [];
+        var targetsChecked = [];
         for(var i = 0; i < vpList.length; i++){
-            targets.push(vpList[i].checked)
+            targetsChecked.push(vpList[i].checked ? 'true' : 'false');
             line_ids.push(vpList[i].parentNode.parentNode.parentNode.querySelector("div").dataset["oeId"]);
         }
-        this._updatePriceTotals(targets, line_ids);
+        this._updatePriceTotals(targetsChecked, line_ids);
     },
     
-    _updatePriceTotals: function (targets, line_ids){
+    _updatePriceTotals: function (targetsChecked, line_ids){
         let self = this;
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/select",
-            params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targets}}).then((data) => {
+            params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targetsChecked}}).then((data) => {
             if (data) {
                 self.$('#portal_sale_content').html($(data['sale_template']));
                 this._updateView();
