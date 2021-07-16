@@ -58,9 +58,9 @@ class CustomerPortal(CustomerPortal):
         
         select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id_formated))
         if(checked):
-            select_sudo.selected = 'yes'
+            select_sudo.hiddenSection = 'yes'
         else:
-            select_sudo.selected = 'no'
+            select_sudo.hiddenSection = 'no'
         
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
