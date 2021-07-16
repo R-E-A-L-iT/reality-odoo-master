@@ -66,7 +66,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                         }
                     }
                     z.className = "priceChange";
-                    z.type = "radio";
                     z.name = ("multipleChoice" + i.toString());
                     z.id = ("multipleChoice" + i.toString() + "R" + k.toString());
                     z.style.display="";
