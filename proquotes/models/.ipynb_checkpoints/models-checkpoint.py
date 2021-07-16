@@ -87,5 +87,5 @@ class varient(models.Model):
     _description = 'Multi Level Choices'
     
     @api.model
-    def create(self):
+    def create(self, args):
         raise UserError(_("Not Implemented"))
