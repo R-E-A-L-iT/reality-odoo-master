@@ -57,8 +57,15 @@ class order(models.Model):
                 len(res),
             ) for l in res]
 
+            
+            
+            
+            
+            
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
+    
+    varients = fields.Many2One('proquotes.varient', string="Varients")
     
     selected = fields.Selection([
         ('true', "Yes"),
@@ -74,3 +81,6 @@ class proquotes(models.Model):
     optional = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
+    
+class varient(models.Model):
+    _name = 'proquotes.varient'
