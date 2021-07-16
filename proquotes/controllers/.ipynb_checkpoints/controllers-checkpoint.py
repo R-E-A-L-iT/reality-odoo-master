@@ -23,7 +23,7 @@ class CustomerPortal(CustomerPortal):
         i = 0
         while(i < len(line_ids)):
             select_sudo = request.env['sale.order.line'].sudo().browse(int(line_ids[i]))
-            if(selected[i]):
+            if(selected[i] == 'true'):
                 select_sudo.selected = 'true'
             else:
                 select_sudo.selected = 'false'
@@ -34,7 +34,7 @@ class CustomerPortal(CustomerPortal):
         
         order_sudo._amount_all()
         results = self._get_portal_order_details(order_sudo)
-        results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+        results['sale_template'] = request.env['ir.ui.view']._render_template("portal.portal_sidebar", {
             'sale_order': order_sudo,
             'report_type': "html",
         })
