@@ -19,6 +19,7 @@
             <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
                 <span class="line_id" t-attf-id="{{line}}"/>
+                <span t-field="line.hiddenSection"/>
             </label>
             
             <!--Apply Custom Class to Special Section Types if needed-->
