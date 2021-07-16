@@ -16,7 +16,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _onLoad: function () {
         
-        //Find All Products that Might Change the Price
         this._updatePriceTotalsEvent();
     },
     
