@@ -89,6 +89,6 @@ class variant(models.Model):
     
     name = fields.Char(string='Variant Group', required=True, copy=False, index=True, default="New")
     
-    @api.model
-    def create(self, args):
-        super.create(args)
+    #@api.model
+    #def create(self, args):
+        #super.create(args)
