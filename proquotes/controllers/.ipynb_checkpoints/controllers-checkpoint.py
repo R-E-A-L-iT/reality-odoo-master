@@ -41,7 +41,7 @@ class CustomerPortal(CustomerPortal):
         
         return results
     
-    @http.route(["/my/orders/<int:order_id>/fold/<int:line_id>"], type='json', auth="public", website=True)
+    @http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
     def select(self, order_id, line_id, checked,  access_token=None, **post):
 
         try:
