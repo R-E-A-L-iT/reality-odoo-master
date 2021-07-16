@@ -46,7 +46,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targetsChecked}}).then((data) => {
             if (data) {
                 self.$('#portal_sale_content').html($(data['sale_inner_template']));
-                this._updateView();
+                console.log(data)
+                this._updateView(data['total']);
             }
         });
     },
@@ -154,15 +155,15 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
     },
     
-    _updateTotal: function (){
-        console.log(document.querySelector("#portalTotal b"))
+    _updateTotal: function (total){
+        document.querySelector("#portalTotal b").innerHTML = total
     },
     
-    _updateView: function () {
+    _updateView: function (total) {
         this._multipleChoiceView();
         this._optionalView();
         this._updateFoldDisplay();
-        this._updateTotal();
+        this._updateTotal(total);
     },
 });
 });
