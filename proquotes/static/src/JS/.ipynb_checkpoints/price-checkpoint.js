@@ -34,7 +34,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             }
             targetsChecked.push(vpList[i].checked == true ? 'true' : 'false');
             line_ids.push(p.querySelector("div").dataset["oeId"]);
-            console.log(i);
         }
         this._updatePriceTotals(targetsChecked, line_ids);
     },
@@ -47,6 +46,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targetsChecked}}).then((data) => {
             if (data) {
                 self.$('#portalTotal').html($(data['sale_template']));
+                console.log($(#portalTotal));
                 this._updateView();
             }
         });
