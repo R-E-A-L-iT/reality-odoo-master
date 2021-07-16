@@ -58,7 +58,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             var cb = cbl[i];
             var x = cb;
             while(x.tagName != "TR"){
-                x = x.parenNode
+                x = x.parentNode
             }
             var y = x.nextElementSibling;
             var k = 0;
