@@ -47,7 +47,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             if (data) {
                 console.log(data)
                 //self.$('#portalTotal').html($(data['sale_outer_template']));
-                self.$('portal_sale_content').html($(data['sale_inner_template']));
+                self.$('#portal_sale_content').html($(data['sale_inner_template']));
                 console.log($('#portalTotal'));
                 this._updateView();
             }
