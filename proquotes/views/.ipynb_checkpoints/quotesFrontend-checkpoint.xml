@@ -10,6 +10,11 @@
         </xpath>
     </template>
     
+    <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
+        <xpath expr="//div" position="attributes">
+            <attribute name="id">portalTotal</attribute>
+        </xpath>
+    </template>
     
     <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
         
