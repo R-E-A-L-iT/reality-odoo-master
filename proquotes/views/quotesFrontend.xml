@@ -19,8 +19,6 @@
             <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
                 <span t-field="line.name"/>
                 <span class="line_id" t-attf-id="{{line}}"/>
-                <span t-if="line.hiddenSection == 'yes'">YES</span>
-                <span t-else="">NO</span>
             </label>
             
             <!--Apply Custom Class to Special Section Types if needed-->

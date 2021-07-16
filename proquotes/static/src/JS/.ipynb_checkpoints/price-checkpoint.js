@@ -117,7 +117,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
     },
     
-    _updateFoldSettings: function () {
+    _updateFoldDisplay: function () {
         var TRstyle;
         var cbl = document.querySelectorAll(".foldInput");
         for(var i = 0; i < cbl.length; i++){
@@ -151,7 +151,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     _updateView: function () {
         this._multipleChoiceView();
         this._optionalView();
-        this._updateSubtotalDisplay();
+        this._updateFoldDisplay();
     },
 });
 });
