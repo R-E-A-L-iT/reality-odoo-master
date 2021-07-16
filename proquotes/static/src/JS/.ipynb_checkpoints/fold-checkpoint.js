@@ -63,11 +63,11 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             }
             y = y.nextElementSibling;
         }
-        this._saveFoldStatus(cb.currentTarget);
+        this._saveFoldStatus(cb.currentTarget.parentNode)
     },
     
     _saveFoldStatus: function (target) {
-        var s = target.dataset["oeId"];
+        var s = target.querySelector(".line_id").id;
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/fold/" + s,
