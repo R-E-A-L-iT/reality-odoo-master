@@ -56,7 +56,10 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var cbl = document.querySelectorAll(".multipleChoice");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
-            var x = cb.parentNode.parentNode;
+            var x = cb;
+            while(x.tagName != "TR"){
+                x = x.parenNode
+            }
             var y = x.nextElementSibling;
             var k = 0;
             var firstChecked = null;
