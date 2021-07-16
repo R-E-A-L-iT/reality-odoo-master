@@ -65,7 +65,7 @@ class order(models.Model):
 class proquotes(models.Model):
     _inherit = 'sale.order.line'
     
-    varients = fields.Many2One('proquotes.varient', string="Varients")
+    varients = fields.Many2one('proquotes.varient', string="Varients")
     
     selected = fields.Selection([
         ('true', "Yes"),
