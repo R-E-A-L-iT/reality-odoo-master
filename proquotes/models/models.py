@@ -87,8 +87,8 @@ class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
     
-    name = fields.Char(string='Variant Group', required=True, copy=False, states={'draft': [('readonly', False)]}, index=True, default="New")
+    name = fields.Char(string='Variant Group', required=True, copy=False, index=True, default="New")
     
     @api.model
     def create(self, args):
-        raise UserError(_(self.name))
+        raise UserError(_(name))
