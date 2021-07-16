@@ -19,7 +19,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var cbl = document.querySelectorAll(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
-            console.log(cb);
+            console.log(cb.checked);
             if(cb.checked == true){
                 TRstyle = "none";
             } else {
