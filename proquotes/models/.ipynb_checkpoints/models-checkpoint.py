@@ -84,3 +84,4 @@ class proquotes(models.Model):
     
 class varient(models.Model):
     _name = 'proquotes.varient'
+    _description = 'Multi Level Choices'
