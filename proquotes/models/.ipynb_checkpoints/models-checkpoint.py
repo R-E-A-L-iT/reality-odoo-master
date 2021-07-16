@@ -86,5 +86,6 @@ class varient(models.Model):
     _name = 'proquotes.varient'
     _description = 'Multi Level Choices'
     
-    def _create(self):
+    @api.model
+    def create(self):
         raise UserError(_("Not Implemented"))
