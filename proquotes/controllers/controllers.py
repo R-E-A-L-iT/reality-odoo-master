@@ -42,7 +42,7 @@ class CustomerPortal(CustomerPortal):
         return results
     
     @http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
-    def select(self, order_id, line_id, checked,  access_token=None, **post):
+    def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
