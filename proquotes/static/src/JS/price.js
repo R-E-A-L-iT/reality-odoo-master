@@ -46,6 +46,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             params: {access_token: this.orderDetail.token, line_ids: line_ids,'selected': targetsChecked}}).then((data) => {
             if (data) {
                 self.$('#portalTotal').html($(data['sale_outer_template']));
+                console.log(data)
                 self.$('#portal_sale_content').html($(data['sale_inner_template']));
                 this._updateView();
             }
