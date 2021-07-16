@@ -91,4 +91,4 @@ class variant(models.Model):
     
     @api.model
     def create(self, args):
-        raise UserError(_(args))
+        raise UserError(_(self.name))
