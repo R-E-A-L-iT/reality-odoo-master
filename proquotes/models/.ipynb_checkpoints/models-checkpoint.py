@@ -89,4 +89,4 @@ class variant(models.Model):
     
     name = fields.Char(string='Variant Group', required=True, copy=False, index=True, default="New")
     
-    #rule = fields.Char(string="Variant Rule"), required=True, default="None")
+    rule = fields.Char(string="Variant Rule", required=True, default="None")
