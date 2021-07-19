@@ -31,7 +31,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var qty = parseInt(target.value);
         console.log(lineId);
         return this._rpc({
-            route: "my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId,
+            route: /*"my/orders/" +*/ this.orderDetail.orderId + "/changeQuantity/" + lineId,
             params: {access_token: this.orderDetail.token, line_id: lineId, quantity: qty}}).then((data) => {
             if (data) {
                 self.$('#portal_sale_content').html($(data['sale_inner_template']));
