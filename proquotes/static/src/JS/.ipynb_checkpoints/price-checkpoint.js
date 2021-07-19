@@ -6,7 +6,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .priceChange': '_updatePriceTotalsEvent',
-        'change .quantityChange': '_updateQuantitiyEvent',
+        'change .quantityChange': '_updateQuantityEvent',
     },
     
     async start() {
@@ -21,7 +21,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateQuantityEvent: function () {
-        
+        console.log("Change")
     },
     
     _updatePriceTotalsEvent: function () {
