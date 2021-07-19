@@ -83,6 +83,10 @@ class proquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
     
+    quantityLocked = fields.Selection([
+        ('yes', "Yes"),
+        ('no', "No")], default="yes", required=True, help="Field to Lock Quantity on Products")
+    
 class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
