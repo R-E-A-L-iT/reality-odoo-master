@@ -21,6 +21,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateQuantityEvent: function (t) {
+        //Update Quantity for Product
         let self = this;
         var target = t.currentTarget;
         var p = target;

@@ -84,6 +84,9 @@ class CustomerPortal(CustomerPortal):
         
         select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id))
         select_sudo.product_uom_qty = quantity
+        if(quantity <= 0){
+            raise UserError(_("Product Quantity Must Be At Least 1"))
+        }
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
         order_sudo._amount_all()
