@@ -85,7 +85,7 @@ class proquotes(models.Model):
     
     quantityLocked = fields.Selection([
         ('yes', "Yes"),
-        ('no', "No")], default="yes", required=True, string="Lock Quantity", help="Field to Lock Quantity on Products")
+        ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
 class variant(models.Model):
     _name = 'proquotes.variant'
