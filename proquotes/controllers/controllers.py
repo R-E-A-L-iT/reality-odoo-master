@@ -75,7 +75,7 @@ class CustomerPortal(CustomerPortal):
         return results
     
     @http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
-    def change_quantity(self, order_id, line_id, quantity, accessToken=None, **post):
+    def change_quantity(self, order_id, line_id, quantity, access_token=None, **post):
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):

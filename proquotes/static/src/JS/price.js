@@ -29,7 +29,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
         var lineId = p.querySelector("div").dataset["oeId"];
         var qty = Math.round(target.value);
-        console.log(lineId);
         return this._rpc({
             route: this.orderDetail.orderId + "/changeQuantity/" + lineId,
             params: {access_token: this.orderDetail.token, line_id: lineId, quantity: qty}}).then((data) => {
