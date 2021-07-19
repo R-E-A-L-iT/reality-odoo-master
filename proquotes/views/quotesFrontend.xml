@@ -83,12 +83,12 @@
         </xpath>
         
         <!--Enable Variable Quantities-->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div" position="attributes">
-            <attribute name="t-if">line.quantityLocked == 'yes'</attribute>
+        <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
+            <t t-if="line.quantityLocked == 'yes'"><span t-field="line.product_uom_qty"></span></t>
         </xpath>
         
-        <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
-            <span>Else</span>
+        <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="after">
+            <t t-else=""><input type="number" class="quantityChange"></input></t>
         </xpath>
         
     </template>
