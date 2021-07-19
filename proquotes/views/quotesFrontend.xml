@@ -87,9 +87,9 @@
             <attribute name="t-if">line.quantityLocked == 'yes'</attribute>
         </xpath>
         
-        <xpath expr="//div[@id=&quot;quote_qty&quot;]" position="after">
+        <!--<xpath expr="//div[@id=&quot;quote_qty&quot;]" position="after">
             <div t-else=""><span>Else</span></div>
-        </xpath>
+        </xpath>-->
         
     </template>
 </odoo>
