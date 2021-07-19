@@ -20,8 +20,18 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         this._updatePriceTotalsEvent();
     },
     
-    _updateQuantityEvent: function () {
-        console.log("Change")
+    _updateQuantityEvent: function (t) {
+        let self = this;
+        var target = t.currentTarget;
+        console.log(t);
+        /*return this._rpc({
+            route: "my/orders/" + this.orderDetail.orderId + "/changeQuantity" + lineId,
+            params: {access_token: this.orderDetail.token, line_id: lineId, quantity: qty}}).then((data) => {
+            if (data) {
+                self.$('#portal_sale_content').html($(data['sale_inner_template']));
+                this._updateView(data['order_amount_total']);
+            }
+        });*/
     },
     
     _updatePriceTotalsEvent: function () {
