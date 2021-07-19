@@ -23,7 +23,12 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     _updateQuantityEvent: function (t) {
         let self = this;
         var target = t.currentTarget;
-        console.log(t);
+        var p = target;
+        while(p.tagName != "TR"){
+            p = p.parentNode;
+        }
+        var lineId = p.querySelector("div").dataset["oeId"]);
+        console.log(lineId);
         /*return this._rpc({
             route: "my/orders/" + this.orderDetail.orderId + "/changeQuantity" + lineId,
             params: {access_token: this.orderDetail.token, line_id: lineId, quantity: qty}}).then((data) => {
