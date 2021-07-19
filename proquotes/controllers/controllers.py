@@ -75,5 +75,5 @@ class CustomerPortal(CustomerPortal):
         return results
     
     @http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
-    def changeQuantity(self, order_id, line_id, quantity, accessToken=None, **post):
+    def change_quantity(self, order_id, line_id, quantity, accessToken=None, **post):
         raise UserError(_("Not Implemented"))
