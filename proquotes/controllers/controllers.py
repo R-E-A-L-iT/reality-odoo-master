@@ -76,4 +76,23 @@ class CustomerPortal(CustomerPortal):
     
     @http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
     def change_quantity(self, order_id, line_id, quantity, accessToken=None, **post):
-        raise UserError(_("Not Implemented"))
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+        
+        
+        select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id))
+        select_sudo.product_uom_qty = quantity
+        if order_sudo != select_sudo.order_id:
+            return request.redirect(order_sudo.get_portal_url())
+        order_sudo._amount_all()
+        
+        results = self._get_portal_order_details(order_sudo)
+        
+        results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+            'sale_order': order_sudo,
+            'report_type': "html",
+        })
+        
+        return results
