@@ -83,7 +83,7 @@
         </xpath>
         
         <!--Enable Variable Quantities-->
-        <xpath expr="t[@t-if=&quot;not line.display_type&quot;/td[2]/div[1]" position="attributes">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;/td[2]/div[1]" position="attributes">
             <attribute name="t-if">line.quantityLocked == 'yes'</attribute>
         </xpath>
         
