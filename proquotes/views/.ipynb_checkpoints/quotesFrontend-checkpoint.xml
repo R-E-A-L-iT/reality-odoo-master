@@ -87,7 +87,7 @@
             <attribute name="t-if">line.quantityLocked == 'yes'</attribute>
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div" position="after">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div" position="inside">
             <div t-else=""><span>Else</span></div>
         </xpath>
         
