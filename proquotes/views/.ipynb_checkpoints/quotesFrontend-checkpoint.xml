@@ -88,7 +88,7 @@
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="after">
-            <t t-else=""><input type="number" class="quantityChange"></input></t>
+            <t t-if="line.quantityLocked =='no'"><input type="number" class="quantityChange"></input></t>
         </xpath>
         
     </template>
