@@ -83,11 +83,11 @@
         </xpath>
         
         <!--Enable Variable Quantities-->
-        <xpath expr="div[@id=&quot;quote_qty&quot;]" position="attributes">
+        <xpath expr="//div[@id=&quot;quote_qty&quot;]" position="attributes">
             <attribute name="t-if">line.quantityLocked == 'yes'</attribute>
         </xpath>
         
-        <xpath expr="div[@id=&quot;quote_qty&quote;]" position="after">
+        <xpath expr="//div[@id=&quot;quote_qty&quote;]" position="after">
             <div t-else=""><span>Else</span></div>
         </xpath>
         
