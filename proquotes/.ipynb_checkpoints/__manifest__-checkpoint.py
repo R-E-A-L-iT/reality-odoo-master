@@ -3,11 +3,10 @@
     'name': "proquotes",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Quote Upgrade Module that adds Advanced Features""",
 
     'description': """
-        Long description of module's purpose
+        Module that allows advanced Quote features. Like Folding Sections, Improved Optional Products, and Multiple Choice Sections
     """,
 
     'author': "My Company",
@@ -17,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'version': '0.2',
+    'version': '0.5',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'sale_management', 'sale', 'digest'],

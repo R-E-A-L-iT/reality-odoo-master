@@ -26,6 +26,7 @@ class order(models.Model):
                 'amount_tax': amount_tax,
                 'amount_total': amount_untaxed + amount_tax,
             })
+            
     def _compute_amount_undiscounted(self):
         for order in self:
             total = 0.0
@@ -33,6 +34,7 @@ class order(models.Model):
                 if(line.selected == 'true'):
                     total += line.price_subtotal + line.price_unit * ((line.discount or 0.0) / 100.0) * line.product_uom_qty  # why is there a discount in a field named amount_undiscounted ??
             order.amount_undiscounted = total 
+            
     def _amount_by_group(self):
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
@@ -57,12 +59,7 @@ class order(models.Model):
                 len(res),
             ) for l in res]
 
-            
-            
-            
-            
-            
-class proquotes(models.Model):
+class orderLineProquotes(models.Model):
     _inherit = 'sale.order.line'
     
     variant = fields.Many2one('proquotes.variant', string="Variant Group")

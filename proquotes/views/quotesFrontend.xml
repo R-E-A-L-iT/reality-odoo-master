@@ -16,8 +16,8 @@
         </xpath>
     </template>
     
-    <template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="17">
-        
+    <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="99">
+    <!--<template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="99">-->
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
         
@@ -29,12 +29,12 @@
             <!--Apply Custom Class to Special Section Types if needed-->
             <t t-if="line.hiddenSection == 'no'">
                 <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none"/> 
+                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/> 
                 <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
             </t>
             <t t-else="">
                 <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none" checked="true"/> 
+                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/> 
                 <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
             </t>
             
@@ -43,7 +43,7 @@
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
             <td>
             <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                <strong class="text-right" style="font-weight: bolder">Subtotal</strong>
+                <span><strong class="text-right" style="font-weight: bolder">Subtotal</strong></span>
                 <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
             </label>
             </td>
@@ -60,17 +60,19 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
-        <xpath expr="//td[1]/span" position="replace">
-            <t t-if="line.optional == 'yes'">
-                <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
-                <input t-else="" type="checkbox" class="priceChange"/>
-            </t>
-            <t t-else="">
-                <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
-                <input t-else="" type="radio" style="display: none;"/>
-            </t>
-            <t t-set="nameDescription" t-value="line.name"></t>
-            <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+        <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
+            <td id="product_name">
+                <t t-if="line.optional == 'yes'">
+                    <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
+                    <input t-else="" type="checkbox" class="priceChange"/>
+                </t>
+                <t t-else="">
+                    <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
+                    <input t-else="" type="radio" style="display: none;"/>
+                </t>
+                <t t-set="nameDescription" t-value="line.name"></t>
+                <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+            </td>
         </xpath>
         
         <!--Ensure Subtotal is only calculated if Item is selected-->

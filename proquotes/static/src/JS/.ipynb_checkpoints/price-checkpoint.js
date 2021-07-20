@@ -88,6 +88,14 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                     break;
                 } else {
                     var z = y.querySelector("input[type='radio']");
+                    if(z == undefined){
+                        if(y.querySelector("input[type='checkbox']") == undefined){
+                            y = y.nextElementSibling;
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
                     if(z.checked){
                         if(firstChecked == null){
                             firstChecked = ("multipleChoice" + i.toString() + "R" + k.toString());
@@ -112,8 +120,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                         tdList[j].append(l);
                     }
                 }
-            k++;
-            y = y.nextElementSibling;
+                k++;
+                y = y.nextElementSibling;
             }
             if(firstChecked != null){
                 document.getElementById(firstChecked).checked = true;
