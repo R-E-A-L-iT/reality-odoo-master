@@ -11,13 +11,11 @@
     </template>
     
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
+        
         <xpath expr="//div" position="attributes">
             <attribute name="id">portalTotal</attribute>
         </xpath>
         
-        <xpath expr="//div" position="replace">
-            <span>Gone</span>
-        </xpath>
     </template>
     
     <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="99">
@@ -100,6 +98,10 @@
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
             <t t-if="line.quantityLocked == 'yes'"><span t-field="line.product_uom_qty"></span></t>
             <t t-if="line.quantityLocked =='no'"><input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input></t>
+        </xpath>
+        
+        <xpath expr="//div[@id=&quot;&quot;]" position="after">
+            <span>Hello There</span>
         </xpath>
         
     </template>
