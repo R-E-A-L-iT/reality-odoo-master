@@ -43,7 +43,7 @@
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
             <td>
             <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                <span><strong class="text-right" style="font-weight: bolder">Subtotal</strong></span>
+                <span><strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal</strong></span>
                 <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
             </label>
             </td>
@@ -82,6 +82,14 @@
         
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
             <attribute name="t-if">line.selected == 'true'</attribute>
+        </xpath>
+        
+        <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
+            <attribute name="class">proquotesLineTotal oe_order_line_price_subtotal</attribute>
+        </xpath>
+            
+        <xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
+            <attribute name="class">proquotesLineTotal oe_order_line_price_total</attribute>
         </xpath>
         
         <!--Enable Variable Quantities-->
