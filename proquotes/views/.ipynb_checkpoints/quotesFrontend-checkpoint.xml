@@ -59,8 +59,6 @@
             <attribute name="class">subtotal-source</attribute>
         </xpath>
         
-        <xpath expr=""
-        
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-if="line.optional == 'yes'">
