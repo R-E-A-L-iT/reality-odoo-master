@@ -88,6 +88,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                     break;
                 } else {
                     var z = y.querySelector("input[type='radio']");
+                    if(z == undefined){
+                        if(y.querySelector("input[type='checkbox']") = undefined){
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
                     if(z.checked){
                         if(firstChecked == null){
                             firstChecked = ("multipleChoice" + i.toString() + "R" + k.toString());
