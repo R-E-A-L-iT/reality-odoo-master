@@ -101,8 +101,8 @@
         </xpath>
         
         <xpath expr="//div[@id=&quot;portal_sale_content&quot;]" position="after">
-            <div class="testDiv">
-            <span>Hello There</span>
+            <div class="card pb-5">
+                <span>Hello There</span>
             </div>
         </xpath>
         
