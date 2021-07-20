@@ -16,7 +16,7 @@
         </xpath>
     </template>
     
-    <template inherit_id="sale.sale_order_portal_content" priority="99">
+    <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="99">
     <!--<template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="99">-->
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
