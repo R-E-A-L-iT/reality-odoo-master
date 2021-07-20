@@ -84,6 +84,14 @@
             <attribute name="t-if">line.selected == 'true'</attribute>
         </xpath>
         
+        <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
+            <attribute name="class">proquotesLineTotal oe_order_line_price_subtotal</attribute>
+        </xpath>
+            
+        <xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
+            <attribute name="class">proquotesLineTotal oe_order_line_price_total</attribute>
+        </xpath>
+        
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
             <t t-if="line.quantityLocked == 'yes'"><span t-field="line.product_uom_qty"></span></t>
