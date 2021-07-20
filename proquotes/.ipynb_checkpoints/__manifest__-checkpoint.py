@@ -3,11 +3,10 @@
     'name': "proquotes",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Quote Upgrade Module that adds Advanced Features""",
 
     'description': """
-        Long description of module's purpose
+        Module that allows advanced Quote features. Like Folding Sections, Improved Optional Products, and Multiple Choice Sections
     """,
 
     'author': "My Company",
