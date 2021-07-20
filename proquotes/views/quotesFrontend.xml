@@ -100,9 +100,9 @@
             <t t-if="line.quantityLocked =='no'"><input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input></t>
         </xpath>
         
-        <xpath expr="//div[@id=&quot;&quot;]" position="after">
+        <!--<xpath expr="//div[@id=&quot;&quot;]" position="after">
             <span>Hello There</span>
-        </xpath>
+        </xpath>-->
         
     </template>
 </odoo>
