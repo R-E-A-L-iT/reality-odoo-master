@@ -90,6 +90,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                     var z = y.querySelector("input[type='radio']");
                     if(z == undefined){
                         if(y.querySelector("input[type='checkbox']") == undefined){
+                            y = y.nextElementSibling;
                             continue;
                         } else {
                             break;
@@ -119,8 +120,8 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                         tdList[j].append(l);
                     }
                 }
-            k++;
-            y = y.nextElementSibling;
+                k++;
+                y = y.nextElementSibling;
             }
             if(firstChecked != null){
                 document.getElementById(firstChecked).checked = true;
