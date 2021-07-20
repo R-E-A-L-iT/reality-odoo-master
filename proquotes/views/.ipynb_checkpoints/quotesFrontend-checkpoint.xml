@@ -60,7 +60,7 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td/span" position="replace">
+        <xpath expr="//td[@tid=&quot;not line.display_typeproduct_name&quot;]/span" position="replace">
             <t t-if="line.optional == 'yes'">
                 <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
                 <input t-else="" type="checkbox" class="priceChange"/>
