@@ -59,6 +59,8 @@
             <attribute name="class">subtotal-source</attribute>
         </xpath>
         
+        <xpath expr=""
+        
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-if="line.optional == 'yes'">
@@ -69,7 +71,7 @@
                 <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
                 <input t-else="" type="radio" style="display: none;"/>
             </t>
-            <t t-set="nameDescription" t-value="line.name"></t>
+            <t t-set="nameDescription" t-value="line.product_id"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
         </xpath>
         
