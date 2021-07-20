@@ -50,7 +50,7 @@ class CustomerPortal(CustomerPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
         
-        digits = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
         line_id_formated = ""
         
         for c in line_id:
