@@ -60,9 +60,7 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
-        <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
-        <!--<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//td/span" position="replace">-->
-            <td>
+        <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
             <t t-if="line.optional == 'yes'">
                 <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
                 <input t-else="" type="checkbox" class="priceChange"/>
@@ -73,7 +71,6 @@
             </t>
             <t t-set="nameDescription" t-value="line.name"></t>
             <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
-            </td>
         </xpath>
         
         <!--Ensure Subtotal is only calculated if Item is selected-->
