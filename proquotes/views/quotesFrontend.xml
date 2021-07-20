@@ -59,7 +59,7 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
-        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]/tr/td/span" position="replace">
+        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[1]/span" position="replace">
             <t t-if="line.optional == 'yes'">
                 <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
                 <input t-else="" type="checkbox" class="priceChange"/>
