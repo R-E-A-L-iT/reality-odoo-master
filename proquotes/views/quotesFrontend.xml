@@ -60,17 +60,19 @@
         </xpath>
         
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
-        <xpath expr="//td[@id=&quot;product_name&quot;]/span" position="replace">
-            <t t-if="line.optional == 'yes'">
-                <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
-                <input t-else="" type="checkbox" class="priceChange"/>
-            </t>
-            <t t-else="">
-                <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
-                <input t-else="" type="radio" style="display: none;"/>
-            </t>
-            <t t-set="nameDescription" t-value="line.name"></t>
-            <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+        <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
+            <td id="product_name">
+                <t t-if="line.optional == 'yes'">
+                    <input t-if="line.selected == 'true'" type="checkbox"  class="priceChange" checked="true"/>
+                    <input t-else="" type="checkbox" class="priceChange"/>
+                </t>
+                <t t-else="">
+                    <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
+                    <input t-else="" type="radio" style="display: none;"/>
+                </t>
+                <t t-set="nameDescription" t-value="line.name"></t>
+                <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+            </td>
         </xpath>
         
         <!--Ensure Subtotal is only calculated if Item is selected-->
