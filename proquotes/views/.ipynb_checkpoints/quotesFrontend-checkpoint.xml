@@ -80,7 +80,7 @@
                 <t t-set="description" t-value="line.product_id.description_sale"/>
                 <div class="product_fold">
                     <span t-raw="description"></span>
-                    <img t-if="not line.product_id.image == False" t-attf-src="data:image/jpeg,{{line.product_id.image_1920}}"/>
+                    <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/jpeg,{{line.product_id.image_1920}}"/>
                 </div>
             </td>
         </xpath>
