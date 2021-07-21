@@ -84,10 +84,12 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
-    product_description = fields.Text(related='product_id.description_sale', required=True, readonly=True, string='Product Description')
+    product_description = fields.Text(compute='compute_description', required=True, readonly=True, string='Product Description')
     
-    def _compute_descripion(self):
-        return 'product_id.description_sale'
+    @ api.depends ('product_id') 
+    def _compute_description (self): 
+        for each in self: 
+            each.product_description = each.product_id.description_sale 
     
 class variant(models.Model):
     _name = 'proquotes.variant'
