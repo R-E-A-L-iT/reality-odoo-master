@@ -19,20 +19,20 @@
                 <field name="optional" invisible="0"/>
                 <field name="selected" invisible="0"/>
                 <field name="quantityLocked" invisible="0"/>
-                <field name="variant" invisible="0"/>
+                <field name="variant" invisible="1"/>
                 <field name="hiddenSection" invisible="1"/>
             </xpath>
             
             <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
-                <!--<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/>--> 
+                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/> 
             </xpath>
             
         </field>
         
     </record>
     
-    <record id="hide_view_order_form" model="ir.ui.view">
+    <record id="hide_view_order_form_proquotes" model="ir.ui.view">
         <field name="name">sale.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>

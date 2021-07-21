@@ -11,42 +11,46 @@
     </template>
     
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
+        
         <xpath expr="//div" position="attributes">
             <attribute name="id">portalTotal</attribute>
         </xpath>
+        
     </template>
     
-    <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="99">
-    <!--<template id="sale_order_portal_content" inherit_id="sale_management.sale_order_portal_content_inherit_sale_management" priority="99">-->
+    <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="17">
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-        
-            <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                <span t-field="line.name"/>
-                <span class="line_id" t-attf-id="{{line}}"/>
-            </label>
+            <div style="width: 75%; float: left;">
+                <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                    <input t-if="line.special == 'optional'" class="optionalSectionCheckbox" type="checkbox"></input>
+                    <span t-field="line.name"/>
+                    <span class="line_id" t-attf-id="{{line}}"/>
+                </label>
             
-            <!--Apply Custom Class to Special Section Types if needed-->
-            <t t-if="line.hiddenSection == 'no'">
-                <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/> 
-                <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
-            </t>
-            <t t-else="">
-                <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-                <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/> 
-                <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
-            </t>
+                <!--Apply Custom Class to Special Section Types if needed-->
+                <t t-if="line.hiddenSection == 'no'">
+                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
+                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/> 
+                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
+                </t>
+                <t t-else="">
+                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
+                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/> 
+                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
+                </t>
+            </div>
             
+            <div style="width: 25%; float: right">
+                <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
+                    <span><strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal</strong></span>
+                    <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
+                </label>
+            </div>
         </xpath>
         <!--Move Subtitle display-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
-            <td>
-            <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                <span><strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal</strong></span>
-                <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
-            </label>
-            </td>
+
         </xpath>
         
         <!--Hide Default Subtotal-->
@@ -77,11 +81,11 @@
         
         <!--Ensure Subtotal is only calculated if Item is selected-->
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true'</attribute>
+            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
         </xpath>
         
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true'</attribute>
+            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
