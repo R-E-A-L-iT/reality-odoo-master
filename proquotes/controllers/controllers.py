@@ -22,7 +22,15 @@ class CustomerPortal(CustomerPortal):
         
         i = 0
         while(i < len(line_ids)):
-            select_sudo = request.env['sale.order.line'].sudo().browse(int(line_ids[i]))
+            
+            digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+            line_id_formated = ""
+        
+            for c in line_ids[i]:
+                if(c in digits):
+                    line_id_formated = line_id_formated + c
+                    
+            select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id_formated))
             if(selected[i] == 'true'):
                 select_sudo.selected = 'true'
             else:
