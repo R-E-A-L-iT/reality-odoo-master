@@ -90,7 +90,15 @@ class CustomerPortal(CustomerPortal):
             return request.redirect('/my')
         
         
-        select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id))
+        
+        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+        line_id_formated = ""
+        
+        for c in line_id:
+            if(c in digits):
+                line_id_formated = line_id_formated + c
+                
+        select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id_formated))
         select_sudo.product_uom_qty = quantity
         if(quantity <= 0):
             raise UserError(_("Product Quantity Must Be At Least 1"))
