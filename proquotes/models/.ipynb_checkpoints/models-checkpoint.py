@@ -94,7 +94,7 @@ class productCategoryProquotes(models.Model):
             name = self.description_sale
         else
             name = ""
-            
+        return name
 class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
