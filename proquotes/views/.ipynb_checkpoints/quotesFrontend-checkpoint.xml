@@ -74,9 +74,9 @@
                     <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
                     <input t-else="" type="radio" style="display: none;"/>
                 </t>
-                <t t-set="name"><t t-field="line.product_id"/></t>
+                <t t-set="name"><span t-field="line.product_id"/></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-                <t t-set="description"><t t-field="line.product_id.description"></t></t>
+                <t t-set="description"><span t-field="line.product_id.description"></t></t>
                 <span t-raw="description"></span>
             </td>
         </xpath>
