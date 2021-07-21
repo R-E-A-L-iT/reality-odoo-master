@@ -76,7 +76,7 @@
                 </t>
                 <t t-set="name"><t t-field="line.product_id"/></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-                <t t-set="description" t-value="line.product_id.description"/>
+                <t t-set="description"><t t-field="line.product_id.description"></t></t>
                 <span t-raw="description"></span>
             </td>
         </xpath>
