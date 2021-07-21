@@ -92,7 +92,7 @@ class productCategoryProquotes(models.Model):
         name = None
         if self.description_sale:
             name = self.description_sale
-        else
+        else:
             name = ""
         return name
 class variant(models.Model):
