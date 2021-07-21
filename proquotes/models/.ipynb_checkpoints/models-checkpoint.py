@@ -85,7 +85,8 @@ class orderLineProquotes(models.Model):
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
     @ api.depends ('product_id') 
-    def _compute_description (self): 
+    def _compute_description (self):
+        raise UserError(_("Here"))
         for each in self: 
             each.product_description = each.product_id.description_sale
             
