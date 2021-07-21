@@ -84,8 +84,9 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
-    product_description = fields.Text(default='_compute_description', required=True, readonly=False, string='Product Description')
+    product_description = fields.Text(default=_compute_description, required=True, readonly=False, string='Product Description')
     
+    @api.model
     @ api.depends ('product_id') 
     def _compute_description (self): 
         for each in self: 
