@@ -77,7 +77,11 @@
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
                 <t t-set="description" t-value="line.product_id.description_sale"/>
-                <span t-raw="description"></span>
+                <div class="product_fold">
+                    <span t-raw="description"></span>
+                    <span t-if="line.product_id.image_1920">IMG</span>
+                    <span t-if="line.product_id.image_1920 == False">IMG</span>
+                </div>
             </td>
         </xpath>
         
