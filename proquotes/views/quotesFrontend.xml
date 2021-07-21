@@ -80,8 +80,7 @@
                 <t t-set="description" t-value="line.product_id.description_sale"/>
                 <div class="product_fold">
                     <span t-raw="description"></span>
-                    <img t-field="line.product_id.image_1920"/>
-                    <span t-if="line.product_id.image_1920 == False">No IMG</span>
+                    <field name="line.product_id.image_1920"/>
                 </div>
             </td>
         </xpath>
