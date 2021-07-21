@@ -87,7 +87,7 @@ class orderLineProquotes(models.Model):
     product_description = fields.Text(compute='_compute_descripion', required=True, readonly=False, string='Product Description')
     
     def _compute_descripion(self):
-        return str(self.product_id.description_sale)
+        return str(self.product_id)
     
 class variant(models.Model):
     _name = 'proquotes.variant'
