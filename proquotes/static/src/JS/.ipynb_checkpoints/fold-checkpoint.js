@@ -6,6 +6,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .foldInput': '_onChange',
+        'change .product_foldI': '_productFoldChange',
     },
     
     async start() {
@@ -66,11 +67,19 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             }
             y = y.nextElementSibling;
         }
-        this._saveFoldStatus(cb.currentTarget)
+        this._saveFoldStatus(cb.currentTarget);
+    },
+    
+    _productFoldChange: function (cb) {
+        this._saveFoldStatus(cb.currentTarget);
     },
     
     _saveFoldStatus: function (target) {
-        var s = target.parentNode.querySelector(".line_id").id;
+        var p = target;
+        while(p.tagName != "TR"){
+            p = p.parentNode
+        }
+        var s = p.querySelector(".line_id").id;
         
         return this._rpc({
             route: "/my/orders/" + this.orderDetail.orderId + "/fold/" + s,
