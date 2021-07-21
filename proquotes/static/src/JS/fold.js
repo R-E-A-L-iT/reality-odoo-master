@@ -51,7 +51,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         } else {
             TRstyle = "table-row";
         }
-        var x = cb.currentTarget.parentNode.parentNode;
+        var x = cb.currentTarget;
+        while(x.tagName != "TR"){
+            x = x.parentNode;
+        }
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
             if(y.className.includes("is-subtotal")){
