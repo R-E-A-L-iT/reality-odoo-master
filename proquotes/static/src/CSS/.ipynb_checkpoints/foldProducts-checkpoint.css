@@ -1,0 +1,17 @@
+.detailLabel {
+    text-decoration: underline;
+    color: #AAA !important;
+    cursor: pointer;
+}
+
+td#product_name {
+    width: 65%;
+}
+
+.product_fold {
+    display: none;
+}
+
+.product_foldI:checked + .product_fold, tr:hover .product_fold {
+    display: block
+}

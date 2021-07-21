@@ -6,6 +6,7 @@
 
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
             <script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
+            <link rel="stylesheet" href="/proquotes/static/src/CSS/foldProducts.css"></link>
 
         </xpath>
     </template>
@@ -74,8 +75,22 @@
                     <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
                     <input t-else="" type="radio" style="display: none;"/>
                 </t>
-                <t t-set="nameDescription" t-value="line.name"></t>
-                <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+                
+                <!--Line Id For User Selection-->
+                <span class="line_id" t-attf-id="{{line}}"></span>
+                
+                <t t-set="name" t-value="line.product_id.name"></t>
+                <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
+                <t t-set="description" t-value="line.product_id.description_sale"/>
+                
+                <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"><span class="detailLabel">Details</span></label>
+                <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+                <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+                
+                <div class="product_fold" style="width: 100%;">
+                    <span style="float: left;" t-raw="description"></span>
+                    <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
+                </div>
             </td>
         </xpath>
         

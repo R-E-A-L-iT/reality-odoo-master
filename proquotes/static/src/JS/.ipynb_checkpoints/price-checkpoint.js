@@ -28,7 +28,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         while(p.tagName != "TR"){
             p = p.parentNode;
         }
-        var lineId = p.querySelector("div").dataset["oeId"];
+        var lineId = p.querySelector(".line_id").id;
         var qty = Math.round(target.value);
         return this._rpc({
             route: this.orderDetail.orderId + "/changeQuantity/" + lineId,
@@ -54,7 +54,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                 p = p.parentNode;
             }
             targetsChecked.push(vpList[i].checked == true ? 'true' : 'false');
-            line_ids.push(p.querySelector("div").dataset["oeId"]);
+            line_ids.push(p.querySelector(".line_id").id);
         }
         this._updatePriceTotals(targetsChecked, line_ids);
     },
