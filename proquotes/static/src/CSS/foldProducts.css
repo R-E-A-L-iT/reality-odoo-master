@@ -6,6 +6,12 @@ td#product_name {
     display: none;
 }
 
-.product_foldI:checked + .product_fold, .tr:hover .product_fold {
+.product_foldI:checked + .product_fold {
     display: block
+}
+
+.tr:hover .product_fold {
+    display: block;
+    position: absolute;
+    z-index: 2;
 }
