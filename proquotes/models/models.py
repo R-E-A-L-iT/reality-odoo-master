@@ -84,7 +84,7 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
-    product_description = fields.Text(related='product_id.description_sale', string='Description')
+    product_description = fields.Text(related='product_id.description_sale', string='Product Description')
     
 class variant(models.Model):
     _name = 'proquotes.variant'
