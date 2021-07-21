@@ -1,3 +1,9 @@
+.detailLabel {
+    text-decoration: underline;
+    color: #AAA;
+    cursor: pointer;
+}
+
 td#product_name {
     width: 65%;
 }
