@@ -84,6 +84,11 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
+    def name_get(self):
+        result = ["Override"]
+        
+        return result
+    
 class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
