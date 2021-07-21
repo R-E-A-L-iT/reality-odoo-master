@@ -86,7 +86,6 @@ class orderLineProquotes(models.Model):
     
     product_description = fields.Text(default=lambda self :self._compute_description, required=True, readonly=False, string='Product Description')
     
-    @api.model
     @ api.depends ('product_id') 
     def _compute_description (self): 
         for each in self: 
