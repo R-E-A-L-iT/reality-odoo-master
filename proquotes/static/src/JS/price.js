@@ -54,7 +54,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                 p = p.parentNode;
             }
             targetsChecked.push(vpList[i].checked == true ? 'true' : 'false');
-            line_ids.push(p.querySelectorAll("div")[1].dataset["oeId"]);
+            line_ids.push(p.querySelector(".line_id").id);
         }
         this._updatePriceTotals(targetsChecked, line_ids);
     },

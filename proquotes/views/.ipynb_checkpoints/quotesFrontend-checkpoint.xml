@@ -74,12 +74,13 @@
                     <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
                     <input t-else="" type="radio" style="display: none;"/>
                 </t>
+                <span class="line_id" t-attf-id="{{line}}"/>
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
                 <t t-set="description" t-value="line.product_id.description_sale"/>
                 <div class="product_fold">
                     <span t-raw="description"></span>
-                    <span t-if="line.product_id.image_1920">IMG</span>
+                    <img t-field="line.product_id.image_1920"/>
                     <span t-if="line.product_id.image_1920 == False">IMG</span>
                 </div>
             </td>
