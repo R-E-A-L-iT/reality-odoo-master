@@ -86,7 +86,6 @@ class orderLineProquotes(models.Model):
     
     @ api.depends ('product_id') 
     def _compute_description (self):
-        raise UserError(_("Here"))
         for each in self: 
             each.product_description = each.product_id.description_sale
             
