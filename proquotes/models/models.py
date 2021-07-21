@@ -89,6 +89,7 @@ class productCategoryProquotes(models.Model):
     _inherit='product.category'
     
     def get_product_multiline_description_sale(self):
+        raise UserError(_("Here"))
         name = None
         if self.description_sale:
             name = self.description_sale
