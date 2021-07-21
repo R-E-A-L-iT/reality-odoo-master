@@ -1,6 +1,7 @@
 .detailLabel {
+    float: right;
     text-decoration: underline;
-    color: #AAA;
+    color: #AAA !important;
     cursor: pointer;
 }
 
