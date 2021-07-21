@@ -75,7 +75,7 @@
                     <input t-else="" type="radio" style="display: none;"/>
                 </t>
                 <t t-set="name" t-value="line.product_id"></t>
-                <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
+                <span t-attf-class="optional{{line.optional}}" t-esc="name"></span>
                 <t t-set="description" t-value="line.product_id.description"/>
                 <span t-raw="description"></span>
             </td>
