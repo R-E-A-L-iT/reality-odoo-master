@@ -89,7 +89,7 @@ class orderLineProquotes(models.Model):
         for each in self: 
             each.product_description = each.product_id.description_sale
             
-    product_description = fields.Text(default=_compute_description, required=True, readonly=False, string='Product Description')
+    product_description = fields.Text(default=_compute_description, readonly=False, string='Product Description')
     
 class variant(models.Model):
     _name = 'proquotes.variant'
