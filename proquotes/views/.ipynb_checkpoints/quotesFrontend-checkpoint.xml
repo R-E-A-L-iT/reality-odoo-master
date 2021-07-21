@@ -30,7 +30,7 @@
                 </label>
             
                 <!--Apply Custom Class to Special Section Types if needed-->
-                <t t-if="line.hidden == 'no'">
+                <t t-if="line.hiddenSection == 'no'">
                     <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
                     <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/> 
                     <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
@@ -84,7 +84,7 @@
                 <t t-set="description" t-value="line.product_id.description_sale"/>
                 
                 <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"><span class="detailLabel">Details</span></label>
-                <input t-if="line.hidden == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+                <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
                 <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
                 
                 <div class="product_fold" style="width: 100%;">
