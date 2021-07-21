@@ -74,7 +74,7 @@
                     <input t-if="line.selected == 'true'" type="radio"  checked="true" style="display: none;"/>
                     <input t-else="" type="radio" style="display: none;"/>
                 </t>
-                <span class="line_id" t-attf-id="{{line}}"/>
+                <span class="line_id" t-attf-id="{{line}}">Hello World</span>
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
                 <t t-set="description" t-value="line.product_id.description_sale"/>
