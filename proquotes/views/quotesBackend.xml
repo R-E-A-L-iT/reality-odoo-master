@@ -16,7 +16,7 @@
             </xpath>
             
             <xpath expr="//field[@name=&quot;name&quot;][@widget=&quot;section_and_note_text&quot;]" position="replace">
-                <field name="name" invisible="1"/>
+                <field name="name" invisible="0"/>
                 <field name="product_description" invisible="0"/>
             </xpath>
             
