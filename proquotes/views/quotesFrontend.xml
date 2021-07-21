@@ -79,6 +79,7 @@
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
                 <t t-set="description" t-value="line.product_id.description_sale"/>
+                <input class="product_foldI" type="checkbox"/>
                 <div class="product_fold">
                     <span style="float: left;" t-raw="description"></span>
                     <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right;"/>

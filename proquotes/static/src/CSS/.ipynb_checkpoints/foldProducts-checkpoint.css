@@ -1,3 +1,7 @@
 .product_fold {
-    color: red;
+    display: none;
+}
+
+.product_foldI:checked + .product_fold {
+    display: block
 }
