@@ -80,7 +80,7 @@
                 <t t-set="description" t-value="line.product_id.description_sale"/>
                 <div class="product_fold">
                     <span t-raw="description"></span>
-                    <field name="line.product_id.image_1920"/>
+                    <img t-field="line.product_id.image_1920"/>
                 </div>
             </td>
         </xpath>
