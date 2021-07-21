@@ -76,6 +76,7 @@
                 </t>
                 <t t-set="nameDescription" t-value="line.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="nameDescription"></span>
+                <span t-field="line.description_sale"></span>
             </td>
         </xpath>
         
