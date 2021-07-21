@@ -101,11 +101,11 @@
         
     </template>
     
-    <template id="sale_order_portal_template" inherit_id="sale.sale_order_portal_template" priority="17">
+    <!--<template id="sale_order_portal_template" inherit_id="sale.sale_order_portal_template" priority="17">
         <xpath expr="//div[@id=&quot;portal_sale_content&quot;]" position="after">
             <div class="row mt16 o_portal_sale_sidebar">
                 <xpath expr="//t[@t-call=&quot;portal.portal_record_sidebar&quot;]" position="move"></xpath>
             </div>
         </xpath>
-    </template>
+    </template>-->
 </odoo>
