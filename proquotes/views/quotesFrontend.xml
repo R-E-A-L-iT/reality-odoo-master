@@ -79,11 +79,11 @@
         
         <!--Ensure Subtotal is only calculated if Item is selected-->
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true'</attribute>
+            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
         </xpath>
         
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true'</attribute>
+            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
@@ -101,12 +101,4 @@
         </xpath>
         
     </template>
-    
-    <!--<template id="sale_order_portal_template" inherit_id="sale.sale_order_portal_template" priority="17">
-        <xpath expr="//div[@id=&quot;portal_sale_content&quot;]" position="after">
-            <div class="row mt16 o_portal_sale_sidebar">
-                <xpath expr="//t[@t-call=&quot;portal.portal_record_sidebar&quot;]" position="move"></xpath>
-            </div>
-        </xpath>
-    </template>-->
 </odoo>
