@@ -9,14 +9,14 @@
         Module that allows advanced Quote features. Like Folding Sections, Improved Optional Products, and Multiple Choice Sections
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Ty Cyr",
+    #'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'version': '0.6',
+    'version': '0.7',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'sale_management', 'sale', 'digest'],
