@@ -72,9 +72,9 @@ class orderLineProquotes(models.Model):
         ('multiple', "Multiple"),
         ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
     
-    hiddenSection = fields.Selection([
+    hidden = fields.Selection([
         ('yes', "Yes"),
-        ('no', "No")], default=False, help="Field To Track if Sections are folded")
+        ('no', "No")], default='no', required=True, help="Field To Track if Sections are folded")
     
     optional = fields.Selection([
         ('yes', "Yes"),
