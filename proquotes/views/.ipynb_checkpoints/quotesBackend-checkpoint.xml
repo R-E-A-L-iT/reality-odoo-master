@@ -19,7 +19,7 @@
                 <field name="optional" invisible="0"/>
                 <field name="selected" invisible="0"/>
                 <field name="quantityLocked" invisible="0"/>
-                <field name="variant" invisible="0"/>
+                <field name="variant" invisible="1"/>
                 <field name="hiddenSection" invisible="1"/>
             </xpath>
             
