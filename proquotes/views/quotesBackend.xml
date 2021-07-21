@@ -15,11 +15,6 @@
                 <field name="special" invisible="1"/>
             </xpath>
             
-            <xpath expr="//field[@name=&quot;name&quot;][@widget=&quot;section_and_note_text&quot;]" position="replace">
-                <field name="name" invisible="0"/>
-                <field name="product_description" invisible="0"/>
-            </xpath>
-            
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
                 <field name="optional" invisible="0"/>
                 <field name="selected" invisible="0"/>
