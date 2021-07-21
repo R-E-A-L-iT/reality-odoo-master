@@ -64,10 +64,6 @@
             <attribute name="class">subtotal-source</attribute>
         </xpath>
         
-        <xpath expr="//td[@id=&quot;product_name&quot;]" position="attributes">
-            <attribute name="style">width: 65%;</attribute>
-        </xpath>
-        
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">

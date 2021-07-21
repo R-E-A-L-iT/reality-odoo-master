@@ -1,3 +1,7 @@
+td#product_name {
+    width: 65%;
+}
+
 .product_fold {
     display: none;
 }
