@@ -85,7 +85,10 @@ class orderLineProquotes(models.Model):
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
     def get_sale_order_line_multiline_description_sale(self, product):
-        return product.description_sale
+        if product.description_sale:
+            return product.description_sale
+        else:
+            return "No Description Available"
     
     
 class productCategoryProquotes(models.Model):
