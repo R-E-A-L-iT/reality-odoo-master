@@ -117,5 +117,14 @@
             <t t-if="line.quantityLocked =='no'"><input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input></t>
         </xpath>
         
+        <!--Hide Unwanted Columns-->
+        <xpath expr="//t[@foreach=&quot;foreach=sale_order.order_line&quot;]//td[hasclass('d-none')][1]" position="attributes">
+            <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@foreach=&quot;foreach=sale_order.order_line&quot;]//td[hasclass('d-none')][2]" position="attributes">
+            <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
+        </xpath>
+        
     </template>
 </odoo>
