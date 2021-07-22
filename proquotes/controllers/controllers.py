@@ -50,6 +50,57 @@ class CustomerPortal(CustomerPortal):
         
         return results
     
+    @http.route(["/my/orders/<int:order_id>/sectionSelect"], type='json', auth="public", website=True)
+    def sectionSelect(self, order_id, section_id, line_ids, selected,  access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+        
+        i = 0
+        
+        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+        section_id_formated = ""
+        for c in section_id:
+            if(c in digits):
+                section_id_formated = section_id_formated + c
+                
+        select_sudo = request.env['sale.order.line'].sudo().browse(int(section_id_formated))
+        if(selected):
+            select_sudo.selected = 'true'
+        else:
+            select_sudo.selected = 'false'
+            
+        while(i < len(line_ids)):
+            
+            digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+            line_id_formated = ""
+        
+            for c in line_ids[i]:
+                if(c in digits):
+                    line_id_formated = line_id_formated + c
+                    
+            select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id_formated))
+            if(selected):
+                select_sudo.sectionSelected = 'true'
+            else:
+                select_sudo.sectionSelected = 'false'
+            i = i + 1
+        
+            if order_sudo != select_sudo.order_id:
+                return request.redirect(order_sudo.get_portal_url())
+        
+        order_sudo._amount_all()
+        results = self._get_portal_order_details(order_sudo)
+        
+        results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+            'sale_order': order_sudo,
+            'report_type': "html",
+        })
+        
+        return results
+    
     @http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
     def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
 
