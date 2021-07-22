@@ -81,7 +81,7 @@
                 
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-                <t t-set="description" t-value="line.product_id.description_sale"/>
+                <t t-set="description" t-value="line.name"/>
                 
                 <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"><span class="detailLabel">Details</span></label>
                 <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
