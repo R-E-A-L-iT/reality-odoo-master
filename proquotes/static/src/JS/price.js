@@ -63,10 +63,10 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     _updateSectionSelectionEvent: function (ev){
         var target = ev.currentTarget;
         var checked = target.checked;
+        console.log(checked);
         var p = target;
         var line_ids = [];
         while(p.tagName != "TR"){
-            console.log(p.tagName)
             p = p.parentNode;
         }
         var y = p.nextElementSibling;
