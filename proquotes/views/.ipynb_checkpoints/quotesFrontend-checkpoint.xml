@@ -49,10 +49,6 @@
                 </label>
             </div>
         </xpath>
-        <!--Move Subtitle display-->
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
-
-        </xpath>
         
         <!--Hide Default Subtotal-->
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
@@ -81,7 +77,7 @@
                 
                 <t t-set="name" t-value="line.product_id.name"></t>
                 <span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-                <t t-set="description" t-value="line.product_id.description_sale"/>
+                <t t-set="description" t-value="line.name"/>
                 
                 <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"><span class="detailLabel">Details</span></label>
                 <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
@@ -94,13 +90,24 @@
             </td>
         </xpath>
         
+        <!--End Multiple Choice Section Upon Optional Product-->
+        <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="before">
+            <t t-if="not current_section_ended">
+                <t t-if="line.optional == 'yes' and current_section.special == 'multiple'" t-set="current_section_ended" t-value="true"/>
+            </t>
+        </xpath>
+        
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
+            <t t-set="current_section_ended" t-value="false"/>
+        </xpath>
+        
         <!--Ensure Subtotal is only calculated if Item is selected-->
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
+            <attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
         </xpath>
         
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
+            <attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
@@ -115,6 +122,31 @@
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
             <t t-if="line.quantityLocked == 'yes'"><span t-field="line.product_uom_qty"></span></t>
             <t t-if="line.quantityLocked =='no'"><input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input></t>
+        </xpath>
+        
+        <!--Hide Unwanted Columns-->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[3]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[4]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[5]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[3]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[4]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+        </xpath>
+        
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[5]" position="attributes">
+            <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
         </xpath>
         
     </template>

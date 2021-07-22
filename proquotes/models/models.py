@@ -84,6 +84,26 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
+    def get_sale_order_line_multiline_description_sale(self, product):
+        if product.description_sale:
+            return product.description_sale
+        else:
+            return "<em>No Description Available</em>"
+    
+    
+class productCategoryProquotes(models.Model):
+    _inherit='product.category'
+    
+    def get_product_multiline_description_sale(self):
+        raise UserError(_("Here"))
+        name = None
+        if self.description_sale:
+            name = self.description_sale
+        else:
+            name = ""
+        return name
+    
+    
 class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
