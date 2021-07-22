@@ -69,10 +69,10 @@ class CustomerPortal(CustomerPortal):
         select_sudo = request.env['sale.order.line'].sudo().browse(int(section_id_formated))
         if(selected == 'true'):
             select_sudo.selected = 'true'
+            raise UserError(_(select_sudo.name))
         else:
             select_sudo.selected = 'false'
             
-        raise UserError(_(select_sudo.name))
         while(i < len(line_ids)):
             
             digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
