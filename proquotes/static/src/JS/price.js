@@ -5,6 +5,7 @@ var publicWidget = require('web.public.widget')
 publicWidget.registry.price = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
+        'change .optionalSectionCheckbox': '_updateSectionSelectionEvent',
         'change .priceChange': '_updatePriceTotalsEvent',
         'change .quantityChange': '_updateQuantityEvent',
     },
@@ -57,6 +58,10 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             line_ids.push(p.querySelector(".line_id").id);
         }
         this._updatePriceTotals(targetsChecked, line_ids);
+    },
+    
+    _updateSectionSelectionEvent: function (){
+        alert("Hello World");
     },
     
     _updatePriceTotals: function (targetsChecked, line_ids){

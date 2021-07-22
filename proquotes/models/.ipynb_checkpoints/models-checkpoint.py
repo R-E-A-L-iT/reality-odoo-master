@@ -18,7 +18,7 @@ class order(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
-                if(line.selected == 'true'):
+                if(line.selected == 'true' and line.sectionSelected == 'true'):
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
             order.update({
@@ -31,7 +31,7 @@ class order(models.Model):
         for order in self:
             total = 0.0
             for line in order.order_line:
-                if(line.selected == 'true'):
+                if(line.selected == 'true' and line.sectionSelected == 'true'):
                     total += line.price_subtotal + line.price_unit * ((line.discount or 0.0) / 100.0) * line.product_uom_qty  # why is there a discount in a field named amount_undiscounted ??
             order.amount_undiscounted = total 
             
@@ -47,7 +47,7 @@ class order(models.Model):
                     group = tax.tax_group_id
                     res.setdefault(group, {'amount': 0.0, 'base': 0.0})
                     for t in taxes:
-                        if(line.selected != 'true'):
+                        if(line.selected != 'true' or line.sectionSelected != 'true'):
                             break;
                         if (t['id'] == tax.id or t['id'] in tax.children_tax_ids.ids):
                             res[group]['amount'] += t['amount']
@@ -67,6 +67,10 @@ class orderLineProquotes(models.Model):
     selected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
+    
+    sectionSelected = fields.Selection([
+        ('true', "Yes"),
+        ('false', "No")], default="true", required=True, help="Field to Mark Wether Container Section is Selected")
     
     special = fields.Selection([
         ('multiple', "Multiple"),
