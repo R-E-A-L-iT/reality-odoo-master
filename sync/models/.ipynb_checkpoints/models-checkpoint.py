@@ -16,6 +16,6 @@ class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
     
-    @api.model
+    @api.multi
     def e(self):
         raise UserError(self._name)
