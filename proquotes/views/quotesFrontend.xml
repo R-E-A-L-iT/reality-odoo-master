@@ -118,7 +118,7 @@
         </xpath>
         
         <!--Hide Unwanted Columns-->
-        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td(hasclass('text-right'))[1]" position="attributes">
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td(hasclass('d-none'))[1]" position="attributes">
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
         </xpath>
         
