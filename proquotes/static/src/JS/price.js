@@ -65,6 +65,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var checked = target.checked;
         var p = target;
         while(p.tagName != "TR"){
+            console.log(p.tagName)
             p.parentNode;
         }
         var y = p.nextElementSibling;
