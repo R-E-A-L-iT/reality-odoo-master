@@ -60,8 +60,19 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         this._updatePriceTotals(targetsChecked, line_ids);
     },
     
-    _updateSectionSelectionEvent: function (){
-        alert("Hello World");
+    _updateSectionSelectionEvent: function (ev){
+        console.log(target);
+        var target = ev.currentTarget;
+        var checked = target.checked;
+        var p = target;
+        while(p.tagName != "TR"){
+            p.parentNode;
+        }
+        var y = p.nextElementSibling;
+        sectionId = p.querySelector(".line_id").id;
+        while(y != null && y != undefined){
+            y = y.nextElementSibling;
+        }
     },
     
     _updatePriceTotals: function (targetsChecked, line_ids){
