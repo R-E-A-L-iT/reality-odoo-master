@@ -12,7 +12,7 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 
-class Sync(models.Model):
+class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
     
