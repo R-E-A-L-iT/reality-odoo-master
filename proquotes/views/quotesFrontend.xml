@@ -50,7 +50,7 @@
             </div>
         </xpath>
         
-        <xpath expr="//t[@t-if&quot;line.display_type == 'line_note'&quot;]" position="inside">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]" position="inside">
             <span class="line_id" t-attf-id="{{line}}"/>
         </xpath>
         
