@@ -118,13 +118,13 @@
         </xpath>
         
         <!--Hide Unwanted Columns-->
-        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[hasclass('d-none')][1]" position="attributes">
+        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[hasclass('text-right')][2]" position="attributes">
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
         </xpath>
         
-        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[hasclass('d-none')][2]" position="attributes">
+        <!--<xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[hasclass('d-none')][2]" position="attributes">
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
-        </xpath>
+        </xpath>-->
         
     </template>
 </odoo>
