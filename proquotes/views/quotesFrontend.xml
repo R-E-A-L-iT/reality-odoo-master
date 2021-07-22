@@ -49,10 +49,6 @@
                 </label>
             </div>
         </xpath>
-        <!--Move Subtitle display-->
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="after">
-
-        </xpath>
         
         <!--Hide Default Subtotal-->
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
@@ -94,13 +90,18 @@
             </td>
         </xpath>
         
+        <!--End Multiple Choice Section Upon Optional Product-->
+        <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="before">
+            <t t-if="line.optional == 'yes' and current_section.special == 'multiple'"t-set="current_section" t-value="false"/>
+        </xpath>
+        
         <!--Ensure Subtotal is only calculated if Item is selected-->
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
+            <attribute name="t-if">line.selected == 'true' and not current_section == 'false'</attribute>
         </xpath>
         
         <xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="attributes">
-            <attribute name="t-if">line.selected == 'true' or current_section.special == 'optional'</attribute>
+            <attribute name="t-if">line.selected == 'true' and current_section == 'false'</attribute>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
