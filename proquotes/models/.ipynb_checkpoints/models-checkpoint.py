@@ -92,7 +92,7 @@ class orderLineProquotes(models.Model):
         if product.description_sale:
             return product.description_sale
         else:
-            return "<em>No Description Available</em>"
+            return "<span></span>"
     
     
 class productCategoryProquotes(models.Model):
