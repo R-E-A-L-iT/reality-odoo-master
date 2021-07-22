@@ -84,6 +84,10 @@ class orderLineProquotes(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
     
+    def get_sale_order_line_multiline_description_sale(self, product):
+        raise UserError(_("Not Here"))
+        return ""
+    
     
 class productCategoryProquotes(models.Model):
     _inherit='product.category'
