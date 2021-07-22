@@ -92,21 +92,7 @@ class orderLineProquotes(models.Model):
         if product.description_sale:
             return product.description_sale
         else:
-            return "<span></span>"
-    
-    
-class productCategoryProquotes(models.Model):
-    _inherit='product.category'
-    
-    def get_product_multiline_description_sale(self):
-        raise UserError(_("Here"))
-        name = None
-        if self.description_sale:
-            name = self.description_sale
-        else:
-            name = ""
-        return name
-    
+            return "<span></span>"    
     
 class variant(models.Model):
     _name = 'proquotes.variant'
