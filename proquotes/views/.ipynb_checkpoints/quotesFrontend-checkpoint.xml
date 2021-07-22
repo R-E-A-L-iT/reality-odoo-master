@@ -122,7 +122,7 @@
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
         </xpath>
         
-        <!--<xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[hasclass('d-none')][2]" position="attributes">
+        <!--<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[hasclass('d-none')][2]" position="attributes">
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
         </xpath>-->
         
