@@ -18,4 +18,4 @@ class sync(models.Model):
     
     @api.model
     def e(self):
-        raise UserError(_name)
+        raise UserError(self._name)
