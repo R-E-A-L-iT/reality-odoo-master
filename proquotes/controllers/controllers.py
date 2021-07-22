@@ -67,7 +67,7 @@ class CustomerPortal(CustomerPortal):
                 section_id_formated = section_id_formated + c
                 
         select_sudo = request.env['sale.order.line'].sudo().browse(int(section_id_formated))
-        if(selected == 'true'):
+        if(selected):
             select_sudo.selected = 'true'
             raise UserError(_(select_sudo.name))
         else:
@@ -83,7 +83,7 @@ class CustomerPortal(CustomerPortal):
                     line_id_formated = line_id_formated + c
                     
             select_sudo = request.env['sale.order.line'].sudo().browse(int(line_id_formated))
-            if(selected == 'true'):
+            if(selected):
                 select_sudo.sectionSelected = 'true'
             else:
                 select_sudo.sectionSelected = 'false'
