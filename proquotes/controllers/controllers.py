@@ -72,6 +72,7 @@ class CustomerPortal(CustomerPortal):
         else:
             select_sudo.selected = 'false'
             
+        raise User_Error(_(select_sudo.product_id))
         while(i < len(line_ids)):
             
             digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
