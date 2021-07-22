@@ -66,7 +66,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         var p = target;
         while(p.tagName != "TR"){
             console.log(p.tagName)
-            p.parentNode;
+            p = p.parentNode;
         }
         var y = p.nextElementSibling;
         sectionId = p.querySelector(".line_id").id;
