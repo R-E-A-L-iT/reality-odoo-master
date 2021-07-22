@@ -118,7 +118,7 @@
         </xpath>
         
         <!--Hide Unwanted Columns-->
-        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td[3]" position="attributes">
+        <xpath expr="//t[@foreach=&quot;sale_order.order_line&quot;]//td" position="attributes">
             <attribute name="class">text-right d-none d-sm-table-cell table-column-none</attribute>
         </xpath>
         
