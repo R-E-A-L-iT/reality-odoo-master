@@ -61,7 +61,6 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateSectionSelectionEvent: function (ev){
-        console.log(target);
         var target = ev.currentTarget;
         var checked = target.checked;
         var p = target;
@@ -72,6 +71,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         sectionId = p.querySelector(".line_id").id;
         while(y != null && y != undefined){
             y = y.nextElementSibling;
+            console.log(y);
         }
     },
     
