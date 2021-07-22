@@ -97,7 +97,7 @@
             </t>
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section&quot;]" position="inside">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
             <t t-set="current_section_ended" t-value="false"/>
         </xpath>
         
