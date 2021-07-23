@@ -51,6 +51,12 @@
                     <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
                 </label>
             </div>
+            
+            
+            <!-- DOWN ARROW THING -->
+            <i class="fa fa-arrow-down" aria-hidden="true"></i>
+            
+            
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
