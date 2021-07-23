@@ -117,7 +117,7 @@ class proquotesMail(models.TransientModel):
             if not values.get('res_id'):
                 result['res_id'] = parent.res_id
             #partner_ids = values.get('partner_ids', list()) + parent.partner_ids.ids
-            result['partner_ids'] = partner_ids
+            #result['partner_ids'] = partner_ids
         elif values.get('model') and values.get('res_id'):
             doc_name_get = self.env[values.get('model')].browse(values.get('res_id')).name_get()
             result['record_name'] = doc_name_get and doc_name_get[0][1] or ''
