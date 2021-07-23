@@ -37,6 +37,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
+                console.log(y);
                 if(y.className.includes("is-subtotal")) {
                     break;
                 } else {
