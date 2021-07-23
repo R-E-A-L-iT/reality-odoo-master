@@ -23,10 +23,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             var cb = cbl[i];
             if(cb.checked == true){
                 TRstyle = "none";
-                expandHTML = "x";
+                expandHTML = "+";
             } else {
                 TRstyle = "table-row";
-                expandHTML = "+";
+                expandHTML = "x";
             }
             var x = cb;
             while(x.tagName != "TR"){
@@ -57,10 +57,10 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         var expandHTML;
         if(cb.currentTarget.checked == true) {
             TRstyle = "none";
-            expandHTML = "x";
+            expandHTML = "+";
         } else {
             TRstyle = "table-row";
-            expandHTML = "+";
+            expandHTML = "x";
         }
         var x = cb.currentTarget;
         while(x.tagName != "TR") {
