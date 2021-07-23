@@ -45,7 +45,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                         console.log(y.style.display);
                     }
                 }
-            y = y.nextElementSibling;
+                y = y.nextElementSibling;
             }
         }
         var subTotalList = document.getElementsByClassName("subtotal-destination");
