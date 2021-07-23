@@ -95,7 +95,12 @@ class orderLineProquotes(models.Model):
             return product.description_sale
         else:
             return "<span></span>"    
-    
+
+class proquotesMail(models.TransientModel):
+    _inherit = 'mail.compose.message'
+    def get_record_data(self, values):
+        raise UserError(_("Test"))
+        
 class variant(models.Model):
     _name = 'proquotes.variant'
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
