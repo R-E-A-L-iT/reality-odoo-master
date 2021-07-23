@@ -28,14 +28,17 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 TRstyle = "table-row";
                 ArrowStyle = "rotate(0deg)";
             }
-            var x = cb.parentNode.parentNode;
+            var x = cb;
+            while(x.tagName != "TR"){
+                x = x.parentNode;
+            }
             x.querySelector('.quote-folding-arrow').style.transform = ArrowStyle;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
-                if(y.className.includes("is-subtotal")){
+                if(y.className.includes("is-subtotal")) {
                     break;
                 } else {
-                    if(y.style != undefined && y.style != null){
+                    if(y.style != undefined && y.style != null ){
                         y.style.display = TRstyle;
                     }
                 }
@@ -51,15 +54,19 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var TRstyle;
+        var ArrowStyle;
         if(cb.currentTarget.checked == true){
             TRstyle = "none";
+            ArrowStyle = "rotate(90deg)";
         } else {
             TRstyle = "table-row";
+            ArrowStyle = "rotate(0deg)";
         }
         var x = cb.currentTarget;
         while(x.tagName != "TR"){
             x = x.parentNode;
         }
+        x.querySelector('.quote-folding-arrow').style.transform = ArrowStyle;
         var y = x.nextElementSibling;
         while(y != null && y != undefined){
             if(y.className.includes("is-subtotal")){
