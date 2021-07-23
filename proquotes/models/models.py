@@ -14,7 +14,7 @@ from odoo import models, fields, api
 class order(models.Model):
     _inherit = 'sale.order'
     
-    partner_ids = fields.Many2Many('res.partner')
+    partner_ids = fields.Many2many('res.partner')
     
     def _amount_all(self):
         for order in self:
