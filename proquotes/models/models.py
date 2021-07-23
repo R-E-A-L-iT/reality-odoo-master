@@ -28,6 +28,8 @@ class order(models.Model):
                 'amount_tax': amount_tax,
                 'amount_total': amount_untaxed + amount_tax,
             })
+        def action_quotation_send(self):
+            raise UserError("No")
             
     def _compute_amount_undiscounted(self):
         for order in self:
