@@ -54,7 +54,7 @@
             
             
             <!-- DOWN ARROW THING -->
-            <i class="fa fa-arrow-down" aria-hidden="true"></i>
+            <span class="quote-folding-arrow">&gt;</span>
             
             
         </xpath>
