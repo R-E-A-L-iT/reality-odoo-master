@@ -55,7 +55,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     _onChange: function (cb) {
         var TRstyle;
         var ArrowStyle;
-        if(cb.currentTarget.checked == true){
+        if(cb.currentTarget.checked == true) {
             TRstyle = "none";
             ArrowStyle = "rotate(90deg)";
         } else {
@@ -63,13 +63,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             ArrowStyle = "rotate(0deg)";
         }
         var x = cb.currentTarget;
-        while(x.tagName != "TR"){
+        while(x.tagName != "TR") {
             x = x.parentNode;
         }
         x.querySelector('.quote-folding-arrow').style.transform = ArrowStyle;
         var y = x.nextElementSibling;
-        while(y != null && y != undefined){
-            if(y.className.includes("is-subtotal")){
+        while(y != null && y != undefined) {
+            if(y.className.includes("is-subtotal")) {
                 break;
             } else {
                 if(y.style != undefined && y.style != null){

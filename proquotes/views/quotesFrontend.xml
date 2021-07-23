@@ -27,7 +27,7 @@
                     
                     
                     <!-- DOWN ARROW THING -->
-                    <span class="quote-folding-arrow">&gt;</span>
+                    <span class="quote-folding-arrow">+</span>
                 
                     
                     <t t-if="line.special == 'optional'">
