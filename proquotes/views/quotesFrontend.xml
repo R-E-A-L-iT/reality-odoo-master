@@ -27,8 +27,8 @@
                     
                     
                     <!-- DOWN ARROW THING -->
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">+</span>
-                    <span t-else="" class="quote-folding-arrow">x</span>
+                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">x</span>
+                    <span t-else="" class="quote-folding-arrow">+</span>
                 
                     
                     <t t-if="line.special == 'optional'">
