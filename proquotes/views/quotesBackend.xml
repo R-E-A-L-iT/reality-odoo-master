@@ -12,7 +12,7 @@
             </xpath>
             
             <xpath expr="//field[@name=&quot;partner_id&quot;]" position="after">
-                <field name="partner_ids" invisible="0"/>
+                <field name="partner_ids" string="Customers"invisible="0"/>
             </xpath>
             
             <xpath expr="//create[1]" position="after">
