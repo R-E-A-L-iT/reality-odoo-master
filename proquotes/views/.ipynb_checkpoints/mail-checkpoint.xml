@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Add Custom Javascript-->
+    <template id="proquotes_mail" inherit_id="sale.mail_notification_paynow_online" priority="17">
+        <xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="replace">
+            <t t-if="record._name == 'sale.order'">
+                <t t-set="is_transaction_pending" t-value="record.get_portal_last_transaction().state == 'pending'"/>
+                <t t-set="access_name">View Quotation</t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
