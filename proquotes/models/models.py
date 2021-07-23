@@ -119,9 +119,9 @@ class proquotesMail(models.TransientModel):
             partner_ids = values.get('partner_ids', list()) + parent.partner_ids.ids
             result['partner_ids'] = partner_ids
         elif values.get('model') and values.get('res_id'):
-            if(values.get('model') == 'sale.order'):
-                result['partner_ids'] = values.get('model').partner_id
-                raise UserError(_(str(result)))
+            #if(values.get('model') == 'sale.order'):
+            #    result['partner_ids'] = self.env[values.get('model')].sudo.browse(values.get('res_id'))
+            #    raise UserError(_(str(result)))
             doc_name_get = self.env[values.get('model')].browse(values.get('res_id')).name_get()
             result['record_name'] = doc_name_get and doc_name_get[0][1] or ''
             subject = tools.ustr(result['record_name'])
