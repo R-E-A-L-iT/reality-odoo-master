@@ -17,22 +17,22 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     
     _onLoad: function () {
         var TRstyle;
-        var ArrowStyle;
+        var expandHTML;
         var cbl = document.querySelectorAll(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
             if(cb.checked == true){
                 TRstyle = "none";
-                ArrowStyle = "rotate(90deg)";
+                expandHTML = "x";
             } else {
                 TRstyle = "table-row";
-                ArrowStyle = "rotate(0deg)";
+                expandHTML = "+";
             }
             var x = cb;
             while(x.tagName != "TR"){
                 x = x.parentNode;
             }
-            x.querySelector('.quote-folding-arrow').style.transform = ArrowStyle;
+            x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")) {
@@ -54,19 +54,19 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
     },
     _onChange: function (cb) {
         var TRstyle;
-        var ArrowStyle;
+        var expandHTML;
         if(cb.currentTarget.checked == true) {
             TRstyle = "none";
-            ArrowStyle = "rotate(90deg)";
+            expandHTML = "x";
         } else {
             TRstyle = "table-row";
-            ArrowStyle = "rotate(0deg)";
+            expandHTML = "+";
         }
         var x = cb.currentTarget;
         while(x.tagName != "TR") {
             x = x.parentNode;
         }
-        x.querySelector('.quote-folding-arrow').style.transform = ArrowStyle;
+        x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
         var y = x.nextElementSibling;
         while(y != null && y != undefined) {
             if(y.className.includes("is-subtotal")) {
