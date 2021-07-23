@@ -24,6 +24,12 @@
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
             <div style="width: 75%; float: left;">
                 <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                    
+                    
+                    <!-- DOWN ARROW THING -->
+                    <span class="quote-folding-arrow">&gt;</span>
+                
+                    
                     <t t-if="line.special == 'optional'">
                         <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/> 
@@ -51,12 +57,6 @@
                     <span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
                 </label>
             </div>
-            
-            
-            <!-- DOWN ARROW THING -->
-            <span class="quote-folding-arrow">&gt;</span>
-            
-            
         </xpath>
         
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
