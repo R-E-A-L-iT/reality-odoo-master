@@ -49,7 +49,7 @@ class order(models.Model):
             'force_email': True,
             'model_description': self.with_context(lang=lang).type_name,
         }
-        raise UserError(_(str(ctx)))
+        raise UserError(_(str('mail.compose.message')))
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
