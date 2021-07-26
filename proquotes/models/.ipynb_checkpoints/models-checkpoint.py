@@ -133,6 +133,6 @@ class variant(models.Model):
     rule = fields.Char(string="Variant Rule", required=True, default="None")
     
 class person(models.Model):
-    _inherit = "res.company"
+    _inherit = "res.partner"
     
     products = fields.Many2one('stock.production.lot', 'company_id')
