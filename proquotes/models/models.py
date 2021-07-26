@@ -131,3 +131,8 @@ class variant(models.Model):
     name = fields.Char(string='Variant Group', required=True, copy=False, index=True, default="New")
     
     rule = fields.Char(string="Variant Rule", required=True, default="None")
+    
+class person(models.Model):
+    _inherit = "res.company"
+    
+    products = fields.Many2Many('stock.production.lot', 'company_id')
