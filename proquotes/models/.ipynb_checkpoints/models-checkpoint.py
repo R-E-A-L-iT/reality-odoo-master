@@ -122,7 +122,7 @@ class proquotesMail(models.TransientModel):
         elif values.get('model') and values.get('res_id'):
             if(values.get('model') == 'sale.order'):
                 partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_ids
-                partner_ids.push(self.env[values.get('model')].browse(values.get('res_id')).partner_id)
+                partner_ids = partner_ids + self.env[values.get('model')].browse(values.get('res_id')).partner_id
                 raise UserError(_(str(partner_ids)))
                 self.partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
                 
