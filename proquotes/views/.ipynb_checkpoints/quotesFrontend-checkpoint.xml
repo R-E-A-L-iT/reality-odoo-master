@@ -15,8 +15,8 @@
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
                 <t t-set="title">Products</t>
-                <t t-set="url" t-value="'https://www.google.com'"/>
-                <t t-set="count" t-value="5"/>
+                <t t-set="url" t-value="'/my/products'"/>
+                <t t-set="count" t-value="0"/>
             </t>
         </xpath>
     </template>
