@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="stock.production.lot.form"></field>
         <field name="arch" type="xml">
             <xpath expr="//group[1]" position="inside">
-                <field name="products" string="Products"/>
+                <field name="owner" string="Owner"/>
             </xpath>
         </field>
     </record> 
