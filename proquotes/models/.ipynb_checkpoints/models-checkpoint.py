@@ -135,4 +135,9 @@ class variant(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
     
-    products = fields.One2many('stock.production.lot', 'ref')
+    products = fields.One2many('stock.production.lot', 'owner', string="Products")
+    
+class owner(models.Model):
+    _inherit = "stock.production.lot"
+    
+    owner = fields.Many2one('res.partner', string="Owner")
