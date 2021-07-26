@@ -123,7 +123,7 @@ class proquotesMail(models.TransientModel):
             if(values.get('model') == 'sale.order'):
                 partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_ids
                 partner_ids = partner_ids + self.env[values.get('model')].browse(values.get('res_id')).partner_id
-                raise UserError(_(str(partner_ids)))
+                raise UserError(_(str(self.partner_ids)))
                 self.partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
                 
                 result['partner_ids'] = partner_ids
