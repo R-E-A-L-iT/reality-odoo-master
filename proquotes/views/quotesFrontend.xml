@@ -22,7 +22,7 @@
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr" position="attributes">
-            <attribute name="t-att-class">'quoteLineRow bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'quoteLineRow  font-italic o_line_note' if line.display_type == 'line_note' else 'quoteLineRow'</attribute>
+            <attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type == 'line_note' else 'quoteLineRow'</attribute>
         </xpath>
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">

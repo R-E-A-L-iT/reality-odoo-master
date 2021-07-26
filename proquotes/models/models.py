@@ -124,7 +124,7 @@ class proquotesMail(models.TransientModel):
                 partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_ids
                 partner_ids = partner_ids + self.env[values.get('model')].browse(values.get('res_id')).partner_id
                 
-                self.env['partner_ids'] = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
+                self.partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
                 raise UserError(_(str(self.env['partner_ids'])))
                 result['partner_ids'] = partner_ids
             doc_name_get = self.env[values.get('model')].browse(values.get('res_id')).name_get()
