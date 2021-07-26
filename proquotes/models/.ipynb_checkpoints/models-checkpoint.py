@@ -135,4 +135,4 @@ class variant(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
     
-    products = fields.Many2one('stock.production.lot', 'company_id')
+    products = fields.Many2one('stock.production.lot', 'ref')
