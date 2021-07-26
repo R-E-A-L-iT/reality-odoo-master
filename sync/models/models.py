@@ -15,7 +15,7 @@ from odoo import models, fields, api
 class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
-    
-    @api.model
+    x = 0
     def e(self):
-        raise UserError(self._name)
+        x = x + 1
+        raise UserError(self.x)

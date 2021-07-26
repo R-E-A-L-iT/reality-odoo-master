@@ -186,25 +186,35 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _updateFoldDisplay: function () {
         var TRstyle;
+        var expandHTML;
         var cbl = document.querySelectorAll(".foldInput");
         for(var i = 0; i < cbl.length; i++){
             var cb = cbl[i];
+
             if(cb.checked == true){
+                console.log(cb);
                 TRstyle = "none";
+                expandHTML = "+";
             } else {
                 TRstyle = "table-row";
+                expandHTML = "x";
             }
-            var x = cb.parentNode.parentNode;
+            var x = cb;
+            while(x.tagName != "TR"){
+                x = x.parentNode;
+            }
+            x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
-                if(y.className.includes("is-subtotal")){
+                if(y.className.includes("is-subtotal")) {
                     break;
                 } else {
-                    if(y.style != undefined && y.style != null){
+                    if(y.style != undefined && y.style != null ){
                         y.style.display = TRstyle;
+                        console.log(y.style.display);
                     }
                 }
-            y = y.nextElementSibling;
+                y = y.nextElementSibling;
             }
         }
         var subTotalList = document.getElementsByClassName("subtotal-destination");

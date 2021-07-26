@@ -19,11 +19,22 @@
         
     </template>
     
-    <template id="sale_order_portal_content" name="Proquotes Frontend Template" inherit_id="sale.sale_order_portal_content" priority="17">
+    <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+        
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr" position="attributes">
+            <attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type == 'line_note' else 'quoteLineRow'</attribute>
+        </xpath>
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
             <div style="width: 75%; float: left;">
                 <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                    
+                    
+                    <!-- DOWN ARROW THING -->
+                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">x</span>
+                    <span t-else="" class="quote-folding-arrow">+</span>
+                
+                    
                     <t t-if="line.special == 'optional'">
                         <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/> 

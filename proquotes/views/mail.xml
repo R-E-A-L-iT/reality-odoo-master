@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
+        <xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
+                <t t-set="access_name">View Quotation</t>
+        </xpath>
+    </template>
+</odoo>
