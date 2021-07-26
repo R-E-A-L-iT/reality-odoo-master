@@ -103,7 +103,7 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = 'mail.compose.message'
     
-    def generate_email_for_composer(self, template_id, res_ids, fields):
+    def render_message(self, res_ids):
         raise UserError(_("Here"))
     
     def get_record_data(self, values):
