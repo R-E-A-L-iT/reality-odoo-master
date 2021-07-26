@@ -11,6 +11,14 @@
         </xpath>
     </template>
     
+    <template id="portal_my_home_menu_invoice" name="Portal layout : invoice menu entries" inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <a t-attf-href="https://www.google.com">Purchased Products</a>
+            </li>
+        </xpath>
+    </template>
+    
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
         
         <xpath expr="//div" position="attributes">
