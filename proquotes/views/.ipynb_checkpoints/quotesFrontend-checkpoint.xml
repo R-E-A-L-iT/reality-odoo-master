@@ -11,11 +11,13 @@
         </xpath>
     </template>
     
-    <template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="17">
+    <template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
         <xpath expr="//ol[hasclass('o_portal_docs')]" position="inside">
-            <li t-if="page_name == 'quote' or sale_order and sale_order.state in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
-                <a t-attf-href="https://www.google.com">Purchased Products</a>
-            </li>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Products</t>
+                <t t-set="url" t-value="https://www.google.com"/>
+                <t t-set="placeholder_count" t-value="5"/>
+            </t>
         </xpath>
     </template>
     
