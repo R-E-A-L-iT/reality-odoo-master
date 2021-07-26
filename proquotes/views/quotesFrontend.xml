@@ -16,7 +16,7 @@
             <t t-call="portal.portal_docs_entry">
                 <t t-set="title">Products</t>
                 <t t-set="url" t-value="'https://www.google.com'"/>
-                <t t-set="placeholder_count" t-value="5"/>
+                <t t-set="count" t-value="5"/>
             </t>
         </xpath>
     </template>
