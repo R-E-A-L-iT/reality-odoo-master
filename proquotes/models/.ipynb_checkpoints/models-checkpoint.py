@@ -102,8 +102,6 @@ class orderLineProquotes(models.Model):
 
 class proquotesMail(models.TransientModel):
     _inherit = 'mail.compose.message'
-    def get_mail_values(self, res_ids):
-        raise UserError(_("Here"))
     
     def get_record_data(self, values):
         """ Returns a defaults-like dict with initial values for the composition
@@ -126,7 +124,7 @@ class proquotesMail(models.TransientModel):
                 partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_ids
                 
                 self.partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
-                #raise UserError(_(str(self.partner_ids)))
+                raise UserError(_(str(self.env[values.get('model')].browse(values.get('res_id')).partner_id)))
                 result['partner_ids'] = partner_ids
             doc_name_get = self.env[values.get('model')].browse(values.get('res_id')).name_get()
             result['record_name'] = doc_name_get and doc_name_get[0][1] or ''
