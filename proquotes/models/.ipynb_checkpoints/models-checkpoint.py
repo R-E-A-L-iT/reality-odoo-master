@@ -103,6 +103,9 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = 'mail.compose.message'
     
+    def generate_email_for_composer(self, template_id, res_ids, fields):
+        raise UserError(_("Here"))
+    
     def get_record_data(self, values):
         """ Returns a defaults-like dict with initial values for the composition
         wizard when sending an email related a previous email (parent_id) or
