@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    
-    
-    
-    
+    <record id="production.lot.form" model="ir.ui.view">
+        <field name="name">proportal.production.lot.form</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.production.lot.form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="inside">
+                <field name="products" string="Products"/>
+            </xpath>
+        </field>
+    </record> 
 </odoo>
