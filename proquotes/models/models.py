@@ -103,8 +103,24 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = 'mail.compose.message'
     
-    def render_message(self, res_ids):
-        raise UserError(_("Here"))
+    def generate_email_for_composer(self, template_id, res_ids, fields):
+        """ Call email_template.generate_email(), get fields relevant for
+            mail.compose.message, transform email_cc and email_to into partner_ids """
+        multi_mode = True
+        if isinstance(res_ids, int):
+            multi_mode = False
+            res_ids = [res_ids]
+
+        returned_fields = fields + ['partner_ids', 'attachments']
+        values = dict.fromkeys(res_ids, False)
+
+        template_values = self.env['mail.template'].with_context(tpl_partners_only=True).browse(template_id).generate_email(res_ids, fields)
+        for res_id in res_ids:
+            res_id_values = dict((field, template_values[res_id][field]) for field in returned_fields if template_values[res_id].get(field))
+            res_id_values['body'] = res_id_values.pop('body_html', '')
+            values[res_id] = res_id_values
+        raise UserError(_(str(values)))
+        return multi_mode and values or values[res_ids[0]]
     
     def get_record_data(self, values):
         """ Returns a defaults-like dict with initial values for the composition
