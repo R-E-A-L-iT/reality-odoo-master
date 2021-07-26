@@ -4,7 +4,7 @@
 import binascii
 
 from odoo import fields, http, _
-from odoo.exceptions import AccessError, MissingError
+from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.addons.payment.controllers.portal import PaymentProcessing
 from odoo.addons.portal.controllers.mail import _message_post_helper
