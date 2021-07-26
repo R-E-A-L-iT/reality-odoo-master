@@ -16,4 +16,4 @@ class CustomerPortal(CustomerPortal):
     
     @http.route(['/my/products', '/my/products/page/<int:page>'], type='http', auth="user", website=True)
     def products(self):
-        raise UserError(_(str(request.env.user.partner_id)))
+        raise UserError(_(str(request.env.user.partner_id.name)))
