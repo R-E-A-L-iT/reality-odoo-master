@@ -119,44 +119,10 @@ class proquotesMail(models.TransientModel):
             res_id_values = dict((field, template_values[res_id][field]) for field in returned_fields if template_values[res_id].get(field))
             res_id_values['body'] = res_id_values.pop('body_html', '')
             if template_values[res_id].get('model') == 'sale.order':
-                raise UserError(_(self.env['sale.order'].browse(res_id).partner_ids))
+                res_id_values['partner_ids'] = self.env['sale.order'].browse(res_id).partner_id + self.env['sale.order'].browse(res_id).partner_ids
             values[res_id] = res_id_values
         return multi_mode and values or values[res_ids[0]]
     
-    def get_record_data(self, values):
-        """ Returns a defaults-like dict with initial values for the composition
-        wizard when sending an email related a previous email (parent_id) or
-        a document (model, res_id). This is based on previously computed default
-        values. """
-        result, subject = {}, False
-        if values.get('parent_id'):
-            parent = self.env['mail.message'].browse(values.get('parent_id'))
-            result['record_name'] = parent.record_name,
-            subject = tools.ustr(parent.subject or parent.record_name or '')
-            if not values.get('model'):
-                result['model'] = parent.model
-            if not values.get('res_id'):
-                result['res_id'] = parent.res_id
-            partner_ids = values.get('partner_ids', list()) + parent.partner_ids.ids
-            result['partner_ids'] = partner_ids
-        elif values.get('model') and values.get('res_id'):
-            if(values.get('model') == 'sale.order'):
-                partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_ids
-                partner_ids = partner_ids + self.env[values.get('model')].browse(values.get('res_id')).partner_id
-                
-                self.partner_ids = self.env[values.get('model')].browse(values.get('res_id')).partner_id + partner_ids
-
-                result['partner_ids'] = partner_ids
-            doc_name_get = self.env[values.get('model')].browse(values.get('res_id')).name_get()
-            result['record_name'] = doc_name_get and doc_name_get[0][1] or ''
-            subject = tools.ustr(result['record_name'])
-
-        re_prefix = _('Re:')
-        if subject and not (subject.startswith('Re:') or subject.startswith(re_prefix)):
-            subject = "%s %s" % (re_prefix, subject)
-        result['subject'] = subject
-        
-        return result
         
 class variant(models.Model):
     _name = 'proquotes.variant'
