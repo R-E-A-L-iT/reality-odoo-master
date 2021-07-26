@@ -118,7 +118,7 @@ class proquotesMail(models.TransientModel):
         for res_id in res_ids:
             res_id_values = dict((field, template_values[res_id][field]) for field in returned_fields if template_values[res_id].get(field))
             res_id_values['body'] = res_id_values.pop('body_html', '')
-            raise UserError(_(str(template_values[res_id].get(field))))
+            raise UserError(_(str(template_values[res_id])))
             values[res_id] = res_id_values
         return multi_mode and values or values[res_ids[0]]
     
