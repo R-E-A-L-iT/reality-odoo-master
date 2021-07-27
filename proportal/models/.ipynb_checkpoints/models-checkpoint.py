@@ -16,7 +16,7 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 class productType(models.Model):
-    _inherit = "product.product"
+    _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = skuhidden.name
 
