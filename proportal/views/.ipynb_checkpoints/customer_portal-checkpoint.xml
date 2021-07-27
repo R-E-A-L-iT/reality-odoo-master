@@ -13,7 +13,8 @@
     
     <template id="portal_products" name="Portal Customer Products Page">
         <t t-call="portal.portal_layout">
-            <t t-esc="company"/>
+            <t t-esc="company.name"/>
+            <t t-esc="company.products"/>
         </t>
     </template>
 </odoo>
