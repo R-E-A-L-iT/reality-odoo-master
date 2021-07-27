@@ -10,4 +10,9 @@
             </t>
         </xpath>
     </template>
+    
+    <template id="portal_products" name="Portal Customer Products Page">
+        <h1>Comming Soon</h1>
+        
+    </template>
 </odoo>
