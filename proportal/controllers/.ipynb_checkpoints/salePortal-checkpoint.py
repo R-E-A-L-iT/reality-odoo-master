@@ -22,8 +22,10 @@ class CustomerPortal(sourcePortal):
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        if(partner.parent_id):
+        if(partner.parent_id != False):
             partner = partner.parent_id
+        else:
+            raise UserError(_("No Parent"))
         SaleOrder = request.env['sale.order']
 
         domain = [
