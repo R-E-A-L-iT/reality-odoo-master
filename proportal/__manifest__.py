@@ -14,15 +14,16 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'version': '0.4',
+    'version': '0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock_account', 'purchase', 'stock', 'portal'],
+    'depends': ['base', 'stock_account', 'product', 'purchase', 'stock', 'portal'],
     
     # always loaded
     'data': [
         #'security/ir.model.access.csv',
         'views/partnerView.xml',
+        'views/productView.xml',
         'views/stockView.xml',
         #'views/customer_portal.xml'
     ],

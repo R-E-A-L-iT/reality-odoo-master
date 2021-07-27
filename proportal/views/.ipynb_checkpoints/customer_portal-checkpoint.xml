@@ -12,7 +12,8 @@
     </template>
     
     <template id="portal_products" name="Portal Customer Products Page">
-        <h1>Comming Soon</h1>
-        
+        <t t-call="portal.portal_layout">
+            <h1>Comming Soon</h1>
+        </t>
     </template>
 </odoo>
