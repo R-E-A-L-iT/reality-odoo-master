@@ -23,10 +23,7 @@ class CustomerPortal(sourcePortal):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         if(partner.parent_id != False):
-            raise UserError(_("Parent"))
             partner = partner.parent_id
-        else:
-            raise UserError(_("No Parent"))
         SaleOrder = request.env['sale.order']
 
         domain = [
