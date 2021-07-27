@@ -24,9 +24,12 @@ class productInstance(models.Model):
     _inherit = "stock.production.lot"
     
     owner = fields.Many2one('res.partner', string="Owner")
-    sku = fields.Char(compute='getSKU')
+    sku = fields.Char(compute='getSKU', readonly=True)
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
     
     def getSKU(self):
         for x in self:
-            x.sku = "No SKU"
+            if x.external_id
+                x.sku = x.external_id
+            else:
+                x.sku=""
