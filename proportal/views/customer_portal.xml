@@ -23,13 +23,13 @@
     <template id="portal_products" name="Portal Customer Products Page">
         <t t-call="portal.portal_layout">
             <t t-if="company.products" t-call="portal.portal_table">
-                <thead>
+                <thead class="productTable">
                     <tr class="active">
-                        <th>Product</th>
-                        <th>SKU</th>
-                        <th>Serial Number/Eid</th>
+                        <th class="customerPortalProducts">Product</th>
+                        <th class="customerPortalProducts">SKU</th>
+                        <th class="customerPortalProducts">Serial Number/Eid</th>
                         <th/>
-                        <th>Expiration Date</th>
+                        <th class="customerPortalProducts">Expiration Date</th>
                     </tr>
                 </thead>
                 <t t-foreach="company.products" t-as="product">
