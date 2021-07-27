@@ -28,7 +28,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 expandHTML = "+";
             } else {
                 TRstyle = "table-row";
-                expandHTML = "x";
+                expandHTML = "&#215;";
             }
             var x = cb;
             while(x.tagName != "TR"){
@@ -63,7 +63,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             expandHTML = "+";
         } else {
             TRstyle = "table-row";
-            expandHTML = "x";
+            expandHTML = "&#215;";
         }
         var x = cb.currentTarget;
         while(x.tagName != "TR") {

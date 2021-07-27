@@ -197,7 +197,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
                 expandHTML = "+";
             } else {
                 TRstyle = "table-row";
-                expandHTML = "x";
+                expandHTML = "&#215;";
             }
             var x = cb;
             while(x.tagName != "TR"){
