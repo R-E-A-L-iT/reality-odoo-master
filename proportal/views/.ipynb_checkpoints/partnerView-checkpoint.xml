@@ -10,7 +10,7 @@
                 <page name="products" string="Products">
                     <sheet>
                         <field name="parentProducts" string="Company Products" attrs="{'invisible': [('company_type', '=', 'company')]}"/>
-                        <field name="products" string="Products" attrs="{'invisible': [('parent_id', '=', False)]'}"/>
+                        <field name="products" string="Products" attrs="{'invisible': [('parent_id', '=', False)]}"/>
                     </sheet>
                 </page>
             </xpath>
