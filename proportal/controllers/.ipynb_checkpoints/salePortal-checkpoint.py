@@ -9,10 +9,11 @@ from odoo.http import request
 from odoo.addons.payment.controllers.portal import PaymentProcessing
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from odoo.addons.sale.controllers.portal import CustomerPortal as sourcePortal
 from odoo.osv import expression
 
 
-class CustomerPortal(CustomerPortal):
+class CustomerPortal(sourcePortal):
 
     #
     # Quotations and Sales Orders
