@@ -4,7 +4,7 @@
 import binascii
 
 from odoo import fields, http, _
-from odoo.exceptions import AccessError, MissingError
+from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.addons.payment.controllers.portal import PaymentProcessing
 from odoo.addons.portal.controllers.mail import _message_post_helper
@@ -19,6 +19,7 @@ class CustomerPortal(CustomerPortal):
     #
 
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+        raise UserError(_("Override"))
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id.parent_id
         SaleOrder = request.env['sale.order']
