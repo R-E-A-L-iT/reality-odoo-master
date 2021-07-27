@@ -25,7 +25,7 @@ class productInstance(models.Model):
     
     owner = fields.Many2one('res.partner', string="Owner")
     sku = fields.Char(_compute='getSKU')
-    expire = fields.date(False)
+    expire = fields.date(None)
     
     def getSKU():
         return "No Sku"
