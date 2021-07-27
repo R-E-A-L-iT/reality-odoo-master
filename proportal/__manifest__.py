@@ -17,7 +17,7 @@
     'version': '0.8',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock_account', 'stock', 'portal'],
+    'depends': ['base', 'stock_account', 'purchase' 'stock', 'portal'],
     
     # always loaded
     'data': [
