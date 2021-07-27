@@ -23,8 +23,8 @@ class productType(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
     
-    products = fields.One2many('stock.production.lot', 'owner', readonly=True)
-    parentProducts = fields.One2many(related='parent_id.products', readonly=True)
+    products = fields.One2many('stock.production.lot', 'owner', string="Products" readonly=True)
+    parentProducts = fields.One2many(related='parent_id.products', string="Company Products" readonly=True)
     
 class productInstance(models.Model):
     _inherit = "stock.production.lot"
