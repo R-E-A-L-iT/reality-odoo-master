@@ -26,12 +26,12 @@
                 <t t-foreach="company.products" t-as="product">
                     <tr>
                         <td><t t-esc="product.product_id.name"/></td>
-                        <td class="text-right"><span t-field="product.sku"/></td>
-                        <td class="text-right"><span t-field="product.name"/></td>
-                        <td class="text-center">
+                        <td><span t-field="product.sku"/></td>
+                        <td><span t-field="product.name"/></td>
+                        <td>
                             
                         </td>
-                        <td class="text-right">
+                        <td class>
                             <span t-field="product.expire"/>
                         </td>
                     </tr>
