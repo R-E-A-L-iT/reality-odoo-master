@@ -34,7 +34,7 @@
                     
                     
                     <!-- DOWN ARROW THING -->
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">x</span>
+                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">&#215;</span>
                     <span t-else="" class="quote-folding-arrow">+</span>
                 
                     
