@@ -28,8 +28,9 @@ class productInstance(models.Model):
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
     
     def getSKU(self):
-        for x in self:
-            if x.external_id:
-                x.sku = x.external_id
-            else:
-                x.sku=""
+        raise UserError(_(str(self)))
+        #for x in self:
+        #    if x.external_id:
+        #        x.sku = x.external_id
+        #   else:
+        #       x.sku=""
