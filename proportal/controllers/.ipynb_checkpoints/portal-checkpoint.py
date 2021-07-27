@@ -16,5 +16,7 @@ class CustomerPortal(CustomerPortal):
     
     @http.route(['/my/products', '/my/products/page/<int:page>'], type='http', auth="user", website=True)
     def products(self):
-        raise UserError(_(str(request)))
+        partner = request.env.user.partner_id
+        if(partner.company_type == 'company'):
+            raise UserError(_("Company"))
         return request.render("proportal.portal_products")
