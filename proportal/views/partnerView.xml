@@ -9,7 +9,11 @@
             <xpath expr="//notebook" position="inside">
                 <page name="products" string="Products">
                     <sheet>
-                        <field name="products" string="Products"/>
+                        <t t-if="not parent_id == False">
+                            <field name="parent_id.products" string="Products"/>
+                        </t><t t-elif="company_type == 'company'">
+                            <field name="products" string="Products"/>
+                        </t>
                     </sheet>
                 </page>
             </xpath>

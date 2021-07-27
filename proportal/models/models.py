@@ -29,5 +29,6 @@ class productInstance(models.Model):
     _inherit = "stock.production.lot"
     
     owner = fields.Many2one('res.partner', string="Owner")
+    equipment_nmber = fields.Char(string="Equipment Number")
     sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
