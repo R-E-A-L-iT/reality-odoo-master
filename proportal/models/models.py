@@ -30,7 +30,7 @@ class productInstance(models.Model):
     def getSKU(self):
         product = self.product_id
         data = self.env['ir.model.data']
-        raise UserError(_(str(data.search([('module', '=', 'product.template'), ('res_id','=', product)]))))
+        raise UserError(_(str(data.search([('module', '=', 'product.product'), ('res_id','=', product)]))))
         #for x in self:
         #    if x.external_id:
         #        x.sku = x.external_id
