@@ -20,9 +20,10 @@ class CustomerPortal(sourcePortal):
     #
     @http.route(['/my/quotes', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
-        raise UserError(_("Override"))
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id.parent_id
+        partner = request.env.user.partner_id
+        if(partner.parent_id):
+            partner = partner.parent_id
         SaleOrder = request.env['sale.order']
 
         domain = [
@@ -72,7 +73,9 @@ class CustomerPortal(sourcePortal):
     @http.route(['/my/orders', '/my/orders/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_orders(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id.parent_id
+        partner = request.env.user.partner_id
+        if(partner.parent_id):
+            partner = partner.parent_id
         SaleOrder = request.env['sale.order']
 
         domain = [
