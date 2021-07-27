@@ -17,12 +17,25 @@
                 <thead>
                     <tr class="active">
                         <th>Product</th>
-                        <th class="text-right">SKU</th>
-                        <th class="text-right">Serial Number/Eid</th>
-                        <th class="text-center"/>
-                        <th class="text-right">Expiration Date</th>
+                        <th>SKU</th>
+                        <th>Serial Number/Eid</th>
+                        <th/>
+                        <th>Expiration Date</th>
                     </tr>
                 </thead>
+                <t t-foreach="company.products" t-as="product">
+                    <tr>
+                        <td><t t-esc="product.product_id.name"/></td>
+                        <td class="text-right"><span t-field="product.sku"/></td>
+                        <td class="text-right"><span t-field="product.name"/></td>
+                        <td class="text-center">
+                            
+                        </td>
+                        <td class="text-right">
+                            <span t-field="product.expire"/>
+                        </td>
+                    </tr>
+                </t>
             </t>
         </t>
     </template>
