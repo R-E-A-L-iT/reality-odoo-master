@@ -29,7 +29,7 @@ class productInstance(models.Model):
     
     def getSKU(self):
         for x in self:
-            if x.external_id
+            if x.external_id:
                 x.sku = x.external_id
             else:
                 x.sku=""
