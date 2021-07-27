@@ -1,4 +1,4 @@
-.productTable > active > .customerPortalProducts {
+.productTable > .active > .customerPortalProducts {
     padding: 0.75rem !important;
 }
 .customerPortalProducts, .customerPortalProducts > span {
