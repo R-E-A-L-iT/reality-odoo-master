@@ -18,7 +18,7 @@ from odoo import models, fields, api
 class productType(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
-    sku = fields.Char(related='skuhidden.name', readonly=True)
+    sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
 
 class person(models.Model):
     _inherit = "res.partner"
