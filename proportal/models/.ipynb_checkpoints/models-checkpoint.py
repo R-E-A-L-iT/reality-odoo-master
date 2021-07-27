@@ -29,16 +29,5 @@ class productInstance(models.Model):
     _inherit = "stock.production.lot"
     
     owner = fields.Many2one('res.partner', string="Owner")
-    sku = fields.Char(compute='getSKU', readonly=True)
+    sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
-    
-    def getSKU(self):
-        raise UserError(_("Not Ready Yet"))
-        #product = self.get('product_id')
-        #data = self.env['ir.model.data']
-        #raise UserError(_(str(data.search([('module', '=', 'product.product'), ('res_id','=', product)]))))
-        #for x in self:
-        #    if x.external_id:
-        #        x.sku = x.external_id
-        #   else:
-        #       x.sku=""
