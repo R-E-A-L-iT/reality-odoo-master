@@ -27,5 +27,5 @@ class productInstance(models.Model):
     sku = fields.Char(compute='getSKU')
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
     
-    def getSKU():
+    def getSKU(self):
         return "No Sku"
