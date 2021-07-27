@@ -15,6 +15,11 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+class productType(models.Model):
+    _inherit = "product.product"
+    skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
+    sku = self.sku.name
+
 class person(models.Model):
     _inherit = "res.partner"
     
@@ -28,9 +33,10 @@ class productInstance(models.Model):
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
     
     def getSKU(self):
-        product = self.get('product_id')
-        data = self.env['ir.model.data']
-        raise UserError(_(str(data.search([('module', '=', 'product.product'), ('res_id','=', product)]))))
+        raise UserError(_("Not Ready Yet"))
+        #product = self.get('product_id')
+        #data = self.env['ir.model.data']
+        #raise UserError(_(str(data.search([('module', '=', 'product.product'), ('res_id','=', product)]))))
         #for x in self:
         #    if x.external_id:
         #        x.sku = x.external_id
