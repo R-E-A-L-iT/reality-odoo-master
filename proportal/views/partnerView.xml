@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">proportal.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="products" string="Products">
+                    <sheet>
+                        <field name="products" string="Products"/>
+                    </sheet>
+                </page>
+            </xpath>
+        </field>
+    </record> 
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--<record id="mail_template_data_portal_welcome" model="ir.ui.view">
+        <field name="name">Portal: new user</field>
+        <field name="model">portal.model_portal_wizard_user</field>
+        <field name="inherit_id" ref="portal.mail_template_data_portal_welcome"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tr[4]" position="replace">
+                   
+            </xpath>
+        </field>
+    </record>-->
+    
+</odoo>

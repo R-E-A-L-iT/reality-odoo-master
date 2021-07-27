@@ -131,3 +131,13 @@ class variant(models.Model):
     name = fields.Char(string='Variant Group', required=True, copy=False, index=True, default="New")
     
     rule = fields.Char(string="Variant Rule", required=True, default="None")
+    
+class person(models.Model):
+    _inherit = "res.partner"
+    
+    products = fields.One2many('stock.production.lot', 'owner', string="Products")
+    
+class owner(models.Model):
+    _inherit = "stock.production.lot"
+    
+    owner = fields.Many2one('res.partner', string="Owner")
