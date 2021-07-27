@@ -8,6 +8,8 @@
         <field name="arch" type="xml">
             <xpath expr="//group/group" position="inside">
                 <field name="owner" string="Owner"/>
+                <field name="sku" string="SKU"/>
+                <field name="expire" string="Expiration Date"/>
             </xpath>
         </field>
     </record> 
