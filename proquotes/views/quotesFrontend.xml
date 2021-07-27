@@ -11,16 +11,6 @@
         </xpath>
     </template>
     
-    <template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Products</t>
-                <t t-set="url" t-value="'/my/products'"/>
-                <t t-set="count" t-value="0"/>
-            </t>
-        </xpath>
-    </template>
-    
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
         
         <xpath expr="//div" position="attributes">
