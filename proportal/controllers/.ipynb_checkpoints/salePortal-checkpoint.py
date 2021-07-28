@@ -20,3 +20,7 @@ class CustomerPortal(sourcePortal):
     #
     def _prepare_portal_layout_values(self):
         raise UserError(_("Override"))
+        
+    @route(['/my', '/my/home'], type='http', auth="user", website=True)
+    def home(self, **kw):
+        raise UserError(_("Override"))
