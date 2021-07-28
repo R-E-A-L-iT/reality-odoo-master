@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
+import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -16,4 +17,6 @@ class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
     def e(self):
+        _logger.info("Starting Sync")
         self.env['sale.order'].browse(24).partner_id = 8
+        _logger.info("Ending Sync")
