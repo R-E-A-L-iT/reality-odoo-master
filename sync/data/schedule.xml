@@ -1,16 +1,13 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
- <data noupdate="1">
-   <record id="Sync Schedule" model="ir.cron">
-     <field name="interval_type">minutes</field>
-     <field name="name">Sync Scheduler</field>
-     <field name="numbercall">-1</field>
-     <field name="priority">0</field>
-     <field name="doall">False</field>
-     <field name="active">True</field>
-     <field name="interval_number">1</field>
-     <field name="model" eval="sync.sync"></field>
-     <field name="function" eval="e"></field>
-   </record>
- </data>
+    <record id="sync_schedule" model="ir.cron">
+        <field name="name">Sync Schedular</field>
+        <field name="model_id" ref="sync.sync"/>
+        <field name="state">code</field>
+        <field name="code">model.e()</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>minutes</field>
+        <field name="numbercall">-1</field>
+    </record>
 </odoo>
