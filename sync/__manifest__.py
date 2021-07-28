@@ -24,7 +24,5 @@
     'data': [
         'security/ir.model.access.csv',
         'data/schedule.xml',
-        #'views/quotesFrontend.xml',
-        #'views/quotesBackend.xml',
     ],
 }

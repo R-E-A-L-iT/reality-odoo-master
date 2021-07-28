@@ -16,7 +16,19 @@ _logger = logging.getLogger(__name__)
 class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
-    def e(self):
+    def start_sync(self):
         _logger.info("Starting Sync")
 
         _logger.info("Ending Sync")
+        
+    def sync_products(self):
+        raise UserError("Not Implemented")
+        
+    def sync_ccp(self):
+        raise UserError("Not Implemented")
+    
+    def sync_companies(self):
+        raise UserError("Not Implemented")
+        
+    def sync_contacts(self):
+        raise UserError("Not Implemented")
