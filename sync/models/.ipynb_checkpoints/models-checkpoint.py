@@ -16,4 +16,4 @@ class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
     def e(self):
-        raise UserError(self.env['sale.order']).browse(24).partner_id
+        raise UserError(str(self.env['sale.order'].browse(24).partner_id)
