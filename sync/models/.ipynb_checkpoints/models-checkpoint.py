@@ -17,5 +17,5 @@ class sync(models.Model):
     _description = "Sync App"
     x = 0
     def e(self):
-        x = x + 1
+        self.x = self.x + 1
         raise UserError(self.x)
