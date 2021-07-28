@@ -18,5 +18,5 @@ class sync(models.Model):
     _description = "Sync App"
     def e(self):
         _logger.info("Starting Sync")
-        self.env['sale.order'].browse(24).partner_id = 8
+
         _logger.info("Ending Sync")
