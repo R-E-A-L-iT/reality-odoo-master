@@ -3,7 +3,7 @@
 <odoo>
     <record id="sync_schedule" model="ir.cron">
         <field name="name">Sync Schedular</field>
-        <field name="model_id" ref="sync.sync"/>
+        <field name="model_id" ref="sync"/>
         <field name="state">code</field>
         <field name="code">model.e()</field>
         <field name='interval_number'>1</field>
