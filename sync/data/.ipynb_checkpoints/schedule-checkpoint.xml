@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<odoo>
+ <data noupdate="1">
+   <record id="Sync Schedule" model="ir.cron">
+     <field name="function">e</field>
+     <field name="interval_type">minutes</field>
+     <field name="name">Backup scheduler</field>
+     <field name="numbercall">-1</field>
+     <field name="priority">0</field>
+     <field name="doall">False</field>
+     <field name="active">True</field>
+     <field name="interval_number">1</field>
+     <field name="model">sync.sync</field>
+   </record>
+ </data>
+</odoo>
