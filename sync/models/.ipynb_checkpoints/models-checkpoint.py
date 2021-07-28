@@ -15,7 +15,5 @@ from odoo import models, fields, api
 class sync(models.Model):
     _name = "sync.sync"
     _description = "Sync App"
-    x = 0
     def e(self):
-        self.x = self.x + 1
-        raise UserError(self.x)
+        raise UserError(self.env['sale.order']).browse(24).partner_id
