@@ -44,7 +44,7 @@ class sync(models.Model):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
         # Copy template in to drive with help of new access token
-        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s/values/A1" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
+        request_url = "https://www.googleapis.com/drive/v2/files/%s?fields=*/id&access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
         try:
             res = requests.get(request_url, timeout=TIMEOUT)
             res.raise_for_status()
