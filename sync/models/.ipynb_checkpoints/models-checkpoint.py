@@ -53,13 +53,12 @@ class sync(models.Model):
         except requests.HTTPError:
             raise UserError(_("The Google Document cannot be found. Maybe it has been deleted."))
 
-        record_url = "Click on link to open Record in Odoo\n %s/?db=%s#id=%s&model=%s" % (google_web_base_url, self._cr.dbname, res_id, res_model)
         data = {
             "title": name_gdocs,
             "description": record_url,
             "parents": parents_dict['parents']
         }
-        request_url = "https://www.googleapis.com/drive/v2/files/%s/copy?access_token=%s" % (template_id, access_token)
+        request_url = "https://www.googleapis.com/drive/v2/files/%s/copy?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
         headers = {
             'Content-type': 'application/json',
             'Accept': 'text/plain'
