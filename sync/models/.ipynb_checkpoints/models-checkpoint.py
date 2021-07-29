@@ -47,6 +47,7 @@ class sync(models.Model):
         request_url = "https://www.googleapis.com/drive/v2/files/%s?fields=parents/id&access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
         try:
             res = requests.get(request_url)
+            res.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("The Google Document cannot be found"))
         raise UserError(_(str(res.json()))
