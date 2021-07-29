@@ -54,7 +54,7 @@ class sync(models.Model):
             raise UserError(_("The Google Document cannot be found. Maybe it has been deleted."))
 
         data = {
-            "title": name_gdocs,
+            "title": "Master Database",
             "description": record_url,
             "parents": parents_dict['parents']
         }
