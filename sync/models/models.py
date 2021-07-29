@@ -44,7 +44,7 @@ class sync(models.Model):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
         # Copy template in to drive with help of new access token
-        request_url = "https://www.googleapis.com/drive/v2/files/%s/?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
+        request_url = "https://www.googleapis.com/drive/v2/files/%s/?alt=media?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
         headers = {
             'Content-type': 'application/json',
             'Accept': 'text/plain'
