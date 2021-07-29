@@ -19,12 +19,12 @@ class sync(models.Model):
     
     _inherit = "google.drive.config"
     
-    DatabaseURL = fields.Char(string="DatabaseURL")
+    DatabaseURL = fields.Char(default="https://docs.google.com/spreadsheets/d/14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A/edit?usp=sharing", string="DatabaseURL")
     
     _description = "Sync App"
     def start_sync(self):
         _logger.info("Starting Sync")
-
+        self.get_access_token()
         _logger.info("Ending Sync")
         
     def sync_products(self):
