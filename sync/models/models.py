@@ -46,7 +46,7 @@ class sync(models.Model):
         # Copy template in to drive with help of new access token
         request_url = "https://www.googleapis.com/drive/v2/files/%s/?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
         headers = {
-            'Content-type': 'application/json',
+            'Content-type': 'application/media',
             'Accept': 'text/plain'
         }
         try:
