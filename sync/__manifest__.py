@@ -18,13 +18,11 @@
     'version': '0.8',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product'],
+    'depends': ['base', 'product', 'google_drive'],
     
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'data/schedule.xml',
-        #'views/quotesFrontend.xml',
-        #'views/quotesBackend.xml',
     ],
 }
