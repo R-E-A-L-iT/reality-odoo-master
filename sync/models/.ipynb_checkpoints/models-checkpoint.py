@@ -51,7 +51,9 @@ class sync(models.Model):
             req.raise_for_status()
             parents_dict = req.json()
         except requests.HTTPError:
-            raise UserError(_("The Google Template cannot be found. Maybe it has been deleted."))
+            raise UserError(_("The Google Document cannot be found. Maybe it has been deleted."))
+            
+        raise UserError(str(parents_dict))
         
     def sync_products(self):
         raise UserError("Not Implemented")
