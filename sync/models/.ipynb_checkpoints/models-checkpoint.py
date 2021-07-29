@@ -9,7 +9,6 @@ import re
 
 import requests
 import werkzeug.urls
-import gspread
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
 
