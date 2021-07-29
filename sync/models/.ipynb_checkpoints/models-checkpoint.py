@@ -50,7 +50,7 @@ class sync(models.Model):
             'Accept': 'text/plain'
         }
         try:
-            res = requests.get(request_url,headers=headers timeout=TIMEOUT)
+            res = requests.get(request_url,headers=headers, timeout=TIMEOUT)
             res.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("The Google Document cannot be found"))
