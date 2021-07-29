@@ -40,6 +40,18 @@ class sync(models.Model):
         self.test()
         _logger.info("Ending Sync")
         
+    def getCell(self):
+        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        access_token = self.get_access_token()
+        # Copy template in to drive with help of new access token
+        request_url = "https://www.googleapis.com/drive/v2/files/%s?fields=parents/id&access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
+        try:
+            res = requests.get(request_url)
+        except requests.HTTPError:
+            raise UserError(_("The Google Document cannot be found"))
+        raise UserError(_(str(res.json()))
+        
+        
     def test(self):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
