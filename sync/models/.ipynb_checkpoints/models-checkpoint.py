@@ -67,7 +67,7 @@ class sync(models.Model):
         req = requests.post(request_url, data=json.dumps(data), headers=headers, timeout=TIMEOUT)
         req.raise_for_status()
         content = req.json()
-        raise UserError(str(content))
+        raise UserError(str(json.dumps(data)))
         
     def sync_products(self):
         raise UserError("Not Implemented")
