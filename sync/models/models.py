@@ -55,7 +55,7 @@ class sync(models.Model):
 
         data = {
             "title": "Master Database",
-            "description": record_url,
+            "description": "Master Database",
             "parents": parents_dict['parents']
         }
         request_url = "https://www.googleapis.com/drive/v2/files/%s/copy?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
