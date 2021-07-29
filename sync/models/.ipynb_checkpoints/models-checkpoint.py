@@ -53,36 +53,6 @@ class sync(models.Model):
             raise UserError(_("The Google Document cannot be found"))
         raise UserError(_(str(res.json()))
         
-        
-    def test(self):
-        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        access_token = self.get_access_token()
-        # Copy template in to drive with help of new access token
-        request_url = "https://www.googleapis.com/drive/v2/files/%s?fields=parents/id&access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
-        headers = {"Content-type": "application/x-www-form-urlencoded"}
-        try:
-            req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
-            req.raise_for_status()
-            parents_dict = req.json()
-        except requests.HTTPError:
-            raise UserError(_("The Google Document cannot be found. Maybe it has been deleted."))
-
-        data = {
-            "title": "Master Database",
-            "description": "Master Database",
-            "parents": parents_dict['parents']
-        }
-        request_url = "https://www.googleapis.com/drive/v2/files/%s/copy?access_token=%s" % ("14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A", access_token)
-        headers = {
-            'Content-type': 'application/json',
-            'Accept': 'text/plain'
-        }
-        # resp, content = Http().request(request_url, "POST", data_json, headers)
-        req = requests.post(request_url, data=json.dumps(data), headers=headers, timeout=TIMEOUT)
-        req.raise_for_status()
-        content = req.json()
-        raise UserError(str(json.dumps(data)))
-        
     def sync_products(self):
         raise UserError("Not Implemented")
         
