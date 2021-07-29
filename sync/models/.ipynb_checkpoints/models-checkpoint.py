@@ -51,7 +51,7 @@ class sync(models.Model):
             res.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("The Google Document cannot be found"))
-        #raise UserError(_(str(res.json()))
+        raise UserError(_(str(res.json())))
         
     def sync_products(self):
         raise UserError("Not Implemented")
