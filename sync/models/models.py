@@ -37,7 +37,7 @@ class sync(models.Model):
     _description = "Sync App"
     def start_sync(self):
         _logger.info("Starting Sync")
-        self.test()
+        self.getCell()
         _logger.info("Ending Sync")
         
     def getCell(self):
