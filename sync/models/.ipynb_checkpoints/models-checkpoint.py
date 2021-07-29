@@ -1,15 +1,28 @@
 #-*- coding: utf-8 -*-
 
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+import ast
+import logging
+import json
+import re
+
+import requests
+import werkzeug.urls
+
+from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
+
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import RedirectWanint, AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
+from odoo.tools.translate import _
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
