@@ -18,7 +18,7 @@ from itertools import groupby
 import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _
-from odoo.exceptions import RedirectWanint, AccessError, UserError, ValidationError
+from odoo.exceptions import RedirectWarning, AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
