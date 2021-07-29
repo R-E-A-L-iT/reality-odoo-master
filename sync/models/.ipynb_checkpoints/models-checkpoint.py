@@ -13,10 +13,13 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
+
 class sync(models.Model):
     _name = "sync.sync"
     
-    _inherits = "google.drive.config"
+    _inherit = "google.drive.config"
+    
+    DatabaseURL = fields.Char(string="DatabaseURL")
     
     _description = "Sync App"
     def start_sync(self):
