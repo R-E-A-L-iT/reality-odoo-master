@@ -43,10 +43,11 @@ class sync(models.Model):
     def getCell(self):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
+        apikey = "AIzaSyCeLQNH2fwGQ-yA6jnAS6YGnh4JraJe4Fg"
         sheetID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
         # Copy template in to drive with help of new access token
         #request_url = "https://www.googleapis.com/drive/v2/files/%s/?access_token=%s&alt=json" % (sheetID, access_token)
-        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&fields=sheets.data.rowData.values.formattedValue&access_token=%s" % (sheetID, access_token)
+        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&fields=sheets.data.rowData.values.formattedValue&access_token=%s&key%s" % (sheetID, access_token, apikey)
         headers = {
             'Accept': 'application/json'
         }
