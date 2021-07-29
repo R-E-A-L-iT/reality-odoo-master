@@ -46,7 +46,7 @@ class sync(models.Model):
         sheetID = "14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A"
         # Copy template in to drive with help of new access token
         #request_url = "https://www.googleapis.com/drive/v2/files/%s/?access_token=%s&alt=json" % (sheetID, access_token)
-        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s/" % (sheetID)
+        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s/values/'CCP'!A1?access_token=%s" % (sheetID, access_tokens)
         headers = {
             'Content-type': 'application/media',
             'Accept': 'text/plain'
