@@ -182,7 +182,7 @@
             <t t-set="default_name" t-value="env.user.name"/>
         </xpath>
         
-        <xpath expr="//div[@t-if=&quot;not sale_order.has_to_be_signed(True) and sale_order.has_to_be_paid(True)&quot;]//main" position="inside">
+        <xpath expr="//div[@t-if=&quot;not sale_order.has_to_be_signed(True) and sale_order.has_to_be_paid(True)&quot;]//main/p/ul/li/b" position="replace">
             
         </xpath>
         
