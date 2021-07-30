@@ -91,7 +91,7 @@ class sync(models.Model):
                 raise RedirectWarning(msg, action_id, _('Go to the configuration panel'))
             else:
                 raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
-        raise UserError(_(str(req.json)))
+        raise UserError(_(str(req.json())))
         return req.json()
     def sync_products(self):
         raise UserError("Not Implemented")
