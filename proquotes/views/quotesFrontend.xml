@@ -178,7 +178,7 @@
             <span><strong t-field="sale_order.partner_id.name"/></span>
         </xpath>
         
-        <xpath expr="//t[@t-call=&quot;portal.signature_form&quot]/t[2]" position="replace">
+        <xpath expr="//t[@t-call=&quot;portal.signature_form&quot;]/t[2]" position="replace">
             <t t-set="default_name" t-value="user.name"/>
             <script>alert("HELLO");</script>
         </xpath>
