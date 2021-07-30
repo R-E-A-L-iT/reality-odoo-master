@@ -30,6 +30,7 @@ _logger = logging.getLogger(__name__)
 class sync(models.Model):
     _name = "sync.sync"
     _inherit = "google.drive.config"
+    _description = "Sync App"
     
     def start_sync(self):
         _logger.info("Start Sync")
