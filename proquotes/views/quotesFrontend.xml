@@ -182,7 +182,7 @@
             <t t-set="default_name" t-value="env.user.name"/>
         </xpath>
         
-        <xpath expr="div[@id=&quot;quote_content&quot;]/div[@t-if=&quot;not sale_order.has_to_be_signed(True) and sale_order.has_to_be_paid(True)&quot;]" position="inside">
+        <xpath expr="div[@id=&quot;quote_content&quot;]//div[@t-if=&quot;not sale_order.has_to_be_signed(True) and sale_order.has_to_be_paid(True)&quot;]//main" position="inside">
             
         </xpath>
         
