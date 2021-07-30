@@ -7,10 +7,11 @@
         <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
         <field name="arch" type="xml">
             
-            <!--<xpath expr="//create[1]" position="after">
+            <xpath expr="//create[1]" position="after">
                 <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'false'}"/>
             </xpath>
             
+            <!--
             <xpath expr="//control" position="after">
                 <field name="special" invisible="1"/>
             </xpath>
@@ -22,12 +23,12 @@
                 <field name="quantityLocked" invisible="0"/>
                 <field name="variant" invisible="1"/>
                 <field name="hiddenSection" invisible="1"/>
-            </xpath>
+            </xpath>-->
             
             <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
                 <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/> 
-            </xpath>-->
+            </xpath>
             
             <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace">
                 
