@@ -174,11 +174,11 @@
     <!--Sign Page-->
     <template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
         
-        <xpath expr="div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
+        <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
             <b t-field="sale_order.partner_id.name"/>
         </xpath>
         
-        <xpath expr="div[@id=&quot;quote_content&quot;]//b[4]" position="replace">
+        <xpath expr="//div[@id=&quot;quote_content&quot;]//b[4]" position="replace">
             <b t-field="sale_order.partner_id.name"/>
         </xpath>
         
