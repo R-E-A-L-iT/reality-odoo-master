@@ -178,9 +178,9 @@
             <span><strong t-field="sale_order.partner_id.name"/></span>
         </xpath>
         
-        <!--<xpath expr="//div[@id=&quot;quote_content&quot;]//b[3]" position="replace">
-            <b t-field="sale_order.partner_id.name"/>
-        </xpath>-->
+        <xpath expr="//t[@t-call=&quot;&quot]/t[2]" position="replace">
+            <t t-set="default_name" t-value="user.name"/>
+        </xpath>
         
     </template>
     
