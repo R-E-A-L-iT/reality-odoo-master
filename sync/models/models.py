@@ -41,7 +41,7 @@ class sync(models.Model):
             'Accept': 'application/json',
         }
         requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2" % (fileID)
-        raise UserError(_(str(self._do_request(requestURL,headers=headers, method="GET"))))
+        raise UserError(_(str(self._do_request(requestURL, headers=headers, method="GET"))))
 
 #class sync(models.Model):
 #    _name = "sync.sync"
