@@ -13,16 +13,16 @@
             
             
             <xpath expr="//control" position="after">
-                <field name="special" invisible="1"/>
+                <field name="product_id.special" invisible="1"/>
             </xpath>
             
             <xpath expr="//tree//field[@name=&quot;product_uom_qty&quot;]" position="after">
-                <field name="optional" invisible="0"/>
-                <field name="selected" invisible="0"/>
-                <field name="sectionSelected" invisible="1"/>
-                <field name="quantityLocked" invisible="0"/>
-                <field name="variant" invisible="1"/>
-                <field name="hiddenSection" invisible="1"/>
+                <field name="product_id.optional" invisible="0"/>
+                <field name="product_id.selected" invisible="0"/>
+                <field name="product_id.sectionSelected" invisible="1"/>
+                <field name="product_id.quantityLocked" invisible="0"/>
+                <field name="product_id.variant" invisible="1"/>
+                <field name="product_id.hiddenSection" invisible="1"/>
             </xpath>
             
             <xpath expr="//create[3]" position="after">
