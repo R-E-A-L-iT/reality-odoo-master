@@ -11,7 +11,7 @@
                 <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'false'}"/>
             </xpath>
             
-            <!--
+            
             <xpath expr="//control" position="after">
                 <field name="special" invisible="1"/>
             </xpath>
@@ -23,7 +23,7 @@
                 <field name="quantityLocked" invisible="0"/>
                 <field name="variant" invisible="1"/>
                 <field name="hiddenSection" invisible="1"/>
-            </xpath>-->
+            </xpath>
             
             <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
