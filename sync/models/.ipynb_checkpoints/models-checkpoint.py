@@ -59,6 +59,40 @@ class sync(models.Model):
             raise UserError(_("The Google Document cannot be found"))
         raise UserError(_(str(res.json())))
         
+    def get_access_token(self, scope=None):
+        Config = self.env['ir.config_parameter'].sudo()
+        google_drive_refresh_token = Config.get_param('google_drive_refresh_token')
+        user_is_admin = self.env.is_admin()
+        if not google_drive_refresh_token:
+            if user_is_admin:
+                dummy, action_id = self.env['ir.model.data'].get_object_reference('base_setup', 'action_general_configuration')
+                msg = _("There is no refresh code set for Google Drive. You can set it up from the configuration panel.")
+                raise RedirectWarning(msg, action_id, _('Go to the configuration panel'))
+            else:
+                raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
+        google_drive_client_id = Config.get_param('google_drive_client_id')
+        google_drive_client_secret = Config.get_param('google_drive_client_secret')
+        #For Getting New Access Token With help of old Refresh Token
+        data = {
+            'client_id': google_drive_client_id,
+            'refresh_token': google_drive_refresh_token,
+            'client_secret': google_drive_client_secret,
+            'grant_type': "refresh_token",
+            'scope': scope or 'https://www.googleapis.com/auth/drive'
+        }
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        try:
+            req = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers, timeout=TIMEOUT)
+            req.raise_for_status()
+        except requests.HTTPError:
+            if user_is_admin:
+                dummy, action_id = self.env['ir.model.data'].get_object_reference('base_setup', 'action_general_configuration')
+                msg = _("Something went wrong during the token generation. Please request again an authorization code .")
+                raise RedirectWarning(msg, action_id, _('Go to the configuration panel'))
+            else:
+                raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
+        raise UserError(_(str(req.json)))
+        return req.json()
     def sync_products(self):
         raise UserError("Not Implemented")
         
