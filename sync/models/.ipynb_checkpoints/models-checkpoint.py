@@ -33,6 +33,7 @@ class sync(models.Model):
     _description = "Sync App"
     
     def start_sync(self):
+        
         _logger.info("Start Sync")
         fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
         accsess_token = self.get_access_token()
