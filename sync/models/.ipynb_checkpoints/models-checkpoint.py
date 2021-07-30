@@ -40,6 +40,7 @@ class sync(models.Model):
     DatabaseURL = fields.Char(default="https://docs.google.com/spreadsheets/d/14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A/edit?usp=sharing")
     
     _description = "Sync App"
+    
     def start_sync(self):
         _logger.info("Starting Sync")
         self.getCell()
@@ -54,5 +55,8 @@ class sync(models.Model):
             'Accept': 'application/json',
             'Authorization': 'Bearer %s' % (accsess_token)
         }
-        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&fields=sheets.data.rowData.values.formattedValue&accsess_token=%s" % (fileID, accsess_token)
+        #requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (fileID)
+        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU/values/a1:d2?accsess_token=%s" % (accsess_token)
+        res = requests.request("get", requestURL, data={}, headers=headers, timeout=TIMEOUT)
+        raise UserError(_(str(res)))
         raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
