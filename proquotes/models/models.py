@@ -79,8 +79,9 @@ class orderLineProquotes(models.Model):
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Container Section is Selected")
     
     special = fields.Selection([
+        ('regular', "regular"),
         ('multiple', "Multiple"),
-        ('optional', "Optional")], default=False, help="Technical field for UX purpose.")
+        ('optional', "Optional")], default='regular', required=True, help="Technical field for UX purpose.")
     
     hiddenSection = fields.Selection([
         ('yes', "Yes"),
