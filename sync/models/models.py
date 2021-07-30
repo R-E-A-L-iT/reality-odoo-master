@@ -32,7 +32,7 @@ _logger = logging.getLogger(__name__)
 
 class sync(models.Model):
     _name = "sync.sync"
-    _inherit = "google.service"
+    _inherit = "google.drive.config"
     
     def start_sync(self):
         _logger.info("Start Sync")
@@ -41,7 +41,7 @@ class sync(models.Model):
             'Accept': 'application/json',
         }
         requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2" % (fileID)
-        raise UserError(_(str(self._do_request(requestURL, headers=headers, method="GET"))))
+        raise UserError(_(str(self.env['google.service']._do_request(requestURL, headers=headers, method="GET"))))
 
 #class sync(models.Model):
 #    _name = "sync.sync"
