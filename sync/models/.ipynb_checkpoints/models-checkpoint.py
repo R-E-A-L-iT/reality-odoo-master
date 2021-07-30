@@ -39,7 +39,7 @@ class sync(models.Model):
         headers = {
             'Accept': 'application/json',
         }
-        requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&accsess_token&key=%s" % (fileID, accsess_token, "AIzaSyD5qi35QEIb-e76OnNqOiAECz7aD4xm3PI")
+        requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&accsess_token&scope=%s" % (fileID, accsess_token, "https://www.googleapis.com/auth/spreadsheets.readonly")
         raise UserError(_(str(self.env['google.service']._do_request(requestURL, headers=headers, method="GET"))))
 
 #class sync(models.Model):
