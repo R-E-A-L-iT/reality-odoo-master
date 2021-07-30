@@ -203,7 +203,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             while(x.tagName != "TR"){
                 x = x.parentNode;
             }
-            x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
+            //x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")) {
