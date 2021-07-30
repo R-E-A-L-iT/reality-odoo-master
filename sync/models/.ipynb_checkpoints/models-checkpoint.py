@@ -40,6 +40,7 @@ class sync(models.Model):
     DatabaseURL = fields.Char(default="https://docs.google.com/spreadsheets/d/14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A/edit?usp=sharing")
     
     _description = "Sync App"
+    
     def start_sync(self):
         _logger.info("Starting Sync")
         self.getCell()
