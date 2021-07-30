@@ -18,7 +18,7 @@
     'version': '0.5',
 
     # any module necessary for this one to work correctly
-    'depends': ['base_setup', 'base', 'product', 'google_acccount', 'google_drive', 'google_acccount'],
+    'depends': ['base', 'product', 'google_account', 'google_drive'],
     
     # always loaded
     'data': [
