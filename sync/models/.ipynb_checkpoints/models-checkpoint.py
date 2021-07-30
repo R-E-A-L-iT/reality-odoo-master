@@ -29,6 +29,11 @@ _logger = logging.getLogger(__name__)
 
 class sync(models.Model):
     _name = "sync.sync"
+    _inherit = "google.drive.config"
+    _description = "Sync App"
+
+class sync(models.Model):
+    _name = "sync.sync"
     
     _inherit = "google.drive.config"
     
@@ -41,32 +46,13 @@ class sync(models.Model):
         _logger.info("Ending Sync")
         
     def getCell(self):
-        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        access_token = self.get_access_token()
-        apikey = "AIzaSyCeLQNH2fwGQ-yA6jnAS6YGnh4JraJe4Fg"
-        sheetID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
-        # Copy template in to drive with help of new access token
-        #request_url = "https://www.googleapis.com/drive/v2/files/%s/?access_token=%s&alt=json" % (sheetID, access_token)
-        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&fields=sheets.data.rowData.values.formattedValue&key%s" % (sheetID, apikey)
+        DatabaseURL = fields.Char(default="")
+        _logger.info("Start Sync")
+        fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
+        accsess_token = self.get_access_token()
         headers = {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer %s' % (accsess_token)
         }
-        try:
-            res = requests.get(request_url,headers=headers, timeout=TIMEOUT)
-            #raise UserError(_("Here"))
-            #res.raise_for_status()
-        except requests.HTTPError:
-            raise UserError(_("The Google Document cannot be found"))
-        raise UserError(_(str(res.json())))
-        
-    def sync_products(self):
-        raise UserError("Not Implemented")
-        
-    def sync_ccp(self):
-        raise UserError("Not Implemented")
-    
-    def sync_companies(self):
-        raise UserError("Not Implemented")
-        
-    def sync_contacts(self):
-        raise UserError("Not Implemented")
+        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&fields=sheets.data.rowData.values.formattedValue&accsess_token=%s" % (fileID, accsess_token)
+        raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
