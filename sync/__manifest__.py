@@ -15,10 +15,10 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Technical',
-    'version': '0.3',
+    'version': '0.4',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product', 'google_acccount', 'google_drive'],
+    'depends': ['base', 'product', 'google_acccount', 'google_drive', 'google_acccount'],
     
     # always loaded
     'data': [

@@ -25,9 +25,6 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.translate import _
 from odoo import models, fields, api
 
-GOOGLE_AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth'
-GOOGLE_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token'
-GOOGLE_API_BASE_URL = 'https://www.googleapis.com'
 _logger = logging.getLogger(__name__)
 
 class sync(models.Model):
