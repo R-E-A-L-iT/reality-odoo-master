@@ -34,6 +34,7 @@ class sync(models.Model):
     
     def start_sync(self):
         
+        DatabaseURL = fields.Char(default="")
         _logger.info("Start Sync")
         fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
         accsess_token = self.get_access_token()
