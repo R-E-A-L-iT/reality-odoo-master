@@ -55,7 +55,7 @@ class sync(models.Model):
             'Authorization': 'Bearer %s' % (accsess_token)
         }
         #requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (fileID)
-        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU/values/Sheet1!a1:Ad2?fields=values"
+        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU/values/Sheet1!a1:d2?fields=values"
         res = requests.request("get", requestURL, data={}, headers=headers, timeout=TIMEOUT)
         raise UserError(_(str(res)))
         raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
