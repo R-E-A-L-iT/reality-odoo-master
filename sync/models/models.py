@@ -54,5 +54,5 @@ class sync(models.Model):
             'Accept': 'application/json',
             'Authorization': 'Bearer %s' % (accsess_token)
         }
-        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&accsess_token=%s" % (fileID, accsess_token)
+        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s?includeGridData=true&accsess_token=%s" % (fileID, accsess_token)
         raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
