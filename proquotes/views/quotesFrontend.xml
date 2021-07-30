@@ -171,6 +171,7 @@
         </xpath>
         
     </template>
+    
     <!--Sign Page-->
     <template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
         
