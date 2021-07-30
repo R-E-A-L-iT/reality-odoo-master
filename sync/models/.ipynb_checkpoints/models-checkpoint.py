@@ -35,10 +35,11 @@ class sync(models.Model):
     def start_sync(self):
         _logger.info("Start Sync")
         fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
+        accsess_token = self.get_access_token()
         headers = {
             'Accept': 'application/json',
         }
-        requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&key%s" % (fileID, "AIzaSyCbXBqe6aKD0q9iUoHCr0Ha_eVC1PD-gt4")
+        requestURL = "/v4/spreadsheets/%s?includeGridData=true&ranges=Sheet1!a1:d2&accsess_token" % (fileID, accsess_token)
         raise UserError(_(str(self.env['google.service']._do_request(requestURL, headers=headers, method="GET"))))
 
 #class sync(models.Model):
