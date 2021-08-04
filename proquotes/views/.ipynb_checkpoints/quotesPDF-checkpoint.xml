@@ -1,0 +1,5 @@
+<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
+    <xpath expr="//tbody" position="replace">
+        <tbody/>
+    </xpath>
+</template>

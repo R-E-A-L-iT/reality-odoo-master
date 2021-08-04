@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.8',
+    'version': '0.9',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
@@ -25,6 +25,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/quotesFrontend.xml',
+        'views/quotesPDF.xml',
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/portalAccess.xml',
