@@ -67,6 +67,15 @@ class SaleOrderTemplateHandler(models.Model):
         self.order_line = order_lines
         self.order_line._compute_tax_id()
 
+class products(models.Model):
+    _inherit = "product.product"
+    
+    def get_product_multiline_description_sale(self):
+        if(self.description_sale):
+            return "self.description_sale"
+        else:
+            return "<span></span>"
+        
 class SaleOrderTemplateLine(models.Model):
     _inherit = "sale.order.template.line"
     
