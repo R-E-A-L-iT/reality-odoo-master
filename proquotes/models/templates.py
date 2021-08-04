@@ -52,6 +52,11 @@ class SaleOrderTemplateHandler(models.Model):
                     'product_id': line.product_id.id,
                     'product_uom': line.product_uom_id.id,
                     'optional': line.optional,
+                    'selected':line.selected,
+                    'sectionSelected':line.sectionSelected,
+                    'special': line.special,
+                    'hiddenSection': line.hiddenSection,
+                    'quantityLocked': line.quantityLocked,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
 
