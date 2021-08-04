@@ -11,10 +11,6 @@
                     <label for="sku"/>
                     <field name="sku" string="SKU"/>
                 </div>
-                <div>
-                    <label for="website_published"/>
-                    <field name="website_published" string="published"/>
-                </div>
             </xpath>
         </field>
     </record> 
