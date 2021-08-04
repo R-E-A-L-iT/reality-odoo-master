@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.3',
+    'version': '0.4',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
@@ -28,7 +28,6 @@
         'views/quotesPDF.xml',
         'views/quotesBackend.xml',
         'views/mail.xml',
-        'views/portalAccess.xml',
         'views/quotesTemplates.xml',
     ],
     # only loaded in demonstration mode
