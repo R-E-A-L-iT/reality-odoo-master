@@ -18,6 +18,10 @@ from odoo import models, fields, api
 class SaleOrderTemplateLine(models.Model):
     _inherit = "sale.order.template.line"
     
+    selected = fields.Selection([
+        ('true', "Yes"),
+        ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
+    
     sectionSelected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Container Section is Selected")
