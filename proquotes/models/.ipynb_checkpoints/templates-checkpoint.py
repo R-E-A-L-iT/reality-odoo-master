@@ -59,7 +59,8 @@ class SaleOrderTemplateHandler(models.Model):
                     'quantityLocked': line.quantityLocked,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
-
+            if(data["special"] == 'multiple'):
+                raise UserError("No Multiple Allowed")
             order_lines.append((0, 0, data))
 
         self.order_line = order_lines
