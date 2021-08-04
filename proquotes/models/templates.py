@@ -51,7 +51,7 @@ class SaleOrderTemplateHandler(models.Model):
                     'product_uom_qty': line.product_uom_qty,
                     'product_id': line.product_id.id,
                     'product_uom': line.product_uom_id.id,
-                    'optional': line.product_id.optional,
+                    'optional': line.optional,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
 
