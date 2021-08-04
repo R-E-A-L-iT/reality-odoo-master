@@ -32,6 +32,10 @@ class SaleOrderTemplateHandler(models.Model):
         order_lines = [(5, 0, 0)]
         for line in template.sale_order_template_line_ids:
             data = self._compute_line_data_for_template_change(line)
+            data.update({
+                'special': line.special
+                'hiddenSection': line.hiddenSection
+            })
 
             if line.product_id:
                 price = line.product_id.lst_price
@@ -54,8 +58,6 @@ class SaleOrderTemplateHandler(models.Model):
                     'optional': line.optional,
                     'selected':line.selected,
                     'sectionSelected':line.sectionSelected,
-                    'special': line.special,
-                    'hiddenSection': line.hiddenSection,
                     'quantityLocked': line.quantityLocked,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
