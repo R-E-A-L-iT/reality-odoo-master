@@ -10,6 +10,8 @@
                 <div>
                     <label for="sku"/>
                     <field name="sku" string="SKU"/>
+                    <label for="website_published"/>
+                    <field name="website_published" string="Published"/>
                 </div>
             </xpath>
         </field>
