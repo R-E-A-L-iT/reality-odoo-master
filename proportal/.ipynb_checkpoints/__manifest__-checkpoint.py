@@ -23,7 +23,7 @@
     'data': [
         #'security/ir.model.access.csv',
         'views/partnerView.xml',
-        'views/portalAccess.xml',
+        #'views/portalAccess.xml',
         'views/productView.xml',
         'views/stockView.xml',
         'views/customer_portal.xml'
