@@ -12,9 +12,9 @@
             </xpath>
             
             
-            <!--<xpath expr="//control" position="after">
+            <xpath expr="//control" position="after">
                 <field name="sale_order_line_ids.special" invisible="1"/>
-            </xpath>-->
+            </xpath>
             <!--
             <xpath expr="//tree//field[@name=&quot;product_uom_qty&quot;]" position="after">
                 <field name="product_id.optional" invisible="0"/>
