@@ -33,7 +33,7 @@ class SaleOrderTemplateHandler(models.Model):
         for line in template.sale_order_template_line_ids:
             data = self._compute_line_data_for_template_change(line)
             data.update({
-                'special': line.special
+                'special': line.special,
                 'hiddenSection': line.hiddenSection
             })
 
