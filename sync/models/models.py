@@ -59,6 +59,7 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.httpsError:
             raise UserError(_("Invalid Document"))
+            
         raise UserError(_(str(req.json()["embedLink"])))
 #        DatabaseURL = fields.Char(default="")
 #        _logger.info("Start Sync")
