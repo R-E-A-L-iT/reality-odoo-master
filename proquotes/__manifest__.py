@@ -16,10 +16,10 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.2',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
+    'depends': ['base','proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
     # always loaded
     'data': [
