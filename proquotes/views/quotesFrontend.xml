@@ -6,6 +6,7 @@
 
             <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
             <script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
+            <script type="text/javascript" src="/proquotes/static/src/JS/poNumber.js"></script>
             <link rel="stylesheet" href="/proquotes/static/src/CSS/foldProducts.css"></link>
 
         </xpath>
@@ -170,6 +171,10 @@
             <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
         </xpath>
         
+        <xpath expr="//t[@t-foreach=&quot;sale_order.order_line$quot;]" position="after">
+            <label for="poNumber">PO Number: </label>
+            <input class="poNumber" id="poNumber"/>
+        </xpath>
     </template>
     
     <!--Sign Page-->
