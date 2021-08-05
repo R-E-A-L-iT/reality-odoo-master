@@ -21,6 +21,7 @@ class CustomerPortal(CustomerPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
         raise UserError(_(str(order_sudo.partner_id)))
+        
         order_sudo.customer_po_number = ponumber
         
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
