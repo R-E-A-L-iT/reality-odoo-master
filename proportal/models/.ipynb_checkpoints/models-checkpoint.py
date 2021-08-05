@@ -33,3 +33,8 @@ class productInstance(models.Model):
     equipment_number = fields.Char(string="Equipment Number")
     sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
     expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
+    formated_label = fields.Char(compute='_label')
+    
+    def _label(self):
+        for i in self:
+            return i.name + i.expire
