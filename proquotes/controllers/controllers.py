@@ -13,7 +13,7 @@ from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
     
-    @http.route(["/my/orders/<int:order_id>/ponumber"])
+    @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
         
         try:
