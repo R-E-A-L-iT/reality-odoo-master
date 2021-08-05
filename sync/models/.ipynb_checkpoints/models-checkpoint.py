@@ -47,6 +47,7 @@ class sync(models.Model):
         _logger.info("Ending Sync")
         
     def getCell(self):
+        
         template_id = "1ZZ7PI3OzsacKYZYobHOTdkh3VZtN2AaTbhha63Dj0yY"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
