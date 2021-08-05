@@ -47,16 +47,25 @@ class sync(models.Model):
         _logger.info("Ending Sync")
         
     def getCell(self):
-        DatabaseURL = fields.Char(default="")
-        _logger.info("Start Sync")
-        fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
-        accsess_token = self.get_access_token()
-        headers = {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer %s' % (accsess_token)
-        }
-        #requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (fileID)
-        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU/values/a1:d2?accsess_token=%s" % (accsess_token)
-        res = requests.request("get", requestURL, data={}, headers=headers, timeout=TIMEOUT)
-        raise UserError(_(str(res)))
-        raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
+        template_id = "1ZZ7PI3OzsacKYZYobHOTdkh3VZtN2AaTbhha63Dj0yY"
+        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        access_token = self.get_access_token()
+        # Copy template in to drive with help of new access token
+        request_url = "https://www.googleapis.com/drive/v2/files/%s/id?access_token=%s" % (template_id, access_token)
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        try:
+            req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
+            raise UserError(_(req))
+#        DatabaseURL = fields.Char(default="")
+#        _logger.info("Start Sync")
+#        fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
+#        accsess_token = self.get_access_token()
+#        headers = {
+#            'Accept': 'application/json',
+#            'Authorization': 'Bearer %s' % (accsess_token)
+#        }
+#        #requestURL = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (fileID)
+#        requestURL = "https://sheets.googleapis.com/v4/spreadsheets/1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU/values/a1:d2?accsess_token=%s" % (accsess_token)
+#        res = requests.request("get", requestURL, data={}, headers=headers, timeout=TIMEOUT)
+#        raise UserError(_(str(res)))
+#        raise UserError(_(str(self.env['google.service']._do_request(requestURL, preuri='', headers=headers, method="GET"))))
