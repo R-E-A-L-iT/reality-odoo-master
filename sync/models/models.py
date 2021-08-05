@@ -65,7 +65,7 @@ class sync(models.Model):
             src.raise_for_status()
         except requests.httpsError:
             raise UserError(_("Invalid Document"))
-        raise UserError(_(str(src.html)))
+        raise UserError(_(str(src.html())))
 #        DatabaseURL = fields.Char(default="")
 #        _logger.info("Start Sync")
 #        fileID = "1ZoT9NZ1pJEtYWRavImwsYPnccTxGB51e34qcDo9cclU"
