@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.5',
+    'version': '0.6S',
 
     # any module necessary for this one to work correctly
     'depends': ['base','proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
