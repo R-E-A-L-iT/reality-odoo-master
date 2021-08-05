@@ -172,7 +172,7 @@
         </xpath>
         
         <xpath expr="//t[@t-foreach=&quot;sale_order.order_line$quot;]" position="after">
-            <label for="poNumber">PO Number: </label>
+            <label for="poNumber">PO Number</label>
             <input class="poNumber" id="poNumber"/>
         </xpath>
     </template>
