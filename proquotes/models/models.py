@@ -19,6 +19,9 @@ class order(models.Model):
     _inherit = 'sale.order'
     
     partner_ids = fields.Many2many('res.partner','display_name', string="Contacts")
+    
+    products = fields.Many2One(related="partner_id.products", readonly=True)
+    
     customer_po_number = fields.Char(string="PO Number")
     
     def _amount_all(self):
