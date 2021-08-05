@@ -59,7 +59,7 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.httpsError:
             raise UserError(_("Invalid Document"))
-        raise UserError(_(str(req.text)))
+        raise UserError(_(str(req.json())))
         try:
             src = requests.get(req.json()["embedLink"], headers=headers, timeout=TIMEOUT)
             src.raise_for_status()
