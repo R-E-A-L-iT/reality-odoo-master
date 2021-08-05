@@ -21,7 +21,6 @@ class order(models.Model):
     partner_ids = fields.Many2many('res.partner','display_name', string="Contacts")
     
     products = fields.One2many(related="partner_id.products", readonly=True)
-    product_label = fields.Char(related="products.formated_label", readonly=True)
     
     customer_po_number = fields.Char(string="PO Number")
     
