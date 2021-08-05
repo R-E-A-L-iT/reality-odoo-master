@@ -37,4 +37,4 @@ class productInstance(models.Model):
     
     def _label(self):
         for i in self:
-            return i.name + i.expire
+            return i.name + str(i.expire)
