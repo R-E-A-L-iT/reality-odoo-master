@@ -48,7 +48,7 @@ class sync(models.Model):
         
     def getCell(self):
         
-        template_id = "1ZZ7PI3OzsacKYZYobHOTdkh3VZtN2AaTbhha63Dj0yY"
+        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
         # Copy template in to drive with help of new access token
