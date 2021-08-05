@@ -57,7 +57,7 @@ class sync(models.Model):
         try:
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
-        except requests.httpsError()
+        except requests.httpsError:
             raise UserError(_("Invalid Document"))
         raise UserError(req.json())
 #        DatabaseURL = fields.Char(default="")
