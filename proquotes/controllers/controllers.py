@@ -20,7 +20,8 @@ class CustomerPortal(CustomerPortal):
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
-        raise UserError(_(str(order_sudo)))
+        raise UserError(_(str(order_sudo.partner_id)))
+        order_sudo.customer_po_number = ponumber
         
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
     def select(self, order_id, line_ids, selected,  access_token=None, **post):
