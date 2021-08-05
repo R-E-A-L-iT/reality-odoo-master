@@ -174,7 +174,7 @@
         
         <xpath expr="//tbody" position="after">
             <label for="poNumber"><span>PO Number:</span></label>
-            <input class="poNumber" id="poNumber"/>
+            <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
         </xpath>
     </template>
     
