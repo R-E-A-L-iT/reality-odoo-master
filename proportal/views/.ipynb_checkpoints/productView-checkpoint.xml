@@ -7,10 +7,6 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[2]/div" position="before">
-                <div> 
-                    <label for="formated_label"/>
-                    <field name="formated_label" string="Formated Label"/>
-                </div>
                 <div>
                     <label for="sku"/>
                     <field name="sku" string="SKU"/>
