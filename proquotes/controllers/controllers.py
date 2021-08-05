@@ -15,8 +15,7 @@ class CustomerPortal(CustomerPortal):
     
     @http.route(["/my/orders/<int:order_id>/ponumber"])
     def poNumber(self, order_id, ponumber, access_token=None, **post):
-        def select(self, order_id, line_ids, selected,  access_token=None, **post):
-
+        
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
