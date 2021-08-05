@@ -172,9 +172,11 @@
             <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
         </xpath>
         
-        <xpath expr="//tbody" position="after">
+        <xpath expr="//section[@id=&quot;terms&quot;]" position="after">
+            <section id="ponumber">
             <label for="poNumber"><span>PO Number:</span></label>
             <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
+            </section>
         </xpath>
     </template>
     
