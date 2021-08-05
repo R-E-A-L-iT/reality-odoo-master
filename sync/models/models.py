@@ -59,4 +59,5 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.httpError:
             raise UserError(_("Invalid Document"))
+            
         raise UserError(_(str(req.json())))
