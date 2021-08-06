@@ -106,6 +106,7 @@ class sync(models.Model):
             
     def updateCompany(self, company, sheet, sheetWidth, i):
         
+        company.name = sheet[i * sheetWidth]["content"]["$t"]
         company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
         company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
