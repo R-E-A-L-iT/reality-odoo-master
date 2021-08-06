@@ -103,4 +103,4 @@ class sync(models.Model):
             i = i + 1
             r = r + "\n"
             
-        raise UserError("r")
+        raise UserError(_(r))
