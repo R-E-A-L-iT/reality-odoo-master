@@ -132,7 +132,7 @@ class sync(models.Model):
         
     def syncContacts(self, sheet):
     
-        sheetWidth = 15
+        sheetWidth = 12
         raise UserError(_(str(sheet[sheetWidth - 1]["content"]["$t"])))
         i = 1
         r = ""
