@@ -60,4 +60,4 @@ class sync(models.Model):
         except requests.httpError:
             raise UserError(_("Invalid Document"))
             
-        raise UserError(_(str(req.json()["feed"])))
+        raise UserError(_(str(req.json()["feed"]["entry"])))
