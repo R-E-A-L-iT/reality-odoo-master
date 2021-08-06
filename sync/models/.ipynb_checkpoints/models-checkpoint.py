@@ -77,7 +77,7 @@ class sync(models.Model):
             
         raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
         
-    def getSyncValues(self, sheetIndex, sheetWidth, syncType)
+    def getSyncValues(self, sheetIndex, sheetWidth, syncType):
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
