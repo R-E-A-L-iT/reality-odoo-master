@@ -99,6 +99,6 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             company_ids = self.env['ir.model.data'].search([('name','=', external_id)])[0].res_id
             company = self.env['res.partner'].browse(company_ids)
-            raise UserError(company.name)
+            company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
             
             i = i + 1
