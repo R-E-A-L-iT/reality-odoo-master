@@ -110,5 +110,5 @@ class sync(models.Model):
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id})[0]
-        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
+        company = self.env['res.partner'].create({'name': 'sheet[i * sheetWidth]["content"]["$t"]'})[0]
         ext.res_id = company
