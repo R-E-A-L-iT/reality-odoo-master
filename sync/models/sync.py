@@ -181,7 +181,7 @@ class sync(models.Model):
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break;
-            external_id = str(sheet[i * sheetWidth["content"]["$t"])
+            external_id = str(sheet[i * sheetWidth]["content"]["$t"])
             
             contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
             if(len(contact_ids) > 0):
