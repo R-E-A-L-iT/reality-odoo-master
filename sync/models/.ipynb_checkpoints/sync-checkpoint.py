@@ -148,8 +148,8 @@ class sync(models.Model):
             i = i + 1
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
-        
-        contact.name = sheet[i * sheetWidth]["content"]["$t"]
+        pass
+        #contact.name = sheet[i * sheetWidth]["content"]["$t"]
         #contact.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         #contact.email = sheet[i * sheetWidth + 2]["content"]["$t"]
         #if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
