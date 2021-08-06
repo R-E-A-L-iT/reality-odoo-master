@@ -116,7 +116,7 @@ class sync(models.Model):
         company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
         company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
         company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
-        company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])])[0].id)
+        company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])]).id)
         company.is_company = True
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
