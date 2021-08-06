@@ -105,7 +105,7 @@ class sync(models.Model):
             i = i + 1
             
     def updateCompany(self, sheet, id, sheetWidth, i):
-        
+        pass
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
@@ -115,7 +115,7 @@ class sync(models.Model):
         company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
         company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
         company.state_id = sheet[i * sheetWidth + 5]["content"]["$t"]
-        company.country_id = sheet[i * sheetWidth + 6]["content"]["$t"]
+        company.country_id = int(sheet[i * sheetWidth + 6]["content"]["$t"])
         company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
         company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
         company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
