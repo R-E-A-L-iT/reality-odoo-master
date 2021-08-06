@@ -62,10 +62,13 @@ class sync(models.Model):
             
         #raise UserError(_(str(req.json())))
         r = ""
-        i = 3
-        
-        while(i < 6):
-            r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
-            i = i + 1
+        i = 1
+        sheetIndex = 0
+        sheetWidth = 0
+        done = False
+        while(not done):
+            if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "False"):
+                done = True
+            done = True
             
-        raise UserError(_(r))
+        raise UserError(_(str(req.json()["feed"]["entry"][9]["content"]["$t"]))
