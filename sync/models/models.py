@@ -62,7 +62,7 @@ class sync(models.Model):
             
         #raise UserError(_(str(req.json())))
         i = 0
-        while(i < 24):
-            r =  str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
+        while(i < 23):
+            r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
             i = i + 1
         raise UserError(_(r))
