@@ -110,14 +110,14 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = company.id
-        company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
-        company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
-        company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
-        company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
+        #company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
+        #company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
+        #company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
+        #company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
         #company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])])[0])
         #company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0])
-        company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
-        company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
-        company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
-        company.property_product_pricelist = sheet[i * sheetWidth + 10]["content"]["$t"]
-        company.is_company = True
+        #company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
+        #company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
+        #company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
+        #company.property_product_pricelist = sheet[i * sheetWidth + 10]["content"]["$t"]
+        #company.is_company = True
