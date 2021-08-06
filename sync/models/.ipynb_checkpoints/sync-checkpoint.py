@@ -67,7 +67,7 @@ class sync(models.Model):
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
                 break
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
-            raise UserError(_(str(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"]sx)))
+            raise UserError(_(str(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])))
             sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
             syncType = str(req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"])
             self.getSyncValues(sheetIndex, sheetWidth, syncType)
