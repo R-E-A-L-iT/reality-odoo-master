@@ -97,6 +97,6 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            company = self.env['ir.model.data'].search([('name','=', external_id)])
+            company = self.env['ir.model.data'].search([('name','=', external_id)]).res_id
             company.name = "Override All"
             i = i + 1
