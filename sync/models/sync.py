@@ -89,10 +89,5 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("Invalid Document"))
-            
-        i = 0;
-        r = ""
-        while(i < sheetWidth):
-            r = r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
-            i = i + 1
-        raise UserError(_(r))
+        sheet = req.json()["feed"]["entry"]
+        raise UserError(_(str(len(sheet))))
