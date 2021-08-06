@@ -98,8 +98,7 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(company_ids) > 0):
-                pass
-                self.updateCompany(self.env['res.partner'].browse(company_ids[0].res_id), sheet, sheetWidth, i)
+                self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
