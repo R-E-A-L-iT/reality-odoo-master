@@ -60,15 +60,13 @@ class sync(models.Model):
             raise UserError(_("Invalid Document"))
         i = 1
         sheetIndex = ""
-        sheetWidth = 0
         syncType = ""
         while(True):
             
-            if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
+            if(str(req.json()["feed"]["entry"][i * 4 + 3]["content"]["$t"]) == "FALSE"):
                 break
-            sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
-            sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
-            syncType = str(req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"])
+            sheetIndex = str(req.json()["feed"]["entry"][i * 4 + 1]["content"]["$t"])
+            syncType = str(req.json()["feed"]["entry"][i * 4 + 2]["content"]["$t"])
             self.getSyncValues(sheetIndex, sheetWidth, syncType)
             i = i + 1
         
@@ -90,7 +88,8 @@ class sync(models.Model):
         if(syncType == "Companies"):
             self.syncCompanies(sheet, sheetWidth)
             
-    def syncCompanies(self, sheet, sheetWidth):
+    def syncCompanies(self, sheet):
+        sheetWidth = 16
         i = 1
         r = ""
         while(True):
