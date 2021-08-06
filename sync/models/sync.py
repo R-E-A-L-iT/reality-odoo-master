@@ -109,3 +109,4 @@ class sync(models.Model):
         
         def createCompany(self, sheet, external_id):
             raise UserError(_("Create"))
+            pass
