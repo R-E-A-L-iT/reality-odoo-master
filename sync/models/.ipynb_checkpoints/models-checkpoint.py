@@ -72,7 +72,5 @@ class sync(models.Model):
                 done = True
             done = True
             i = i + 1
-            if(i > 10):
-                raise UserError(_("No Stop"))
             
-        raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
+        raise UserError(_(str(req.json()["feed"]["entry"])))
