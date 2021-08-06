@@ -98,18 +98,13 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(company_ids) > 0):
-                self.updateCompany(sheet, company_ids[0].res_id, sheetWidth, i)
+                self.updateCompany(company_ids[0].res_id, sheet, sheetWidth, i)
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
             i = i + 1
             
-    def updateCompany(self, sheet, id, sheetWidth, i):
-        pass
-    def createCompany(self, sheet, external_id, sheetWidth, i):
-        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
-        ext.res_id = company.id
+    def updateCompany(self, company, sheet, sheetWidth, i):
         
         company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
@@ -122,3 +117,8 @@ class sync(models.Model):
         company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
         company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])])[0].id)
         company.is_company = True
+    def createCompany(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
+        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
+        ext.res_id = company.id
+        self.updateCompany(company, sheet, sheetWidth, i)
