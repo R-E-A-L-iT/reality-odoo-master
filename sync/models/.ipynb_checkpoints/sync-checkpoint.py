@@ -82,6 +82,7 @@ class sync(models.Model):
 
         request_url = "https://spreadsheets.google.com/feeds/cells/%s/%s/private/full?access_token=%s&alt=json" % (template_id, sheetIndex, access_token)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
+        
         try:
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
