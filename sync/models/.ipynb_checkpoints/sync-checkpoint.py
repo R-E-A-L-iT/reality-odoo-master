@@ -153,8 +153,8 @@ class sync(models.Model):
         contact.name = sheet[i * sheetWidth]["content"]["$t"]
         contact.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         contact.email = sheet[i * sheetWidth + 2]["content"]["$t"]
-        if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
-            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
+        #if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
+            #contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
         contact.street = sheet[i * sheetWidth + 4]["content"]["$t"]
         contact.street = sheet[i * sheetWidth + 5]["content"]["$t"]
         if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
