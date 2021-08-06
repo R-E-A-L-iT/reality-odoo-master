@@ -96,8 +96,7 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            external_id = "fjdajfdklfjkahfkldfhdajhfkafhslfhlska"
-            company_ids = self.env['ir.model.data'].search([('name','=', external_id)])
+            company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(company_ids) > 0):
                 self.updateCompany(sheet, company_ids[0].res_id, sheetWidth, i)
             else:
@@ -106,9 +105,20 @@ class sync(models.Model):
             i = i + 1
             
     def updateCompany(self, sheet, id, sheetWidth, i):
-        pass
+        
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
-        ext = self.env['ir.model.data'].create({'name': external_id})[0]
-        company = self.env['res.partner'].create({'name': 'sheet[i * sheetWidth]["content"]["$t"]'})[0]
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
+        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = company
+        company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
+        company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
+        company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
+        company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
+        company.state = sheet[i * sheetWidth + 5]["content"]["$t"]
+        company.country = sheet[i * sheetWidth + 6]["content"]["$t"]
+        company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
+        company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
+        company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
+        company.pricelist = sheet[i * sheetWidth + 10]["content"]["$t"]
+        company.is_company = True
