@@ -86,7 +86,7 @@ class sync(models.Model):
         sheet = req.json()["feed"]["entry"]
         
         if(syncType == "Companies"):
-            self.syncCompanies(sheet, sheetWidth)
+            self.syncCompanies(sheet)
             
     def syncCompanies(self, sheet):
         sheetWidth = 16
