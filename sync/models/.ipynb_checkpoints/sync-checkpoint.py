@@ -98,7 +98,9 @@ class sync(models.Model):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             company_ids = self.env['ir.model.data'].search([('name','=', external_id)])
-            for company_id in company_ids:
-                company = self.env['res.partner'].search(['id','=',company_id.res_id])
+            j = 0
+            while(j < len(company_ids))
+                company = self.env['res.partner'].search(['id','=', company_ids[j].res_id])
                 company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
+                j = j + 1
             i = i + 1
