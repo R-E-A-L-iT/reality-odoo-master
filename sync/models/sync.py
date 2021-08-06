@@ -89,6 +89,7 @@ class sync(models.Model):
             self.syncCompanies(sheet)
             
     def syncCompanies(self, sheet):
+        
         sheetWidth = 16
         i = 1
         r = ""
