@@ -120,4 +120,4 @@ class sync(models.Model):
         #company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
         #company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
         #company.property_product_pricelist = sheet[i * sheetWidth + 10]["content"]["$t"]
-        #company.is_company = True
+        company.is_company = True
