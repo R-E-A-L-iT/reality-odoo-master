@@ -105,7 +105,6 @@ class sync(models.Model):
             i = i + 1
             
     def updateCompany(self, sheet, id, sheetWidth, i):
-            _logger.info(str(self.env['res.partner'].browse(id)[0].country_id))
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
