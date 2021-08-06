@@ -143,7 +143,8 @@ class sync(models.Model):
             if(len(contact_ids) > 0):
                 self.updateContacts(0, 0, 0, 0)
             else:
-                self.createContacts(sheet, external_id, sheetWidth, i)
+                pass
+                #self.createContacts(sheet, external_id, sheetWidth, i)
             
             i = i + 1
             
