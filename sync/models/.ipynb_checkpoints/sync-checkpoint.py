@@ -99,7 +99,7 @@ class sync(models.Model):
             company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(company_ids) > 0):
                 pass
-                #self.updateCompany(self.env['res.partner'].browse(company_ids[0].res_id), sheet, sheetWidth, i)
+                self.updateCompany(self.env['res.partner'].browse(company_ids[0].res_id), sheet, sheetWidth, i)
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
@@ -111,16 +111,19 @@ class sync(models.Model):
         company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
         company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
         company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
-        company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])]).id)
-        company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])]).id)
+        if(sheet[i * sheetWidth + 5]["content"]["$t"] != ""):
+            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])])[0].id)
+        if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
+            company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
         company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
         company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
         company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
-        company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])]).id)
+        if(sheet[i * sheetWidth + 10]["content"]["$t"] != ""):
+            company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])])[0].id)
         company.is_company = True
         
-    def createCompany(self, sheet, external_id, sheetWidth, i):s
-        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})
-        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})
+    def createCompany(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
+        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = company.id
         self.updateCompany(company, sheet, sheetWidth, i)
