@@ -43,15 +43,15 @@ class sync(models.Model):
     
     def start_sync(self):
         _logger.info("Starting Sync")
-        self.getCell()
+        self.getSyncData()
         _logger.info("Ending Sync")
         
-    def getCell(self):
+    def getSyncData(self):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
-        # Copy template in to drive with help of new access token
+
         request_url = "https://spreadsheets.google.com/feeds/cells/%s/1/private/full?access_token=%s&alt=json" % (template_id, access_token)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
         try:
@@ -59,18 +59,40 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("Invalid Document"))
-            
-        #raise UserError(_(str(req.json())))
-        r = ""
         i = 1
-        sheetIndex = 0
+        sheetIndex = ""
         sheetWidth = 0
+        syncType = ""
         done = False
         while(not done):
             
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
-                raise UserError(_(str(i)))
                 done = True
+                break;
+            sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
+            sheetWidth = req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"]
+            syncType = req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"]
+            self.sync(sheetIndex, sheetWidth, syncType)
             i = i + 1
             
         raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
+        
+    def sync(self, sheetIndex, sheetWidth, syncType)
+        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        access_token = self.get_access_token()
+
+        request_url = "https://spreadsheets.google.com/feeds/cells/%s/%s/private/full?access_token=%s&alt=json" % (template_id, sheetIndex, access_token)
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        try:
+            req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
+            req.raise_for_status()
+        except requests.HTTPError:
+            raise UserError(_("Invalid Document"))
+            
+        i = 0;
+        r = ""
+        while(i < sheetWidth):
+            r = r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
+            i = i + 1
+        raise UserError(_(r))
