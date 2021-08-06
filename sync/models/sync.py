@@ -141,7 +141,7 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 10]["content"]["$t"])
             contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(contact_ids) > 0):
-                self.updateContacts(0, sheet, sheetWidth, i)
+                self.updateContacts(0, 0, 0, 0)
             else:
                 self.createContacts(sheet, external_id, sheetWidth, i)
             
