@@ -10,4 +10,14 @@
             <span t-raw="description"/>
         </xpath>
     </template>
+    
+    <template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
+        <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+            <t t-set="name" t-value="line.product_id.name"/>
+            <span t-raw="name"></span>
+            
+            <t t-set="description" t-value="line.name"/>
+            <span t-raw="description"/>
+        </xpath>
+    </template>
 </odoo>
