@@ -108,7 +108,6 @@ class sync(models.Model):
         pass
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
-        raise UserError(_(str(self.env['res.lang'].get_installed())))
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = company
