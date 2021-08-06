@@ -104,8 +104,8 @@ class sync(models.Model):
                 self.createCompany(sheet, external_id)
             
             i = i + 1
-        def self.updateCompany(sheet, id):
+        def updateCompany(self, sheet, id):
             pass
         
-        def self.createCompany(sheet, external_id):
+        def createCompany(self, sheet, external_id):
             raise UserError(_("Create"))
