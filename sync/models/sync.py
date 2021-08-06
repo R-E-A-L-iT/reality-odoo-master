@@ -145,12 +145,11 @@ class sync(models.Model):
                 self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 pass
-                #self.createContacts(sheet, external_id, sheetWidth, i)
+                self.createContacts(sheet, external_id, sheetWidth, i)
             
             i = i + 1
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
-        pass
         #contact.name = sheet[i * sheetWidth]["content"]["$t"]
         #contact.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         #contact.email = sheet[i * sheetWidth + 2]["content"]["$t"]
@@ -171,4 +170,4 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         contact = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = contact.id
-        self.updateCompany(contact, sheet, sheetWidth, i)
+        self.updateContact(contact, sheet, sheetWidth, i)
