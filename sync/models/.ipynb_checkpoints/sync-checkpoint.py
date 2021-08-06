@@ -98,8 +98,5 @@ class sync(models.Model):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             company = self.env['ir.model.data'].search([('name','=', external_id)])
-            raise UserError(_(str(company)))
+            company.name = "Override All"
             i = i + 1
-            
-            
-        raise UserError(_(r))
