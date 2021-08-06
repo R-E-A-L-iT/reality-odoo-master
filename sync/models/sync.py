@@ -157,13 +157,13 @@ class sync(models.Model):
             #contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
         contact.street = sheet[i * sheetWidth + 4]["content"]["$t"]
         contact.street = sheet[i * sheetWidth + 5]["content"]["$t"]
-        if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
-            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
-        if(sheet[i * sheetWidth + 7]["content"]["$t"] != ""):
-            contact.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 7]["content"]["$t"])])[0].id)
+        #if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
+        #    contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
+        #if(sheet[i * sheetWidth + 7]["content"]["$t"] != ""):
+        #    contact.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 7]["content"]["$t"])])[0].id)
         contact.zip = sheet[i * sheetWidth + 8]["content"]["$t"]
-        if(sheet[i * sheetWidth + 9]["content"]["$t"] != ""):
-            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 9]["content"]["$t"])])[0].id)
+        #if(sheet[i * sheetWidth + 9]["content"]["$t"] != ""):
+        #    contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 9]["content"]["$t"])])[0].id)
         contact.is_company = False
         
     def createContacts(self, sheet, external_id, sheetWidth, i):
