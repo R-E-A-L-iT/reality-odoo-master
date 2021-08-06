@@ -115,7 +115,7 @@ class sync(models.Model):
         company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
         company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
         company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
-        company.state = sheet[i * sheetWidth + 5]["content"]["$t"]
+        company.state_id = sheet[i * sheetWidth + 5]["content"]["$t"]
         company.country = sheet[i * sheetWidth + 6]["content"]["$t"]
         company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
         company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
