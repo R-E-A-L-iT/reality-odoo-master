@@ -59,6 +59,7 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("Invalid Document"))
+            
         #raise UserError(_(str(req.json())))
         
         raise UserError(_(str(req.json()["feed"]["entry"][24]["content"]["$t"])))
