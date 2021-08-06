@@ -119,7 +119,7 @@ class sync(models.Model):
         company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])]).id)
         company.is_company = True
         
-    def createCompany(self, sheet, external_id, sheetWidth, i):
+    def createCompany(self, sheet, external_id, sheetWidth, i):s
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})
         company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})
         ext.res_id = company.id
