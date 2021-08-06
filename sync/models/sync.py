@@ -110,6 +110,7 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = company.id
+        
         company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         #company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
         #company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
