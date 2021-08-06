@@ -67,6 +67,7 @@ class sync(models.Model):
         sheetWidth = 0
         done = False
         while(not done):
+            
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
                 done = True
             done = True
