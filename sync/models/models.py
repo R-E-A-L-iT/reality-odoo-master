@@ -52,7 +52,7 @@ class sync(models.Model):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
         # Copy template in to drive with help of new access token
-        request_url = "https://spreadsheets.google.com/feeds/cells/%s/1/private/basic?access_token=%s&alt=json" % (template_id, access_token)
+        request_url = "https://spreadsheets.google.com/feeds/cells/%s/1/private/full?access_token=%s&alt=json" % (template_id, access_token)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
         try:
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
@@ -60,10 +60,10 @@ class sync(models.Model):
         except requests.HTTPError:
             raise UserError(_("Invalid Document"))
             
-        raise UserError(_(str(req.json())))
-        #r = ""
-        #i = 0
-        #while(i < 23):
-        #    r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
-        #    i = i + 1
-        #raise UserError(_(r))
+        #raise UserError(_(str(req.json())))
+        r = ""
+        i = 0
+        while(i < 23):
+            r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
+            i = i + 1
+        raise UserError(_(r))
