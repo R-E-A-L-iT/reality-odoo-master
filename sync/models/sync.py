@@ -94,13 +94,13 @@ class sync(models.Model):
         i = 1
         r = ""
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
-                break;
-            external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            company_id = self.env['ir.model.data'].search([('name','=', external_id)]).res_id
             try:
+                if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                    break;
+                external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
+                company_id = self.env['ir.model.data'].search([('name','=', external_id)]).res_id
                 company = self.env['res.partner'].browse(company_id)
+                company.name = "Override All"
+                i = i + 1
             except:
-                continue
-            company.name = "Override All"
-            i = i + 1
+                i = i + 1
