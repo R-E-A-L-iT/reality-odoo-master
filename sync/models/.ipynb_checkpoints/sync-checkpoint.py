@@ -88,6 +88,8 @@ class sync(models.Model):
             self.syncCompanies(sheet)
         elif(syncType == "Contacts"):
             self.syncContacts(sheet)
+        elif(syncType == "Products"):
+            self.syncProducts(sheet)
             
     def syncCompanies(self, sheet):
         
@@ -155,7 +157,7 @@ class sync(models.Model):
         if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
             contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
         contact.street = sheet[i * sheetWidth + 4]["content"]["$t"]
-        contact.street = sheet[i * sheetWidth + 5]["content"]["$t"]
+        contact.city = sheet[i * sheetWidth + 5]["content"]["$t"]
         if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
             contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
         if(sheet[i * sheetWidth + 7]["content"]["$t"] != ""):
@@ -170,3 +172,34 @@ class sync(models.Model):
         contact = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i)
+        
+    def syncProducts(self, sheet):
+    
+        sheetWidth = 7
+        i = 1
+        r = ""
+        while(True):
+            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                break;
+            external_id = str(sheet[i * sheetWidth["content"]["$t"])
+            
+            contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+            if(len(contact_ids) > 0):
+                self.updateProducts(self.env['product.template'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+            else:
+                self.createProducts(sheet, external_id, sheetWidth, i)
+            
+            i = i + 1
+            
+    def updateProducts(self, product, sheet, sheetWidth, i):
+        product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
+        product.description_sale = sheet[i * sheetWidth + 2]["content"]["$t"]
+        product.price = sheet[i * sheetWidth + 3]["content"]["$t"]
+        product.tracking = "serial"
+        product.type = "product"
+        
+    def createProducts(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
+        product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        ext.res_id = product.id
+        self.updateProducts(product, sheet, sheetWidth, i)
