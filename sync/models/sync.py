@@ -100,5 +100,6 @@ class sync(models.Model):
             while(j < sheetWidth):
                 r = r + str(sheet[i * sheetWidth + j]["content"]["$t"]) + "    "
                 j = j + 1
+            i = i + 1
             r = r + "\n"
         raise UserError("r")
