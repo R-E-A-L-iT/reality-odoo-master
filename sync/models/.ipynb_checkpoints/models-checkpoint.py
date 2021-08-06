@@ -70,7 +70,6 @@ class sync(models.Model):
             
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
                 done = True
-            done = True
             i = i + 1
             
-        raise UserError(_(str(req.json()["feed"]["entry"])))
+        raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
