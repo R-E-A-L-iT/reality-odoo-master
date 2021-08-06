@@ -70,7 +70,7 @@ class sync(models.Model):
                 done = True
                 break;
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
-            sheetWidth = req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"]
+            sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
             syncType = str(req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"])
             self.getSyncValues(sheetIndex, sheetWidth, syncType)
             i = i + 1
