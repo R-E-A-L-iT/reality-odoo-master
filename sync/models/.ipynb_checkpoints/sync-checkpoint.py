@@ -141,7 +141,7 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(contact_ids) > 0):
-                self.updateCompany(self.env['res.partner'].browse(contact_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
+                self.updateCompany(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
@@ -152,7 +152,7 @@ class sync(models.Model):
         contact.name = sheet[i * sheetWidth]["content"]["$t"]
         contact.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
         contact.email = sheet[i * sheetWidth + 2]["content"]["$t"]
-        if(self.env['ir.model.data'].search_count([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')]) > 0):
+        if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
             contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
         contact.street = sheet[i * sheetWidth + 4]["content"]["$t"]
         contact.street = sheet[i * sheetWidth + 5]["content"]["$t"]
