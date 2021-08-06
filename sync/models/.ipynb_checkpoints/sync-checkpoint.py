@@ -41,9 +41,9 @@ class sync(models.Model):
     
     _description = "Sync App"
     
-    def start_sync(self):
+    def start_sync(self, template_id=""):
         _logger.info("Starting Sync")
-        self.getSyncData()
+        self.getSyncData(template_id)
         _logger.info("Ending Sync")
         
     def getSyncData(self, template_id):
@@ -89,8 +89,9 @@ class sync(models.Model):
             raise UserError(_("Invalid Document"))
         sheet = req.json()["feed"]["entry"]
         
-        #if(syncType == "Companies"):
-            #self.syncCompanies(sheet, sheetWidth)
+        if(syncType == "Companies"):
+            self.syncCompanies(sheet, sheetWidth)
             
-    #def syncCompanies(self, sheet, sheetWidth):
+    def syncCompanies(self, sheet, sheetWidth):
+        pass
         
