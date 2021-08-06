@@ -62,4 +62,4 @@ class sync(models.Model):
             
         #raise UserError(_(str(req.json())))
         
-        raise UserError(_(str(req.json()["feed"]["entry"][24]["content"]["$t"])))
+        raise UserError(_(str(req.json()["feed"]["entry"][47]["content"]["$t"])))
