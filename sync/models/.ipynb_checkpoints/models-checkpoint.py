@@ -72,7 +72,7 @@ class sync(models.Model):
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
             sheetWidth = req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"]
             syncType = str(req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"])
-            #self.getSyncValues(sheetIndex, sheetWidth, syncType)
+            self.getSyncValues(sheetIndex, sheetWidth, syncType)
             i = i + 1
             
         raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
