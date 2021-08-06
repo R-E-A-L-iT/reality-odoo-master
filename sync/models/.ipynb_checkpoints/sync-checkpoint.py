@@ -145,7 +145,7 @@ class sync(models.Model):
                 try:
                     self.updateCompany(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
                 except:
-                    raise UserError(_(str(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id))))
+                    raise UserError(_(str(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id)[0])))
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
