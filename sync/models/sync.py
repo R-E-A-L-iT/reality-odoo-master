@@ -99,14 +99,16 @@ class sync(models.Model):
             external_id = "fjdajfdklfjkahfkldfhdajhfkafhslfhlska"
             company_ids = self.env['ir.model.data'].search([('name','=', external_id)])
             if(len(company_ids) > 0):
-                self.updateCompany(sheet, company_ids[0].res_id)
+                self.updateCompany(sheet, company_ids[0].res_id, sheetWidth, i)
             else:
-                self.createCompany(sheet, external_id)
+                self.createCompany(sheet, external_id, sheetWidth, i)
             
             i = i + 1
             
-    def updateCompany(self, sheet, id):
+    def updateCompany(self, sheet, id, sheetWidth, i):
         pass
         
-    def createCompany(self, sheet, external_id):
-        raise UserError(_("Create"))
+    def createCompany(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id})[0]
+        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
+        ext.res_id = company
