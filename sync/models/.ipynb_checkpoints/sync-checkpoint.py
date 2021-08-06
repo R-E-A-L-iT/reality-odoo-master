@@ -63,11 +63,9 @@ class sync(models.Model):
         sheetIndex = ""
         sheetWidth = 0
         syncType = ""
-        done = False
-        while(not done):
+        while(True):
             
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
-                done = True
                 break;
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
             sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
@@ -89,10 +87,10 @@ class sync(models.Model):
             req.raise_for_status()
         except requests.HTTPError:
             raise UserError(_("Invalid Document"))
-        sheet = req.json()["feed"]["entry"]    
-        i = sheetWidth;
-        r = ""
-        while(i < sheetWidth * 2):
-            r = r + str(sheet[i]["content"]["$t"]) + "\n"
-            i = i + 1
-        raise UserError(_(r))
+        sheet = req.json()["feed"]["entry"]
+        
+        #if(syncType == "Companies"):
+            #self.syncCompanies(sheet, sheetWidth)
+            
+    #def syncCompanies(self, sheet, sheetWidth):
+        
