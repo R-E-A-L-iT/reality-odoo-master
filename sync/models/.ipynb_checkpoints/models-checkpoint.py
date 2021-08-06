@@ -67,8 +67,11 @@ class sync(models.Model):
         sheetWidth = 0
         done = False
         while(not done):
-            if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "False"):
+            if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
                 done = True
             done = True
+            i = i + 1
+            if(i > 10):
+                raise UserError(_("No Stop"))
             
-        raise UserError(_(str(req.json()["feed"]["entry"][9]["content"]["$t"])))
+        raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
