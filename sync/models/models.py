@@ -63,6 +63,7 @@ class sync(models.Model):
         #raise UserError(_(str(req.json())))
         r = ""
         i = 0
+        
         while(i < 13):
             r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
             i = i + 1
