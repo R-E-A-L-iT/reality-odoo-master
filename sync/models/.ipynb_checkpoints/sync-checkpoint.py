@@ -46,9 +46,8 @@ class sync(models.Model):
         self.getSyncData()
         _logger.info("Ending Sync")
         
-    def getSyncData(self):
+    def getSyncData(self, template_id):
         
-        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
 
@@ -66,6 +65,7 @@ class sync(models.Model):
         while(True):
             
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
+                raise UserError(_("FAIL"))
                 break;
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
             sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
