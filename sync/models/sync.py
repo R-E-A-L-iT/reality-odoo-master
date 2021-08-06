@@ -43,7 +43,7 @@ class sync(models.Model):
     
     def start_sync(self):
         _logger.info("Starting Sync")
-        self.getSyncData(template_id)
+        self.getSyncData()
         _logger.info("Ending Sync")
         
     def getSyncData(self):
