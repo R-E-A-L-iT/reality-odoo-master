@@ -97,7 +97,7 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            company = self.env['ir.model.data'].search([('res_id','=', external_id)])
+            company = self.env['ir.model.data'].search([('name','=', external_id)])
             raise UserError(_(str(company)))
             i = i + 1
             
