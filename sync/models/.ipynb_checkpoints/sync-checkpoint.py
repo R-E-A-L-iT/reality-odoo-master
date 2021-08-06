@@ -105,6 +105,7 @@ class sync(models.Model):
             i = i + 1
             
     def updateCompany(self, sheet, id, sheetWidth, i):
+        raise UserError(_(str(self.env['res.partner'].browse(id)[0].country_id)))
         pass
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
