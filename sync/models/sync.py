@@ -94,13 +94,10 @@ class sync(models.Model):
         i = 1
         r = ""
         while(True):
-            try:
-                if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
-                    break;
-                external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-                company_id = self.env['ir.model.data'].search([('name','=', external_id)]).res_id
-                company = self.env['res.partner'].browse(company_id)
-                company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
-                i = i + 1
-            except:
-                i = i + 1
+            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                break;
+            external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
+            company_id = int(self.env['ir.model.data'].search([('name','=', external_id)]).res_id)
+            company = self.env['res.partner'].browse(company_id)
+            company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
+            i = i + 1
