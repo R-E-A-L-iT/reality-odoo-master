@@ -115,10 +115,10 @@ class sync(models.Model):
         company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
         company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
         company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
-        company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])])[0])
-        company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0])
+        company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])])[0].id)
+        company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
         company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
         company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
         company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
-        #company.property_product_pricelist = sheet[i * sheetWidth + 10]["content"]["$t"]
+        company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])])[0].id)
         company.is_company = True
