@@ -97,8 +97,14 @@ class sync(models.Model):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
             external_id = "fjdajfdklfjkahfkldfhdajhfkafhslfhlska"
-            company_ids = self.env['ir.model.data'].search([('name','=', external_id)])[0].res_id
-            company = self.env['res.partner'].browse(company_ids)
-            company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
+            company_ids = self.env['ir.model.data'].search([('name','=', external_id)])
+            if(len(company_ids > 0)):
+                self.updateCompany(sheet, company_ids[0].res_id)
+            else:
+                self.createCompany(sheet, company_ids[0].res_id)
             
             i = i + 1
+        def self.updateCompany(sheet, id):
+            pass
+        def self.createCompany(sheet, id):
+            raise UserError(_("Create"))
