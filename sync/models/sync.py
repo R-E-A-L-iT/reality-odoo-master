@@ -65,7 +65,7 @@ class sync(models.Model):
         while(True):
             
             if(str(req.json()["feed"]["entry"][i * 5 + 4]["content"]["$t"]) == "FALSE"):
-                break;
+                break
             sheetIndex = str(req.json()["feed"]["entry"][i * 5 + 1]["content"]["$t"])
             raise UserError(_(str(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"]sx)))
             sheetWidth = int(req.json()["feed"]["entry"][i * 5 + 2]["content"]["$t"])
