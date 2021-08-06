@@ -142,8 +142,14 @@ class sync(models.Model):
 
             contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
             if(len(contact_ids) > 0):
-                contact = self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id)[0]
-                self.updateCompany(contact, sheet, sheetWidth, i)
+                try:
+                    contact = self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id)[0]
+                except:
+                    raise UserError(_("Error"))
+                try:
+                    self.updateCompany(contact, sheet, sheetWidth, i)
+                except:
+                    raise UserError(_("???"))
             else:
                 self.createCompany(sheet, external_id, sheetWidth, i)
             
