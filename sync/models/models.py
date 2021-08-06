@@ -71,4 +71,4 @@ class sync(models.Model):
                 done = True
             done = True
             
-        raise UserError(_(str(req.json()["feed"]["entry"][9]["content"]["$t"]))
+        raise UserError(_(str(req.json()["feed"]["entry"][9]["content"]["$t"])))
