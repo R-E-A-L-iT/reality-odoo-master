@@ -71,8 +71,6 @@ class sync(models.Model):
             syncType = str(req.json()["feed"]["entry"][i * 5 + 3]["content"]["$t"])
             self.getSyncValues(sheetIndex, sheetWidth, syncType)
             i = i + 1
-            
-        raise UserError(_(str(req.json()["feed"]["entry"][14]["content"]["$t"])))
         
     def getSyncValues(self, sheetIndex, sheetWidth, syncType):
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
@@ -93,5 +91,14 @@ class sync(models.Model):
             self.syncCompanies(sheet, sheetWidth)
             
     def syncCompanies(self, sheet, sheetWidth):
-        pass
-        
+        i = 1
+        r = ""
+        while(True):
+            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                break;
+            j = 0
+            while(j < sheetWidth):
+                r = r + str(sheet[i * sheetWidth + j)]["content"]["$t"]) + "\t"
+                j = j + 1
+            r = r + "\n"
+        raise UserError("r")
