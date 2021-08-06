@@ -100,7 +100,7 @@ class sync(models.Model):
                 external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
                 company_id = self.env['ir.model.data'].search([('name','=', external_id)]).res_id
                 company = self.env['res.partner'].browse(company_id)
-                company.name = "Override All"
+                company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
                 i = i + 1
             except:
                 i = i + 1
