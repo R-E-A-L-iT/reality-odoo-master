@@ -61,6 +61,7 @@ class sync(models.Model):
             raise UserError(_("Invalid Document"))
             
         #raise UserError(_(str(req.json())))
+        r = ""
         i = 0
         while(i < 23):
             r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
