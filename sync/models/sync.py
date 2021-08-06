@@ -131,8 +131,9 @@ class sync(models.Model):
         self.updateCompany(company, sheet, sheetWidth, i)
         
     def syncContacts(self, sheet):
-        raise UserError(_(str(sheet[sheetWidth - 1]["content"]["$t"])))
+    
         sheetWidth = 15
+        raise UserError(_(str(sheet[sheetWidth - 1]["content"]["$t"])))
         i = 1
         r = ""
         while(True):
