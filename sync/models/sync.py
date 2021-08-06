@@ -97,10 +97,8 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break;
             external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            company_id = self.env['ir.model.data'].search([('name','=', external_id)])
-            if(len(company_id) > 1):
-                raise UserError(_(external_id))
-                
-            company = self.env['res.partner'].browse(company_id.res_id)
-            company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
+            company_ids = self.env['ir.model.data'].search([('name','=', external_id)])
+            for company_id in company_ids
+                company = self.env['res.partner'].browse(company_id.res_id)
+                company.name = str(sheet[i * sheetWidth + 0]["content"]["$t"])
             i = i + 1
