@@ -67,10 +67,10 @@ class sync(models.Model):
                 break
             sheetIndex = str(req.json()["feed"]["entry"][i * 4 + 1]["content"]["$t"])
             syncType = str(req.json()["feed"]["entry"][i * 4 + 2]["content"]["$t"])
-            self.getSyncValues(sheetIndex, sheetWidth, syncType)
+            self.getSyncValues(sheetIndex, syncType)
             i = i + 1
         
-    def getSyncValues(self, sheetIndex, sheetWidth, syncType):
+    def getSyncValues(self, sheetIndex, syncType):
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
