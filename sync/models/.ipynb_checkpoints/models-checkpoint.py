@@ -66,4 +66,5 @@ class sync(models.Model):
         while(i < 23):
             r =  r + str(req.json()["feed"]["entry"][i]["content"]["$t"]) + "\n"
             i = i + 1
+            
         raise UserError(_(r))
