@@ -88,7 +88,7 @@ class sync(models.Model):
         elif(syncType == "CCP"):
             self.syncCCP(sheet)
         elif(syncType == "Pricelist"):
-            self.syncPriceList(sheet)
+            self.syncPricelist(sheet)
             
     def syncCompanies(self, sheet):
         
@@ -182,9 +182,9 @@ class sync(models.Model):
                 break;
             external_id = str(sheet[i * sheetWidth]["content"]["$t"])
             
-            contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
-            if(len(contact_ids) > 0):
-                self.updateProducts(self.env['product.template'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+            product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+            if(len(product_ids) > 0):
+                self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createProducts(sheet, external_id, sheetWidth, i)
             
@@ -252,7 +252,6 @@ class sync(models.Model):
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
         
     def syncPricelist(self, sheet):
-        return
         sheetWidth = 17
         i = 1
         r = ""
@@ -262,21 +261,38 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + 15]["content"]["$t"]) == "FALSE"):
                 i = i + 1
                 continue;
-            external_id = str(sheet[i * sheetWidth]["content"]["$t"])
-            
-            contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
-            if(len(contact_ids) > 0):
-                self.updateProducts(self.env['product.template'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
-            else:
-                self.createProducts(sheet, external_id, sheetWidth, i)
+            self.priceListProduct(sheet, sheetWidth, i)
             
             i = i + 1
             
-    def updatePricelist(self, product, sheet, sheetWidth, i):
+    def priceListProduct(self, sheet, sheetWidth, i):
+        external_id = str(sheet[i * sheetWidth]["content"]["$t"])
+        raise UserError(_(external_id))
+            
+        product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+        if(len(product_ids) > 0):
+            self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
+        else:
+            self.createPricelistProducts(sheet, external_id, sheetWidth, i)
+            
+            i = i + 1
+    
+    def priceListCAN(self, sheet, sheetWidth, i):
         pass
+    
+    def priceListUS(self, sheet, sheetWidth, i):
+        pass
+    
+    def updatePricelistProducts(self, product, sheet, sheetWidth, i):
+        product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
+        product.description_sale = sheet[i * sheetWidth + 2]["content"]["$t"]
+        product.price = sheet[i * sheetWidth + 5]["content"]["$t"]
+        product.can_publish = sheet[i * sheetWidth + 7]["content"]["$t"]
+        product.tracking = "serial"
+        product.type = "product"
         
-    def createPricelist(self, sheet, external_id, sheetWidth, i):
+    def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
-        self.updateProducts(product, sheet, sheetWidth, i)
+        self.updatePricelistProducts(product, sheet, sheetWidth, i)
