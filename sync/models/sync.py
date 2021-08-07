@@ -239,6 +239,10 @@ class sync(models.Model):
         
         product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
         product_id = product_ids[len(product_ids) - 1].id
-        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"], 'product_id': product_id})[0]
+        
+        company_id = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT Solutions')])[0].id
+        
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"],
+                                                            'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
