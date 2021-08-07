@@ -218,7 +218,8 @@ class sync(models.Model):
             
             ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
             if(len(ccp_ids) > 0):
-                self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
+                pass
+                #self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createCPP(sheet, external_id, sheetWidth, i)
             
