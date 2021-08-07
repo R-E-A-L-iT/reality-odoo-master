@@ -222,14 +222,15 @@ class sync(models.Model):
                 self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 pass
-                #self.createCPP(sheet, external_id, sheetWidth, i)
+                self.createCPP(sheet, external_id, sheetWidth, i)
             
             i = i + 1
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
         ccp_item.product_id = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])[0]
-        ccp_item.owner = sheet[i * sheetWidth]["content"]["$t"]
+        ccp_item.owner = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
+                                                          ('model', '=', 'res.partner')])[0].res_id
         if(sheet[i * sheetWidth + 5]["content"]["$t"] != "FALSE"):
             ccp_item.expire = sheet[i * sheetWidth + 5]["content"]["$t"]
         else:
@@ -239,4 +240,4 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = ccp_item.id
-        #self.updateCCP(ccp_item, sheet, sheetWidth, i)
+        self.updateCCP(ccp_item, sheet, sheetWidth, i)
