@@ -87,6 +87,7 @@ class sync(models.Model):
             self.syncProducts(sheet)
         elif(syncType == "CCP"):
             self.syncCCP(sheet)
+        elif(syncType == "Pricelist")
             
     def syncCompanies(self, sheet):
         
@@ -224,6 +225,7 @@ class sync(models.Model):
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
+        
         product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
         ccp_item.product_id = product_ids[len(product_ids) - 1].id
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
@@ -242,8 +244,38 @@ class sync(models.Model):
         product_id = product_ids[len(product_ids) - 1].id
         
         company_id = self.env['res.company'].search([('id', '=', 1)]).id
-        raise UserError(_("Here"))
+        
         ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"],
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
+        
+    def syncPricelist(self, sheet):
+    
+        sheetWidth = 17
+        i = 1
+        r = ""
+        while(True):
+            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                break;
+            if(str(sheet[i * sheetWidth + 15]["content"]["$t"]) == "FALSE"):
+                i = i + 1
+                continue;
+            external_id = str(sheet[i * sheetWidth]["content"]["$t"])
+            
+            contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+            if(len(contact_ids) > 0):
+                self.updateProducts(self.env['product.template'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+            else:
+                self.createProducts(sheet, external_id, sheetWidth, i)
+            
+            i = i + 1
+            
+    def updatePricelist(self, product, sheet, sheetWidth, i):
+        pass
+        
+    def createPricelist(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
+        product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        ext.res_id = product.id
+        self.updateProducts(product, sheet, sheetWidth, i)
