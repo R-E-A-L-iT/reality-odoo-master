@@ -237,4 +237,4 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = ccp_item.id
-        self.updateCCP(ccp_item, sheet, sheetWidth, i)
+        #self.updateCCP(ccp_item, sheet, sheetWidth, i)
