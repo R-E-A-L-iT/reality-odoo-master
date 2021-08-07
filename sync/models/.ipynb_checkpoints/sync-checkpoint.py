@@ -90,6 +90,8 @@ class sync(models.Model):
             self.syncContacts(sheet)
         elif(syncType == "Products"):
             self.syncProducts(sheet)
+        elif(syncType == "CCP"):
+            self.syncCCP(sheet)
             
     def syncCompanies(self, sheet):
         
@@ -203,3 +205,36 @@ class sync(models.Model):
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
         self.updateProducts(product, sheet, sheetWidth, i)
+        
+    def syncCCP(self, sheet):
+    
+        sheetWidth = 9
+        i = 1
+        r = ""
+        while(True):
+            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
+                break;
+            external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
+            
+            ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+            if(len(contact_ids) > 0):
+                self.updateProducts(self.env['product.template'].browse(ccp_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+            else:
+                self.createProducts(sheet, external_id, sheetWidth, i)
+            
+            i = i + 1
+            
+    def updateCCP(self, ccp_item, sheet, sheetWidth, i):
+        ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
+        ccp_item.product = sheet[i * sheetWidth + 2]["content"]["$t"]
+        ccp_item.owner = sheet[i * sheetWidth]["content"]["$t"]
+        if(sheet[i * sheetWidth]["content"]["$t" + 5] != "FALSE"):
+            ccp_item.expire = sheet[i * sheetWidth + 5]["content"]["$t"]
+        else:
+            ccp_item.expire = None
+        
+    def createCCP(self, sheet, external_id, sheetWidth, i):
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
+        ccp_item = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        ext.res_id = product.id
+        self.updateCCP(ccp_item, sheet, sheetWidth, i)
