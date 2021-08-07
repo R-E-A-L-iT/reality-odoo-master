@@ -219,7 +219,7 @@ class sync(models.Model):
             ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
             if(len(ccp_ids) > 0):
                 pass
-                #self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
+                self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 pass
                 #self.createCPP(sheet, external_id, sheetWidth, i)
@@ -230,7 +230,7 @@ class sync(models.Model):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
         ccp_item.product = sheet[i * sheetWidth + 4]["content"]["$t"]
         ccp_item.owner = sheet[i * sheetWidth]["content"]["$t"]
-        if(sheet[i * sheetWidth]["content"]["$t" + 5] != "FALSE"):
+        if(sheet[i * sheetWidth + 5]["content"]["$t"] != "FALSE"):
             ccp_item.expire = sheet[i * sheetWidth + 5]["content"]["$t"]
         else:
             ccp_item.expire = None
