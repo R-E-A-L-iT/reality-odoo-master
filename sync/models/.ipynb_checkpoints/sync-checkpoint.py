@@ -225,8 +225,6 @@ class sync(models.Model):
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
         product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
-        if(len(product_ids) == 0):
-            raise UserError("No Match")
         ccp_item.product_id = product_ids[len(product_ids) - 1]
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
                                                           ('model', '=', 'res.partner')])
@@ -238,6 +236,9 @@ class sync(models.Model):
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
-        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
+        product_id = product_ids[len(product_ids) - 1]
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"], 'product_id': product_id})[0]
         ext.res_id = ccp_item.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
