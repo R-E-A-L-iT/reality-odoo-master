@@ -225,7 +225,8 @@ class sync(models.Model):
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
         product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
-        
+        if(len(product_ids) == 0):
+            raise UserError("No Match")
         ccp_item.product_id = product_ids[len(product_ids) - 1]
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
                                                           ('model', '=', 'res.partner')])
