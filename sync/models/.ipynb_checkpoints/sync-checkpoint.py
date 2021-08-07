@@ -216,9 +216,9 @@ class sync(models.Model):
                 break;
             external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
             
-            ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+            ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
             if(len(contact_ids) > 0):
-                self.updateProducts(self.env['product.template'].browse(ccp_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+                self.updateProducts(self.env['stock.production.lot'].browse(ccp_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createProducts(sheet, external_id, sheetWidth, i)
             
@@ -234,7 +234,7 @@ class sync(models.Model):
             ccp_item.expire = None
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
-        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        ccp_item = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
