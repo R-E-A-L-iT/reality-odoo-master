@@ -242,7 +242,7 @@ class sync(models.Model):
         product_id = product_ids[len(product_ids) - 1].id
         
         company_id = self.env['res.company'].search([('id', '=', 1)]).id
-        
+        raise UserError(_("Here"))
         ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"],
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
