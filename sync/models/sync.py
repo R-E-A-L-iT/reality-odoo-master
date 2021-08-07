@@ -209,7 +209,7 @@ class sync(models.Model):
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
                 break
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"])):
+            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) == "FALSE"):
                 i = i + 1
                 continue
             external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
