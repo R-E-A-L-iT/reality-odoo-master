@@ -224,9 +224,12 @@ class sync(models.Model):
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
-        ccp_item.product_id = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])[0]
-        ccp_item.owner = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
-                                                          ('model', '=', 'res.partner')])[0].res_id
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
+        
+        ccp_item.product_id = product_ids[len(product_ids) - 1]
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
+                                                          ('model', '=', 'res.partner')])
+        ccp_item.owner = owner_ids[len(owner_ids) - 1].res_id
         if(sheet[i * sheetWidth + 5]["content"]["$t"] != "FALSE"):
             ccp_item.expire = sheet[i * sheetWidth + 5]["content"]["$t"]
         else:
