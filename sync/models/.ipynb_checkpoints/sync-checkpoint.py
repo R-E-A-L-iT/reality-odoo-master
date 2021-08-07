@@ -261,21 +261,22 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + 15]["content"]["$t"]) == "FALSE"):
                 i = i + 1
                 continue;
-            self.priceListProduct(sheet, sheetWidth, i)
+            self.pricelistProduct(sheet, sheetWidth, i)
             
             i = i + 1
             
-    def priceListProduct(self, sheet, sheetWidth, i):
+    def pricelistProduct(self, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth]["content"]["$t"])
-        raise UserError(_(external_id))
-            
+        if(i == 129):
+            raise UserError(_(external_id))    
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+        #raise UserError(_("Stage 1\n" + external_id)) 
         if(len(product_ids) > 0):
+            #raise UserError(_("Stage 1.5:\n" + external_id)) 
             self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
         else:
+            raise UserError(_("Stage 2:\n" + external_id + "\n" + str(i)))
             self.createPricelistProducts(sheet, external_id, sheetWidth, i)
-            
-            i = i + 1
     
     def priceListCAN(self, sheet, sheetWidth, i):
         pass
@@ -292,7 +293,9 @@ class sync(models.Model):
         product.type = "product"
         
     def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
+        raise UserError(_(external_id))
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
+        raise UserError(_("HERE!!!"))
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
         self.updatePricelistProducts(product, sheet, sheetWidth, i)
