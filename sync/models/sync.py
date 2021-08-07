@@ -221,6 +221,7 @@ class sync(models.Model):
                 pass
                 #self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
+                pass
                 #self.createCPP(sheet, external_id, sheetWidth, i)
             
             i = i + 1
