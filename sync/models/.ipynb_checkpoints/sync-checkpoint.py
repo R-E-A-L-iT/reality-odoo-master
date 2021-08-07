@@ -87,7 +87,8 @@ class sync(models.Model):
             self.syncProducts(sheet)
         elif(syncType == "CCP"):
             self.syncCCP(sheet)
-        elif(syncType == "Pricelist")
+        elif(syncType == "Pricelist"):
+            self.syncPriceList(sheet)
             
     def syncCompanies(self, sheet):
         
@@ -251,7 +252,7 @@ class sync(models.Model):
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
         
     def syncPricelist(self, sheet):
-    
+        return
         sheetWidth = 17
         i = 1
         r = ""
