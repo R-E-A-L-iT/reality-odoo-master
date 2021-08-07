@@ -238,7 +238,10 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         
         product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
-        product_id = product_ids[len(product_ids) - 1].id
+        if(len(product_ids) != 0):
+            product_id = product_ids[len(product_ids) - 1].id
+        else:
+            raise UserError("No Product Match")
         
         company_id = self.env['res.company'].browse(1).id
         
