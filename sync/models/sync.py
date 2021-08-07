@@ -217,8 +217,8 @@ class sync(models.Model):
             external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
             
             ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
-            if(len(contact_ids) > 0):
-                self.updateProducts(self.env['stock.production.lot'].browse(ccp_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+            if(len(ccp_ids) > 0):
+                self.updateProducts(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
             else:
                 self.createProducts(sheet, external_id, sheetWidth, i)
             
