@@ -29,11 +29,6 @@ _logger = logging.getLogger(__name__)
 
 class sync(models.Model):
     _name = "sync.sync"
-    _inherit = "google.drive.config"
-    _description = "Sync App"
-
-class sync(models.Model):
-    _name = "sync.sync"
     
     _inherit = "google.drive.config"
     
@@ -213,7 +208,9 @@ class sync(models.Model):
         r = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) == "FALSE"):
-                break;
+                break
+            if(str(sheet[i * sheetWidth + 6]["content"]["$t"])):
+                continue
             external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
             
             ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
