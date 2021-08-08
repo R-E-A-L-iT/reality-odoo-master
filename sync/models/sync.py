@@ -42,7 +42,7 @@ class sync(models.Model):
         _logger.info("Ending Sync")
         
     def getSyncData(self):
-        template_id = "12y6FkK_c95swZvqdwyNL-04cQFpqTGUGjJ1Syj-11_Y"
+        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
 
@@ -71,6 +71,7 @@ class sync(models.Model):
                 return
         if(msg != ""):
             self.syncFail(msg)
+            
     def getSyncValues(self, template_id, sheetIndex, syncType):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
@@ -104,15 +105,12 @@ class sync(models.Model):
         i = 1
         r = ""
         msg = ""
+        msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i * sheetWidth + 12]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             try:
@@ -123,14 +121,12 @@ class sync(models.Model):
                 else:
                     self.createCompany(sheet, external_id, sheetWidth, i)
             except:
-                j = 0
                 _logger.info("Companies")
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = self.endTable(msg)
                 return True, msg
             i = i + 1
+        msg = self.endTable(msg)
         return False, msg
             
     def updateCompany(self, company, sheet, sheetWidth, i):
@@ -163,24 +159,17 @@ class sync(models.Model):
         i = 1
         r = ""
         msg = ""
+        msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i * sheetWidth + 10]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                 
             if(not self.check_id(str(sheet[i * sheetWidth + 3]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             try:
@@ -192,15 +181,12 @@ class sync(models.Model):
                 else:
                     self.createContacts(sheet, external_id, sheetWidth, i)
             except:
-                j = 0
                 _logger.info("Contacts")
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
-                i = i + 1
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = self.endTable(msg)
                 return True, msg
             i = i + 1
+        msg = self.endTable(msg)
         return False, msg
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
@@ -232,25 +218,17 @@ class sync(models.Model):
         i = 1
         r = ""
         msg = ""
+        msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             if(not self.check_price(sheet[i * sheetWidth + 3]["content"]["$t"])):
-                j = 0
-                _logger.info("Price: " + str(self.check_price(sheet[i * sheetWidth + 3]["content"]["$t"])))
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
@@ -263,14 +241,12 @@ class sync(models.Model):
                 else:
                     self.createProducts(sheet, external_id, sheetWidth, i)
             except:
-                j = 0
                 _logger.info("Products")
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = self.endTable(msg)
                 return True, msg
             i = i + 1
+        msg = self.endTable(msg)
         return False, msg
             
     def updateProducts(self, product, sheet, sheetWidth, i):
@@ -292,6 +268,7 @@ class sync(models.Model):
         i = 1
         r = ""
         msg = ""
+        msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
@@ -300,11 +277,7 @@ class sync(models.Model):
                 continue
 
             if(not self.check_id(str(sheet[i * sheetWidth + 2]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
@@ -317,14 +290,12 @@ class sync(models.Model):
                 else:
                     self.createCCP(sheet, external_id, sheetWidth, i)
             except:
-                j = 0
                 _logger.info("CCP")
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = self.endTable(msg)
                 return True, msg
             i = i + 1
+        msg = self.endTable(msg)
         return False, msg
 
             
@@ -360,6 +331,7 @@ class sync(models.Model):
         i = 1
         r = ""
         msg = ""
+        msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
@@ -368,47 +340,27 @@ class sync(models.Model):
                 continue
             
             if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             if(not self.check_id(str(sheet[i * sheetWidth + 14]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             if(not self.check_id(str(sheet[i * sheetWidth + 16]["content"]["$t"]))):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             if(not self.check_price(sheet[i * sheetWidth + 5]["content"]["$t"])):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             if(not self.check_price(sheet[i * sheetWidth + 6]["content"]["$t"])):
-                j = 0
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
@@ -417,16 +369,12 @@ class sync(models.Model):
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
             except:
-                j = 0
                 _logger.info("Pricelist")
-                while(j < sheetWidth):
-                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
-                    j = j + 1
-                msg = msg + "\n"
-                msg = msg + "\n"
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 return True, msg
             
             i = i + 1
+        msg = self.endTable(msg)
         return False, msg
             
     def pricelistProduct(self, sheet, sheetWidth, i):
@@ -441,7 +389,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
         pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
         if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
+            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[0].res_id)
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
@@ -459,7 +407,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
         pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
         if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
+            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[0].res_id)
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 6]["content"]["$t"]) != ""):
@@ -496,7 +444,7 @@ class sync(models.Model):
                                                                  ('name', '=', 'product.template,name'),
                                                                 ('lang', '=', 'fr_CA')])
         if(len(product_name_french) > 0):
-            product_name_french[len(product_name_french) - 1].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+            product_name_french[0].value = sheet[i * sheetWidth + 3]["content"]["$t"]
         else:
             product_name_french_new = self.env['ir.translation'].create({'name':'product.template,name', 
                                                                         'lang':'fr_CA',
@@ -507,7 +455,7 @@ class sync(models.Model):
                                                                  ('name', '=', 'product.template,description_sale'),
                                                                 ('lang', '=', 'fr_CA')])
         if(len(product_description_french) > 0):
-            product_description_french[len(product_description_french) - 1].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+            product_description_french[0].value = sheet[i * sheetWidth + 3]["content"]["$t"]
         else:
             product_description_french_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
                                                                         'lang':'fr_CA',
@@ -539,8 +487,58 @@ class sync(models.Model):
             return False
             _logger.info("Price: " + str(price))
     
+    def buildMSG(self, msg, sheet, sheetWidth, i):
+        if(msg == ""):
+            msg = self.startTable(msg, sheet, sheetWidth, True)
+        msg = msg + "<tr>"
+        j = 0
+        while(j < sheetWidth):
+            msg = msg + "<td>" + str(sheet[sheetWidth * i + j]["content"]["$t"])
+            j = j + 1
+        msg = msg + "</tr>"
+        return msg
+            
+    def startTable(self, msg, sheet, sheetWidth, force=False):
+        if(force):
+            msg = msg + "<table><tr>"
+            j = 0
+            while(j < sheetWidth):
+                msg = msg + "<th><strong>" + str(sheet[j]["content"]["$t"]) + "</strong></th>"
+                j = j + 1
+            msg = msg + "</tr>"
+        elif(msg != ""):
+            msg = msg + "<table><tr>"
+            while(j < sheetWidth):
+                msg = msg + "<th>" + str(sheet[j]["content"]["$t"]) + "</th>"
+                j = j + 1
+            msg = msg + "</tr>"
+            
+        return msg
+    
+    def endTable(self, msg):
+        if(msg != ""):
+            msg = msg + "</table>"
+        return msg
+            
+    
     def syncCancel(self, msg):
-        msg = "The Sync Procsess Was forced to quit and no records were updated\n The Following Rows of The Google Sheet Table are invalid\n" + msg
+        msg = "<h1>The Sync Procsess Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + msg + "<a href=\"https://ezeake-reality-test-3014753.dev.odoo.com/web#action=12&cids=1&id=34&menu_id=4&model=ir.cron&view_type=form\">Manual Retry</a>"
+        _logger.info(msg)
+        self.sendSyncReport(msg)
     
     def syncFail(self, msg):
-        msg = "The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo" + msg
+        msg = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>" + msg + "<a href=\"https://ezeake-reality-test-3014753.dev.odoo.com/web#action=12&cids=1&id=34&menu_id=4&model=ir.cron&view_type=form\">Manual Retry</a>"
+        _logger.info(msg)
+        self.sendSyncReport(msg)
+    
+    def sendSyncReport(self, msg):
+        values = {'subject': 'Sync Report'}
+        message = self.env['mail.message'].create(values)[0]
+        
+        values = {'mail_message_id': message.id}
+        
+        email = self.env['mail.mail'].create(values)[0]
+        email.body_html = msg
+        email.email_to = "tyjcyr@gmail.com"
+        email_id = {email.id}
+        email.process_email_queue(email_id)        
