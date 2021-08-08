@@ -37,7 +37,6 @@ class sync(models.Model):
     _description = "Sync App"
     
     
-    toggle = fields.Boolean(string="Report Trigger", default="False")
     msg = fields.Text(string="Error MSG")
     
     def start_sync(self):
@@ -545,9 +544,6 @@ class sync(models.Model):
     
     def syncCancel(self, msg):
         self.msg = "The Sync Procsess Was forced to quit and no records were updated\n The Following Rows of The Google Sheet Table are invalid\n" + msg
-        self.toggle = not self.toggle
     
     def syncFail(self, msg):
         self.msg = "The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo" + msg
-        self.toggle = not self.toggle
-        
