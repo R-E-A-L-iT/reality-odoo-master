@@ -52,7 +52,7 @@ class sync(models.Model):
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
-            raise UserError(_("Invalid Document"))
+            raise UserError(_("Invalid Main Document"))
         i = 1
         sheetIndex = ""
         syncType = ""
@@ -84,18 +84,23 @@ class sync(models.Model):
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
-            raise UserError(_("Invalid Document"))
+            raise UserError(_("Invalid Sheet: %s" % sheetIndex))
         sheet = req.json()["feed"]["entry"]
         
         if(syncType == "Companies"):
+            _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
         elif(syncType == "Contacts"):
+            _logger.info("Contacts")
             quit, msg = self.syncContacts(sheet)
         elif(syncType == "Products"):
+            _logger.info("Products")
             quit, msg = self.syncProducts(sheet)
         elif(syncType == "CCP"):
+            _logger.info("CCP")
             quit, msg = self.syncCCP(sheet)
         elif(syncType == "Pricelist"):
+            _logger.info("Pricelist")
             quit, msg = self.syncPricelist(sheet)
         return quit, msg
             
@@ -369,7 +374,6 @@ class sync(models.Model):
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
             except:
-                _logger.info("Pricelist")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 return True, msg
             
@@ -389,7 +393,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
         pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
         if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[0].res_id)
+            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
@@ -407,7 +411,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
         pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
         if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[0].res_id)
+            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 6]["content"]["$t"]) != ""):
@@ -421,7 +425,7 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 6]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
     
-    def updatePricelistProducts(self, product, sheet, sheetWidth, i):
+    def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
         product.description_sale = sheet[i * sheetWidth + 2]["content"]["$t"]
         
@@ -435,27 +439,34 @@ class sync(models.Model):
         product.tracking = "serial"
         product.type = "product"
         
-        self.translatePricelistFrench(product, sheet, sheetWidth, i)
+        self.translatePricelistFrench(product, sheet, sheetWidth, i, new)
         
         return product
         
-    def translatePricelistFrench(self, product, sheet, sheetWidth, i):
+    def translatePricelistFrench(self, product, sheet, sheetWidth, i, new):
+        if(new):
+            _logger.info("RETURN")
+            return
         product_name_french = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                  ('name', '=', 'product.template,name'),
                                                                 ('lang', '=', 'fr_CA')])
+
         if(len(product_name_french) > 0):
-            product_name_french[0].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+            product_name_french[len(product_name_french) - 1].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+
         else:
             product_name_french_new = self.env['ir.translation'].create({'name':'product.template,name', 
                                                                         'lang':'fr_CA',
                                                                         'res_id': product.id})[0]
             product_name_french_new.value = sheet[i * sheetWidth + 3]["content"]["$t"]
             
+
         product_description_french = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                  ('name', '=', 'product.template,description_sale'),
                                                                 ('lang', '=', 'fr_CA')])
+
         if(len(product_description_french) > 0):
-            product_description_french[0].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+            product_description_french[len(product_description_french) - 1].value = sheet[i * sheetWidth + 4]["content"]["$t"]
         else:
             product_description_french_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
                                                                         'lang':'fr_CA',
@@ -467,7 +478,7 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
-        self.updatePricelistProducts(product, sheet, sheetWidth, i)
+        self.updatePricelistProducts(product, sheet, sheetWidth, i, True)
         return product
     
     def check_id(self, id):
