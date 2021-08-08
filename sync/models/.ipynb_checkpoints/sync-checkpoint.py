@@ -392,7 +392,8 @@ class sync(models.Model):
     
     def pricelistCAN(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
-        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
+        pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
@@ -400,7 +401,6 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 5]["content"]["$t"]
         else:
-            pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
@@ -408,7 +408,8 @@ class sync(models.Model):
     
     def pricelistUS(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
-        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
+        pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
@@ -416,7 +417,6 @@ class sync(models.Model):
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
         else:
-            pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
