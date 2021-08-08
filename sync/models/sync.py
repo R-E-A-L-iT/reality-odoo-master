@@ -36,9 +36,6 @@ class sync(models.Model):
     
     _description = "Sync App"
     
-    
-    msg = fields.Text(string="Error MSG")
-    
     def start_sync(self):
         _logger.info("Starting Sync")
         self.getSyncData()
@@ -543,7 +540,7 @@ class sync(models.Model):
             _logger.info("Price: " + str(price))
     
     def syncCancel(self, msg):
-        self.msg = "The Sync Procsess Was forced to quit and no records were updated\n The Following Rows of The Google Sheet Table are invalid\n" + msg
+        msg = "The Sync Procsess Was forced to quit and no records were updated\n The Following Rows of The Google Sheet Table are invalid\n" + msg
     
     def syncFail(self, msg):
-        self.msg = "The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo" + msg
+        msg = "The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo" + msg
