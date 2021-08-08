@@ -392,38 +392,34 @@ class sync(models.Model):
     
     def pricelistCAN(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
-        pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
-        if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
+        if(len(pricelist_item_ids) > 0): 
+            pricelist_item = pricelist_item_ids[len(pricelist_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 5]["content"]["$t"]
         else:
-            ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.pricelist.item"})
             pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            ext.res_id = pricelist_item.id
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 5]["content"]["$t"]
     
     def pricelistUS(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
-        pricelist_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.pricelist.item')])
-        if(len(pricelist_ids) > 0): 
-            pricelist_item = self.env['product.pricelist.item'].browse(pricelist_ids[len(pricelist_ids) - 1].res_id)
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
+        if(len(pricelist_item_ids) > 0): 
+            pricelist_item = pricelist_item_ids[len(pricelist_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 6]["content"]["$t"]) != ""):
+            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
         else:
-            ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.pricelist.item"})
             pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            ext.res_id = pricelist_item.id
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 6]["content"]["$t"]) != ""):
+            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
                 pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
@@ -481,7 +477,7 @@ class sync(models.Model):
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
         _logger.info(True)
-        self.updatePricelistProducts(product, sheet, sheetWidth, i, True)
+        self.updatePricelistProducts(product, sheet, sheetWidth, i, new=True)
         return product
     
     def check_id(self, id):
