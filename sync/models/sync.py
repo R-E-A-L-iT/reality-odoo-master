@@ -36,6 +36,8 @@ class sync(models.Model):
     
     _description = "Sync App"
     
+    msg = fields.Text(char="Error MSG")
+    
     def start_sync(self):
         _logger.info("Starting Sync")
         self.getSyncData()
