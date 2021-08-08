@@ -36,7 +36,7 @@ class sync(models.Model):
     
     _description = "Sync App"
     
-    msg = fields.Text(string="Message")
+    msg = fields.Text(required=True, default="", string="Message")
     
     def start_sync(self):
         _logger.info("Starting Sync")
