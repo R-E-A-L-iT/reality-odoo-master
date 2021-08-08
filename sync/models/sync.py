@@ -32,11 +32,11 @@ class sync(models.Model):
     
     _inherit = "google.drive.config"
     
-    DatabaseURL = fields.Char(default="https://docs.google.com/spreadsheets/d/14XrvJUaWddKFIEV3eYZvcCtAyzkvdNDswsREgUxiv_A/edit?usp=sharing")
+    DatabaseURL = fields.Char(default="")
     
     _description = "Sync App"
     
-    msg = fields.Text(char="Error MSG")
+    msg = fields.Text(string="Error MSG")
     
     def start_sync(self):
         _logger.info("Starting Sync")
