@@ -329,9 +329,7 @@ class sync(models.Model):
         return product
         
     def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
-        raise UserError(_(external_id))
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        raise UserError(_("HERE!!!"))
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
         self.updatePricelistProducts(product, sheet, sheetWidth, i)
