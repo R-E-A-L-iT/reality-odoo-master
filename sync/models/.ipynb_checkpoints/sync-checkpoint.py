@@ -36,6 +36,8 @@ class sync(models.Model):
     
     _description = "Sync App"
     
+    msg = fields.Text(string="Message")
+    
     def start_sync(self):
         _logger.info("Starting Sync")
         self.getSyncData()
@@ -56,15 +58,21 @@ class sync(models.Model):
         i = 1
         sheetIndex = ""
         syncType = ""
+        msg = ""
         while(True):
             
             if(str(req.json()["feed"]["entry"][i * 4 + 3]["content"]["$t"]) != "TRUE"):
                 break
             sheetIndex = str(req.json()["feed"]["entry"][i * 4 + 1]["content"]["$t"])
             syncType = str(req.json()["feed"]["entry"][i * 4 + 2]["content"]["$t"])
-            self.getSyncValues(template_id, sheetIndex, syncType)
+            quit, msgr = self.getSyncValues(template_id, sheetIndex, syncType)
+            msg = msg + msgr
             i = i + 1
-        
+            if(quit):
+                self.syncCancel(msg)
+                return
+        if(msg != ""):
+            self.syncFail(msg)
     def getSyncValues(self, template_id, sheetIndex, syncType):
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
@@ -72,6 +80,7 @@ class sync(models.Model):
         request_url = "https://spreadsheets.google.com/feeds/cells/%s/%s/private/full?access_token=%s&alt=json" % (template_id, sheetIndex, access_token)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
         
+        msg = ""
         try:
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
@@ -80,32 +89,51 @@ class sync(models.Model):
         sheet = req.json()["feed"]["entry"]
         
         if(syncType == "Companies"):
-            self.syncCompanies(sheet)
+            quit, msg = self.syncCompanies(sheet)
         elif(syncType == "Contacts"):
-            self.syncContacts(sheet)
+            quit, msg = self.syncContacts(sheet)
         elif(syncType == "Products"):
-            self.syncProducts(sheet)
+            quit, msg = self.syncProducts(sheet)
         elif(syncType == "CCP"):
-            self.syncCCP(sheet)
+            quit, msg = self.syncCCP(sheet)
         elif(syncType == "Pricelist"):
-            self.syncPricelist(sheet)
+            quit, msg = self.syncPricelist(sheet)
+        return quit, msg
             
     def syncCompanies(self, sheet):
         
         sheetWidth = 16
         i = 1
         r = ""
+        msg = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
-            external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
-            company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
-            if(len(company_ids) > 0):
-                self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
-            else:
-                self.createCompany(sheet, external_id, sheetWidth, i)
-            
+            if(not self.check_id(str(sheet[i * sheetWidth + 12]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+            try:
+                external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
+                company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
+                if(len(company_ids) > 0):
+                    self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
+                else:
+                    self.createCompany(sheet, external_id, sheetWidth, i)
+            except:
+                j = 0
+                _logger.info("Companies")
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                return True, msg
             i = i + 1
+        return False, msg
             
     def updateCompany(self, company, sheet, sheetWidth, i):
         
@@ -136,18 +164,46 @@ class sync(models.Model):
         sheetWidth = 15
         i = 1
         r = ""
+        msg = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
-            external_id = str(sheet[i * sheetWidth + 10]["content"]["$t"])
+            if(not self.check_id(str(sheet[i * sheetWidth + 10]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+                
+            if(not self.check_id(str(sheet[i * sheetWidth + 3]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+            try:
+                external_id = str(sheet[i * sheetWidth + 10]["content"]["$t"])
             
-            contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
-            if(len(contact_ids) > 0):
-                self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
-            else:
-                self.createContacts(sheet, external_id, sheetWidth, i)
-            
+                contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
+                if(len(contact_ids) > 0):
+                    self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+                else:
+                    self.createContacts(sheet, external_id, sheetWidth, i)
+            except:
+                j = 0
+                _logger.info("Contacts")
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                return True, msg
             i = i + 1
+        return False, msg
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
         contact.name = sheet[i * sheetWidth]["content"]["$t"]
@@ -177,18 +233,47 @@ class sync(models.Model):
         sheetWidth = 7
         i = 1
         r = ""
+        msg = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
-            external_id = str(sheet[i * sheetWidth]["content"]["$t"])
+            if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            if(not self.check_price(sheet[i * sheetWidth + 3]["content"]["$t"])):
+                j = 0
+                _logger.info("Price: " + str(self.check_price(sheet[i * sheetWidth + 3]["content"]["$t"])))
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
             
-            product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
-            if(len(product_ids) > 0):
-                self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
-            else:
-                self.createProducts(sheet, external_id, sheetWidth, i)
+            try:
+                external_id = str(sheet[i * sheetWidth]["content"]["$t"])
             
+                product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
+                if(len(product_ids) > 0):
+                    self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
+                else:
+                    self.createProducts(sheet, external_id, sheetWidth, i)
+            except:
+                j = 0
+                _logger.info("Products")
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                return True, msg
             i = i + 1
+        return False, msg
             
     def updateProducts(self, product, sheet, sheetWidth, i):
         product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
@@ -208,21 +293,42 @@ class sync(models.Model):
         sheetWidth = 9
         i = 1
         r = ""
+        msg = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != "TRUE"):
                 i = i + 1
                 continue
-            external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
+
+            if(not self.check_id(str(sheet[i * sheetWidth + 2]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            try:
+                external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
             
-            ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
-            if(len(ccp_ids) > 0):
-                self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
-            else:
-                self.createCCP(sheet, external_id, sheetWidth, i)
-            
+                ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
+                if(len(ccp_ids) > 0):
+                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
+                else:
+                    self.createCCP(sheet, external_id, sheetWidth, i)
+            except:
+                j = 0
+                _logger.info("CCP")
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                return True, msg
             i = i + 1
+        return False, msg
+
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
         ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
@@ -255,6 +361,7 @@ class sync(models.Model):
         sheetWidth = 19
         i = 1
         r = ""
+        msg = ""
         while(True):
             if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
                 break
@@ -262,12 +369,67 @@ class sync(models.Model):
                 i = i + 1
                 continue
             
-            product = self.pricelistProduct(sheet, sheetWidth, i)
-            self.pricelistCAN(product, sheet, sheetWidth, i)
-            self.pricelistUS(product, sheet, sheetWidth, i)
-            
+            if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            if(not self.check_id(str(sheet[i * sheetWidth + 14]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            if(not self.check_id(str(sheet[i * sheetWidth + 16]["content"]["$t"]))):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            if(not self.check_price(sheet[i * sheetWidth + 5]["content"]["$t"])):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            if(not self.check_price(sheet[i * sheetWidth + 6]["content"]["$t"])):
+                j = 0
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                i = i + 1
+                continue
+               
+            try:
+                product = self.pricelistProduct(sheet, sheetWidth, i)
+                self.pricelistCAN(product, sheet, sheetWidth, i)
+                self.pricelistUS(product, sheet, sheetWidth, i)
+            except:
+                j = 0
+                _logger.info("Pricelist")
+                while(j < sheetWidth):
+                    msg = msg + str(sheet[i * sheetWidth + j]["content"]["$t"]) + " | "
+                    j = j + 1
+                msg = msg + "\n"
+                msg = msg + "\n"
+                return True, msg
             
             i = i + 1
+        return False, msg
             
     def pricelistProduct(self, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth]["content"]["$t"])  
@@ -361,3 +523,27 @@ class sync(models.Model):
         ext.res_id = product.id
         self.updatePricelistProducts(product, sheet, sheetWidth, i)
         return product
+    
+    def check_id(self, id):
+        if(" " in id):
+            _logger.info("ID: " + str(id))
+            return False
+        else:
+            return True
+    
+    def check_price(self, price):
+        if(price in ("", " ")):
+            return True
+        try:
+            float(price)
+            return True
+        except:
+            return False
+            _logger.info("Price: " + str(price))
+    
+    def syncCancel(self, msg):
+        raise UserError(_("CANCEL\n" + msg))
+    
+    def syncFail(self, msg):
+        raise UserError(_("FAIL\n" + msg))
+        
