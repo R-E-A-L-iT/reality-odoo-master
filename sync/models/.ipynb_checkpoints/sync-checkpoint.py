@@ -394,7 +394,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
         pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
         if(len(pricelist_item_ids) > 0): 
-            pricelist_item = pricelist_item_ids[len(pricelist_ids) - 1]
+            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
@@ -410,7 +410,7 @@ class sync(models.Model):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
         pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name)])
         if(len(pricelist_item_ids) > 0): 
-            pricelist_item = pricelist_item_ids[len(pricelist_ids) - 1]
+            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
