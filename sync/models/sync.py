@@ -42,6 +42,7 @@ class sync(models.Model):
         _logger.info("Ending Sync")
         
     def getSyncData(self):
+        
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         access_token = self.get_access_token()
@@ -58,9 +59,9 @@ class sync(models.Model):
         syncType = ""
         msg = ""
         while(True):
-            
             if(str(req.json()["feed"]["entry"][i * 4 + 3]["content"]["$t"]) != "TRUE"):
                 break
+                
             sheetIndex = str(req.json()["feed"]["entry"][i * 4 + 1]["content"]["$t"])
             syncType = str(req.json()["feed"]["entry"][i * 4 + 2]["content"]["$t"])
             quit, msgr = self.getSyncValues(template_id, sheetIndex, syncType)
@@ -373,8 +374,7 @@ class sync(models.Model):
                 product = self.pricelistProduct(sheet, sheetWidth, i)
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
-            except Exception as e:
-                _logger.info(str(e))
+            except:
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 return True, msg
             
@@ -393,7 +393,7 @@ class sync(models.Model):
     def pricelistCAN(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
         pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
-        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name), ('pricelist_id', '=', pricelist_id)])
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
@@ -409,7 +409,7 @@ class sync(models.Model):
     def pricelistUS(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
         pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
-        pricelist_item_ids = self.env['product.pricelist.item'].search([('name','=', product.name), ('pricelist_id', '=', pricelist_id)])
+        pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
@@ -441,9 +441,8 @@ class sync(models.Model):
         return product
         
     def translatePricelistFrench(self, product, sheet, sheetWidth, i, new):
-        _logger.info(new)
         if(new == True):
-            _logger.info("RETURN")
+            return
         else:
             product_name_french = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                      ('name', '=', 'product.template,name'),
@@ -476,7 +475,6 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
         product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
         ext.res_id = product.id
-        _logger.info(True)
         self.updatePricelistProducts(product, sheet, sheetWidth, i, new=True)
         return product
     
@@ -532,12 +530,14 @@ class sync(models.Model):
             
     
     def syncCancel(self, msg):
-        msg = "<h1>The Sync Procsess Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + msg + "<a href=\"https://ezeake-reality-test-3014753.dev.odoo.com/web#action=12&cids=1&id=34&menu_id=4&model=ir.cron&view_type=form\">Manual Retry</a>"
+        link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
+        msg = "<h1>The Sync Procsess Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + msg + "<a href=\"" + link + "\">Manual Retry</a>"
         _logger.info(msg)
         self.sendSyncReport(msg)
     
     def syncFail(self, msg):
-        msg = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>" + msg + "<a href=\"https://ezeake-reality-test-3014753.dev.odoo.com/web#action=12&cids=1&id=34&menu_id=4&model=ir.cron&view_type=form\">Manual Retry</a>"
+        link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
+        msg = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>" + msg + "<a href=\"" + link + "\">Manual Retry</a>"
         _logger.info(msg)
         self.sendSyncReport(msg)
     
