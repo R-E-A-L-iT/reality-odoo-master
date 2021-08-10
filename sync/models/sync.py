@@ -549,6 +549,6 @@ class sync(models.Model):
         
         email = self.env['mail.mail'].create(values)[0]
         email.body_html = msg
-        email.email_to = "sync@store.r-e-a-l.it"
+        email.email_to = "ezekiel@r-e-a-l.it"
         email_id = {email.id}
         email.process_email_queue(email_id)        
