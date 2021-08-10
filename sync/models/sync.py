@@ -186,8 +186,9 @@ class sync(models.Model):
                     self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createContacts(sheet, external_id, sheetWidth, i)
-            except:
+            except Exception as e:
                 _logger.info("Contacts")
+                _logger.info(str(e))
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
