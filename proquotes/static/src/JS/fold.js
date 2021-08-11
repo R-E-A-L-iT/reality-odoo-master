@@ -28,13 +28,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
                 expandHTML = "+";
             } else {
                 TRstyle = "table-row";
-//                 expandHTML = "&#215;";
+                expandHTML = "&#215;";
             }
             var x = cb;
             while(x.tagName != "TR"){
                 x = x.parentNode;
             }
-            //x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
+            x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")) {
@@ -63,13 +63,13 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             expandHTML = "+";
         } else {
             TRstyle = "table-row";
-//             expandHTML = "&#215;";
+            expandHTML = "&#215;";
         }
         var x = cb.currentTarget;
         while(x.tagName != "TR") {
             x = x.parentNode;
         }
-        //x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
+        x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
         var y = x.nextElementSibling;
         while(y != null && y != undefined) {
             if(y.className.includes("is-subtotal")) {
