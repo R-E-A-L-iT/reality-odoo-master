@@ -106,7 +106,9 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _multipleChoiceView: function () {
         var cbl = document.querySelectorAll(".multipleChoice");
+        console.log("Multiple")
         for(var i = 0; i < cbl.length; i++){
+            console.log(cbl[i]);
             var cb = cbl[i];
             var x = cb;
             while(x.tagName != "TR"){
