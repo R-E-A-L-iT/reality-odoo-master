@@ -232,6 +232,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateView: function (total) {
+        console.log("view")
         this._multipleChoiceView();
         this._optionalView();
         this._updateFoldDisplay();
