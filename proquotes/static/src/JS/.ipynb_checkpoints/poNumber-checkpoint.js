@@ -2,7 +2,7 @@ odoo.define('proquotes.ponumber', function (require) {
 'use strict';
 var publicWidget = require('web.public.widget')
 
-publicWidget.registry.price = publicWidget.Widget.extend({
+publicWidget.registry.ponumber = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
     events: {
         'change .poNumber': '_update_po_number',

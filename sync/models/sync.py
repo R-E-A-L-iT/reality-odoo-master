@@ -53,6 +53,8 @@ class sync(models.Model):
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
+            msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
+            self.sendSyncReport(msg)
             raise UserError(_("Invalid Main Document"))
         i = 1
         sheetIndex = ""
@@ -85,6 +87,8 @@ class sync(models.Model):
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
+            msg = ("<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex) 
+            self.sendSyncReport(msg)
             raise UserError(_("Invalid Sheet: %s" % sheetIndex))
         sheet = req.json()["feed"]["entry"]
         

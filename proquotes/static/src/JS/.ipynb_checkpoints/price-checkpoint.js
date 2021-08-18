@@ -11,13 +11,14 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     async start() {
+        console.log("Start")
         await this._super(...arguments);
         this.orderDetail = this.$el.find('table#sales_order_table').data();
         this._onLoad();
     },
     
     _onLoad: function () {
-        
+        console.log("load");
         this._updatePriceTotalsEvent();
     },
     
@@ -85,7 +86,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }).then((data) =>{
             if(data) {
                 self.$('#portal_sale_content').html($(data['sale_inner_template']));
-                this._updateView(data['order_amount_total'])
+                this._updateView(data['order_amount_total']);
             }
             
         });
@@ -106,11 +107,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _multipleChoiceView: function () {
         var cbl = document.querySelectorAll(".multipleChoice");
+        console.log("Multiple");
         for(var i = 0; i < cbl.length; i++){
+            console.log(cbl[i]);
             var cb = cbl[i];
             var x = cb;
             while(x.tagName != "TR"){
-                x = x.parentNode
+                x = x.parentNode;
             }
             var y = x.nextElementSibling;
             var k = 0;
@@ -203,7 +206,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
             while(x.tagName != "TR"){
                 x = x.parentNode;
             }
-            //x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
+            x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while(y != null && y != undefined){
                 if(y.className.includes("is-subtotal")) {
@@ -226,10 +229,11 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateTotal: function (total){
-        document.querySelector("#portalTotal b").innerHTML = total
+        document.querySelector("#portalTotal b").innerHTML = total;
     },
     
     _updateView: function (total) {
+        console.log("view");
         this._multipleChoiceView();
         this._optionalView();
         this._updateFoldDisplay();
