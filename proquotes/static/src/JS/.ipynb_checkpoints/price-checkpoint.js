@@ -71,7 +71,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
         var y = p.nextElementSibling;
         var section_id = p.querySelector(".line_id").id;
-        while(y != null #& y != undefined){
+        while(y != null & y != undefined){
             if(y.className.includes("is-subtotal")){
                 break;
             }
@@ -86,7 +86,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }).then((data) =>{
             if(data) {
                 self.$('#portal_sale_content').html($(data['sale_inner_template']));
-                this._updateView(data['order_amount_total'])
+                this._updateView(data['order_amount_total']);
             }
             
         });
@@ -107,13 +107,13 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     
     _multipleChoiceView: function () {
         var cbl = document.querySelectorAll(".multipleChoice");
-        console.log("Multiple")
+        console.log("Multiple");
         for(var i = 0; i < cbl.length; i++){
             console.log(cbl[i]);
             var cb = cbl[i];
             var x = cb;
             while(x.tagName != "TR"){
-                x = x.parentNode
+                x = x.parentNode;
             }
             var y = x.nextElementSibling;
             var k = 0;
@@ -229,11 +229,11 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateTotal: function (total){
-        document.querySelector("#portalTotal b").innerHTML = total
+        document.querySelector("#portalTotal b").innerHTML = total;
     },
     
     _updateView: function (total) {
-        console.log("view")
+        console.log("view");
         this._multipleChoiceView();
         this._optionalView();
         this._updateFoldDisplay();
