@@ -71,7 +71,7 @@ publicWidget.registry.price = publicWidget.Widget.extend({
         }
         var y = p.nextElementSibling;
         var section_id = p.querySelector(".line_id").id;
-        while(y != null & y != undefined){
+        while(y != null && y != undefined){
             if(y.className.includes("is-subtotal")){
                 break;
             }
