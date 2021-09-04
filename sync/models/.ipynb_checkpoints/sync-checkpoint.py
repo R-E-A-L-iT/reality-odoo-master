@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 import ast
 import logging
 import json
@@ -28,7 +28,7 @@ _logger = logging.getLogger(__name__)
 class sync(models.Model):
     _name = "sync.sync"
     
-    _inherit = "google.drive.config"
+    _inherit = "sync.sheets"
     
     DatabaseURL = fields.Char(default="")
     
