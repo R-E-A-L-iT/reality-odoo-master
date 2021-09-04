@@ -20,3 +20,4 @@ GOOGLE_API_BASE_URL = 'https://www.googleapis.com'
 class googlesheetsAPI(models.Model):
     _name = "sync.sheets"
     _inherit = "google.drive.config"
+    _description = "Googlesheets API Handler"
