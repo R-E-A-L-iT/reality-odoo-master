@@ -1,5 +1,3 @@
-#-*- coding: utf-8 -*-
-
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import ast
@@ -45,16 +43,18 @@ class sync(models.Model):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        access_token = self.get_access_token()
+        access_token = self.get_access_token("https://www.googleapis.com/auth/spreadsheets.readonly")
 
-        request_url = "https://spreadsheets.google.com/feeds/cells/%s/1/private/full?access_token=%s&alt=json" % (template_id, access_token)
-        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (template_id)
+        headers = {"Accept": "Application/json",
+                  "Authorization": "OAuth %s" % (access_token)}
         try:
             req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
             msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
+            raise UserError(_(req.json()))
             raise UserError(_("Invalid Main Document"))
         i = 1
         sheetIndex = ""
