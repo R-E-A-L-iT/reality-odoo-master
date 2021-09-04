@@ -17,7 +17,7 @@ GOOGLE_AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth'
 GOOGLE_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token'
 GOOGLE_API_BASE_URL = 'https://www.googleapis.com'
 
-class googlesheetsAPI(models.Model):
+class googlesheetsAPI(models.AbstractModel):
     _name = "sync.sheets"
-    _inherit = "google.drive.config"
+    _inherit = "google.service"
     _description = "Googlesheets API Handler"
