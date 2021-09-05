@@ -4,6 +4,7 @@ import json
 import gspread
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 class sheetsAPI(models.Model):
