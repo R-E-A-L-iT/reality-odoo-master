@@ -40,7 +40,7 @@ class sync(models.Model):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
-            return
+            raise UserError(_("Authentication Values Missing"))
         self.getSyncData(psw)
         _logger.info("Ending Sync")
         
