@@ -34,9 +34,9 @@ class sync(models.Model):
     
     _description = "Sync App"
     
-    def start_sync(self, refresh=None, id=None, secret=None):
+    def start_sync(self, psw=None):
         _logger.info("Starting Sync")
-        if(refresh == None or id == None or secret==None):
+        if(psw == None):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
@@ -44,11 +44,12 @@ class sync(models.Model):
         self.getSyncData(refresh, id, secret)
         _logger.info("Ending Sync")
         
-    def getSyncData(self, refresh, id, secret):
+    def getSyncData(self, psw):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        self.getDoc(psw, template_id, 0)
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        access_token = self._get_spreadsheet_tokens(refresh, id, secret)
+        #access_token = self._get_spreadsheet_tokens(refresh, id, secret)
         request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (template_id)
         headers = {"Accept": "Application/json",
                   "Authorization": "OAuth %s" % (access_token)}
