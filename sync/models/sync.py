@@ -42,12 +42,14 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             raise UserError(_("Authentication Values Missing"))
         self.getSyncData(psw)
+        raise UserError(_("Complete"))
         _logger.info("Ending Sync")
         
     def getSyncData(self, psw):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         self.getDoc(psw, template_id, 0)
+        return
         google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         #access_token = self._get_spreadsheet_tokens(refresh, id, secret)
         request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (template_id)

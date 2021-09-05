@@ -10,7 +10,7 @@ class sheetsAPI(models.Model):
     _name = "sync.sheets"
     _description = "Google Sheets API Handler"
     
-    def getDoc(psw, spreadsheetID, sheet_num):
+    def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets"]
 
         creds = sac.from_json_keyfile_dict(psw, scope)
