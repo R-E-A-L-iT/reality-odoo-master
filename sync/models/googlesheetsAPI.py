@@ -36,10 +36,5 @@ class googlesheetsAPI(models.AbstractModel):
             req = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
         except requests.HTTPError:
-            if user_is_admin:
-                dummy, action_id = self.env['ir.model.data'].get_object_reference('base_setup', 'action_general_configuration')
-                msg = _("Something went wrong")
-                raise RedirectWarning(msg, action_id, _('Go to the configuration panel'))
-            else:
-                raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
+            raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
         return req.json().get('access_token')
