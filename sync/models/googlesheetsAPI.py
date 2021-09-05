@@ -4,7 +4,7 @@ import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
-class sheetsAPI(model.Model):
+class sheetsAPI(models.Model):
     _name = sync.sheets
     _description = "Google Sheets API Handler"
     
