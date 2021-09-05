@@ -36,7 +36,7 @@ class sync(models.Model):
     
     def start_sync(self, refresh=None, id=None, secret=None):
         _logger.info("Starting Sync")
-        if(refresh == None or id == None, or secret==None):
+        if(refresh == None or id == None or secret==None):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
