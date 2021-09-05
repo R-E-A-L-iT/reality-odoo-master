@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 import logging
 import gspread
-from oauth2client.service account import ServiceAccountCredntials
+from oauth2client.service_account import ServiceAccountCredntials
 
 import requests
 from werkzeug import urls
