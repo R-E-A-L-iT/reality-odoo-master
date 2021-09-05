@@ -23,31 +23,23 @@ class googlesheetsAPI(models.AbstractModel):
     _inherit = "google.service"
     _description = "Googlesheets API Handler"
     
-    def _get_google_tokens(self, authorize_code, service):
-        """ Call Google API to exchange authorization code against token, with POST request, to
-            not be redirected.
-        """
-        get_param = self.env['ir.config_parameter'].sudo().get_param
-        base_url = get_param('web.base.url', default='http://www.odoo.com?NoBaseUrl')
-        client_id = get_param('google_%s_client_id' % (service,), default=False)
-        client_secret = get_param('google_%s_client_secret' % (service,), default=False)
-
-        headers = {"content-type": "application/x-www-form-urlencoded"}
-        raise UserError(_(str(client_id)))
+    def _get_google_tokens(self, refresh, id, secret):
         data = {
-            'code': authorize_code,
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'grant_type': 'authorization_code',
-            'redirect_uri': base_url + '/google_account/authentication'
+            'client_id': id,
+            'refresh_token': refresh,
+            'client_secret': secret,
+            'grant_type': "refresh_token",
+            'scope': 'https://www.googleapis.com/auth/spreadsheets'
         }
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
         try:
-            dummy, response, dummy = self._do_request(GOOGLE_TOKEN_ENDPOINT, params=data, headers=headers, method='POST', preuri='')
-            access_token = response.get('access_token')
-            refresh_token = response.get('refresh_token')
-            ttl = response.get('expires_in')
-            return access_token
-        except requests.HTTPError as e:
-            raise UserError(_(str(e)))
-            error_msg = _("Something went wrong during your token generation. Maybe your Authorization Code is invalid")
-            raise self.env['res.config.settings'].get_config_warning(error_msg)
+            req = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers, timeout=TIMEOUT)
+            req.raise_for_status()
+        except requests.HTTPError:
+            if user_is_admin:
+                dummy, action_id = self.env['ir.model.data'].get_object_reference('base_setup', 'action_general_configuration')
+                msg = _("Something went wrong")
+                raise RedirectWarning(msg, action_id, _('Go to the configuration panel'))
+            else:
+                raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
+        return req.json().get('access_token')
