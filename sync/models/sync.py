@@ -41,7 +41,7 @@ class sync(models.Model):
             _logger.info(msg)
             self.sendSyncReport(msg)
             return
-        self.getSyncData(refresh, id, secret)
+        self.getSyncData(psw)
         _logger.info("Ending Sync")
         
     def getSyncData(self, psw):
