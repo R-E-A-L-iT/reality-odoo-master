@@ -45,7 +45,7 @@ class googlesheetsAPI(models.AbstractModel):
             access_token = response.get('access_token')
             refresh_token = response.get('refresh_token')
             ttl = response.get('expires_in')
-            return access_token, refresh_token, ttl
+            return access_token
         except requests.HTTPError as e:
             raise UserError(_(str(e)))
             error_msg = _("Something went wrong during your token generation. Maybe your Authorization Code is invalid")
