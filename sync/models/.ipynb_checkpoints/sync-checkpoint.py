@@ -40,6 +40,7 @@ class sync(models.Model):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
+            return
         self.getSyncData(refresh, id, secret)
         _logger.info("Ending Sync")
         
