@@ -7,7 +7,7 @@ from odoo import api, fields, models
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 class sheetsAPI(models.Model):
-    _name = sync.sheets
+    _name = "sync.sheets"
     _description = "Google Sheets API Handler"
     
     def getDoc(psw, spreadsheetID, sheet_num):
