@@ -16,5 +16,5 @@ class sheetsAPI(models.Model):
         creds = sac.from_json_keyfile_dict(psw, scope)
         client = gspread.authorize(creds)
         
-        doc = gspread.open_by_key(spreadsheetID)
+        doc = client.open_by_key(spreadsheetID)
 
