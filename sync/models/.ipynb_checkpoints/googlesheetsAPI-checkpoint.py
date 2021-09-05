@@ -35,6 +35,7 @@ class googlesheetsAPI(models.AbstractModel):
         try:
             req = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers, timeout=TIMEOUT)
             req.raise_for_status()
-        except requests.HTTPError:
+        except requests.HTTPError as e:
+            raise UserError(_(str(e)))
             raise UserError(_("Google Drive is not yet configured. Please contact your administrator."))
         return req.json().get('access_token')
