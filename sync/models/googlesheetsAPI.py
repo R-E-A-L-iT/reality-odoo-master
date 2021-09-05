@@ -33,6 +33,7 @@ class googlesheetsAPI(models.AbstractModel):
         client_secret = get_param('google_%s_client_secret' % (service,), default=False)
 
         headers = {"content-type": "application/x-www-form-urlencoded"}
+        raise UserError(_(client_id))
         data = {
             'code': authorize_code,
             'client_id': client_id,
