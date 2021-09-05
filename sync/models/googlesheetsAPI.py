@@ -23,7 +23,7 @@ class googlesheetsAPI(models.AbstractModel):
     _inherit = "google.service"
     _description = "Googlesheets API Handler"
     
-    def _get_google_tokens(self, refresh, id, secret):
+    def _get_spreadsheet_tokens(self, refresh, id, secret):
         data = {
             'client_id': id,
             'refresh_token': refresh,
