@@ -17,4 +17,5 @@ class sheetsAPI(models.Model):
         client = gspread.authorize(creds)
         
         doc = client.open_by_key(spreadsheetID)
+        raise UserError(str(doc.get_all_values()))
 
