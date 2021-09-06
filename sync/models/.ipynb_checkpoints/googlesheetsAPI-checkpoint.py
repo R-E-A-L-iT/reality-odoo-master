@@ -12,11 +12,11 @@ class sheetsAPI(models.Model):
     _description = "Google Sheets API Handler"
     
     def getDoc(self, psw, spreadsheetID, sheet_num):
-        scope = ["https://www.googleapis.com/auth/spreadsheets"]
+        scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
         creds = sac.from_json_keyfile_dict(psw, scope)
         client = gspread.authorize(creds)
         
         doc = client.open_by_key(spreadsheetID)
-        raise UserError(str(doc.worksheets()))
+        return doc.get_worksheet(sheet_num).get_all_values()
 

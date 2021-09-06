@@ -42,38 +42,30 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             raise UserError(_("Authentication Values Missing"))
         self.getSyncData(psw)
-        raise UserError(_("Complete"))
         _logger.info("Ending Sync")
         
     def getSyncData(self, psw):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-        self.getDoc(psw, template_id, 0)
-        return
-        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        #access_token = self._get_spreadsheet_tokens(refresh, id, secret)
-        request_url = "https://sheets.googleapis.com/v4/spreadsheets/%s" % (template_id)
-        headers = {"Accept": "Application/json",
-                  "Authorization": "OAuth %s" % (access_token)}
+        
         try:
-            req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
-            req.raise_for_status()
-        except requests.HTTPError:
+            sync_data = self.getDoc(psw, template_id, 0)
+        except:
             msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
-            raise UserError(_(req.json()))
             raise UserError(_("Invalid Main Document"))
         i = 1
         sheetIndex = ""
         syncType = ""
         msg = ""
         while(True):
-            if(str(req.json()["feed"]["entry"][i * 4 + 3]["content"]["$t"]) != "TRUE"):
+            if(str(sync_data[i][3]) != "TRUE"):
                 break
                 
-            sheetIndex = str(req.json()["feed"]["entry"][i * 4 + 1]["content"]["$t"])
-            syncType = str(req.json()["feed"]["entry"][i * 4 + 2]["content"]["$t"])
-            quit, msgr = self.getSyncValues(template_id, sheetIndex, syncType)
+            sheetIndex = int(sync_data[i][1])
+            syncType = str(sync_data[i][2])
+            
+            quit, msgr = self.getSyncValues(psw, template_id, sheetIndex, syncType)
             msg = msg + msgr
             i = i + 1
             if(quit):
@@ -82,22 +74,13 @@ class sync(models.Model):
         if(msg != ""):
             self.syncFail(msg)
             
-    def getSyncValues(self, template_id, sheetIndex, syncType):
-        google_web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        access_token = self.get_access_token()
-
-        request_url = "https://spreadsheets.google.com/feeds/cells/%s/%s/private/full?access_token=%s&alt=json" % (template_id, sheetIndex, access_token)
-        headers = {"Content-type": "application/x-www-form-urlencoded"}
-        
-        msg = ""
+    def getSyncValues(self, psw, template_id, sheetIndex, syncType):
         try:
-            req = requests.get(request_url, headers=headers, timeout=TIMEOUT)
-            req.raise_for_status()
-        except requests.HTTPError:
+            sheet = self.getDoc(psw, template_id, sheetIndex)
+        except:
             msg = ("<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex) 
             self.sendSyncReport(msg)
             raise UserError(_("Invalid Sheet: %s" % sheetIndex))
-        sheet = req.json()["feed"]["entry"]
         
         if(syncType == "Companies"):
             _logger.info("Companies")
@@ -124,20 +107,22 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][-1]) != "TRUE"):
                 break
-            if(not self.check_id(str(sheet[i * sheetWidth + 12]["content"]["$t"]))):
+            
+            if(not self.check_id(str(sheet[i][12]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
+            
             try:
-                external_id = str(sheet[i * sheetWidth + 12]["content"]["$t"])
+                external_id = str(sheet[i][12])
                 company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(company_ids) > 0):
                     self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createCompany(sheet, external_id, sheetWidth, i)
-            except:
+            except Exception as e:
                 _logger.info("Companies")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
@@ -148,25 +133,30 @@ class sync(models.Model):
             
     def updateCompany(self, company, sheet, sheetWidth, i):
         
-        company.name = sheet[i * sheetWidth]["content"]["$t"]
-        company.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
-        company.website = sheet[i * sheetWidth + 2]["content"]["$t"]
-        company.street = sheet[i * sheetWidth + 3]["content"]["$t"]
-        company.city = sheet[i * sheetWidth + 4]["content"]["$t"]
-        if(sheet[i * sheetWidth + 5]["content"]["$t"] != ""):
-            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 5]["content"]["$t"])])[0].id)
-        if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
-            company.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
-        company.zip = sheet[i * sheetWidth + 7]["content"]["$t"]
-        company.lang = sheet[i * sheetWidth + 8]["content"]["$t"]
-        company.email = sheet[i * sheetWidth + 9]["content"]["$t"]
-        if(sheet[i * sheetWidth + 10]["content"]["$t"] != ""):
-            company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 10]["content"]["$t"])])[0].id)
+        company.name = sheet[i][0]
+        company.phone = sheet[i][1]
+        company.website = sheet[i][2]
+        company.street = sheet[i][3]
+        company.city = sheet[i][4]
+        if(sheet[i][5] != ""):
+            _logger.info(str(sheet[i][5]))
+            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][5])])[0].id)
+        if(sheet[i][6] != ""):
+            name = sheet[i][6]
+            if(name == "US"):
+                name = "United States"
+                _logger.info(name)
+            company.country_id = int(self.env['res.country'].search([('name','=', name)])[0].id)
+        company.zip = sheet[i][7]
+        company.lang = sheet[i][8]
+        company.email = sheet[i][9]
+        if(sheet[i][10] != ""):
+            company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][10])])[0].id)
         company.is_company = True
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        company = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
+        company = self.env['res.partner'].create({'name': sheet[i][0]})[0]
         ext.res_id = company.id
         self.updateCompany(company, sheet, sheetWidth, i)
         
@@ -178,26 +168,26 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][-1]) != "TRUE"):
                 break
-            if(not self.check_id(str(sheet[i * sheetWidth + 10]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                 
-            if(not self.check_id(str(sheet[i * sheetWidth + 3]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][3]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             try:
-                external_id = str(sheet[i * sheetWidth + 10]["content"]["$t"])
+                external_id = str(sheet[i][10])
             
                 contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(contact_ids) > 0):
                     self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createContacts(sheet, external_id, sheetWidth, i)
-            except:
+            except Exception as e:
                 _logger.info("Contacts")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
@@ -207,25 +197,25 @@ class sync(models.Model):
         return False, msg
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
-        contact.name = sheet[i * sheetWidth]["content"]["$t"]
-        contact.phone = sheet[i * sheetWidth + 1]["content"]["$t"]
-        contact.email = sheet[i * sheetWidth + 2]["content"]["$t"]
-        if(sheet[i * sheetWidth + 3]["content"]["$t"] != ""):
-            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i * sheetWidth + 3]["content"]["$t"]), ('model', '=', 'res.partner')])[0].res_id)
-        contact.street = sheet[i * sheetWidth + 4]["content"]["$t"]
-        contact.city = sheet[i * sheetWidth + 5]["content"]["$t"]
-        if(sheet[i * sheetWidth + 6]["content"]["$t"] != ""):
-            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i * sheetWidth + 6]["content"]["$t"])])[0].id)
-        if(sheet[i * sheetWidth + 7]["content"]["$t"] != ""):
-            contact.country_id = int(self.env['res.country'].search([('name','=',sheet[i * sheetWidth + 7]["content"]["$t"])])[0].id)
-        contact.zip = sheet[i * sheetWidth + 8]["content"]["$t"]
-        if(sheet[i * sheetWidth + 9]["content"]["$t"] != ""):
-            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i * sheetWidth + 9]["content"]["$t"])])[0].id)
+        contact.name = sheet[i][0]
+        contact.phone = sheet[i][1]
+        contact.email = sheet[i][2]
+        if(sheet[i][3] != ""):
+            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i][3]), ('model', '=', 'res.partner')])[0].res_id)
+        contact.street = sheet[i][4]
+        contact.city = sheet[i][5]
+        if(sheet[i][6] != ""):
+            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][6])])[0].id)
+        if(sheet[i][7] != ""):
+            contact.country_id = int(self.env['res.country'].search([('name','=',sheet[i][7])])[0].id)
+        contact.zip = sheet[i][8]
+        if(sheet[i][9] != ""):
+            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
         contact.is_company = False
         
     def createContacts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        contact = self.env['res.partner'].create({'name': sheet[i * sheetWidth]["content"]["$t"]})[0]
+        contact = self.env['res.partner'].create({'name': sheet[i][0]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i)
         
@@ -237,20 +227,20 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][-1]) != "TRUE"):
                 break
-            if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][0]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i * sheetWidth + 3]["content"]["$t"])):
+            if(not self.check_price(sheet[i][3])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
             try:
-                external_id = str(sheet[i * sheetWidth]["content"]["$t"])
+                external_id = str(sheet[i][0])
             
                 product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
                 if(len(product_ids) > 0):
@@ -267,15 +257,15 @@ class sync(models.Model):
         return False, msg
             
     def updateProducts(self, product, sheet, sheetWidth, i):
-        product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
-        product.description_sale = sheet[i * sheetWidth + 2]["content"]["$t"]
-        product.price = sheet[i * sheetWidth + 3]["content"]["$t"]
+        product.name = sheet[i][1]
+        product.description_sale = sheet[i][2]
+        product.price = sheet[i][3]
         product.tracking = "serial"
         product.type = "product"
         
     def createProducts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
         ext.res_id = product.id
         self.updateProducts(product, sheet, sheetWidth, i)
         
@@ -287,19 +277,19 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][-1]) != "TRUE"):
                 break
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][6]) != "TRUE"):
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(sheet[i * sheetWidth + 2]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][2]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             try:
-                external_id = str(sheet[i * sheetWidth + 2]["content"]["$t"])
+                external_id = str(sheet[i][2])
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
@@ -317,28 +307,28 @@ class sync(models.Model):
 
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
-        ccp_item.name = sheet[i * sheetWidth + 1]["content"]["$t"]
+        ccp_item.name = sheet[i][1]
         
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
         ccp_item.product_id = product_ids[len(product_ids) - 1].id
-        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i * sheetWidth]["content"]["$t"]), 
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), 
                                                           ('model', '=', 'res.partner')])
         ccp_item.owner = owner_ids[len(owner_ids) - 1].res_id
-        if(sheet[i * sheetWidth + 5]["content"]["$t"] != "FALSE"):
-            ccp_item.expire = sheet[i * sheetWidth + 5]["content"]["$t"]
+        if(sheet[i][5] != "FALSE"):
+            ccp_item.expire = sheet[i][5]
         else:
             ccp_item.expire = None
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i * sheetWidth + 4]["content"]["$t"])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
         
         product_id = product_ids[len(product_ids) - 1].id
         
         company_id = self.env['res.company'].search([('id', '=', 1)]).id
         
-        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"],
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i][1],
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
@@ -350,33 +340,33 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i * sheetWidth + (sheetWidth - 1)]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][sheetWidth - 1]) != "TRUE"):
                 break
-            if(str(sheet[i * sheetWidth + 17]["content"]["$t"]) != "TRUE"):
+            if(str(sheet[i][17]) != "TRUE"):
                 i = i + 1
                 continue
             
-            if(not self.check_id(str(sheet[i * sheetWidth]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][0]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i * sheetWidth + 14]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][14]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i * sheetWidth + 16]["content"]["$t"]))):
+            if(not self.check_id(str(sheet[i][16]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i * sheetWidth + 5]["content"]["$t"])):
+            if(not self.check_price(sheet[i][5])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i * sheetWidth + 6]["content"]["$t"])):
+            if(not self.check_price(sheet[i][6])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
@@ -394,7 +384,7 @@ class sync(models.Model):
         return False, msg
             
     def pricelistProduct(self, sheet, sheetWidth, i):
-        external_id = str(sheet[i * sheetWidth]["content"]["$t"])  
+        external_id = str(sheet[i][0])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0): 
             return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
@@ -402,45 +392,45 @@ class sync(models.Model):
             return self.createPricelistProducts(sheet, external_id, sheetWidth, i)
     
     def pricelistCAN(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i * sheetWidth + 14]["content"]["$t"])
+        external_id = str(sheet[i][14])
         pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
-                pricelist_item.fixed_price = sheet[i * sheetWidth + 5]["content"]["$t"]
+            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
+                pricelist_item.fixed_price = sheet[i][5]
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
-                pricelist_item.fixed_price = sheet[i * sheetWidth + 5]["content"]["$t"]
+            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
+                pricelist_item.fixed_price = sheet[i][5]
     
     def pricelistUS(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i * sheetWidth + 16]["content"]["$t"])
+        external_id = str(sheet[i][16])
         pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
-                pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
+            if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
+                pricelist_item.fixed_price = sheet[i][6]
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i * sheetWidth + 6]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
-                pricelist_item.fixed_price = sheet[i * sheetWidth + 6]["content"]["$t"]
+            if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
+                pricelist_item.fixed_price = sheet[i][6]
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
-        product.name = sheet[i * sheetWidth + 1]["content"]["$t"]
-        product.description_sale = sheet[i * sheetWidth + 2]["content"]["$t"]
+        product.name = sheet[i][1]
+        product.description_sale = sheet[i][2]
         
-        if(str(sheet[i * sheetWidth + 5]["content"]["$t"]) != " " and str(sheet[i * sheetWidth + 5]["content"]["$t"]) != ""):
-            product.price = sheet[i * sheetWidth + 5]["content"]["$t"]
+        if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
+            product.price = sheet[i][5]
         
-        if(str(sheet[i * sheetWidth + 10]["content"]["$t"]) == "TRUE"):
+        if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
         else:
             product.is_published = False
@@ -460,13 +450,13 @@ class sync(models.Model):
                                                                     ('lang', '=', 'fr_CA')])
 
             if(len(product_name_french) > 0):
-                product_name_french[len(product_name_french) - 1].value = sheet[i * sheetWidth + 3]["content"]["$t"]
+                product_name_french[len(product_name_french) - 1].value = sheet[i][3]
 
             else:
                 product_name_french_new = self.env['ir.translation'].create({'name':'product.template,name', 
                                                                             'lang':'fr_CA',
                                                                             'res_id': product.id})[0]
-                product_name_french_new.value = sheet[i * sheetWidth + 3]["content"]["$t"]
+                product_name_french_new.value = sheet[i][3]
             
 
             product_description_french = self.env['ir.translation'].search([('res_id', '=', product.id),
@@ -474,17 +464,17 @@ class sync(models.Model):
                                                                     ('lang', '=', 'fr_CA')])
 
             if(len(product_description_french) > 0):
-                product_description_french[len(product_description_french) - 1].value = sheet[i * sheetWidth + 4]["content"]["$t"]
+                product_description_french[len(product_description_french) - 1].value = sheet[i][4]
             else:
                 product_description_french_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
                                                                             'lang':'fr_CA',
                                                                             'res_id': product.id})[0]
-                product_description_french_new.value = sheet[i * sheetWidth + 4]["content"]["$t"]
+                product_description_french_new.value = sheet[i][4]
             return
     
     def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i * sheetWidth + 1]["content"]["$t"]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
         ext.res_id = product.id
         self.updatePricelistProducts(product, sheet, sheetWidth, i, new=True)
         return product
@@ -512,7 +502,7 @@ class sync(models.Model):
         msg = msg + "<tr>"
         j = 0
         while(j < sheetWidth):
-            msg = msg + "<td>" + str(sheet[sheetWidth * i + j]["content"]["$t"])
+            msg = msg + "<td>" + str(sheet[i][j])
             j = j + 1
         msg = msg + "</tr>"
         return msg
@@ -522,13 +512,13 @@ class sync(models.Model):
             msg = msg + "<table><tr>"
             j = 0
             while(j < sheetWidth):
-                msg = msg + "<th><strong>" + str(sheet[j]["content"]["$t"]) + "</strong></th>"
+                msg = msg + "<th><strong>" + str(sheet[0][j]) + "</strong></th>"
                 j = j + 1
             msg = msg + "</tr>"
         elif(msg != ""):
             msg = msg + "<table><tr>"
             while(j < sheetWidth):
-                msg = msg + "<th>" + str(sheet[j]["content"]["$t"]) + "</th>"
+                msg = msg + "<th>" + str(sheet[0][j]) + "</th>"
                 j = j + 1
             msg = msg + "</tr>"
             
