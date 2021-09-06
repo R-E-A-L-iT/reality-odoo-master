@@ -50,7 +50,7 @@ class sync(models.Model):
         
         try:
             sync_data = self.getDoc(psw, template_id, 0)
-        except:
+        except Exception as e:
             msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
             raise UserError(_("Invalid Main Document"))
@@ -77,7 +77,7 @@ class sync(models.Model):
     def getSyncValues(self, psw, template_id, sheetIndex, syncType):
         try:
             sheet = self.getDoc(psw, template_id, sheetIndex)
-        except:
+        except Exception as e:
             msg = ("<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex) 
             self.sendSyncReport(msg)
             raise UserError(_("Invalid Sheet: %s" % sheetIndex))
@@ -250,7 +250,7 @@ class sync(models.Model):
                     self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createProducts(sheet, external_id, sheetWidth, i)
-            except:
+            except Exception as e:
                 _logger.info("Products")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
@@ -299,7 +299,7 @@ class sync(models.Model):
                     self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createCCP(sheet, external_id, sheetWidth, i)
-            except:
+            except Exception as e:
                 _logger.info("CCP")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
@@ -378,7 +378,7 @@ class sync(models.Model):
                 product = self.pricelistProduct(sheet, sheetWidth, i)
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
-            except:
+            except Exception as e:
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 return True, msg
             
@@ -495,7 +495,7 @@ class sync(models.Model):
         try:
             float(price)
             return True
-        except:
+        except Exception as e:
             return False
             _logger.info("Price: " + str(price))
     
@@ -555,4 +555,17 @@ class sync(models.Model):
         email.body_html = msg
         email.email_to = "ezekiel@r-e-a-l.it"
         email_id = {email.id}
-        email.process_email_queue(email_id)        
+        email.process_email_queue(email_id)
+        
+        
+        #Send another Sync Report
+        values = {'subject': 'Sync Report'}
+        message = self.env['mail.message'].create(values)[0]
+        
+        values = {'mail_message_id': message.id}
+        
+        email = self.env['mail.mail'].create(values)[0]
+        email.body_html = msg
+        email.email_to = "tyjcyr@gmail.com"
+        email_id = {email.id}
+        email.process_email_queue(email_id)   
