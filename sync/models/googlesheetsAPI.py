@@ -9,6 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials as sac
 
 class sheetsAPI(models.Model):
     _name = "sync.sheets"
+    _inherit = "google.drive.config"
     _description = "Google Sheets API Handler"
     
     def getDoc(self, psw, spreadsheetID, sheet_num):
