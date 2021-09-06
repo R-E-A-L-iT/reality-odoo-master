@@ -139,10 +139,9 @@ class sync(models.Model):
         company.street = sheet[i][3]
         company.city = sheet[i][4]
         if(sheet[i][5] != ""):
-            _logger.info(str(sheet[i][5]))
             company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][5])])[0].id)
-        if(sheet[i][6] != ""):
-            name = sheet[i][6]
+        name = sheet[i][6]
+        if(name != ""):
             if(name == "US"):
                 name = "United States"
                 _logger.info(name)
@@ -206,8 +205,12 @@ class sync(models.Model):
         contact.city = sheet[i][5]
         if(sheet[i][6] != ""):
             contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][6])])[0].id)
-        if(sheet[i][7] != ""):
-            contact.country_id = int(self.env['res.country'].search([('name','=',sheet[i][7])])[0].id)
+        
+        name = sheet[i][7]
+        if(name != ""):
+            if(name == "US"):
+                name = "United States"
+            contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
         contact.zip = sheet[i][8]
         if(sheet[i][9] != ""):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
