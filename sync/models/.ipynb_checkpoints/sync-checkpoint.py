@@ -133,6 +133,10 @@ class sync(models.Model):
             
     def updateCompany(self, company, sheet, sheetWidth, i):
         
+        if(company.stringRep == str(sheet[i][:])):
+            return
+        company.stringRep = str(sheet[i][:])
+        
         company.name = sheet[i][0]
         company.phone = sheet[i][1]
         company.website = sheet[i][2]
@@ -196,6 +200,11 @@ class sync(models.Model):
         return False, msg
             
     def updateContacts(self, contact, sheet, sheetWidth, i):
+        
+        if(contact.stringRep == str(sheet[i][:])):
+            return
+        contact.stringRep = str(sheet[i][:])
+        
         contact.name = sheet[i][0]
         contact.phone = sheet[i][1]
         contact.email = sheet[i][2]
@@ -260,6 +269,11 @@ class sync(models.Model):
         return False, msg
             
     def updateProducts(self, product, sheet, sheetWidth, i):
+        
+        if(product.stringRep == str(sheet[i][:])):
+            return
+        product.stringRep = str(sheet[i][:])
+        
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
         product.price = sheet[i][3]
@@ -310,6 +324,11 @@ class sync(models.Model):
 
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
+        
+        if(ccp_item.stringRep == str(sheet[i][:])):
+            return
+        ccp_item.stringRep = str(sheet[i][:])
+        
         ccp_item.name = sheet[i][1]
         
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
@@ -376,6 +395,9 @@ class sync(models.Model):
                
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
+                if(product.stringRep == str(sheet[i][:])):
+                    continue
+                product.stringRep = str(sheet[i][:])
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
             except Exception as e:
@@ -427,6 +449,12 @@ class sync(models.Model):
                 pricelist_item.fixed_price = sheet[i][6]
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
+        
+        if(company.stringRep == str(sheet[i][:])):
+            return
+        if(not new):
+            company.stringRep = str(sheet[i][:])
+        
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
         
