@@ -16,19 +16,19 @@ from odoo import models, fields, api
 
 
 class partner(models.Model):
-    _inhert = "res.partner"
+    _inherit = "res.partner"
     stringRep = fields.Char(default="")
     
 class product(models.Model):
-    _inhert = "product.template
+    _inherit = "product.template"
     stringRep = fields.Char(default="")
     
 class pricelist(models.Model):
-    _inhert = "product.pricelist"
+    _inherit = "product.pricelist"
     stringRep = fields.Char(default="")
     
 class ccp(models.Model):
-    _inhert = "stock.production.lot"
+    _inherit = "stock.production.lot"
     stringRep = fields.Char(default="")
     
     
