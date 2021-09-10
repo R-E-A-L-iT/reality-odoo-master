@@ -40,7 +40,7 @@ class sync(models.Model):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
-            raise UserError(_("Authentication Values Missing"))
+            return
         self.getSyncData(psw)
         _logger.info("Ending Sync")
         
@@ -53,7 +53,7 @@ class sync(models.Model):
         except Exception as e:
             msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
-            raise UserError(_("Invalid Main Document"))
+            return
         i = 1
         sheetIndex = ""
         syncType = ""
@@ -80,7 +80,7 @@ class sync(models.Model):
         except Exception as e:
             msg = ("<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex) 
             self.sendSyncReport(msg)
-            raise UserError(_("Invalid Sheet: %s" % sheetIndex))
+            return False, ""
         
         if(syncType == "Companies"):
             _logger.info("Companies")
@@ -152,7 +152,6 @@ class sync(models.Model):
         if(name != ""):
             if(name == "US"):
                 name = "United States"
-                _logger.info(name)
             company.country_id = int(self.env['res.country'].search([('name','=', name)])[0].id)
         company.zip = sheet[i][7]
         company.lang = sheet[i][8]
