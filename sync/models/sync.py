@@ -102,11 +102,11 @@ class sync(models.Model):
     def syncCompanies(self, sheet):
         
         sheetWidth = 16
+        i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             return
-        i = 1
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -170,11 +170,11 @@ class sync(models.Model):
     def syncContacts(self, sheet):
     
         sheetWidth = 15
+        i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             return
-        i = 1
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -242,11 +242,11 @@ class sync(models.Model):
     def syncProducts(self, sheet):
     
         sheetWidth = 7
+        i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             return
-        i = 1
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -301,11 +301,11 @@ class sync(models.Model):
     def syncCCP(self, sheet):
     
         sheetWidth = 9
+        i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             return
-        i = 1
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -373,19 +373,15 @@ class sync(models.Model):
         
     def syncPricelist(self, sheet):
         sheetWidth = 19
+        i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             return
-        i = 1
         r = ""
         msg = ""
-        cuttoff = 0
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(cuttoff > 500):
-                msg = "<h1>Too Many New Entries</h1><p>Rerun to continue add entries</h1>"
-                break
             if(str(sheet[i][sheetWidth - 1]) != "TRUE"):
                 break
             if(str(sheet[i][17]) != "TRUE"):
@@ -420,8 +416,8 @@ class sync(models.Model):
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
                 if(product.stringRep == str(sheet[i][:])):
+                    i = i + 1
                     continue
-                cuttoff = cuttoff + 1
                 product.stringRep = str(sheet[i][:])
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
