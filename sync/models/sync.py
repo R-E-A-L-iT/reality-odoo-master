@@ -103,6 +103,10 @@ class sync(models.Model):
         
         sheetWidth = 16
         i = 1
+        if(len(sheet[i]) != sheetWidth):
+            msg = "<h1>Sync Page Invalid<h1>"
+            self.sendSyncReport(msg)
+            return
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -167,6 +171,10 @@ class sync(models.Model):
     
         sheetWidth = 15
         i = 1
+        if(len(sheet[i]) != sheetWidth):
+            msg = "<h1>Sync Page Invalid<h1>"
+            self.sendSyncReport(msg)
+            return
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -235,6 +243,10 @@ class sync(models.Model):
     
         sheetWidth = 7
         i = 1
+        if(len(sheet[i]) != sheetWidth):
+            msg = "<h1>Sync Page Invalid<h1>"
+            self.sendSyncReport(msg)
+            return
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -290,6 +302,10 @@ class sync(models.Model):
     
         sheetWidth = 9
         i = 1
+        if(len(sheet[i]) != sheetWidth):
+            msg = "<h1>Sync Page Invalid<h1>"
+            self.sendSyncReport(msg)
+            return
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -358,6 +374,10 @@ class sync(models.Model):
     def syncPricelist(self, sheet):
         sheetWidth = 19
         i = 1
+        if(len(sheet[i]) != sheetWidth):
+            msg = "<h1>Sync Page Invalid<h1>"
+            self.sendSyncReport(msg)
+            return
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -396,11 +416,13 @@ class sync(models.Model):
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
                 if(product.stringRep == str(sheet[i][:])):
+                    i = i + 1
                     continue
                 product.stringRep = str(sheet[i][:])
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
             except Exception as e:
+                _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 return True, msg
             
@@ -450,10 +472,10 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(company.stringRep == str(sheet[i][:])):
-            return
+        if(product.stringRep == str(sheet[i][:])):
+            return product
         if(not new):
-            company.stringRep = str(sheet[i][:])
+            product.stringRep = str(sheet[i][:])
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
