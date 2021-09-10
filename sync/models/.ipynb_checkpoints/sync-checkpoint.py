@@ -51,6 +51,7 @@ class sync(models.Model):
         try:
             sync_data = self.getDoc(psw, template_id, 0)
         except Exception as e:
+            _logger.info(e)
             msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
             return
@@ -78,6 +79,7 @@ class sync(models.Model):
         try:
             sheet = self.getDoc(psw, template_id, sheetIndex)
         except Exception as e:
+            _logger.info(e)
             msg = ("<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex) 
             self.sendSyncReport(msg)
             return False, ""
@@ -128,6 +130,7 @@ class sync(models.Model):
                     self.createCompany(sheet, external_id, sheetWidth, i)
             except Exception as e:
                 _logger.info("Companies")
+                _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
@@ -199,6 +202,7 @@ class sync(models.Model):
                     self.createContacts(sheet, external_id, sheetWidth, i)
             except Exception as e:
                 _logger.info("Contacts")
+                _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
@@ -272,6 +276,7 @@ class sync(models.Model):
                     self.createProducts(sheet, external_id, sheetWidth, i)
             except Exception as e:
                 _logger.info("Products")
+                _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
@@ -330,6 +335,7 @@ class sync(models.Model):
                     self.createCCP(sheet, external_id, sheetWidth, i)
             except Exception as e:
                 _logger.info("CCP")
+                _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
@@ -545,8 +551,8 @@ class sync(models.Model):
             float(price)
             return True
         except Exception as e:
+            _logger.info(e)
             return False
-            _logger.info("Price: " + str(price))
     
     def buildMSG(self, msg, sheet, sheetWidth, i):
         if(msg == ""):
