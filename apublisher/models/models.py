@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 class publish_state(models.Model):
     _inherit = "product.template"
 
-    publish_type = fields.selection(
+    publish_type = fields.Selection(
         [
             ('FALSE','False'),
             ('TRUE','True'),
