@@ -3,8 +3,8 @@
 <odoo>
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
         
-        <xpath expr="//img" position="replace">
-<!-- <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE?unique=7737f53" width="100%;" height="20px;"/> -->
+        <xpath expr="//img" position="after">
+            <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100%;" height="20px;"/>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
@@ -13,13 +13,14 @@
             
             <t t-set="description" t-value="line.name"/>
             <span t-raw="description"/>
+            <span>gobbeldeegoop</span>
         </xpath>
     </template>
     
     <template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
         
-        <xpath expr="//img" position="replace">
-<!--              <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE?unique=7737f53" width="100%;" height="20px;"/> -->
+        <xpath expr="//img" position="after">
+             <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100%;" height="20px;"/>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
@@ -28,6 +29,7 @@
             
             <t t-set="description" t-value="line.name"/>
             <span t-raw="description"/>
+            <span>gobbeldeegoop</span>
         </xpath>
     </template>
 </odoo>
