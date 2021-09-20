@@ -20,6 +20,8 @@
     # any module necessary for this one to work correctly
     'depends': ['base', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
+    'version': '0.1',
+    
     # always loaded
     'data': [
         'security/ir.model.access.csv',
