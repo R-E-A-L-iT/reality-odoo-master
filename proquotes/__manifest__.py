@@ -20,7 +20,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.5',
+    'version': '0.6',
     
     # always loaded
     'data': [
