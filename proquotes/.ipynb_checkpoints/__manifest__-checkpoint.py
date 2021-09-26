@@ -18,9 +18,9 @@
 
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
+    'depends': ['base', 'mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.6',
+    'version': '0.7',
     
     # always loaded
     'data': [
