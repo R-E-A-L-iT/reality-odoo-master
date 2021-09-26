@@ -5,7 +5,6 @@
         
         <xpath expr="img" position="after">
             <span></span>
-            <img t-att-src="image_data_uri(doc.signature)" style="height: 400px; width: 20px;"/>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">

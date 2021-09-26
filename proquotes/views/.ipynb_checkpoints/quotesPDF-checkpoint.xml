@@ -4,7 +4,7 @@
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
         
         <xpath expr="img" position="after">
-            <img t-att-src="image_data_uri(doc.signature)" style="height: 400px; width: 20px;"/>
+            <span></span>
         </xpath>
         
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
