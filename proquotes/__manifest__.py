@@ -30,7 +30,7 @@
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
-        'views/document.xml'
+        #'views/document.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
