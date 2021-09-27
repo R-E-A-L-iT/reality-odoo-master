@@ -6,6 +6,9 @@
         <field name="model">web.view_base_document_layout</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[name=&quot;logo&quot;]" position="attributes">
+                <attribute name="style">width: 400px;</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
