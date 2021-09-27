@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <record id="view_base_document_layout" model="ir.ui.view">
-        <field name="name">Document Layout</field>
-        <field name="model">base.document.layout</field>
-        <field name="inherit_id" ref="web.view_base_document_layout"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name=&quot;logo&quot;]" position="attributes">
-                <attribute name="style">width: 400px;</attribute>
-            </xpath>
-        </field>
-    </record>
+    <template id="external_layout_standard" inherit_id="web.external_layout_standardd" priority="17">
+        <xpath expr="//div/div/div" position="replace">
+            
+        </xpath>
+    </template>
 </odoo>
