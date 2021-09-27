@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="external_layout_standard" inherit_id="web.external_layout_standard" priority="17">
-        <xpath expr="//img" position="replace">
+        <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
             
         </xpath>
     </template>
