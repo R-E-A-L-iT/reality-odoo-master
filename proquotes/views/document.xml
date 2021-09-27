@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="external_layout_standard" inherit_id="web.external_layout_standardd" priority="17">
+    <template id="external_layout_standard" inherit_id="web.external_layout_standard" priority="17">
         <xpath expr="//img" position="replace">
             
         </xpath>
