@@ -12,7 +12,7 @@
     
     <template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
         <xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
-                <t t-set="access_name">View Quotation</t>
+                <t t-set="access_name" style="color: grey">View Quotation</t>
         </xpath>
     </template>
 </odoo>
