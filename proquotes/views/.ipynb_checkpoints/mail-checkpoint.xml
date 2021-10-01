@@ -24,7 +24,8 @@
         <xpath expr="/table/tr[1]" position="replace">
             <tr>
                 <td align="center" style="min-width:590px;">
-                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                    <t t-raw="message.body"/>
+<!--                     <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                         <tbody>
                             <tr>
                                 <td valign="top" style="font-size:13px;">
@@ -37,7 +38,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                 </td>
             </tr>
         </xpath>
