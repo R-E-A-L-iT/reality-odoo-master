@@ -11,7 +11,7 @@
         </xpath>
         
         <!-- replace header -->
-        <xpath expr="/tbody/tr[1]">
+        <xpath expr="/tbody/tr[1]" position="replace">
             <style>
                 body {
                     background-color: #2D2F32;
