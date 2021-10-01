@@ -19,7 +19,7 @@
                 </td>
             </tr>
         </xpath>
-        <xpath expr="table/tr[0]" position="replace">
+        <!--<xpath expr="table/tr[0]" position="replace">
             <tr style="background-color:#1F1F1F;">
                 <td align="center" style="min-width:590px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
@@ -44,7 +44,7 @@
                     </table>
                 </td>
             </tr>
-        </xpath>
+        </xpath>-->
         
         <!-- replace header -->
 <!--         <xpath expr="/tbody/tr[1]" position="replace">
