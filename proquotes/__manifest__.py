@@ -20,7 +20,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.2',
+    'version': '0.3',
     
     # always loaded
     'data': [
@@ -31,7 +31,6 @@
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/document.xml',
-        'views/base_document.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
