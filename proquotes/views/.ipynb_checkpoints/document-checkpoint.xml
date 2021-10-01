@@ -9,32 +9,26 @@
     </template>
     
     <template id="external_layout_standard" inherit_id="web.external_layout_standard" priority="17">
-        <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
+        <xpath expr="//div" position="replace">
             <span>Hello World</span>
         </xpath>
     </template>
     
     <template id="external_layout_clean" inherit_id="web.external_layout_clean" priority="17">
-        <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
+        <xpath expr="//div" position="replace">
             
         </xpath>
     </template>
     
     <template id="external_layout_boxed" inherit_id="web.external_layout_boxed" priority="17">
-        <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
+        <xpath expr="//div" position="replace">
             
         </xpath>
     </template>
     
     <template id="external_layout_background" inherit_id="web.external_layout_background" priority="17">
-        <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
+        <xpath expr="//div" position="replace">
             
-        </xpath>
-    </template>
-    
-    <template id="frontend_layout" inherit_id="web.web.frontend_layout" priority="17">
-        <xpath expr="//header[@id=&quot;top&quot;]/img" position="replace">
-            <span>Hello There</span>
         </xpath>
     </template>
 </odoo>
