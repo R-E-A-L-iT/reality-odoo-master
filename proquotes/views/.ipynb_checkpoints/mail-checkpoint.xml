@@ -29,18 +29,18 @@
                         <tbody>
                             <tr>
                                 <td valign="middle">
-                                    <span style="font-size:10px;">Your Account</span>
+                                    <span style="font-size:10px;">Your Account</span><br/>
                                     <span style=" font-size:20px;font-weight: bold; color: #36363A;">
                                         ${object.user_id.name}
                                     </span>
                                 </td>
                                 <td valign="middle" align="right">
-<!--                     <img src="https://r-e-a-l.it/Images-Updated/animatification.gif" style="vertical-align: middle; width: 100px; height: auto;" alt="logo"> -->
+                                    <img src="https://r-e-a-l.it/Images-Updated/animatification.gif" style="vertical-align: middle; width: 100px; height: auto;" alt="logo"></img>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="text-align:center;">
-                                  <div width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"></div>
+                                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;" />
                                 </td>
                             </tr>
                         </tbody>
@@ -59,7 +59,7 @@
                             </tr>
                             <tr>
                                 <td style="text-align:center;">
-                                  <div width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"></div>
+                                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"></hr>
                                 </td>
                             </tr>
                         </tbody>
