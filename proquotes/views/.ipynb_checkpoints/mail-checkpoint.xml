@@ -20,6 +20,8 @@
             </tr>
         </xpath>
         
+        <!-- USE END TAGS INSTEAD OF /> TO FIX EMAIL -->
+        
         <!-- replace content -->
         <xpath expr="table/tr[1]" position="replace">
             <!-- HEADER -->
