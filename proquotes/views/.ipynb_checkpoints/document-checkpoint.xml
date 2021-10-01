@@ -2,7 +2,7 @@
 <odoo>
     <template id="external_layout_standard" inherit_id="web.external_layout_standard" priority="17">
         <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
-            
+            <span>Hello World</span>
         </xpath>
     </template>
     
