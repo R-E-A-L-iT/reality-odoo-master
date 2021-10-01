@@ -5,7 +5,7 @@
         <field name="model">base.document.layout</field>
         <field name="inherit_id" ref="web.view_base_document_layout"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name=&quot;&quot;]" position="replace">
+            <xpath expr="//field[@name=&quot;logo&quot;]" position="replace">
                 
             </xpath>
         </field>
