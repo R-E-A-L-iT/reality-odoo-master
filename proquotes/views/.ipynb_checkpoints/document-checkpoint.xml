@@ -7,6 +7,7 @@
 
         </xpath>
     </template>
+    
     <template id="external_layout_standard" inherit_id="web.external_layout_standard" priority="17">
         <xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace">
             <span>Hello World</span>
@@ -32,7 +33,7 @@
     </template>
     
     <template id="frontend_layout" inherit_id="web.frontend_layout" priority="17">
-        <xpath expr="//header[@id=&quote;top&quot;/img" position="replace">
+        <xpath expr="//header[@id=&quot;top&quot;/img" position="replace">
             <span>Hello There</span>
         </xpath>
     </template>
