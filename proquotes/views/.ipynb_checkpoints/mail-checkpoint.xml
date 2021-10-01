@@ -11,7 +11,7 @@
         </xpath>
         
         <!-- replace header -->
-        <xpath expr="/tbody/tr[1]" position="replace">
+<!--         <xpath expr="/tbody/tr[1]" position="replace">
             <style>
                 body {
                     background-color: #2D2F32;
@@ -51,7 +51,7 @@
                     </table>
                 </td>
             </tr>
-        </xpath>
+        </xpath> -->
     </template>
     
     <template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
