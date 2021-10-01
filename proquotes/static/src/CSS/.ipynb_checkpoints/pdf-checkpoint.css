@@ -1,3 +1,4 @@
-img {
-    width: 1000px !important;
+img[Alt*="Logo"] {
+    width: 800px !important;
+    height: 100px;
 }
