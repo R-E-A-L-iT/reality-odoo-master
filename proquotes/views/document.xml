@@ -32,7 +32,7 @@
         </xpath>
     </template>
     
-    <template id="frontend_layout" inherit_id="web.frontend_layout" priority="17">
+    <template id="frontend_layout" inherit_id="web.web.frontend_layout" priority="17">
         <xpath expr="//header[@id=&quot;top&quot;]/img" position="replace">
             <span>Hello There</span>
         </xpath>
