@@ -46,7 +46,6 @@
                                                             <span style="font-size:10px;">Your Account</span>
                                                             <br/>
                                                             <span style=" font-size:20px;font-weight: bold; color: #36363A;">
-<!--                                                                 ${object.user_id.name} -->
                                                                 my.R-E-A-L.iT
                                                             </span>
                                                         </td>
