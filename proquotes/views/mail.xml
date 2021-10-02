@@ -70,7 +70,10 @@
                                                     <tr>
                                                         <td valign="top" style="font-size:13px;">
                                                             <div>
+                                                                <h1 style="color: black;">NEW QUOTATION</h1>
+                                                                <br/><br/>
                                                                 <t t-raw="message.body"/>
+                                                                <br/><br/>
                                                                 <a href="https://www.r-e-a-l.store/my/quotes" style="color:#db0d0d;">
                                                                     View Quotation
                                                                 </a>
