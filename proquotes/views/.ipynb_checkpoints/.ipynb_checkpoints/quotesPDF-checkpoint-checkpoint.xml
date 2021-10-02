@@ -13,7 +13,7 @@
             
             <t t-set="description" t-value="line.name"/>
             <span t-raw="description"/>
-            <span></span>
+            <span>gobbeldeegoop</span>
         </xpath>
     </template>
     
@@ -29,6 +29,7 @@
             
             <t t-set="description" t-value="line.name"/>
             <span t-raw="description"/>
+            <span>gobbeldeegoop</span>
         </xpath>
     </template>
 </odoo>
