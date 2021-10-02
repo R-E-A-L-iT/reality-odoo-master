@@ -25,6 +25,11 @@
         <!-- replace content -->
         <xpath expr="table/tr[1]" position="replace">
             <!-- HEADER -->
+            <style>
+                body {
+                    background-color: #2D2F32 !important;
+                }
+            </style>
             <tr>
                 <td align="center" style="min-width: 590px;">
                     <table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px; border-collapse:separate;">
