@@ -102,7 +102,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td valign="middle" align="left" style="opacity:0.7;">
-                                                            <a href="callto:18445REALIT">+1-844-5-R-E-A-L.iT</a> | <a href="mailto:expert@r-e-a-l.it">EXPERT@R-E-A-L.iT</a> | <a href="https://www.r-e-a-l.it">https://www.r-e-a-l.it/</a>
+                                                            <a href="callto:18445REALIT" style="color:#454748">+1-844-5-R-E-A-L.iT</a> | <a href="mailto:expert@r-e-a-l.it" style="color:#454748">EXPERT@R-E-A-L.iT</a> | <a href="https://www.r-e-a-l.it" style="color:#454748">https://www.r-e-a-l.it/</a>
 <!--                                                             ${object.user_id.company_id.phone}
                                                             % if object.user_id.company_id.email
                                                             | 
