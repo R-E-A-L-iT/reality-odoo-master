@@ -4,9 +4,11 @@ img[Alt*="Logo"] {
     margin-left: auto !important;
     margin-right: auto !important;
     display: block;
+    float: none;
     clear: both;
 }
 
 img[Alt*="Logo"] + * {
+    float: none;
     display: none;
 }
