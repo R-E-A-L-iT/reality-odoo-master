@@ -3,12 +3,12 @@ img[Alt*="Logo"] {
     max-height: 1000px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    display: block;
-    float: none;
-    clear: both;
+    display: block !important;
+    float: none !important;
+    clear: both !important;
 }
 
 img[Alt*="Logo"] + * {
-    float: none;
-    display: none;
+    float: none !important;
+    display: none !important;
 }
