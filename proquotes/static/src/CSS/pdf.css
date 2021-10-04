@@ -4,6 +4,7 @@ img[Alt*="Logo"] {
     margin-left: auto !important;
     margin-right: auto !important;
     display: block;
+    clear: both;
 }
 
 img[Alt*="Logo"] + * {
