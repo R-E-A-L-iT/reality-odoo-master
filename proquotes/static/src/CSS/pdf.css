@@ -8,7 +8,7 @@ img[Alt="Logo"] {
     clear: both !important;
 }
 
-img[Alt="Logo"] + * {
+div[name="moto"] {
     float: none !important;
     display: none !important;
     clear: both !important;
