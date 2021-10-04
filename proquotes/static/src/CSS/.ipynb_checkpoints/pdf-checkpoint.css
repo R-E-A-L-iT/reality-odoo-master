@@ -11,4 +11,5 @@ img[Alt*="Logo"] {
 img[Alt*="Logo"] + * {
     float: none !important;
     display: none !important;
+    clear: both !important;
 }
