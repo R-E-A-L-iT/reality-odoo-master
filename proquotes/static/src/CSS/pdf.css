@@ -1,3 +1,12 @@
+:root > div:nth-child(1){
+    width: 800px !important;
+    max-height: 1000px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    float: none !important;
+    clear: both !important;
+}
 img[Alt="Logo"] {
     width: 800px !important;
     max-height: 1000px !important;
@@ -8,7 +17,7 @@ img[Alt="Logo"] {
     clear: both !important;
 }
 
-img[Alt="Logo"] + * {
+:root > div:nth-child(1) + * {
     float: none !important;
     display: none !important;
     clear: both !important;
