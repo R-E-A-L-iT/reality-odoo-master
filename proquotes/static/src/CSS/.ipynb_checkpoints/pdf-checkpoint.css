@@ -3,12 +3,12 @@ div.header > div.row > div.col3.mb4 {
     max-height: 1000px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    display: block !important;
+    display: none !important;
     float: none !important;
     clear: both !important;
 }
 img[Alt="Logo"] {
-    width: 100% !important;
+    width: 800px !important;
     max-height: 1000px !important;
     margin-left: auto !important;
     margin-right: auto !important;
