@@ -75,7 +75,7 @@
                                                                 <br/><br/>
                                                                 <t t-raw="message.body"/>
                                                                 <br/><br/>
-                                                                <a href="https://www.r-e-a-l.store/my/quotes" style="color:#db0d0d;">
+                                                                <a href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
                                                                     View Quotation
                                                                 </a>
                                                             </div>
