@@ -28,6 +28,11 @@
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
             <attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute>
         </xpath>
+        
+        <!--Remove Tax Calculation-->
+        <xpath expr="//t[@t-foreach=&quot;doc.ammount_by_group&quot;]" position="replace"/>
+        <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position=""/>
+        <xpath expr="//td[@name=&quot;td_amount_total&quot;]" position=""/>
     </template>
     
     <!--Apply HTML-->
