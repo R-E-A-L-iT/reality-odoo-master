@@ -26,7 +26,7 @@
             </xpath>
             
             
-            <xpath expr="//field[@name=&quot;product_id&quot;]" position="after">
+            <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="before">
                 <field name="applied_name" invisible="0"/>
             </xpath>
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
