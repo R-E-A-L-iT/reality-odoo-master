@@ -30,7 +30,7 @@
         </xpath>
         
         <!--Remove Tax Calculation-->
-        <xpath expr="//t[@t-foreach=&quot;doc.ammount_by_group&quot;]" position="replace"/>
+        <xpath expr="//t[@t-foreach=&quot;doc.amount_by_group&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position=""/>
         <xpath expr="//td[@name=&quot;td_amount_total&quot;]" position=""/>
     </template>
