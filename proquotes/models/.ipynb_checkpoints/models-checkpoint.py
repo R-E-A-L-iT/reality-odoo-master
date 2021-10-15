@@ -108,7 +108,7 @@ class orderLineProquotes(models.Model):
         for record in self:
             record.applied_name = ""
             _logger.info(self.order_partner_id.lang)
-            _logger.info(self.env['ir.translation'].search([('res_id', '=', record.product_id),
+            _logger.info(self.env['ir.translation'].search([('res_id', '=', record.product_id.id),
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', self.order_partner_id.lang)]).value)
     
