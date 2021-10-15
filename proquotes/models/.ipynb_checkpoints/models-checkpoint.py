@@ -107,7 +107,7 @@ class orderLineProquotes(models.Model):
     def get_applied_name(self):
         for record in self:
             id = self.env['ir.translation'].search([('value', '=', record.product_id.name),
-                                                   ('name', '=', 'product.template,name')]).res_id
+                                                   ('name', '=', 'product.template,name')])[-1].res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', self.order_partner_id.lang)]).value
