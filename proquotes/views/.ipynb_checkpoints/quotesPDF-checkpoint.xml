@@ -7,6 +7,14 @@
             <span></span>
         </xpath>
         
+        <!--Remove Taxes-->
+        <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
+        <xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
+        
+        <!--Remove Subtotal-->
+        <xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
+        
+        <!-- Apply HTML-->
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
             <t t-set="name" t-value="line.product_id.name"/>
             <span t-raw="name"></span>
@@ -15,14 +23,33 @@
             <span t-raw="description"/>
             <span></span>
         </xpath>
+        
+        <!--Hide Unselected-->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
+            <attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute>
+        </xpath>
+        
+        <!--Remove Tax Calculation-->
+        <xpath expr="//t[@t-foreach=&quot;doc.amount_by_group&quot;]" position="replace"/>
+        <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position="replace"/>
+        <xpath expr="//td[@name=&quot;td_amount_total&quot;]" position="replace"/>
     </template>
     
+    <!--Apply HTML-->
     <template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
         
         <xpath expr="//img" position="after">
              <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100;" height="20px"/>
         </xpath>
+         
+        <!--Remove Taxes-->
+        <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace"/> 
         
+        <!--Remove Subtotal-->
+        <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
+        
+        <!--Apply HTML-->
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
             <t t-set="name" t-value="line.product_id.name"/>
             <span t-raw="name"></span>
