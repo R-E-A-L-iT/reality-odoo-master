@@ -108,9 +108,9 @@ class orderLineProquotes(models.Model):
         for record in self:
             record.applied_name = ""
             _logger.info(self.order_partner_id.lang)
-            #self.env['ir.translation'].search([('res_id', '=', self.product_id.id),
-            #                                                         ('name', '=', 'product.template,name'),
-            #                                                        ('lang', '=', self.order_partner_id.lang)])[-1].value
+            _logger.info(self.env['ir.translation'].search([('res_id', '=', self.product_id.id),
+                                                                     ('name', '=', 'product.template,name'),
+                                                                    ('lang', '=', self.order_partner_id.lang)])[-1].value)
     
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
