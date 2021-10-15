@@ -110,7 +110,7 @@ class orderLineProquotes(models.Model):
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', self.order_partner_id.lang)]).value
             if(name == False):
-                name = record.product_id
+                name = record.product_id.name
             record.applied_name = name
     
     def get_sale_order_line_multiline_description_sale(self, product):
