@@ -23,6 +23,10 @@
             <span t-raw="description"/>
             <span></span>
         </xpath>
+        
+        <!--Hide Unselected-->
+        <xpath expr="" position="attributes">
+            <attribute name="t-if">not line.name and line.selected=='true' and line.sectionSelected=='true'</attribute>
     </template>
     
     <!--Apply HTML-->
