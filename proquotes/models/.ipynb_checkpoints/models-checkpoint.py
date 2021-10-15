@@ -74,6 +74,8 @@ class orderLineProquotes(models.Model):
     
     variant = fields.Many2one('proquotes.variant', string="Variant Group")
     
+    applied_name = fields.Char(compute='get_applied_name', string="Applied Name")
+    
     selected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
@@ -98,6 +100,13 @@ class orderLineProquotes(models.Model):
     quantityLocked = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
+    
+    def get_applied_name(self):
+        for record in self:
+            record.applied_name = ""
+            #self.env['ir.translation'].search([('res_id', '=', self.product_id.id),
+            #                                                         ('name', '=', 'product.template,name'),
+            #                                                        ('lang', '=', self.order_partner_id.lang)])[-1].value
     
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
