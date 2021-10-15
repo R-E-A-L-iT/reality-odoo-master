@@ -114,7 +114,7 @@ class orderLineProquotes(models.Model):
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', self.order_partner_id.lang)]).value
-            if(name == False):
+            if(name == False or name  == ""):
                 name = record.product_id.name
             record.applied_name = name
     
