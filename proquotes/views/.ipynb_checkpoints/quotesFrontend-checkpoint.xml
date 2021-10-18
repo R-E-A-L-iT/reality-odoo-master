@@ -181,6 +181,7 @@
                     <span>Veuillez insérer votre numéro de bon de commande ici et joindre le fichier de bon de commande à la section commentaires ci-dessous.</span>
                     <br />
                 </label>
+                <br />
                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
             </section>
         </xpath>
