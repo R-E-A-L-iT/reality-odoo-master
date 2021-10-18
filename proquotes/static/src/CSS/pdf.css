@@ -1,5 +1,5 @@
-div[class="header"]{
-    border-style: none;
+div.header{
+    border-style: none !important;
 }
 
 div.col-3.mb4 {
