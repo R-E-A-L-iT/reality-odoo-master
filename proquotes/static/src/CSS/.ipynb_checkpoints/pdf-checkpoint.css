@@ -1,12 +1,10 @@
-div.header {
-    border-style: none !important;
+div[style="border-bottom: 1px solid black"] {
+    display: none !important;
 }
-
 div.col-3.mb4 {
     width: 5px !important;
 }
-/*img[Alt="Logo"] {
-    display: none !important;
+img[Alt="Logo"] {
     width: 800px !important;
     max-height: 1000px !important;
     margin-left: auto !important;
@@ -14,7 +12,7 @@ div.col-3.mb4 {
     display: block !important;
     float: none !important;
     clear: both !important;
-}*/
+}
 
 div[name="moto"] {
     border-style: none !important;
