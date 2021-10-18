@@ -7,6 +7,11 @@
             <span></span>
         </xpath>
         
+        
+        <!--Move Cliet Info-->
+        <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
+            <attribute name="style">margin: auto;</attribute>
+        </xpath>
         <!--Remove Taxes-->
         <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
@@ -33,6 +38,14 @@
         <xpath expr="//t[@t-foreach=&quot;doc.amount_by_group&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_amount_total&quot;]" position="replace"/>
+        
+        <!--Add Signature-->
+        <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+            <div>
+                <span style="height: 40px">Signature:_______________________________________________________________________</span>
+                <span style="height: 40px;">Date:____________________________________________________________________________</span>
+            </div>
+        </xpath>
     </template>
     
     <!--Apply HTML-->
