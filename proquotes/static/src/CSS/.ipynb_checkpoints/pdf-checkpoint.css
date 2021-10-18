@@ -1,3 +1,7 @@
+div[class="header"]{
+    border-style: none;
+}
+
 div.col-3.mb4 {
     width: 5px !important;
 }
@@ -9,7 +13,6 @@ img[Alt="Logo"] {
     display: block !important;
     float: none !important;
     clear: both !important;
-    border-style: none !important;
 }
 
 div[name="moto"] {
