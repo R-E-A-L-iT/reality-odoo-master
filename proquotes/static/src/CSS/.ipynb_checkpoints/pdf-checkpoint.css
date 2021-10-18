@@ -1,11 +1,11 @@
-div.header{
+div.header {
     border-style: none !important;
 }
 
 div.col-3.mb4 {
     width: 5px !important;
 }
-img[Alt="Logo"] {
+/*img[Alt="Logo"] {
     display: none !important;
     width: 800px !important;
     max-height: 1000px !important;
@@ -14,7 +14,7 @@ img[Alt="Logo"] {
     display: block !important;
     float: none !important;
     clear: both !important;
-}
+}*/
 
 div[name="moto"] {
     border-style: none !important;
