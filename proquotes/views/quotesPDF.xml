@@ -36,7 +36,7 @@
         
         <!--Add Signature-->
         <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
-            <span>Signature:____________________</span>
+            <span style="width: 50%">Signature:____________________</span>
             <span>Date:_________________________</span>
         </xpath>
     </template>
