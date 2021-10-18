@@ -174,8 +174,13 @@
         
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
             <section id="ponumber">
-            <label for="poNumber"><span>PO Number:</span></label>
-            <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
+<!--                 <p>If you use a PO system, please </p> -->
+                <label for="poNumber">
+                    <span>Please insert your PO number here, and attach the PO file to the comments section below.</span>
+                    <br />
+                    <span>Veuillez insérer votre numéro de bon de commande ici et joindre le fichier de bon de commande à la section commentaires ci-dessous.</span>
+                </label>
+                <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
             </section>
         </xpath>
     </template>
