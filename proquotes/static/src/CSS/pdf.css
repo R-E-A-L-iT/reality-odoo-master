@@ -16,6 +16,7 @@ img[Alt="Logo"] {
 }
 
 div[name="moto"] {
+    border-style: none !important;
     float: none !important;
     display: none !important;
     clear: both !important;
