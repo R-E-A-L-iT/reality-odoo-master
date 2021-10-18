@@ -33,6 +33,12 @@
         <xpath expr="//t[@t-foreach=&quot;doc.amount_by_group&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_amount_total&quot;]" position="replace"/>
+        
+        <!--Add Signature-->
+        <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+            <span>Signature:____________________</span>
+            <span>Date:_________________________</span>
+        </xpath>
     </template>
     
     <!--Apply HTML-->
