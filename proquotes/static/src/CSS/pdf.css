@@ -9,6 +9,7 @@ img[Alt="Logo"] {
     display: block !important;
     float: none !important;
     clear: both !important;
+    border-style: none !important;
 }
 
 div[name="moto"] {
