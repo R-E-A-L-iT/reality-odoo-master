@@ -420,14 +420,14 @@ class sync(models.Model):
                
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
-                if(product.stringRep == str(sheet[i][:])):
-                    _logger.info(product.stringRep)
-                    _logger.info(str(sheet[i][:]))
-                    i = i + 1
-                    continue
-                product.stringRep = str(sheet[i][:])
+                #if(product.stringRep == str(sheet[i][:])):
+                #    i = i + 1
+                #    continue
+
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
+                
+                product.stringRep = str(sheet[i][:])
             except Exception as e:
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
