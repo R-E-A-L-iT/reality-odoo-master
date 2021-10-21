@@ -421,6 +421,8 @@ class sync(models.Model):
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
                 if(product.stringRep == str(sheet[i][:])):
+                    _logger.info(product.stringRep)
+                    _logger.info(str(sheet[i][:]))
                     i = i + 1
                     continue
                 product.stringRep = str(sheet[i][:])
