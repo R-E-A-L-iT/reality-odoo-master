@@ -420,9 +420,9 @@ class sync(models.Model):
                
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
-                #if(product.stringRep == str(sheet[i][:])):
-                #    i = i + 1
-                #    continue
+                if(product.stringRep == str(sheet[i][:])):
+                    i = i + 1
+                    continue
 
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
