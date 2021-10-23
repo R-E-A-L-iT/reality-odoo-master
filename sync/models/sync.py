@@ -420,9 +420,9 @@ class sync(models.Model):
                
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
-                if(product.stringRep == str(sheet[i][:])):
-                    i = i + 1
-                    continue
+                #if(product.stringRep == str(sheet[i][:])):
+                #    i = i + 1
+                #    continue
 
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
@@ -454,7 +454,10 @@ class sync(models.Model):
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                pricelist_item.fixed_price = sheet[i][5]
+                _logger.info(pricelist_item.fixed_price, sheet[i][5])
+                pricelist_item.fixed_price = int(sheet[i][5])
+            else:
+                _logger.info(sheet[i][5])
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
