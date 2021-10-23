@@ -457,9 +457,8 @@ class sync(models.Model):
                 _logger.info(pricelist_item.fixed_price, sheet[i][5])
                 pricelist_item.fixed_price = sheet[i][5]
             else:
-                if(i == 5):
-                    for j  in range(len(sheet[i])):
-                        _logger.info(j, sheet[i][j])
+                for j  in range(len(sheet[i])):
+                    _logger.info(j, sheet[i][j])
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
