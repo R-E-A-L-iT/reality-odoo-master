@@ -286,8 +286,8 @@ class sync(models.Model):
             
     def updateProducts(self, product, sheet, sheetWidth, i):
         
-        if(product.stringRep == str(sheet[i][:])):
-            return
+        #if(product.stringRep == str(sheet[i][:])):
+        #    return
         product.stringRep = str(sheet[i][:])
         
         product.name = sheet[i][1]
@@ -295,6 +295,7 @@ class sync(models.Model):
         product.price = sheet[i][3]
         product.tracking = "serial"
         product.type = "product"
+        product.stringRep = str(sheet[i][:])
         
     def createProducts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
