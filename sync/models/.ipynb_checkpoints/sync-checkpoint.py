@@ -454,11 +454,7 @@ class sync(models.Model):
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                _logger.info(pricelist_item.fixed_price, sheet[i][5])
-                pricelist_item.fixed_price = sheet[i][5]
-            else:
-                for j  in range(len(sheet[i])):
-                    _logger.info(j, sheet[i][j])
+                pricelist_item.fixed_price = float(sheet[i][5])
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
@@ -618,6 +614,18 @@ class sync(models.Model):
         email_id = {email.id}
         email.process_email_queue(email_id)
         
+        #Send another Sync Report
+        values = {'subject': 'Sync Report'}
+        message = self.env['mail.message'].create(values)[0]
+        
+        values = {'mail_message_id': message.id}
+        
+        email = self.env['mail.mail'].create(values)[0]
+        email.body_html = msg
+        email.email_to = "derek@r-e-a-l.it"
+        email_id = {email.id}
+        email.process_email_queue(email_id)   
+
         
         #Send another Sync Report
         values = {'subject': 'Sync Report'}
