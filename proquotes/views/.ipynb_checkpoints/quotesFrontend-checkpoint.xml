@@ -184,6 +184,10 @@
                 <br />
                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
             </section>
+            <section class="quoteConfig">
+                <span id="QCheader">Placeholder Header</span>
+                <span id="QCfooter">Placeholder Footer</span>
+            </section>
         </xpath>
     </template>
     
