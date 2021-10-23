@@ -455,7 +455,7 @@ class sync(models.Model):
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
                 _logger.info(pricelist_item.fixed_price, sheet[i][5])
-                pricelist_item.fixed_price = int(sheet[i][5])
+                pricelist_item.fixed_price = sheet[i][5]
             else:
                 _logger.info(sheet[i][5])
         else:
