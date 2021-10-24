@@ -142,7 +142,6 @@ class sync(models.Model):
         
         if(company.stringRep == str(sheet[i][:])):
             return
-        company.stringRep = str(sheet[i][:])
         
         company.name = sheet[i][0]
         company.phone = sheet[i][1]
@@ -162,6 +161,7 @@ class sync(models.Model):
         if(sheet[i][10] != ""):
             company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][10])])[0].id)
         company.is_company = True
+        company.stringRep = str(sheet[i][:])
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
@@ -214,7 +214,6 @@ class sync(models.Model):
         
         if(contact.stringRep == str(sheet[i][:])):
             return
-        contact.stringRep = str(sheet[i][:])
         
         contact.name = sheet[i][0]
         contact.phone = sheet[i][1]
@@ -235,6 +234,8 @@ class sync(models.Model):
         if(sheet[i][9] != ""):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
         contact.is_company = False
+        
+        contact.stringRep = str(sheet[i][:])
         
     def createContacts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
@@ -286,9 +287,8 @@ class sync(models.Model):
             
     def updateProducts(self, product, sheet, sheetWidth, i):
         
-        #if(product.stringRep == str(sheet[i][:])):
-        #    return
-        product.stringRep = str(sheet[i][:])
+        if(product.stringRep == str(sheet[i][:])):
+            return
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
@@ -349,7 +349,6 @@ class sync(models.Model):
         
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
-        ccp_item.stringRep = str(sheet[i][:])
         
         ccp_item.name = sheet[i][1]
         
@@ -362,6 +361,8 @@ class sync(models.Model):
             ccp_item.expire = sheet[i][5]
         else:
             ccp_item.expire = None
+            
+        ccp_item.stringRep = str(sheet[i][:])
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
@@ -421,9 +422,9 @@ class sync(models.Model):
                
             try:
                 product = self.pricelistProduct(sheet, sheetWidth, i)
-                #if(product.stringRep == str(sheet[i][:])):
-                #    i = i + 1
-                #    continue
+                if(product.stringRep == str(sheet[i][:])):
+                    i = i + 1
+                    continue
 
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
@@ -480,10 +481,8 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        #if(product.stringRep == str(sheet[i][:])):
-        #    return product
-        if(not new):
-            product.stringRep = str(sheet[i][:])
+        if(product.stringRep == str(sheet[i][:])):
+            return product
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
@@ -499,6 +498,9 @@ class sync(models.Model):
         product.type = "product"
         
         self.translatePricelistFrench(product, sheet, sheetWidth, i, new)
+        
+        if(not new):
+            product.stringRep = str(sheet[i][:])
         
         return product
         
