@@ -172,6 +172,16 @@
             <attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
         </xpath>
         
+        
+        
+        
+        <!-- HERE IS PO -->
+        
+        
+        
+        
+        
+        
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
             <section id="ponumber">
 <!--                 <p>If you use a PO system, please </p> -->
@@ -185,8 +195,8 @@
                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
             </section>
             <section class="quoteConfig">
-                <span id="QCheader">Placeholder Header</span>
-                <span id="QCfooter">Placeholder Footer</span>
+<!--                 <span id="QCheader">Placeholder Header</span> -->
+                <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
             </section>
         </xpath>
     </template>
