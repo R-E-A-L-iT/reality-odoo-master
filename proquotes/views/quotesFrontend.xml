@@ -196,7 +196,7 @@
             </section>
             <section class="quoteConfig">
 <!--                 <span id="QCheader">Placeholder Header</span> -->
-                <span id="QCfooter">Placeholder Footer</span>
+                <span id="QCfooter" t-attf-value="sale_order.footerSelection"></span>
             </section>
         </xpath>
     </template>
