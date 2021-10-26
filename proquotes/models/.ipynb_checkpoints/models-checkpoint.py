@@ -27,6 +27,11 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
+    footerSelection = fields.Selection([
+        ('reality', "R-E-A-L.iT"),
+        ('geoplus', "GeoPlus"),
+        ('abtech', "AbTech")], default='reality', required=True, help="Footer selection field")
+    
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0

@@ -15,6 +15,7 @@
                 <field name="partner_ids" invisible="0"/>
                 <field name="products" invisible="0"/>
                 <field name="customer_po_number" invisible="0"/>
+                <field name="footer" invisible="0"/>
             </xpath>
             
             <xpath expr="//create[1]" position="after">
