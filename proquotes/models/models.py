@@ -27,7 +27,7 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
-    footerSelection = fields.Selection([
+    footer = fields.Selection([
         ('reality', "R-E-A-L.iT"),
         ('geoplus', "GeoPlus"),
         ('abtech', "AbTech")], default='reality', required=True, help="Footer selection field")
