@@ -28,9 +28,13 @@ class order(models.Model):
     customer_po_number = fields.Char(string="PO Number")
     
     footer = fields.Selection([
-        ('reality', "R-E-A-L.iT"),
-        ('geoplus', "GeoPlus"),
-        ('abtech', "AbTech")], default='reality', required=True, help="Footer selection field")
+        ('Abtech_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
+        ('Abtech_Ontario_Phil', "Abtech_Ontario_Phil"),
+        ('Abtech_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('Geoplus_Canada', "Geoplus_Canada"),
+        ('Geoplus_America', "Geoplus_America"),
+        ('Leica_Various_Ali', "Leica_Various_Ali"),
+        ('Reality_Various_Derek', "Reality_Various_Derek")], default='Reality_Various_Derek', required=True, help="Footer selection field")
     
     def _amount_all(self):
         for order in self:
