@@ -47,7 +47,7 @@
             </div>
             
             <!-- footer insert here -->
-<!--             <p t-field="sale_order.footer"></p> -->
+            <p t-field="sale_order_pdf_content.id"></p>
             <img id="insert-footer"></img>
             
         </xpath>
