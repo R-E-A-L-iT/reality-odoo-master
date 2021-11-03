@@ -36,8 +36,10 @@ class order(models.Model):
         ('Leica_Various_Ali', "Leica_Various_Ali"),
         ('Reality_Various_Derek', "Reality_Various_Derek")], default='Reality_Various_Derek', required=True, help="Footer selection field")
     header = fields.Selection([
+        ('ChurchXRAY', "ChurchXRAY"),
         ('Architecture', "Architecture"),
-        ('Surveying', "Surveying")], default='Surveying', required=True, help="Header selection field")
+        ('Software', "Software"),
+        ('Starfield', "Starfield")], default='Starfield', required=True, help="Header selection field")
     
     def _amount_all(self):
         for order in self:

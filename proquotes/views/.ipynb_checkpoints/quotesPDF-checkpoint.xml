@@ -45,7 +45,15 @@
                 <span style="height: 40px">Signature:_______________________________________________________________________</span>
                 <span style="height: 40px;">Date:____________________________________________________________________________</span>
             </div>
+            
+            <!-- footer insert here -->
+<!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p>
+            <img id="insert-footer"></img> -->
+            
         </xpath>
+    </template>
+    <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+        
     </template>
     
     <!--Apply HTML-->
