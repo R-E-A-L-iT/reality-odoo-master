@@ -47,8 +47,8 @@
             </div>
             
             <!-- footer insert here -->
-            <p id="footer-info" t-value="sale_order_pdf_content.id"></p>
-            <img id="insert-footer"></img>
+<!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p>
+            <img id="insert-footer"></img> -->
             
         </xpath>
     </template>
