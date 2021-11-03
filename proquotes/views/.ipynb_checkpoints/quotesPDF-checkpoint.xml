@@ -47,7 +47,7 @@
             </div>
             
             <!-- footer insert here -->
-            <p id="footer-info">{sale_order.footer}</p>
+            <p id="footer-info">${sale_order.footer}</p>
             <img id="insert-footer"></img>
             
         </xpath>
