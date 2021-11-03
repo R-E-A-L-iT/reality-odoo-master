@@ -44,11 +44,10 @@
             <div>
                 <span style="height: 40px">Signature:_______________________________________________________________________</span>
                 <span style="height: 40px;">Date:____________________________________________________________________________</span>
-                <span>Testing</span>
             </div>
             
             <!-- footer insert here -->
-            <img src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"></img>
+            <img src="'https://r-e-a-l.it/CAPTURE/images/footer/' + sale_order.footer + '.png'"></img>
         </xpath>
     </template>
     
