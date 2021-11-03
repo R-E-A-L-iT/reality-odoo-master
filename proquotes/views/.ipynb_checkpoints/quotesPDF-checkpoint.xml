@@ -47,7 +47,7 @@
             </div>
             
             <!-- footer insert here -->
-            <img src="'https://r-e-a-l.it/CAPTURE/images/footer/' + sale_order.footer + '.png'"></img>
+            <img t-att-src="'https://r-e-a-l.it/CAPTURE/images/footer' + sale_order.footer + '.png'"></img>
         </xpath>
     </template>
     
