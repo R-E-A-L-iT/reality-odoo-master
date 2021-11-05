@@ -20,7 +20,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.5',
+    'version': '0.6',
     
     # always loaded
     'data': [
@@ -31,6 +31,7 @@
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/document.xml',
+        'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
     'demo': [
