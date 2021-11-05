@@ -31,7 +31,7 @@
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/document.xml',
-        'models/quoteNotify.py'
+#         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
     'demo': [
