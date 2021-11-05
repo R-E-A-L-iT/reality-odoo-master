@@ -27,7 +27,9 @@ _logger = logging.getLogger(__name__)
 
 # Insert code to catch when a customer views a quote here
 
-# example?..:
+# event handler...
+
+# example quote notification?..:
 # 
 # sendQuoteNotification(
 #     "R-E-A-L.iT | A Client has Viewed your Quote",
@@ -55,3 +57,9 @@ def sendQuoteNotification(self, title, msg, recipients):
         this.email.email_to = String(user)
         
     email_id.process_email_queue(email_id)
+    
+sendQuoteNotification(
+    "R-E-A-L.iT | A Client has Viewed your Quote",
+    "Ezekiel deBlois has viewed your quotation with the ID of S0174.",
+    ["ezekiel@r-e-a-l.it", "derek@r-e-a-l.it"]
+)
