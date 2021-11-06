@@ -3,6 +3,10 @@
 <odoo>
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
         
+        <xpath expr="//div" position="after">
+            <link type="text/css" href="../static/src/CSS/quotePDF.css"></link>
+        </xpath>
+        
         <xpath expr="//img" position="after">
             <span></span>
         </xpath>
@@ -10,7 +14,7 @@
         
         <!--Move Cliet Info-->
         <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
-            <attribute name="style">position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333</attribute><!-- margin: auto; -->
+            <attribute name="style">position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;</attribute><!-- margin: auto; -->
         </xpath>
         <!--Remove Taxes-->
         <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
