@@ -21,27 +21,3 @@ class CustomerPortal(CustomerPortal):
             'company': company
         }
         return request.render("proportal.portal_products", values)
-    
-    def _show_report(self, model, report_type, report_ref, download=False):
-        raise UserError("_Show_report")
-        if report_type not in ('html', 'pdf', 'text'):
-            raise UserError(_("Invalid report type: %s", report_type))
-
-        report_sudo = request.env.ref(report_ref).with_user(SUPERUSER_ID)
-
-        if not isinstance(report_sudo, type(request.env['ir.actions.report'])):
-            raise UserError(_("%s is not the reference of a report", report_ref))
-
-        #if hasattr(model, 'company_id'):
-            #report_sudo = report_sudo.with_company(model.company_id)
-
-        method_name = '_render_qweb_%s' % (report_type)
-        report = getattr(report_sudo, method_name)([model.id], data={'report_type': report_type})[0]
-        reporthttpheaders = [
-            ('Content-Type', 'application/pdf' if report_type == 'pdf' else 'text/html'),
-            ('Content-Length', len(report)),
-        ]
-        if report_type == 'pdf' and download:
-            filename = "%s.pdf" % (re.sub('\W+', '-', model._get_report_base_filename()))
-            reporthttpheaders.append(('Content-Disposition', content_disposition(filename)))
-        return request.make_response(report, headers=reporthttpheaders)
