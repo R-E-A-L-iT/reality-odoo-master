@@ -23,6 +23,7 @@ class CustomerPortal(CustomerPortal):
         return request.render("proportal.portal_products", values)
     
     def _show_report(self, model, report_type, report_ref, download=False):
+        raise UserError("_Show_report")
         if report_type not in ('html', 'pdf', 'text'):
             raise UserError(_("Invalid report type: %s", report_type))
 
