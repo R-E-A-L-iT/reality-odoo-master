@@ -8,8 +8,8 @@
 
         </xpath> -->
         
-        <xpath expr="//img" position="after">
-            <span><p>${object.partner_id.id}</p></span>
+        <xpath expr="//td[@name='td_amount_total_label']" position="after">
+            <span><p>Testing</p></span>
         </xpath>
         
         
