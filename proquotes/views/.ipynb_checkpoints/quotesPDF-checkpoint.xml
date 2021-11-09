@@ -8,7 +8,7 @@
 
         </xpath> -->
         
-        <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position="after">
+        <xpath expr="//td[@t-if=&quot;information_block&quot;]" position="replace">
             <span><p>Testing</p></span>
         </xpath>
         
