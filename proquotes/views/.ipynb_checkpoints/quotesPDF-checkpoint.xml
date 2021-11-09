@@ -8,7 +8,7 @@
 
         </xpath> -->
         
-        <xpath expr="//td[@name='td_amount_total_label']" position="after">
+        <xpath expr="//td[@name=&quot;td_amount_total_label&quot;]" position="after">
             <span><p>Testing</p></span>
         </xpath>
         
@@ -52,8 +52,8 @@
             </div>
             
             <!-- footer insert here -->
-<!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p>
-            <img id="insert-footer"></img> -->
+<!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p> -->
+            <img id="insert-footer" src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"></img>
             
         </xpath>
     </template>
