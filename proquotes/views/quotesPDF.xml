@@ -3,13 +3,13 @@
 <odoo>
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
         
-        <xpath expr="//div" position="after">
+<!--         <xpath expr="//div" position="after">
             <?xml-stylesheet href="../static/src/CSS/quotePDF.css"?>
 
-        </xpath>
+        </xpath> -->
         
         <xpath expr="//img" position="after">
-            <span></span>
+            <span><p>${object.partner_id.id}</p></span>
         </xpath>
         
         
