@@ -4,7 +4,8 @@
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
         
         <xpath expr="//div" position="after">
-            <link type="text/css" href="../static/src/CSS/quotePDF.css"></link>
+            <?xml-stylesheet href="../static/src/CSS/quotePDF.css"?>
+<!--             <link type="text/css" href="../static/src/CSS/quotePDF.css"></link> -->
         </xpath>
         
         <xpath expr="//img" position="after">
