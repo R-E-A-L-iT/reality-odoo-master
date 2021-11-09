@@ -9,9 +9,16 @@
         </xpath> -->
         
         <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
-            <span><p>Testing</p></span>
+            <span><p>Testing 1</p></span>
         </xpath>
         
+        <xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
+            <span><p>Testing 2</p></span>
+        </xpath>
+        
+        <xpath expr="//div[@t-field=&quot;doc.partner_id&quot;]" position="after">
+            <span><p>Testing 3</p></span>
+        </xpath>
         
         <!--Move Cliet Info-->
         <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
@@ -58,7 +65,7 @@
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
                  width="100%"
                  height="auto"
-                 style="position: absolute; z-index: 2; top: 750px;"
+                 style="position: absolute; z-index: 2; top: 775px;"
             >
             </img>
             
