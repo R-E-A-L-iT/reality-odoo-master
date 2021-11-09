@@ -5,7 +5,7 @@
         
         <xpath expr="//div" position="after">
             <?xml-stylesheet href="../static/src/CSS/quotePDF.css"?>
-<!--             <link type="text/css" href="../static/src/CSS/quotePDF.css"></link> -->
+
         </xpath>
         
         <xpath expr="//img" position="after">
