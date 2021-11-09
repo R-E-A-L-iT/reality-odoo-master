@@ -8,7 +8,7 @@
 
         </xpath> -->
         
-        <xpath expr="//td[@t-set=&quot;information_block&quot;]" position="replace">
+        <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
             <span><p>Testing</p></span>
         </xpath>
         
