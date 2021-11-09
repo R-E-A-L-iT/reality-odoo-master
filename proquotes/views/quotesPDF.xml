@@ -24,11 +24,11 @@
             <span><p>Testing 4</p></span>
         </xpath>
         
-        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang&quot;]" position="before">
+        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="before">
             <span><p>Testing 5</p></span>
         </xpath>
         
-        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang&quot;]" position="after">
+        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="after">
             <span><p>Testing 5</p></span>
         </xpath>
         
