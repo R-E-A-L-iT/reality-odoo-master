@@ -14,6 +14,12 @@ from odoo.osv import expression
 
 class CustomerPortal(CustomerPortal):
     
+    @route(['/my', '/my/home'], type='http', auth="user", website=True)
+    def home(self, **kw):
+        raise UserError("home")
+        values = self._prepare_portal_layout_values()
+        return request.render("portal.portal_my_home", values)
+    
     @http.route(['/my/products', '/my/products/page/<int:page>'], type='http', auth="user", website=True)
     def products(self):
         company = request.env.user.partner_id.parent_id
