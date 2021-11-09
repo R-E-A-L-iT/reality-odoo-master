@@ -4,3 +4,8 @@ div {
 p {
     color: blue;
 }
+
+#insert-footer {
+    width: 750px;
+    height: auto;
+}
