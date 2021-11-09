@@ -53,7 +53,13 @@
             
             <!-- footer insert here -->
 <!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p> -->
-            <img id="insert-footer" src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"></img>
+            <img 
+                 id="insert-footer" 
+                 src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
+                 width="750px"
+                 height="auto"
+            >
+            </img>
             
         </xpath>
     </template>
