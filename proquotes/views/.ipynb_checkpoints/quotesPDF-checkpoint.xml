@@ -24,6 +24,14 @@
             <span><p>Testing 4</p></span>
         </xpath>
         
+        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang&quot;]" position="before">
+            <span><p>Testing 5</p></span>
+        </xpath>
+        
+        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang&quot;]" position="after">
+            <span><p>Testing 5</p></span>
+        </xpath>
+        
         <!--Move Cliet Info-->
         <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
             <attribute name="style">position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;</attribute><!-- margin: auto; -->
