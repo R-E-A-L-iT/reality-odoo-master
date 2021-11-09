@@ -29,7 +29,11 @@
         </xpath>
         
         <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="after">
-            <span><p>Testing 5</p></span>
+            <span><p>Testing 6</p></span>
+        </xpath>
+        
+        <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="replace">
+            <span><p>Testing 7</p></span>
         </xpath>
         
         <!--Move Cliet Info-->
