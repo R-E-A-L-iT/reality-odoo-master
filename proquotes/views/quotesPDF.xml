@@ -56,7 +56,7 @@
             <img 
                  id="insert-footer" 
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
-                 width="750px"
+                 width="100%"
                  height="auto"
                  style="position: absolute; z-index: 2; top: 750px;"
             >
