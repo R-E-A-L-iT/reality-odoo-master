@@ -48,11 +48,11 @@
             <span><p>Testing 7</p></span>
         </xpath>
         
-        <xpath expr="//t[@t-if=&quot;doc.partner_shipping_id == doc.partner_invoice_id
+<!--         <xpath expr="//t[@t-if=&quot;doc.partner_shipping_id == doc.partner_invoice_id
                              and doc.partner_invoice_id != doc.partner_id
                              or doc.partner_shipping_id != doc.partner_invoice_id&quot;" position="replace">
             <span><p></p></span>
-        </xpath>
+        </xpath> -->
         
         <!--Move Cliet Info-->
         <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
