@@ -21,7 +21,19 @@
         </xpath>
         
         <xpath expr="//div[@t-field=&quot;doc.partner_id&quot;]" position="before">
-            <span><p>Testing 4</p></span>
+            <span>
+                <p
+                    style="z-index: 2; background-color: white; margin-top: -50px; margin-left: -750px;"
+                >
+                    <t t-set="address">
+                        <div t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                        <p t-if="doc.partner_id.vat">
+                            <t t-esc="doc.company_id.country_id.vat_label or 'Tax ID'"/>:
+                            <span t-field="doc.partner_id.vat"/>
+                        </p>
+                    </t>
+                </p>
+            </span>
         </xpath>
         
         <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="before">
