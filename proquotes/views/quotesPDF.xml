@@ -44,7 +44,7 @@
             <span><p>Testing 6</p></span>
         </xpath> -->
         
-        <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attribute">
+        <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
             <attribute name="name">partner_address</attribute>
         </xpath>
         
