@@ -44,7 +44,7 @@
             <span><p>Testing 6</p></span>
         </xpath> -->
         
-        <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="replace">
+<!--         <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="replace">
             <t t-set="address">
                         <div t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
                         <p t-if="doc.partner_id.vat">
@@ -52,7 +52,7 @@
                             <span t-field="doc.partner_id.vat"/>
                         </p>
                     </t>
-        </xpath>
+        </xpath> -->
         
 <!--         <xpath expr="//t[@t-if=&quot;doc.partner_shipping_id == doc.partner_invoice_id
                              and doc.partner_invoice_id != doc.partner_id
@@ -62,7 +62,7 @@
         
         <!--Move Cliet Info-->
         <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
-            <attribute name="style">position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;</attribute><!-- margin: auto; -->
+            <attribute name="style">margin: auto;</attribute><!-- position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;; -->
         </xpath>
         <!--Remove Taxes-->
         <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
