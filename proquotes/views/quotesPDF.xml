@@ -45,7 +45,7 @@
         </xpath> -->
         
         <xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
-            <attribute name="name">partner_address</attribute>
+            <attribute name="id">partner_address</attribute>
         </xpath>
         
 <!--         <xpath expr="//t[@t-if=&quot;doc.partner_shipping_id == doc.partner_invoice_id

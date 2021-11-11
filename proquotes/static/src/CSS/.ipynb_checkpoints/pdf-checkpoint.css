@@ -22,6 +22,6 @@ div[name="moto"] {
     clear: both !important;
 }
 
-t[name="partner_address"] {
-    background-color: green;
+t[id="partner_address"] {
+    color: green !important;
 }
