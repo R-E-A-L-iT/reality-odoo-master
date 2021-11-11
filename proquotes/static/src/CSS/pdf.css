@@ -1,4 +1,4 @@
-/* div > div > div {
+div > div > div {
     border-bottom: none !important;
 }
 div.col-3.mb4 {
@@ -20,4 +20,4 @@ div[name="moto"] {
     float: none !important;
     display: none !important;
     clear: both !important;
-} */
+}
