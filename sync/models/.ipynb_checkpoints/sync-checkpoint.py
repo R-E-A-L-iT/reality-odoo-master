@@ -60,8 +60,8 @@ class sync(models.Model):
         syncType = ""
         msg = ""
         while(True):
+            _logger.info(sync_data[i][3])
             if(str(sync_data[i][3]) != "TRUE"):
-                _logger.info("Finished Sync")
                 break
                 
             sheetIndex = int(sync_data[i][1])
