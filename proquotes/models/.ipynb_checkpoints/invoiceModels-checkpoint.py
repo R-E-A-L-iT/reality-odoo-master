@@ -21,6 +21,7 @@ _logger = logging.getLogger(__name__)
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
     
+    order_partner_id = fields.Many2one(related='account.move.partner_id', store=False, string='Customer', readonly=True)
     applied_name = fields.Char(compute='get_applied_name', string="Applied Name")
     
     def get_applied_name(self):
