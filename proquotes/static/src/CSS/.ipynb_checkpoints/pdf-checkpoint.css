@@ -21,3 +21,9 @@ div[name="moto"] {
     display: none !important;
     clear: both !important;
 }
+
+t[id="partner_address"] {
+    color: green !important;
+    background-color: red !important;
+    border: 1px solid #333;
+}

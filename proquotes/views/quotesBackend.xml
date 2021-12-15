@@ -43,6 +43,13 @@
             <xpath expr="//create[3]" position="after">
                 <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
                 <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/> 
+                <![CDATA[
+                    <style>
+                        #o_field_input_781 > div.o_list_view.o_list_optional_columns > div.table-responsive > table > tbody {
+                            width: 100%;
+                        }
+                    </style>
+                ]]>
             </xpath>
             
         </field>
