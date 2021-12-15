@@ -27,7 +27,7 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
-    company_name = fields.Char(related="res.company.id", string="company_name")
+    company_name = fields.Char(related="company_id.name", string="company_name")
     
     footer = fields.Selection([
         ('Abtech_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
