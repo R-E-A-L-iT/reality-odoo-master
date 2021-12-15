@@ -186,13 +186,13 @@
             <section id="ponumber">
 <!--                 <p>If you use a PO system, please </p> -->
                 <label for="poNumber" id="POlabel">
-<!--                     <span>Please insert your PO number here, and attach the PO file to the comments section below.</span>
+                    <span>Please insert your PO number here, and attach the PO file to the comments section below.</span>
                     <br />
-                    <span>Veuillez insérer votre numéro de bon de commande ici et joindre le fichier de bon de commande à la section commentaires ci-dessous.</span> -->
+                    <span>Veuillez insérer votre numéro de bon de commande ici et joindre le fichier de bon de commande à la section commentaires ci-dessous.</span>
                     <br />
                 </label>
                 <br />
-                <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
+<!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
             </section>
             <section class="quoteConfig">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
