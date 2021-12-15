@@ -97,12 +97,13 @@
                 <span id="footer-info" t-value="sale.report.order_id.footer"></span>
                 <img 
                  id="insert-footer" 
-                 src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
                  width="100%"
                  height="auto"
-            >
+                >
+                    <attribute name="src">"https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"</attribute>
+                    <!-- src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png" -->
                     <!-- style="position: absolute; z-index: 2; top: 775px;" -->
-            </img>
+                </img>
             </div>
         </xpath>
     </template>
