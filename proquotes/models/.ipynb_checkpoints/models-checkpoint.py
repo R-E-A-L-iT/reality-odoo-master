@@ -27,8 +27,6 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
-    company = fields.Char(related="company_id.name")
-    
     footer = fields.Selection([
         ('Abtech_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
         ('Abtech_Ontario_Phil', "Abtech_Ontario_Phil"),
@@ -36,7 +34,6 @@ class order(models.Model):
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
-        ('Leica_Various_Ali', str(company)),
         ('Reality_Various_Derek', "Reality_Various_Derek")], default='Reality_Various_Derek', required=True, help="Footer selection field")
     header = fields.Selection([
         ('ChurchXRAY', "ChurchXRAY"),
@@ -189,4 +186,4 @@ class owner(models.Model):
 class pdf_quote(models.Model):
     _inherit = "sale.report"
     
-    footer = fields.Selection(related="sale.order.footer")
+    #footer = fields.Selection(related="sale.order.footer")
