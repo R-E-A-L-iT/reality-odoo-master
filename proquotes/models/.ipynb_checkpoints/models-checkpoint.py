@@ -27,7 +27,7 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
-    company_name = fields.Many2one(related="company_id", string="company_name")
+    company_name = fields.Many2one(related="sale.order.company_id", string="company_name")
     
     footer = fields.Selection([
         ('Abtech_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
