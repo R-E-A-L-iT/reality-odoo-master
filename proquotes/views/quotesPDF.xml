@@ -97,15 +97,15 @@
             </div>
             
             <!-- footer insert here -->
-<!--             <p id="footer-info" t-value="sale_order_pdf_content.footer"></p> --> 
-<!--             <img 
+            <p id="footer-info" t-value="sale_order_pdf_content.footer"></p> 
+            <img 
                  id="insert-footer" 
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
                  width="100%"
                  height="auto"
                  style="position: absolute; z-index: 2; top: 775px;"
             >
-            </img> -->
+            </img>
             
         </xpath>
     </template>
