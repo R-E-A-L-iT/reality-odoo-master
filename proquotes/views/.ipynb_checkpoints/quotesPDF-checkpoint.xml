@@ -103,7 +103,7 @@
                     <!-- src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png" -->
                     <!-- style="position: absolute; z-index: 2; top: 775px;" -->
                 </img>
-                <xpath expr="//img[@id=&quot;insert-footer&quot;]">
+                <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
                     <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute>
                 </xpath>
             </div>
