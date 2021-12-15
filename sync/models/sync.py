@@ -10,6 +10,7 @@ import werkzeug.urls
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
 
+from urllib import urlopen
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -496,6 +497,11 @@ class sync(models.Model):
         
         if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
             product.price = sheet[i][5]
+        
+        if(len(str(sheet[i][8])) > 0):
+            url = str(sheet[i][5])
+            img = urlopen(url)
+            product.image_1920 = img
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
