@@ -500,6 +500,7 @@ class sync(models.Model):
         
         if(len(str(sheet[i][8])) > 0):
             url = str(sheet[i][5])
+            _logger.info(url)
             img = urlopen(url)
             product.image_1920 = img
         
