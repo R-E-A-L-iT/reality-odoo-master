@@ -11,12 +11,12 @@
 
     'author': "Ty Cyr",
 
-    # Categories can be used to filter modules in modules listing
+    # Categories can be used to filter modules in m1dules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Technical',
 
-    'version': '0.0',
+    'version': '0.1',
     
     # any module necessary for this one to work correctly
     'depends': ['base', 'proportal', 'product', 'google_account', 'google_drive'],
