@@ -9,8 +9,6 @@ import requests
 import werkzeug.urls
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
-
-from urllib.request import urlopen
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -502,12 +500,9 @@ class sync(models.Model):
         _logger.info(str(sheet[i][7]))
         if(len(str(sheet[i][7])) > 0):
             url = str(sheet[i][7])
-            try:
-                img = urlopen(url)
-            except:
-                _logger.info("No Image")
-                img = ""
-            product.image_1920 = img
+            req = requests.get(url, stream=True)
+            if(req.status_code == 200):
+                product.image_1920 = req.raw
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
