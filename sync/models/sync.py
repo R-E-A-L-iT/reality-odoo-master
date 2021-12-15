@@ -181,7 +181,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -255,7 +255,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i][0]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -315,7 +315,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(str(sheet[i][6]) != "TRUE"):
                 i = i + 1
@@ -389,7 +389,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][sheetWidth - 1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(str(sheet[i][17]) != "TRUE"):
                 i = i + 1
@@ -613,21 +613,9 @@ class sync(models.Model):
         
         email = self.env['mail.mail'].create(values)[0]
         email.body_html = msg
-        email.email_to = "ezekiel@r-e-a-l.it"
+        email.email_to = "sync@store.r-e-a-l.it"
         email_id = {email.id}
-        email.process_email_queue(email_id)
-        
-        #Send another Sync Report
-        values = {'subject': 'Sync Report'}
-        message = self.env['mail.message'].create(values)[0]
-        
-        values = {'mail_message_id': message.id}
-        
-        email = self.env['mail.mail'].create(values)[0]
-        email.body_html = msg
-        email.email_to = "derek@r-e-a-l.it"
-        email_id = {email.id}
-        email.process_email_queue(email_id)   
+        email.process_email_queue(email_id)  
 
         
         #Send another Sync Report
