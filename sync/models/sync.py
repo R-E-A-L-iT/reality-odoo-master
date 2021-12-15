@@ -341,6 +341,7 @@ class sync(models.Model):
             except Exception as e:
                 _logger.info("CCP")
                 _logger.info(e)
+                _logger.info(i)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
