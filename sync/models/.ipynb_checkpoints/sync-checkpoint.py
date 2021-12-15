@@ -7,9 +7,9 @@ import re
 
 import requests
 import werkzeug.urls
+import base64
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
-
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -496,6 +496,14 @@ class sync(models.Model):
         
         if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
             product.price = sheet[i][5]
+        
+
+#         _logger.info(str(sheet[i][7]))
+#         if(len(str(sheet[i][7])) > 0):
+#             url = str(sheet[i][7])
+#             req = requests.get(url, stream=True)
+#             if(req.status_code == 200):
+#                 product.image_1920 = req.content
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
