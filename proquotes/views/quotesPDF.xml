@@ -94,7 +94,7 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <p id="footer-info" t-value="sale_order_pdf_content.footer"></p> 
+                <span id="footer-info" t-value="sale_order_pdf_content.footer"></span> 
             </div>
             
             <!-- footer insert here -->
