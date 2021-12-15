@@ -503,7 +503,7 @@ class sync(models.Model):
             url = str(sheet[i][7])
             req = requests.get(url, stream=True)
             if(req.status_code == 200):
-                product.image_1920 = base64.b64encode(req.text)
+                product.image_1920 = req.content
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
