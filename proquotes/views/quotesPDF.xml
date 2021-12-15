@@ -88,9 +88,11 @@
         <!--Add Signature-->
         <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
             <div>
-                <span style="height: 40px">&nbsp;&nbsp;PO #:&nbsp;&nbsp;____________________________________</span>
-                <span style="height: 40px">&nbsp;&nbsp;Signature:&nbsp;&nbsp;_______________________________</span>
-                <span style="height: 40px">&nbsp;&nbsp;Date:&nbsp;&nbsp;____________________________________</span>
+                <span style="height: 40px"> PO #: ____________________________________</span>
+                <br />
+                <span style="height: 40px"> Signature: _______________________________</span>
+                <br />
+                <span style="height: 40px"> Date: ____________________________________</span>
             </div>
             
             <!-- footer insert here -->
