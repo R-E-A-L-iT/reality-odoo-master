@@ -21,7 +21,6 @@ _logger = logging.getLogger(__name__)
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
     
-    #order_partner_id = fields.Many2one(related='partner_id', store=False, string='Customer', readonly=True)
     applied_name = fields.Char(compute='get_applied_name', string="Applied Name")
     
     def get_applied_name(self):
@@ -33,7 +32,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=', 'product.template,name'),
-                                                      ('lang', '=', self.order_partner_id.lang)]).value
+                                                      ('lang', '=', self.partner_id.lang)]).value
             if(name == False or name  == ""):
                 name = record.product_id.name
             record.applied_name = name
