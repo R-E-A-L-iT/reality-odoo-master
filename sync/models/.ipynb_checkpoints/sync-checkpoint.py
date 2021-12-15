@@ -502,7 +502,11 @@ class sync(models.Model):
         _logger.info(str(sheet[i][7]))
         if(len(str(sheet[i][7])) > 0):
             url = str(sheet[i][7])
-            img = urlopen(url)
+            try:
+                img = urlopen(url)
+            except:
+                _logger.info("No Image")
+                img = ""
             product.image_1920 = img
         
         if(str(sheet[i][10]) == "TRUE"):
