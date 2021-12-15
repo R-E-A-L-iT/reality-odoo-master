@@ -186,4 +186,4 @@ class owner(models.Model):
 class pdf_quote(models.Model):
     _inherit = "sale.report"
     
-    footer = fields.selection(related="sale.order.footer")
+    footer = fields.Selection(related="sale.order.footer")
