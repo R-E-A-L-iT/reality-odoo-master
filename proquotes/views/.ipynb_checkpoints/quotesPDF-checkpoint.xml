@@ -94,7 +94,7 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span id="footer-info" t-field="sale.report.order_id.footer"></span>
+                <span id="footer-info" t-value="sale.report.order_id.footer"></span>
                 <img 
                  id="insert-footer" 
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
