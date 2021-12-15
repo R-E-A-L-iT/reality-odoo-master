@@ -499,9 +499,9 @@ class sync(models.Model):
             product.price = sheet[i][5]
         
 
-        
+        _logger.info(str(sheet[i][7]))
         if(len(str(sheet[i][7])) > 0):
-            url = str(sheet[i][5])
+            url = str(sheet[i][7])
             img = urlopen(url)
             product.image_1920 = img
         
