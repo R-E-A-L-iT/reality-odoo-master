@@ -36,7 +36,7 @@ class order(models.Model):
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
-        ('company_name', str(company_id)),
+        ('company_name', str(company_name)),
         ('Reality_Various_Derek', "Reality_Various_Derek")], default='Reality_Various_Derek', required=True, help="Footer selection field")
     header = fields.Selection([
         ('ChurchXRAY', "ChurchXRAY"),
