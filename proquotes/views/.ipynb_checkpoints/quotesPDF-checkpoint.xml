@@ -88,26 +88,29 @@
         <!--Add Signature-->
         <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
             <div>
-                <span style="height: 40px">Signature:_______________________________________________________________________</span>
-                <span style="height: 40px;">Date:____________________________________________________________________________</span>
+                <span style="height: 40px"> PO #: ____________________________________</span>
+                <br />
+                <span style="height: 40px"> Signature: _______________________________</span>
+                <br />
+                <span style="height: 40px"> Date: ____________________________________</span>
             </div>
             
             <!-- footer insert here -->
-<!--             <p id="footer-info" t-value="sale_order_pdf_content.id"></p> -->
-<!--             <img 
+<!--             <p id="footer-info" t-value="sale_order_pdf_content.footer"></p> --> 
+            <img 
                  id="insert-footer" 
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
                  width="100%"
                  height="auto"
                  style="position: absolute; z-index: 2; top: 775px;"
             >
-            </img> -->
+            </img>
             
         </xpath>
     </template>
-    <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
         
-    </template>
+    </template> -->
     
     <!--Apply HTML-->
     <template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
