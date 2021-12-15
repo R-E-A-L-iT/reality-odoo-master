@@ -60,6 +60,7 @@ class sync(models.Model):
         syncType = ""
         msg = ""
         while(True):
+            _logger.info(sync_data[i][3])
             if(str(sync_data[i][3]) != "TRUE"):
                 break
                 
@@ -108,7 +109,8 @@ class sync(models.Model):
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            return
+            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            return True, msg
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -176,7 +178,8 @@ class sync(models.Model):
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            return
+            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            return True, msg
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -250,7 +253,8 @@ class sync(models.Model):
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            return
+            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            return True, msg
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -310,7 +314,8 @@ class sync(models.Model):
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            return
+            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            return True, msg
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
@@ -337,6 +342,7 @@ class sync(models.Model):
             except Exception as e:
                 _logger.info("CCP")
                 _logger.info(e)
+                _logger.info(i)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
@@ -384,7 +390,8 @@ class sync(models.Model):
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            return
+            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            return True, msg
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
