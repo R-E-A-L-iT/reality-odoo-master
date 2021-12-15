@@ -488,8 +488,8 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(product.stringRep == str(sheet[i][:])):
-            return product
+#         if(product.stringRep == str(sheet[i][:])):
+#             return product
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
@@ -498,12 +498,12 @@ class sync(models.Model):
             product.price = sheet[i][5]
         
 
-#         _logger.info(str(sheet[i][7]))
-#         if(len(str(sheet[i][7])) > 0):
-#             url = str(sheet[i][7])
-#             req = requests.get(url, stream=True)
-#             if(req.status_code == 200):
-#                 product.image_1920 = req.content
+        _logger.info(str(sheet[i][7]))
+        if(len(str(sheet[i][7])) > 0):
+            url = str(sheet[i][7])
+            req = requests.get(url, stream=True)
+            if(req.status_code == 200):
+                product.image_1920 = base64.decodestring(req.text)
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
