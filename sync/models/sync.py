@@ -181,7 +181,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -255,7 +255,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(not self.check_id(str(sheet[i][0]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -315,7 +315,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(str(sheet[i][6]) != "TRUE"):
                 i = i + 1
