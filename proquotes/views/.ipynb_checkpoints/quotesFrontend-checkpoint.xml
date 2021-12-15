@@ -188,7 +188,7 @@
                 <label for="poNumber" id="POlabel">
                     <span>Please insert your PO number and file in the comments below.</span>
                     <br />
-                    <span>VVeuillez insérer votre numéro de bon de commande et votre fichier dans les commentaires ci-dessous.</span>
+                    <span>Veuillez insérer votre numéro de bon de commande et votre fichier dans les commentaires ci-dessous.</span>
                     <br />
                 </label>
                 <br />
