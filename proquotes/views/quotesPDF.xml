@@ -95,10 +95,7 @@
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
                 <span id="footer-info" t-field="sale.report.order_id.footer"></span>
-            </div>
-            
-            <!-- footer insert here -->
-            <img 
+                <img 
                  id="insert-footer" 
                  src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
                  width="100%"
@@ -106,7 +103,7 @@
                  style="position: absolute; z-index: 2; top: 775px;"
             >
             </img>
-            
+            </div>
         </xpath>
     </template>
 <!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
