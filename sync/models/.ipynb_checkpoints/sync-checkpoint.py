@@ -7,6 +7,7 @@ import re
 
 import requests
 import werkzeug.urls
+import base64
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
 from datetime import datetime, timedelta
@@ -502,7 +503,7 @@ class sync(models.Model):
             url = str(sheet[i][7])
             req = requests.get(url, stream=True)
             if(req.status_code == 200):
-                product.image_1920 = req.text
+                product.image_1920 = base64.encode(req.text)
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
