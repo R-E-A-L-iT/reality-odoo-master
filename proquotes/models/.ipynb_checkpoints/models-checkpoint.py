@@ -179,3 +179,11 @@ class owner(models.Model):
     _inherit = "stock.production.lot"
     
     owner = fields.Many2one('res.partner', string="Owner")
+    
+    
+# pdf footer
+
+class pdf_quote(models.Model):
+    _inherit = "sale.report"
+    
+    footer = fields.selection(related="sale.order.footer")
