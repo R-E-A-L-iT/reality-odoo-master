@@ -613,21 +613,9 @@ class sync(models.Model):
         
         email = self.env['mail.mail'].create(values)[0]
         email.body_html = msg
-        email.email_to = "ezekiel@r-e-a-l.it"
+        email.email_to = "sync@store.r-e-a-l.it"
         email_id = {email.id}
-        email.process_email_queue(email_id)
-        
-        #Send another Sync Report
-        values = {'subject': 'Sync Report'}
-        message = self.env['mail.message'].create(values)[0]
-        
-        values = {'mail_message_id': message.id}
-        
-        email = self.env['mail.mail'].create(values)[0]
-        email.body_html = msg
-        email.email_to = "derek@r-e-a-l.it"
-        email_id = {email.id}
-        email.process_email_queue(email_id)   
+        email.process_email_queue(email_id)  
 
         
         #Send another Sync Report
