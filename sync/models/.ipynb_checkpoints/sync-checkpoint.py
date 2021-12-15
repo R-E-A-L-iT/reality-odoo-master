@@ -10,7 +10,7 @@ import werkzeug.urls
 
 from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
 
-from urllib import urlopen
+from urllib.requests import urlopen
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
