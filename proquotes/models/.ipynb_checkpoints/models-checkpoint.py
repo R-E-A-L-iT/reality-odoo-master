@@ -27,6 +27,8 @@ class order(models.Model):
     
     customer_po_number = fields.Char(string="PO Number")
     
+    company_name = fields.Char(related="company_id")
+    
     footer = fields.Selection([
         ('Abtech_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
         ('Abtech_Ontario_Phil', "Abtech_Ontario_Phil"),
@@ -34,6 +36,7 @@ class order(models.Model):
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
+        ('company_name', str(company_name),
         ('Reality_Various_Derek', "Reality_Various_Derek")], default='Reality_Various_Derek', required=True, help="Footer selection field")
     header = fields.Selection([
         ('ChurchXRAY', "ChurchXRAY"),
