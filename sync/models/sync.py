@@ -389,7 +389,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(str(sheet[i][sheetWidth - 1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
             if(str(sheet[i][17]) != "TRUE"):
                 i = i + 1
