@@ -541,7 +541,7 @@ class sync(models.Model):
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', 'en_CA')])
             
-            product_name_Us = self.env['ir.translation'].search([('res_id', '=', product.id),
+            product_name_US = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                 ('name', '=', 'product.template,name'),
                                                                 ('lang', '=', 'en_US')])
 
