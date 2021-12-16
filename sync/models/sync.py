@@ -552,7 +552,7 @@ class sync(models.Model):
                 product_name_Can_new = self.env['ir.translation'].create({'name':'product.template,name', 
                                                                             'lang':'en_CA',
                                                                             'res_id': product.id})[0]
-                product_name_french_new.value = sheet[i][1]
+                product_name_Can_new.value = sheet[i][1]
                 
             if(len(product_name_US) > 0):
                 product_name_US[-1].value = sheet[i][1]
