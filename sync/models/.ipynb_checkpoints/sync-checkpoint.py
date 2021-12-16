@@ -359,7 +359,10 @@ class sync(models.Model):
         ccp_item.name = sheet[i][1]
         
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        
+        _logger.info("id")
         ccp_item.product_id = product_ids[-1].id
+        _logger.info("id end")
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), 
                                                           ('model', '=', 'res.partner')])
         ccp_item.owner = owner_ids[-1].res_id
