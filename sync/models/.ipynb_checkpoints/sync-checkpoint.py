@@ -546,7 +546,7 @@ class sync(models.Model):
 
             else:
                 product_name_new = self.env['ir.translation'].create({'name':'product.template,name', 
-                                                                            'lang':'lang',
+                                                                            'lang': lang,
                                                                             'res_id': product.id})[0]
                 product_name_new.value = sheet[i][nameI]
             
