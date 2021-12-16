@@ -336,7 +336,7 @@ class sync(models.Model):
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
-                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[len(ccp_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createCCP(sheet, external_id, sheetWidth, i)
             except Exception as e:
@@ -351,18 +351,30 @@ class sync(models.Model):
         return False, msg
 
             
-    def updateCCP(self, ccp_item, sheet, sheetWidth, i):
-        
+    def updateCCP(self, ccp_item, sheet, sheetWidth, i):        
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
         
+        if(i == 8):
+            _logger.info("name")
         ccp_item.name = sheet[i][1]
         
+        if(i == 8):
+            _logger.info("id")
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
-        ccp_item.product_id = product_ids[len(product_ids) - 1].id
-        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), 
-                                                          ('model', '=', 'res.partner')])
-        ccp_item.owner = owner_ids[len(owner_ids) - 1].res_id
+        
+        if(i == 8):
+            _logger.info("Id Tupple")
+        ccp_item.product_id = product_ids[-1].id
+
+        
+        if(i == 8):
+            _logger.info("owner")
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
+        
+        if(i == 8):
+            _logger.info("Owner Tupple")
+        ccp_item.owner = owner_ids[-1].res_id
         if(sheet[i][5] != "FALSE"):
             ccp_item.expire = sheet[i][5]
         else:
@@ -488,8 +500,8 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(product.stringRep == str(sheet[i][:])):
-            return product
+        #if(product.stringRep == str(sheet[i][:])):
+        #    return product
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
@@ -512,42 +524,44 @@ class sync(models.Model):
         product.tracking = "serial"
         product.type = "product"
         
-        self.translatePricelistFrench(product, sheet, sheetWidth, i, new)
+        self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
+        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
+        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
         
         if(not new):
             product.stringRep = str(sheet[i][:])
         
         return product
         
-    def translatePricelistFrench(self, product, sheet, sheetWidth, i, new):
+    def translatePricelist(self, product, sheet, sheetWidth, i, nameI, descriptionI, lang, new):
         if(new == True):
             return
         else:
-            product_name_french = self.env['ir.translation'].search([('res_id', '=', product.id),
+            product_name = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                      ('name', '=', 'product.template,name'),
-                                                                    ('lang', '=', 'fr_CA')])
+                                                                    ('lang', '=', lang)])
 
-            if(len(product_name_french) > 0):
-                product_name_french[len(product_name_french) - 1].value = sheet[i][3]
+            if(len(product_name) > 0):
+                product_name[-1].value = sheet[i][nameI]
 
             else:
-                product_name_french_new = self.env['ir.translation'].create({'name':'product.template,name', 
-                                                                            'lang':'fr_CA',
+                product_name_new = self.env['ir.translation'].create({'name':'product.template,name', 
+                                                                            'lang': lang,
                                                                             'res_id': product.id})[0]
-                product_name_french_new.value = sheet[i][3]
+                product_name_new.value = sheet[i][nameI]
             
 
-            product_description_french = self.env['ir.translation'].search([('res_id', '=', product.id),
+            product_description = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                      ('name', '=', 'product.template,description_sale'),
-                                                                    ('lang', '=', 'fr_CA')])
+                                                                    ('lang', '=', lang)])
 
-            if(len(product_description_french) > 0):
-                product_description_french[len(product_description_french) - 1].value = sheet[i][4]
+            if(len(product_description) > 0):
+                product_description[-1].value = sheet[i][descriptionI]
             else:
-                product_description_french_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
-                                                                            'lang':'fr_CA',
+                product_description_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
+                                                                            'lang':lang,
                                                                             'res_id': product.id})[0]
-                product_description_french_new.value = sheet[i][4]
+                product_description_new.value = sheet[i][descriptionI]
             return
     
     def createPricelistProducts(self, sheet, external_id, sheetWidth, i):

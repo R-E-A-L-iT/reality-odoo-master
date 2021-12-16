@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--Add Custom Javascript-->
-    <template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
-        <xpath expr="." position="inside">
-
-            <script type="text/javascript" src="/proquotes/static/src/JS/fold.js"></script>
-            <script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
-            <script type="text/javascript" src="/proquotes/static/src/JS/poNumber.js"></script>
-            <link rel="stylesheet" href="/proquotes/static/src/CSS/ponumber.css"></link>
-            <link rel="stylesheet" href="/proquotes/static/src/CSS/foldProducts.css"></link>
-
-        </xpath>
-    </template>
     
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
         

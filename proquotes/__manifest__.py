@@ -10,6 +10,8 @@
     """,
 
     'author': "Ty Cyr",
+    
+    'license': "LGPL-3",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -20,7 +22,18 @@
     # any module necessary for this one to work correctly
     'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.5',
+    'assets': {
+        'web.assets_frontend': [
+            'proquotes/static/src/CSS/foldProducts.css',
+            'proquotes/static/src/CSS/pdf.css',
+            'proquotes/static/src/CSS/ponumber.css',
+            'proquotes/static/src/JS/fold.js',
+            'proquotes/static/src/JS/poNumber.js',
+            'proquotes/static/src/JS/price.js'
+        ]
+    },
+    
+    'version': '0.8',
     
     # always loaded
     'data': [
@@ -30,7 +43,6 @@
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
-        'views/document.xml',
 #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode

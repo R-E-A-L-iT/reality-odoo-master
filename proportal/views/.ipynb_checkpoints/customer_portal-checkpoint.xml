@@ -2,13 +2,13 @@
 
 <odoo>
     
-    <template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
+    <!--<template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
         <xpath expr="." position="inside">
 
             <link rel="stylesheet" href="/proportal/static/src/CSS/products.css"></link>
 
         </xpath>
-    </template>
+    </template>-->
     
     <template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
@@ -21,6 +21,7 @@
     </template>
     
     <template id="portal_products" name="Portal Customer Products Page">
+        <link rel="stylesheet" href="/proportal/static/src/CSS/products.css"></link>
         <t t-call="portal.portal_layout">
             <t t-if="company.products" t-call="portal.portal_table">
                 <thead class="productTable">
