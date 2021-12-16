@@ -541,9 +541,9 @@ class sync(models.Model):
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', 'en_CA')])
             
-            product_name_Us = self.env['ir.translation'].search(['res_id', '=', product.id),
+            product_name_Us = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                 ('name', '=', 'product.template,name'),
-                                                                'lang', '=', 'en_US'])
+                                                                ('lang', '=', 'en_US')])
 
             if(len(product_name_Can) > 0):
                 product_name_Can[-1].value = sheet[i][1]
