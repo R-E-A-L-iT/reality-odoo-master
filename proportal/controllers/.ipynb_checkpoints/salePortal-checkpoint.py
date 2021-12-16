@@ -53,9 +53,9 @@ class CustomerPortal(sourcePortal):
             'token': access_token,
             'return_url': '/shop/payment/validate',
             'bootstrap_formatting': True,
-            'partner_id': order.partner_id.id,
+            'partner_id': order_sudo.partner_id.id,
             'report_type': 'html',
-            'action': order._get_portal_return_action(),
+            'action': order_sudo._get_portal_return_action(),
             'message': message,
         }
 
