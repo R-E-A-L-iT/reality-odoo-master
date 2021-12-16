@@ -22,16 +22,16 @@
     
     'assets': {
         'web.assets_frontend': [
-            'static/src/CSS/foldProducts.css',
-            'static/src/CSS/pdf.css',
-            'static/src/CSS/ponumber.css',
-            'static/src/JS/fold.js',
-            'static/src/JS/poNumber.js',
-            'static/src/JS/price.js'
+            'proquotes/static/src/CSS/foldProducts.css',
+            'proquotes/static/src/CSS/pdf.css',
+            'proquotes/static/src/CSS/ponumber.css',
+            'proquotes/static/src/JS/fold.js',
+            'proquotes/static/src/JS/poNumber.js',
+            'proquotes/static/src/JS/price.js'
         ]
     },
     
-    'version': '0.7',
+    'version': '0.8',
     
     # always loaded
     'data': [
