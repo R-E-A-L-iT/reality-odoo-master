@@ -336,12 +336,8 @@ class sync(models.Model):
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
-                    if(i == 8):
-                        _logger.info("Update")
                     self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
                 else:
-                    if(i == 8):
-                        _logger.info("New")
                     self.createCCP(sheet, external_id, sheetWidth, i)
             except Exception as e:
                 _logger.info("CCP")
@@ -356,6 +352,8 @@ class sync(models.Model):
 
             
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):
+        if(i == 8):
+            _logger.info("Here")
         
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
