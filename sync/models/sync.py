@@ -351,21 +351,29 @@ class sync(models.Model):
         return False, msg
 
             
-    def updateCCP(self, ccp_item, sheet, sheetWidth, i):
-        if(i == 8):
-            _logger.info("Here")
-        
+    def updateCCP(self, ccp_item, sheet, sheetWidth, i):        
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
         
+        if(i == 8):
+            _logger.info("name")
         ccp_item.name = sheet[i][1]
         
+        if(i == 8):
+            _logger.info("id")
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
         
+        if(i == 8):
+            _logger.info("Id Tupple")
         ccp_item.product_id = product_ids[-1].id
 
-        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), 
-                                                          ('model', '=', 'res.partner')])
+        
+        if(i == 8):
+            _logger.info("owner")
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
+        
+        if(i == 8):
+            _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
         if(sheet[i][5] != "FALSE"):
             ccp_item.expire = sheet[i][5]
