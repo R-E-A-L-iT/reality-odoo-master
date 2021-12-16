@@ -20,7 +20,18 @@
     # any module necessary for this one to work correctly
     'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
-    'version': '0.3',
+    'assets': {
+        'web.assets_frontent': [
+            'static/src/CSS/foldProducts.css',
+            'static/src/CSS/pdf.css',
+            'static/src/CSS/ponumber.css',
+            'static/src/JS/fold.js',
+            'static/src/JS/poNumber.js',
+            'static/src/JS/price.js'
+        ]
+    }
+    
+    'version': '0.5',
     
     # always loaded
     'data': [
@@ -30,7 +41,6 @@
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
-        'views/document.xml',
 #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
