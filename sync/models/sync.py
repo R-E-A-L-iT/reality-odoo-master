@@ -500,8 +500,8 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(product.stringRep == str(sheet[i][:])):
-            return product
+        #if(product.stringRep == str(sheet[i][:])):
+        #    return product
         
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
@@ -525,11 +525,70 @@ class sync(models.Model):
         product.type = "product"
         
         self.translatePricelistFrench(product, sheet, sheetWidth, i, new)
+        self.translatePricelistEnglish(product, sheet, sheetWidth, i, new)
         
         if(not new):
             product.stringRep = str(sheet[i][:])
         
         return product
+        
+        
+    def translatePricelistEnglish(self, product, sheet, sheetWidth, i, new):
+        if(new == True):
+            return
+        else:
+            product_name_Can = self.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                     ('name', '=', 'product.template,name'),
+                                                                    ('lang', '=', 'en_CA')])
+            
+            product_name_Us = self.env['ir.translation'].search(['res_id', '=', product.id),
+                                                                ('name', '=', 'product.template,name'),
+                                                                'lang', '=', 'en_US'])
+
+            if(len(product_name_Can) > 0):
+                product_name_Can[-1].value = sheet[i][1]
+
+            else:
+                product_name_Can_new = self.env['ir.translation'].create({'name':'product.template,name', 
+                                                                            'lang':'en_CA',
+                                                                            'res_id': product.id})[0]
+                product_name_french_new.value = sheet[i][1]
+                
+            if(len(product_name_US) > 0):
+                product_name_US[-1].value = sheet[i][1]
+
+            else:
+                product_name_US_new = self.env['ir.translation'].create({'name':'product.template,name', 
+                                                                            'lang':'en_US',
+                                                                            'res_id': product.id})[0]
+                product_name_US_new.value = sheet[i][1]
+            
+
+            product_description_Can = self.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                     ('name', '=', 'product.template,description_sale'),
+                                                                    ('lang', '=', 'en_CA')])
+            
+            product_description_US = self.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                     ('name', '=', 'product.template,description_sale'),
+                                                                    ('lang', '=', 'en_US')])
+
+            if(len(product_description_Can) > 0):
+                product_description_Can[-1].value = sheet[i][2]
+            else:
+                product_description_Can_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
+                                                                            'lang':'en_CA',
+                                                                            'res_id': product.id})[0]
+                product_description_Can_new.value = sheet[i][2]
+                
+            if(len(product_description_US) > 0):
+                product_description_US[-1].value = sheet[i][2]
+            else:
+                product_description_US_new = self.env['ir.translation'].create({'name':'product.template,description_sale', 
+                                                                            'lang':'en_US',
+                                                                            'res_id': product.id})[0]
+                product_description_US_new.value = sheet[i][2]
+                
+            return
         
     def translatePricelistFrench(self, product, sheet, sheetWidth, i, new):
         if(new == True):
