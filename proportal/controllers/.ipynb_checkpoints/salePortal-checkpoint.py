@@ -56,7 +56,7 @@ class CustomerPortal(sourcePortal):
             'partner_id': order.partner_id.id,
             'report_type': 'html',
             'action': order._get_portal_return_action(),
-            'message': = message
+            'message': message,
         }
 
         return request.render('sale.sale_order_portal_template', values)
