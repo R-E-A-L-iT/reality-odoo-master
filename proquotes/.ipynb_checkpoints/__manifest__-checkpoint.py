@@ -21,7 +21,7 @@
     'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
     
     'assets': {
-        'web.assets_frontent': [
+        'web.assets_frontend': [
             'static/src/CSS/foldProducts.css',
             'static/src/CSS/pdf.css',
             'static/src/CSS/ponumber.css',
@@ -31,7 +31,7 @@
         ]
     },
     
-    'version': '0.6',
+    'version': '0.7',
     
     # always loaded
     'data': [
