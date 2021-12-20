@@ -229,7 +229,10 @@ publicWidget.registry.price = publicWidget.Widget.extend({
     },
     
     _updateTotal: function (total){
-        document.querySelector("#portalTotal b").innerHTML = total;
+        var div = document.querySelector("#portalTotal b");
+        if(div != null){
+            document.querySelector("#portalTotal b").innerHTML = total;
+        }
     },
     
     _updateView: function (total) {
