@@ -119,11 +119,13 @@ class sync(models.Model):
                 break
             
             if(str(sheet[i][-2] != "TRUE")):
+                _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
             if(not self.check_id(str(sheet[i][12]))):
+                _logger.info("ID")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
