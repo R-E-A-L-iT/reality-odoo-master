@@ -515,6 +515,9 @@ class sync(models.Model):
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
+        if(product.stringRep == ""):
+            _logger.info("Translate")
+        
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
         
