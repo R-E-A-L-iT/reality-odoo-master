@@ -512,7 +512,7 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(product.stringRep == str(sheet[i][:])):
+        if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
         product.name = sheet[i][1]
@@ -542,6 +542,8 @@ class sync(models.Model):
         
         if(not new):
             product.stringRep = str(sheet[i][:])
+        else:
+            product.stringRep = ""
         
         return product
         
