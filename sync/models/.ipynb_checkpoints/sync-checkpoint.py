@@ -513,6 +513,7 @@ class sync(models.Model):
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
+            _logger.info(product.stringRep)
             return product
         
         if(product.stringRep == ""):
