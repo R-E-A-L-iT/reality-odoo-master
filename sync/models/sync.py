@@ -185,6 +185,7 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+                _logger.info(i)
                 break
             if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
