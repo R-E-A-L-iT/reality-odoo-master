@@ -547,6 +547,7 @@ class sync(models.Model):
         if(not new):
             product.stringRep = str(sheet[i][:])
         else:
+            _logger.info(new)
             product.stringRep = ""
         
         return product
