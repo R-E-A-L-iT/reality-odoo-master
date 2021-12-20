@@ -121,6 +121,7 @@ class sync(models.Model):
             if(str(sheet[i][-2] != "TRUE")):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
+                continue
             
             if(not self.check_id(str(sheet[i][12]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -193,6 +194,7 @@ class sync(models.Model):
                 
             if(str(sheet[i][-2]) != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i = i + 1
                 continue
             if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
