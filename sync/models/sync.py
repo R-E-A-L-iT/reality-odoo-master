@@ -545,6 +545,7 @@ class sync(models.Model):
         self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
         
         if(new == False):
+            _logger.info("Update String Rep")
             product.stringRep = str(sheet[i][:])
         else:
             _logger.info(new)
