@@ -173,7 +173,7 @@ class sync(models.Model):
         
     def syncContacts(self, sheet):
     
-        sheetWidth = 15
+        sheetWidth = 16
         i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
@@ -185,8 +185,11 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
-                _logger.info(i)
                 break
+                
+            if(str(sheet[i][-2]) != "TRUE"):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                continue
             if(not self.check_id(str(sheet[i][10]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
