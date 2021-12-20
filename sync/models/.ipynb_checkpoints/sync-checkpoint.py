@@ -104,7 +104,7 @@ class sync(models.Model):
             
     def syncCompanies(self, sheet):
         
-        sheetWidth = 16
+        sheetWidth = 17
         i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
@@ -117,6 +117,10 @@ class sync(models.Model):
         while(True):
             if(str(sheet[i][-1]) != "TRUE"):
                 break
+            
+            if(str(sheet[i][-2] != "TRUE")):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i = i + 1
             
             if(not self.check_id(str(sheet[i][12]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
