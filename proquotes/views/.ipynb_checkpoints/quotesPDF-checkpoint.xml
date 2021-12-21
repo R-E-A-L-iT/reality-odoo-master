@@ -91,15 +91,15 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span id="footer-info" t-value="sale.report_saleorder_document.order_id.footer"></span>
-                <img 
+                <span id="footer-info" t-value="doc.footer"></span>
+<!--                 <img 
                  id="insert-footer" 
                  width="100%"
                  height="auto"
                 >
-                    <!-- src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png" -->
-                    <!-- style="position: absolute; z-index: 2; top: 775px;" -->
-                </img>
+                    src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
+                    style="position: absolute; z-index: 2; top: 775px;"
+                </img> -->
                 <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
 <!--                     <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute> -->
                 </xpath>
