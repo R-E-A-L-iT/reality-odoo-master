@@ -526,9 +526,6 @@ class sync(models.Model):
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
-        if(product.stringRep == ""):
-            _logger.info("Translate")
-        
         product.name = sheet[i][1]
         product.description_sale = sheet[i][2]
         
@@ -550,9 +547,11 @@ class sync(models.Model):
         product.tracking = "serial"
         product.type = "product"
         
-        self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
-        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
-        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
+        if(not new):
+            _logger.info("Translate")
+            self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
         
         return product
         
