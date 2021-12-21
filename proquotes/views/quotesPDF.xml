@@ -91,7 +91,7 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <t t-set="footer" t-field="doc.footer"></t>
+                <t t-set="footer" t-value="doc.footer"></t>
                 <img 
                  id="insert-footer" 
                  width="100%"
