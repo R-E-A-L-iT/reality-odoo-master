@@ -170,6 +170,8 @@ class sync(models.Model):
         if(sheet[i][10] != ""):
             company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][10])])[0].id)
         company.is_company = True
+        
+        _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
@@ -250,6 +252,7 @@ class sync(models.Model):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
         contact.is_company = False
         
+        _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
         
     def createContacts(self, sheet, external_id, sheetWidth, i):
@@ -311,6 +314,8 @@ class sync(models.Model):
         product.price = sheet[i][3]
         product.tracking = "serial"
         product.type = "product"
+        
+        _logger.info("Product String Rep")
         product.stringRep = str(sheet[i][:])
         
     def createProducts(self, sheet, external_id, sheetWidth, i):
@@ -392,6 +397,7 @@ class sync(models.Model):
         else:
             ccp_item.expire = None
             
+        _logger.info("CCP String Rep")
         ccp_item.stringRep = str(sheet[i][:])
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
@@ -460,6 +466,7 @@ class sync(models.Model):
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
                 
+                _logger.info("Pricelist Price StringRep")
                 product.stringRep = str(sheet[i][:])
             except Exception as e:
                 _logger.info(e)
@@ -545,10 +552,10 @@ class sync(models.Model):
         self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
         
         if(new == False):
-            _logger.info("Update String Rep")
+            _logger.info("Pricelist StringRep")
             product.stringRep = str(sheet[i][:])
         else:
-            _logger.info(new)
+            _logger.info("Blank String Rep")
             product.stringRep = ""
         
         return product
