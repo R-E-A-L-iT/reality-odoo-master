@@ -91,7 +91,7 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span id="footer-info" t-value="sale.report.order_id.footer"></span>
+                <span id="footer-info" t-value="sale.report_saleorder_document.order_id.footer"></span>
                 <img 
                  id="insert-footer" 
                  width="100%"

@@ -170,6 +170,8 @@ class sync(models.Model):
         if(sheet[i][10] != ""):
             company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][10])])[0].id)
         company.is_company = True
+        
+        _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
         
     def createCompany(self, sheet, external_id, sheetWidth, i):
@@ -250,6 +252,7 @@ class sync(models.Model):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
         contact.is_company = False
         
+        _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
         
     def createContacts(self, sheet, external_id, sheetWidth, i):
@@ -311,6 +314,8 @@ class sync(models.Model):
         product.price = sheet[i][3]
         product.tracking = "serial"
         product.type = "product"
+        
+        _logger.info("Product String Rep")
         product.stringRep = str(sheet[i][:])
         
     def createProducts(self, sheet, external_id, sheetWidth, i):
@@ -392,6 +397,7 @@ class sync(models.Model):
         else:
             ccp_item.expire = None
             
+        _logger.info("CCP String Rep")
         ccp_item.stringRep = str(sheet[i][:])
         
     def createCCP(self, sheet, external_id, sheetWidth, i):
@@ -452,7 +458,7 @@ class sync(models.Model):
                 continue
                
             try:
-                product = self.pricelistProduct(sheet, sheetWidth, i)
+                product, new= self.pricelistProduct(sheet, sheetWidth, i)
                 if(product.stringRep == str(sheet[i][:])):
                     i = i + 1
                     continue
@@ -460,7 +466,12 @@ class sync(models.Model):
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
                 
-                product.stringRep = str(sheet[i][:])
+                if(new):
+                    _logger.info("Blank StringRep")
+                    product.stringRep = ""
+                else:
+                    _logger.info("Pricelist Price StringRep")
+                    product.stringRep = str(sheet[i][:])
             except Exception as e:
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -474,9 +485,9 @@ class sync(models.Model):
         external_id = str(sheet[i][0])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0): 
-            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
+            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i), False
         else:
-            return self.createPricelistProducts(sheet, external_id, sheetWidth, i)
+            return self.createPricelistProducts(sheet, external_id, sheetWidth, i), True
     
     def pricelistCAN(self, product, sheet, sheetWidth, i):
         external_id = str(sheet[i][14])
@@ -512,7 +523,7 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
         
-        if(product.stringRep == str(sheet[i][:])):
+        if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
         product.name = sheet[i][1]
@@ -536,12 +547,11 @@ class sync(models.Model):
         product.tracking = "serial"
         product.type = "product"
         
-        self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
-        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
-        self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
-        
         if(not new):
-            product.stringRep = str(sheet[i][:])
+            _logger.info("Translate")
+            self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
         
         return product
         
