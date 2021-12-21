@@ -91,7 +91,12 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span id="footer-info" t-value="doc.footer"></span>
+                <span t-value="doc.footer"></span>
+                <span t-value="doc"></span>
+                <span t-value="doc.header"></span>
+                <span t-value="doc.sale.order"></span>
+                <span t-value="doc.sale.order.footer"></span>
+                <span>footer test</span>
 <!--                 <img 
                  id="insert-footer" 
                  width="100%"
