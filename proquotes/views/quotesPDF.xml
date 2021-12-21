@@ -91,23 +91,19 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span t-field="doc.footer"></span>
-<!--                 <span t-field="doc"></span> -->
-                <span t-field="doc.header"></span>
-<!--                 <span t-field="doc.sale.order"></span> -->
-<!--                 <span t-field="doc.sale.order.footer"></span> -->
-                <span>footer test</span>
-<!--                 <img 
+                <t t-set="footer" t-field="doc.footer"></t>
+                <img 
                  id="insert-footer" 
                  width="100%"
                  height="auto"
+                 t-attf-src="https://r-e-a-l.it/CAPTURE/images/footer/{{footer}}.png"
                 >
-                    src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
-                    style="position: absolute; z-index: 2; top: 775px;"
-                </img> -->
-                <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
-<!--                     <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute> -->
-                </xpath>
+<!--                     src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png"
+                    style="position: absolute; z-index: 2; top: 775px;" -->
+                </img>
+<!--                 <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
+                    <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute>
+                </xpath> -->
             </div>
         </xpath>
     </template>
