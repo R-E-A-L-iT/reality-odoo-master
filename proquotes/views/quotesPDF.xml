@@ -91,11 +91,11 @@
                 <br />
                 <span style="height: 40px"> Date: ____________________________________</span>
                 <br /><br /><br />
-                <span t-value="doc.footer"></span>
-                <span t-value="doc"></span>
-                <span t-value="doc.header"></span>
-                <span t-value="doc.sale.order"></span>
-                <span t-value="doc.sale.order.footer"></span>
+                <span t-field="doc.footer"></span>
+                <span t-field="doc"></span>
+                <span t-field="doc.header"></span>
+                <span t-field="doc.sale.order"></span>
+                <span t-field="doc.sale.order.footer"></span>
                 <span>footer test</span>
 <!--                 <img 
                  id="insert-footer" 
