@@ -190,7 +190,7 @@
     </template>
     
     <!--Sign Page-->
-<!--     <template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
+    <template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
         
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
             <span><strong t-field="sale_order.partner_id.name"/></span>
@@ -200,6 +200,6 @@
             <t t-set="default_name" t-value="env.user.name"/>
         </xpath>
         
-    </template> -->
+    </template>
     
 </odoo>
