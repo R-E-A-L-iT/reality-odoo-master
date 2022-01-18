@@ -66,9 +66,9 @@ class CustomerPortal(sourcePortal):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         SaleOrder = request.env['sale.order']
-        
+        raise UserError(partner.commercial_partner_id.id);
         domain = [
-            #('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
+            ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sent', 'cancel'])
         ]
 
