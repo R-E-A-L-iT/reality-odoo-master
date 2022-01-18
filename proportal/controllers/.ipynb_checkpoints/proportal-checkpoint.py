@@ -70,4 +70,6 @@ class CustomerPortal(CustomerPortal):
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
         })
+        
+        return none
         return request.render("sale.portal_my_quotations", values)
