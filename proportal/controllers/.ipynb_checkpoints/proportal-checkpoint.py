@@ -21,7 +21,6 @@ class CustomerPortal(CustomerPortal):
         }
         return request.render("proportal.portal_products", values)
     
-    @override
     @http.route(['/my/quotes', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
