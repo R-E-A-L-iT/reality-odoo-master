@@ -61,7 +61,7 @@ class CustomerPortal(sourcePortal):
 
         return request.render('sale.sale_order_portal_template', values)
     
-     @http.route(['/my/quotes', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/my/quotes', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
