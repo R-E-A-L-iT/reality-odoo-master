@@ -21,13 +21,14 @@ class CustomerPortal(CustomerPortal):
         }
         return request.render("proportal.portal_products", values)
     
+    @override
     @http.route(['/my/quotes', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_quotes(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
-        UserError("Error")
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         SaleOrder = request.env['sale.order']
-
+        x = none
+        x.bob
         domain = [
             ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sent', 'cancel'])
