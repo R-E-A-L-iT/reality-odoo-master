@@ -67,6 +67,8 @@ class CustomerPortal(sourcePortal):
         partner = request.env.user.partner_id
         SaleOrder = request.env['sale.order']
         
+        raise UserError(str(partner))
+        
         domain = [
             ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sent', 'cancel'])
