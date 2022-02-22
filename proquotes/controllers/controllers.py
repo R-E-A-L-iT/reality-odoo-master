@@ -15,10 +15,10 @@ class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
         
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
         
         order_sudo.customer_po_number = ponumber
         
@@ -27,10 +27,10 @@ class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
     def select(self, order_id, line_ids, selected,  access_token=None, **post):
 
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
         
         i = 0
         while(i < len(line_ids)):
@@ -65,10 +65,10 @@ class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/sectionSelect"], type='json', auth="public", website=True)
     def sectionSelect(self, order_id, section_id, line_ids, selected,  access_token=None, **post):
 
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
         
         i = 0
         
@@ -116,10 +116,10 @@ class CustomerPortal(CustomerPortal):
     @http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
     def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
 
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
         
         digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
         line_id_formated = ""
@@ -147,11 +147,11 @@ class CustomerPortal(CustomerPortal):
     
     @http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
     def change_quantity(self, order_id, line_id, quantity, access_token=None, **post):
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
-        
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
+        #
         
         
         digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
