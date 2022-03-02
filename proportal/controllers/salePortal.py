@@ -12,10 +12,10 @@ from odoo.addons.sale.controllers.portal import CustomerPortal as sourcePortal
 from odoo.osv import expression
 
 
-class CustomerPortal(sourcePortal):
+class CustomerPortalINH(sourcePortal):
 
     def _prepare_portal_layout_values(self):
-        values = super(CustomerPortal, self)._prepare_portal_layout_values()
+        values = super(CustomerPortalINH, self)._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
         SaleOrder = request.env['sale.order'].sudo()
