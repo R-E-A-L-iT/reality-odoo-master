@@ -20,3 +20,5 @@ class CustomerPortal(CustomerPortal):
             'company': company
         }
         return request.render("proportal.portal_products", values)
+    
+   
