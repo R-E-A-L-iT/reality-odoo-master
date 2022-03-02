@@ -28,11 +28,13 @@ class CustomerPortalINH(CustomerPortal):
             ('state', 'in', ['sent', 'cancel'])
         ])
         values['quotation_count'] = quotation_count
+        values['new_quotation_count'] = quotation_count
         order_count = SaleOrder.search_count([
             ('partner_id', 'child_of', [partner.id]),
             ('state', 'in', ['sale', 'done'])
         ])
         values['order_count'] = order_count
+        values['new_order_count'] = order_count
         _logger.info('>>>>>>>>>>>>>>>>>>>>>>>. values after: %s', values)
         return values
     #
