@@ -20,7 +20,7 @@
             <t t-call="portal.portal_docs_entry">
                 <t t-set="title">New Quotations</t>
                 <t t-set="url" t-value="'/my/quotes'"/>
-                <t t-set="placeholder_count" t-value="'quotation_count'"/>
+                <t t-set="placeholder_count" t-value="'new_quotation_count'"/>
             </t>
         </xpath>
     </template>
