@@ -14,6 +14,25 @@ from odoo.osv import expression
 
 class CustomerPortal(sourcePortal):
 
+    def _prepare_portal_layout_values(self):
+        values = super(CustomerPortal, self)._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        SaleOrder = request.env['sale.order'].sudo()
+        quotation_count = SaleOrder.search_count([
+            ('message_partner_ids', 'child_of', [partner.id]),
+            ('state', 'in', ['sent', 'cancel'])
+        ])
+        order_count = SaleOrder.search_count([
+            ('message_partner_ids', 'child_of', [partner.id]),
+            ('state', 'in', ['sale', 'done'])
+        ])
+
+        values.update({
+            'quotation_count': quotation_count,
+            'order_count': order_count,
+        })
+        return values
     #
     # Quotations and Sales Orders
     #
@@ -67,12 +86,10 @@ class CustomerPortal(sourcePortal):
         partner = request.env.user.partner_id
         SaleOrder = request.env['sale.order'].sudo()
         
-        # domain = [
-        #     ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
-        #     ('state', 'in', ['sent', 'cancel'])
-        # ]
-
-        domain = []
+        domain = [
+            ('message_partner_ids', 'child_of', [partner.id]),
+            ('state', 'in', ['sent', 'cancel'])
+        ]
 
         searchbar_sortings = {
             'date': {'label': _('Order Date'), 'order': 'date_order desc'},
