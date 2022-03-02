@@ -8,30 +8,32 @@ from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
-from odoo.addons.sale.controllers.portal import CustomerPortal as sourcePortal
+from odoo.addons.sale.controllers.portal import CustomerPortal
 from odoo.osv import expression
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
-class CustomerPortalINH(sourcePortal):
+class CustomerPortalINH(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         values = super(CustomerPortalINH, self)._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
+        _logger.info('>>>>>>>>>>>>>>>>>>>>>>>. values before: %s', values)
         SaleOrder = request.env['sale.order'].sudo()
         quotation_count = SaleOrder.search_count([
             ('message_partner_ids', 'child_of', [partner.id]),
             ('state', 'in', ['sent', 'cancel'])
         ])
+        values['quotation_count'] = quotation_count
         order_count = SaleOrder.search_count([
             ('message_partner_ids', 'child_of', [partner.id]),
             ('state', 'in', ['sale', 'done'])
         ])
-
-        values.update({
-            'quotation_count': quotation_count,
-            'order_count': order_count,
-        })
+        values['order_count'] = order_count
+        _logger.info('>>>>>>>>>>>>>>>>>>>>>>>. values after: %s', values)
         return values
     #
     # Quotations and Sales Orders
