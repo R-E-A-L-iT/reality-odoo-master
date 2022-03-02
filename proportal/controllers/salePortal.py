@@ -24,12 +24,12 @@ class CustomerPortalINH(CustomerPortal):
         _logger.info('>>>>>>>>>>>>>>>>>>>>>>>. values before: %s', values)
         SaleOrder = request.env['sale.order'].sudo()
         quotation_count = SaleOrder.search_count([
-            ('message_partner_ids', 'child_of', [partner.id]),
+            ('partner_id', 'child_of', [partner.id]),
             ('state', 'in', ['sent', 'cancel'])
         ])
         values['quotation_count'] = quotation_count
         order_count = SaleOrder.search_count([
-            ('message_partner_ids', 'child_of', [partner.id]),
+            ('partner_id', 'child_of', [partner.id]),
             ('state', 'in', ['sale', 'done'])
         ])
         values['order_count'] = order_count
@@ -89,7 +89,7 @@ class CustomerPortalINH(CustomerPortal):
         SaleOrder = request.env['sale.order'].sudo()
         
         domain = [
-            ('message_partner_ids', 'child_of', [partner.id]),
+            ('partner_id', 'child_of', [partner.id]),
             ('state', 'in', ['sent', 'cancel'])
         ]
 
