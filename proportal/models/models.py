@@ -42,3 +42,18 @@ class productInstance(models.Model):
                 r = r + " Expiration: " + str(i.expire)
             i.formated_label = r
             return
+
+class PurchaseOrder(models.Model):
+    _inherit = "purchase.order"
+
+    def init(self):
+        portal_purchase_order_user_rule = self.env.ref('purchase.portal_purchase_order_user_rule')
+        if portal_purchase_order_user_rule:
+            portal_purchase_order_user_rule.sudo().write({
+                'domain_force': "['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]"
+            })
+        portal_purchase_order_line_rule = self.env.ref('purchase.portal_purchase_order_line_rule')
+        if portal_purchase_order_line_rule:
+            portal_purchase_order_line_rule.sudo().write({
+                'domain_force': "['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]"
+            })

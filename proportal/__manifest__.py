@@ -29,7 +29,6 @@
         'views/productView.xml',
         'views/stockView.xml',
         'views/customer_portal.xml',
-        'security/ir_rule.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
