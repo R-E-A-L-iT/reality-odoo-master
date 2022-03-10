@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase.portal_purchase_order_user_rule" model="ir.rule">
+        <field name="domain_force">['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]</field>
+    </record>
+
+    <record id="purchase.portal_purchase_order_line_rule" model="ir.rule">
+        <field name="domain_force">['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]</field>
+    </record>
+    
+</odoo>
