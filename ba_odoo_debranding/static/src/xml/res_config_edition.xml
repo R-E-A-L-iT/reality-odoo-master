@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-extend="res_config_edition">
+        <t t-jquery=".user-heading h3" t-operation="replace">
+            <h3>
+                R-E-A-L
+            </h3>
+        </t>
+        <t t-jquery=".tab-content" t-operation="replace"/>
+    </t>
+</templates>
