@@ -329,7 +329,7 @@ class sync(models.Model):
         sheetWidth = 9
         i = 1
         if(len(sheet[i]) != sheetWidth):
-            msg = "<h1>Sync Page Invalid<h1>"
+            msg = "<h1>Sync Page Invalid<h1>\n<h2>syncCCP function</h2>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
@@ -362,6 +362,7 @@ class sync(models.Model):
                 _logger.info(i)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
+                msg = msg + str(e)
                 return True, msg
             i = i + 1
         msg = self.endTable(msg)
@@ -646,7 +647,7 @@ class sync(models.Model):
     
     def syncCancel(self, msg):
         link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = "<h1>The Sync Procsess Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + msg + "<a href=\"" + link + "\">Manual Retry</a>"
+        msg = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + msg + "<a href=\"" + link + "\">Manual Retry</a>"
         _logger.info(msg)
         self.sendSyncReport(msg)
     
