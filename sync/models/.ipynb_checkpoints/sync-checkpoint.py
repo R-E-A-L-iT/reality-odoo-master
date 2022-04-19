@@ -353,8 +353,6 @@ class sync(models.Model):
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
-                    _logger.info("Checkpoint Number Unombero")
-                    _logger.info(str(ccp_ids[-1]))
                     self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createCCP(sheet, external_id, sheetWidth, i)
@@ -375,28 +373,28 @@ class sync(models.Model):
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
         
-        if(i == 8):
-            _logger.info("name")
+#         if(i == 8):
+        _logger.info("name")
         ccp_item.name = sheet[i][1]
         
-        if(i == 8):
-            _logger.info("id")
+#         if(i == 8):
+        _logger.info("id")
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
         
-        if(i == 8):
-            _logger.info("Id Tupple")
+#         if(i == 8):
+        _logger.info("Id Tupple")
         ccp_item.product_id = product_ids[-1].id
 
         
-        if(i == 8):
-            _logger.info("owner")
+#         if(i == 8):
+        _logger.info("owner")
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
         if (len(owner_ids) == 0):
             _logger.info("No owner")
         
         
-        if(i == 8):
-            _logger.info("Owner Tupple")
+#         if(i == 8):
+        _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
         if(sheet[i][5] != "FALSE"):
             ccp_item.expire = sheet[i][5]
