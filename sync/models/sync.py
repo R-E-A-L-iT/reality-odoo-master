@@ -542,8 +542,14 @@ class sync(models.Model):
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
+            product.is_ca = True
         else:
             product.is_published = False
+            product.is_ca = False
+        if (str(sheet[i][19]) == "TRUE"):
+            product.is_us = True
+        else:
+            product.is_us = False
         product.tracking = "serial"
         product.type = "product"
         
