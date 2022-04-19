@@ -415,7 +415,7 @@ class sync(models.Model):
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
         
     def syncPricelist(self, sheet):
-        sheetWidth = 19
+        sheetWidth = 20
         i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[i])) + "</p>"
