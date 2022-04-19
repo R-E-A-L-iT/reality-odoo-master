@@ -353,6 +353,8 @@ class sync(models.Model):
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
+                    _logger.info("Checkpoint Number Unombero")
+                    _logger.info(str(ccp_ids - 1))
                     self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
                 else:
                     self.createCCP(sheet, external_id, sheetWidth, i)
