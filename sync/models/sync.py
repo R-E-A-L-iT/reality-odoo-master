@@ -418,7 +418,7 @@ class sync(models.Model):
         sheetWidth = 19
         i = 1
         if(len(sheet[i]) != sheetWidth):
-            msg = "<h1>Sync Page Invalid<h1>"
+            msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(sheetWidth) + "</p>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
@@ -542,14 +542,8 @@ class sync(models.Model):
         
         if(str(sheet[i][10]) == "TRUE"):
             product.is_published = True
-            product.is_ca = True
         else:
             product.is_published = False
-            product.is_ca = False
-        if (str(sheet[i][19]) == "TRUE"):
-            product.is_us = True
-        else:
-            product.is_us = False
         product.tracking = "serial"
         product.type = "product"
         

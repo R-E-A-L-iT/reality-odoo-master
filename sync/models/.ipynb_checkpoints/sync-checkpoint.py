@@ -418,7 +418,7 @@ class sync(models.Model):
         sheetWidth = 19
         i = 1
         if(len(sheet[i]) != sheetWidth):
-            msg = "<h1>Sync Page Invalid<h1>"
+            msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(sheetWidth) + "</p>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
