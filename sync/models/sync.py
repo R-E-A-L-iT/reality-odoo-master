@@ -389,6 +389,9 @@ class sync(models.Model):
         if(i == 8):
             _logger.info("owner")
         owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
+        if (len(owner_ids) == 0):
+            _logger.info("No owner")
+        
         
         if(i == 8):
             _logger.info("Owner Tupple")
