@@ -380,6 +380,8 @@ class sync(models.Model):
 #         if(i == 8):
         _logger.info("id")
         product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        _logger.info(str(len(product_ids)))
+        _logger.info(str(sheet[i][4]))
         
 #         if(i == 8):
         _logger.info("Id Tupple")
