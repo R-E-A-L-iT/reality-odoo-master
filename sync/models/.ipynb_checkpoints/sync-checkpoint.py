@@ -466,10 +466,8 @@ class sync(models.Model):
             try:
                 product, new= self.pricelistProduct(sheet, sheetWidth, i)
                 if(product.stringRep == str(sheet[i][:])):
-                    _logger.info("Skip")
-                    
-                    #i = i + 1
-                    #continue
+                    i = i + 1
+                    continue
 
                 self.pricelistCAN(product, sheet, sheetWidth, i)
                 self.pricelistUS(product, sheet, sheetWidth, i)
