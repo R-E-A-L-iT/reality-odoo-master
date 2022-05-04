@@ -34,13 +34,18 @@ class sync(models.Model):
     
     _description = "Sync App"
     
+    # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
+        
+        # Checks authentication values
         if(psw == None):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
             return
+        
+        # next funct
         self.getSyncData(psw)
         _logger.info("Ending Sync")
         
@@ -48,17 +53,21 @@ class sync(models.Model):
         
         template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         
+        # get the database data; reading in the sheet
         try:
             sync_data = self.getDoc(psw, template_id, 0)
         except Exception as e:
             _logger.info(e)
-            msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
+            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
             return
+        
         i = 1
         sheetIndex = ""
         syncType = ""
         msg = ""
+        
+        # loop through entries in first sheet
         while(True):
             _logger.info(sync_data[i][3])
             if(str(sync_data[i][3]) != "TRUE"):
@@ -73,6 +82,8 @@ class sync(models.Model):
             if(quit):
                 self.syncCancel(msg)
                 return
+            
+        # error
         if(msg != ""):
             self.syncFail(msg)
             
@@ -85,6 +96,7 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             return False, ""
         
+        # identify the type of sheet
         if(syncType == "Companies"):
             _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
@@ -102,22 +114,30 @@ class sync(models.Model):
             quit, msg = self.syncPricelist(sheet)
         return quit, msg
             
+    # same pattern for all sync items
     def syncCompanies(self, sheet):
         
-        sheetWidth = 17
+        # check sheet width to filter out invalid sheets
+        sheetWidth = 17 # every company tab will have the same amount of columns (Same with others)
         i = 1
         if(len(sheet[i]) != sheetWidth):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
+        
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
+        
+        # loop through all the rows
         while(True):
+            
+            # check if should continue
             if(str(sheet[i][-1]) != "TRUE"):
                 break
             
+            # validation checks (vary depending on tab/function)
             if(str(sheet[i][-2]) != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
@@ -130,7 +150,10 @@ class sync(models.Model):
                 i = i + 1
                 continue
             
+            # if it gets here data should be valid
             try:
+                
+                # attempts to access existing item (item/row)
                 external_id = str(sheet[i][12])
                 company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(company_ids) > 0):
@@ -149,9 +172,11 @@ class sync(models.Model):
             
     def updateCompany(self, company, sheet, sheetWidth, i):
         
+        # check if any update to item is needed and skips if there is none
         if(company.stringRep == str(sheet[i][:])):
             return
         
+        # reads values and puts them in appropriate fields
         company.name = sheet[i][0]
         company.phone = sheet[i][1]
         company.website = sheet[i][2]
@@ -174,12 +199,14 @@ class sync(models.Model):
         _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
         
+    # creates object and updates it
     def createCompany(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         company = self.env['res.partner'].create({'name': sheet[i][0]})[0]
         ext.res_id = company.id
         self.updateCompany(company, sheet, sheetWidth, i)
         
+    # follows same pattern
     def syncContacts(self, sheet):
     
         sheetWidth = 16
@@ -226,7 +253,8 @@ class sync(models.Model):
             i = i + 1
         msg = self.endTable(msg)
         return False, msg
-            
+    
+    # follows same pattern
     def updateContacts(self, contact, sheet, sheetWidth, i):
         
         if(contact.stringRep == str(sheet[i][:])):
@@ -254,13 +282,15 @@ class sync(models.Model):
         
         _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
-        
+    
+    # follows same pattern
     def createContacts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         contact = self.env['res.partner'].create({'name': sheet[i][0]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i)
-        
+    
+    # follows same pattern
     def syncProducts(self, sheet):
     
         sheetWidth = 7
@@ -303,7 +333,8 @@ class sync(models.Model):
             i = i + 1
         msg = self.endTable(msg)
         return False, msg
-            
+    
+    # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i):
         
         if(product.stringRep == str(sheet[i][:])):
@@ -317,13 +348,15 @@ class sync(models.Model):
         
         _logger.info("Product String Rep")
         product.stringRep = str(sheet[i][:])
-        
+    
+    # follows same pattern
     def createProducts(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
         product = self.env['product.template'].create({'name': sheet[i][1]})[0]
         ext.res_id = product.id
         self.updateProducts(product, sheet, sheetWidth, i)
-        
+    
+    # follows same pattern
     def syncCCP(self, sheet):
     
         sheetWidth = 9
@@ -368,7 +401,7 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-            
+    # follows same pattern        
     def updateCCP(self, ccp_item, sheet, sheetWidth, i):        
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
@@ -405,7 +438,8 @@ class sync(models.Model):
             
         _logger.info("CCP String Rep")
         ccp_item.stringRep = str(sheet[i][:])
-        
+    
+    # follows same pattern
     def createCCP(self, sheet, external_id, sheetWidth, i):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         
@@ -419,7 +453,8 @@ class sync(models.Model):
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
         self.updateCCP(ccp_item, sheet, sheetWidth, i)
-        
+    
+    # follows same pattern
     def syncPricelist(self, sheet):
         sheetWidth = 20
         i = 1
@@ -434,7 +469,7 @@ class sync(models.Model):
         while(True):
             if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
-            if(str(sheet[i][17]) != "TRUE"):
+            if(str(sheet[i][-2]) != "TRUE"):
                 i = i + 1
                 continue
             
@@ -486,7 +521,7 @@ class sync(models.Model):
             i = i + 1
         msg = self.endTable(msg)
         return False, msg
-            
+    
     def pricelistProduct(self, sheet, sheetWidth, i):
         external_id = str(sheet[i][0])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])

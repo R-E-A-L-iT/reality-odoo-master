@@ -52,7 +52,7 @@ class sync(models.Model):
             sync_data = self.getDoc(psw, template_id, 0)
         except Exception as e:
             _logger.info(e)
-            msg = "<h1>Source Document Invalid<\h1><p>Sync Fail</p>"
+            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
             self.sendSyncReport(msg)
             return
         i = 1
@@ -434,7 +434,7 @@ class sync(models.Model):
         while(True):
             if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
                 break
-            if(str(sheet[i][17]) != "TRUE"):
+            if(str(sheet[i][-2]) != "TRUE"):
                 i = i + 1
                 continue
             
