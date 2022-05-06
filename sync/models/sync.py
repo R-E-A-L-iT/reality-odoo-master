@@ -584,17 +584,13 @@ class sync(models.Model):
         if (str(sheet[i][10]) == "TRUE"):
             product.is_published = True
             product.is_ca = True
-            product.product_tmpl_id.is_ca = True
         else:
             product.is_published = False
             product.is_ca = False
-            product.product_tmpl_id.is_ca = False
         if (str(sheet[i][17]) == "TRUE"):
             product.is_us = True
-            product.product_tmpl_id.is_us = True
         else:
             product.is_us = False
-            product.product_tmpl_id.is_us = False
         product.tracking = "serial"
         product.type = "product"
         
