@@ -582,7 +582,7 @@ class sync(models.Model):
 #                 product.image_1920 = req.content
 
         if (str(sheet[i][10]) == "TRUE"):
-            product.is_published = True
+            product.is_published = False
             product.is_ca = True
         else:
             product.is_published = False
