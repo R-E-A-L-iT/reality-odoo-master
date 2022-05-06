@@ -580,11 +580,17 @@ class sync(models.Model):
 #             req = requests.get(url, stream=True)
 #             if(req.status_code == 200):
 #                 product.image_1920 = req.content
-        
-        if(str(sheet[i][10]) == "TRUE"):
+
+        if (str(sheet[i][10]) == "TRUE"):
             product.is_published = True
+            product.is_ca = True
         else:
             product.is_published = False
+            product.is_ca = False
+        if (str(sheet[i][17]) == "TRUE"):
+            product.is_us = True
+        else:
+            product.is_us = False
         product.tracking = "serial"
         product.type = "product"
         
