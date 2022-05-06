@@ -554,8 +554,12 @@ class sync(models.Model):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
-                pricelist_item.fixed_price = sheet[i][6]
+            
+            
+#             if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
+#                 pricelist_item.fixed_price = sheet[i][6]
+                
+                
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
