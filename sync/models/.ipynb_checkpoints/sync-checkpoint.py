@@ -820,8 +820,8 @@ class sync(models.Model):
                     i = i + 1
                     continue
 
-                self.pricelistCAN(product, sheet, sheetWidth, i)
-                self.pricelistUS(product, sheet, sheetWidth, i)
+                self.pricelistCAN(product, sheet, sheetWidth, i, columns)
+                self.pricelistUS(product, sheet, sheetWidth, i, columns)
                 
                 if(new):
                     _logger.info("Blank StringRep")
