@@ -357,6 +357,7 @@ class sync(models.Model):
             columns["continue"] = sheet[0].index("Continue")
         else:
             columnsMissing = True
+        _logger.info(str(columns))
         
         i = 1
         if(len(sheet[i]) != sheetWidth or columnsMissing):
