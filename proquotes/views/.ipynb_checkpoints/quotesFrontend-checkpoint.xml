@@ -200,7 +200,7 @@
             <t t-set="default_name" t-value="env.user.name"/>
         </xpath>
         
-        <xpath expr="//a[t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace">
+        <xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace">
             <a class="btn">Hello</a>
         </xpath>
         
