@@ -842,7 +842,7 @@ class sync(models.Model):
         external_id = str(sheet[i][columns["sku"]])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0): 
-            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columbs), False
+            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns), False
         else:
             return self.createPricelistProducts(sheet, external_id, sheetWidth, i, columns), True
     
