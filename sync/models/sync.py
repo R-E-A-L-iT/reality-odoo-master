@@ -124,77 +124,77 @@ class sync(models.Model):
         
         #Calculate Indexes
         if("Company Name" in  sheet[0]):
-            colomns["companyName"] = sheet[0].index("Company Name")
+            columns["companyName"] = sheet[0].index("Company Name")
         else:
             missingColumn = True
             
         if("Phone" in  sheet[0]):
-            colomns["phone"] = sheet[0].index("Phone")
+            columns["phone"] = sheet[0].index("Phone")
         else:
             missingColumn = True
         
         if("Website" in  sheet[0]):
-            colomns["website"] = sheet[0].index("Website")
+            columns["website"] = sheet[0].index("Website")
         else:
             missingColumn = True
         
         if("Street" in  sheet[0]):
-            colomns["street"] = sheet[0].index("Street")
+            columns["street"] = sheet[0].index("Street")
         else:
             missingColumn = True
             
         if("City" in  sheet[0]):
-            colomns["city"] = sheet[0].index("City")
+            columns["city"] = sheet[0].index("City")
         else:
             missingColumn = True
             
         if("State" in  sheet[0]):
-            colomns["state"] = sheet[0].index("State")
+            columns["state"] = sheet[0].index("State")
         else:
             missingColumn = True
             
         if("Country Code" in  sheet[0]):
-            colomns["country"] = sheet[0].index("Country Code")
+            columns["country"] = sheet[0].index("Country Code")
         else:
             missingColumn = True
             
         if("Postal Code" in  sheet[0]):
-            colomns["postalCode"] = sheet[0].index("Postal Code")
+            columns["postalCode"] = sheet[0].index("Postal Code")
         else:
             missingColumn = True
             
         if("Language" in  sheet[0]):
-            colomns["language"] = sheet[0].index("Language")
+            columns["language"] = sheet[0].index("Language")
         else:
             missingColumn = True
             
         if("Email" in  sheet[0]):
-            colomns["email"] = sheet[0].index("Email")
+            columns["email"] = sheet[0].index("Email")
         else:
             missingColumn = True
             
         if("Pricelist" in  sheet[0]):
-            colomns["pricelist"] = sheet[0].index("Pricelist")
+            columns["pricelist"] = sheet[0].index("Pricelist")
         else:
             missingColumn = True
             
         if("Is a Company" in  sheet[0]):
-            colomns["company"] = sheet[0].index("Is a Company")
+            columns["company"] = sheet[0].index("Is a Company")
         else:
             missingColumn = True
             
         if("OCOMID" in  sheet[0]):
-            colomns["id"] = sheet[0].index("Phone")
+            columns["id"] = sheet[0].index("Phone")
         else:
             missingColumn = True
             
         if("Valid" in  sheet[0]):
-            colomns["valid"] = sheet[0].index("Valid")
+            columns["valid"] = sheet[0].index("Valid")
         else:
             missingColumn = True
             
         if("Continue" in  sheet[0]):
-            colomns["continue"] = sheet[0].index("Continue")
+            columns["continue"] = sheet[0].index("Continue")
         else:
             missingColumn = True
             
