@@ -754,7 +754,7 @@ class sync(models.Model):
         else:
             columnsMissing = True
             
-        if("US PL SEL" in sheet[0]):
+        if("USD PL SEL" in sheet[0]):
             columns["usPricelist"] = sheet[0].index("US PL SEL")
         else:
             columnsMissing = True
