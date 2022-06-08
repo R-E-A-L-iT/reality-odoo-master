@@ -179,7 +179,7 @@ class sync(models.Model):
             missingColumn = True
             
         if("OCOMID" in  sheet[0]):
-            columns["id"] = sheet[0].index("Phone")
+            columns["id"] = sheet[0].index("OCOMID")
         else:
             missingColumn = True
             
