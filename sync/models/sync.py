@@ -847,7 +847,7 @@ class sync(models.Model):
             return self.createPricelistProducts(sheet, external_id, sheetWidth, i, columns), True
     
     def pricelistCAN(self, product, sheet, sheetWidth, i, columns):
-        external_id = str(sheet[i][columns["canPLID"])
+        external_id = str(sheet[i][columns["canPLID"]])
         pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
