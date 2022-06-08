@@ -7,7 +7,12 @@
     color: #db0d0d;   
 }
 
+#projectPortalTable > thead > tr > th > em {
+    background-color: #1E2023;
+    color: #fff;
+}
+
 #projectPortalTable > thead > tr > th {
-    background-color: #2D2F32;
+    background-color: #1E2023;
     color: #fff;   
 }
