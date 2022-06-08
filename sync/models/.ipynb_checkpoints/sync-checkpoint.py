@@ -357,7 +357,6 @@ class sync(models.Model):
             columns["continue"] = sheet[0].index("Continue")
         else:
             columnsMissing = True
-        _logger.info(str(columns))
         
         i = 1
         if(len(sheet[i]) != sheetWidth or columnsMissing):
@@ -552,8 +551,54 @@ class sync(models.Model):
     def syncCCP(self, sheet):
     
         sheetWidth = 9
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("Owner ID" in  sheet[0]):
+            columns["ownerId"] = sheet[0].index("Owner ID")
+        else:
+            columnsMissing = True
+        
+        if("EID/SN" in  sheet[0]):
+            columns["eidsn"] = sheet[0].index("EID/SN")
+        else:
+            columnsMissing = True
+            
+        if("External ID" in  sheet[0]):
+            columns["externalId"] = sheet[0].index("External ID")
+        else:
+            columnsMissing = True
+        
+        if("Product Code" in  sheet[0]):
+            columns["code"] = sheet[0].index("Product Code")
+        else:
+            columnsMissing = True
+            
+        if("Product Name" in  sheet[0]):
+            columns["name"] = sheet[0].index("Product Name")
+        else:
+            columnsMissing = True
+            
+        if("Expiration Date" in  sheet[0]):
+            columns["date"] = sheet[0].index("Expiration Date")
+        else:
+            columnsMissing = True
+            
+        if("Valid" in  sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+            
+        if("Continue" in  sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = True
+            
+        
+        
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>\n<h2>syncCCP function</h2>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -562,25 +607,25 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
-            if(str(sheet[i][6]) != "TRUE"):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(sheet[i][2]))):
+            if(not self.check_id(str(sheet[i][columns["externalId"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             try:
-                external_id = str(sheet[i][2])
+                external_id = str(sheet[i][columns["externalId"]])
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
-                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
+                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createCCP(sheet, external_id, sheetWidth, i)
+                    self.createCCP(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("CCP")
                 _logger.info(e)
@@ -594,19 +639,19 @@ class sync(models.Model):
         return False, msg
 
     # follows same pattern        
-    def updateCCP(self, ccp_item, sheet, sheetWidth, i):        
+    def updateCCP(self, ccp_item, sheet, sheetWidth, i, columns):        
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
         
 #         if(i == 8):
         _logger.info("name")
-        ccp_item.name = sheet[i][1]
+        ccp_item.name = sheet[i][columns["eidsn"]]
         
 #         if(i == 8):
         _logger.info("id")
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][columns["name"]])])
         _logger.info(str(len(product_ids)))
-        _logger.info(str(sheet[i][4]))
+        _logger.info(str(sheet[i][columns["name"]]))
         
 #         if(i == 8):
         _logger.info("Id Tupple")
@@ -615,7 +660,7 @@ class sync(models.Model):
         
 #         if(i == 8):
         _logger.info("owner")
-        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][columns["ownerId"]]), ('model', '=', 'res.partner')])
         if (len(owner_ids) == 0):
             _logger.info("No owner")
         
@@ -623,8 +668,8 @@ class sync(models.Model):
 #         if(i == 8):
         _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
-        if(sheet[i][5] != "FALSE"):
-            ccp_item.expire = sheet[i][5]
+        if(sheet[i][columns["date"]] != "FALSE"):
+            ccp_item.expire = sheet[i][columns["date"]]
         else:
             ccp_item.expire = None
             
@@ -632,19 +677,19 @@ class sync(models.Model):
         ccp_item.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createCCP(self, sheet, external_id, sheetWidth, i):
+    def createCCP(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][columns["name"]])])
         
         product_id = product_ids[len(product_ids) - 1].id
         
         company_id = self.env['res.company'].search([('id', '=', 1)]).id
         
-        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i][1],
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i][columns["eidsn"]],
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
-        self.updateCCP(ccp_item, sheet, sheetWidth, i)
+        self.updateCCP(ccp_item, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncPricelist(self, sheet):
