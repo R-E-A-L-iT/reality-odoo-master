@@ -10,6 +10,10 @@
     padding-right: 0;
 }
 
+#quote_content > div.row.justify-content-center.text-center.d-print-none.pt-1.pb-4 > div.o_download_pdf.btn-toolbar.flex-sm-nowrap {
+    display: none;
+}
+
 #quotesDownloadButton{
     background-color: #db0d0d;
     color: #fff;
