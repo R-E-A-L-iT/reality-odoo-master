@@ -917,8 +917,8 @@ class sync(models.Model):
         if(not new):
             _logger.info("Translate")
             self.translatePricelist(product, sheet, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
-            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new, columns)
-            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new, columns)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new)
         
         return product
         
