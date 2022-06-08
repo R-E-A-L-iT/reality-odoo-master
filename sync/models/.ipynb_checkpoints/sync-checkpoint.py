@@ -100,18 +100,23 @@ class sync(models.Model):
         if(syncType == "Companies"):
             _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
+            _logger.info("Done Companies")
         elif(syncType == "Contacts"):
             _logger.info("Contacts")
             quit, msg = self.syncContacts(sheet)
+            _logger.info("Done Contacts")
         elif(syncType == "Products"):
             _logger.info("Products")
             quit, msg = self.syncProducts(sheet)
+            _logger.info("Done Products")
         elif(syncType == "CCP"):
             _logger.info("CCP")
             quit, msg = self.syncCCP(sheet)
+            _logger.info("DoneCCP")
         elif(syncType == "Pricelist"):
             _logger.info("Pricelist")
             quit, msg = self.syncPricelist(sheet)
+            _logger.info("Done Pricelist")
         return quit, msg
             
     # same pattern for all sync items
