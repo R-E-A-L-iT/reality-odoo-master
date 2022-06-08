@@ -695,7 +695,86 @@ class sync(models.Model):
     def syncPricelist(self, sheet):
         sheetWidth = 20
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("SKUs" in sheet[0]):
+            columns["sku"] = sheet[0].index("SKU")
+        else:
+            columnsMissing = True
+
+        if("EN-Name" in sheet[0]):
+            columns["eName"] = sheet[0].index("EN-Name")
+        else:
+            columnsMissing = True
+            
+        if("EN-Description" in sheet[0]):
+            columns["eDisc"] = sheet[0].index("EN-Description")
+        else:
+            columnsMissing = True
+            
+        if("FR-Name" in sheet[0]):
+            columns["fName"] = sheet[0].index("FR-Name")
+        else:
+            columnsMissing = True
+            
+        if("FR-Description" in sheet[0]):
+            columns["fDisc"] = sheet[0].index("FR-Description")
+        else:
+            columnsMissing = True
+        
+        if("Price" in sheet[0]):
+            columns["canPrice"] = sheet[0].index("Price")
+        else:
+            columnsMissing = True
+            
+        if("US Price" in sheet[0]):
+            columns["usPrice"] = sheet[0].index("US Price")
+        else:
+            columnsMissing = True
+            
+        if("Publish" in sheet[0]):
+            columns["canPusblish"] = sheet[0].index("Publish")
+        else:
+            columnsMissing = True
+            
+        if("Publish_USA" in sheet[0]):
+            columns["usPusblish"] = sheet[0].index("Publish_USA")
+        else:
+            columnsMissing = True
+        
+        if("CAN PL SEL" in sheet[0]):
+            columns["canPricelist"] = sheet[0].index("CAN PL SEL")
+        else:
+            columnsMissing = True
+        
+        if("CAN PL ID" in sheet[0]):
+            columns["canPLID"] = sheet[0].index("CAN PL ID")
+        else:
+            columnsMissing = True
+            
+        if("US PL SEL" in sheet[0]):
+            columns["usPricelist"] = sheet[0].index("US PL SEL")
+        else:
+            columnsMissing = True
+        
+        if("US PL ID" in sheet[0]):
+            columns["usPLID"] = sheet[0].index("US PL ID")
+        else:
+            columnsMissing = True
+        
+        if("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = True
+        
+        if("Valid" in sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+        
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[i])) + "</p>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -959,14 +1038,14 @@ class sync(models.Model):
         email.process_email_queue(email_id)  
 
         
-        #Send another Sync Report
-        #values = {'subject': 'Sync Report'}
-        #message = self.env['mail.message'].create(values)[0]
+        Send another Sync Report
+        values = {'subject': 'Sync Report'}
+        message = self.env['mail.message'].create(values)[0]
         
-        #values = {'mail_message_id': message.id}
+        values = {'mail_message_id': message.id}
         
-        #email = self.env['mail.mail'].create(values)[0]
-        #email.body_html = msg
-        #email.email_to = "tyjcyr@gmail.com"
-        #email_id = {email.id}
-        #email.process_email_queue(email_id)   
+        email = self.env['mail.mail'].create(values)[0]
+        email.body_html = msg
+        email.email_to = "ty@r-e-a-l.it"
+        email_id = {email.id}
+        email.process_email_queue(email_id)   
