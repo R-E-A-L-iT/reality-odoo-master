@@ -776,9 +776,6 @@ class sync(models.Model):
         
         if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[i])) + "</p>"
-            msg += "<p>" + str(sheet[0][:]) + "</p>"
-            msg += "<p>" + str(columns) + "</p>"
-            msg += "<p>" + str(columnsMissing) + "</p>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
@@ -786,39 +783,39 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
-            if(str(sheet[i][-2]) != "TRUE"):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
                 continue
             
-            if(not self.check_id(str(sheet[i][0]))):
+            if(not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i][14]))):
+            if(not self.check_id(str(sheet[i][columns["canPLID"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i][16]))):
+            if(not self.check_id(str(sheet[i][columns["usPLID"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][5])):
+            if(not self.check_price(sheet[i][columns["canPrice"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][6])):
+            if(not self.check_price(sheet[i][columns["usPrice"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             try:
-                product, new= self.pricelistProduct(sheet, sheetWidth, i)
+                product, new= self.pricelistProduct(sheet, sheetWidth, i, columns)
                 if(product.stringRep == str(sheet[i][:])):
                     i = i + 1
                     continue
@@ -841,60 +838,58 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
     
-    def pricelistProduct(self, sheet, sheetWidth, i):
-        external_id = str(sheet[i][0])  
+    def pricelistProduct(self, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["sku"]])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0): 
-            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i), False
+            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columbs), False
         else:
-            return self.createPricelistProducts(sheet, external_id, sheetWidth, i), True
+            return self.createPricelistProducts(sheet, external_id, sheetWidth, i, columns), True
     
-    def pricelistCAN(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i][14])
+    def pricelistCAN(self, product, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["canPLID"])
         pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                pricelist_item.fixed_price = float(sheet[i][5])
+            if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+                pricelist_item.fixed_price = float(sheet[i][columns["canPrice"]])
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                pricelist_item.fixed_price = sheet[i][5]
+            if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["canPrice"]]
     
-    def pricelistUS(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i][16])
+    def pricelistUS(self, product, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["usPLID"]])
         pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            
-            
-#             if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
-#                 pricelist_item.fixed_price = sheet[i][6]
+            if(str(sheet[i][columns["usPrice"]]) != " " and str(sheet[i][columns["usPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["usPrice"]]
                 
                 
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
-                pricelist_item.fixed_price = sheet[i][6]
+            if(str(sheet[i][columns["usPrice"]]) != " " and str(sheet[i][columns["usPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["usPrice"]]
     
-    def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
+    def updatePricelistProducts(self, product, sheet, sheetWidth, i, columns, new=False):
         
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
-        product.name = sheet[i][1]
-        product.description_sale = sheet[i][2]
+        product.name = sheet[i][columns["eName"]]
+        product.description_sale = sheet[i][columns["eDisc"]]
         
-        if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-            product.price = sheet[i][5]
+        if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+            product.price = sheet[i][columns["canPrice"]]
         
 
 #         _logger.info(str(sheet[i][7]))
@@ -904,15 +899,15 @@ class sync(models.Model):
 #             if(req.status_code == 200):
 #                 product.image_1920 = req.content
 
-        if (str(sheet[i][10]) == "TRUE"):
+        if (str(sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_published = True
         else:
             product.is_published = False
-        if (str(sheet[i][10]) == "TRUE"):
+        if (str(sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_ca = True
         else:
             product.is_ca = False
-        if (str(sheet[i][17]) == "TRUE"):
+        if (str(sheet[i][columns["usPublish"]]) == "TRUE"):
             product.is_us = True
         else:
             product.is_us = False
@@ -921,13 +916,13 @@ class sync(models.Model):
         
         if(not new):
             _logger.info("Translate")
-            self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
-            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
-            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new, columns)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new, columns)
         
         return product
         
-    def translatePricelist(self, product, sheet, sheetWidth, i, nameI, descriptionI, lang, new):
+    def translatePricelist(self, product, sheet, sheetWidth, i, nameI, descriptionI, lang, new, columns):
         if(new == True):
             return
         else:
@@ -958,11 +953,11 @@ class sync(models.Model):
                 product_description_new.value = sheet[i][descriptionI]
             return
     
-    def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
+    def createPricelistProducts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][columns["eName"]]})[0]
         ext.res_id = product.id
-        self.updatePricelistProducts(product, sheet, sheetWidth, i, new=True)
+        self.updatePricelistProducts(product, sheet, sheetWidth, i, columns, new=True)
         return product
     
     def check_id(self, id):
