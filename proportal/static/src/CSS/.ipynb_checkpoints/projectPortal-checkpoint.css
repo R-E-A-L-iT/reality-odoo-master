@@ -6,3 +6,8 @@
 #projectPortalTable > tbody > tr > td > a > span {
     color: #db0d0d;   
 }
+
+#projectPortalTable > thead {
+    background-color: #2D2F32;
+    color: #fff;   
+}
