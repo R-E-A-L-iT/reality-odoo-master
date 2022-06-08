@@ -699,7 +699,7 @@ class sync(models.Model):
         columns = dict()
         columnsMissing = False
         
-        if("SKUs" in sheet[0]):
+        if("SKU" in sheet[0]):
             columns["sku"] = sheet[0].index("SKU")
         else:
             columnsMissing = True
