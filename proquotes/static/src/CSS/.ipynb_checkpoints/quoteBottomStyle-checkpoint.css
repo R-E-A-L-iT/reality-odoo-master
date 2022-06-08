@@ -60,3 +60,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
     border-color: #db0d0d;
     color: #fff;
 }
+
+#message-108 > div > div:nth-child(3) > p:nth-child(1) {
+    color: #fff;
+}
