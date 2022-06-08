@@ -444,35 +444,76 @@ class sync(models.Model):
     
         sheetWidth = 7
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("SKU" in sheet[0]):
+            columns["sku"] = sheet.index("SKU")
+        else:
+            columnsMissing = True
+            
+        if("Name" in sheet[0]):
+            columns["name"] = sheet.index("Name")
+        else:
+            columnsMissing = True
+            
+        if("Description" in sheet[0]):
+            columns["description"] = sheet.index("Description")
+        else:
+            columnsMissing = True
+            
+        if("Price" in sheet[0]):
+            columns["price"] = sheet.index("Price")
+        else:
+            columnsMissing = True
+            
+        if("Product Type" in sheet[0]):
+            columns["type"] = sheet.index("Product Type")
+        else:
+            columnsMissing = True
+            
+        if("Tracking" in sheet[0]):
+            columns["tracking"] = sheet.index("Tracking")
+        else:
+            columnsMissing = True
+            
+        if("Valid" in sheet[0]):
+            columns["sku"] = sheet.index("Valid")
+        else:
+            columnsMissing = True
+        
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
+        
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
                 break
-            if(not self.check_id(str(sheet[i][0]))):
+                
+            if(not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][3])):
+            if(not self.check_price(sheet[i][columns["price"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
             try:
-                external_id = str(sheet[i][0])
+                external_id = str(sheet[i][columns["sku"]])
             
                 product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
                 if(len(product_ids) > 0):
-                    self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createProducts(sheet, external_id, sheetWidth, i)
+                    self.createProducts(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("Products")
                 _logger.info(e)
@@ -484,14 +525,14 @@ class sync(models.Model):
         return False, msg
     
     # follows same pattern
-    def updateProducts(self, product, sheet, sheetWidth, i):
+    def updateProducts(self, product, sheet, sheetWidth, i, columns):
         
         if(product.stringRep == str(sheet[i][:])):
             return
         
-        product.name = sheet[i][1]
-        product.description_sale = sheet[i][2]
-        product.price = sheet[i][3]
+        product.name = sheet[i][columns["name"]]
+        product.description_sale = sheet[i][columns["description"]]
+        product.price = sheet[i][columns["price"]]
         product.tracking = "serial"
         product.type = "product"
         
@@ -499,11 +540,11 @@ class sync(models.Model):
         product.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createProducts(self, sheet, external_id, sheetWidth, i):
+    def createProducts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][columns["name"]]})[0]
         ext.res_id = product.id
-        self.updateProducts(product, sheet, sheetWidth, i)
+        self.updateProducts(product, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncCCP(self, sheet):
