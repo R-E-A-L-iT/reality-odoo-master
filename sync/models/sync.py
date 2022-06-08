@@ -178,11 +178,6 @@ class sync(models.Model):
         else:
             missingColumn = True
             
-        if("Is a Company" in  sheet[0]):
-            columns["company"] = sheet[0].index("Is a Company")
-        else:
-            missingColumn = True
-            
         if("OCOMID" in  sheet[0]):
             columns["id"] = sheet[0].index("Phone")
         else:
@@ -289,8 +284,76 @@ class sync(models.Model):
     def syncContacts(self, sheet):
     
         sheetWidth = 16
+        columns = dict()
+        columnsMissing = False
+        
+        if("Name" in sheet[0]):
+            columns["name"] = sheet[0].index("Name")
+        else:
+            columnsMissing
+            
+        if("Phone" in sheet[0]):
+            columns["phone"] = sheet[0].index("Phone")
+        else:
+            columnsMissing
+            
+        if("Email" in sheet[0]):
+            columns["email"] = sheet[0].index("Email")
+        else:
+            columnsMissing
+            
+        if("Company" in sheet[0]):
+            columns["company"] = sheet[0].index("Company")
+        else:
+            columnsMissing
+        
+        if("Street Address" in sheet[0]):
+            columns["streetAddress"] = sheet[0].index("Street Address")
+        else:
+            columnsMissing
+            
+        if("City" in sheet[0]):
+            columns["city"] = sheet[0].index("City")
+        else:
+            columnsMissing
+            
+        if("State/Region" in sheet[0]):
+            columns["state"] = sheet[0].index("State/Region")
+        else:
+            columnsMissing
+            
+        if("Country Code" in sheet[0]):
+            columns["country"] = sheet[0].index("Country Code")
+        else:
+            columnsMissing
+            
+        if("Postal Code" in sheet[0]):
+            columns["postalCode"] = sheet[0].index("Postal Code")
+        else:
+            columnsMissing
+            
+        if("Pricelist" in sheet[0]):
+            columns["pricelist"] = sheet[0].index("Pricelist")
+        else:
+            columnsMissing
+            
+        if("OCID" in sheet[0]):
+            columns["id"] = sheet[0].index("OCID")
+        else:
+            columnsMissing
+            
+       if("Valid" in sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing
+            
+        if("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing
+        
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -299,30 +362,32 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
                 
-            if(str(sheet[i][-2]) != "TRUE"):
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
-                continue
-            if(not self.check_id(str(sheet[i][10]))):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                 
-            if(not self.check_id(str(sheet[i][3]))):
+            if(not self.check_id(str(sheet[i][columns["id"]]))):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i = i + 1
+                continue
+                
+            if(not self.check_id(str(sheet[i][columns["company"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             try:
-                external_id = str(sheet[i][10])
+                external_id = str(sheet[i][columns["id"]])
             
                 contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(contact_ids) > 0):
-                    self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createContacts(sheet, external_id, sheetWidth, i)
+                    self.createContacts(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("Contacts")
                 _logger.info(e)
@@ -334,38 +399,38 @@ class sync(models.Model):
         return False, msg
     
     # follows same pattern
-    def updateContacts(self, contact, sheet, sheetWidth, i):
+    def updateContacts(self, contact, sheet, sheetWidth, i, columns):
         
         if(contact.stringRep == str(sheet[i][:])):
             return
         
-        contact.name = sheet[i][0]
-        contact.phone = sheet[i][1]
-        contact.email = sheet[i][2]
-        if(sheet[i][3] != ""):
-            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i][3]), ('model', '=', 'res.partner')])[0].res_id)
-        contact.street = sheet[i][4]
-        contact.city = sheet[i][5]
-        if(sheet[i][6] != ""):
-            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][6])])[0].id)
+        contact.name = sheet[i][columns["name"]]
+        contact.phone = sheet[i][columns["phone"]]
+        contact.email = sheet[i][columns["email"]]
+        if(sheet[i][columns["company"]] != ""):
+            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i][columns["company"]]), ('model', '=', 'res.partner')])[0].res_id)
+        contact.street = sheet[i][columns["streetAddress"]]
+        contact.city = sheet[i][columns["city"]]
+        if(sheet[i][columns["state"]] != ""):
+            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
         
-        name = sheet[i][7]
+        name = sheet[i][columns["country"]]
         if(name != ""):
             if(name == "US"):
                 name = "United States"
             contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
-        contact.zip = sheet[i][8]
-        if(sheet[i][9] != ""):
-            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
+        contact.zip = sheet[i][columns["postalCode"]]
+        if(sheet[i][columns["pricelist"]] != ""):
+            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
         contact.is_company = False
         
         _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createContacts(self, sheet, external_id, sheetWidth, i):
+    def createContacts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        contact = self.env['res.partner'].create({'name': sheet[i][0]})[0]
+        contact = self.env['res.partner'].create({'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i)
     
