@@ -117,6 +117,7 @@ class sync(models.Model):
             _logger.info("Pricelist")
             quit, msg = self.syncPricelist(sheet)
             _logger.info("Done Pricelist")
+        _logger.info(str(quit) + "\n" + str(msg))
         return quit, msg
             
     # same pattern for all sync items
