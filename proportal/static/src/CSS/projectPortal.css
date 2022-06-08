@@ -3,6 +3,6 @@
     color: #db0d0d;
 }
 
-#projectPortalTable > td > a {
+#projectPortalTable > td > a > span {
     color: #db0d0d;   
 }
