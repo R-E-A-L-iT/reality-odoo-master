@@ -22,6 +22,7 @@
 button.btn.btn-success {
     background-color: #db0d0d;
     color: #fff;
+    border-color: #db0d0d;
 }
 
 a.btn.btn-primary {
