@@ -262,7 +262,7 @@ class sync(models.Model):
         company.street = sheet[i][columns["street"]]
         company.city = sheet[i][columns["city"]]
         if(sheet[i][columns["state"]] != ""):
-            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns[state]])])[0].id)
+            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
         name = sheet[i][columns["country"]]
         if(name != ""):
             if(name == "US"):
