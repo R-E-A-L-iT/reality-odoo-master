@@ -729,18 +729,18 @@ class sync(models.Model):
         else:
             columnsMissing = True
             
-        if("US Price" in sheet[0]):
-            columns["usPrice"] = sheet[0].index("US Price")
+        if("USD Price" in sheet[0]):
+            columns["usPrice"] = sheet[0].index("USD Price")
         else:
             columnsMissing = True
             
         if("Publish" in sheet[0]):
-            columns["canPusblish"] = sheet[0].index("Publish")
+            columns["canPublish"] = sheet[0].index("Publish")
         else:
             columnsMissing = True
             
         if("Publish_USA" in sheet[0]):
-            columns["usPusblish"] = sheet[0].index("Publish_USA")
+            columns["usPublish"] = sheet[0].index("Publish_USA")
         else:
             columnsMissing = True
         
