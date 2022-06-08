@@ -449,37 +449,37 @@ class sync(models.Model):
         columnsMissing = False
         
         if("SKU" in sheet[0]):
-            columns["sku"] = sheet.index("SKU")
+            columns["sku"] = sheet[0].index("SKU")
         else:
             columnsMissing = True
             
         if("Name" in sheet[0]):
-            columns["name"] = sheet.index("Name")
+            columns["name"] = sheet[0].index("Name")
         else:
             columnsMissing = True
             
         if("Description" in sheet[0]):
-            columns["description"] = sheet.index("Description")
+            columns["description"] = sheet[0].index("Description")
         else:
             columnsMissing = True
             
         if("Price" in sheet[0]):
-            columns["price"] = sheet.index("Price")
+            columns["price"] = sheet[0].index("Price")
         else:
             columnsMissing = True
             
         if("Product Type" in sheet[0]):
-            columns["type"] = sheet.index("Product Type")
+            columns["type"] = sheet[0].index("Product Type")
         else:
             columnsMissing = True
             
         if("Tracking" in sheet[0]):
-            columns["tracking"] = sheet.index("Tracking")
+            columns["tracking"] = sheet[0].index("Tracking")
         else:
             columnsMissing = True
             
         if("Valid" in sheet[0]):
-            columns["sku"] = sheet.index("Valid")
+            columns["valid"] = sheet[0].index("Valid")
         else:
             columnsMissing = True
         
