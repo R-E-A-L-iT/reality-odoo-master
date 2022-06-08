@@ -6,6 +6,10 @@
     padding-right: 0;
 }
 
+#quote_content > div.row.justify-content-center.text-center.d-print-none.pt-1.pb-4 > div:nth-child(3) {
+    padding-right: 0;
+}
+
 #quotesDownloadButton{
     background-color: #db0d0d;
     color: #fff;
