@@ -922,7 +922,7 @@ class sync(models.Model):
         
         return product
         
-    def translatePricelist(self, product, sheet, sheetWidth, i, nameI, descriptionI, lang, new, columns):
+    def translatePricelist(self, product, sheet, sheetWidth, i, nameI, descriptionI, lang, new):
         if(new == True):
             return
         else:
