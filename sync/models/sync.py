@@ -432,7 +432,7 @@ class sync(models.Model):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
         contact = self.env['res.partner'].create({'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
-        self.updateContacts(contact, sheet, sheetWidth, i)
+        self.updateContacts(contact, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncProducts(self, sheet):
