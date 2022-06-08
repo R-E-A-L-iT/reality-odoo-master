@@ -14,7 +14,12 @@
     display: none;
 }
 
-#quotesDownloadButton{
+#quotesDownloadButton {
+    background-color: #db0d0d;
+    color: #fff;
+}
+
+button.btn.btn-success {
     background-color: #db0d0d;
     color: #fff;
 }
