@@ -1038,7 +1038,7 @@ class sync(models.Model):
         email.process_email_queue(email_id)  
 
         
-        Send another Sync Report
+        #Send another Sync Report
         values = {'subject': 'Sync Report'}
         message = self.env['mail.message'].create(values)[0]
         
