@@ -290,67 +290,67 @@ class sync(models.Model):
         if("Name" in sheet[0]):
             columns["name"] = sheet[0].index("Name")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Phone" in sheet[0]):
             columns["phone"] = sheet[0].index("Phone")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Email" in sheet[0]):
             columns["email"] = sheet[0].index("Email")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Company" in sheet[0]):
             columns["company"] = sheet[0].index("Company")
         else:
-            columnsMissing
+            columnsMissing = True
         
         if("Street Address" in sheet[0]):
             columns["streetAddress"] = sheet[0].index("Street Address")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("City" in sheet[0]):
             columns["city"] = sheet[0].index("City")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("State/Region" in sheet[0]):
             columns["state"] = sheet[0].index("State/Region")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Country Code" in sheet[0]):
             columns["country"] = sheet[0].index("Country Code")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Postal Code" in sheet[0]):
             columns["postalCode"] = sheet[0].index("Postal Code")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Pricelist" in sheet[0]):
             columns["pricelist"] = sheet[0].index("Pricelist")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("OCID" in sheet[0]):
             columns["id"] = sheet[0].index("OCID")
         else:
-            columnsMissing
+            columnsMissing = True
             
        if("Valid" in sheet[0]):
             columns["valid"] = sheet[0].index("Valid")
         else:
-            columnsMissing
+            columnsMissing = True
             
         if("Continue" in sheet[0]):
             columns["continue"] = sheet[0].index("Continue")
         else:
-            columnsMissing
+            columnsMissing = True
         
         i = 1
         if(len(sheet[i]) != sheetWidth or columnsMissing):
