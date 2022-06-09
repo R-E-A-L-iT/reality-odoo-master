@@ -13,7 +13,7 @@
                 </div>
             </xpath>
             <xpath expr="//field[@name=&quot;is_published&quot;]" position="replace">
-                <field name="is_published" widget="website_redirect_button" attrs="{'invisible': [('sale_ok','=',False)]}"/>
+                <!--<field name="is_published" widget="website_redirect_button" attrs="{'invisible': [('sale_ok','=',False)]}"/>-->
             </xpath>
         </field>
     </record> 
