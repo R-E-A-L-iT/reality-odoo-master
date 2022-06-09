@@ -888,6 +888,7 @@ class sync(models.Model):
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, columns, new=False):
         
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
+            _logger.info(str(sheet[i][:]))
             return product
         
         product.name = sheet[i][columns["eName"]]
