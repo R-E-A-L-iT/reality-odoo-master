@@ -19,7 +19,7 @@
     'version': '0.6',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal'],
+    'depends': ['base', 'website', 'website_sale', 'stock_account', 'product', 'purchase', 'stock', 'portal'],
     
     'assets': {
         'web.assets_frontend': [
