@@ -887,8 +887,8 @@ class sync(models.Model):
     
     def updatePricelistProducts(self, product, sheet, sheetWidth, i, columns, new=False):
         
-        #if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
-        #    return product
+        if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
+            return product
         
         product.name = sheet[i][columns["eName"]]
         product.description_sale = sheet[i][columns["eDisc"]]
@@ -917,7 +917,6 @@ class sync(models.Model):
         else:
             product.is_us = False
             
-        _logger.info(str(sheet[i][columns["canBeSold"]]))
         if(str(sheet[i][columns["canBeSold"]]) == "TRUE"):
             product.sale_ok = True
         else:
