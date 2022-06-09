@@ -12,9 +12,9 @@
                     <field name="sku" string="SKU"/>
                 </div>
             </xpath>
-            <field name="is_published" widget="website_redirect_button" position="replace">
+            <xpath expr="//field[@name=&quot;is_published&quot;]" position="replace">
                 <field name="is_published" widget="website_redirect_button"/>
-            </field>
+            </xpath>
         </field>
     </record> 
 </odoo>
