@@ -693,7 +693,7 @@ class sync(models.Model):
     
     # follows same pattern
     def syncPricelist(self, sheet):
-        sheetWidth = 20
+        sheetWidth = 21
         i = 1
         
         columns = dict()
@@ -929,7 +929,6 @@ class sync(models.Model):
             product_name = self.env['ir.translation'].search([('res_id', '=', product.id),
                                                                      ('name', '=', 'product.template,name'),
                                                                     ('lang', '=', lang)])
-
             if(len(product_name) > 0):
                 product_name[-1].value = sheet[i][nameI]
 
