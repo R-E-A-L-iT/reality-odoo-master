@@ -918,9 +918,9 @@ class sync(models.Model):
             product.is_us = False
             
         if(str(sheet[i][columns["canBeSold"]]) == "TRUE"):
-            product.canBeSold = True
+            product.purchase_ok = True
         else:
-            product.canBeSold = False
+            product.purchase_ok = False
             
         product.tracking = "serial"
         product.type = "product"
