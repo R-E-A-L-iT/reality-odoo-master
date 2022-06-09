@@ -16,10 +16,16 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'version': '0.5',
+    'version': '0.1',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal'],
+    
+    'assets': {
+        'web.assets_frontend': [
+            'proportal/static/src/CSS/projectPortal.css'
+        ]
+    },
     
     # always loaded
     'data': [
@@ -28,7 +34,8 @@
         #'views/portalAccess.xml',
         'views/productView.xml',
         'views/stockView.xml',
-        'views/customer_portal.xml'
+        'views/customer_portal.xml',
+        'views/portalProject.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

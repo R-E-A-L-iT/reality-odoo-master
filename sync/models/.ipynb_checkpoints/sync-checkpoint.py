@@ -100,18 +100,24 @@ class sync(models.Model):
         if(syncType == "Companies"):
             _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
+            _logger.info("Done Companies")
         elif(syncType == "Contacts"):
             _logger.info("Contacts")
             quit, msg = self.syncContacts(sheet)
+            _logger.info("Done Contacts")
         elif(syncType == "Products"):
             _logger.info("Products")
             quit, msg = self.syncProducts(sheet)
+            _logger.info("Done Products")
         elif(syncType == "CCP"):
             _logger.info("CCP")
             quit, msg = self.syncCCP(sheet)
+            _logger.info("DoneCCP")
         elif(syncType == "Pricelist"):
             _logger.info("Pricelist")
             quit, msg = self.syncPricelist(sheet)
+            _logger.info("Done Pricelist")
+        _logger.info(str(quit) + "\n" + str(msg))
         return quit, msg
             
     # same pattern for all sync items
@@ -119,8 +125,82 @@ class sync(models.Model):
         
         # check sheet width to filter out invalid sheets
         sheetWidth = 17 # every company tab will have the same amount of columns (Same with others)
+        columns = dict()
+        missingColumn = False
+        
+        #Calculate Indexes
+        if("Company Name" in  sheet[0]):
+            columns["companyName"] = sheet[0].index("Company Name")
+        else:
+            missingColumn = True
+            
+        if("Phone" in  sheet[0]):
+            columns["phone"] = sheet[0].index("Phone")
+        else:
+            missingColumn = True
+        
+        if("Website" in  sheet[0]):
+            columns["website"] = sheet[0].index("Website")
+        else:
+            missingColumn = True
+        
+        if("Street" in  sheet[0]):
+            columns["street"] = sheet[0].index("Street")
+        else:
+            missingColumn = True
+            
+        if("City" in  sheet[0]):
+            columns["city"] = sheet[0].index("City")
+        else:
+            missingColumn = True
+            
+        if("State" in  sheet[0]):
+            columns["state"] = sheet[0].index("State")
+        else:
+            missingColumn = True
+            
+        if("Country Code" in  sheet[0]):
+            columns["country"] = sheet[0].index("Country Code")
+        else:
+            missingColumn = True
+            
+        if("Postal Code" in  sheet[0]):
+            columns["postalCode"] = sheet[0].index("Postal Code")
+        else:
+            missingColumn = True
+            
+        if("Language" in  sheet[0]):
+            columns["language"] = sheet[0].index("Language")
+        else:
+            missingColumn = True
+            
+        if("Email" in  sheet[0]):
+            columns["email"] = sheet[0].index("Email")
+        else:
+            missingColumn = True
+            
+        if("Pricelist" in  sheet[0]):
+            columns["pricelist"] = sheet[0].index("Pricelist")
+        else:
+            missingColumn = True
+            
+        if("OCOMID" in  sheet[0]):
+            columns["id"] = sheet[0].index("OCOMID")
+        else:
+            missingColumn = True
+            
+        if("Valid" in  sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            missingColumn = True
+            
+        if("Continue" in  sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            missingColumn = True
+            
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        if(len(sheet[i]) != sheetWidth or missingColumn):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -134,17 +214,17 @@ class sync(models.Model):
         while(True):
             
             # check if should continue
-            if(str(sheet[i][-1]) != "TRUE"):
+            if(str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
             
             # validation checks (vary depending on tab/function)
-            if(str(sheet[i][-2]) != "TRUE"):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
-            if(not self.check_id(str(sheet[i][12]))):
+            if(not self.check_id(str(sheet[i][columns["id"]]))):
 
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
@@ -154,12 +234,12 @@ class sync(models.Model):
             try:
                 
                 # attempts to access existing item (item/row)
-                external_id = str(sheet[i][12])
+                external_id = str(sheet[i][columns["id"]])
                 company_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(company_ids) > 0):
-                    self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateCompany(self.env['res.partner'].browse(company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createCompany(sheet, external_id, sheetWidth, i)
+                    self.createCompany(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("Companies")
                 _logger.info(e)
@@ -170,48 +250,116 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
             
-    def updateCompany(self, company, sheet, sheetWidth, i):
+    def updateCompany(self, company, sheet, sheetWidth, i, columns):
         
         # check if any update to item is needed and skips if there is none
         if(company.stringRep == str(sheet[i][:])):
             return
         
         # reads values and puts them in appropriate fields
-        company.name = sheet[i][0]
-        company.phone = sheet[i][1]
-        company.website = sheet[i][2]
-        company.street = sheet[i][3]
-        company.city = sheet[i][4]
-        if(sheet[i][5] != ""):
-            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][5])])[0].id)
-        name = sheet[i][6]
+        company.name = sheet[i][columns["companyName"]]
+        company.phone = sheet[i][columns["phone"]]
+        company.website = sheet[i][columns["website"]]
+        company.street = sheet[i][columns["street"]]
+        company.city = sheet[i][columns["city"]]
+        if(sheet[i][columns["state"]] != ""):
+            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
+        name = sheet[i][columns["country"]]
         if(name != ""):
             if(name == "US"):
                 name = "United States"
             company.country_id = int(self.env['res.country'].search([('name','=', name)])[0].id)
-        company.zip = sheet[i][7]
-        company.lang = sheet[i][8]
-        company.email = sheet[i][9]
-        if(sheet[i][10] != ""):
-            company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][10])])[0].id)
+        company.zip = sheet[i][columns["postalCode"]]
+        company.lang = sheet[i][columns["language"]]
+        company.email = sheet[i][columns["language"]]
+        if(sheet[i][columns["pricelist"]] != ""):
+            company.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
         company.is_company = True
         
         _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
         
     # creates object and updates it
-    def createCompany(self, sheet, external_id, sheetWidth, i):
+    def createCompany(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        company = self.env['res.partner'].create({'name': sheet[i][0]})[0]
+        company = self.env['res.partner'].create({'name': sheet[i][columns["companyName"]]})[0]
         ext.res_id = company.id
-        self.updateCompany(company, sheet, sheetWidth, i)
+        self.updateCompany(company, sheet, sheetWidth, i, columns)
         
     # follows same pattern
     def syncContacts(self, sheet):
     
         sheetWidth = 16
+        columns = dict()
+        columnsMissing = False
+        
+        if("Name" in sheet[0]):
+            columns["name"] = sheet[0].index("Name")
+        else:
+            columnsMissing = True
+            
+        if("Phone" in sheet[0]):
+            columns["phone"] = sheet[0].index("Phone")
+        else:
+            columnsMissing = True
+            
+        if("Email" in sheet[0]):
+            columns["email"] = sheet[0].index("Email")
+        else:
+            columnsMissing = True
+            
+        if("Company" in sheet[0]):
+            columns["company"] = sheet[0].index("Company")
+        else:
+            columnsMissing = True
+        
+        if("Street Address" in sheet[0]):
+            columns["streetAddress"] = sheet[0].index("Street Address")
+        else:
+            columnsMissing = True
+            
+        if("City" in sheet[0]):
+            columns["city"] = sheet[0].index("City")
+        else:
+            columnsMissing = True
+            
+        if("State/Region" in sheet[0]):
+            columns["state"] = sheet[0].index("State/Region")
+        else:
+            columnsMissing = True
+            
+        if("Country Code" in sheet[0]):
+            columns["country"] = sheet[0].index("Country Code")
+        else:
+            columnsMissing = True
+            
+        if("Postal Code" in sheet[0]):
+            columns["postalCode"] = sheet[0].index("Postal Code")
+        else:
+            columnsMissing = True
+            
+        if("Pricelist" in sheet[0]):
+            columns["pricelist"] = sheet[0].index("Pricelist")
+        else:
+            columnsMissing = True
+            
+        if("OCID" in sheet[0]):
+            columns["id"] = sheet[0].index("OCID")
+        else:
+            columnsMissing = True
+            
+        if("Valid" in sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+            
+        if("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = True
+        
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -220,30 +368,32 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
                 
-            if(str(sheet[i][-2]) != "TRUE"):
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
-                continue
-            if(not self.check_id(str(sheet[i][10]))):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                 
-            if(not self.check_id(str(sheet[i][3]))):
+            if(not self.check_id(str(sheet[i][columns["id"]]))):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i = i + 1
+                continue
+                
+            if(not self.check_id(str(sheet[i][columns["company"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             try:
-                external_id = str(sheet[i][10])
+                external_id = str(sheet[i][columns["id"]])
             
                 contact_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'res.partner')])
                 if(len(contact_ids) > 0):
-                    self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateContacts(self.env['res.partner'].browse(contact_ids[len(contact_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createContacts(sheet, external_id, sheetWidth, i)
+                    self.createContacts(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("Contacts")
                 _logger.info(e)
@@ -255,75 +405,116 @@ class sync(models.Model):
         return False, msg
     
     # follows same pattern
-    def updateContacts(self, contact, sheet, sheetWidth, i):
+    def updateContacts(self, contact, sheet, sheetWidth, i, columns):
         
         if(contact.stringRep == str(sheet[i][:])):
             return
         
-        contact.name = sheet[i][0]
-        contact.phone = sheet[i][1]
-        contact.email = sheet[i][2]
-        if(sheet[i][3] != ""):
-            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i][3]), ('model', '=', 'res.partner')])[0].res_id)
-        contact.street = sheet[i][4]
-        contact.city = sheet[i][5]
-        if(sheet[i][6] != ""):
-            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][6])])[0].id)
+        contact.name = sheet[i][columns["name"]]
+        contact.phone = sheet[i][columns["phone"]]
+        contact.email = sheet[i][columns["email"]]
+        if(sheet[i][columns["company"]] != ""):
+            contact.parent_id = int(self.env['ir.model.data'].search([('name','=',sheet[i][columns["company"]]), ('model', '=', 'res.partner')])[0].res_id)
+        contact.street = sheet[i][columns["streetAddress"]]
+        contact.city = sheet[i][columns["city"]]
+        if(sheet[i][columns["state"]] != ""):
+            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
         
-        name = sheet[i][7]
+        name = sheet[i][columns["country"]]
         if(name != ""):
             if(name == "US"):
                 name = "United States"
             contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
-        contact.zip = sheet[i][8]
-        if(sheet[i][9] != ""):
-            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][9])])[0].id)
+        contact.zip = sheet[i][columns["postalCode"]]
+        if(sheet[i][columns["pricelist"]] != ""):
+            contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
         contact.is_company = False
         
         _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createContacts(self, sheet, external_id, sheetWidth, i):
+    def createContacts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"res.partner"})[0]
-        contact = self.env['res.partner'].create({'name': sheet[i][0]})[0]
+        contact = self.env['res.partner'].create({'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
-        self.updateContacts(contact, sheet, sheetWidth, i)
+        self.updateContacts(contact, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncProducts(self, sheet):
     
         sheetWidth = 7
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("SKU" in sheet[0]):
+            columns["sku"] = sheet[0].index("SKU")
+        else:
+            columnsMissing = True
+            
+        if("Name" in sheet[0]):
+            columns["name"] = sheet[0].index("Name")
+        else:
+            columnsMissing = True
+            
+        if("Description" in sheet[0]):
+            columns["description"] = sheet[0].index("Description")
+        else:
+            columnsMissing = True
+            
+        if("Price" in sheet[0]):
+            columns["price"] = sheet[0].index("Price")
+        else:
+            columnsMissing = True
+            
+        if("Product Type" in sheet[0]):
+            columns["type"] = sheet[0].index("Product Type")
+        else:
+            columnsMissing = True
+            
+        if("Tracking" in sheet[0]):
+            columns["tracking"] = sheet[0].index("Tracking")
+        else:
+            columnsMissing = True
+            
+        if("Valid" in sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+        
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
             return True, msg
+        
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
                 break
-            if(not self.check_id(str(sheet[i][0]))):
+                
+            if(not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][3])):
+            if(not self.check_price(sheet[i][columns["price"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
             
             try:
-                external_id = str(sheet[i][0])
+                external_id = str(sheet[i][columns["sku"]])
             
                 product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
                 if(len(product_ids) > 0):
-                    self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i)
+                    self.updateProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createProducts(sheet, external_id, sheetWidth, i)
+                    self.createProducts(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("Products")
                 _logger.info(e)
@@ -335,14 +526,14 @@ class sync(models.Model):
         return False, msg
     
     # follows same pattern
-    def updateProducts(self, product, sheet, sheetWidth, i):
+    def updateProducts(self, product, sheet, sheetWidth, i, columns):
         
         if(product.stringRep == str(sheet[i][:])):
             return
         
-        product.name = sheet[i][1]
-        product.description_sale = sheet[i][2]
-        product.price = sheet[i][3]
+        product.name = sheet[i][columns["name"]]
+        product.description_sale = sheet[i][columns["description"]]
+        product.price = sheet[i][columns["price"]]
         product.tracking = "serial"
         product.type = "product"
         
@@ -350,18 +541,64 @@ class sync(models.Model):
         product.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createProducts(self, sheet, external_id, sheetWidth, i):
+    def createProducts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][columns["name"]]})[0]
         ext.res_id = product.id
-        self.updateProducts(product, sheet, sheetWidth, i)
+        self.updateProducts(product, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncCCP(self, sheet):
     
         sheetWidth = 9
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("Owner ID" in  sheet[0]):
+            columns["ownerId"] = sheet[0].index("Owner ID")
+        else:
+            columnsMissing = True
+        
+        if("EID/SN" in  sheet[0]):
+            columns["eidsn"] = sheet[0].index("EID/SN")
+        else:
+            columnsMissing = True
+            
+        if("External ID" in  sheet[0]):
+            columns["externalId"] = sheet[0].index("External ID")
+        else:
+            columnsMissing = True
+        
+        if("Product Code" in  sheet[0]):
+            columns["code"] = sheet[0].index("Product Code")
+        else:
+            columnsMissing = True
+            
+        if("Product Name" in  sheet[0]):
+            columns["name"] = sheet[0].index("Product Name")
+        else:
+            columnsMissing = True
+            
+        if("Expiration Date" in  sheet[0]):
+            columns["date"] = sheet[0].index("Expiration Date")
+        else:
+            columnsMissing = True
+            
+        if("Valid" in  sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+            
+        if("Continue" in  sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = True
+            
+        
+        
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Sync Page Invalid<h1>\n<h2>syncCCP function</h2>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -370,25 +607,25 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
-            if(str(sheet[i][6]) != "TRUE"):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(sheet[i][2]))):
+            if(not self.check_id(str(sheet[i][columns["externalId"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             try:
-                external_id = str(sheet[i][2])
+                external_id = str(sheet[i][columns["externalId"]])
             
                 ccp_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'stock.production.lot')])
                 if(len(ccp_ids) > 0):
-                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i)
+                    self.updateCCP(self.env['stock.production.lot'].browse(ccp_ids[-1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    self.createCCP(sheet, external_id, sheetWidth, i)
+                    self.createCCP(sheet, external_id, sheetWidth, i, columns)
             except Exception as e:
                 _logger.info("CCP")
                 _logger.info(e)
@@ -402,19 +639,19 @@ class sync(models.Model):
         return False, msg
 
     # follows same pattern        
-    def updateCCP(self, ccp_item, sheet, sheetWidth, i):        
+    def updateCCP(self, ccp_item, sheet, sheetWidth, i, columns):        
         if(ccp_item.stringRep == str(sheet[i][:])):
             return
         
 #         if(i == 8):
         _logger.info("name")
-        ccp_item.name = sheet[i][1]
+        ccp_item.name = sheet[i][columns["eidsn"]]
         
 #         if(i == 8):
         _logger.info("id")
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][columns["name"]])])
         _logger.info(str(len(product_ids)))
-        _logger.info(str(sheet[i][4]))
+        _logger.info(str(sheet[i][columns["name"]]))
         
 #         if(i == 8):
         _logger.info("Id Tupple")
@@ -423,7 +660,7 @@ class sync(models.Model):
         
 #         if(i == 8):
         _logger.info("owner")
-        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][0]), ('model', '=', 'res.partner')])
+        owner_ids = self.env['ir.model.data'].search([('name', '=', sheet[i][columns["ownerId"]]), ('model', '=', 'res.partner')])
         if (len(owner_ids) == 0):
             _logger.info("No owner")
         
@@ -431,8 +668,8 @@ class sync(models.Model):
 #         if(i == 8):
         _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
-        if(sheet[i][5] != "FALSE"):
-            ccp_item.expire = sheet[i][5]
+        if(sheet[i][columns["date"]] != "FALSE"):
+            ccp_item.expire = sheet[i][columns["date"]]
         else:
             ccp_item.expire = None
             
@@ -440,25 +677,104 @@ class sync(models.Model):
         ccp_item.stringRep = str(sheet[i][:])
     
     # follows same pattern
-    def createCCP(self, sheet, external_id, sheetWidth, i):
+    def createCCP(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"stock.production.lot"})[0]
         
-        product_ids = self.env['product.product'].search([('name', '=', sheet[i][4])])
+        product_ids = self.env['product.product'].search([('name', '=', sheet[i][columns["name"]])])
         
         product_id = product_ids[len(product_ids) - 1].id
         
         company_id = self.env['res.company'].search([('id', '=', 1)]).id
         
-        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i][1],
+        ccp_item = self.env['stock.production.lot'].create({'name': sheet[i][columns["eidsn"]],
                                                             'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
-        self.updateCCP(ccp_item, sheet, sheetWidth, i)
+        self.updateCCP(ccp_item, sheet, sheetWidth, i, columns)
     
     # follows same pattern
     def syncPricelist(self, sheet):
         sheetWidth = 20
         i = 1
-        if(len(sheet[i]) != sheetWidth):
+        
+        columns = dict()
+        columnsMissing = False
+        
+        if("SKU" in sheet[0]):
+            columns["sku"] = sheet[0].index("SKU")
+        else:
+            columnsMissing = True
+
+        if("EN-Name" in sheet[0]):
+            columns["eName"] = sheet[0].index("EN-Name")
+        else:
+            columnsMissing = True
+            
+        if("EN-Description" in sheet[0]):
+            columns["eDisc"] = sheet[0].index("EN-Description")
+        else:
+            columnsMissing = True
+            
+        if("FR-Name" in sheet[0]):
+            columns["fName"] = sheet[0].index("FR-Name")
+        else:
+            columnsMissing = True
+            
+        if("FR-Description" in sheet[0]):
+            columns["fDisc"] = sheet[0].index("FR-Description")
+        else:
+            columnsMissing = True
+        
+        if("Price" in sheet[0]):
+            columns["canPrice"] = sheet[0].index("Price")
+        else:
+            columnsMissing = True
+            
+        if("USD Price" in sheet[0]):
+            columns["usPrice"] = sheet[0].index("USD Price")
+        else:
+            columnsMissing = True
+            
+        if("Publish_CA" in sheet[0]):
+            columns["canPublish"] = sheet[0].index("Publish_CA")
+        else:
+            columnsMissing = True
+            
+        if("Publish_USA" in sheet[0]):
+            columns["usPublish"] = sheet[0].index("Publish_USA")
+        else:
+            columnsMissing = True
+        
+        if("CAN PL SEL" in sheet[0]):
+            columns["canPricelist"] = sheet[0].index("CAN PL SEL")
+        else:
+            columnsMissing = True
+        
+        if("CAN PL ID" in sheet[0]):
+            columns["canPLID"] = sheet[0].index("CAN PL ID")
+        else:
+            columnsMissing = True
+            
+        if("USD PL SEL" in sheet[0]):
+            columns["usPricelist"] = sheet[0].index("USD PL SEL")
+        else:
+            columnsMissing = True
+        
+        if("US PL ID" in sheet[0]):
+            columns["usPLID"] = sheet[0].index("US PL ID")
+        else:
+            columnsMissing = True
+        
+        if("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = True
+        
+        if("Valid" in sheet[0]):
+            columns["valid"] = sheet[0].index("Valid")
+        else:
+            columnsMissing = True
+        
+        if(len(sheet[i]) != sheetWidth or columnsMissing):
             msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[i])) + "</p>"
             self.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[i])))
@@ -467,45 +783,45 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
-            if(i == len(sheet) or str(sheet[i][-1]) != "TRUE"):
+            if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
-            if(str(sheet[i][-2]) != "TRUE"):
+            if(str(sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
                 continue
             
-            if(not self.check_id(str(sheet[i][0]))):
+            if(not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i][14]))):
+            if(not self.check_id(str(sheet[i][columns["canPLID"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_id(str(sheet[i][16]))):
+            if(not self.check_id(str(sheet[i][columns["usPLID"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][5])):
+            if(not self.check_price(sheet[i][columns["canPrice"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
-            if(not self.check_price(sheet[i][6])):
+            if(not self.check_price(sheet[i][columns["usPrice"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
                
             try:
-                product, new= self.pricelistProduct(sheet, sheetWidth, i)
+                product, new= self.pricelistProduct(sheet, sheetWidth, i, columns)
                 if(product.stringRep == str(sheet[i][:])):
                     i = i + 1
                     continue
 
-                self.pricelistCAN(product, sheet, sheetWidth, i)
-                self.pricelistUS(product, sheet, sheetWidth, i)
+                self.pricelistCAN(product, sheet, sheetWidth, i, columns)
+                self.pricelistUS(product, sheet, sheetWidth, i, columns)
                 
                 if(new):
                     _logger.info("Blank StringRep")
@@ -522,60 +838,58 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
     
-    def pricelistProduct(self, sheet, sheetWidth, i):
-        external_id = str(sheet[i][0])  
+    def pricelistProduct(self, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["sku"]])  
         product_ids = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0): 
-            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i), False
+            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns), False
         else:
-            return self.createPricelistProducts(sheet, external_id, sheetWidth, i), True
+            return self.createPricelistProducts(sheet, external_id, sheetWidth, i, columns), True
     
-    def pricelistCAN(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i][14])
+    def pricelistCAN(self, product, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["canPLID"]])
         pricelist_id = self.env['product.pricelist'].search([('name','=','CAN Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                pricelist_item.fixed_price = float(sheet[i][5])
+            if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+                pricelist_item.fixed_price = float(sheet[i][columns["canPrice"]])
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-                pricelist_item.fixed_price = sheet[i][5]
+            if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["canPrice"]]
     
-    def pricelistUS(self, product, sheet, sheetWidth, i):
-        external_id = str(sheet[i][16])
+    def pricelistUS(self, product, sheet, sheetWidth, i, columns):
+        external_id = str(sheet[i][columns["usPLID"]])
         pricelist_id = self.env['product.pricelist'].search([('name','=','USD Pricelist')])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0): 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            
-            
-#             if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
-#                 pricelist_item.fixed_price = sheet[i][6]
+            if(str(sheet[i][columns["usPrice"]]) != " " and str(sheet[i][columns["usPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["usPrice"]]
                 
                 
         else:
             pricelist_item = self.env['product.pricelist.item'].create({'pricelist_id':pricelist_id, 'product_tmpl_id':product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(sheet[i][6]) != " " and str(sheet[i][6]) != ""):
-                pricelist_item.fixed_price = sheet[i][6]
+            if(str(sheet[i][columns["usPrice"]]) != " " and str(sheet[i][columns["usPrice"]]) != ""):
+                pricelist_item.fixed_price = sheet[i][columns["usPrice"]]
     
-    def updatePricelistProducts(self, product, sheet, sheetWidth, i, new=False):
+    def updatePricelistProducts(self, product, sheet, sheetWidth, i, columns, new=False):
         
         if(product.stringRep == str(sheet[i][:]) and product.stringRep != ""):
             return product
         
-        product.name = sheet[i][1]
-        product.description_sale = sheet[i][2]
+        product.name = sheet[i][columns["eName"]]
+        product.description_sale = sheet[i][columns["eDisc"]]
         
-        if(str(sheet[i][5]) != " " and str(sheet[i][5]) != ""):
-            product.price = sheet[i][5]
+        if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
+            product.price = sheet[i][columns["canPrice"]]
         
 
 #         _logger.info(str(sheet[i][7]))
@@ -585,13 +899,15 @@ class sync(models.Model):
 #             if(req.status_code == 200):
 #                 product.image_1920 = req.content
 
-        if (str(sheet[i][10]) == "TRUE"):
+        if (str(sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_published = True
-            product.is_ca = True
         else:
             product.is_published = False
+        if (str(sheet[i][columns["canPublish"]]) == "TRUE"):
+            product.is_ca = True
+        else:
             product.is_ca = False
-        if (str(sheet[i][17]) == "TRUE"):
+        if (str(sheet[i][columns["usPublish"]]) == "TRUE"):
             product.is_us = True
         else:
             product.is_us = False
@@ -600,9 +916,9 @@ class sync(models.Model):
         
         if(not new):
             _logger.info("Translate")
-            self.translatePricelist(product, sheet, sheetWidth, i, 3, 4, "fr_CA", new)
-            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_CA", new)
-            self.translatePricelist(product, sheet, sheetWidth, i, 1, 2, "en_US", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new)
+            self.translatePricelist(product, sheet, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new)
         
         return product
         
@@ -637,11 +953,11 @@ class sync(models.Model):
                 product_description_new.value = sheet[i][descriptionI]
             return
     
-    def createPricelistProducts(self, sheet, external_id, sheetWidth, i):
+    def createPricelistProducts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create({'name': external_id, 'model':"product.template"})[0]
-        product = self.env['product.template'].create({'name': sheet[i][1]})[0]
+        product = self.env['product.template'].create({'name': sheet[i][columns["eName"]]})[0]
         ext.res_id = product.id
-        self.updatePricelistProducts(product, sheet, sheetWidth, i, new=True)
+        self.updatePricelistProducts(product, sheet, sheetWidth, i, columns, new=True)
         return product
     
     def check_id(self, id):
@@ -728,6 +1044,6 @@ class sync(models.Model):
         
         email = self.env['mail.mail'].create(values)[0]
         email.body_html = msg
-        email.email_to = "tyjcyr@gmail.com"
+        email.email_to = "ty@r-e-a-l.it"
         email_id = {email.id}
         email.process_email_queue(email_id)   
