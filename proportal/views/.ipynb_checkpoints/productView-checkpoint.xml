@@ -17,9 +17,6 @@
                 <field name="is_published" widget="website_redirect_button"/>
             </div>
             
-            <xpath expr="//field[@name=&quot;is_published&quot;]" position="replace">
-                <field name="is_published" widget="website_redirect_button"/>
-            </xpath>
         </field>
     </record> 
 </odoo>
