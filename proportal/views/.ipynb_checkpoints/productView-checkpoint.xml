@@ -8,8 +8,8 @@
         <field name="arch" type="xml">
             <xpath expr="//div[2]/div" position="before">
                 <div>
-                    <label for="sku"/>
-                    <field name="sku" string="SKU"/>
+                    <!--<label for="sku"/>
+                    <field name="sku" string="SKU"/>-->
                 </div>
             </xpath>            
         </field>
@@ -22,7 +22,7 @@
         <field name="arch" type="xml">
             
             <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
-                <!--<attribute name="attrs"></attribute>-->
+                <attribute name="attrs"></attribute>
             </xpath>
             
         </field>
