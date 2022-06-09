@@ -1037,13 +1037,13 @@ class sync(models.Model):
 
         
         #Send another Sync Report
-#        values = {'subject': 'Sync Report'}
-#        message = self.env['mail.message'].create(values)[0]
-#        
-#        values = {'mail_message_id': message.id}
-#        
-#        email = self.env['mail.mail'].create(values)[0]
-#        email.body_html = msg
-#        email.email_to = "ty@r-e-a-l.it"
-#        email_id = {email.id}
-#        email.process_email_queue(email_id)   
+        values = {'subject': 'Sync Report'}
+        message = self.env['mail.message'].create(values)[0]
+        
+        values = {'mail_message_id': message.id}
+        
+        email = self.env['mail.mail'].create(values)[0]
+        email.body_html = msg
+        email.email_to = "ty@r-e-a-l.it"
+        email_id = {email.id}
+        email.process_email_queue(email_id)   
