@@ -920,6 +920,7 @@ class sync(models.Model):
         if(str(sheet[i][columns["canBeSold"]]) == "TRUE"):
             product.sale_ok = True
         else:
+            _logger.info("No Sail")
             product.sale_ok = False
             
         product.tracking = "serial"
