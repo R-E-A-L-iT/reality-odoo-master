@@ -743,6 +743,11 @@ class sync(models.Model):
             columns["usPublish"] = sheet[0].index("Publish_USA")
         else:
             columnsMissing = True
+            
+        if("Can_Be_Sold" in sheet[0]):
+            columns["canBeSold"] = sheet[0].index("Can_Be_Sold")
+        else:
+            columnsMissing = True
         
         if("CAN PL SEL" in sheet[0]):
             columns["canPricelist"] = sheet[0].index("CAN PL SEL")
@@ -911,6 +916,12 @@ class sync(models.Model):
             product.is_us = True
         else:
             product.is_us = False
+            
+        if(str(sheet[i][columns["canBeSold"]]) == "TRUE"):
+            product.canBeSold = True
+        else:
+            product.canBeSold = False
+            
         product.tracking = "serial"
         product.type = "product"
         
