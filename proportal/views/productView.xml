@@ -13,8 +13,8 @@
                 </div>
             </xpath>-->
             
-            <xpath expr="//field[@name=&quot;is_published&quot;]" position="after">
-                <!--<attribute name="attrs">{'invisible': 0}</attribute>-->
+            <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
+                <attribute name="attrs">{'invisible': 0}</attribute>
             </xpath>
         </field>
     </record>
