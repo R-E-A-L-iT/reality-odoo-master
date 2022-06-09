@@ -22,7 +22,7 @@
         <field name="arch" type="xml">
             
             <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
-                <attribute name="attrs"></attribute>
+                <!--<attribute name="attrs"></attribute>-->
             </xpath>
             
         </field>
