@@ -13,7 +13,7 @@
                 </div>
             </xpath>
             <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
-                <attribute name="attrs">{'invisible': 'False'</attribute>
+                <attribute name="attrs">{'invisible': 'False'}</attribute>
             </xpath>
         </field>
     </record> 
