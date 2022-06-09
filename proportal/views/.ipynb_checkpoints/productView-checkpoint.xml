@@ -7,12 +7,12 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
-            <xpath expr="//div[2]/div" position="before">
+            <!--<xpath expr="//div[2]/div" position="before">
                 <div>
                     <label for="sku"/>
                     <field name="sku" string="SKU"/>
                 </div>
-            </xpath>
+            </xpath>-->
             
             <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
                 <attribute name="attrs">{'invisible': 0}</attribute>
