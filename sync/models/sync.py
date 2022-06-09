@@ -734,8 +734,8 @@ class sync(models.Model):
         else:
             columnsMissing = True
             
-        if("Publish" in sheet[0]):
-            columns["canPublish"] = sheet[0].index("Publish")
+        if("Publish_CA" in sheet[0]):
+            columns["canPublish"] = sheet[0].index("Publish_CA")
         else:
             columnsMissing = True
             
