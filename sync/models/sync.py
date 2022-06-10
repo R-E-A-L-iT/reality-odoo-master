@@ -343,6 +343,11 @@ class sync(models.Model):
         else:
             columnsMissing = True
             
+        if("Language" in sheet[0]):
+            columns["language"] = sheet[0].index("Language")
+        else:
+            columnsMissing = True
+            
         if("OCID" in sheet[0]):
             columns["id"] = sheet[0].index("OCID")
         else:
@@ -426,6 +431,9 @@ class sync(models.Model):
                 name = "United States"
             contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
         contact.zip = sheet[i][columns["postalCode"]]
+        
+        contact.language = sheet[i][columns["language"]]
+        
         if(sheet[i][columns["pricelist"]] != ""):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
         contact.is_company = False
