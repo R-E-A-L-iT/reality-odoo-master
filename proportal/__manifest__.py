@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal'],
+    'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
     
     'assets': {
         'web.assets_frontend': [
@@ -36,6 +36,7 @@
         'views/stockView.xml',
         'views/customer_portal.xml',
         'views/portalProject.xml',
+        #'views/storePage.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

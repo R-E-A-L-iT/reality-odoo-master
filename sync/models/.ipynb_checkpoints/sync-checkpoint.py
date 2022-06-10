@@ -289,7 +289,7 @@ class sync(models.Model):
     # follows same pattern
     def syncContacts(self, sheet):
     
-        sheetWidth = 16
+        sheetWidth = 17
         columns = dict()
         columnsMissing = False
         
@@ -340,6 +340,11 @@ class sync(models.Model):
             
         if("Pricelist" in sheet[0]):
             columns["pricelist"] = sheet[0].index("Pricelist")
+        else:
+            columnsMissing = True
+            
+        if("Language" in sheet[0]):
+            columns["language"] = sheet[0].index("Language")
         else:
             columnsMissing = True
             
@@ -426,6 +431,9 @@ class sync(models.Model):
                 name = "United States"
             contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
         contact.zip = sheet[i][columns["postalCode"]]
+        
+        contact.lang = sheet[i][columns["language"]]
+        
         if(sheet[i][columns["pricelist"]] != ""):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
         contact.is_company = False
@@ -743,6 +751,11 @@ class sync(models.Model):
             columns["usPublish"] = sheet[0].index("Publish_USA")
         else:
             columnsMissing = True
+            
+        if("Can_Be_Sold" in sheet[0]):
+            columns["canBeSold"] = sheet[0].index("Can_Be_Sold")
+        else:
+            columnsMissing = True
         
         if("CAN PL SEL" in sheet[0]):
             columns["canPricelist"] = sheet[0].index("CAN PL SEL")
@@ -911,6 +924,12 @@ class sync(models.Model):
             product.is_us = True
         else:
             product.is_us = False
+            
+        if(str(sheet[i][columns["canBeSold"]]) == "TRUE"):
+            product.sale_ok = True
+        else:
+            product.sale_ok = False
+            
         product.tracking = "serial"
         product.type = "product"
         
