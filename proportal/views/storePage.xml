@@ -3,7 +3,7 @@
 <odoo>
     <template id="website_sale.product" name="Store_Page" inherit_id="website_sale.product" track="1" priority="99">
         <xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
-            <p t-elif="product.sale_ok" id="callUsHTMLElement">Contact US</p>
+            <p t-elif="not product.sell_ok" id="callUsHTMLElement">Contact US</p>
         </xpath>
     </template>
 </odoo>
