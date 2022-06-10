@@ -2,8 +2,8 @@
 
 <odoo>
     <template id="product_page" name="Store Page" inherit_id="website_sale.product_quantity" priority="99">
-        <xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
+        <!--<xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
             <p t-elif="product.sale_ok" id="callUsHTMLElement">Contact US</p>
-        </xpath>
+        </xpath>-->
     </template>
 </odoo>
