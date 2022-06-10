@@ -289,7 +289,7 @@ class sync(models.Model):
     # follows same pattern
     def syncContacts(self, sheet):
     
-        sheetWidth = 16
+        sheetWidth = 17
         columns = dict()
         columnsMissing = False
         
