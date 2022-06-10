@@ -432,7 +432,7 @@ class sync(models.Model):
             contact.country_id = int(self.env['res.country'].search([('name','=',name)])[0].id)
         contact.zip = sheet[i][columns["postalCode"]]
         
-        contact.language = sheet[i][columns["language"]]
+        contact.lang = sheet[i][columns["language"]]
         
         if(sheet[i][columns["pricelist"]] != ""):
             contact.property_product_pricelist = int(self.env['product.pricelist'].search([('name','=',sheet[i][columns["pricelist"]])])[0].id)
