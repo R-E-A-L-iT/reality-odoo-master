@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="product_quantity" name="Store_Page" inherit_id="website_sale.product_quantity" priority="99">
+    <template id="website_sale.product_quantity" name="Store_Page" inherit_id="website_sale.product_quantity" priority="99">
         <xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
             <p t-elif="not product.sell_ok" id="callUsHTMLElement">Contact US</p>
         </xpath>
