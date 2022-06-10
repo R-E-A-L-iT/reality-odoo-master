@@ -11,7 +11,6 @@
         <field name="name">product.template.form.view</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="website_sale.product_template_form_view"/>
-        <field name="mode">primary</field>
         <field name="priority" eval="17"/>
         <field name="arch" type="xml">
             <!--<xpath expr="//div[2]/div" position="before">
