@@ -64,3 +64,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 #message-108 > div > div:nth-child(3) > p:nth-child(1) {
     color: #fff;
 }
+
+#quote_content > div.row.justify-content-center.text-center.d-print-none.pt-1.pb-4 > div:nth-child(2) {
+    display: none;
+}
