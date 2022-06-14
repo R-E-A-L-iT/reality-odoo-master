@@ -33,7 +33,7 @@
 ##############################################################################
 {
     'name': 'Website Product Country Wise',
-    'version': '1.0',
+    'version': '1.1',
     'author': "Braincrew Apps",
     'license': "LGPL-3",
     'website': 'http://www.braincrewapps.com',
