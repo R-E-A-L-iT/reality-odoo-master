@@ -6,23 +6,4 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="website_sale.product_template_form_view"/>
     </record>
-    
-    <record id="product_template_form_view_proportal" model="ir.ui.view">
-        <field name="name">product.template.form.view</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="website_sale.product_template_form_view"/>
-        <field name="priority" eval="17"/>
-        <field name="arch" type="xml">
-            <!--<xpath expr="//div[2]/div" position="before">
-                <div>
-                    <label for="sku"/>
-                    <field name="sku" string="SKU"/>
-                </div>
-            </xpath>-->
-            
-            <xpath expr="//field[@name=&quot;is_published&quot;]" position="attributes">
-                <attribute name="attrs">{'invisible': 0}</attribute>
-            </xpath>
-        </field>
-    </record>
 </odoo>
