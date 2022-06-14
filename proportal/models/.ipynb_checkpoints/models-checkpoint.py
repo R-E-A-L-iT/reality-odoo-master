@@ -19,7 +19,7 @@ class productType(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
-    htmlDescription = fields.Text(string="Extended HTML Description", default="")
+    storeCode = fields.Text(string="E-Commerce Store Code", default="")
 
 class person(models.Model):
     _inherit = "res.partner"
