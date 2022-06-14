@@ -701,7 +701,7 @@ class sync(models.Model):
     
     # follows same pattern
     def syncPricelist(self, sheet):
-        sheetWidth = 21
+        sheetWidth = 22
         i = 1
         
         columns = dict()
@@ -754,6 +754,11 @@ class sync(models.Model):
             
         if("Can_Be_Sold" in sheet[0]):
             columns["canBeSold"] = sheet[0].index("Can_Be_Sold")
+        else:
+            columnsMissing = True
+            
+        if("E-Commerce_Website_Code" in sheet[0]):
+            columns["ecommerceWebsiteCode"] = sheet[0].index("E-Commerce_Website_Code")
         else:
             columnsMissing = True
         
@@ -930,6 +935,7 @@ class sync(models.Model):
         else:
             product.sale_ok = False
             
+        product.storeCode = sheet[i][columns["ecommerceWebsiteCode"]]
         product.tracking = "serial"
         product.type = "product"
         
