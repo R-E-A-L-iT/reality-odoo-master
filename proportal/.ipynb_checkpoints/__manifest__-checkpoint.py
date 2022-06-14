@@ -36,7 +36,7 @@
         'views/productView.xml',
         'views/customer_portal.xml',
         'views/portalProject.xml',
-        #'views/storePage.xml',
+        'views/storePage.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
