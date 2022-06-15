@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="proportal.navButton" name="navButton" inherit_id="website_sale.navbar_toggler" priority="17">
+    <template id="proportal.navButton" name="navButton" inherit_id="website.navbar_toggler" priority="17">
         <xpath expr="//span" position="replace">
             <span>Hello There</span>
         </xpath>
