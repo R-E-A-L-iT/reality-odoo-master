@@ -21,7 +21,15 @@
     height: 50%;
 }
 
+#wrapwrap > main {
+    background-color: 000;
+}
+
 header#top > nav.Navbar {
     background-color: #000;
     border-bottom-color: #000 !important;
+}
+
+#bottom > div.o_footer_copyright.o_colored_level.o_cc > div {
+    background-color: #111;
 }
