@@ -39,7 +39,7 @@ h2#quote_header_7 {
     background-color: #000 !important;
 }
 
-.is-subtotal text-right {
+.is-subtotal.text-right {
     color: #fff;
 }
 
