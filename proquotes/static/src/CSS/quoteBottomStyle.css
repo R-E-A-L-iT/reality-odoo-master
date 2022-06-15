@@ -1,4 +1,4 @@
-div#wrap.o_portal_wrap {
+div#wrap.o_portal_wrap, main[style] {
     background-color: #000 !important;
 }
 
