@@ -32,7 +32,11 @@ h2#quote_header_7 {
 }
 
 #portal_sale_content > div.card-body {
-    background-color: #000 !important
+    background-color: #000 !important;
+}
+
+#quote_content > div.salesman-container {
+    background-color: #000 !important;
 }
 
 button.btn.btn-success {
