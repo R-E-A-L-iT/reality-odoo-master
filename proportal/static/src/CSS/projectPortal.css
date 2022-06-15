@@ -44,3 +44,7 @@ header#top > nav.Navbar {
 .nav-link > span {
     color: #fff;
 }
+
+#top_menu_container > button > span.navbar-toggler-icon {
+    color: #fff !important;
+}
