@@ -22,7 +22,7 @@
 }
 
 #wrapwrap > main {
-    background-color: 000;
+    background-color: #000 !important;
 }
 
 header#top > nav.Navbar {
@@ -30,6 +30,6 @@ header#top > nav.Navbar {
     border-bottom-color: #000 !important;
 }
 
-#bottom > div.o_footer_copyright.o_colored_level.o_cc > div {
+#bottom > div.o_footer_copyright.o_colored_level.o_cc {
     background-color: #111;
 }
