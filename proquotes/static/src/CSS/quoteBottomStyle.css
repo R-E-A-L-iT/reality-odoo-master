@@ -39,6 +39,10 @@ h2#quote_header_7 {
     background-color: #000 !important;
 }
 
+.is-subtotal text-right {
+    color: #fff;
+}
+
 button.btn.btn-success {
     background-color: #db0d0d;
     color: #fff;
