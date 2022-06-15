@@ -27,7 +27,7 @@ div#wrap.o_portal_wrap, main[style] {
     color: #fff;
 }
 
-#top {
+#top.o_header_standard {
     background-color: #000;
 }
 
