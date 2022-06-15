@@ -1,5 +1,13 @@
+div#wrap.o_portal_wrap {
+    background-color: #000 !important;
+}
+
+#portal_sale_content {
+    background-color: #000 !important;
+}
+
 #wrapwrap.o_portal {
-    background-color: #1E2023 !important;
+    background-color: #000 !important;
 }
 
 #quote_content > div.row.justify-content-center.text-center.d-print-none.pt-1.pb-4 > div:nth-child(1){
@@ -16,6 +24,26 @@
 
 #quotesDownloadButton {
     background-color: #db0d0d;
+    color: #fff;
+}
+
+h2#quote_header_7 {
+    display: none;
+}
+
+#portal_sale_content > div.card-body {
+    background-color: #000 !important;
+}
+
+#quote_content > div.salesman-container {
+    background-color: #000 !important;
+}
+
+img.quoteFooterContactImage {
+    background-color: #000;
+}
+
+.is-subtotal.text-right {
     color: #fff;
 }
 
