@@ -1,5 +1,5 @@
 #wrapwrap.o_portal {
-    background-color: #1E2023 !important;
+    background-color: #000 !important;
 }
 
 #quote_content > div.row.justify-content-center.text-center.d-print-none.pt-1.pb-4 > div:nth-child(1){
@@ -17,6 +17,10 @@
 #quotesDownloadButton {
     background-color: #db0d0d;
     color: #fff;
+}
+
+h2#quote_header_7 {
+    display: none;
 }
 
 button.btn.btn-success {
