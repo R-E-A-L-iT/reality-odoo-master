@@ -16,3 +16,11 @@
     background-color: #1E2023;
     color: #fff;   
 }
+
+#top_menu_container > a > span > img {
+    height: 50%;
+}
+
+header#top > nav {
+    background-color: #000;
+}
