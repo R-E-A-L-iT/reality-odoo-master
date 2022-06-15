@@ -39,6 +39,10 @@ h2#quote_header_7 {
     background-color: #000 !important;
 }
 
+img.quoteFooterContactImage {
+    background-color: #000;
+}
+
 .is-subtotal.text-right {
     color: #fff;
 }
