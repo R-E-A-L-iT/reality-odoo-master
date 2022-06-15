@@ -48,3 +48,10 @@ header#top > nav.Navbar {
 #top_menu_container > button > span.navbar-toggler-icon {
     color: #fff !important;
 }
+
+div.proportal-menu-bar {
+    width: 35px;
+    height: 5px;
+    background-color: #fff;
+    margin: 6px;
+}

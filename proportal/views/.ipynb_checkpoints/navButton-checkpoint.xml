@@ -3,7 +3,9 @@
 <odoo>
     <template id="proportal.navButton" name="navButton" inherit_id="website.navbar_toggler" priority="17">
         <xpath expr="//span" position="replace">
-            <span>Hello There</span>
+            <div class="proportal-menu-bar"></div>
+            <div class="proportal-menu-bar"></div>
+            <div class="proportal-menu-bar"></div>
         </xpath>
     </template>
 </odoo>
