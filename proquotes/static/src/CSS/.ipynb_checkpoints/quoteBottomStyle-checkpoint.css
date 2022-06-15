@@ -1,6 +1,11 @@
 div#wrap.o_portal_wrap {
     background-color: #000 !important;
 }
+
+#portal_sale_content {
+    background-color: #000;
+}
+
 #wrapwrap.o_portal {
     background-color: #000 !important;
 }
