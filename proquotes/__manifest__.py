@@ -45,7 +45,7 @@
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
-        'views/quoteLogo.xml',
+        #'views/quoteLogo.xml',
 #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
