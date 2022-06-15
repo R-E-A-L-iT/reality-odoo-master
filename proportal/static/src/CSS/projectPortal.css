@@ -33,3 +33,10 @@ header#top > nav.Navbar {
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
     background-color: #111;
 }
+
+.nav-item {
+    color: #fff;
+}
+.nav-link {
+    color: #fff;
+}
