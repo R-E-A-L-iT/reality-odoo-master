@@ -40,3 +40,7 @@ header#top > nav.Navbar {
 .nav-link {
     color: #fff;
 }
+
+.nav-link > span {
+    color: #fff;
+}
