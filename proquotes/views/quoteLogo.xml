@@ -2,7 +2,7 @@
 <odoo>
     
     <template id="proquotes.logo_img" inherit_id="web.frontend_layout" priority="17">
-        <xpath expr="//header[@id=&quot;top&quot;]" position="attributes">'
+        <xpath expr="//header[@id=&quot;top&quot;]//img" position="attributes">'
             <!--<attribute name="t-attf-src">https://cdn.r-e-a-l.it/images/icons/product-cycle.gif</attribute>-->
         </xpath>
     </template>
