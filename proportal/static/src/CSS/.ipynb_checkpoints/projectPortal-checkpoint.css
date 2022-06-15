@@ -49,6 +49,10 @@ header#top > nav.Navbar {
     color: #fff !important;
 }
 
+#top_menu > li.o_wsale_my_cart.align-self-md-start.nav-item > a > sup {
+    background-color: #db0d0d;
+}
+
 div.proportal-menu-bar {
     width: 35px;
     height: 5px;
