@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'version': '0.1',
+    'version': '0.8',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -36,6 +36,7 @@
         'views/productView.xml',
         'views/customer_portal.xml',
         'views/portalProject.xml',
+        'views/navButton.xml',
         #'views/storePage.xml',
     ],
     # only loaded in demonstration mode

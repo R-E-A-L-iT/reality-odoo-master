@@ -27,6 +27,14 @@ div#wrap.o_portal_wrap, main[style] {
     color: #fff;
 }
 
+#top.o_header_standard {
+    background-color: #000;
+}
+
+#top_menu_container {
+    background-color: #000;
+}
+
 h2#quote_header_7 {
     display: none;
 }
