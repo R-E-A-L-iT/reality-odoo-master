@@ -28,14 +28,14 @@
             'proquotes/static/src/CSS/pdf.css',
             'proquotes/static/src/CSS/ponumber.css',
             'proquotes/static/src/CSS/login.css',
-            #'proquotes/static/src/CSS/quoteStyle.css',
+            'proquotes/static/src/CSS/quoteStyle.css',
             'proquotes/static/src/JS/fold.js',
             'proquotes/static/src/JS/poNumber.js',
             'proquotes/static/src/JS/price.js'
         ]
     },
     
-    'version': '0.5',
+    'version': '0.6',
     
     # always loaded
     'data': [
