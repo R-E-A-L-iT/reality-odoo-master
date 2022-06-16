@@ -2,8 +2,11 @@
 
 <odoo>
     <template id="proportal.product" name="Store_Page" inherit_id="website_sale.product" priority="17">
-        <xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
+        <!--<xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
             <p t-elif="not product.sale_ok" id="callUsHTMLElement">Contact US</p>
+        </xpath>-->
+        <xpath expr="//p[@t-else=&quot;&quot;]" position="replace">
+            <p>Hello There</p>
         </xpath>
     </template>
 </odoo>
