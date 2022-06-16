@@ -60,3 +60,7 @@ div.proportal-menu-bar {
     margin: 6px;
     border-radius: 2px;
 }
+
+body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
+    color: #fff !important;
+}
