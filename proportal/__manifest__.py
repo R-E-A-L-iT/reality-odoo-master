@@ -23,7 +23,7 @@
     
     'assets': {
         'web.assets_frontend': [
-            'proportal/static/src/CSS/projectPortal.css'
+            #'proportal/static/src/CSS/projectPortal.css'
         ]
     },
     
@@ -37,7 +37,7 @@
         'views/customer_portal.xml',
         'views/portalProject.xml',
         'views/navButton.xml',
-        'views/storePage.xml',
+        #'views/storePage.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
