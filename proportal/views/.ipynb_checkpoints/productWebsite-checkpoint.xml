@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="proportal.product" inherit_id="product.product" priority="99">
+        
+    </template>
+</odoo>
