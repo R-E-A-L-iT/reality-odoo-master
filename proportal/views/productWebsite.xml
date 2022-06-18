@@ -2,7 +2,8 @@
 
 <odoo>
     <template id="product_website" name="Product Website" customize_show="True">
-        <div id="add_to_cart_wrap">
-        </div>
+        <xpath expr="//div[@id&quot;add_to_cart_wrap&quot;]" position="after">
+            
+        </xpath>
     </template>
 </odoo>
