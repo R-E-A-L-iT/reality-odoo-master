@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template inherit_id="website_sale.products" customize_show="True">
+    <template inherit_id="product.products" customize_show="True">
         
     </template>
 </odoo>
