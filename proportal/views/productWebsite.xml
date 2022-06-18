@@ -2,6 +2,7 @@
 
 <odoo>
     <template id="proportal.product" name="Product Website" inherit_id="website_sale.product" priority="17">
+        <div id="add_to_cart_wrap"></div>
         <xpath expr="//p[@t-elif=&quot;not product.active&quot;]" position="after">
             <p t-elif="not product.sale_ok" id="callUsHTMLElement">Contact US</p>
         </xpath>
