@@ -2,7 +2,7 @@
 
 <odoo>
     <template id="proportal.product_website" name="Product Website" inherit_id="website_sale.product">
-        <xpath expr="//div[@id&quot;add_to_cart_wrap&quot;]" position="after">
+        <xpath expr="//div[@id=&quot;add_to_cart_wrap&quot;]" position="after">
             
         </xpath>
     </template>
