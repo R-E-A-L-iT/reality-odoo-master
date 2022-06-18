@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="product_website" name="Product Website" customize_show="True" mode="primary">
-        
+    <template id="product_website" name="Product Website" customize_show="True">
+        <div id="add_to_cart_wrap">
+        </div>
     </template>
 </odoo>
