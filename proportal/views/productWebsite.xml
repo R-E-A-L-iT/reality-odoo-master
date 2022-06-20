@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="product_website" inherit_id="website_sale.product_quantity" priority="17">
-        <xpath expr="//div[@id=&quot;add_to_cart_wrap&quot;]" position="replace">
-            <div id="add_to_cart_wrap"></div>
-        </xpath>
+    <template id="product_website" inherit_id="website_sale.product_share_buttons" priority="99">
     </template>
 </odoo>
