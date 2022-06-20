@@ -93,6 +93,7 @@
 #product-webpage-root .product-landing-divide {
     align-self: center;
     border: 1px solid #611008;
+    background-color: #611008;
     margin: 0 10px;
     width: 100px;
 }
