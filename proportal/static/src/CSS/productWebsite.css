@@ -32,6 +32,7 @@
     margin-inline-end: 0px;
     font-weight: bold;
     color: #fff;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
 }
 
 #product-webpage-root h2 {
@@ -42,6 +43,7 @@
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     font-weight: bold;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
 }
 
 #product-webpage-root h3 {
@@ -52,6 +54,7 @@
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     font-weight: bold;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
 }
 
 #product-webpage-root hr {
@@ -146,7 +149,7 @@
     flex-direction: row;
     justify-content: center;
     left: 0;
-    position: fixed;
+    /*position: fixed;*//*Main Links row is not fixed on screen*/
     top: 131px;
     width: 100%;
     z-index: 49;
