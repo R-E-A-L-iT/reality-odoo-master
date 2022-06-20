@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="proportal.product" name="Product Website" inherit_id="website_sale.product">
+    <template id="product" name="Product Website" inherit_id="website_sale.product" active="False">
         
     </template>
 </odoo>
