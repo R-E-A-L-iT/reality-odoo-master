@@ -1,0 +1,198 @@
+#product-webpage-root {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: #000;
+    color: #fff;
+}
+#product-webpage-root a {
+    color: #fff;
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue;
+    font-weight: 700;
+    position: relative;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+#product-webpage-root iframe {
+    border-width: 2px;
+    border-style: inset;
+    border-color: initial;
+    border-image: initial;
+}
+
+#product-webpage-root h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    color: #fff;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
+}
+
+#product-webpage-root h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
+}
+
+#product-webpage-root h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    font-family: HelveticaNeue-CondensedBlack,Helvetica Neue,Impact,sans-serif;
+}
+
+#product-webpage-root hr {
+    display: block;
+    unicode-bidi: isolate;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    overflow: hidden;
+    border-style: inset;
+    border-width: 1px;
+}
+
+/*Section*/
+#product-webpage-root section{
+    display: block;
+}
+
+/*Links*/
+#product-webpage-root .subheader {
+    background-color: #1a1a1ab3;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    left: 0;
+    /*position: fixed;*//*Main Links row is not fixed on screen*/
+    top: 131px;
+    width: 100%;
+    z-index: 49;
+}
+
+#product-webpage-root .subheader>a>h3 {
+    color: #888;
+    font-family: roboto,sans-serif;
+    font-size: 1rem;
+    font-weight: 100;
+    padding: 5px 9px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/*Landing Section*/
+#product-webpage-root #landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#product-webpage-root .product-landing-text {
+    z-index: 1;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+}
+
+#product-webpage-root .product-landing-divide {
+    align-self: center;
+    border: 1px solid #611008;
+    background-color: #611008;
+    margin: 0 10px;
+    width: 100px;
+}
+
+#product-webpage-root .product-landing-text>h1 {
+    word-wrap: break-word;
+    font-size: 2em;
+    font-weight: 900;
+    margin: 0;
+    text-align: center;
+    text-shadow: 5px 5px 5px #000;
+}
+
+@media screen and (min-width: 640px) {
+#product-webpage-root .product-landing-text>h1 {
+    font-size: 4em;
+}
+}
+
+#product-webpage-root .product-landing-text>h2 {
+    color: #dbdbdb;
+    font-family: HelveticaNeue-Light,Helvetica Neue Light;
+    font-size: 1em;
+    font-weight: 100;
+    letter-spacing: 2.75px;
+    text-align: center;
+    text-shadow: 3px 4px 3px #000;
+    text-transform: uppercase;
+}
+
+@media screen and (min-width: 640px) {
+#product-webpage-root .product-landing-text>h2 {
+    font-size: 2em;
+}
+}
+
+@media (min-width: 750px){
+#product-webpage-root #landing>iframe {
+    border: none;
+    height: calc(100vh - 130px);
+    min-height: 500px;
+    width: 100vw;
+}
+}
+
+/*Section Overview*/
+@media (min-width: 750px) {
+#product-webpage-root .advertise>h1 {
+    color: #2d2f32;
+    font-size: 3em;
+    font-weight: 300;
+    text-align: center;
+}
+}
+
+/*Section Advertize*/
+@media (min-width: 750px) {
+#product-webpage-root .advertise>iframe {
+    border: 1px solid #333;
+    border-radius: 15px;
+    height: 45vw;
+    margin-left: 10vw;
+    width: 80vw;
+}
+}
+
+@media (min-width: 750px) {
+#product-webpage-root .advertise>p {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+    margin-left: 10vw;
+    margin-top: 50px;
+    padding-bottom: 50px;
+    width: 80vw;
+}
+}
