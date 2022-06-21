@@ -21,6 +21,12 @@
     height: 50%;
 }
 
+#top_menu_container > a > img{
+    position: absolute;
+    top: 0;
+    margin-top: 10px;
+}
+
 #wrapwrap.o_portal > main {
     background-color: #000 !important;
 }
