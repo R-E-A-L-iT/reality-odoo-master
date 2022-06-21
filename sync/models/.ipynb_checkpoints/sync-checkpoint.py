@@ -263,7 +263,9 @@ class sync(models.Model):
         company.street = sheet[i][columns["street"]]
         company.city = sheet[i][columns["city"]]
         if(sheet[i][columns["state"]] != ""):
-            company.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
+            stateTup = self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])
+            if(len(stateTup) > 0):
+                company.state_id = int(stateTup[0].id)
         name = sheet[i][columns["country"]]
         if(name != ""):
             if(name == "US"):
@@ -423,7 +425,9 @@ class sync(models.Model):
         contact.street = sheet[i][columns["streetAddress"]]
         contact.city = sheet[i][columns["city"]]
         if(sheet[i][columns["state"]] != ""):
-            contact.state_id = int(self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])[0].id)
+            stateTup = self.env['res.country.state'].search([('code','=',sheet[i][columns["state"]])])
+            if(len(stateTup) > 0):
+                contact.state_id = int(stateTup[0].id)
         
         name = sheet[i][columns["country"]]
         if(name != ""):
