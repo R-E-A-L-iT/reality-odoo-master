@@ -4,6 +4,7 @@
     display: block;
     background-color: #000;
     color: #fff;
+    overflow-x: hidden;
 }
 
 #product-webpage-root a {
@@ -509,6 +510,7 @@
 @media (min-width: 750px){
 #product-webpage-root .specs-under {
     border: 1px solid #333;
+    background-color: #333;
     float: left;
     margin-top: 7.5px;
     width: 25%;
