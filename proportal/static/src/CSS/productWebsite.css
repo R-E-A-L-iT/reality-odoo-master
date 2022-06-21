@@ -612,6 +612,14 @@
 }
 
 /*Ordering Section*/
+#product-webpage-root .ordering-column{
+    width: calc(50vw);
+}
+
+#product-webpage-root #order-border{
+    width: calc(50vw - 1px);
+}
+
 @media (min-width: 750px){
 #product-webpage-root .order-options {
     display: flex;
