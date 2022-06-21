@@ -526,10 +526,9 @@
 }
 
 #product-webpage-root .contact-left {
-    border-left: 1px solid #770909;
     float: left;
     max-width: 50vw;
-    width: calc(50vw - 1px);
+    width: 50vw;
 }
 
 #product-webpage-root .left-contain {
@@ -557,9 +556,10 @@
 }
 
 #product-webpage-root .contact-right {
+    border-left: 1px solid #770909;
     float: left;
     max-width: 50vw;
-    width: 50vw;
+    width: calc(50vw - 1px);
 }
 
 #product-webpage-root .right-contain {
