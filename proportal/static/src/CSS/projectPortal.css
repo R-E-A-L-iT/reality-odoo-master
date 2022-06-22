@@ -38,7 +38,7 @@ header#top > nav.Navbar {
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
     z-index: 6;
     background-color: #111;
-    position: fixed;
+    position: relative;
     bottom: 0px;
     width: 100vw;
 }
