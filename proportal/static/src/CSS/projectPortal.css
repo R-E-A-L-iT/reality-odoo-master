@@ -24,8 +24,8 @@ body {
     height: 50%;
 }
 
-#top_menu_container > a{
-    margin: auto;
+#top_menu_container > a {
+    margin: auto !important;
     display: block;
 }
 
