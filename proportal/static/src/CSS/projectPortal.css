@@ -83,6 +83,8 @@ div.proportal-menu-bar {
     background-color: #fff;
     margin: 6px;
     border-radius: 2px;
+    background-color: #db0d0d;
+    border-style: none;
 }
 
 body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
@@ -135,4 +137,12 @@ margin-right: 5vw;
     font-family: 'FontAwesome';
     content: "\f105";
     padding-right: 0.2rem;
+}
+
+#top_menu_container > ul > li > a {
+    color: #db0d0d !important;
+}
+
+#top_menu_container > ul > li > a > i {
+    color: #db0d0d;
 }
