@@ -139,10 +139,6 @@ margin-right: 5vw;
     padding-right: 0.2rem;
 }
 
-#top_menu_container > ul > li > a {
-    color: #db0d0d !important;
-}
-
-#top_menu_container > ul > li > a > i {
+.nav-link > span {
     color: #db0d0d;
 }
