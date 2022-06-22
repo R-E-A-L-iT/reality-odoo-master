@@ -96,3 +96,9 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 #product_no_sell_phone {
     background-color: #db0d0d;
 }
+
+#product-menu-pro > div:nth-child(1) > ol {
+    background-color: #24272A !important;
+    border: 1px solid #2D2F32 !important;
+    border-radius: 10px;
+}
