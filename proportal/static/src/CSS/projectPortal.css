@@ -122,3 +122,14 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+
+#product-menu-pro > div:nth-child(2) > div > div > a {
+color: #888 !important;
+padding-left: 15px !important;
+}
+
+#product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.active::before {
+    font-family: 'FontAwesome';
+    content: "\f105";
+    padding-right: 0.2rem;
+}
