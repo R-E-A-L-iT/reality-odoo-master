@@ -1,3 +1,6 @@
+body {
+    overflow-x: hidden;
+}
 #projectPortalTable {
     background-color: #333;
     color: #db0d0d;
@@ -21,9 +24,13 @@
     height: 50%;
 }
 
-#top_menu_container > a{
-    margin: auto;
+#top_menu_container > a {
+    margin: auto !important;
     display: block;
+}
+
+#wrapwrap {
+    overflow-x: hidden;
 }
 
 #wrapwrap.o_portal > main {
@@ -38,7 +45,7 @@ header#top > nav.Navbar {
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
     z-index: 6;
     background-color: #111;
-    position: fixed;
+    position: relative;
     bottom: 0px;
     width: 100vw;
 }
