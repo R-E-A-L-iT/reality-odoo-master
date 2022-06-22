@@ -29,6 +29,10 @@ body {
     display: block;
 }
 
+#wrapwrap {
+    overflow-x: hidden;
+}
+
 #wrapwrap.o_portal > main {
     background-color: #000 !important;
 }
