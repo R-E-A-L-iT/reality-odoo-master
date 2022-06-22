@@ -101,6 +101,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     background-color: #24272A !important;
     border: 1px solid #2D2F32 !important;
     border-radius: 10px;
+    margin-left: 5vw;
 }
 
 #product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.o_not_editable > a {
@@ -127,6 +128,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 color: #888 !important;
 padding-left: 15px !important;
 background-color:#000;
+margin-right: 5vw;
 }
 
 #product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.active::before {
