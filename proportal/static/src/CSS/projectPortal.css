@@ -1,3 +1,6 @@
+body {
+    overflow-x: hidden;
+}
 #projectPortalTable {
     background-color: #333;
     color: #db0d0d;
