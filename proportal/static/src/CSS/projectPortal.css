@@ -31,7 +31,7 @@
 }
 
 header#top > nav.Navbar {
-    background-color: #000;
+    background-color: #000 !important;
     border-bottom-color: #000 !important;
 }
 
@@ -56,6 +56,14 @@ header#top > nav.Navbar {
 
 #top_menu > li.o_wsale_my_cart.align-self-md-start.nav-item > a > sup {
     background-color: #db0d0d;
+}
+
+#product_detail {
+    background-color: #000;
+}
+
+#wrap#wrap {
+    background-color: #000 !important;
 }
 
 div.proportal-menu-bar {
