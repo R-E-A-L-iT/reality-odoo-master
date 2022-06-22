@@ -321,7 +321,7 @@
 #product-webpage-root #sketchfab>iframe {
     border: none;
     height: 100%;
-    width: calc(25vw + 200px);
+    width: calc(75vw + 200px);
     margin-left: calc(12.5vw - 100px);
     margin-right: calc(12.5vw - 100px);
 }
