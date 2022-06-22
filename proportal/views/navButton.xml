@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <template id="proportal.navButtonMargin" name="navButtonMargin" inherit_id="website.template_header_hamburger" priority="17">
+        <xpath expr="//t[@t-set=&quot;_toggler_class&quot;]" position="attributes">
+            <attribute name="t-valuef">order-first</attribute>
+        </xpath>
+    </template>
     <template id="proportal.navButton" name="navButton" inherit_id="website.navbar_toggler" priority="17">
         <xpath expr="//span" position="replace">
             <div class="proportal-menu-bar"></div>
