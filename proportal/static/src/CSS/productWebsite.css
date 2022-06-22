@@ -563,7 +563,7 @@
     border-left: 1px solid #770909;
     float: left;
     max-width: 50vw;
-    width: calc(50vw - 1px);
+    width: calc(50vw - 2px);
 }
 
 #product-webpage-root .right-contain {
