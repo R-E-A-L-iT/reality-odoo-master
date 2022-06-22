@@ -4,3 +4,7 @@
 .customerPortalProducts, .customerPortalProducts > span {
     color: #333;
 }
+
+#product_detail > div {
+    margin: auto;
+}
