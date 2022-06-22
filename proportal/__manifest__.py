@@ -39,6 +39,7 @@
         'views/customer_portal.xml',
         'views/portalProject.xml',
         'views/navButton.xml',
+        'views/navbarCustom.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
