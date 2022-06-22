@@ -614,10 +614,12 @@
 
 /*Ordering Section*/
 #product-webpage-root .ordering-column{
+    max-width: 50vw;
     width: calc(50vw);
 }
 
 #product-webpage-root #order-border{
+    max-width: 50vw;
     width: calc(50vw - 1px);
 }
 
