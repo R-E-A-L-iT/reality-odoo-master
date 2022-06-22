@@ -58,6 +58,10 @@ header#top > nav.Navbar {
     background-color: #db0d0d;
 }
 
+#product_detail {
+    background-color: #000;
+}
+
 div.proportal-menu-bar {
     width: 35px;
     height: 5px;
