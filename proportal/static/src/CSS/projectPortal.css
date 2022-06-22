@@ -96,3 +96,43 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 #product_no_sell_phone {
     background-color: #db0d0d;
 }
+
+#product-menu-pro > div:nth-child(1) > ol {
+    background-color: #24272A !important;
+    border: 1px solid #2D2F32 !important;
+    border-radius: 10px;
+    margin-left: 5vw;
+}
+
+#product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.o_not_editable > a {
+    color: #db0d0d !important;
+}
+
+#product-menu-pro > div:nth-child(2) > div > form > div > input {
+    color: #888 !important;
+    background-color: #24272A !important;
+    border: 1px solid #2D2F32 !important;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#product-menu-pro > div:nth-child(2) > div > form > div > div > button {
+    color: #888;
+    background-color: #2D2F32 !important;
+    border: 1px solid #2D2F32 !important;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#product-menu-pro > div:nth-child(2) > div > div > a {
+color: #888 !important;
+padding-left: 15px !important;
+background-color:#000;
+margin-right: 5vw;
+}
+
+#product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.active::before {
+    font-family: 'FontAwesome';
+    content: "\f105";
+    padding-right: 0.2rem;
+}
