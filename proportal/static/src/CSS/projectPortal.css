@@ -62,7 +62,7 @@ header#top > nav.Navbar {
     background-color: #000;
 }
 
-#wrap {
+#wrap#wrap {
     background-color: #000 !important;
 }
 
