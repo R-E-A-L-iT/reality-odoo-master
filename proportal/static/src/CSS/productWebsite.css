@@ -178,6 +178,7 @@
 /*Section*/
 #product-webpage-root section{
     display: block;
+    width: 100vw;
 }
 
 /*Links*/
