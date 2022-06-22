@@ -88,3 +88,11 @@ div.proportal-menu-bar {
 body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     color: #fff !important;
 }
+
+#product_no_sell_email {
+    background-color: #db0d0d;
+}
+
+#product_no_sell_phone {
+    background-color: #db0d0d;
+}
