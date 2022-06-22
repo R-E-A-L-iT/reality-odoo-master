@@ -666,6 +666,6 @@
 #product-webpage-root .ordering-below>img {
     max-width: 1400px;
     transition: all .5s ease-in-out;
-    width: 100%;
+    width: 100vw;
 }
 }
