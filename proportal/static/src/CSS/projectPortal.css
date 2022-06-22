@@ -31,7 +31,7 @@
 }
 
 header#top > nav.Navbar {
-    background-color: #000;
+    background-color: #000 !important;
     border-bottom-color: #000 !important;
 }
 
