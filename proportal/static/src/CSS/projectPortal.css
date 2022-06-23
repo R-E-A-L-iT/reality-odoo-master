@@ -108,7 +108,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     height: 100%;
 }
 
-#product-menu-pro input {
+#product-menu-pro input div{
     height: 100%;
 }
 
