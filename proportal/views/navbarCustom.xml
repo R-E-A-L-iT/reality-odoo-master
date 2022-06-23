@@ -5,8 +5,17 @@
             <nav id="custom-navbar" class="navbar navbar-expand">
                 <div class="container">
                     <a href="/" class="navbar-brand logo">
-                        <img src="https://cdn.r-e-a-l.it/images/icons/product-cycle.gif" t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
+                        <img src="https://cdn.r-e-a-l.it/images/icons/product-cycle.gif"
+                        t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
                     </a>
+                </div>
+                <div id="Menu-Links">
+                    <ul id="top_menu" class="nav navbar-nav">
+                     <t t-call="portal.placeholder_user_sign_in">
+                        <t t-set="_item_class" t-value="'nav-item'"/>
+                        <t t-set="_link_class" t-value="'nav-link'"/>
+                    </t>
+                    </ul>
                 </div>
             </nav>
         </xpath>
