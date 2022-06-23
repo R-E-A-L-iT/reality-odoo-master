@@ -105,7 +105,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     margin-bottom: 0.5rem;
 }
 
-#product-menu-pro form, #product-menu-pro div, #product-menu-pro input #product-menu-pro ol{
+#product-menu-pro form, #product-menu-pro div, #product-menu-pro input{
     margin-bottom: 0px !important;
     padding-bottom: 0px !important;
 }
@@ -127,6 +127,8 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     border: 1px solid #2D2F32 !important;
     border-radius: 10px;
     margin-left: 5vw;
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 #product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.o_not_editable > a {
