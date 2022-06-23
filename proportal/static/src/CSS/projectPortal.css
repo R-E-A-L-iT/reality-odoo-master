@@ -107,7 +107,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 
 #product-menu-pro form, #product-menu-pro div, #product-menu-pro input{
     margin-bottom: 0px !important;
-    padding-bottom: 0px !important;
+    padding-bottom: 375rem !important;
 }
 
 #product-menu-pro .col-lg-6 {
@@ -128,7 +128,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     border-radius: 10px;
     margin-left: 5vw;
     margin-bottom: 0px !important;
-    padding-bottom: 0px !important;
+    padding-bottom: .375rem !important;
 }
 
 #product-menu-pro > div:nth-child(1) > ol > li.breadcrumb-item.o_not_editable > a {
