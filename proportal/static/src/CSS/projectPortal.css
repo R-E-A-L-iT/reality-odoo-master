@@ -100,6 +100,18 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     background-color: #db0d0d;
 }
 
+#product-meun-pro {
+    height: fit-content;
+}
+
+#product-menu-pro .col-lg-6 {
+    height: 100%;
+}
+
+#product-menu-pro input {
+    height: 100%;
+}
+
 #product-menu-pro > div:nth-child(1) > ol {
     background-color: #24272A !important;
     border: 1px solid #2D2F32 !important;
