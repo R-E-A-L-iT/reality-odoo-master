@@ -2,6 +2,14 @@
 <odoo>
     <template id="proportal.navbar" name="Proportal navbar" inherit_id="portal.frontend_layout">
         <xpath expr="//div[@id='wrapwrap']/header" position="replace">
+            <nav id="custom-navbar" class="navbar navbar-expand navbar-light bg-light">
+                <div class="container">
+                    <a href="/" class="navbar-brand logo">
+                        <img t-att-src="'/logo.png?company=%s' % res_company.id"
+                        t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
+                    </a>
+                </div>
+            </nav>
         </xpath>
     </template>
 </odoo>
