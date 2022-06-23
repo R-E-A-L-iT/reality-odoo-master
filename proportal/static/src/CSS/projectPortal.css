@@ -105,18 +105,15 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 }
 
 #product-menu-pro .col-lg-6 {
-    height: fit-content;
-    min-height: 100%;
+    height: 100%;
 }
 
 #product-menu-pro input, #product-menu-pro div{
-    height: fit-content;
-    min-height: 100%;
+    height: 100%;
 }
 
 #product-menu-pro > div:nth-child(2) > div > form {
     min-height: 100%;
-    margin: 0px !important;
 }
 
 #product-menu-pro > div:nth-child(1) > ol {
