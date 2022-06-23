@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="proportal.navbar" name="Proportal navbar" inherit_id="portal.frontend_layout">
-        <xpath expr="//nav/div[@class=&quot;container&quot;]" position="replace">
+        <xpath expr="//header[@id=&quot;top&quot;]/nav" position="replace">
         </xpath>
     </template>
 </odoo>
