@@ -107,7 +107,8 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 
 #product-menu-pro input{
     margin-bottom: 0px !important;
-    padding-bottom: 0px !important;
+    padding-top: .375rem;
+    padding-bottom: .735rem !important;
 }
 
 #product-menu-pro .col-lg-6 {
@@ -128,6 +129,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     border-radius: 10px;
     margin-left: 5vw;
     margin-bottom: 0px !important;
+    padding-top: 0.375rem;
     padding-bottom: 0.375rem !important;
 }
 
