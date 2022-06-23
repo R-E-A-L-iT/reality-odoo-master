@@ -169,8 +169,12 @@ margin-right: 5vw;
     padding-right: 0.2rem;
 }
 
+#product-menu-pro .dropdown-menu.show {
+    background-color: #2D2F32;
+}
+
 #product-menu-pro .dropdown-item{
-    background-color: 2D2F32;
+    background-color: #2D2F32;
     color: #fff;
 }
 
