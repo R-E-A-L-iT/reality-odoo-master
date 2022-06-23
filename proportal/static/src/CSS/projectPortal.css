@@ -105,7 +105,7 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     margin-bottom: 0.5rem;
 }
 
-#product-menu-pro form, #product-menu-pro div, #product-menu-pro input {
+#product-menu-pro form, #product-menu-pro div, #product-menu-pro input #product-menu-pro ol{
     margin-bottom: 0px !important;
     padding-bottom: 0px !important;
 }
