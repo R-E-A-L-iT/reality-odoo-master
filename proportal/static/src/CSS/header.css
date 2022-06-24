@@ -4,7 +4,7 @@
 }
 
 @media (min-width: 750px){
-#custom-navbar  a {
+#custom-navbar  #custom-navbar-logo {
     display: block;
     height: fit-content;
     margin: auto;
