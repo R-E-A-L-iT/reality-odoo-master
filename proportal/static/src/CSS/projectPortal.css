@@ -34,8 +34,8 @@ body {
     overflow-x: hidden;
 }
 
-#wrapwrap > main {
-    background-color: #000 !important;
+#wrap {
+    height: 100%;    
 }
 
 header#top > nav.Navbar {
