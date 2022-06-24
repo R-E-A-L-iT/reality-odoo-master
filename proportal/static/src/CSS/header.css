@@ -35,6 +35,8 @@
     display: block;
     margin: auto;
     list-style: none;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 #custom-navbar li {
