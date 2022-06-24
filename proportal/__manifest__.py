@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.1',
+    'version': '0.2',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -40,7 +40,7 @@
         'views/customer_portal.xml',
         'views/portalProject.xml',
         'views/navButton.xml',
-        #'views/navbarCustom.xml',
+        'views/navbarCustom.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
