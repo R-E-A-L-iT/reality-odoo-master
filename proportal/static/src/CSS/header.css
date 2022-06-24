@@ -1,9 +1,11 @@
 #custom-navbar {
     background-color: #000;
+    display: block;
 }
 
 @media (min-width: 750px){
 #custom-navbar  a {
+    display: block;
     height: fit-content;
     margin: auto;
     position: relative;
@@ -14,6 +16,7 @@
 
 @media (min-width: 750px){
 #custom-navbar img {
+    display: block;
     height: auto;
     margin: auto;
     position: relative;
