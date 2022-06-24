@@ -34,7 +34,7 @@ body {
     overflow-x: hidden;
 }
 
-#wrapwrap.o_portal > main {
+#wrapwrap > main {
     background-color: #000 !important;
 }
 
