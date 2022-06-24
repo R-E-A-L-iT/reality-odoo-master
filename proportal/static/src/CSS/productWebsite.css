@@ -175,9 +175,10 @@
 }
 
 /*Section*/
-#custom-webpage-root section{
+#custom-webpage-root section {
     display: block;
     width: 100vw;
+    clear: both;
 }
 
 /*Links*/
