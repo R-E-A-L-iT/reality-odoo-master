@@ -10,11 +10,10 @@
                     </a>
                 </div>
                 <div id="Menu-Links">
-                    <ul id="top_menu" class="nav navbar-nav">
-                     <t t-call="portal.placeholder_user_sign_in">
-                        <t t-set="_item_class" t-value="'nav-item'"/>
-                        <t t-set="_link_class" t-value="'nav-link'"/>
-                    </t>
+                    <ul>
+                        <li>
+                            <a href="/my/home">MY.R-E-A-L.iT</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
