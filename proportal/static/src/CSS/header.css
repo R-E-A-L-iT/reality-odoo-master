@@ -25,3 +25,18 @@
     width: 400px;
 }
 }
+
+
+#custom-navbar ul{
+    display: block;
+    margin: auto;
+}
+
+#custom-navbar li{
+    display: inline-block;
+    margin: auto;
+}
+
+#custom-navbar li::marker{
+    display: none;
+}
