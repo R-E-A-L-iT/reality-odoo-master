@@ -12,6 +12,12 @@
                 <div id="Menu-Links">
                     <ul>
                         <li>
+                            <a href="/contact">CONTACT</a>
+                        </li>
+                        <li>
+                            <a href="/en_CA/livechat">SUPPORT</a>
+                        </li>
+                        <li>
                             <a href="/my/home">MY.R-E-A-L.iT</a>
                         </li>
                     </ul>
