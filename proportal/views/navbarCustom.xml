@@ -21,6 +21,7 @@
                             <a href="/my/home">MY.R-E-A-L.iT</a>
                         </li>
                         <li>
+                            <t t-set="is_connected" t-value="not user_id._is_public()"/>
                             <a t-if="is_connected" href="/web/session/logout?redirect=/">LOGOUT</a>
                         </li>
                     </ul>
