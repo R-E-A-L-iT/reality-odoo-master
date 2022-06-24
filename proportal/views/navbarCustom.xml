@@ -20,6 +20,9 @@
                         <li>
                             <a href="/my/home">MY.R-E-A-L.iT</a>
                         </li>
+                        <li>
+                            <a href="/web/session/logout?redirect=/">LOGOUT</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
