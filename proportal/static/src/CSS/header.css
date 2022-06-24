@@ -34,11 +34,14 @@
 #custom-navbar ul{
     display: block;
     margin: auto;
+    list-style: none;
 }
 
 #custom-navbar li {
     display: inline-block;
     margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #custom-navbar a {
