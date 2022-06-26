@@ -5,7 +5,6 @@
         <field name="name">Sync Schedule</field>
         <field name="model_id" ref="model_sync_sync"/>
         <field name="state">code</field>
-        <field name="code">model.start_sync()</field>
         <field name='interval_number'>30</field>
         <field name='interval_type'>minutes</field>
         <field name="numbercall">-1</field>
