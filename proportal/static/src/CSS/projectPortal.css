@@ -113,6 +113,10 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     margin-right: .5rem !important;
 }
 
+#product-menu-pro > div:nth-child(2) > div > div {
+    margin-left: 0.5rem !important;
+}
+
 #product-menu-pro > div:nth-child(2) > div {
     justify-content: unset !important;
 }
