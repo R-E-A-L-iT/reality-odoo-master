@@ -103,13 +103,18 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 #product-menu-pro {
     height: fit-content;
     margin-bottom: 0.5rem;
+    justify-content: center;
 }
 
-#product-menu-pro .col-lg-6{
+#product-menu-pro .custom-menu-row{
     display: block;
     margin-top: .5rem;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    margin-left: .5rem !important;
+    margin-right: .5rem !important;
+}
+
+#product-menu-pro > div:nth-child(2) > div > div {
+    margin-left: 0.5rem !important;
 }
 
 #product-menu-pro > div:nth-child(2) > div {
