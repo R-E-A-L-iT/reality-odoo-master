@@ -9,23 +9,7 @@
                         t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
                     </a>
                 </div>
-                <div id="Menu-Links">
-                    <ul>
-                        <li>
-                            <a href="/contact">CONTACT</a>
-                        </li>
-                        <li>
-                            <a href="/en_CA/livechat">SUPPORT</a>
-                        </li>
-                        <li>
-                            <a href="/my/home">MY.R-E-A-L.iT</a>
-                        </li>
-                        <li>
-                            <t t-set="is_connected" t-value="not user_id._is_public()"/>
-                            <a t-if="is_connected" href="/web/session/logout?redirect=/">LOGOUT</a>
-                        </li>
-                    </ul>
-                </div>
+                <t t-call="custom.menu-links"/>
             </nav>
         </xpath>
     </template>
