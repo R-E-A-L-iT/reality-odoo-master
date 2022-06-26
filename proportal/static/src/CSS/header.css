@@ -54,7 +54,7 @@
     display: none;
 }
 
-#product-menu-pro .dropdown {
+#product-menu-pro .dropdown-content {
     background-color: #000;
     border: .5px solid #888;
     border-radius: 2px;
@@ -64,4 +64,8 @@
     padding: 7px;
     position: absolute;
     z-index: 71!important;
+}
+
+#product-menu-pro li.dropdown {
+    padding: 5px;
 }
