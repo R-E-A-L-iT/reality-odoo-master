@@ -66,6 +66,10 @@
     z-index: 71!important;
 }
 
+#custom-navbar .dropdown-link:hover>.dropdown-content {
+    display: block;
+}
+
 #custom-navbar li.dropdown {
     padding: 5px;
 }
