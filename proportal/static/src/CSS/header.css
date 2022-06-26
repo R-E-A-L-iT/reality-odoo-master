@@ -60,7 +60,6 @@
     border-radius: 2px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
     display: none;
-    min-width: 160px;
     padding: 7px;
     position: absolute;
     z-index: 71!important;
@@ -72,4 +71,5 @@
 
 #custom-navbar li.dropdown {
     padding: 5px;
+    display: block;
 }
