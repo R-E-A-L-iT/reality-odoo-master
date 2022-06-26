@@ -105,7 +105,6 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     margin-bottom: 0.5rem;
 }
 
-/*
 #product-menu-pro .col-lg-6{
     display: block;
     margin-top: .5rem;
@@ -117,7 +116,6 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     justify-content: unset !important;
 }
 
-*/
 #product-menu-pro input{
     margin-bottom: 0px !important;
     padding-top: .375rem;
@@ -128,12 +126,11 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
     height: 100%;
 }
 
-/*
 #product-menu-pro > div:nth-child(2) > div > form {
     min-height: 100%;
     margin-right: auto !important;
     margin-left: auto !important;
-}*/
+}
 
 #product-menu-pro > div:nth-child(1) > ol {
     background-color: #24272A !important;
