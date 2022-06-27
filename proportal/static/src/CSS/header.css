@@ -59,8 +59,11 @@
     width: fit-content;
 }
 
+#custom-navbar .dropdown-content::before {
+    content: "\n";
+}
 #custom-navbar .dropdown-link:hover>.dropdown-content {
-    display: block;
+    display: inline-block;
 }
 
 #custom-navbar .dropdown-link:hover>div.dropdown-content.submenu {
