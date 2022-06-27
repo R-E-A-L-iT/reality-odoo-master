@@ -64,7 +64,11 @@
 }
 
 #custom-navbar .dropdown-link:hover>div.dropdown-content.submenu {
+    left: 0px;
     display: inline-block;
+    position: absolute;
+    margin-left: calc(100% + 7px);
+    width: fit-content;
 }
 
 #custom-navbar .dropdown-content {
