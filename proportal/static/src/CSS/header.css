@@ -49,6 +49,7 @@
 #custom-navbar a {
     color: #fff;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 #custom-navbar li::marker{
