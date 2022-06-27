@@ -83,7 +83,7 @@
     padding: 7px;
     padding-right: 0px;
     position: absolute;
-    z-index: 71!important;
+    z-index: 71 !important;
 }
 
 #custom-navbar .dropdown-content a {
