@@ -67,9 +67,8 @@
     left: 0px;
     display: inline-block;
     position: absolute;
-    padding-left: calc(100% + 7px);
+    margin-left: calc(100% + 7px);
     width: fit-content;
-    z-index: 70;
 }
 
 #custom-navbar .dropdown-content {
