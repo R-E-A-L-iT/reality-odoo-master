@@ -52,8 +52,8 @@
     text-transform: uppercase;
     padding-left: 13px;
     padding-right: 13px;
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 13px;
+    padding-bottom: 13px;
 }
 
 #custom-navbar li::marker{
@@ -89,10 +89,6 @@
     padding-right: 0px;
     position: absolute;
     z-index: 71 !important;
-}
-
-#custom-navbar .dropdown-content a {
-    padding-right: 7px;
 }
 
 #custom-navbar li.dropdown {
