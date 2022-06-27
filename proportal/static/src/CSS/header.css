@@ -87,10 +87,6 @@
     z-index: 71 !important;
 }
 
-#custom-navbar .dropdown-content a {
-    padding-right: 7px;
-}
-
 #custom-navbar li.dropdown {
     padding: 5px;
     display: block;
