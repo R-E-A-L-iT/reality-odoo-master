@@ -65,6 +65,11 @@
     z-index: 71!important;
 }
 
+#custom-navbar .submenu {
+    display: inline-block;
+    margin-left: 12px;
+}
+
 #custom-navbar .dropdown-link:hover>.dropdown-content {
     display: block;
 }
