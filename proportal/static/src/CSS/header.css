@@ -70,8 +70,12 @@
     margin-left: 12px;
 }
 
-#custom-navbar .dropdown-link:hover>.dropdown-content {
+#custom-navbar ul.dropdown-link:hover>.dropdown-content {
     display: block;
+}
+
+#custom-navbar div.dropdown-link:hover>.dropdown-content {
+    display: inline-block;
 }
 
 #custom-navbar li.dropdown {
