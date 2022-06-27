@@ -48,6 +48,7 @@
 
 #custom-navbar a {
     color: #fff;
+    white-space: nowrap;
 }
 
 #custom-navbar li::marker{
@@ -55,17 +56,22 @@
 }
 
 #custom-navbar .submenu {
-    display: inline-block;
     margin-left: 12px;
+    width: fit-content;
 }
 
-#custom-navbar .dropdown-link:hover>ul.dropdown-content {
+#custom-navbar .dropdown-link:hover>.dropdown-content {
     display: block;
 }
 
-#custom-navbar .dropdown-link:hover>div.dropdown-content {
+#custom-navbar .dropdown-link:hover>div.dropdown-content.submenu {
+    top: 0px;
+    left: 0px;
     display: inline-block;
-}
+    position: absolute;
+    margin-left: 100%;
+    padding-left: 7px;
+    width: fit-content;
 
 #custom-navbar .dropdown-content {
     background-color: #000;
@@ -74,8 +80,13 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
     display: none;
     padding: 7px;
+    padding-right: 0px;
     position: absolute;
     z-index: 71!important;
+}
+
+#custom-navbar .dropdown-content a {
+    padding-right: 7px;
 }
 
 #custom-navbar li.dropdown {
