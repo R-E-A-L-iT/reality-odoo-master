@@ -50,6 +50,10 @@
     color: #fff;
     white-space: nowrap;
     text-transform: uppercase;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 #custom-navbar li::marker{
