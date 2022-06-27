@@ -70,11 +70,11 @@
     margin-left: 12px;
 }
 
-#custom-navbar ul.dropdown-link:hover>.dropdown-content {
+#custom-navbar .dropdown-link:hover>ul.dropdown-content {
     display: block;
 }
 
-#custom-navbar div.dropdown-link:hover>.dropdown-content {
+#custom-navbar .dropdown-link:hover>div.dropdown-content {
     display: inline-block;
 }
 
