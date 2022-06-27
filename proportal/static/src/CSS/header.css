@@ -48,6 +48,7 @@
 
 #custom-navbar a {
     color: #fff;
+    white-space: nowrap;
 }
 
 #custom-navbar li::marker{
@@ -79,8 +80,13 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
     display: none;
     padding: 7px;
+    padding-right: 0px;
     position: absolute;
     z-index: 71!important;
+}
+
+#custom-navbar .dropdown-content a {
+    padding-right: 7px;
 }
 
 #custom-navbar li.dropdown {
