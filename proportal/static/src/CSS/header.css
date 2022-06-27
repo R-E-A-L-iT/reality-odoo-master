@@ -55,15 +55,15 @@
 }
 
 #custom-navbar .submenu {
-    display: inline-block;
     margin-left: 12px;
+    width: fit-content;
 }
 
-#custom-navbar .dropdown-link:hover>ul.dropdown-content {
+#custom-navbar .dropdown-link:hover>.dropdown-content {
     display: block;
 }
 
-#custom-navbar .dropdown-link:hover>div.dropdown-content {
+#custom-navbar .dropdown-link:hover>div.dropdown-content.submenu {
     display: inline-block;
 }
 
