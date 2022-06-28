@@ -52,7 +52,7 @@
     text-transform: uppercase;
 }
 
-#custom-navbar a:after, #custom-navbar a:before {
+/*#custom-navbar a:after, #custom-navbar a:before {
     background: currentColor;
     height: 1px;
     left: 0;
@@ -78,7 +78,7 @@
     transform: scaleX(1);
     -webkit-transform-origin: 0 50%;
     transform-origin: 0 50%;
-}
+}*/
 
 #custom-navbar li::marker{
     display: none;
