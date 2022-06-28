@@ -1,0 +1,4 @@
+#customHome>#homepage {
+    width: 100vw;
+    height:calc(100vh - 130px);
+}
