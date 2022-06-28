@@ -1,4 +1,5 @@
 #custom-homepage>#homepage {
     width: 100vw;
-    height:calc(100vh - 130px);
+    border: none;
+    height: calc(83vh - 130px);
 }
