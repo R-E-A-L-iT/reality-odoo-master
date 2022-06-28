@@ -2,6 +2,11 @@ body {
     overflow-x: hidden;
     background-color: #000;
 }
+
+div.o_brand_promotion {
+    visibility: hidden !important;
+}
+
 #projectPortalTable {
     background-color: #333;
     color: #db0d0d;
