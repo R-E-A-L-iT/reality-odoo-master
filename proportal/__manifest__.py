@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.5',
+    'version': '0.6',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -29,6 +29,7 @@
             'proportal/static/src/CSS/productMiniMenu.css',
             'proportal/static/src/CSS/productWebsite.css',
             'proportal/static/src/CSS/header.css',
+            'proportal/static/src/CSS/footer.css',
         ]
     },
     
