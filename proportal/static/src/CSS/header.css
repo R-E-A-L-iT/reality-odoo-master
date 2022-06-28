@@ -52,7 +52,17 @@
     text-transform: uppercase;
 }
 
-a:before {
+#custom-navbar a:after, #custom-navbar a:before {
+    background: currentColor;
+    height: 1px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+}
+
+#custom-navbar a:before {
     content: "";
     -webkit-transform: scaleX(0);
     transform: scaleX(0);
