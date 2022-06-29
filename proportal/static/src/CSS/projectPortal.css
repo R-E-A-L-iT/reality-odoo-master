@@ -1,110 +1,110 @@
 body {
-    overflow-x: hidden;
-    background-color: #000;
+	overflow-x: hidden;
+	background-color: #000;
 }
 
 div.o_brand_promotion {
-    visibility: hidden !important;
+	visibility: hidden !important;
 }
 
 #projectPortalTable {
-    background-color: #333;
-    color: #db0d0d;
+	background-color: #333;
+	color: #db0d0d;
 }
 
 #projectPortalTable > tbody > tr > td > a > span {
-    color: #db0d0d;   
+	color: #db0d0d;   
 }
 
 #projectPortalTable > thead > tr > th > em {
-    background-color: #1E2023;
-    color: #fff;
+	background-color: #1E2023;
+	color: #fff;
 }
 
 #projectPortalTable > thead > tr > th {
-    background-color: #1E2023;
-    color: #fff;   
+	background-color: #1E2023;
+	color: #fff;   
 }
 
 #top_menu_container > a > span > img {
-    height: 50%;
+	height: 50%;
 }
 
 #top_menu_container > a {
-    margin: auto !important;
-    display: block;
+	margin: auto !important;
+	display: block;
 }
 
 #wrapwrap {
-    overflow-x: hidden;
+	overflow-x: hidden;
 }
 
 #wrap {
-    height: 100%;    
+	height: 100%;    
 }
 
 header#top > nav.Navbar {
-    background-color: #000 !important;
-    border-bottom-color: #000 !important;
+	background-color: #000 !important;
+	border-bottom-color: #000 !important;
 }
 
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
-    z-index: 6;
-    background-color: #111;
-    position: relative;
-    bottom: 0px;
-    width: 100vw;
+	z-index: 6;
+	background-color: #111;
+	position: relative;
+	bottom: 0px;
+	width: 100vw;
 }
 
 .nav-item {
-    color: #fff;
+	color: #fff;
 }
 .nav-link {
-    color: #fff;
+	color: #fff;
 }
 
 .nav-link > span {
-    color: #fff;
+	color: #fff;
 }
 
 #top_menu_container > button > span.navbar-toggler-icon {
-    color: #fff !important;
+	color: #fff !important;
 }
 
 #top_menu > li.o_wsale_my_cart.align-self-md-start.nav-item > a > sup {
-    background-color: #db0d0d;
+	background-color: #db0d0d;
 }
 
 #product_detail {
-    background-color: #000;
+	background-color: #000;
 }
 
 #wrap#wrap {
-    background-color: #000 !important;
+	background-color: #000 !important;
 }
 
 div.proportal-menu-bar {
-    width: 35px;
-    height: 5px;
-    background-color: #fff;
-    margin: 6px;
-    border-radius: 2px;
-    background-color: #db0d0d;
-    border-style: none;
+	width: 35px;
+	height: 5px;
+	background-color: #fff;
+	margin: 6px;
+	border-radius: 2px;
+	background-color: #db0d0d;
+	border-style: none;
 }
 
 body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
-    color: #fff !important;
+	color: #fff !important;
 }
 
 #product_no_sell_email {
-    background-color: #db0d0d;
+	background-color: #db0d0d;
 }
 
 #product_no_sell_phone {
-    background-color: #db0d0d;
+	background-color: #db0d0d;
 }
 
 .nav-link > span {
-    color: #db0d0d;
+	color: #db0d0d;
 }
