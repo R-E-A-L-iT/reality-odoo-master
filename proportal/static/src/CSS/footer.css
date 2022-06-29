@@ -57,6 +57,12 @@
     white-space: nowrap;
 }
 
+.footer-column>ul>li>a {
+    color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
+}
+
 #custom-footer a:after, #custom-footer a:before {
     background: currentColor;
     height: 1px;
@@ -76,4 +82,11 @@
     transition: -webkit-transform .3s;
     transition: transform .3s;
     transition: transform .3s,-webkit-transform .3s;
+}
+
+#custom-footer a:hover:before {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transform-origin: 0 50%;
+    transform-origin: 0 50%;
 }
