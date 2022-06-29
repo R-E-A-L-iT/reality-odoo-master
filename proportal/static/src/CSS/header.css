@@ -51,6 +51,7 @@
 	white-space: nowrap;
 	text-transform: uppercase;
 	position: relative;
+	padding-right: 7px;
 }
 
 #custom-navbar a:hover {
@@ -115,6 +116,7 @@
 	box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
 	display: none;
 	padding: 7px;
+	padding-right: 0px;
 	position: absolute;
 	z-index: 71 !important;
 }
