@@ -52,6 +52,10 @@
     text-transform: uppercase;
 }
 
+#custom-navbar a:hover {
+    text-decoration: none;
+}
+
 #custom-navbar a:after, #custom-navbar a:before {
     background: currentColor;
     height: 1px;
@@ -73,7 +77,7 @@
     transition: transform .3s,-webkit-transform .3s;
 }
 
-#custom-navbar a:hover:before {
+#custom-navbar ul a:hover:before {
     -webkit-transform: scaleX(1);
     transform: scaleX(1);
     -webkit-transform-origin: 0 50%;
