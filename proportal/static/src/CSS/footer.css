@@ -25,6 +25,7 @@
 
 @media (min-width: 750px){
 #custom-footer .footer-column>h1 {
+    color: white;
     font-size: 1rem;
     text-align: center;
     text-transform: uppercase;
@@ -48,7 +49,6 @@
 
 #custom-footer a {
     color: #fff;
-    color: var(--color-text);
     cursor: pointer;
     font-family: HelveticaNeue-CondensedBlack,Helvetica Neue;
     font-weight: 700;
