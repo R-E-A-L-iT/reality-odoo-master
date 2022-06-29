@@ -57,7 +57,7 @@
     white-space: nowrap;
 }
 
-.footer-column>ul>li>a {
+#custom-footer .footer-column>ul>li>a {
     color: #888;
     font-family: Source Sans Pro,sans-serif;
     font-weight: 100;
