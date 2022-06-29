@@ -50,6 +50,7 @@
     color: #fff;
     white-space: nowrap;
     text-transform: uppercase;
+    position: relative;
 }
 
 #custom-navbar a:hover {
