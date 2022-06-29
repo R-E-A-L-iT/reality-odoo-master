@@ -56,16 +56,6 @@
     text-decoration: none;
 }
 
-#custom-navbar a:after, #custom-navbar a:before {
-    background: currentColor;
-    height: 1px;
-    left: 0;
-    pointer-events: none;
-    position: absolute;
-    top: 100%;
-    width: 100%;
-}
-
 #custom-navbar a:before {
     content: "";
     -webkit-transform: scaleX(0);
@@ -75,6 +65,16 @@
     transition: -webkit-transform .3s;
     transition: transform .3s;
     transition: transform .3s,-webkit-transform .3s;
+}
+
+#custom-navbar a:after, #custom-navbar a:before {
+    background: currentColor;
+    height: 1px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    width: 100%;
 }
 
 #custom-navbar ul a:hover:before {
