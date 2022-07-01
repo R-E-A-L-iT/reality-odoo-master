@@ -710,10 +710,12 @@
 
 #custom-webpage-root .landing>h1 {
     font-size: 7.5rem;
-    margin-top: 200px;
+    top: 200px;
     min-width: 100vw;
     text-align: center;
     text-shadow: 7.5px 7.5px 5px #000;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 #custom-webpage-root .landing>h3 {
