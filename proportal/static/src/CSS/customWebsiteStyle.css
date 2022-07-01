@@ -742,3 +742,30 @@
 	max-width: 50%;
 	width: 50%;
 }
+
+#custom-webpage-root .left-container {
+    position: relative;
+	margin: 50px;
+}
+
+#custom-webpage-root .left-container>h1 {
+    float: right;
+    margin-bottom: 10px;
+}
+
+#custom-webpage-root .right-container {
+    max-width: 590px;
+	margin: 50px;
+}
+#custom-webpage-root .right-container>p {
+    color: #888;
+    font-family: HelveticaNeue-Light,Helvetica Neue Light;
+    letter-spacing: 1px;
+    line-height: 25px;
+}
+
+#custom-webpage-root .left-container>button {
+    float: right;
+    margin-top: 200px;
+    position: relative;
+}
