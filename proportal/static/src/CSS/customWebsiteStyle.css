@@ -686,3 +686,24 @@
 #custom-webpage-root .directory-line {
     display: none;
 }
+
+/*Industries*/
+
+#custim-webpage-root .industry {
+    display: flex;
+    flex-direction: row;
+}
+
+#custom-webpage-root .industry, #custom-webpage-root .landing {
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#custom-webpage-root .landing {
+    background: no-repeat 50% fixed;
+    background-size: cover;
+    height: calc(100vh - 75px);
+    row-gap: 10px;
+    width: 100vw;
+}
