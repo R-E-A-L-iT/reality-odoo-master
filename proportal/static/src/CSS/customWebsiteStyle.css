@@ -672,3 +672,17 @@
 	margin: auto;
 }
 }
+
+/*Directories*/
+#custom-webpage-root .directory-section {
+    min-height: 500px;
+    width: 100vw;
+}
+
+#custom-webpage-root .directory-container {
+    padding: 50px;
+}
+
+#custom-webpage-root .directory-line {
+    display: none;
+}
