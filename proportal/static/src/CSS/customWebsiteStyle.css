@@ -729,6 +729,10 @@
     position: relative;
 }
 
+#custom-webpage-root .overview {
+    display: flex;
+}
+
 #custom-webpage-root .overview-right {
     border-left: .5px solid #7e0707;
     margin-top: 25px;
