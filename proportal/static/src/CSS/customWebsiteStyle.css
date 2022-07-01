@@ -701,19 +701,22 @@
 }
 
 #custom-webpage-root .landing {
+	padding-top: calc(50vh - 35px);
     background: no-repeat 50% fixed;
     background-size: cover;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 70px);
     row-gap: 10px;
     width: 100vw;
 }
 
 #custom-webpage-root .landing>h1 {
     font-size: 7.5rem;
-    margin-top: 200px;
+    top: 200px;
     min-width: 100vw;
     text-align: center;
     text-shadow: 7.5px 7.5px 5px #000;
+	  margin-top: 0px;
+	  margin-bottom: 0px;
 }
 
 #custom-webpage-root .landing>h3 {
@@ -721,6 +724,58 @@
     min-width: 100vw;
     text-align: center;
     text-shadow: 5px 5px 2.5px #000;
+}
+
+.landing>.hr {
+    border: 2px solid #9e0a0a;
+	background-color: #9e0a0a;
+    margin-left: calc(50vw - 50px);
+    width: 100px;
+}
+
+#custom-webpage-root .left-container>button {
+    float: right;
+    margin-top: 200px;
+    position: relative;
+}
+
+#custom-webpage-root .overview {
+    display: flex;
+}
+
+#custom-webpage-root .overview-right {
+    border-left: .5px solid #7e0707;
+    margin-top: 25px;
+	  max-width: 50vw;
+	  width: 50vw;
+}
+
+#custom-webpage-root .overview-left {
+    border-right: .5px solid #7e0707;
+    margin-top: 25px;
+	max-width: 50vw;
+	width: 50vw;
+}
+
+#custom-webpage-root .left-container {
+    position: relative;
+	margin: 50px;
+}
+
+#custom-webpage-root .left-container>h1 {
+    float: right;
+    margin-bottom: 10px;
+}
+
+#custom-webpage-root .right-container {
+    max-width: 590px;
+	margin: 50px;
+}
+#custom-webpage-root .right-container>p {
+    color: #888;
+    font-family: HelveticaNeue-Light,Helvetica Neue Light;
+    letter-spacing: 1px;
+    line-height: 25px;
 }
 
 #custom-webpage-root .left-container>button {
