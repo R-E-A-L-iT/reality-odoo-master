@@ -728,3 +728,17 @@
     margin-top: 200px;
     position: relative;
 }
+
+#custom-webpage-root .overview-right {
+    border-left: .5px solid #7e0707;
+    margin-top: 25px;
+	max-width: 50%;
+	width: 50%;
+}
+
+#custom-webpage-root .overview-left {
+    border-right: .5px solid #7e0707;
+    margin-top: 25px;
+	max-width: 50%;
+	width: 50%;
+}
