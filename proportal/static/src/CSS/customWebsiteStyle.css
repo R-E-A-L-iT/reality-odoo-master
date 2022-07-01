@@ -701,9 +701,10 @@
 }
 
 #custom-webpage-root .landing {
+	padding-top: (50vh - 35px;)
     background: no-repeat 50% fixed;
     background-size: cover;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 70px);
     row-gap: 10px;
     width: 100vw;
 }
