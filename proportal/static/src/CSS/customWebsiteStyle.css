@@ -726,6 +726,13 @@
     text-shadow: 5px 5px 2.5px #000;
 }
 
+.landing>.hr {
+    border: 2px solid #9e0a0a;
+	background-color: #9e0a0a;
+    margin-left: calc(50vw - 50px);
+    width: 100px;
+}
+
 #custom-webpage-root .left-container>button {
     float: right;
     margin-top: 200px;
