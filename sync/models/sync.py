@@ -1024,6 +1024,10 @@ class sync(models.Model):
 			self.sendSyncReport(msg)
 			_logger.info("Sheet Width: " + str(len(sheet[0])))
 			return True, msg
+		
+		msg = ""
+
+		return False, msg
 
 	def check_id(self, id):
 		if(" " in id):
