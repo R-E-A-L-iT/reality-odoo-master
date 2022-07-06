@@ -1049,7 +1049,8 @@ class sync(models.Model):
 				_logger.info(pageIds)
 				for it in pageIds:
 					if(external_id in it):
-						_logger.info(it.name)
+						_logger.info("Match" + str(it.name))
+					_logger.info(it.name)
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
 				else:
@@ -1057,6 +1058,7 @@ class sync(models.Model):
 					_logger.info(str(external_id) + " Page Not Created")
 					return True, msg
 				i = i + 1
+				break
 			except Exception as e:
 				_logger.info(e)
 				msg = self.buildMSG(msg, sheet, sheetWidth, i)
