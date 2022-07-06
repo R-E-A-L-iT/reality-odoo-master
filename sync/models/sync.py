@@ -1036,6 +1036,11 @@ class sync(models.Model):
 				msg = self.buildMSG(msg, sheet, sheetWidth, i)
 				i = i + 1
 				continue
+
+			if(not sheet[i][columns["valid"]] == "TRUE"):
+				msg = self.buildMSG(msg, sheet, sheetWidth, i)
+				i = i + 1
+				continue
 			
 			try:
 				external_id = str(sheet[i][columns["id"]])
@@ -1046,6 +1051,7 @@ class sync(models.Model):
 				else:
 					msg = self.buildMSG(msg, sheet, sheetWidth, i)
 					_logger.info("Page Not Created")
+					return True, msg
 				i = i + 1
 			except Exception as e:
 				_logger.info(e)
