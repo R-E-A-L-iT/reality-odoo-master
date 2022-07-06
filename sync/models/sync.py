@@ -1048,7 +1048,7 @@ class sync(models.Model):
 				pageIds = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view')])
 				_logger.info(pageIds)
 				for it in pageIds:
-					if(external_id in it):
+					if(external_id in it.name):
 						_logger.info("Match" + str(it.name))
 					if("custom.custom" in it.name):
 						_logger.info(it.name)
