@@ -1019,8 +1019,8 @@ class sync(models.Model):
 		else:
 			missingColumn = True
 
-		if(len(sheet[i]) != sheetWidth or missingColumn):
-			msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[i])) + "</p>"
+		if(len(sheet[0]) != sheetWidth or missingColumn):
+			msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + str(len(sheet[0])) + "</p>"
 			self.sendSyncReport(msg)
 			_logger.info("Sheet Width: " + str(len(sheet[i])))
 			return True, msg
