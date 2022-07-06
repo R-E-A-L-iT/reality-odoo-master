@@ -1009,13 +1009,13 @@ class sync(models.Model):
 		else:
 			missingColumn = True
 
-		if("valid" in  sheet[0]):
-			columns["valid"] = sheet[0].index("valid")
+		if("Valid" in  sheet[0]):
+			columns["valid"] = sheet[0].index("Valid")
 		else:
 			missingColumn = True
 
-		if("continue" in  sheet[0]):
-			columns["continue"] = sheet[0].index("continue")
+		if("Continue" in  sheet[0]):
+			columns["continue"] = sheet[0].index("Continue")
 		else:
 			missingColumn = True
 
