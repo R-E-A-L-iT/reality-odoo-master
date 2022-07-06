@@ -1,3 +1,10 @@
-* {
-	display: und;
+@media max-width(749px){
+	#custom-navbar  #custom-navbar-logo {
+		display: block;
+		height: fit-content;
+		margin: auto;
+		position: relative;
+		top: 0;
+		width: 75vw;
+	}
 }
