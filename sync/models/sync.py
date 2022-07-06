@@ -1045,10 +1045,10 @@ class sync(models.Model):
 			try:
 				external_id = str(sheet[i][columns["id"]])
 				_logger.info(external_id)
-				pageIds = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'ir.ui.view')])
+				pageIds = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', 'ir.ui.view.custom')])
 				_logger.info(pageIds)
 				if(len(pageIds) > 0):
-					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
+					page = self.env['ir.ui.view.custom'].browse(pageIds[-1].res_id)
 				else:
 					msg = self.buildMSG(msg, sheet, sheetWidth, i)
 					_logger.info(str(external_id) + " Page Not Created")
