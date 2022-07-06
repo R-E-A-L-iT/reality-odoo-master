@@ -1048,7 +1048,7 @@ class sync(models.Model):
 				pageIds = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view')])
 				_logger.info(pageIds)
 				for it in pageIds:
-					if("custom.custom" in it):
+					if(external_id in it):
 						_logger.info(it.name)
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
