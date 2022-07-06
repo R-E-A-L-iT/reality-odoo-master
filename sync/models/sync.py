@@ -1049,15 +1049,11 @@ class sync(models.Model):
 				_logger.info(pageIds)
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
+					page.arch_base = sheet[i][columns["html"]]
 				else:
 					#msg = self.buildMSG(msg, sheet, sheetWidth, i)
 					msg = ""
 					_logger.info(str(external_id) + " Page Not Created")
-					views = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view')])
-					for it in views:
-						if("custom" in it.name):
-							_logger.info(it.name)
-					return True, msg
 				i = i + 1
 			except Exception as e:
 				_logger.info(e)
