@@ -1047,8 +1047,8 @@ class sync(models.Model):
 				_logger.info(external_id)
 				pageIds = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view')])
 				_logger.info(pageIds)
-				for i in pageIds:
-					_logger.info(i.name)
+				for it in pageIds:
+					_logger.info(it.name)
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
 				else:
