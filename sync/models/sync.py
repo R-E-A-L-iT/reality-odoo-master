@@ -994,7 +994,7 @@ class sync(models.Model):
 	
 	def syncWebCode(self, sheet):
 		# check sheet width to filter out invalid sheets
-		sheetWidth =  6# every company tab will have the same amount of columns (Same with others)
+		sheetWidth =  8# every company tab will have the same amount of columns (Same with others)
 		columns = dict()
 		missingColumn = False
 		
