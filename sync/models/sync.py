@@ -1050,7 +1050,7 @@ class sync(models.Model):
 					self.updateCCP(self.env['ir.ui.view'].browse(pageIds[-1].res_id), sheet, sheetWidth, i, columns)
 				else:
 					msg = self.buildMSG(msg, sheet, sheetWidth, i)
-					_logger.info( + "Page Not Created")
+					_logger.info(external_id + " Page Not Created")
 					return True, msg
 				i = i + 1
 			except Exception as e:
