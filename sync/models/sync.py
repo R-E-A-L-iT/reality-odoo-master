@@ -1025,8 +1025,32 @@ class sync(models.Model):
 			_logger.info("Sheet Width: " + str(len(sheet[0])))
 			return True, msg
 		
+		i = 1
 		msg = ""
+		msg = self.startTable(msg, sheet, sheetWidth)
+		while(True):
+			if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+				break
 
+			if(not self.check_id(str(sheet[i][columns["sku"]]))):
+				msg = self.buildMSG(msg, sheet, sheetWidth, i)
+				i = i + 1
+				continue
+			
+			try:
+				external_id = str(sheet[i][columns["id"]])
+			
+				pageIds = self.env['ir.model.data'].search([('name','=', external_id), ('model', '=', '')])
+				if(len(pageIds) > 0):
+					self.updateCCP(self.env['stock.production.lot'].browse(pageIds[-1].res_id), sheet, sheetWidth, i, columns)
+				else:
+					msg = self.buildMSG(msg, sheet, sheetWidth, i)
+					_logger.info("Page Not Created")
+				i = i + 1
+			except Exception as e:
+				_logger.info(e)
+				msg = self.buildMSG(msg, sheet, sheetWidth, i)
+				return True, msg
 		return False, msg
 
 	def check_id(self, id):
