@@ -1050,7 +1050,6 @@ class sync(models.Model):
 				for it in pageIds:
 					if(external_id in it.name):
 						_logger.info("Match" + str(it.name))
-					_logger.info(it.name)
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
 				else:
