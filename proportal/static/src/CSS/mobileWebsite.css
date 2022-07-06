@@ -17,4 +17,9 @@
 	transition: all .5s ease-in-out;
 	width: 75%;
 }
+
+#custom-navbar ul.nav-list {
+	display: none;
+}
+
 }
