@@ -1,0 +1,25 @@
+@media (max-width: 749px) {
+#custom-navbar  #custom-navbar-logo {
+	display: block;
+	height: fit-content;
+	margin: auto;
+	position: relative;
+	top: 0;
+	width: 100%;
+}
+
+#custom-navbar img {
+	display: block;
+	height: auto;
+	margin: auto;
+	position: relative;
+	top: 0;
+	transition: all .5s ease-in-out;
+	width: 75%;
+}
+
+#custom-navbar ul.nav-list {
+	display: none;
+}
+
+}
