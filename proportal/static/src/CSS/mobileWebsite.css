@@ -64,6 +64,17 @@
     margin: auto;
 }
 
+
+#custom-webpage-root .contact-left {
+ 	display: flex;
+    justify-content: center;
+}
+
+#custom-webpage-root .contact-right {
+    display: flex;
+	justify-content: center;
+}
+
 #custom-webpage-root .ordering-below {
     width: 100vw;
     display: flex;
