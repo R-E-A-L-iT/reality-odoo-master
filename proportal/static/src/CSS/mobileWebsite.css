@@ -34,6 +34,10 @@
 	display: none;
 }
 
+#custom-navbar .custom-burger:hover+ul.nav-list, #custom-navbar ul.nav-list:hover {
+	display: block;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
