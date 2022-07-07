@@ -44,6 +44,10 @@
 	width: 100vw;
 }
 
+#custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-text-section {
+    margin: auto;
+}
+
 #custom-webpage-root .ordering-below {
     width: 100vw;
     display: flex;
