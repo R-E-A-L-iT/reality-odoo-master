@@ -22,6 +22,18 @@
 	display: none;
 }
 
+#custom-webpage-root .feature-tiling {
+	display: block;
+}
+
+#custom-webpage-roof .feature-image-section {
+	width: 100vw;
+}
+
+#custom-webpage-root .feature-text-section {
+	width: 100vw;
+}
+
 #custom-webpage-root .ordering-below {
     width: 100vw;
     display: flex;
