@@ -26,6 +26,10 @@
 	display: block;
 }
 
+.vidwrap {
+	margin-top: 10px;
+}
+
 #custom-webpage-root .feature-image-section {
 	width: 100vw;
 }
