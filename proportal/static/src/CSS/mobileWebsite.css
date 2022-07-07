@@ -18,6 +18,17 @@
 	width: 75%;
 }
 
+#custom-navbar .custom-burger {
+	display: block;
+}
+
+#custom-navbar .burger-row {
+	width: 100px;
+	height: 10px;
+	border-radius: 10px;
+	background-color: #fff;
+}
+
 #custom-navbar ul.nav-list {
 	display: none;
 }
