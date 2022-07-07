@@ -66,11 +66,13 @@
 
 
 #custom-webpage-root .contact-left {
+	float: none;
  	display: flex;
     justify-content: center;
 }
 
 #custom-webpage-root .contact-right {
+	float: none;
     display: flex;
 	justify-content: center;
 }
