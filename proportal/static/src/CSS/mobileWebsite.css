@@ -35,7 +35,9 @@
 }
 
 #custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-image-section {
-    padding-right: calc(12.5vw - 50px);
+	display: block;
+    padding: 0px;
+	margin: auto;
 }
 
 #custom-webpage-root .feature-text-section {
