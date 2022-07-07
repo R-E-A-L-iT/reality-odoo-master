@@ -18,6 +18,10 @@
 	width: 75%;
 }
 
+#custom-navbar #Menu-Links {
+	display: block
+}
+
 #custom-navbar .custom-burger {
 	display: block;
 }
@@ -35,6 +39,19 @@
 }
 
 #custom-navbar .custom-burger:hover+ul.nav-list, #custom-navbar ul.nav-list:hover {
+	position: absolute;
+	display: block;
+	background-color: black;
+	z-index: 10;
+	width: 100vw;
+}
+
+#custom-navbar li {
+	display: block;
+}
+
+#custom-navbar .dropdown-content {
+	position: relative;
 	display: block;
 }
 
