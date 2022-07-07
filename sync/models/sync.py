@@ -1059,7 +1059,8 @@ class sync(models.Model):
 				i = i + 1
 			except Exception as e:
 				_logger.info(e)
-				msg = self.buildMSG(msg, sheet, sheetWidth, i)
+				#msg = self.buildMSG(msg, sheet, sheetWidth, i)
+				msg = ""
 				return True, msg
 		return False, msg
 
