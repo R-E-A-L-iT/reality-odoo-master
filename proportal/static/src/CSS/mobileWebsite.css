@@ -22,4 +22,11 @@
 	display: none;
 }
 
+#custom-webpage-root .ordering-below {
+	width: 100vw;
+}
+
+#custom-webpage-root .ordering-below>img {
+	max-width: 75%;
+}
 }
