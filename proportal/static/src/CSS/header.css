@@ -54,10 +54,13 @@
 	padding-right: 7px;
 }
 
+@media (min-width: 750px){
 #custom-navbar a:hover {
 	text-decoration: none;
 }
+}
 
+@media (min-width: 750px){
 #custom-navbar a:before {
 	content: "";
 	-webkit-transform: scaleX(0);
@@ -68,7 +71,9 @@
 	transition: transform .3s;
 	transition: transform .3s,-webkit-transform .3s;
 }
+}
 
+@media (min-width: 750px){
 #custom-navbar a:after, #custom-navbar a:before {
 	background: currentColor;
 	height: 1px;
@@ -78,12 +83,15 @@
 	top: 100%;
 	width: 100%;
 }
+}
 
+@media (min-width: 750px){
 #custom-navbar ul a:hover:before {
 	-webkit-transform: scaleX(1);
 	transform: scaleX(1);
 	-webkit-transform-origin: 0 50%;
 	transform-origin: 0 50%;
+}
 }
 
 #custom-navbar li::marker{
