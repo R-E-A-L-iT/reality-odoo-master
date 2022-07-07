@@ -36,6 +36,13 @@
 
 #custom-navbar .custom-burger:hover+ul.nav-list, #custom-navbar ul.nav-list:hover {
 	display: block;
+	background-color: black;
+	z-index: 10;
+}
+
+#custom-navbar li {
+	position: absolute;
+	display: block;
 }
 
 #custom-webpage-root .feature-tiling {
