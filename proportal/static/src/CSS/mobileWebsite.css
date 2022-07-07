@@ -44,6 +44,11 @@
 	width: 100vw;
 }
 
+#custom-webpage-root .ordering-column {
+    max-width: 100vw;
+	width: 100vw;
+}
+
 #custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-text-section {
     margin: auto;
 }
