@@ -46,12 +46,16 @@
 
 #custom-webpage-root .ordering-column {
     max-width: 100vw;
-	width: 100vw;
+	width: fit-content;
+}
+
+#custom-webpage-root .order-options {
+	padding: 12.5vw;
 }
 
 #custom-webpage-root #order-border {
 	max-width: 100vw;
-	width: 100vw;
+	width: fit-content;
 	margin-right: calc(12.5vw - 100px);
 	margin-left: calc(12.5vw - 100px);
 }
