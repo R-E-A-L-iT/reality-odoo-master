@@ -69,12 +69,17 @@
 	float: none;
  	display: flex;
     justify-content: center;
+	width: 100vw;
+	max-width: 100vw;
 }
 
 #custom-webpage-root .contact-right {
+	border: none;
 	float: none;
     display: flex;
 	justify-content: center;
+	width: 100vw;
+	max-width: 100vw;
 }
 
 #custom-webpage-root .ordering-below {
