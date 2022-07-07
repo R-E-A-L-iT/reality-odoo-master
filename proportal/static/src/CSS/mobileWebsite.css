@@ -50,6 +50,11 @@
 	display: block;
 }
 
+#custom-navbar .dropdown-content {
+	position: relative;
+	display: block;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
