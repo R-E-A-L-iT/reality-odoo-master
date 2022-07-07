@@ -125,3 +125,7 @@
 	padding: 5px;
 	display: block;
 }
+
+#custom-navbar .custom-burger {
+	display: none;
+}
