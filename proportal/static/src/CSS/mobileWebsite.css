@@ -184,6 +184,10 @@
 	max-width: 100vw;
 }
 
+#custom-webpage-root #stats-column-image {
+	z-index: 99;
+}
+
 #custom-webpage-root .ordering-below {
     width: 100vw;
     display: flex;
