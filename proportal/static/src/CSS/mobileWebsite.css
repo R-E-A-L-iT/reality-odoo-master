@@ -88,6 +88,16 @@
 	padding: 12.5vw;
 }
 
+#custom-webpage-root #sketchfab {
+	padding: 12.5vw;
+}
+
+#custom-webpage #sketchfab + div {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
