@@ -88,10 +88,6 @@
 	padding: 12.5vw;
 }
 
-#custom-webpage-root #sketchfab {
-	padding: 12.5vw;
-}
-
 #custom-webpage #sketchfab + div {
 	display: flex;
 	flex-wrap: wrap;
