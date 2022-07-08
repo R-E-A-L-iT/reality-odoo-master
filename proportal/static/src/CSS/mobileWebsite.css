@@ -69,6 +69,10 @@
 	display: block;
 }
 
+#custom-navbar .submenu>a {
+	display: block;
+}
+
 #custom-webpage-root .subheader {
 	flex-wrap: wrap;
 }
