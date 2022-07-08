@@ -78,6 +78,12 @@
 	flex-wrap: wrap;
 }
 
+#custom-webpage-root .subheader>a>h3 {
+    margin: 0px;
+    font-size: .75rem;
+	padding: 3px;
+}
+
 #custom-webpage-root .product-landing-text {
 	width: 75%;
 }
