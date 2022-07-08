@@ -78,8 +78,18 @@
 	flex-wrap: wrap;
 }
 
+#custom-webpage-root .product-landing-text {
+	width: 75%;
+}
+
 #custom-webpage-root #overview {
-	display: block
+	display: block;
+}
+
+#custom-webpage-root #overview>iframe {
+	width: 75vw;
+	margin-left: 12.5vw;
+	margin-right: 12.5vw;
 }
 
 #custom-webpage-root #overview > h1{
