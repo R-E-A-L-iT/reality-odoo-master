@@ -55,7 +55,13 @@
 }
 
 #custom-navbar .dropdown-content>li {
-	list-style-type: disc;
+	display: list-item;
+	list-style: disc;
+	color: #fff;
+}
+
+#custom-navbar .dropdown-content>li li{
+	list-style: circle;
 }
 
 #custom-navbar .dropdown-content {
