@@ -44,6 +44,7 @@
 	background-color: black;
 	z-index: 50;
 	width: 100vw;
+	left: 0px;
 }
 
 #custom-navbar li {
