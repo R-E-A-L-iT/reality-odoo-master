@@ -1050,7 +1050,7 @@ class sync(models.Model):
 				if(len(pageIds) > 0):
 					page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
 					opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-					closer = "</xpath>\n</data>"
+					closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
 					page.arch_base = opener + sheet[i][columns["html"]] + closer
 				else:
 					#msg = self.buildMSG(msg, sheet, sheetWidth, i)
