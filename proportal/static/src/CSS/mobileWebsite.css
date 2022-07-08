@@ -50,8 +50,12 @@
 	display: block;
 }
 
-#custom-navbar .submenu {
+#custom-navbar .dropdown-content {
 	border: none;
+}
+
+#custom-navbar .dropdown-content>li {
+	list-style-type: disc;
 }
 
 #custom-navbar .dropdown-content {
