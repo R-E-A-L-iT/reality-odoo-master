@@ -57,6 +57,7 @@
 
 #custom-webpage-root .subheader {
 	flex-wrap: wrap;
+	border: none;
 }
 
 #custom-webpage-root .feature-tiling {
