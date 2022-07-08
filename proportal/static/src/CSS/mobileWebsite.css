@@ -79,9 +79,7 @@
 }
 
 #custom-webpage-root #overview {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
+	display: block;
 }
 
 #custom-webpage-root #overview > h1{
