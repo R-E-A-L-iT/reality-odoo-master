@@ -94,6 +94,10 @@
 	justify-content: center;
 }
 
+#custom-webpage-root .vidleft>p, #custom-webpage-root .vidright>p {
+	padding: 12.5vw;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
