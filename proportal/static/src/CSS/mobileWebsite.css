@@ -78,6 +78,12 @@
 	flex-wrap: wrap;
 }
 
+#custom-webpage-root #overview {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
