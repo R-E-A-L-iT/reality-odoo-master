@@ -85,7 +85,7 @@
 }
 
 #custom-webpage-root #overview > h1{
-	padding: 12.5vw;
+	padding: 12.5vw !important;
 }
 
 #custom-webpage-root #overview > p {
