@@ -50,6 +50,10 @@
 	display: block;
 }
 
+#cusom-navbar .submenu {
+	border: none;
+}
+
 #custom-navbar .dropdown-content {
 	position: relative;
 	display: block;
@@ -57,7 +61,6 @@
 
 #custom-webpage-root .subheader {
 	flex-wrap: wrap;
-	border: none;
 }
 
 #custom-webpage-root .feature-tiling {
