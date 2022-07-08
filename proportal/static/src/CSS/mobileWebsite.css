@@ -42,8 +42,9 @@
 	position: absolute;
 	display: block;
 	background-color: black;
-	z-index: 10;
+	z-index: 50;
 	width: 100vw;
+	left: 0px;
 }
 
 #custom-navbar li {
@@ -51,7 +52,25 @@
 }
 
 #custom-navbar .dropdown-content {
+	border: none;
+}
+
+#custom-navbar .dropdown-content>li {
+	display: list-item;
+	list-style: disc;
+	color: #fff;
+}
+
+#custom-navbar .dropdown-content>li li{
+	list-style: circle;
+}
+
+#custom-navbar .dropdown-content {
 	position: relative;
+	display: block;
+}
+
+#custom-navbar .submenu>a {
 	display: block;
 }
 
@@ -59,14 +78,37 @@
 	flex-wrap: wrap;
 }
 
-#custom-webpage-root #overview{
-	display: block;
-} 
+#custom-webpage-root #overview {
+	display: block
+}
 
+#custom-webpage-root #overview > h1{
+	padding: 12.5vw !important;
+}
 
-#custom-webpage-root #overview>iframe{
-	margin: auto;
-} 
+#custom-webpage-root #overview > p {
+	padding: 12.5vw;
+}
+
+#custom-webpage-root #sketchfab>iframe {
+	width: 75vw;
+	margin-left: 12.5vw;
+	margin-right: 12.5vw;
+}
+
+#custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root .vidright {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+#custom-webpage-root .vidleft>p, #custom-webpage-root .vidright>p {
+	padding: 12.5vw;
+}
+
+#custom-webpage-root .vidleft>h1, #custom-webpage-root .vidright>h1 {
+	padding: 12.5vw;
+}
 
 #custom-webpage-root .feature-tiling {
 	display: block;
