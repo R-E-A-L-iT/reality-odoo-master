@@ -187,4 +187,8 @@
 #custom-webpage-root .ordering-below>img {
 	max-width: 100%;
 }
+
+#custom-webpage-root iframe {
+    border: none;
+}
 }
