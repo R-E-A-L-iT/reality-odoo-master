@@ -184,7 +184,7 @@
 	max-width: 100vw;
 }
 
-#custom-webpage-root #stats-column-image {
+#custom-webpage-root #stats-column-image>img {
 	z-index: 99;
 }
 
