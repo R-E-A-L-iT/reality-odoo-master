@@ -84,6 +84,10 @@
 	justify-content: center;
 }
 
+#custom-webpage-root #overview > h1{
+	padding: 12.5vw;
+}
+
 #custom-webpage-root #overview > p {
 	padding: 12.5vw;
 }
