@@ -88,7 +88,7 @@
 	padding: 12.5vw;
 }
 
-#custom-webpage #sketchfab + div>section {
+#custom-webpage-root #sketchfab + div>section {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
