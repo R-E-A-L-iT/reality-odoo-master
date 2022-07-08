@@ -98,6 +98,10 @@
 	padding: 12.5vw;
 }
 
+#custom-webpage-root .vidleft>h1, #custom-webpage-root .vidright>h1 {
+	padding: 12.5vw;
+}
+
 #custom-webpage-root .feature-tiling {
 	display: block;
 }
