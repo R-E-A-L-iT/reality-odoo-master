@@ -88,7 +88,7 @@
 	padding: 12.5vw;
 }
 
-#custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root {
+#custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root .vidright {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
