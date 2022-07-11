@@ -781,6 +781,7 @@
     position: relative;
 }
 
-/* #custom-webpage-root [src=""]{
+#custom-webpage-root [src=""]{
 	display:none
-} */
+}
+
