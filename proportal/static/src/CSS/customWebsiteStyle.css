@@ -181,6 +181,7 @@
 	clear: both;
 	margin: 0px;
 	justify-content: space-around;
+	flex-wrap: wrap;
 }
 
 /*Links*/
