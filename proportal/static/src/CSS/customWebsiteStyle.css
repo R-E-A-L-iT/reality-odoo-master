@@ -555,10 +555,6 @@
 	width: 50vw;
 }
 
-#custom-webpage-root .left-contain {
-	margin: 50px;
-}
-
 #custom-webpage-root .right-contain>h1>ul {
 	list-style-type: none;
 	padding-left: 10px;
@@ -580,11 +576,6 @@
 	float: left;
 	max-width: 50vw;
 	width: calc(50vw - 2px);
-}
-
-#custom-webpage-root .right-contain {
-	margin: 50px;
-	max-width: 590px;
 }
 
 #custom-webpage-root .right-contain>p {
@@ -652,11 +643,9 @@
 .ordering-column {
 	float: left;
 	margin-bottom: 50px;
-	margin-top: 50px;
 	max-width: 700px;
 	padding-left: 100px;
 	padding-right: 100px;
-	padding-top: 50px;
 	z-index: 3;
 }
 }
