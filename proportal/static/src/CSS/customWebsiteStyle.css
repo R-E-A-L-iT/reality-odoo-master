@@ -176,9 +176,11 @@
 
 /*Section*/
 #custom-webpage-root section {
-	display: block;
+	display: flex;
 	width: 100vw;
 	clear: both;
+	margin: 0px;
+	justify-content: space-around;
 }
 
 /*Links*/
