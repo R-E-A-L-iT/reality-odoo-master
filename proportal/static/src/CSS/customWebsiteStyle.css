@@ -555,18 +555,18 @@
 	width: 50vw;
 }
 
-#custom-webpage-root .right-contain>h1>ul {
+#custom-webpage-root .right-contain h1>ul {
 	list-style-type: none;
 	padding-left: 10px;
 }
 
-#custom-webpage-root .right-contain>h1>ul>li {
+#custom-webpage-root .right-contain h1>ul>li {
 	float: left;
 	height: 25px;
 	width: 25px;
 }
 
-#custom-webpage-root .right-contain>h1>ul>li>a>img {
+#custom-webpage-root .right-contain h1>ul>li>a>img {
 	height: 20px;
 	width: 20px;
 }
