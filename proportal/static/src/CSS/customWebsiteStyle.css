@@ -427,6 +427,12 @@
 }
 
 /*Feature Section*/
+
+#custom-webpage-root #use-Case-div {
+	position: absolute;
+	left: 12.5vw;
+}
+
 #custom-webpage-root .feature-tiling {
 	border-top: 1px solid #333;
 	display: flex;
