@@ -292,7 +292,6 @@
 	border: 1px solid #333;
 	border-radius: 15px;
 	height: 45vw;
-	margin-left: 10vw;
 	width: 80vw;
 }
 }
@@ -491,7 +490,6 @@
 
 #custom-webpage-root .specs-above {
 	font-family: HelveticaNeue-Light,Helvetica Neue Light;
-	/*padding-left: 12.5vw;*/
 	margin-top: 50px;
 	width: 75vw;
 }
@@ -516,7 +514,6 @@
 }
 
 #custom-webpage-root #stats-column-image, #custom-webpage-root .specs-container {
-	/* padding-left: 12.5vw; */
 	width: 75vw;
 }
 
