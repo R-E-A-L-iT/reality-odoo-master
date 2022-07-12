@@ -636,13 +636,16 @@
 }
 }
 
+#custom-webpage-root .ordering-column {
+	padding-left: 100px;
+	padding-right: 100px;
+}
+
 @media (min-width: 750px){
-.ordering-column {
+#custom-webpage-root .ordering-column {
 	float: left;
 	margin-bottom: 50px;
 	max-width: 700px;
-	padding-left: 100px;
-	padding-right: 100px;
 	z-index: 3;
 }
 }
