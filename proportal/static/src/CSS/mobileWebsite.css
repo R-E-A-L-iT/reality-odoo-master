@@ -155,10 +155,6 @@
 	padding-right: 12.5vw;
 }
 
-#custom-webpage-root .order-options {
-	padding: 12.5vw;
-}
-
 #custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-text-section {
     margin: auto;
 }
