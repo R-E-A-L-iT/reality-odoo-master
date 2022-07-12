@@ -514,6 +514,13 @@
 	width: 75vw;
 }
 
+#custom-webpage-root #stats-column-image {
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	justify-content: center;
+}
+
 @media (min-width: 750px){
 #custom-webpage-root .specs-under {
 	border: 1px solid #333;
@@ -522,11 +529,6 @@
 	margin-top: 7.5px;
 	width: 25%;
 }
-}
-
-#custom-webpage-root #stats-column-image, #custom-webpage-root .specs-container {
-	/* padding-left: 12.5vw; */
-	width: 75vw;
 }
 
 /*Copy Section*/
