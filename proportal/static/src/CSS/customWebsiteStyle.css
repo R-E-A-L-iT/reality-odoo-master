@@ -400,7 +400,7 @@
 /*Feature Header*/
 #custom-webpage-root .feature-header {
 	height: 200px;
-	padding-left: 12.5vw;
+	/*padding-left: 12.5vw;*/
 	width: 100vw;
 }
 
@@ -484,7 +484,7 @@
 
 #custom-webpage-root .specs-above {
 	font-family: HelveticaNeue-Light,Helvetica Neue Light;
-	padding-left: 12.5vw;
+	/*padding-left: 12.5vw;*/
 	margin-top: 50px;
 	width: 75vw;
 }
@@ -509,7 +509,7 @@
 }
 
 #custom-webpage-root #stats-column-image, #custom-webpage-root .specs-container {
-	padding-left: 12.5vw;
+	/* padding-left: 12.5vw; */
 	width: 75vw;
 }
 
@@ -524,7 +524,7 @@
 }
 
 #custom-webpage-root #stats-column-image, #custom-webpage-root .specs-container {
-	padding-left: 12.5vw;
+	/* padding-left: 12.5vw; */
 	width: 75vw;
 }
 
