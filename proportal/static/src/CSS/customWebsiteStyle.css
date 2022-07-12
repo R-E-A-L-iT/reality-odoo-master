@@ -540,28 +540,9 @@
 	width: 50vw;
 }
 
-#custom-webpage-root .left-contain {
-	margin: 50px;
-}
-
-#custom-webpage-root .left-contain>h1>ul {
-	list-style-type: none;
-	padding-left: 10px;
-}
-
-#custom-webpage-root .left-contain>h1>ul>li {
-	float: left;
-	height: 25px;
-	width: 25px;
-}
-
-#custom-webpage-root .left-contain>h1>ul>li>a>img {
+#custom-webpage-root .right-contain>h1>ul>li>a>img {
 	height: 20px;
 	width: 20px;
-}
-
-#custom-webpage-root .left-contain>h1 {
-	float: right;
 }
 
 #custom-webpage-root .contact-right {
