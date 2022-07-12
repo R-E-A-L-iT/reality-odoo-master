@@ -540,6 +540,7 @@
 }
 
 /*Copy Section*/
+@media (min-width: 750px){
 #custom-webpage-root #contact {
 	margin-top: 100px;
 	min-width: 100vw;
@@ -547,6 +548,7 @@
 	flex-wrap: nowrap;
 	justify-content: space-around;
 	align-items: flex-start;
+}
 }
 
 #custom-webpage-root .contact-left {
