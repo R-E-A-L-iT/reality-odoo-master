@@ -99,7 +99,7 @@
 
 #custom-webpage-root #overview>iframe {
 	width: 75vw;
-	/*margin-left: 12.5vw;*/
+	margin-left: 12.5vw;
 	margin-right: 12.5vw;
 }
 
@@ -113,8 +113,8 @@
 
 #custom-webpage-root #sketchfab>iframe {
 	width: 75vw;
-	/*margin-left: 12.5vw;
-	margin-right: 12.5vw;*/
+	margin-left: 12.5vw;
+	margin-right: 12.5vw;
 }
 
 #custom-webpage-root .yt-vid {
