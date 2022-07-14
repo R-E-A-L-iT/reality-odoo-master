@@ -161,16 +161,9 @@
 	width: 100vw;
 }
 
-#custom-webpage-root #feature-section-list {
-	background-color: red;
-}
-
-#custom-webpage-root #feature-section-list + section {
-	justify-content: left;
-}
-
 #custom-webpage-root #use-Case-div {
     position: relative;
+	left: 0px;
 }
 
 #custom-webpage-root .ordering-column {
