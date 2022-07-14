@@ -1,6 +1,7 @@
 @media (max-width: 749px) {
 #custom-webpage-root * {
 	max-width: 100vw;
+	text-align: center;
 }
 
 #custom-navbar  #custom-navbar-logo {
@@ -122,10 +123,6 @@
 
 #custom-webpage-root .vidwrap.vid-first {
     flex-direction: column-reverse;
-}
-
-#custom-webpage-root .vidwrap * {
-	text-align: center;
 }
 
 #custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root .vidright {
