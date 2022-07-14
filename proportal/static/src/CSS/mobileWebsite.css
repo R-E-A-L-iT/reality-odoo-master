@@ -148,7 +148,7 @@
 	width: 100vw;
 }
 
-#custom-webpage-root .featuree-section + section {
+#custom-webpage-root .featuree-section-list + section {
 	justify-content: left;
 }
 
