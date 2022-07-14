@@ -195,6 +195,12 @@
 	max-width: 100vw;
 }
 
+#custom-webpage-root .contact-right h1>ul {
+	width: fit-content;
+	margin: auto;
+	padding: 0px;
+}
+
 #custom-webpage-root #stats-column-image>img {
 	z-index: 99;
 }
