@@ -10,13 +10,16 @@
             <xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
                 <attribute name="string">Business</attribute>
             </xpath>
-            
-            <xpath expr="//group[@name=&quot;sale_header&quot;]" position="after">
+
+            <xpath expr="//field[@name=&quot;partner_id&quot;]" position="after">
                 <field name="partner_ids" invisible="0"/>
                 <field name="products" invisible="0"/>
-                <field name="customer_po_number" invisible="0"/>
-                <field name="header" invisible="0"/>
-                <field name="footer" invisible="0"/>
+
+				<group name="custom_quote_details">
+                	<field name="customer_po_number" invisible="0"/>
+                	<field name="header" invisible="0"/>
+                	<field name="footer" invisible="0"/>
+				</group>
             </xpath>
             
             <xpath expr="//create[1]" position="after">
