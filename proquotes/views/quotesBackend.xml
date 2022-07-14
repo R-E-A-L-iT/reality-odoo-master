@@ -11,7 +11,7 @@
                 <attribute name="string">Business</attribute>
             </xpath>
             
-            <xpath expr="//field[@name=&quot;partner_id&quot;]" position="after">
+            <xpath expr="//group[@name=&quot;sale_header&quot;]" position="after">
                 <field name="partner_ids" invisible="0"/>
                 <field name="products" invisible="0"/>
                 <field name="customer_po_number" invisible="0"/>
