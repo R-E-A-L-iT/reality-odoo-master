@@ -124,6 +124,10 @@
     flex-direction: column-reverse;
 }
 
+#custom-webpage-root .vidwrap * {
+	text-emphasis: center;
+}
+
 #custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root .vidright {
 	display: flex;
 	flex-wrap: wrap;
