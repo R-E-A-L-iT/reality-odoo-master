@@ -148,6 +148,14 @@
 	width: 100vw;
 }
 
+#custom-webpage-root .featureSection + section {
+	justify-content: left;
+}
+
+#custom-webpage-root .useCaseDiv {
+	position: relative;
+}
+
 #custom-webpage-root .ordering-column {
     max-width: 100vw;
 	width: fit-content;
