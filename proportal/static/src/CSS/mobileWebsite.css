@@ -79,6 +79,10 @@
 	display: block;
 }
 
+#custom-webpage-root #landing>iframe {
+	width: 100vw;
+}
+
 #custom-webpage-root .subheader {
 	flex-wrap: wrap;
 }
