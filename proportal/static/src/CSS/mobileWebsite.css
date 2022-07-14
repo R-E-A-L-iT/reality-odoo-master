@@ -156,8 +156,8 @@
 	justify-content: left;
 }
 
-#custom-webpage-root .use-Case-Div {
-	position: relative;
+#custom-webpage-root #use-Case-div {
+    position: relative;
 }
 
 #custom-webpage-root .ordering-column {
