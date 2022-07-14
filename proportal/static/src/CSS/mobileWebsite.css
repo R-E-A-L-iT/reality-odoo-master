@@ -1,4 +1,8 @@
 @media (max-width: 749px) {
+#custom-webpage-root * {
+	max-width: 100vw;
+}
+
 #custom-navbar  #custom-navbar-logo {
 	display: block;
 	height: fit-content;
@@ -110,6 +114,10 @@
 	width: 75vw;
 	/*margin-left: 12.5vw;
 	margin-right: 12.5vw;*/
+}
+
+#custom-webpage-root .yt-vid {
+	width: 75%;
 }
 
 #custom-webpage-root .vidwrap, #custom-webpage-root .vidleft, #custom-webpage-root .vidright {
