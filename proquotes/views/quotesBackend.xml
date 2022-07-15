@@ -23,7 +23,7 @@
 						<field name="rental_street" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
 						<label for="rental_city" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
 						<field name="rental_city" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
-						<label for="rental_street" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
+						<label for="rental_zip" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
 						<field name="rental_zip" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
 						<label for="rental_country" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
 						<field name="rental_country" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
