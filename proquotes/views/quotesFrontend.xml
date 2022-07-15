@@ -182,7 +182,16 @@
                 <br />
 <!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
 				<t t-if="sale_order.is_rental == True">
-					<div id="insUploadLabel">
+					<div>
+						<span>
+							Should equipment be shipped to a different address?
+						</span>
+						<span>
+							L'expédition de l'équipement doit être à une différente adresse?
+						</span>
+						<input type="checkbox"/>
+					</div>
+					<div>
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
 						</span>
