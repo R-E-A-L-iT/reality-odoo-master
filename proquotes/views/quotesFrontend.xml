@@ -193,7 +193,9 @@
 						<br/>
 						<input id="new-address" type="checkbox"/>
 					</div>
-					<br/>
+					<t t-if="sale_order.rental_diff_add == True">
+						<!--TODO Address Input-->
+					</t>
 					<div>
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
