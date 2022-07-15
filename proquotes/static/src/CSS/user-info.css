@@ -30,6 +30,7 @@
 	background-color: #db0d0d;
 	color: white;
 	cursor: pointer;
+	padding: 0px;
 }
 
 #user-info #new-address:checked:before {
