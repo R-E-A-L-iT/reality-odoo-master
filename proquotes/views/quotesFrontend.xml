@@ -181,7 +181,7 @@
                 </div>
                 <br />
 <!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
-				<t t-if="{sale_order.is_rental == True}">
+				<t t-if="{{sale_order.is_rental}} == True">
 					<div id="insUploadLabel">
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
