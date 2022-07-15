@@ -3,10 +3,5 @@
 }
 
 #user-info input[type=file] {
-	background-color: #db0d0d;
-	color: white;
-}
-
-#user-info #file-upload-button {
 	display: none;
 }
