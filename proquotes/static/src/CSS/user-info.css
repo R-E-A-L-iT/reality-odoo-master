@@ -9,4 +9,6 @@
 
 #user-info input[type=file] {
 	display: none;
+	color: white;
+	cursor: pointer;
 }
