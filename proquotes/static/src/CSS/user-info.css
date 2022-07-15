@@ -19,14 +19,18 @@
 }
 
 #user-info #new-address:before {
+	display: block;
 	visibility: visible;
 	content: "No";
 	color: white;
 	width: fit-content;
 	height: fit-content;
+	padding: 3px;
+	background-color: #db0d0d;
+	color: white;
+	cursor: pointer;
 }
 
 #user-info #new-address:checked:before {
-	display: block;
 	content: "Yes";
 }
