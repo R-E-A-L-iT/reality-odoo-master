@@ -17,7 +17,7 @@
 #user-info #new-address {
 	visibility: hidden;
 	display: block;
-	height: fit-content;
+	height: 1rem;
 }
 
 #user-info #new-address:before {
@@ -28,7 +28,6 @@
 	width: fit-content;
 	height: fit-content;
 	background-color: #db0d0d;
-	color: white;
 	cursor: pointer;
 	padding: 0px;
 }
