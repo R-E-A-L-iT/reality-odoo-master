@@ -1,3 +1,8 @@
 #user-info label > span {
     color: white !important;
 }
+
+#user-info input[type=file] {
+	background-color: #db0d0d;
+	color: white;
+}
