@@ -17,7 +17,7 @@
 #user-info #new-address {
 	visibility: hidden;
 	display: block;
-	height: 1rem;
+	height: calc(1rem + 3px);
 }
 
 #user-info #new-address:before {
@@ -26,10 +26,10 @@
     content: "No";
     color: white;
     width: fit-content;
-    height: 1rem;
+    height: calc(1rem + 3px);
     background-color: #db0d0d;
     cursor: pointer;
-    padding: 0px;
+    padding: 3px;
     align-content: center;
     justify-content: center;
     align-items: center;
