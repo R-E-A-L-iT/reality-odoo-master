@@ -181,7 +181,7 @@
                 </label>
                 <br />
 <!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
-				<t t-if="{sale_order.is_rental">
+				<t t-if="{sale_order.is_rental}">
 					<span>Hello There</span>
 				</t>
             </section>
