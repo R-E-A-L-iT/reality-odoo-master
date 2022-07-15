@@ -15,6 +15,9 @@
 
 #user-info #new-address:before {
 	content: "No";
+	color: white;
+	width: fit-content;
+	height: fit-content;
 }
 
 #user-info #new-address:checked:before {
@@ -22,6 +25,5 @@
 }
 
 #user-info #new-address {
-	width: fit-content;
-	height: fit-content;
+	display: none;
 }
