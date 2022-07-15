@@ -12,3 +12,15 @@
 #user-info input[type=file] {
 	display: none;
 }
+
+#user-info #new-address:before {
+	content: "No";
+}
+
+#user-info #new-address:checked:before {
+	content: "Yes";
+}
+
+#user-info #new-address {
+	display: none;
+}
