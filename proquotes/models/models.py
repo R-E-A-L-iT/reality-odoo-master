@@ -49,6 +49,7 @@ class order(models.Model):
 	is_rental = fields.Boolean(string="Rental Quote", default=False)
 	rental_start = fields.Date(string="Rental Start Date", default=False)
 	rental_end = fields.Date(string="Rental End Date", default=False)
+	rental_insurance = fields.Binary(string="Insurance")
 	
 	def _amount_all(self):
 		for order in self:
