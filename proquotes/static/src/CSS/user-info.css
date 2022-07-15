@@ -17,6 +17,7 @@
 #user-info #new-address {
 	visibility: hidden;
 	display: block;
+	height: fit-content;
 }
 
 #user-info #new-address:before {
