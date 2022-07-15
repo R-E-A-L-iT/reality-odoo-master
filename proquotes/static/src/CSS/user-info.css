@@ -19,7 +19,7 @@
 }
 
 #user-info #new-address:before {
-	display: block;
+	visibility: visible;
 	content: "No";
 	color: white;
 	width: fit-content;
