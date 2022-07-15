@@ -13,7 +13,13 @@
 	display: none;
 }
 
+
+#user-info #new-address {
+	display: none;
+}
+
 #user-info #new-address:before {
+	display: block;
 	content: "No";
 	color: white;
 	width: fit-content;
@@ -21,9 +27,6 @@
 }
 
 #user-info #new-address:checked:before {
+	display: block;
 	content: "Yes";
-}
-
-#user-info #new-address {
-	display: none;
 }
