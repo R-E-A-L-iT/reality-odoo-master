@@ -1,4 +1,4 @@
-#user-info label > span {
+#user-info div > span {
     color: white !important;
 }
 
@@ -8,5 +8,5 @@
 }
 
 #user-info #file-upload-button {
-	background-color: #db0d0d;
+	display: none;
 }

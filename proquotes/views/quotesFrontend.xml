@@ -173,16 +173,16 @@
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
             <section id="user-info">
 <!--                 <p>If you use a PO system, please </p> -->
-                <label for="poNumber" id="POlabel">
+                <div id="POlabel">
                     <span>Please insert your PO number and file in the comments below.</span>
                     <br />
                     <span>Veuillez insérer votre numéro de bon de commande et votre fichier dans les commentaires ci-dessous.</span>
                     <br />
-                </label>
+                </div>
                 <br />
 <!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
 				<t t-if="{sale_order.is_rental}">
-					<label for="insUpload" id="insUploadLabel">
+					<div id="insUploadLabel">
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
 						</span>
@@ -190,7 +190,7 @@
 						<span>
 							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
 						</span>
-					</label>
+					</div>
 					<input type="file" id="insUpload"/>
 				</t>
             </section>
