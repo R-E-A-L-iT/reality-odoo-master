@@ -16,6 +16,7 @@
                 <field name="products" invisible="0"/>
 
 				<group name="custom_quote_details">
+					<field name="is_rental" invisible="0"/>
                 	<field name="customer_po_number" invisible="0"/>
                 	<field name="header" invisible="0"/>
                 	<field name="footer" invisible="0"/>
