@@ -191,7 +191,7 @@
 							L'expédition de l'équipement doit être à une différente adresse?
 						</span>
 						<br/>
-						<input id="new-address" type="checkbox"/>
+						<input id="new-address" type="checkbox">Different Address</input>
 					</div>
 					<div>
 						<span>
