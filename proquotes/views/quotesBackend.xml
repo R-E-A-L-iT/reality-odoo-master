@@ -19,9 +19,9 @@
 					<field name="is_rental" invisible="0"/>
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
 					<field name="rental_street" attrs="{'invisible': [('is_rental', '!=', True), '|', ('rental_diff_add', '!=', True)]}"/>
-					<field name="rental_city" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
-					<field name="rental_zip" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
-					<field name="rental_country" attrs="{'invisible': [('rental_diff_add', '!=', True)]}"/>
+					<field name="rental_city" attrs="{'invisible': [('is_rental', '!=', True), '|', ('rental_diff_add', '!=', True)]}"/>
+					<field name="rental_zip" attrs="{'invisible': [('is_rental', '!=', True), '|', ('rental_diff_add', '!=', True)]}"/>
+					<field name="rental_country" attrs="{'invisible': [('is_rental', '!=', True), '|', ('rental_diff_add', '!=', True)]}"/>
 					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
 					<field name="rental_insurance" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
