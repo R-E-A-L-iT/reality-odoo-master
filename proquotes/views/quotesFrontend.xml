@@ -186,10 +186,12 @@
 						<span>
 							Should equipment be shipped to a different address?
 						</span>
+						<br/>
 						<span>
 							L'expédition de l'équipement doit être à une différente adresse?
 						</span>
-						<input type="checkbox"/>
+						<br/>
+						<input id="new-address" type="checkbox"/>
 					</div>
 					<div>
 						<span>
