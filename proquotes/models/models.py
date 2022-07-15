@@ -47,7 +47,7 @@ class order(models.Model):
 		('Starfield', "Starfield")], default='Starfield', required=True, help="Header selection field")
 
 	is_rental = fields.Boolean(string="Rental Quote", default=False)
-	rental_diff_add = fields.Boolean(string="Rental Address" default=False)
+	rental_diff_add = fields.Boolean(string="Rental Address", default=False)
 	rental_street = fields.Char(string="Street Address")
 	rental_city = fields.Char(string="City")
 	rental_zip = fields.Char(string="ZIP/Postal Code")
