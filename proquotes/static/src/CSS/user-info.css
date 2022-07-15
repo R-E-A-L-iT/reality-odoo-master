@@ -2,6 +2,11 @@
     color: white !important;
 }
 
-/* #user-info input[type=file] {
+#user-info .upload-label {
+	padding: 3px;
+	background-color: #db0d0d;
+}
+
+#user-info input[type=file] {
 	display: none;
-} */
+}
