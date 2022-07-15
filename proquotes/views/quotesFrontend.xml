@@ -182,7 +182,15 @@
                 <br />
 <!--                 <input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/> -->
 				<t t-if="{sale_order.is_rental}">
-					<span>Hello There</span>
+					<label for="insUpload" id="insUploadLabel">
+						<span>
+							Please upload your proof of insurance for the total amount of rental equipment here:
+						</span>
+						<span>
+							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
+						</span>
+					</label>
+					<input type="upload" id="insUpload"/>
 				</t>
             </section>
             <section class="quoteConfig">
