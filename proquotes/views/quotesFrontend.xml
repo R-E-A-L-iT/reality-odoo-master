@@ -190,12 +190,12 @@
 						<span>
 							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
 						</span>
+						<br/>
+						<label for=insUpload>
+							<span class="upload-label">Upload File</span>
+						</label>
+						<input type="file" id="insUpload"/>
 					</div>
-					<br/>
-					<label for=insUpload>
-						<span class="upload-label">Upload File</span>
-					</label>
-					<input type="file" id="insUpload"/>
 				</t>
             </section>
             <section class="quoteConfig">
