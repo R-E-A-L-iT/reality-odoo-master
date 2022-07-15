@@ -5,13 +5,10 @@
 #user-info .upload-label {
 	padding: 3px;
 	background-color: #db0d0d;
+	color: white;
+	cursor: pointer;
 }
 
 #user-info input[type=file] {
 	display: none;
-	color: white;
-}
-
-#user-info input[type=file]:hover {
-	cursor: pointer;
 }
