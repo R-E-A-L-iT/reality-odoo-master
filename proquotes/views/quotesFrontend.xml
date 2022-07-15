@@ -171,7 +171,7 @@
         
         
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
-            <section id="ponumber">
+            <section id="user-info">
 <!--                 <p>If you use a PO system, please </p> -->
                 <label for="poNumber" id="POlabel">
                     <span>Please insert your PO number and file in the comments below.</span>
@@ -190,7 +190,7 @@
 							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
 						</span>
 					</label>
-					<input type="upload" id="insUpload"/>
+					<input type="file" id="insUpload"/>
 				</t>
             </section>
             <section class="quoteConfig">
