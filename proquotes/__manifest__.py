@@ -26,7 +26,7 @@
         'web.assets_frontend': [
             'proquotes/static/src/CSS/foldProducts.css',
             'proquotes/static/src/CSS/pdf.css',
-            'proquotes/static/src/CSS/ponumber.css',
+            'proquotes/static/src/CSS/user-info.css',
             'proquotes/static/src/CSS/login.css',
             'proquotes/static/src/CSS/quoteStyle.css',
             'proquotes/static/src/JS/fold.js',
@@ -35,7 +35,7 @@
         ]
     },
     
-    'version': '0.2',
+    'version': '0.3',
     
     # always loaded
     'data': [
