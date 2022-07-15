@@ -2,6 +2,7 @@
 
 import ast
 import base64
+from email.policy import default
 import re
 
 from datetime import datetime, timedelta
@@ -46,6 +47,8 @@ class order(models.Model):
 		('Starfield', "Starfield")], default='Starfield', required=True, help="Header selection field")
 
 	is_rental = fields.Boolean(string="Rental Quote", default=False)
+	rental_start = fields.Date(string="Rental Start Date", default=False)
+	rental_end = fields.Date(string="Rental End Date", default=False)
 	
 	def _amount_all(self):
 		for order in self:
