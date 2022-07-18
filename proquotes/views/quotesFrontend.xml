@@ -191,12 +191,11 @@
 							L'expédition de l'équipement doit être à une différente adresse?
 						</span>
 						<br/>
-						<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox"/>
+						<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
 						<input t-else="" id="new-address" type="checkbox"/> 
 					</div>
 					<t t-if="sale_order.rental_diff_add == True">
 						<!--TODO Address Input-->
-						<span>Hello There</span>
 					</t>
 					<div>
 						<span>
