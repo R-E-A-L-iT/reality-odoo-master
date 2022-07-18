@@ -23,7 +23,7 @@
 #user-info #new-address:before {
     display: flex;
     visibility: visible;
-    content: "No&nbsp";
+    content: "No&nbsp;";
     color: white;
     width: fit-content;
     height: calc(1rem + 3px);
