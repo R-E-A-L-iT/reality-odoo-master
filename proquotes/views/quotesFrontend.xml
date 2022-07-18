@@ -201,6 +201,11 @@
 						</label>
 						<input id="rental-address" type="text"/>
 						<br/>
+						<label for="rental-address">
+							<span>City</span>
+						</label>
+						<input id="rental-address" type="text"/>
+						<br/>
 					</t>
 					<div>
 						<span>
