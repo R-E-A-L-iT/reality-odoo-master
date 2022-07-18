@@ -196,6 +196,7 @@
 					</div>
 					<t t-if="sale_order.rental_diff_add == True">
 						<!--TODO Address Input-->
+						<span>Hello There</span>
 					</t>
 					<div>
 						<span>
