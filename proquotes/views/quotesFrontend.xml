@@ -197,9 +197,9 @@
 					<br/>
 					<t t-if="sale_order.rental_diff_add == True">
 						<label for="rental-address">
-							Address
+							<span>Address</span>
 						</label>
-						<!-- <input id="rental-address" type="text"> -->
+						<input id="rental-address" type="text">
 						<br/>
 					</t>
 					<div>
