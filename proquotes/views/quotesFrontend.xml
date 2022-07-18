@@ -199,7 +199,7 @@
 						<label for="rental-address">
 							<span>Address</span>
 						</label>
-						<input id="rental-address" type="text">
+						<input id="rental-address" type="text"/>
 						<br/>
 					</t>
 					<div>
