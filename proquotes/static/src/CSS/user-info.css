@@ -38,3 +38,8 @@
 #user-info #new-address:checked:before {
 	content: "Yes";
 }
+
+#user-info .rental-address {
+	display: flex;
+	justify-content: space-around;
+}
