@@ -195,7 +195,7 @@
 						<input t-else="" id="new-address" type="checkbox"/> 
 					</div>
 					<br/>
-					<t t-if="sale_order.rental_diff_add == True">
+					<div class="rental-address" t-if="sale_order.rental_diff_add == True">
 						<label for="rental-address">
 							<span>Address</span>
 						</label>
@@ -206,7 +206,7 @@
 						</label>
 						<input id="rental-address" type="text"/>
 						<br/>
-					</t>
+					</div>
 					<div>
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
