@@ -194,13 +194,13 @@
 						<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
 						<input t-else="" id="new-address" type="checkbox"/> 
 					</div>
-					</br>
+					<br/>
 					<t t-if="sale_order.rental_diff_add == True">
 						<label for="rental-address">
 							Address
 						</label>
 						<input id="rental-address" type="text">
-						</br>
+						<br/>
 					</t>
 					<div>
 						<span>
