@@ -70,6 +70,12 @@ header#top>nav.Navbar {
 	padding-bottom: 1em;
 }
 
+#bottom>div.o_footer_copyright.o_colored_level.o_cc {
+	margin: 0px;
+	padding: 0px;
+	height: 1em;
+}
+
 .nav-item {
 	color: #fff;
 }
