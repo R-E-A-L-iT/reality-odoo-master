@@ -77,7 +77,7 @@ header#top>nav.Navbar {
 	height: 1em;
 }
 
-#bottom .o_footer_copyright .row, #bottom .o_footer_copyright .row * {
+#bottom .o_footer_copyright .row, #bottom .o_footer_copyright .col-sm {
 	display: flex;
 	flex-wrap: nowrap;
 }
