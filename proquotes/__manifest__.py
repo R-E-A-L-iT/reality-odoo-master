@@ -10,7 +10,7 @@
     """,
 
     'author': "Ty Cyr",
-    
+
     'license': "LGPL-3",
 
     # Categories can be used to filter modules in modules listing
@@ -20,8 +20,8 @@
 
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web','mail', 'account', 'proportal', 'product' ,'website', 'sale_management', 'sale', 'digest', 'portal'],
-    
+    'depends': ['base', 'web', 'mail', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
+
     'assets': {
         'web.assets_frontend': [
             'proquotes/static/src/CSS/foldProducts.css',
@@ -34,9 +34,9 @@
             'proquotes/static/src/JS/price.js'
         ]
     },
-    
-    'version': '0.1',
-    
+
+    'version': '0.2',
+
     # always loaded
     'data': [
         'security/ir.model.access.csv',
@@ -46,7 +46,7 @@
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/quoteLogo.xml',
-#         'models/quoteNotify.py'
+        #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
     'demo': [
