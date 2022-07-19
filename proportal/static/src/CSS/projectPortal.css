@@ -82,6 +82,11 @@ header#top>nav.Navbar {
 	flex-wrap: nowrap;
 }
 
+#bottom .o_footer_copyright span {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
 .nav-item {
 	color: #fff;
 }
