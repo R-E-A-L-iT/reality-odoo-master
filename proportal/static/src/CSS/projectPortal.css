@@ -49,17 +49,15 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
-/* main {
-	overflow-y: scroll;
-} */
-
 #bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
+	display: flex;
+	flex-wrap: nowrap;
 	z-index: 99;
 	background-color: #111;
+	position: fixed;
 	bottom: 0px;
-	/* position: fixed;
-	bottom: 0px;
-	width: 100vw; */
+	width: 100vw;
+	height: 2em;
 }
 
 .nav-item {
