@@ -77,6 +77,11 @@ header#top>nav.Navbar {
 	height: 1em;
 }
 
+.o_footer_copyright .row {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
 .nav-item {
 	color: #fff;
 }
