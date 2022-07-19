@@ -84,11 +84,13 @@ header#top>nav.Navbar {
 
 #bottom button {
 	height: 1em;
+	font-size: 1rem;
 }
 
 #bottom .o_footer_copyright span {
 	white-space: nowrap;
 	height: 1em;
+	font-size: 1rem;
 }
 
 .nav-item {
