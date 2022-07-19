@@ -48,13 +48,21 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
-/* #bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
+#bottom {
+	z-index: 6;
+	background-color: #111;
+	position: absolute;
+	bottom: 0px;
+	width: 100vw;
+}
+
+#bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
 	background-color: #111;
 	position: relative;
 	bottom: 0px;
 	width: 100vw;
-} */
+}
 
 .nav-item {
 	color: #fff;
