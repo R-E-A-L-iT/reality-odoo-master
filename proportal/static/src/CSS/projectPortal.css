@@ -49,10 +49,18 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
-#bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
+#bottom {
+	z-index: 6;
+	background-color: #111;
+	position: fixed;
+	padding: 0px;
+	height: fit-content;
+}
+
+#bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	display: flex;
 	flex-wrap: nowrap;
-	z-index: 99;
+	z-index: 6;
 	background-color: #111;
 	position: fixed;
 	bottom: 0px;
