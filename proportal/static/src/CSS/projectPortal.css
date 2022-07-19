@@ -38,7 +38,6 @@ div.o_brand_promotion {
 #wrapwrap {
 	overflow-x: hidden;
 	overflow-y: scroll;
-	margin-bottom: 4rem;
 }
 
 #wrap {
@@ -120,6 +119,10 @@ header#top>nav.Navbar {
 
 #wrap#wrap {
 	background-color: #000 !important;
+}
+
+main {
+	margin-bottom: 4rem;
 }
 
 div.proportal-menu-bar {
