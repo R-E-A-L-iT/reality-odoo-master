@@ -37,6 +37,7 @@ div.o_brand_promotion {
 
 #wrapwrap {
 	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 #wrap {
@@ -52,13 +53,13 @@ header#top>nav.Navbar {
 	overflow-y: scroll;
 } */
 
-/* #bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
+#bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
 	background-color: #111;
-	position: fixed;
+	/* position: fixed;
 	bottom: 0px;
-	width: 100vw;
-} */
+	width: 100vw; */
+}
 
 .nav-item {
 	color: #fff;
