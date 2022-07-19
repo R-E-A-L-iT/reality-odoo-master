@@ -65,14 +65,15 @@ header#top>nav.Navbar {
 	position: fixed;
 	bottom: 0px;
 	width: 100vw;
-	height: 3em;
-	padding-top: 1em;
-	padding-bottom: 1em;
+	height: 4em;
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
 }
 
-#bottom>div.o_footer_copyright.o_colored_level.o_cc {
+#bottom>div.o_footer_copyright.o_colored_level.o_cc *, #bottom>div.o_footer_copyright.o_colored_level.o_cc .py-3 {
 	margin: 0px;
-	padding: 0px;
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
 	height: 1em;
 }
 
