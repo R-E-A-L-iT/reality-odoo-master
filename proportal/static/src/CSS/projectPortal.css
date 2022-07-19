@@ -48,9 +48,9 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
-main {
+/* main {
 	overflow-y: scroll;
-}
+} */
 
 /* #bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
