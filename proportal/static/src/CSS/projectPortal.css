@@ -74,7 +74,7 @@ header#top>nav.Navbar {
 	margin: 0px;
 	padding-top: 0px !important;
 	padding-bottom: 0px !important;
-	height: fit-content;
+	height: 1em;
 }
 
 #bottom .o_footer_copyright .row, #bottom .o_footer_copyright .col-sm {
@@ -82,8 +82,13 @@ header#top>nav.Navbar {
 	flex-wrap: nowrap;
 }
 
+#bottom button {
+	height: 1em;
+}
+
 #bottom .o_footer_copyright span {
 	white-space: nowrap;
+	height: 1em;
 }
 
 .nav-item {
