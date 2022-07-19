@@ -65,9 +65,9 @@ header#top>nav.Navbar {
 	position: fixed;
 	bottom: 0px;
 	width: 100vw;
-	height: 4em;
-	padding-top: 1.5em;
-	padding-bottom: 1.5em;
+	height: 4rem;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 }
 
 #bottom>div.o_footer_copyright.o_colored_level.o_cc *, #bottom>div.o_footer_copyright.o_colored_level.o_cc .py-3 {
