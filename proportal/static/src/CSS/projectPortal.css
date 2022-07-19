@@ -57,7 +57,9 @@ header#top>nav.Navbar {
 	position: fixed;
 	bottom: 0px;
 	width: 100vw;
-	height: 2em;
+	height: 3em;
+	padding-top: 1em;
+	padding-bottom: 1em;
 }
 
 .nav-item {
