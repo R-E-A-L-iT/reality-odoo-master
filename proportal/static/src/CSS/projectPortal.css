@@ -83,8 +83,8 @@ header#top>nav.Navbar {
 }
 
 #bottom button {
-	height: 1em;
-	font-size: 1rem;
+	height: 1rem;
+	font-size: .75rem;
 }
 
 #bottom .o_footer_copyright span {
