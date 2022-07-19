@@ -82,7 +82,7 @@ header#top>nav.Navbar {
 	flex-wrap: nowrap;
 }
 
-#bottom button[type="button"] {
+#bottom>div.o_footer_copyright.o_colored_level.o_cc>div button[type="button"] {
 	height: fit-content;
 	font-size: .75rem;
 }
