@@ -51,10 +51,9 @@ header#top > nav.Navbar {
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
 	background-color: #111;
-	position: absolute;
+	position: fixed;
 	bottom: 0px;
 	width: 100vw;
-	height: 3vh;
 }
 
 .nav-item {
