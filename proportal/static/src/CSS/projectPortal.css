@@ -48,6 +48,10 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
+main {
+	position: relative;
+}
+
 /*#bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
 	background-color: #111;
