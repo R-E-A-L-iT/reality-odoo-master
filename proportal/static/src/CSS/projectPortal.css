@@ -53,7 +53,7 @@ header#top>nav.Navbar {
 	background-color: #111;
 	position: absolute;
 	bottom: 0px;
-	width: 100vw;
+	width: fit-content;
 }
 
 #bottom>div.o_footer_copyright.o_colored_level.o_cc {
