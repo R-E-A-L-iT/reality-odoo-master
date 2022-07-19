@@ -1,6 +1,7 @@
 #wrapwrap {
 	position: relative;
 	height: fit-content;
+	overflow-y: scroll;
 }
 
 body {
