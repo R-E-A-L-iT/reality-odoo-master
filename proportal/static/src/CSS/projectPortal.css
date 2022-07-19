@@ -56,6 +56,7 @@ header#top>nav.Navbar {
 #bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 99;
 	background-color: #111;
+	bottom: 0px;
 	/* position: fixed;
 	bottom: 0px;
 	width: 100vw; */
