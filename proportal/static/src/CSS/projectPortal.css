@@ -83,8 +83,7 @@ header#top>nav.Navbar {
 }
 
 #bottom .o_footer_copyright span {
-	display: flex;
-	flex-wrap: nowrap;
+	white-space: nowrap;
 }
 
 .nav-item {
