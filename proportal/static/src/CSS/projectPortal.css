@@ -12,25 +12,25 @@ div.o_brand_promotion {
 	color: #db0d0d;
 }
 
-#projectPortalTable > tbody > tr > td > a > span {
-	color: #db0d0d;   
+#projectPortalTable>tbody>tr>td>a>span {
+	color: #db0d0d;
 }
 
-#projectPortalTable > thead > tr > th > em {
+#projectPortalTable>thead>tr>th>em {
 	background-color: #1E2023;
 	color: #fff;
 }
 
-#projectPortalTable > thead > tr > th {
+#projectPortalTable>thead>tr>th {
 	background-color: #1E2023;
-	color: #fff;   
+	color: #fff;
 }
 
-#top_menu_container > a > span > img {
+#top_menu_container>a>span>img {
 	height: 50%;
 }
 
-#top_menu_container > a {
+#top_menu_container>a {
 	margin: auto !important;
 	display: block;
 }
@@ -40,15 +40,15 @@ div.o_brand_promotion {
 }
 
 #wrap {
-	height: 100%;    
+	height: 100%;
 }
 
-header#top > nav.Navbar {
+header#top>nav.Navbar {
 	background-color: #000 !important;
 	border-bottom-color: #000 !important;
 }
 
-#bottom > div.o_footer_copyright.o_colored_level.o_cc {
+#bottom, #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	z-index: 6;
 	background-color: #111;
 	position: relative;
@@ -59,19 +59,20 @@ header#top > nav.Navbar {
 .nav-item {
 	color: #fff;
 }
+
 .nav-link {
 	color: #fff;
 }
 
-.nav-link > span {
+.nav-link>span {
 	color: #fff;
 }
 
-#top_menu_container > button > span.navbar-toggler-icon {
+#top_menu_container>button>span.navbar-toggler-icon {
 	color: #fff !important;
 }
 
-#top_menu > li.o_wsale_my_cart.align-self-md-start.nav-item > a > sup {
+#top_menu>li.o_wsale_my_cart.align-self-md-start.nav-item>a>sup {
 	background-color: #db0d0d;
 }
 
@@ -93,7 +94,7 @@ div.proportal-menu-bar {
 	border-style: none;
 }
 
-body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
+body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	color: #fff !important;
 }
 
@@ -105,6 +106,6 @@ body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	background-color: #db0d0d;
 }
 
-.nav-link > span {
+.nav-link>span {
 	color: #db0d0d;
 }
