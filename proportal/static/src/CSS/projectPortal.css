@@ -82,7 +82,7 @@ header#top>nav.Navbar {
 	flex-wrap: nowrap;
 }
 
-#bottom button {
+#bottom button[type="button"] {
 	height: fit-content;
 	font-size: .75rem;
 }
