@@ -284,10 +284,10 @@
 								<option class="us-op">Wyoming</option>
 							</select>
 							<br/>
-							<label for="country">
+							<label for="country/region">
 								<span>Country</span>
 							</label>
-							<select id="country">
+							<select id="country/region">
 								<option>Canada</option>
 								<option>United States</option>
 							</select>
