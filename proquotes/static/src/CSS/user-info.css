@@ -11,11 +11,11 @@
 
 
 #user-info input[type=file] {
-	display: none;
+	display: inline-block;
 }
 
 #user-info #fileInputButton {
-	display: block;
+	display: none;
 }
 
 
