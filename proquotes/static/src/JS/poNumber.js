@@ -29,19 +29,25 @@ odoo.define("proquotes.ponumber", function (require) {
 		_update_po_file: function (ev) {
 			var target = ev.currentTarget;
 			var poFile = target.files;
+			var ready;
 			var reader = new FileReader();
 			reader.readAsBinaryString(poFile[0]);
-			reader.onloadend = (function (self, id, token) {
-				console.log(reader.readyState);
-				console.log("Uploading");
-				return self._rpc({
-					route: "/my/orders/" + id + "/poFile",
-					params: {
-						access_token: token,
-						poFile: reader.result,
-					},
-				});
-			})(this, this.orderDetail.orderId, this.orderDetail.token);
+			reader.onloadend = function () {
+				console.log("File Read");
+				ready = true;
+			};
+
+			while (!ready) {
+				console.log("Reading File");
+			}
+
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
+				params: {
+					access_token: this.orderDetail.token,
+					poFile: reader.result,
+				},
+			});
 		},
 	});
 });
