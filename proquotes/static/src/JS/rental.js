@@ -17,12 +17,18 @@ odoo.define("proquotes.rental", function (require) {
 		async start() {
 			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
+			document.getElementById("rental-address").style.display =
+				document.getElementById("new-address").checked
+					? "block"
+					: "none";
 		},
 
 		_newAddress: function (ev) {
 			var target = ev.currentTarget;
 			var newAdd = target.checked ? true : false;
 			console.log(newAdd);
+			document.getElementById("rental-address").style.display =
+				target.checked ? "block" : "none";
 		},
 
 		_street: function (ev) {

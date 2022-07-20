@@ -204,7 +204,7 @@
 							<input t-else="" id="new-address" type="checkbox"/>
 						</div>
 						<br/>
-						<div class="rental-address" t-if="sale_order.rental_diff_add == True">
+						<div id="rental-address" class="rental-address">
 							<label for="street">
 								<span>Street</span>
 							</label>
