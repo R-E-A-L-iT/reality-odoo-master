@@ -217,15 +217,23 @@
 							<span>City</span>
 						</label>
 						<input id="rental-address" type="text"/>
+
 						<label for="state">
 							<span>State/Province</span>
 						</label>
-
 						<select id="state">
 							<option>Quebec</option>
 							<option>Alberta</option>
 							<option>Ontario</option>
 							<option>British Columbia</option>
+						</select>
+
+						<label for="country">
+							<span>Country</span>
+						</label>
+						<select id="country">
+							<option>Canada</option>
+							<option>United States</option>
 						</select>
 						<br/>
 					</div>
