@@ -36,7 +36,7 @@ odoo.define("proquotes.rental", function (require) {
 
 		_inssurance: function (ev) {
 			var target = ev.currentTarget;
-			var inssurance = target.value;
+			var inssurance = target.files;
 			console.log(inssurance);
 		},
 	});
