@@ -57,7 +57,7 @@ class order(models.Model):
     rental_state = fields.Many2one(
         "res.country.state", string="State", store="true")
     rental_country = fields.Many2one(
-        "res.country", string="State", store="true")
+        "res.country", string="Country", store="true")
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
