@@ -6,6 +6,7 @@ odoo.define("proquotes.ponumber", function (require) {
 		selector: ".o_portal_sale_sidebar",
 		events: {
 			"change .poNumber": "_update_po_number",
+			"change #poFile": "_update_po_file",
 		},
 
 		async start() {
@@ -23,6 +24,12 @@ odoo.define("proquotes.ponumber", function (require) {
 					ponumber: poNumber,
 				},
 			});
+		},
+
+		_inssurance: function (ev) {
+			var target = ev.currentTarget;
+			var poFile = target.files;
+			console.log(poFile);
 		},
 	});
 });
