@@ -37,17 +37,17 @@ odoo.define("proquotes.ponumber", function (require) {
 				ready = true;
 			};
 
-			while (!ready) {
-				console.log("Reading File");
-			}
+			// while (!ready) {
+			// 	console.log("Reading File");
+			// }
 
-			return this._rpc({
-				route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
-				params: {
-					access_token: this.orderDetail.token,
-					poFile: reader.result,
-				},
-			});
+			// return this._rpc({
+			// 	route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
+			// 	params: {
+			// 		access_token: this.orderDetail.token,
+			// 		poFile: reader.result,
+			// 	},
+			// });
 		},
 	});
 });
