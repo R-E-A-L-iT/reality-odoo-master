@@ -189,7 +189,7 @@
 				</div>
 				<br />
 				<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
-				<input class="file" id="poFile" t-attf-value="{{sale_order.customer_po_file}}"/>
+				<input type="file" id="poFile" t-attf-value="{{sale_order.customer_po_file}}"/>
 				<t t-if="sale_order.is_rental == True">
 					<div>
 						<span>
