@@ -188,7 +188,7 @@
 						<br />
 					</div>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
-					<input type="file" id="poFile" t-attf-value="{{sale_order.customer_po_file}}"/>
+					<input type="file" id="poFile"/>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
 						<div>
@@ -319,7 +319,7 @@
 							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
 							</span>
 							<br/>
-							<input type="file" id="insUpload" t-attf-value="{{sale_order.rental_insurance}}"/>
+							<input type="file" id="insUpload"/>
 						</div>
 					</t>
 				</form>
