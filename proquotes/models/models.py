@@ -56,7 +56,7 @@ class order(models.Model):
     rental_city = fields.Char(string="City")
     rental_zip = fields.Char(string="ZIP/Postal Code")
     rental_state = fields.Many2one(
-        "res.country.state", string="State", store="true")
+        "res.country.state", string="State/Province", store="true")
     rental_country = fields.Many2one(
         "res.country", string="Country", store="true")
 
