@@ -213,11 +213,11 @@
 						</label>
 						<input id="rental-address" type="text"/>
 						<br/>
-						<label for="rental-address">
+						<label for="rental-city">
 							<span>City</span>
 						</label>
-						<input id="rental-address" type="text"/>
-
+						<input id="rental-city" type="text"/>
+						<br/>
 						<label for="state">
 							<span>State/Province</span>
 						</label>
@@ -286,7 +286,7 @@
 							<option class="us-op">Wisconsin</option>
 							<option class="us-op">Wyoming</option>
 						</select>
-
+						<br/>
 						<label for="country">
 							<span>Country</span>
 						</label>
