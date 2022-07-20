@@ -319,7 +319,7 @@
 							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
 							</span>
 							<br/>
-							<input type="file" id="insUpload"/>
+							<input type="file" id="insUpload" t-attf-value="{{sale_order.rental_insurance}}"/>
 						</div>
 					</t>
 				</form>
