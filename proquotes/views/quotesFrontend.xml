@@ -208,12 +208,12 @@
 							<label for="street">
 								<span>Street</span>
 							</label>
-							<input id="street" type="text"/>
+							<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}"/>
 							<br/>
 							<label for="city">
 								<span>City</span>
 							</label>
-							<input id="city" type="text" t-attf-value="{{sale_order.rental-city}}"/>
+							<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}"/>
 							<br/>
 							<label for="state">
 								<span>State/Province</span>
