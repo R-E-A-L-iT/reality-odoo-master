@@ -296,6 +296,17 @@
 						</select>
 						<br/>
 					</div>
+					<br/>
+					<div>
+						<label for="rental-start">
+							<span>Start Date</span>
+						</label>
+						<input type="date"/>
+						<label for="rental-end">
+							<span>End Date</span>
+						</label>
+						<input type="date"/>
+					</div>
 					<div>
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
