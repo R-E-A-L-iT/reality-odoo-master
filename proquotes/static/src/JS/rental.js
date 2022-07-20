@@ -7,7 +7,9 @@ odoo.define("proquotes.rental", function (require) {
 		events: {
 			"change #street": "_street",
 			"change #city": "_city",
-			"change #zip": "_city",
+			"change #zip": "_zip",
+			"change #rental_start": "_start",
+			"change #rental_end": "_end",
 			"change #insUpload": "_inssurance",
 		},
 
@@ -34,6 +36,16 @@ odoo.define("proquotes.rental", function (require) {
 			console.log(zip);
 		},
 
+		_start: function (ev) {
+			var target = ev.currentTarget;
+			var start = target.files;
+			console.log(start);
+		},
+		_end: function (ev) {
+			var target = ev.currentTarget;
+			var end = target.files;
+			console.log(end);
+		},
 		_inssurance: function (ev) {
 			var target = ev.currentTarget;
 			var inssurance = target.files;
