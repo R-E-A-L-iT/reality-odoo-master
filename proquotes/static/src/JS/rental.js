@@ -38,12 +38,12 @@ odoo.define("proquotes.rental", function (require) {
 
 		_start: function (ev) {
 			var target = ev.currentTarget;
-			var start = target.files;
+			var start = target.value;
 			console.log(start);
 		},
 		_end: function (ev) {
 			var target = ev.currentTarget;
-			var end = target.files;
+			var end = target.value;
 			console.log(end);
 		},
 		_inssurance: function (ev) {
