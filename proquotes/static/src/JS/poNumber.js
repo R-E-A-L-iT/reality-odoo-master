@@ -37,7 +37,9 @@ odoo.define("proquotes.ponumber", function (require) {
 			while (reader.readyState == reader.LOADING) {
 				console.log("loading");
 				console.log(i);
-				setTimeout(1000);
+				setTimeout(function () {
+					console.log(i);
+				}, 1000);
 				if (i++ > 60) {
 					break;
 				}
