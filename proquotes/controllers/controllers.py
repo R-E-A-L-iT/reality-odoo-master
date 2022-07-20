@@ -11,7 +11,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 from odoo.osv import expression
 
 
-class CustomerPortal(CustomerPortal):
+class QuoteCustomerPortal(portal_pager):
 
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
@@ -27,7 +27,7 @@ class CustomerPortal(CustomerPortal):
         return
 
     @http.route(["/my/orders/<int:order_id>/poFile"], type='json', auth="public", website=True)
-    def poNumber(self, order_id, poFile, access_token=None, **post):
+    def poFile(self, order_id, poFile, access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access(
