@@ -217,6 +217,7 @@
 							<span>City</span>
 						</label>
 						<input id="rental-address" type="text"/>
+						<input id="state" type="dropdown"/>
 						<br/>
 					</div>
 					<div>
