@@ -54,7 +54,7 @@ class order(models.Model):
     rental_street = fields.Char(string="Street Address")
     rental_city = fields.Char(string="City")
     rental_zip = fields.Char(string="ZIP/Postal Code")
-    rental_country = fields.One2many(
+    rental_state = fields.One2many(
         string="State", related="res.country.state")
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
