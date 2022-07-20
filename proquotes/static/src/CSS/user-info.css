@@ -40,6 +40,5 @@
 }
 
 #user-info .rental-address {
-	display: flex;
-	justify-content: space-around;
+	display: block;
 }
