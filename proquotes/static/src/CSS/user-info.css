@@ -43,7 +43,3 @@
 	display: flex;
 	justify-content: space-around;
 }
-
-#user-info .can-op {
-	display: none;
-}
