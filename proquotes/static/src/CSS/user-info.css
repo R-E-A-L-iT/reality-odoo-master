@@ -12,10 +12,14 @@
 
 #user-info input[type=file] {
 	display: inline-block;
+	color: white;
 }
 
 #user-info input[type="file"]::file-selector-button {
-	display: none;
+	padding: 3px;
+	background-color: #db0d0d;
+	color: white;
+	cursor: pointer;
 }
 
 
