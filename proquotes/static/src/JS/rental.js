@@ -5,6 +5,7 @@ odoo.define("proquotes.rental", function (require) {
 	publicWidget.registry.rental = publicWidget.Widget.extend({
 		selector: ".o_portal_sale_sidebar",
 		events: {
+			"change #new-address": "_newAddress",
 			"change #street": "_street",
 			"change #city": "_city",
 			"change #zip": "_zip",
@@ -16,6 +17,12 @@ odoo.define("proquotes.rental", function (require) {
 		async start() {
 			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
+		},
+
+		_newAddress: function (ev) {
+			var target = ev.currentTarget;
+			var newAdd = target.checked ? true : false;
+			console.log(newAdd);
 		},
 
 		_street: function (ev) {
