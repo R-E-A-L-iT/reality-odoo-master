@@ -29,6 +29,7 @@ odoo.define("proquotes.ponumber", function (require) {
 		_update_po_file: function (ev) {
 			var target = ev.currentTarget;
 			var poFile = target.files;
+			console.log(poFile);
 			var reader = new FileReader();
 			reader.readAsBinaryString(poFile[0]);
 			// while (reader.readyState == reader.LOADING) {
