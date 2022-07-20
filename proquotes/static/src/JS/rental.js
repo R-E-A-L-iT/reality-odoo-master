@@ -8,6 +8,7 @@ odoo.define("proquotes.rental", function (require) {
 			"change #street": "_street",
 			"change #city": "_city",
 			"change #zip": "_city",
+			"change #insUpload": "_inssurance",
 		},
 
 		async start() {
@@ -31,6 +32,12 @@ odoo.define("proquotes.rental", function (require) {
 			var target = ev.currentTarget;
 			var zip = target.value;
 			console.log(zip);
+		},
+
+		_inssurance: function (ev) {
+			var target = ev.currentTarget;
+			var inssurance = target.value;
+			console.log(inssurance);
 		},
 	});
 });
