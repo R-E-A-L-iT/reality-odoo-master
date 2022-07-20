@@ -29,7 +29,7 @@ odoo.define("proquotes.ponumber", function (require) {
 		_update_po_file: function (ev) {
 			var target = ev.currentTarget;
 			var poFile = target.files;
-			reader = FileReader();
+			reader = new FileReader();
 			return this._rpc({
 				route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
 				params: {
