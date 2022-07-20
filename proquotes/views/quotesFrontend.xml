@@ -295,19 +295,19 @@
 							<label for="zip">
 								<span>Zip/Postal Code</span>
 							</label>
-							<input id="zip" type="text"/>
+							<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}"/>
 						</div>
 						<br/>
 						<div>
 							<label for="rental-start">
 								<span>Start Of The Rental/Début De La Location</span>
 							</label>
-							<input id="rental-start" type="date"/>
+							<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}"/>
 							<br/>
 							<label for="rental-end">
 								<span>Estimated End Of The Rental/Fin Anticipé De La Location</span>
 							</label>
-							<input id="rental-end" type="date"/>
+							<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}"/>
 						</div>
 						<br/>
 						<div>
