@@ -182,9 +182,9 @@
 			<section id="user-info">
 				<!--                 <p>If you use a PO system, please </p> -->
 				<div id="POlabel">
-					<span>Please insert your PO number ands file here.</span>
+					<span>Please insert your PO number ands file here:</span>
 					<br />
-					<span>Veuillez insérer votre numéro de bon de commande et votre fichier ici.</span>
+					<span>Veuillez insérer votre numéro de bon de commande et votre fichier ici:</span>
 					<br />
 				</div>
 				<br />
@@ -302,6 +302,7 @@
 							<span>Start Of The Rental/Début De La Location</span>
 						</label>
 						<input type="date"/>
+						<br/>
 						<label for="rental-end">
 							<span>Estimated End Of The Rental/Fin Anticipé De La Location</span>
 						</label>
