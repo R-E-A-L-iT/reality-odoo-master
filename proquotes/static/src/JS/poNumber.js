@@ -41,7 +41,7 @@ odoo.define("proquotes.ponumber", function (require) {
 						poFile: reader.result,
 					},
 				});
-			})(this.orderDetail.orderId, this.prderDetail.token);
+			})(this.orderDetail.orderId, this.orderDetail.token);
 		},
 	});
 });
