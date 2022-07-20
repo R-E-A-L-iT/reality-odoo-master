@@ -209,7 +209,7 @@
 					<br/>
 					<div class="rental-address" t-if="sale_order.rental_diff_add == True">
 						<label for="rental-address">
-							<span>Address</span>
+							<span>Street</span>
 						</label>
 						<input id="rental-address" type="text"/>
 						<br/>
