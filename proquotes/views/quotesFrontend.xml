@@ -180,7 +180,7 @@
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
 			<section id="user-info">
-				<form>
+				<form autocomplete="on">
 					<!--                 <p>If you use a PO system, please </p> -->
 					<div id="POlabel">
 						<span>Please insert your PO number ands file here:</span>
