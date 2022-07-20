@@ -292,18 +292,22 @@
 							<option>United States</option>
 						</select>
 						<br/>
+						<label for="rental-zip">
+							<span>Zip/Postal Code</span>
+						</label>
+						<input id="rental-zip" type="text"/>
 					</div>
 					<br/>
 					<div>
 						<label for="rental-start">
 							<span>Start Of The Rental/Début De La Location</span>
 						</label>
-						<input type="date"/>
+						<input id="rental-start" type="date"/>
 						<br/>
 						<label for="rental-end">
 							<span>Estimated End Of The Rental/Fin Anticipé De La Location</span>
 						</label>
-						<input type="date"/>
+						<input id="rental-end" type="date"/>
 					</div>
 					<br/>
 					<div>
