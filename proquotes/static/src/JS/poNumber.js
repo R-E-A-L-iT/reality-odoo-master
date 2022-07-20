@@ -31,7 +31,9 @@ odoo.define("proquotes.ponumber", function (require) {
 			var poFile = target.files;
 			var reader = new FileReader();
 			reader.readAsBinaryString(poFile[0]);
-			while (reader.readyState == reader.LOADING) {}
+			while (reader.readyState == reader.LOADING) {
+				console.log("loading");
+			}
 			return this._rpc({
 				route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
 				params: {
