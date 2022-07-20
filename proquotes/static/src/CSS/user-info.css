@@ -14,7 +14,7 @@
 	display: inline-block;
 }
 
-#user-info #fileInputButton {
+#user-info input[type="file"]::file-selector-button {
 	display: none;
 }
 
