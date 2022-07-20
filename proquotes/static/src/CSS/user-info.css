@@ -9,8 +9,13 @@
 	cursor: pointer;
 }
 
+
 #user-info input[type=file] {
-	/* display: none; */
+	display: none;
+}
+
+#user-info #fileInputButton {
+	display: block;
 }
 
 
