@@ -189,6 +189,9 @@
 				</div>
 				<br />
 				<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
+				<label for="poFile">
+					<span class="upload-label">Upload File</span>
+				</label>
 				<input type="file" id="poFile" t-attf-value="{{sale_order.customer_po_file}}"/>
 				<t t-if="sale_order.is_rental == True">
 					<div>
