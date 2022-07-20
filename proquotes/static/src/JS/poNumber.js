@@ -26,7 +26,7 @@ odoo.define("proquotes.ponumber", function (require) {
 			});
 		},
 
-		_inssurance: function (ev) {
+		_update_po_file: function (ev) {
 			var target = ev.currentTarget;
 			var poFile = target.files;
 			console.log(poFile);
