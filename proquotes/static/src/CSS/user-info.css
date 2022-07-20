@@ -33,6 +33,7 @@
 	display: flex;
 	visibility: visible;
 	content: "No ";
+	white-space: pre;
 	color: white;
 	width: fit-content;
 	height: calc(1rem + 3px);
