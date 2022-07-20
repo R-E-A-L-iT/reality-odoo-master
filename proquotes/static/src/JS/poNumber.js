@@ -33,15 +33,15 @@ odoo.define("proquotes.ponumber", function (require) {
 			var reader = new FileReader();
 			console.log(this.orderDetail.orderId);
 			reader.readAsBinaryString(poFile[0]);
-			reader.onloadend = (function (id, token) {
-				return this._rpc({
+			reader.onloadend = (function (self, id, token) {
+				return self._rpc({
 					route: "/my/orders/" + id + "/poFile",
 					params: {
 						access_token: token,
 						poFile: reader.result,
 					},
 				});
-			})(this.orderDetail.orderId, this.orderDetail.token);
+			})(this, this.orderDetail.orderId, this.orderDetail.token);
 		},
 	});
 });
