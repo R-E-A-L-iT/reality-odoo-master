@@ -54,8 +54,7 @@ class order(models.Model):
     rental_street = fields.Char(string="Street Address")
     rental_city = fields.Char(string="City")
     rental_zip = fields.Char(string="ZIP/Postal Code")
-    rental_state = fields.Many2one(
-        string="State", related="res.country.state", store="true")
+    rental_state = fields.Many2one("res.country.state", string="State" store="true")
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
