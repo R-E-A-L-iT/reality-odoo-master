@@ -222,10 +222,19 @@
 							<span>State/Province</span>
 						</label>
 						<select id="state">
-							<option>Quebec</option>
-							<option>Alberta</option>
-							<option>Ontario</option>
-							<option>British Columbia</option>
+							<option class="can-op">Alberta</option>
+							<option class="can-op">British Columbia</option>
+							<option class="can-op">Manitoba</option>
+							<option class="can-op">New Brunswick</option>
+							<option class="can-op">Northwest Territories</option>
+							<option class="can-op">Newfoundland and Labrador</option>
+							<option class="can-op">Nova Scotia</option>
+							<option class="can-op">Nunavut</option>
+							<option class="can-op">Ontario</option>
+							<option class="can-op">Prince Edward Island</option>
+							<option class="can-op">Quebec</option>
+							<option class="can-op">Saskatchewan</option>
+							<option class="can-op">Yukon</option>
 						</select>
 
 						<label for="country">
