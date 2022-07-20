@@ -210,10 +210,10 @@
 							</label>
 							<input id="street" type="text"/>
 							<br/>
-							<label for="rental-city">
+							<label for="city">
 								<span>City</span>
 							</label>
-							<input id="city" type="text"/>
+							<input id="city" type="text" t-attf-value="sale_order.rental-city"/>
 							<br/>
 							<label for="state">
 								<span>State/Province</span>
