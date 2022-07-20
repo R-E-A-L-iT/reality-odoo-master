@@ -28,7 +28,7 @@ class QuoteCustomerPortal(cPortal):
         return
 
     @http.route(["/my/orders/<int:order_id>/poFile"], type='json', auth="public", website=True)
-    def poFile(self, order_id, pofile, access_token=None, **post):
+    def poFile(self, order_id, poFile, access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access(
@@ -36,7 +36,7 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        order_sudo.customer_po_file = pofile
+        order_sudo.customer_po_file = poFile
 
         return
 
