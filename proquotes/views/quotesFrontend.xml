@@ -187,9 +187,9 @@
 					<span>Veuillez insérer votre numéro de bon de commande et votre fichier ici:</span>
 					<br />
 				</div>
-				<br />
 				<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
 				<input type="file" id="poFile" t-attf-value="{{sale_order.customer_po_file}}"/>
+				<br/>
 				<t t-if="sale_order.is_rental == True">
 					<div>
 						<span>
@@ -305,6 +305,7 @@
 						</label>
 						<input type="date"/>
 					</div>
+					<br/>
 					<div>
 						<span>
 							Please upload your proof of insurance for the total amount of rental equipment here:
