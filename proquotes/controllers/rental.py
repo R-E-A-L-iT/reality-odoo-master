@@ -3,13 +3,10 @@
 
 import binascii
 
-from odoo import fields, http, _
-from odoo.exceptions import AccessError, MissingError, UserError
+from odoo import http, _
+from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
-from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
-from odoo.addons.portal.controllers.portal import pager as portal_pager
-from odoo.osv import expression
 
 import logging
 _logger = logging.getLogger(__name__)
