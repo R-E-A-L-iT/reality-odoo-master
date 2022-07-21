@@ -26,9 +26,15 @@ odoo.define("proquotes.rental", function (require) {
 		_newAddress: function (ev) {
 			var target = ev.currentTarget;
 			var newAdd = target.checked ? true : false;
-			console.log(newAdd);
 			document.getElementById("rental-address").style.display =
 				target.checked ? "block" : "none";
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/newAddress",
+				params: {
+					access_token: this.orderDetail.token,
+					ponumber: newAdd,
+				},
+			});
 		},
 
 		_street: function (ev) {
