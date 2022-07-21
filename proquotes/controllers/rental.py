@@ -65,6 +65,28 @@ class RentalCustomerPortal(cPortal):
 
         return
 
+    @http.route(["/my/orders/<int:order_id>/country"], type='json', auth="public", website=True)
+    def country(self, order_id, country, access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access(
+                'sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        cCode = None
+
+        if country == "Canada":
+            cCode = http.request.env['res.country.state'].search(
+                [('code', '=', "Canada")])
+        else:
+            cCode = http.request.env['res.country.state'].search(
+                [('code', '=', "United States")])
+
+        order_sudo.rental_country = cCode
+
+        return
+
     @http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
     def start(self, order_id, start, access_token=None, **post):
 
