@@ -41,7 +41,7 @@ class QuoteCustomerPortal(cPortal):
             return request.redirect('/my')
 
         order_sudo.customer_po_file = poFile
-
+        _logger.info("File Set")
         return
 
     @http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
