@@ -78,17 +78,17 @@ class RentalCustomerPortal(cPortal):
 
         if country == "Canada":
             cCode = http.request.env['res.country.state'].search(
-                [('code', '=', "Canada")])[0].id
+                [('code', '=', "Canada")].id)
         else:
             cCode = http.request.env['res.country.state'].search(
-                [('code', '=', "United States")])[0].id
+                [('code', '=', "United States")].id)
 
         order_sudo.rental_country = cCode
         _logger.info(cCode)
 
         return
 
-    @http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
+    @ http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
     def start(self, order_id, start, access_token=None, **post):
 
         try:
@@ -101,7 +101,7 @@ class RentalCustomerPortal(cPortal):
 
         return
 
-    @http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
+    @ http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
     def end(self, order_id, end, access_token=None, **post):
 
         try:
