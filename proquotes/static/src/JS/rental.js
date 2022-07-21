@@ -32,7 +32,7 @@ odoo.define("proquotes.rental", function (require) {
 				route: "/my/orders/" + this.orderDetail.orderId + "/newAddress",
 				params: {
 					access_token: this.orderDetail.token,
-					ponumber: newAdd,
+					newAdd: newAdd,
 				},
 			});
 		},
