@@ -11,6 +11,9 @@ from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.osv import expression
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class QuoteCustomerPortal(cPortal):
 
@@ -29,6 +32,7 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(["/my/orders/<int:order_id>/poFile"], type='json', auth="public", website=True)
     def poFile(self, order_id, poFile, access_token=None, **post):
+        _logger.info("File Recieved")
 
         try:
             order_sudo = self._document_check_access(
