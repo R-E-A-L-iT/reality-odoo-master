@@ -40,19 +40,37 @@ odoo.define("proquotes.rental", function (require) {
 		_street: function (ev) {
 			var target = ev.currentTarget;
 			var street = target.value;
-			console.log(street);
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/street",
+				params: {
+					access_token: this.orderDetail.token,
+					street: street,
+				},
+			});
 		},
 
 		_city: function (ev) {
 			var target = ev.currentTarget;
 			var city = target.value;
-			console.log(city);
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/city",
+				params: {
+					access_token: this.orderDetail.token,
+					city: city,
+				},
+			});
 		},
 
 		_zip: function (ev) {
 			var target = ev.currentTarget;
 			var zip = target.value;
-			console.log(zip);
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/zip",
+				params: {
+					access_token: this.orderDetail.token,
+					zip: zip,
+				},
+			});
 		},
 
 		_start: function (ev) {
