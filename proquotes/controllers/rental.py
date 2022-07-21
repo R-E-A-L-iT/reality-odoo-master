@@ -82,7 +82,7 @@ class RentalCustomerPortal(cPortal):
         return
 
     @http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
-    def start(self, order_id, end, access_token=None, **post):
+    def end(self, order_id, end, access_token=None, **post):
 
         try:
             order_sudo = self._document_check_access(
