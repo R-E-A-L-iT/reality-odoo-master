@@ -27,6 +27,8 @@ odoo.define("proquotes.ponumber", function (require) {
 		},
 
 		_update_po_file: function (ev) {
+			//TODO Get Files Working
+			return;
 			var target = ev.currentTarget;
 			var poFile = target.files;
 			var ready = false;
