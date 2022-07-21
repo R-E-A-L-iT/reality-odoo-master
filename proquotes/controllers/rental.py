@@ -67,3 +67,29 @@ class RentalCustomerPortal(cPortal):
         order_sudo.rental_zip = zip
 
         return
+
+    @http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
+    def start(self, order_id, start, access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access(
+                'sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        order_sudo.rental_start = start
+
+        return
+
+    @http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
+    def start(self, order_id, end, access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access(
+                'sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        order_sudo.rental_end = end
+
+        return
