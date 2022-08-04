@@ -371,8 +371,8 @@
 	#custom-webpage-root .vidright {
 		float: right;
 		max-width: 700px;
-		padding-left: 12.5vw;
-		padding-right: 50px;
+		padding-left: 50px;
+		padding-right: 12.5vw;
 		padding-top: 150px;
 		width: calc(37.5vw - 100px);
 		z-index: 3;
