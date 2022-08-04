@@ -636,8 +636,8 @@
 		margin-bottom: 50px;
 		max-width: 700px;
 		z-index: 3;
-		padding-left: 100px;
-		padding-right: 100px;
+		padding-left: 12.5vw;
+		padding-right: 12.5vw;
 	}
 }
 
