@@ -792,3 +792,9 @@
 	display: flex;
 	flex-wrap: nowrap;
 }
+
+#custom-webpage-root #custom-contact li {
+	margin: 10px;
+	height: 7vw;
+	width: 7vw;
+}
