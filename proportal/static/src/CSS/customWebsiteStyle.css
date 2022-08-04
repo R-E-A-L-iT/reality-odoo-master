@@ -778,3 +778,11 @@
 	padding-left: 12.5vw;
 	padding-right: 12.5vw;
 }
+
+#custom-webpage-root #custom-contact .left-contain {
+	padding-right: 50px;
+}
+
+#custom-webpage-root #custom-contact .right-contain {
+	padding-left: 50px;
+}
