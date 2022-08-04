@@ -358,12 +358,12 @@
 	#custom-webpage-root .vidleft {
 		float: left;
 		max-width: 700px;
-		padding-left: 50px;
+		padding-left: 12.5vw;
 		padding-right: 50px;
 		padding-top: 150px;
-		width: calc(50vw - 100px);
+		width: calc(37.5vw - 50px);
 		z-index: 3;
-		margin-left: calc(12.5vw - 100px);
+		/* margin-left: calc(12.5vw - 100px); */
 	}
 }
 
@@ -371,12 +371,12 @@
 	#custom-webpage-root .vidright {
 		float: right;
 		max-width: 700px;
-		padding-left: 50px;
+		padding-left: 12.5vw;
 		padding-right: 50px;
 		padding-top: 150px;
-		width: calc(50vw - 100px);
+		width: calc(37.5vw - 100px);
 		z-index: 3;
-		margin-right: calc(12.5vw - 100px);
+		/* margin-right: calc(12.5vw - 100px); */
 	}
 }
 
