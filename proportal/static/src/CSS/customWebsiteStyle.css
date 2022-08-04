@@ -786,3 +786,9 @@
 #custom-webpage-root #custom-contact .right-contain {
 	padding-left: 50px;
 }
+
+#custom-webpage-root #custom-contact ul {
+	list-style: none;
+	display: flex;
+	flex-wrap: nowrap;
+}
