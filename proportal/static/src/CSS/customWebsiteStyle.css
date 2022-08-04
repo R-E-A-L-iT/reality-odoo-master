@@ -430,7 +430,7 @@
 
 /*Feature Section*/
 
-#custom-webpage-root #v-div {
+#custom-webpage-root .v-div {
 	position: absolute;
 	left: 12.5vw;
 }
