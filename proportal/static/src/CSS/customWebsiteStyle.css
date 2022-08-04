@@ -564,7 +564,7 @@
 	padding-left: 10px;
 }
 
-#custom-webpage-root .right-contain h1>ul>li {
+#custom-webpage-root .right-contain h1>ul>li, #custom-webpage-root .right-contain h1>ul>li {
 	float: left;
 	height: 25px;
 	width: 25px;
