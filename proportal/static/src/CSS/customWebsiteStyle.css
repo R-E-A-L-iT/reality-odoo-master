@@ -788,6 +788,7 @@
 }
 
 #custom-webpage-root #custom-contact ul {
+	padding: 0px;
 	list-style: none;
 	display: flex;
 	flex-wrap: nowrap;
