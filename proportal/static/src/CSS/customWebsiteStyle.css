@@ -168,11 +168,11 @@
 		border: 2px solid #333;
 		border-radius: 15px;
 		box-shadow: 10px 10px 10px #181818;
-		height: 23vw;
+		width: calc(37.5vw - 100px);
+		height: auto;
 		max-height: 350px;
 		max-width: 595px;
 		transition: all .5s ease-in-out;
-		width: calc(37.5vw - 100px)
 	}
 }
 
