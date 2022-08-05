@@ -78,12 +78,12 @@ class RentalCustomerPortal(cPortal):
 
         if country == "Canada":
             # cCode = request.env['res.country']
-            cCode = http.request.env['res.country'].sudo()
+            cCode = request.env['sale.order.line'].sudo()
             # cCode = registry.get('res.country')
             # .search([('code', '=', "Canada")])[0]
         else:
             # cCode = request.env['res.country']
-            cCode = http.request.env['res.country'].sudo()
+            cCode = request.env['sale.order.line'].sudo()
             # cCode = registry.get('res.country')
             # .search(    [('code', '=', "United States")])[0]
         _logger.info(str(cCode))
