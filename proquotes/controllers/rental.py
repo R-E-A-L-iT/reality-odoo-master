@@ -89,6 +89,7 @@ class RentalCustomerPortal(cPortal):
             # cCode = request.env['sale.order.line'].sudo()
             # cCode = registry.get('res.country')
         _logger.info(len(cCode))
+        _logger.info(str(order_sudo.rental_country))
         #order_sudo.rental_country = cCode
 
         return
