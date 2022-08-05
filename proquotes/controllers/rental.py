@@ -3,7 +3,7 @@
 
 import binascii
 
-from odoo import http, _
+from odoo import http, _, registry
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
@@ -77,13 +77,15 @@ class RentalCustomerPortal(cPortal):
         cCode = None
 
         if country == "Canada":
-            cCode = http.request.env['res.country'].search(
-                [('code', '=', "Canada")])
+            cCode = registry.get('res.country')
+            # cCode = http.request.env['res.country'].search(
+            #    [('code', '=', "Canada")])
         else:
-            cCode = http.request.env['res.country'].search(
-                [('code', '=', "United States")])
+            cCode = registry.get('res.country')
+            # cCode = http.request.env['res.country'].search(
+            #     [('code', '=', "United States")])
 
-        #order_sudo.rental_country = cCode
+            #order_sudo.rental_country = cCode
         _logger.info(cCode)
 
         return
