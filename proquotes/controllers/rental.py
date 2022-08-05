@@ -79,11 +79,11 @@ class RentalCustomerPortal(cPortal):
         if country == "Canada":
             # cCode = request.env['res.country']
             cCode = request.env['res.country'].browse(
-                [('code', '=', "Canada")])[0].id
+                [('code', '=', "Canada")])[0]
         else:
             # cCode = request.env['res.country']
             cCode = request.env['res.country'].browse(
-                [('code', '=', "United States")])[0].id
+                [('code', '=', "United States")])[0]
 
         order_sudo.rental_country = cCode
 
