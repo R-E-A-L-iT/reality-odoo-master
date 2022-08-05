@@ -86,7 +86,7 @@ class RentalCustomerPortal(cPortal):
             #     [('code', '=', "United States")])
 
             #order_sudo.rental_country = cCode
-        _logger.info(cCode)
+        _logger.info(str(cCode))
 
         return
 
