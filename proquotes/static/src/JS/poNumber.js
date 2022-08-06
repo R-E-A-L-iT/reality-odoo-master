@@ -37,13 +37,13 @@ odoo.define("proquotes.ponumber", function (require) {
 				return this._rpc({
 					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
 					params: {
-						access_token: self.orderDetail.token,
+						access_token: this.orderDetail.token,
 						poFile: reader.result,
 					},
 				});
 			});
 
-			reader.readAsText(poFile[0]);
+			reader.readAsArrayBuffer(poFile[0]);
 		},
 	});
 });
