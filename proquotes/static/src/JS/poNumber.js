@@ -34,14 +34,14 @@ odoo.define("proquotes.ponumber", function (require) {
 			var reader = new FileReader();
 			reader.addEventListener("load", (event) => {
 				console.log("File Read");
-				console.log(reader.result.toString("base64"));
-				return this._rpc({
-					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
-					params: {
-						access_token: this.orderDetail.token,
-						poFile: reader.result.toString("base64"),
-					},
-				});
+				console.log(btoa(String.fromCharCode(...a)));
+				// return this._rpc({
+				// 	route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
+				// 	params: {
+				// 		access_token: this.orderDetail.token,
+				// 		poFile: reader.result.toString("base64"),
+				// 	},
+				// });
 			});
 
 			reader.readAsArrayBuffer(poFile[0]);
