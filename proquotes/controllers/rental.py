@@ -90,7 +90,7 @@ class RentalCustomerPortal(cPortal):
             # cCode = registry.get('res.country')
         _logger.info(len(cCode))
         _logger.info(str(order_sudo.rental_country))
-        #order_sudo.rental_country = cCode
+        order_sudo.rental_country = 38
 
         return
 
