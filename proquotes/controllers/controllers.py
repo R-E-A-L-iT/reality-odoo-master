@@ -43,11 +43,11 @@ class QuoteCustomerPortal(cPortal):
 
         _logger.info(str(order_sudo.customer_po_file))
         # file = base64.b64encode(poFile)
-        _logger.info(poFile)
-        _logger.info(bytes(poFile, 'utf-8'))
+        binFile = bytes(poFile, 'utf-8')
+        _logger.info(binFile)
         # _logger.info(str(file))
         # _logger.info(base64.b64decode(file))
-        #order_sudo.customer_po_file = poFile
+        order_sudo.customer_po_file = binFile
         _logger.info("File Set")
         return
 
