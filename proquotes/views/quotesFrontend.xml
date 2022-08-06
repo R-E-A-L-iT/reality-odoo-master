@@ -89,7 +89,10 @@
 				<span class="line_id" t-attf-id="{{line}}"></span>
 
 				<t t-set="name" t-value="line.applied_name"></t>
-				<span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
+				<!-- <span t-attf-class="optional{{line.optional}}" t-raw="name"></span> -->
+				<markup>
+					<span t-attf-class="optional{{line.optional}}" t-esc="name"></span>
+				</markup>
 				<t t-set="description" t-value="line.name"/>
 
 				<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
@@ -99,7 +102,10 @@
 				<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
 
 				<div class="product_fold" style="width: 100%;">
-					<span style="float: left;" t-raw="description"></span>
+					<!-- <span style="float: left;" t-raw="description"></span> -->
+					<markup>
+						<span style="float: left;" t-esc="description"></span>
+					</markup>
 					<img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
 				</div>
 			</td>
@@ -240,6 +246,7 @@
 								<option class="us-op">Colorado</option>
 								<option class="us-op">Connecticut</option>
 								<option class="us-op">Delaware</option>
+								<option class="us-op">District of Columbia</option>
 								<option class="us-op">Florida</option>
 								<option class="us-op">Georgia</option>
 								<option class="us-op">Hawaii</option>

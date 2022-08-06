@@ -90,8 +90,60 @@ class RentalCustomerPortal(cPortal):
         stateCodes['Saskatchewan'] = 544
         stateCodes['Yukon'] = 545
 
+        stateCodes['Alabama'] = 9
+        stateCodes['Alaska'] = 10
+        stateCodes['Arizona'] = 11
+        stateCodes['Arkansas'] = 12
+        stateCodes['California'] = 13
+        stateCodes['Colorado'] = 14
+        stateCodes['Connecticut'] = 15
+        stateCodes['Delaware'] = 16
+        stateCodes['District of Columbia'] = 17
+        stateCodes['Florida'] = 18
+        stateCodes['Georgia'] = 19
+        stateCodes['Hawaii'] = 20
+        stateCodes['Idaho'] = 21
+        stateCodes['Illinois'] = 22
+        stateCodes['Indiana'] = 23
+        stateCodes['Iowa'] = 24
+        stateCodes['Kansas'] = 25
+        stateCodes['Kentucky'] = 26
+        stateCodes['Louisiana'] = 27
+        stateCodes['Maine'] = 28
+        stateCodes['Montana'] = 29
+        stateCodes['Nebraska'] = 30
+        stateCodes['Nevada'] = 31
+        stateCodes['New Hampshire'] = 32
+        stateCodes['New Jersey'] = 33
+        stateCodes['New Mexico'] = 34
+        stateCodes['New York'] = 35
+        stateCodes['North Carolina'] = 36
+        stateCodes['North Dakota'] = 37
+        stateCodes['Ohio'] = 38
+        stateCodes['Oklahoma'] = 39
+        stateCodes['Oregon'] = 40
+        stateCodes['Maryland'] = 41
+        stateCodes['Massachusetts'] = 42
+        stateCodes['Michigan'] = 43
+        stateCodes['Minnesota'] = 44
+        stateCodes['Mississipi'] = 45
+        stateCodes['Missouri'] = 46
+        stateCodes['Pennsylvania'] = 47
+        stateCodes['Rhode Island'] = 48
+        stateCodes['South Carolina'] = 49
+        stateCodes['South Dakota'] = 50
+        stateCodes['Tennessee'] = 51
+        stateCodes['Texas'] = 52
+        stateCodes['Utah'] = 53
+        stateCodes['Vermont'] = 54
+        stateCodes['Verginia'] = 55
+        stateCodes['Washington'] = 56
+        stateCodes['West Virginia'] = 57
+        stateCodes['Wisconsin'] = 58
+        stateCodes['Wyoming'] = 59
+        stateCodes['Wyoming'] = 59
+
         order_sudo.rental_state = stateCodes[state]
-        _logger.info(order_sudo.rental_state)
 
         return
 
