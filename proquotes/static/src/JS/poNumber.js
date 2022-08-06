@@ -32,7 +32,7 @@ odoo.define("proquotes.ponumber", function (require) {
 			var poFile = target.files;
 			console.log(poFile);
 
-			reader.onloadend = (function (self) {
+			reader.onloadend = (function (self, reader) {
 				console.log("File Read");
 				return self._rpc({
 					route: "/my/orders/" + self.orderDetail.orderId + "/poFile",
@@ -41,7 +41,7 @@ odoo.define("proquotes.ponumber", function (require) {
 						poFile: reader.result,
 					},
 				});
-			})(this);
+			})(this, reader);
 
 			reader.readAsArrayBuffer(poFile[0]);
 		},
