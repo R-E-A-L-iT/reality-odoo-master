@@ -136,7 +136,7 @@ class RentalCustomerPortal(cPortal):
         stateCodes['Texas'] = 52
         stateCodes['Utah'] = 53
         stateCodes['Vermont'] = 54
-        stateCodes['Verginia'] = 55
+        stateCodes['Virginia'] = 55
         stateCodes['Washington'] = 56
         stateCodes['West Virginia'] = 57
         stateCodes['Wisconsin'] = 58
