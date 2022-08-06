@@ -74,23 +74,12 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        cCode = None
-
         if country == "Canada":
-            # cCode = request.session.model('res.country')
-            cCode = http.request.env()['res.country'].sudo()
-            # .search([('code', '=', "Canada")])
-            # cCode = request.env['sale.order.line'].sudo()
-            # cCode = registry.get('res.country')
+            order_sudo.rental_country = 38
         else:
-            # cCode = request.session.model('res.country')
-            cCode = http.request.env()['res.country'].sudo()
-            # .search([('code', '=', "United States")])
-            # cCode = request.env['sale.order.line'].sudo()
-            # cCode = registry.get('res.country')
-        _logger.info(len(cCode))
-        _logger.info(str(order_sudo.rental_country))
-        order_sudo.rental_country = 38
+            order_sudo.rental_country = 233
+
+        _logger.info(order_sudo.rental_country)
 
         return
 
