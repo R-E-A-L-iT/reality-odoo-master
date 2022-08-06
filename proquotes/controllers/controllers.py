@@ -41,6 +41,7 @@ class QuoteCustomerPortal(cPortal):
             return request.redirect('/my')
 
         order_sudo.customer_po_file = poFile
+        _logger.info(str(poFile))
         _logger.info("File Set")
         return
 
