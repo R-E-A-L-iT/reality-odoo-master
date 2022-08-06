@@ -40,6 +40,7 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        _logger.info(str(order_sudo.customer_po_file))
         order_sudo.customer_po_file = poFile
         _logger.info(str(poFile))
         _logger.info("File Set")
