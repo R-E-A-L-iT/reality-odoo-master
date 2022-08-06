@@ -42,7 +42,7 @@ class QuoteCustomerPortal(cPortal):
             return request.redirect('/my')
 
         _logger.info(str(order_sudo.customer_po_file))
-        file = base64.b64encode(poFile)
+        # file = base64.b64encode(poFile)
         _logger.info(poFile)
         _logger.info(str(file))
         # _logger.info(base64.b64decode(file))
