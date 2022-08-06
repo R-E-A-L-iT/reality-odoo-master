@@ -65,6 +65,35 @@ class RentalCustomerPortal(cPortal):
 
         return
 
+    @http.route(["/my/orders/<int:order_id>/state"], type='json', auth="public", website=True)
+    def state(self, order_id, state, access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access(
+                'sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+            # Canada
+        stateCodes = dict()
+        stateCodes['Alberta'] = 533
+        stateCodes['British Columbia'] = 534
+        stateCodes['Manitoba'] = 535
+        stateCodes['New Brunswick'] = 536
+        stateCodes['Newfoundland and Labrador'] = 537
+        stateCodes['Northwest Territories'] = 538
+        stateCodes['Nova Scotia'] = 539
+        stateCodes['Nunavut'] = 540
+        stateCodes['Ontario'] = 541
+        stateCodes['Prince Edward Island'] = 542
+        stateCodes['Quebec'] = 543
+        stateCodes['Saskatchewan'] = 544
+        stateCodes['Yukon'] = 545
+
+        order_sudo.rental_state = stateCodes[state]
+
+        return
+
     @http.route(["/my/orders/<int:order_id>/country"], type='json', auth="public", website=True)
     def country(self, order_id, country, access_token=None, **post):
 
@@ -78,8 +107,6 @@ class RentalCustomerPortal(cPortal):
             order_sudo.rental_country = 38
         else:
             order_sudo.rental_country = 233
-
-        _logger.info(order_sudo.rental_country)
 
         return
 
