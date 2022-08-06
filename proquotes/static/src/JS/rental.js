@@ -9,6 +9,7 @@ odoo.define("proquotes.rental", function (require) {
 			"change #street": "_street",
 			"change #city": "_city",
 			"change #zip": "_zip",
+			"change #state": "_state",
 			"change #country": "_country",
 			"change #rental-start": "_start",
 			"change #rental-end": "_end",
@@ -70,6 +71,18 @@ odoo.define("proquotes.rental", function (require) {
 				params: {
 					access_token: this.orderDetail.token,
 					zip: zip,
+				},
+			});
+		},
+
+		_state: function (ev) {
+			var target = ev.currentTarget;
+			var state = target.value;
+			return this._rpc({
+				route: "/my/orders/" + this.orderDetail.orderId + "/state",
+				params: {
+					access_token: this.orderDetail.token,
+					state: state,
 				},
 			});
 		},
