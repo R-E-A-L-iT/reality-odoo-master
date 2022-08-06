@@ -91,6 +91,7 @@ class RentalCustomerPortal(cPortal):
         stateCodes['Yukon'] = 545
 
         order_sudo.rental_state = stateCodes[state]
+        _logger.info(order_sudo.rental_state)
 
         return
 
