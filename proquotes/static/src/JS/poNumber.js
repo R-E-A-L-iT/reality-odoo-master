@@ -28,22 +28,21 @@ odoo.define("proquotes.ponumber", function (require) {
 
 		_update_po_file: function (ev) {
 			//TODO Get Files Working
-			return;
 			var target = ev.currentTarget;
 			var poFile = target.files;
-			var ready = false;
-			var reader = new FileReader();
-			reader.readAsArrayBuffer(poFile[0]);
-			reader.onloadend = (function (self) {
-				console.log("File Read");
-				return self._rpc({
-					route: "/my/orders/" + self.orderDetail.orderId + "/poFile",
-					params: {
-						access_token: self.orderDetail.token,
-						poFile: reader.result,
-					},
-				});
-			})(this);
+			console.log(poFile);
+			return;
+			// reader.readAsArrayBuffer(poFile[0]);
+			// reader.onloadend = (function (self) {
+			// 	console.log("File Read");
+			// 	return self._rpc({
+			// 		route: "/my/orders/" + self.orderDetail.orderId + "/poFile",
+			// 		params: {
+			// 			access_token: self.orderDetail.token,
+			// 			poFile: reader.result,
+			// 		},
+			// 	});
+			// })(this);
 		},
 	});
 });
