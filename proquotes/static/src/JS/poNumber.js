@@ -35,7 +35,7 @@ odoo.define("proquotes.ponumber", function (require) {
 			reader.onload = (function (self) {
 				console.log("File Read");
 				console.log("File Reader: " + reader.error);
-				console.log("state: " + result.readyState);
+				console.log("state: " + reader.readyState);
 				console.log(reader.result);
 				return self._rpc({
 					route: "/my/orders/" + self.orderDetail.orderId + "/poFile",
