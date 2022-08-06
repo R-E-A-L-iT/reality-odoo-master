@@ -126,7 +126,7 @@ class RentalCustomerPortal(cPortal):
         stateCodes['Massachusetts'] = 42
         stateCodes['Michigan'] = 43
         stateCodes['Minnesota'] = 44
-        stateCodes['Mississipi'] = 45
+        stateCodes['Mississippi'] = 45
         stateCodes['Missouri'] = 46
         stateCodes['Pennsylvania'] = 47
         stateCodes['Rhode Island'] = 48
