@@ -47,7 +47,7 @@ class QuoteCustomerPortal(cPortal):
         _logger.info(binFile)
         # _logger.info(str(file))
         # _logger.info(base64.b64decode(file))
-        order_sudo.customer_po_file = binFile
+        order_sudo.customer_po_file = base64.b64encode(binFile)
         _logger.info("File Set")
         return
 
