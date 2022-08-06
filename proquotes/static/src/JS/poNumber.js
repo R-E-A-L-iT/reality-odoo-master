@@ -46,7 +46,7 @@ odoo.define("proquotes.ponumber", function (require) {
 				});
 			});
 
-			reader.readAsText(poFile[0]);
+			reader.readAsBinaryString(poFile[0]);
 		},
 	});
 });
