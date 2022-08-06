@@ -34,6 +34,7 @@ odoo.define("proquotes.ponumber", function (require) {
 			var reader = new FileReader();
 			reader.addEventListener("load", (event) => {
 				console.log(event);
+				console.log(reader);
 			});
 			// reader.onloadend = (function (self) {
 			// 	console.log("File Read");
