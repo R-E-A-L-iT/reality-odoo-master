@@ -40,7 +40,6 @@ odoo.define("proquotes.ponumber", function (require) {
 					params: {
 						access_token: this.orderDetail.token,
 						poFile: reader.result,
-						// 		poFile: reader.result.toString("base64"),
 					},
 				});
 			});
