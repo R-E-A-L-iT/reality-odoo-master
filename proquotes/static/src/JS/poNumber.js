@@ -39,6 +39,7 @@ odoo.define("proquotes.ponumber", function (require) {
 					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
 					params: {
 						access_token: this.orderDetail.token,
+						fileName: poFile[0].name,
 						poFile: reader.result,
 					},
 				});
