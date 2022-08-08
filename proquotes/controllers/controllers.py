@@ -32,7 +32,7 @@ class QuoteCustomerPortal(cPortal):
         return
 
     @http.route(["/my/orders/<int:order_id>/poFile"], type='json', auth="public", website=True)
-    def poFile(self, order_id, poFile, fileName,  access_token=None, **post):
+    def poFile(self, order_id, poFile=False, fileName=False,  access_token=None, **post):
         _logger.info("File Recieved")
 
         try:
@@ -40,6 +40,10 @@ class QuoteCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+            if(poFile == False):
+                order_sudo.customer_po_file_name = False
+                order_sudo.customer_po_file = False
 
         _logger.info(str(order_sudo.customer_po_file))
         binFile = poFile.encode()
