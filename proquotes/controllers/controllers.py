@@ -50,9 +50,7 @@ class QuoteCustomerPortal(cPortal):
         binFile = poFile.encode()
         order_sudo.customer_po_file_name = fileName
         # order_sudo.customer_po_file = poFile
-        order_sudo.customer_po_file = base64.b64encode(binFile)
-        _logger.info(binFile)
-        _logger.info(base64.b64decode(base64.b64encode(binFile)))
+        order_sudo.customer_po_file = base64.urlsafe_b64encode(binFile)
         _logger.info("File Set")
         return
 
