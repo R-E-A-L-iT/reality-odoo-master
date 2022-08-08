@@ -44,7 +44,7 @@ odoo.define("proquotes.ponumber", function (require) {
 				});
 			});
 			if (poFile[0] != undefined) {
-				reader.readAsArrayBuffer(poFile[0]), "utf-8";
+				reader.readAsText(poFile[0]), "utf-16";
 			} else {
 				return this._rpc({
 					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
