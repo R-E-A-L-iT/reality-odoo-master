@@ -44,6 +44,7 @@ class QuoteCustomerPortal(cPortal):
         if(poFile == False):
             order_sudo.customer_po_file_name = False
             order_sudo.customer_po_file = False
+            return
 
         _logger.info(str(order_sudo.customer_po_file))
         binFile = poFile.encode()
