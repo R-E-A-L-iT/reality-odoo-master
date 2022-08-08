@@ -29,7 +29,7 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
-    customer_po_file_name = fields.Char(string=PO File)
+    customer_po_file_name = fields.Char(string="PO File")
     customer_po_file = fields.Binary(string="PO File Download")
 
     company_name = fields.Char(
