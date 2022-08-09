@@ -90,6 +90,20 @@ odoo.define("proquotes.rental", function (require) {
 		_country: function (ev) {
 			var target = ev.currentTarget;
 			var country = target.value;
+			if (country == "Canada") {
+				iOps = document.getElementsByClassName("can-op");
+				eOps = document.getElementsByClassName("us-op");
+			} else {
+				iOps = document.getElementsByClassName("us-op");
+				eOps = document.getElementsByClassName("can-op");
+			}
+			for (var i = 0; i < iOps.length; i++) {
+				iOps[i].style.display = "block";
+			}
+
+			for (var i = 0; i < eOps.length; i++) {
+				eOps[i].style.display = "none";
+			}
 			return this._rpc({
 				route: "/my/orders/" + this.orderDetail.orderId + "/country",
 				params: {
