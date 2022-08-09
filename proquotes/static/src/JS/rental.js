@@ -18,26 +18,6 @@ odoo.define("proquotes.rental", function (require) {
 
 		async start() {
 			await this._super(...arguments);
-
-			if (document.getElementById("rental_country") == "Canada") {
-				iOps = document.getElementsByClassName("can-op");
-				eOps = document.getElementsByClassName("us-op");
-			} else if (
-				document.getElementById("rental_country").value ==
-				"United States"
-			) {
-				iOps = document.getElementsByClassName("us-op");
-				eOps = document.getElementsByClassName("can-op");
-			}
-
-			for (var i = 0; i < iOps.length; i++) {
-				iOps[i].style.display = "block";
-			}
-
-			for (var i = 0; i < eOps.length; i++) {
-				eOps[i].style.display = "none";
-			}
-
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
 			console.log("Started");
 		},
