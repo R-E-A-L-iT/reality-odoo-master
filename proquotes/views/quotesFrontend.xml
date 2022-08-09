@@ -289,10 +289,12 @@
 							<label for="country">
 								<span>Country</span>
 							</label>
-							<select id="country" t-attf-value="{{sale_order.rental_country.id}}">
+							<select id="country">
 								<option>Select</option>
-								<option value="38">Canada</option>
-								<option value="233">United States</option>
+								<option t-if="sale_order.rental_country.id == 'Canada'" selected="selected">Canada</option>
+								<option t-else="">Canada</option>
+								<option t-if="sale_order.rental_country.id == 233" selected="selected">United States</option>
+								<option t-else="">United States</option>
 							</select>
 							<br/>
 							<label for="zip">
