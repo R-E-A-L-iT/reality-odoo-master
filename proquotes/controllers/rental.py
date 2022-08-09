@@ -74,6 +74,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        if(state == "Select"):
+            return
+
             # Canada
         stateCodes = dict()
         stateCodes['Alberta'] = 533
@@ -158,7 +161,7 @@ class RentalCustomerPortal(cPortal):
 
         if country == "Canada":
             order_sudo.rental_country = 38
-        else:
+        elif country == "United States":
             order_sudo.rental_country = 233
 
         return
