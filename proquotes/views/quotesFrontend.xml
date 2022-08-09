@@ -188,7 +188,6 @@
 						<br />
 					</div>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
-					<!-- <input type="file" id="poFile" multiple="false"/> -->
 					<br/>
 					<div>
 						<span>Please Upload your PO File in the comments below:</span>
@@ -397,7 +396,6 @@
 							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
 							</span>
 							<br/>
-							<!-- <input type="file" id="insUpload" multiple="false"/> -->
 						</div>
 					</t>
 				</form>
