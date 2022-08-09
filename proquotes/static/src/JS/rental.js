@@ -17,6 +17,7 @@ odoo.define("proquotes.rental", function (require) {
 		},
 
 		async start() {
+			await this._super(...arguments);
 			var addressBlock = document.getElementById("rental-address");
 			if (document.getElementById("new-address").checked) {
 				addressBlock.style.display = "block";
@@ -27,7 +28,6 @@ odoo.define("proquotes.rental", function (require) {
 				console.log(addressBlock);
 				console.log(addressBlock.style.display);
 			}
-			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
 			console.log("Started");
 		},
