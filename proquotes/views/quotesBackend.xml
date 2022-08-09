@@ -25,10 +25,7 @@
 					<field name="rental_country" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}"/>
 					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}"/>
-					<!-- <field name="rental_insurance" attrs="{'invisible': [('is_rental', '!=', True)]}"/> -->
 					<field name="customer_po_number" invisible="0"/>
-					<!-- <field name="customer_po_file_name" invisible="1"/> -->
-					<!-- <field name="customer_po_file" filename="customer_po_file_name" invisible="0"/> -->
 					<field name="header" invisible="0"/>
 					<field name="footer" invisible="0"/>
 				</group>
