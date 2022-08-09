@@ -219,7 +219,7 @@
 								<span>State/Province</span>
 							</label>
 							<select id="state">
-								<option>Select</option>
+								<option t-if="sale_order.rental_state.id == False">Select</option>
 								<option t-if="sale_order.rental_state.id == 533" selected="selected" class="can-op">Alberta</option>
 								<option t-else="" class="can-op">Alberta</option>
 								<option t-if="sale_order.rental_state.id == 534" selected="selected" class="can-op">British Columbia</option>
@@ -355,7 +355,7 @@
 								<span>Country</span>
 							</label>
 							<select id="country">
-								<option>Select</option>
+								<option t-if="sale_order.rental_country.id == False">Select</option>
 								<option t-if="sale_order.rental_country.id == 38" selected="selected">Canada</option>
 								<option t-else="">Canada</option>
 								<option t-if="sale_order.rental_country.id == 233" selected="selected">United States</option>
