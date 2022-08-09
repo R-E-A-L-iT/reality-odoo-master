@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import binascii
+from random import sample
 
 from odoo import http, _, registry
 from odoo.exceptions import AccessError, MissingError
@@ -75,6 +76,7 @@ class RentalCustomerPortal(cPortal):
             return request.redirect('/my')
 
         if(state == "Select"):
+            order_sudo.rental_state = False
             return
 
             # Canada
