@@ -291,7 +291,7 @@
 							</label>
 							<select id="country">
 								<option>Select</option>
-								<option t-if="sale_order.rental_country.id == 'Canada'" selected="selected">Canada</option>
+								<option t-if="sale_order.rental_country.id == 38" selected="selected">Canada</option>
 								<option t-else="">Canada</option>
 								<option t-if="sale_order.rental_country.id == 233" selected="selected">United States</option>
 								<option t-else="">United States</option>
