@@ -35,6 +35,7 @@
 	content: "No ";
 	white-space: pre;
 	color: white;
+	width: -moz-fit-content;
 	width: fit-content;
 	height: calc(1rem + 3px);
 	background-color: #db0d0d;
@@ -49,6 +50,18 @@
 	content: "Yes";
 }
 
+#user-info #new-address+br {
+	display: none;
+}
+
 #user-info .rental-address {
+	display: none;
+}
+
+#user-info #new-address:checked+br {
+	display: block;
+}
+
+#user-info #new-address:checked+.rental-address {
 	display: block;
 }
