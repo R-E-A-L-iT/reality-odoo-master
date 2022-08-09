@@ -159,8 +159,10 @@ class RentalCustomerPortal(cPortal):
             return request.redirect('/my')
 
         if country == "Canada":
+            order_sudo.rental_state = False
             order_sudo.rental_country = 38
         elif country == "United States":
+            order_sudo.rental_state = False
             order_sudo.rental_country = 233
 
         return
