@@ -289,7 +289,7 @@
 							<label for="country">
 								<span>Country</span>
 							</label>
-							<select id="country" t-attf-value="{{sale_order.rental_country}}">
+							<select id="country" t-attf-value="{{sale_order.rental_country}}.id">
 								<option>Select</option>
 								<option value="38">Canada</option>
 								<option value="233">United States</option>
