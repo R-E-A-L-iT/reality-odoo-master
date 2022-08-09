@@ -202,171 +202,170 @@
 							<br/>
 							<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
 							<input t-else="" id="new-address" type="checkbox"/>
-						</div>
-						<br/>
-						<div id="rental-address" class="rental-address">
-							<label for="street">
-								<span>Street</span>
-							</label>
-							<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}"/>
-							<br/>
-							<label for="city">
-								<span>City</span>
-							</label>
-							<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}"/>
-							<br/>
-							<label for="state">
-								<span>State/Province</span>
-							</label>
-							<select id="state">
-								<option t-if="sale_order.rental_state.id == False" id="state-select" value="Select">Select</option>
-								<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
-								<option t-if="sale_order.rental_state.id == 533" selected="selected" class="can-op">Alberta</option>
-								<option t-else="" class="can-op">Alberta</option>
-								<option t-if="sale_order.rental_state.id == 534" selected="selected" class="can-op">British Columbia</option>
-								<option t-else="" class="can-op">British Columbia</option>
-								<option t-if="sale_order.rental_state.id == 535" selected="selected" class="can-op">Manitoba</option>
-								<option t-else="" class="can-op">Manitoba</option>
-								<option t-if="sale_order.rental_state.id == 536" selected="selected" class="can-op">New Brunswick</option>
-								<option t-else="" class="can-op">New Brunswick</option>
-								<option t-if="sale_order.rental_state.id == 538" selected="selected" class="can-op">Northwest Territories</option>
-								<option t-else="" class="can-op">Northwest Territories</option>
-								<option t-if="sale_order.rental_state.id == 537" selected="selected" class="can-op">Newfoundland and Labrador</option>
-								<option t-else="" class="can-op">Newfoundland and Labrador</option>
-								<option t-if="sale_order.rental_state.id == 539" selected="selected" class="can-op">Nova Scotia</option>
-								<option t-else="" class="can-op">Nova Scotia</option>
-								<option t-if="sale_order.rental_state.id == 540" selected="selected" class="can-op">Nunavut</option>
-								<option t-else="" class="can-op">Nunavut</option>
-								<option t-if="sale_order.rental_state.id == 541" selected="selected" class="can-op">Ontario</option>
-								<option t-else="" class="can-op">Ontario</option>
-								<option t-if="sale_order.rental_state.id == 542" selected="selected" class="can-op">Prince Edward Island</option>
-								<option t-else="" class="can-op">Prince Edward Island</option>
-								<option t-if="sale_order.rental_state.id == 543" selected="selected" class="can-op">Quebec</option>
-								<option t-else="" class="can-op">Quebec</option>
-								<option t-if="sale_order.rental_state.id == 544" selected="selected" class="can-op">Saskatchewan</option>
-								<option t-else="" class="can-op">Saskatchewan</option>
-								<option t-if="sale_order.rental_state.id == 545" selected="selected" class="can-op">Yukon</option>
-								<option t-else="" class="can-op">Yukon</option>
+							<div id="rental-address" class="rental-address">
+								<label for="street">
+									<span>Street</span>
+								</label>
+								<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}"/>
+								<br/>
+								<label for="city">
+									<span>City</span>
+								</label>
+								<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}"/>
+								<br/>
+								<label for="state">
+									<span>State/Province</span>
+								</label>
+								<select id="state">
+									<option t-if="sale_order.rental_state.id == False" id="state-select" value="Select">Select</option>
+									<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
+									<option t-if="sale_order.rental_state.id == 533" selected="selected" class="can-op">Alberta</option>
+									<option t-else="" class="can-op">Alberta</option>
+									<option t-if="sale_order.rental_state.id == 534" selected="selected" class="can-op">British Columbia</option>
+									<option t-else="" class="can-op">British Columbia</option>
+									<option t-if="sale_order.rental_state.id == 535" selected="selected" class="can-op">Manitoba</option>
+									<option t-else="" class="can-op">Manitoba</option>
+									<option t-if="sale_order.rental_state.id == 536" selected="selected" class="can-op">New Brunswick</option>
+									<option t-else="" class="can-op">New Brunswick</option>
+									<option t-if="sale_order.rental_state.id == 538" selected="selected" class="can-op">Northwest Territories</option>
+									<option t-else="" class="can-op">Northwest Territories</option>
+									<option t-if="sale_order.rental_state.id == 537" selected="selected" class="can-op">Newfoundland and Labrador</option>
+									<option t-else="" class="can-op">Newfoundland and Labrador</option>
+									<option t-if="sale_order.rental_state.id == 539" selected="selected" class="can-op">Nova Scotia</option>
+									<option t-else="" class="can-op">Nova Scotia</option>
+									<option t-if="sale_order.rental_state.id == 540" selected="selected" class="can-op">Nunavut</option>
+									<option t-else="" class="can-op">Nunavut</option>
+									<option t-if="sale_order.rental_state.id == 541" selected="selected" class="can-op">Ontario</option>
+									<option t-else="" class="can-op">Ontario</option>
+									<option t-if="sale_order.rental_state.id == 542" selected="selected" class="can-op">Prince Edward Island</option>
+									<option t-else="" class="can-op">Prince Edward Island</option>
+									<option t-if="sale_order.rental_state.id == 543" selected="selected" class="can-op">Quebec</option>
+									<option t-else="" class="can-op">Quebec</option>
+									<option t-if="sale_order.rental_state.id == 544" selected="selected" class="can-op">Saskatchewan</option>
+									<option t-else="" class="can-op">Saskatchewan</option>
+									<option t-if="sale_order.rental_state.id == 545" selected="selected" class="can-op">Yukon</option>
+									<option t-else="" class="can-op">Yukon</option>
 
-								<option t-if="sale_order.rental_state.id == 9" selected="selected" class="us-op">Alabama</option>
-								<option t-else="" class="us-op">Alabama</option>
-								<option t-if="sale_order.rental_state.id == 10" selected="selected" class="us-op">Alaska</option>
-								<option t-else="" class="us-op">Alaska</option>
-								<option t-if="sale_order.rental_state.id == 11" selected="selected" class="us-op">Arizona</option>
-								<option t-else="" class="us-op">Arizona</option>
-								<option t-if="sale_order.rental_state.id == 12" selected="selected" class="us-op">Arkansas</option>
-								<option t-else="" class="us-op">Arkansas</option>
-								<option t-if="sale_order.rental_state.id == 13" selected="selected" class="us-op">California</option>
-								<option t-else="" class="us-op">California</option>
-								<option t-if="sale_order.rental_state.id == 14" selected="selected" class="us-op">Colorado</option>
-								<option t-else="" class="us-op">Colorado</option>
-								<option t-if="sale_order.rental_state.id == 15" selected="selected" class="us-op">Connecticut</option>
-								<option t-else="" class="us-op">Connecticut</option>
-								<option t-if="sale_order.rental_state.id == 16" selected="selected" class="us-op">Delaware</option>
-								<option t-else="" class="us-op">Delaware</option>
-								<option t-if="sale_order.rental_state.id == 17" selected="selected" class="us-op">District of Columbia</option>
-								<option t-else="" class="us-op">District of Columbia</option>
-								<option t-if="sale_order.rental_state.id == 18" selected="selected" class="us-op">Florida</option>
-								<option t-else="" class="us-op">Florida</option>
-								<option t-if="sale_order.rental_state.id == 19" selected="selected" class="us-op">Georgia</option>
-								<option t-else="" class="us-op">Georgia</option>
-								<option t-if="sale_order.rental_state.id == 20" selected="selected" class="us-op">Hawaii</option>
-								<option t-else="" class="us-op">Hawaii</option>
-								<option t-if="sale_order.rental_state.id == 21" selected="selected" class="us-op">Idaho</option>
-								<option t-else="" class="us-op">Idaho</option>
-								<option t-if="sale_order.rental_state.id == 22" selected="selected" class="us-op">Illinois</option>
-								<option t-else="" class="us-op">Illinois</option>
-								<option t-if="sale_order.rental_state.id == 23" selected="selected" class="us-op">Indiana</option>
-								<option t-else="" class="us-op">Indiana</option>
-								<option t-if="sale_order.rental_state.id == 24" selected="selected" class="us-op">Iowa</option>
-								<option t-else="" class="us-op">Iowa</option>
-								<option t-if="sale_order.rental_state.id == 25" selected="selected" class="us-op">Kansas</option>
-								<option t-else="" class="us-op">Kansas</option>
-								<option t-if="sale_order.rental_state.id == 26" selected="selected" class="us-op">Kentucky</option>
-								<option t-else="" class="us-op">Kentucky</option>
-								<option t-if="sale_order.rental_state.id == 27" selected="selected" class="us-op">Louisiana</option>
-								<option t-else="" class="us-op">Louisiana</option>
-								<option t-if="sale_order.rental_state.id == 28" selected="selected" class="us-op">Maine</option>
-								<option t-else="" class="us-op">Maine</option>
-								<option t-if="sale_order.rental_state.id == 29" selected="selected" class="us-op">Montana</option>
-								<option t-else="" class="us-op">Montana</option>
-								<option t-if="sale_order.rental_state.id == 30" selected="selected" class="us-op">Nebraska</option>
-								<option t-else="" class="us-op">Nebraska</option>
-								<option t-if="sale_order.rental_state.id == 31" selected="selected" class="us-op">Nevada</option>
-								<option t-else="" class="us-op">Nevada</option>
-								<option t-if="sale_order.rental_state.id == 32" selected="selected" class="us-op">New Hampshire</option>
-								<option t-else="" class="us-op">New Hampshire</option>
-								<option t-if="sale_order.rental_state.id == 33" selected="selected" class="us-op">New Jersey</option>
-								<option t-else="" class="us-op">New Jersey</option>
-								<option t-if="sale_order.rental_state.id == 34" selected="selected" class="us-op">New Mexico</option>
-								<option t-else="" class="us-op">New Mexico</option>
-								<option t-if="sale_order.rental_state.id == 35" selected="selected" class="us-op">New York</option>
-								<option t-else="" class="us-op">New York</option>
-								<option t-if="sale_order.rental_state.id == 36" selected="selected" class="us-op">North Carolina</option>
-								<option t-else="" class="us-op">North Carolina</option>
-								<option t-if="sale_order.rental_state.id == 37" selected="selected" class="us-op">North Dakota</option>
-								<option t-else="" class="us-op">North Dakota</option>
-								<option t-if="sale_order.rental_state.id == 38" selected="selected" class="us-op">Ohio</option>
-								<option t-else="" class="us-op">Ohio</option>
-								<option t-if="sale_order.rental_state.id == 39" selected="selected" class="us-op">Oklahoma</option>
-								<option t-else="" class="us-op">Oklahoma</option>
-								<option t-if="sale_order.rental_state.id == 40" selected="selected" class="us-op">Oregon</option>
-								<option t-else="" class="us-op">Oregon</option>
-								<option t-if="sale_order.rental_state.id == 41" selected="selected" class="us-op">Maryland</option>
-								<option t-else="" class="us-op">Maryland</option>
-								<option t-if="sale_order.rental_state.id == 42" selected="selected" class="us-op">Massachusetts</option>
-								<option t-else="" class="us-op">Massachusetts</option>
-								<option t-if="sale_order.rental_state.id == 43" selected="selected" class="us-op">Michigan</option>
-								<option t-else="" class="us-op">Michigan</option>
-								<option t-if="sale_order.rental_state.id == 44" selected="selected" class="us-op">Minnesota</option>
-								<option t-else="" class="us-op">Minnesota</option>
-								<option t-if="sale_order.rental_state.id == 45" selected="selected" class="us-op">Mississippi</option>
-								<option t-else="" class="us-op">Mississippi</option>
-								<option t-if="sale_order.rental_state.id == 46" selected="selected" class="us-op">Missouri</option>
-								<option t-else="" class="us-op">Missouri</option>
-								<option t-if="sale_order.rental_state.id == 47" selected="selected" class="us-op">Pennsylvania</option>
-								<option t-else="" class="us-op">Pennsylvania</option>
-								<option t-if="sale_order.rental_state.id == 48" selected="selected" class="us-op">Rhode Island</option>
-								<option t-else="" class="us-op">Rhode Island</option>
-								<option t-if="sale_order.rental_state.id == 49" selected="selected" class="us-op">South Carolina</option>
-								<option t-else="" class="us-op">South Carolina</option>
-								<option t-if="sale_order.rental_state.id == 50" selected="selected" class="us-op">South Dakota</option>
-								<option t-else="" class="us-op">South Dakota</option>
-								<option t-if="sale_order.rental_state.id == 51" selected="selected" class="us-op">Tennessee</option>
-								<option t-else="" class="us-op">Tennessee</option>
-								<option t-if="sale_order.rental_state.id == 52" selected="selected" class="us-op">Texas</option>
-								<option t-else="" class="us-op">Texas</option>
-								<option t-if="sale_order.rental_state.id == 53" selected="selected" class="us-op">Utah</option>
-								<option t-else="" class="us-op">Utah</option>
-								<option t-if="sale_order.rental_state.id == 54" selected="selected" class="us-op">Vermont</option>
-								<option t-else="" class="us-op">Vermont</option>
-								<option t-if="sale_order.rental_state.id == 55" selected="selected" class="us-op">Virginia</option>
-								<option t-else="" class="us-op">Virginia</option>
-								<option t-if="sale_order.rental_state.id == 56" selected="selected" class="us-op">Washington</option>
-								<option t-else="" class="us-op">Washington</option>
-								<option t-if="sale_order.rental_state.id == 57" selected="selected" class="us-op">West Virginia</option>
-								<option t-else="" class="us-op">West Virginia</option>
-								<option t-if="sale_order.rental_state.id == 58" selected="selected" class="us-op">Wisconsin</option>
-								<option t-else="" class="us-op">Wisconsin</option>
-								<option t-if="sale_order.rental_state.id == 59" selected="selected" class="us-op">Wyoming</option>
-								<option t-else="" class="us-op">Wyoming</option>
-							</select>
-							<br/>
-							<label for="country">
-								<span>Country</span>
-							</label>
-							<select id="country">
-								<option t-if="sale_order.rental_country.id == False">Select</option>
-								<option t-if="sale_order.rental_country.id == 38" selected="selected">Canada</option>
-								<option t-else="">Canada</option>
-								<option t-if="sale_order.rental_country.id == 233" selected="selected">United States</option>
-								<option t-else="">United States</option>
-							</select>
-							<br/>
-							<label for="zip">
-								<span>Zip/Postal Code</span>
-							</label>
-							<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}"/>
+									<option t-if="sale_order.rental_state.id == 9" selected="selected" class="us-op">Alabama</option>
+									<option t-else="" class="us-op">Alabama</option>
+									<option t-if="sale_order.rental_state.id == 10" selected="selected" class="us-op">Alaska</option>
+									<option t-else="" class="us-op">Alaska</option>
+									<option t-if="sale_order.rental_state.id == 11" selected="selected" class="us-op">Arizona</option>
+									<option t-else="" class="us-op">Arizona</option>
+									<option t-if="sale_order.rental_state.id == 12" selected="selected" class="us-op">Arkansas</option>
+									<option t-else="" class="us-op">Arkansas</option>
+									<option t-if="sale_order.rental_state.id == 13" selected="selected" class="us-op">California</option>
+									<option t-else="" class="us-op">California</option>
+									<option t-if="sale_order.rental_state.id == 14" selected="selected" class="us-op">Colorado</option>
+									<option t-else="" class="us-op">Colorado</option>
+									<option t-if="sale_order.rental_state.id == 15" selected="selected" class="us-op">Connecticut</option>
+									<option t-else="" class="us-op">Connecticut</option>
+									<option t-if="sale_order.rental_state.id == 16" selected="selected" class="us-op">Delaware</option>
+									<option t-else="" class="us-op">Delaware</option>
+									<option t-if="sale_order.rental_state.id == 17" selected="selected" class="us-op">District of Columbia</option>
+									<option t-else="" class="us-op">District of Columbia</option>
+									<option t-if="sale_order.rental_state.id == 18" selected="selected" class="us-op">Florida</option>
+									<option t-else="" class="us-op">Florida</option>
+									<option t-if="sale_order.rental_state.id == 19" selected="selected" class="us-op">Georgia</option>
+									<option t-else="" class="us-op">Georgia</option>
+									<option t-if="sale_order.rental_state.id == 20" selected="selected" class="us-op">Hawaii</option>
+									<option t-else="" class="us-op">Hawaii</option>
+									<option t-if="sale_order.rental_state.id == 21" selected="selected" class="us-op">Idaho</option>
+									<option t-else="" class="us-op">Idaho</option>
+									<option t-if="sale_order.rental_state.id == 22" selected="selected" class="us-op">Illinois</option>
+									<option t-else="" class="us-op">Illinois</option>
+									<option t-if="sale_order.rental_state.id == 23" selected="selected" class="us-op">Indiana</option>
+									<option t-else="" class="us-op">Indiana</option>
+									<option t-if="sale_order.rental_state.id == 24" selected="selected" class="us-op">Iowa</option>
+									<option t-else="" class="us-op">Iowa</option>
+									<option t-if="sale_order.rental_state.id == 25" selected="selected" class="us-op">Kansas</option>
+									<option t-else="" class="us-op">Kansas</option>
+									<option t-if="sale_order.rental_state.id == 26" selected="selected" class="us-op">Kentucky</option>
+									<option t-else="" class="us-op">Kentucky</option>
+									<option t-if="sale_order.rental_state.id == 27" selected="selected" class="us-op">Louisiana</option>
+									<option t-else="" class="us-op">Louisiana</option>
+									<option t-if="sale_order.rental_state.id == 28" selected="selected" class="us-op">Maine</option>
+									<option t-else="" class="us-op">Maine</option>
+									<option t-if="sale_order.rental_state.id == 29" selected="selected" class="us-op">Montana</option>
+									<option t-else="" class="us-op">Montana</option>
+									<option t-if="sale_order.rental_state.id == 30" selected="selected" class="us-op">Nebraska</option>
+									<option t-else="" class="us-op">Nebraska</option>
+									<option t-if="sale_order.rental_state.id == 31" selected="selected" class="us-op">Nevada</option>
+									<option t-else="" class="us-op">Nevada</option>
+									<option t-if="sale_order.rental_state.id == 32" selected="selected" class="us-op">New Hampshire</option>
+									<option t-else="" class="us-op">New Hampshire</option>
+									<option t-if="sale_order.rental_state.id == 33" selected="selected" class="us-op">New Jersey</option>
+									<option t-else="" class="us-op">New Jersey</option>
+									<option t-if="sale_order.rental_state.id == 34" selected="selected" class="us-op">New Mexico</option>
+									<option t-else="" class="us-op">New Mexico</option>
+									<option t-if="sale_order.rental_state.id == 35" selected="selected" class="us-op">New York</option>
+									<option t-else="" class="us-op">New York</option>
+									<option t-if="sale_order.rental_state.id == 36" selected="selected" class="us-op">North Carolina</option>
+									<option t-else="" class="us-op">North Carolina</option>
+									<option t-if="sale_order.rental_state.id == 37" selected="selected" class="us-op">North Dakota</option>
+									<option t-else="" class="us-op">North Dakota</option>
+									<option t-if="sale_order.rental_state.id == 38" selected="selected" class="us-op">Ohio</option>
+									<option t-else="" class="us-op">Ohio</option>
+									<option t-if="sale_order.rental_state.id == 39" selected="selected" class="us-op">Oklahoma</option>
+									<option t-else="" class="us-op">Oklahoma</option>
+									<option t-if="sale_order.rental_state.id == 40" selected="selected" class="us-op">Oregon</option>
+									<option t-else="" class="us-op">Oregon</option>
+									<option t-if="sale_order.rental_state.id == 41" selected="selected" class="us-op">Maryland</option>
+									<option t-else="" class="us-op">Maryland</option>
+									<option t-if="sale_order.rental_state.id == 42" selected="selected" class="us-op">Massachusetts</option>
+									<option t-else="" class="us-op">Massachusetts</option>
+									<option t-if="sale_order.rental_state.id == 43" selected="selected" class="us-op">Michigan</option>
+									<option t-else="" class="us-op">Michigan</option>
+									<option t-if="sale_order.rental_state.id == 44" selected="selected" class="us-op">Minnesota</option>
+									<option t-else="" class="us-op">Minnesota</option>
+									<option t-if="sale_order.rental_state.id == 45" selected="selected" class="us-op">Mississippi</option>
+									<option t-else="" class="us-op">Mississippi</option>
+									<option t-if="sale_order.rental_state.id == 46" selected="selected" class="us-op">Missouri</option>
+									<option t-else="" class="us-op">Missouri</option>
+									<option t-if="sale_order.rental_state.id == 47" selected="selected" class="us-op">Pennsylvania</option>
+									<option t-else="" class="us-op">Pennsylvania</option>
+									<option t-if="sale_order.rental_state.id == 48" selected="selected" class="us-op">Rhode Island</option>
+									<option t-else="" class="us-op">Rhode Island</option>
+									<option t-if="sale_order.rental_state.id == 49" selected="selected" class="us-op">South Carolina</option>
+									<option t-else="" class="us-op">South Carolina</option>
+									<option t-if="sale_order.rental_state.id == 50" selected="selected" class="us-op">South Dakota</option>
+									<option t-else="" class="us-op">South Dakota</option>
+									<option t-if="sale_order.rental_state.id == 51" selected="selected" class="us-op">Tennessee</option>
+									<option t-else="" class="us-op">Tennessee</option>
+									<option t-if="sale_order.rental_state.id == 52" selected="selected" class="us-op">Texas</option>
+									<option t-else="" class="us-op">Texas</option>
+									<option t-if="sale_order.rental_state.id == 53" selected="selected" class="us-op">Utah</option>
+									<option t-else="" class="us-op">Utah</option>
+									<option t-if="sale_order.rental_state.id == 54" selected="selected" class="us-op">Vermont</option>
+									<option t-else="" class="us-op">Vermont</option>
+									<option t-if="sale_order.rental_state.id == 55" selected="selected" class="us-op">Virginia</option>
+									<option t-else="" class="us-op">Virginia</option>
+									<option t-if="sale_order.rental_state.id == 56" selected="selected" class="us-op">Washington</option>
+									<option t-else="" class="us-op">Washington</option>
+									<option t-if="sale_order.rental_state.id == 57" selected="selected" class="us-op">West Virginia</option>
+									<option t-else="" class="us-op">West Virginia</option>
+									<option t-if="sale_order.rental_state.id == 58" selected="selected" class="us-op">Wisconsin</option>
+									<option t-else="" class="us-op">Wisconsin</option>
+									<option t-if="sale_order.rental_state.id == 59" selected="selected" class="us-op">Wyoming</option>
+									<option t-else="" class="us-op">Wyoming</option>
+								</select>
+								<br/>
+								<label for="country">
+									<span>Country</span>
+								</label>
+								<select id="country">
+									<option t-if="sale_order.rental_country.id == False">Select</option>
+									<option t-if="sale_order.rental_country.id == 38" selected="selected">Canada</option>
+									<option t-else="">Canada</option>
+									<option t-if="sale_order.rental_country.id == 233" selected="selected">United States</option>
+									<option t-else="">United States</option>
+								</select>
+								<br/>
+								<label for="zip">
+									<span>Zip/Postal Code</span>
+								</label>
+								<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}"/>
+							</div>
 						</div>
 						<br/>
 						<div>
