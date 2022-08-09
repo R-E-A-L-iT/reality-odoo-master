@@ -75,7 +75,7 @@ odoo.define("proquotes.rental", function (require) {
 			var state = target.value;
 
 			if (state != "Select") {
-				document.getElementById("state-select").style.display = "none;";
+				document.getElementById("state-select").style.display = "none";
 			}
 
 			return this._rpc({
