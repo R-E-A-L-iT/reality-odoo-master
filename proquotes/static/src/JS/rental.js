@@ -90,6 +90,9 @@ odoo.define("proquotes.rental", function (require) {
 		_country: function (ev) {
 			var target = ev.currentTarget;
 			var country = target.value;
+			var iOps = undefined;
+			var eOps = undefined;
+
 			if (country == "Canada") {
 				iOps = document.getElementsByClassName("can-op");
 				eOps = document.getElementsByClassName("us-op");
