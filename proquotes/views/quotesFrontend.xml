@@ -182,13 +182,20 @@
 			<section id="user-info">
 				<form autocomplete="on">
 					<div id="POlabel">
-						<span>Please insert your PO number ands file here:</span>
+						<span>Please insert your PO number here:</span>
 						<br />
-						<span>Veuillez insérer votre numéro de bon de commande et votre fichier ici:</span>
+						<span>Veuillez insérer votre numéro de bon de commande ici:</span>
 						<br />
 					</div>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
 					<!-- <input type="file" id="poFile" multiple="false"/> -->
+					<br/>
+					<div>
+						<span>Please Upload your PO File in the comments below:</span>
+						<br/>
+						<span>Veuillez télécharger votre fichier PO dans les commentaires ci-dessous:
+						</span>
+					</div>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
 						<div>
@@ -383,11 +390,11 @@
 						<br/>
 						<div>
 							<span>
-							Please upload your proof of insurance for the total amount of rental equipment here:
+							Please upload your proof of insurance for the total amount in the comments below:
 							</span>
 							<br/>
 							<span>
-							SVP télécharger votre preuve d'assurance pour le montant total d'équipement en location ici:
+							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
 							</span>
 							<br/>
 							<!-- <input type="file" id="insUpload" multiple="false"/> -->
