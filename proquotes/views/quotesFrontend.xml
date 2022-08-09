@@ -220,6 +220,7 @@
 							</label>
 							<select id="state">
 								<option t-if="sale_order.rental_state.id == False" id="state-select" value="Select">Select</option>
+								<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
 								<option t-if="sale_order.rental_state.id == 533" selected="selected" class="can-op">Alberta</option>
 								<option t-else="" class="can-op">Alberta</option>
 								<option t-if="sale_order.rental_state.id == 534" selected="selected" class="can-op">British Columbia</option>
