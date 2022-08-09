@@ -21,6 +21,7 @@ odoo.define("proquotes.rental", function (require) {
 				document.getElementById("rental-address").style.display =
 					"block";
 			} else {
+				console.log("Not Checked");
 				document.getElementById("rental-address").style.display =
 					"none";
 			}
