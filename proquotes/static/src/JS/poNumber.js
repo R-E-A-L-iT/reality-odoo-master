@@ -45,7 +45,7 @@ odoo.define("proquotes.ponumber", function (require) {
 				});
 			});
 			if (poFile[0] != undefined) {
-				reader.readAsText(poFile[0]);
+				reader.readAsBinaryString(poFile[0]);
 			} else {
 				return this._rpc({
 					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
