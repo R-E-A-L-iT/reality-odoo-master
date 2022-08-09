@@ -73,6 +73,11 @@ odoo.define("proquotes.rental", function (require) {
 		_state: function (ev) {
 			var target = ev.currentTarget;
 			var state = target.value;
+
+			if (state != "Select") {
+				document.getElementById("state-select").style.display = "none;";
+			}
+
 			return this._rpc({
 				route: "/my/orders/" + this.orderDetail.orderId + "/state",
 				params: {
