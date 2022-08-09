@@ -6,7 +6,7 @@ odoo.define("proquotes.ponumber", function (require) {
 		selector: ".o_portal_sale_sidebar",
 		events: {
 			"change .poNumber": "_update_po_number",
-			"change #poFile": "_update_po_file",
+			//"change #poFile": "_update_po_file",
 		},
 
 		async start() {
@@ -26,34 +26,34 @@ odoo.define("proquotes.ponumber", function (require) {
 			});
 		},
 
-		_update_po_file: function (ev) {
-			//TODO Get Files Working
-			var target = ev.currentTarget;
-			var poFile = target.files;
-			console.log(poFile);
-			var reader = new FileReader();
-			reader.addEventListener("load", (event) => {
-				console.log("File Read");
-				console.log(reader.result);
-				return this._rpc({
-					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
-					params: {
-						access_token: this.orderDetail.token,
-						fileName: poFile[0].name,
-						poFile: reader.result,
-					},
-				});
-			});
-			if (poFile[0] != undefined) {
-				reader.readAsText(poFile[0], "base64");
-			} else {
-				return this._rpc({
-					route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
-					params: {
-						access_token: this.orderDetail.token,
-					},
-				});
-			}
-		},
+		// _update_po_file: function (ev) {
+		// 	//TODO Get Files Working
+		// 	var target = ev.currentTarget;
+		// 	var poFile = target.files;
+		// 	console.log(poFile);
+		// 	var reader = new FileReader();
+		// 	reader.addEventListener("load", (event) => {
+		// 		console.log("File Read");
+		// 		console.log(reader.result);
+		// 		return this._rpc({
+		// 			route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
+		// 			params: {
+		// 				access_token: this.orderDetail.token,
+		// 				fileName: poFile[0].name,
+		// 				poFile: reader.result,
+		// 			},
+		// 		});
+		// 	});
+		// 	if (poFile[0] != undefined) {
+		// 		reader.readAsText(poFile[0], "base64");
+		// 	} else {
+		// 		return this._rpc({
+		// 			route: "/my/orders/" + this.orderDetail.orderId + "/poFile",
+		// 			params: {
+		// 				access_token: this.orderDetail.token,
+		// 			},
+		// 		});
+		// 	}
+		// },
 	});
 });

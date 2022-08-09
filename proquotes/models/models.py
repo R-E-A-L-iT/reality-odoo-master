@@ -29,8 +29,8 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
-    customer_po_file_name = fields.Char(string="PO File Name")
-    customer_po_file = fields.Binary(string="PO File")
+    #customer_po_file_name = fields.Char(string="PO File Name")
+    #customer_po_file = fields.Binary(string="PO File")
 
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True)
@@ -63,7 +63,7 @@ class order(models.Model):
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
-    rental_insurance = fields.Binary(string="Insurance")
+    #rental_insurance = fields.Binary(string="Insurance")
 
     def _amount_all(self):
         for order in self:

@@ -13,7 +13,7 @@ odoo.define("proquotes.rental", function (require) {
 			"change #country": "_country",
 			"change #rental-start": "_start",
 			"change #rental-end": "_end",
-			"change #insUpload": "_inssurance",
+			// "change #insUpload": "_inssurance",
 		},
 
 		async start() {
@@ -122,10 +122,10 @@ odoo.define("proquotes.rental", function (require) {
 				},
 			});
 		},
-		_inssurance: function (ev) {
-			var target = ev.currentTarget;
-			var inssurance = target.files;
-			console.log(inssurance);
-		},
+		// _inssurance: function (ev) {
+		// 	var target = ev.currentTarget;
+		// 	var inssurance = target.files;
+		// 	console.log(inssurance);
+		// },
 	});
 });
