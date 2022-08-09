@@ -226,135 +226,135 @@
 								<select id="state">
 									<option t-if="sale_order.rental_state.id == False" id="state-select" value="Select">Select</option>
 									<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
-									<option t-if="sale_order.rental_state.id == 533" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Alberta</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Alberta</option>
-									<option t-if="sale_order.rental_state.id == 534" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">British Columbia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">British Columbia</option>
-									<option t-if="sale_order.rental_state.id == 535" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Manitoba</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Manitoba</option>
-									<option t-if="sale_order.rental_state.id == 536" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">New Brunswick</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">New Brunswick</option>
-									<option t-if="sale_order.rental_state.id == 538" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Northwest Territories</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Northwest Territories</option>
-									<option t-if="sale_order.rental_state.id == 537" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Newfoundland and Labrador</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Newfoundland and Labrador</option>
-									<option t-if="sale_order.rental_state.id == 539" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Nova Scotia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Nova Scotia</option>
-									<option t-if="sale_order.rental_state.id == 540" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Nunavut</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Nunavut</option>
-									<option t-if="sale_order.rental_state.id == 541" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Ontario</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Ontario</option>
-									<option t-if="sale_order.rental_state.id == 542" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Prince Edward Island</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Prince Edward Island</option>
-									<option t-if="sale_order.rental_state.id == 543" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Quebec</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Quebec</option>
-									<option t-if="sale_order.rental_state.id == 544" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Saskatchewan</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Saskatchewan</option>
-									<option t-if="sale_order.rental_state.id == 545" selected="selected" t-attf-class="{{sale_order.rental_country}} can-op">Yukon</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} can-op">Yukon</option>
+									<option t-if="sale_order.rental_state.id == 533" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Alberta</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Alberta</option>
+									<option t-if="sale_order.rental_state.id == 534" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">British Columbia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">British Columbia</option>
+									<option t-if="sale_order.rental_state.id == 535" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Manitoba</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Manitoba</option>
+									<option t-if="sale_order.rental_state.id == 536" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">New Brunswick</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">New Brunswick</option>
+									<option t-if="sale_order.rental_state.id == 538" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Northwest Territories</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Northwest Territories</option>
+									<option t-if="sale_order.rental_state.id == 537" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Newfoundland and Labrador</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Newfoundland and Labrador</option>
+									<option t-if="sale_order.rental_state.id == 539" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Nova Scotia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Nova Scotia</option>
+									<option t-if="sale_order.rental_state.id == 540" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Nunavut</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Nunavut</option>
+									<option t-if="sale_order.rental_state.id == 541" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Ontario</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Ontario</option>
+									<option t-if="sale_order.rental_state.id == 542" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Prince Edward Island</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Prince Edward Island</option>
+									<option t-if="sale_order.rental_state.id == 543" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Quebec</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Quebec</option>
+									<option t-if="sale_order.rental_state.id == 544" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Saskatchewan</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Saskatchewan</option>
+									<option t-if="sale_order.rental_state.id == 545" selected="selected" t-attf-class="{{sale_order.rental_country.name}} can-op">Yukon</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} can-op">Yukon</option>
 
-									<option t-if="sale_order.rental_state.id == 9" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Alabama</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Alabama</option>
-									<option t-if="sale_order.rental_state.id == 10" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Alaska</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Alaska</option>
-									<option t-if="sale_order.rental_state.id == 11" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Arizona</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Arizona</option>
-									<option t-if="sale_order.rental_state.id == 12" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Arkansas</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Arkansas</option>
-									<option t-if="sale_order.rental_state.id == 13" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">California</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">California</option>
-									<option t-if="sale_order.rental_state.id == 14" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Colorado</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Colorado</option>
-									<option t-if="sale_order.rental_state.id == 15" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Connecticut</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Connecticut</option>
-									<option t-if="sale_order.rental_state.id == 16" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Delaware</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Delaware</option>
-									<option t-if="sale_order.rental_state.id == 17" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">District of Columbia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">District of Columbia</option>
-									<option t-if="sale_order.rental_state.id == 18" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Florida</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Florida</option>
-									<option t-if="sale_order.rental_state.id == 19" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Georgia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Georgia</option>
-									<option t-if="sale_order.rental_state.id == 20" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Hawaii</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Hawaii</option>
-									<option t-if="sale_order.rental_state.id == 21" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Idaho</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Idaho</option>
-									<option t-if="sale_order.rental_state.id == 22" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Illinois</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Illinois</option>
-									<option t-if="sale_order.rental_state.id == 23" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Indiana</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Indiana</option>
-									<option t-if="sale_order.rental_state.id == 24" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Iowa</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Iowa</option>
-									<option t-if="sale_order.rental_state.id == 25" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Kansas</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Kansas</option>
-									<option t-if="sale_order.rental_state.id == 26" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Kentucky</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Kentucky</option>
-									<option t-if="sale_order.rental_state.id == 27" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Louisiana</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Louisiana</option>
-									<option t-if="sale_order.rental_state.id == 28" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Maine</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Maine</option>
-									<option t-if="sale_order.rental_state.id == 29" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Montana</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Montana</option>
-									<option t-if="sale_order.rental_state.id == 30" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Nebraska</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Nebraska</option>
-									<option t-if="sale_order.rental_state.id == 31" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Nevada</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Nevada</option>
-									<option t-if="sale_order.rental_state.id == 32" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">New Hampshire</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">New Hampshire</option>
-									<option t-if="sale_order.rental_state.id == 33" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">New Jersey</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">New Jersey</option>
-									<option t-if="sale_order.rental_state.id == 34" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">New Mexico</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">New Mexico</option>
-									<option t-if="sale_order.rental_state.id == 35" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">New York</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">New York</option>
-									<option t-if="sale_order.rental_state.id == 36" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">North Carolina</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">North Carolina</option>
-									<option t-if="sale_order.rental_state.id == 37" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">North Dakota</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">North Dakota</option>
-									<option t-if="sale_order.rental_state.id == 38" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Ohio</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Ohio</option>
-									<option t-if="sale_order.rental_state.id == 39" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Oklahoma</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Oklahoma</option>
-									<option t-if="sale_order.rental_state.id == 40" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Oregon</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Oregon</option>
-									<option t-if="sale_order.rental_state.id == 41" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Maryland</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Maryland</option>
-									<option t-if="sale_order.rental_state.id == 42" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Massachusetts</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Massachusetts</option>
-									<option t-if="sale_order.rental_state.id == 43" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Michigan</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Michigan</option>
-									<option t-if="sale_order.rental_state.id == 44" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Minnesota</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Minnesota</option>
-									<option t-if="sale_order.rental_state.id == 45" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Mississippi</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Mississippi</option>
-									<option t-if="sale_order.rental_state.id == 46" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Missouri</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Missouri</option>
-									<option t-if="sale_order.rental_state.id == 47" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Pennsylvania</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Pennsylvania</option>
-									<option t-if="sale_order.rental_state.id == 48" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Rhode Island</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Rhode Island</option>
-									<option t-if="sale_order.rental_state.id == 49" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">South Carolina</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">South Carolina</option>
-									<option t-if="sale_order.rental_state.id == 50" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">South Dakota</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">South Dakota</option>
-									<option t-if="sale_order.rental_state.id == 51" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Tennessee</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Tennessee</option>
-									<option t-if="sale_order.rental_state.id == 52" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Texas</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Texas</option>
-									<option t-if="sale_order.rental_state.id == 53" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Utah</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Utah</option>
-									<option t-if="sale_order.rental_state.id == 54" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Vermont</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Vermont</option>
-									<option t-if="sale_order.rental_state.id == 55" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Virginia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Virginia</option>
-									<option t-if="sale_order.rental_state.id == 56" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Washington</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Washington</option>
-									<option t-if="sale_order.rental_state.id == 57" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">West Virginia</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">West Virginia</option>
-									<option t-if="sale_order.rental_state.id == 58" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Wisconsin</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Wisconsin</option>
-									<option t-if="sale_order.rental_state.id == 59" selected="selected" t-attf-class="{{sale_order.rental_country}} us-op">Wyoming</option>
-									<option t-else="" t-attf-class="{{sale_order.rental_country}} us-op">Wyoming</option>
+									<option t-if="sale_order.rental_state.id == 9" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Alabama</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Alabama</option>
+									<option t-if="sale_order.rental_state.id == 10" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Alaska</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Alaska</option>
+									<option t-if="sale_order.rental_state.id == 11" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Arizona</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Arizona</option>
+									<option t-if="sale_order.rental_state.id == 12" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Arkansas</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Arkansas</option>
+									<option t-if="sale_order.rental_state.id == 13" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">California</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">California</option>
+									<option t-if="sale_order.rental_state.id == 14" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Colorado</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Colorado</option>
+									<option t-if="sale_order.rental_state.id == 15" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Connecticut</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Connecticut</option>
+									<option t-if="sale_order.rental_state.id == 16" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Delaware</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Delaware</option>
+									<option t-if="sale_order.rental_state.id == 17" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">District of Columbia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">District of Columbia</option>
+									<option t-if="sale_order.rental_state.id == 18" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Florida</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Florida</option>
+									<option t-if="sale_order.rental_state.id == 19" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Georgia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Georgia</option>
+									<option t-if="sale_order.rental_state.id == 20" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Hawaii</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Hawaii</option>
+									<option t-if="sale_order.rental_state.id == 21" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Idaho</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Idaho</option>
+									<option t-if="sale_order.rental_state.id == 22" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Illinois</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Illinois</option>
+									<option t-if="sale_order.rental_state.id == 23" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Indiana</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Indiana</option>
+									<option t-if="sale_order.rental_state.id == 24" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Iowa</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Iowa</option>
+									<option t-if="sale_order.rental_state.id == 25" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Kansas</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Kansas</option>
+									<option t-if="sale_order.rental_state.id == 26" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Kentucky</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Kentucky</option>
+									<option t-if="sale_order.rental_state.id == 27" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Louisiana</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Louisiana</option>
+									<option t-if="sale_order.rental_state.id == 28" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Maine</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Maine</option>
+									<option t-if="sale_order.rental_state.id == 29" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Montana</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Montana</option>
+									<option t-if="sale_order.rental_state.id == 30" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Nebraska</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Nebraska</option>
+									<option t-if="sale_order.rental_state.id == 31" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Nevada</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Nevada</option>
+									<option t-if="sale_order.rental_state.id == 32" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">New Hampshire</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">New Hampshire</option>
+									<option t-if="sale_order.rental_state.id == 33" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">New Jersey</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">New Jersey</option>
+									<option t-if="sale_order.rental_state.id == 34" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">New Mexico</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">New Mexico</option>
+									<option t-if="sale_order.rental_state.id == 35" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">New York</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">New York</option>
+									<option t-if="sale_order.rental_state.id == 36" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">North Carolina</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">North Carolina</option>
+									<option t-if="sale_order.rental_state.id == 37" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">North Dakota</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">North Dakota</option>
+									<option t-if="sale_order.rental_state.id == 38" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Ohio</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Ohio</option>
+									<option t-if="sale_order.rental_state.id == 39" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Oklahoma</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Oklahoma</option>
+									<option t-if="sale_order.rental_state.id == 40" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Oregon</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Oregon</option>
+									<option t-if="sale_order.rental_state.id == 41" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Maryland</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Maryland</option>
+									<option t-if="sale_order.rental_state.id == 42" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Massachusetts</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Massachusetts</option>
+									<option t-if="sale_order.rental_state.id == 43" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Michigan</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Michigan</option>
+									<option t-if="sale_order.rental_state.id == 44" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Minnesota</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Minnesota</option>
+									<option t-if="sale_order.rental_state.id == 45" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Mississippi</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Mississippi</option>
+									<option t-if="sale_order.rental_state.id == 46" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Missouri</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Missouri</option>
+									<option t-if="sale_order.rental_state.id == 47" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Pennsylvania</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Pennsylvania</option>
+									<option t-if="sale_order.rental_state.id == 48" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Rhode Island</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Rhode Island</option>
+									<option t-if="sale_order.rental_state.id == 49" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">South Carolina</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">South Carolina</option>
+									<option t-if="sale_order.rental_state.id == 50" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">South Dakota</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">South Dakota</option>
+									<option t-if="sale_order.rental_state.id == 51" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Tennessee</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Tennessee</option>
+									<option t-if="sale_order.rental_state.id == 52" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Texas</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Texas</option>
+									<option t-if="sale_order.rental_state.id == 53" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Utah</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Utah</option>
+									<option t-if="sale_order.rental_state.id == 54" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Vermont</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Vermont</option>
+									<option t-if="sale_order.rental_state.id == 55" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Virginia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Virginia</option>
+									<option t-if="sale_order.rental_state.id == 56" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Washington</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Washington</option>
+									<option t-if="sale_order.rental_state.id == 57" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">West Virginia</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">West Virginia</option>
+									<option t-if="sale_order.rental_state.id == 58" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Wisconsin</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Wisconsin</option>
+									<option t-if="sale_order.rental_state.id == 59" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Wyoming</option>
+									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Wyoming</option>
 								</select>
 								<br/>
 								<label for="country">
