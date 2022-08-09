@@ -17,13 +17,15 @@ odoo.define("proquotes.rental", function (require) {
 		},
 
 		async start() {
+			var addressBlock = document.getElementById("rental-address");
 			if (document.getElementById("new-address").checked) {
-				document.getElementById("rental-address").style.display =
-					"block";
+				addressBlock.style.display = "block";
+				console.log(addressBlock);
+				console.log(addressBlock.style.display);
 			} else {
-				console.log("Not Checked");
-				document.getElementById("rental-address").style.display =
-					"none";
+				addressBlock.style.display = "none";
+				console.log(addressBlock);
+				console.log(addressBlock.style.display);
 			}
 			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
