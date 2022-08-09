@@ -219,6 +219,7 @@
 								<span>State/Province</span>
 							</label>
 							<select id="state">
+								<option>Select</option>
 								<option class="can-op">Alberta</option>
 								<option class="can-op">British Columbia</option>
 								<option class="can-op">Manitoba</option>
@@ -289,8 +290,11 @@
 								<span>Country</span>
 							</label>
 							<select id="country">
-								<option>Canada</option>
-								<option>United States</option>
+								<option>Select</option>
+								<option t-if="sale_order.rental_country == 38" selected="selected">Canada</option>
+								<option t-else="">Canada</option>
+								<option t-if="sale_order.rental_country == 233" selected="selected">United States</option>
+								<option t-else="">United States</option>
 							</select>
 							<br/>
 							<label for="zip">
