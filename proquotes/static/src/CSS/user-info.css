@@ -62,6 +62,6 @@
 	display: block;
 }
 
-#user-info #new-address:checked+.rental-address {
+#user-info #new-address:checked+br+.rental-address {
 	display: block;
 }
