@@ -23,6 +23,7 @@ odoo.define("proquotes.rental", function (require) {
 				document.getElementById("new-address").checked
 					? "block"
 					: "none";
+			console.log("Started");
 		},
 
 		_newAddress: function (ev) {
