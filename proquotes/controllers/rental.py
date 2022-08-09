@@ -144,7 +144,6 @@ class RentalCustomerPortal(cPortal):
         stateCodes['West Virginia'] = 57
         stateCodes['Wisconsin'] = 58
         stateCodes['Wyoming'] = 59
-        stateCodes['Wyoming'] = 59
 
         order_sudo.rental_state = stateCodes[state]
 
