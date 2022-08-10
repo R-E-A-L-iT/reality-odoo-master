@@ -9,6 +9,11 @@ from odoo.tools.translate import _
 
 
 class sync_pricelist():
+
+    @staticmethod
+    def connect(name, sheet, database):
+        return sync_pricelist(name, sheet, database)
+
     def __init__(self, name, sheet, database):
         self.sheet = sheet
         self.database = database
