@@ -76,11 +76,12 @@ class sync(models.Model):
             if(str(sync_data[i][3]) != "TRUE"):
                 break
 
+            sheetName = str(sync_data[i][0])
             sheetIndex = int(sync_data[i][1])
             syncType = str(sync_data[i][2])
 
-            quit, msgr = self.getSyncValues(
-                psw, template_id, sheetIndex, syncType)
+            quit, msgr = self.getSyncValues(sheetName,
+                                            psw, template_id, sheetIndex, syncType)
             msg = msg + msgr
             i = i + 1
             if(quit):
@@ -91,7 +92,7 @@ class sync(models.Model):
         if(msg != ""):
             self.syncFail(msg)
 
-    def getSyncValues(self, psw, template_id, sheetIndex, syncType):
+    def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
         try:
             sheet = self.getDoc(psw, template_id, sheetIndex)
         except Exception as e:
@@ -120,7 +121,7 @@ class sync(models.Model):
             _logger.info("DoneCCP")
         elif(syncType == "Pricelist"):
             _logger.info("Pricelist")
-            syncer = sync_pricelist(sheet, self)
+            syncer = sync_pricelist(sheetName, sheet, self)
             quit, msg = syncer.sync()
             # quit, msg = self.syncPricelist(sheet)
             _logger.info("Done Pricelist")
@@ -806,13 +807,13 @@ class sync(models.Model):
                     page.arch_base = opener + \
                         sheet[i][columns["html"]] + closer
                 else:
-                    #msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                    # msg = self.buildMSG(msg, sheet, sheetWidth, i)
                     msg = ""
                     _logger.info(str(external_id) + " Page Not Created")
                 i = i + 1
             except Exception as e:
                 _logger.info(e)
-                #msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                # msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = ""
                 return True, msg
         return False, msg

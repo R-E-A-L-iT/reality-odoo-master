@@ -11,9 +11,10 @@ from odoo import models, fields, api
 
 
 class sync_pricelist():
-    def __init__(sheet, database):
+    def __init__(self, name, sheet, database):
         self.sheet = sheet
         self.database = database
+        self.name = name
 
         # follows same pattern
     def syncPricelist(self, sheet):
