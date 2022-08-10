@@ -6,18 +6,17 @@ from itertools import groupby
 import logging
 
 from odoo.tools.translate import _
+from odoo import models
 
 
-class sync_pricelist():
+class sync_pricelist(models.Model):
+    _name = "sync.sync"
+    _description = "Sync Pricelist"
 
-    @staticmethod
-    def connect(name, sheet, database):
-        return sync_pricelist(name, sheet, database)
-
-    def __init__(self, name, sheet, database):
+    def start_sync_pricelist(self, name, sheet):
         self.sheet = sheet
-        self.database = database
         self.name = name
+        return self.syncPriclist(sheet)
 
         # follows same pattern
     def syncPricelist(self, sheet):
@@ -181,18 +180,18 @@ class sync_pricelist():
 
     def pricelistProduct(self, sheet, sheetWidth, i, columns):
         external_id = str(sheet[i][columns["sku"]])
-        product_ids = self.database.env['ir.model.data'].search(
+        product_ids = self.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'product.template')])
         if(len(product_ids) > 0):
-            return self.updatePricelistProducts(self.database.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns), False
+            return self.updatePricelistProducts(self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns), False
         else:
             return self.createPricelistProducts(sheet, external_id, sheetWidth, i, columns), True
 
     def pricelistCAN(self, product, sheet, sheetWidth, i, columns):
         external_id = str(sheet[i][columns["canPLID"]])
-        pricelist_id = self.database.env['product.pricelist'].search(
+        pricelist_id = self.env['product.pricelist'].search(
             [('name', '=', 'CAN Pricelist')])[0].id
-        pricelist_item_ids = self.database.env['product.pricelist.item'].search(
+        pricelist_item_ids = self.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
@@ -202,7 +201,7 @@ class sync_pricelist():
                 pricelist_item.fixed_price = float(
                     sheet[i][columns["canPrice"]])
         else:
-            pricelist_item = self.database.env['product.pricelist.item'].create(
+            pricelist_item = self.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i][columns["canPrice"]]) != " " and str(sheet[i][columns["canPrice"]]) != ""):
@@ -210,9 +209,9 @@ class sync_pricelist():
 
     def pricelistUS(self, product, sheet, sheetWidth, i, columns):
         external_id = str(sheet[i][columns["usPLID"]])
-        pricelist_id = self.database.env['product.pricelist'].search(
+        pricelist_id = self.env['product.pricelist'].search(
             [('name', '=', 'USD Pricelist')])[0].id
-        pricelist_item_ids = self.database.env['product.pricelist.item'].search(
+        pricelist_item_ids = self.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
@@ -222,7 +221,7 @@ class sync_pricelist():
                 pricelist_item.fixed_price = sheet[i][columns["usPrice"]]
 
         else:
-            pricelist_item = self.database.env['product.pricelist.item'].create(
+            pricelist_item = self.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             pricelist_item.applied_on = "1_product"
             if(str(sheet[i][columns["usPrice"]]) != " " and str(sheet[i][columns["usPrice"]]) != ""):
@@ -284,36 +283,36 @@ class sync_pricelist():
         if(new == True):
             return
         else:
-            product_name = self.database.env['ir.translation'].search([('res_id', '=', product.id),
-                                                                       ('name', '=',
-                                                                        'product.template,name'),
-                                                                       ('lang', '=', lang)])
+            product_name = self.env['ir.translation'].search([('res_id', '=', product.id),
+                                                              ('name', '=',
+                                                               'product.template,name'),
+                                                              ('lang', '=', lang)])
             if(len(product_name) > 0):
                 product_name[-1].value = sheet[i][nameI]
 
             else:
-                product_name_new = self.database.env['ir.translation'].create({'name': 'product.template,name',
-                                                                               'lang': lang,
-                                                                               'res_id': product.id})[0]
+                product_name_new = self.env['ir.translation'].create({'name': 'product.template,name',
+                                                                      'lang': lang,
+                                                                      'res_id': product.id})[0]
                 product_name_new.value = sheet[i][nameI]
 
-            product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
-                                                                              ('name', '=', 'product.template,description_sale'),
-                                                                              ('lang', '=', lang)])
+            product_description = self.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                     ('name', '=', 'product.template,description_sale'),
+                                                                     ('lang', '=', lang)])
 
             if(len(product_description) > 0):
                 product_description[-1].value = sheet[i][descriptionI]
             else:
-                product_description_new = self.database.env['ir.translation'].create({'name': 'product.template,description_sale',
-                                                                                      'lang': lang,
-                                                                                      'res_id': product.id})[0]
+                product_description_new = self.env['ir.translation'].create({'name': 'product.template,description_sale',
+                                                                             'lang': lang,
+                                                                             'res_id': product.id})[0]
                 product_description_new.value = sheet[i][descriptionI]
             return
 
     def createPricelistProducts(self, sheet, external_id, sheetWidth, i, columns):
-        ext = self.database.env['ir.model.data'].create(
+        ext = self.env['ir.model.data'].create(
             {'name': external_id, 'model': "product.template"})[0]
-        product = self.database.env['product.template'].create(
+        product = self.env['product.template'].create(
             {'name': sheet[i][columns["eName"]]})[0]
         ext.res_id = product.id
         self.updatePricelistProducts(
