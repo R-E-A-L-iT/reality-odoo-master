@@ -10,7 +10,7 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 
 
-class sync_pricelist():
+class sync_pricelist(object):
     def __init__(self, name, sheet, database):
         self.sheet = sheet
         self.database = database
