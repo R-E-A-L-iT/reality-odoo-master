@@ -23,6 +23,8 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.translate import _
 from odoo import models, fields, api
 
+from . import sync_pricelist
+
 _logger = logging.getLogger(__name__)
 
 
@@ -120,9 +122,10 @@ class sync(models.Model):
         elif(syncType == "Pricelist"):
             _logger.info("Pricelist")
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
-            syncer = self.pool.get('sync_pricelist.sync_pricelist')
-            quit, msg = syncer.start_sync_pricelist(
-                name=sheetName, sheet=sheet)
+            syncer = sync_pricelist()
+            # quit, msg = syncer.syncPricelist(self, sheetName, sheet)
+            quit = False
+            msg = ""
             # quit, msg = self.syncPricelist(sheet)
             _logger.info("Done Pricelist")
         elif(syncType == "WebHTML"):

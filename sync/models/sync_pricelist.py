@@ -11,15 +11,13 @@ from odoo import models
 _logger = logging.getLogger(__name__)
 
 
-class sync_pricelist(models.Model):
-    _name = "sync_pricelist.sync_pricelist"
-    _description = "Sync Pricelist"
+class sync_pricelist():
 
-    @staticmethod
-    def start_sync_pricelist(name, sheet):
-        _logger.info("Test")
+    def __init__(self, name, sheet):
+        self.name = name
+        self.sheet = sheet
 
-        # follows same pattern
+# follows same pattern
     def syncPricelist(self, sheet):
         sheetWidth = 22
         i = 1
