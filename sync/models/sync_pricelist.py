@@ -10,7 +10,8 @@ from odoo import models
 
 
 class sync_pricelist(models.Model):
-    _name = "sync.sync"
+    _name = "sync.sheet"
+    _inherit = "sync.sheet"
     _description = "Sync Pricelist"
 
     def start_sync_pricelist(self, name, sheet):

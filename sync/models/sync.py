@@ -23,8 +23,6 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.translate import _
 from odoo import models, fields, api
 
-from . import sync_pricelist
-
 _logger = logging.getLogger(__name__)
 
 
