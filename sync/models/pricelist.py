@@ -5,9 +5,7 @@ from functools import partial
 from itertools import groupby
 import logging
 
-from odoo import api, fields, models
 from odoo.tools.translate import _
-from odoo import models, fields, api
 
 
 class sync_pricelist(object):
