@@ -8,6 +8,8 @@ import logging
 from odoo.tools.translate import _
 from odoo import models
 
+_logger = logging.getLogger(__name__)
+
 
 class sync_pricelist(models.Model):
     _name = "sync_pricelist.sync_pricelist"
@@ -15,8 +17,7 @@ class sync_pricelist(models.Model):
 
     @staticmethod
     def start_sync_pricelist(name, sheet):
-        syncer = sync_pricelist()
-        return syncer.syncPriclist(sheet)
+        _logger.info("Test")
 
         # follows same pattern
     def syncPricelist(self, sheet):
