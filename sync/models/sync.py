@@ -120,7 +120,8 @@ class sync(models.Model):
         elif(syncType == "Pricelist"):
             _logger.info("Pricelist")
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
-            quit, msg = self.start_sync_pricelist(sheetName, sheet)
+            # quit, msg = self.start_sync_pricelist(sheetName, sheet)
+            _logger.info(str(self.pool.get('sync_pricelist.sync_pricelist')))
             # quit, msg = self.syncPricelist(sheet)
             _logger.info("Done Pricelist")
         elif(syncType == "WebHTML"):
