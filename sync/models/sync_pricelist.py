@@ -8,7 +8,7 @@ import logging
 from odoo.tools.translate import _
 
 
-class sync_pricelist(object):
+class sync_pricelist():
     def __init__(self, name, sheet, database):
         self.sheet = sheet
         self.database = database
