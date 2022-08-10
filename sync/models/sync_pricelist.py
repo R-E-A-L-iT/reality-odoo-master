@@ -13,7 +13,7 @@ class sync_pricelist(models.Model):
     _name = "sync_pricelist.sync_pricelist"
     _description = "Sync Pricelist"
 
-    def __init__(name, sheet):
+    def __init__(self, name, sheet):
         self.name = name
         self.sheet = sheet
 
