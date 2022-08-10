@@ -13,13 +13,9 @@ class sync_pricelist(models.Model):
     _name = "sync_pricelist.sync_pricelist"
     _description = "Sync Pricelist"
 
-    def __init__(self, name, sheet):
-        self.name = name
-        self.sheet = sheet
-
     @staticmethod
     def start_sync_pricelist(name, sheet):
-        syncer = sync_pricelist(name, sheet)
+        syncer = sync_pricelist()
         return syncer.syncPriclist(sheet)
 
         # follows same pattern
