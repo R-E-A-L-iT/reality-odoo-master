@@ -21,3 +21,7 @@ class utilities:
         except Exception as e:
             _logger.info(e)
             return False
+
+    @staticmethod
+    def buildError(msg, sheetName, key, problem):
+        pass
