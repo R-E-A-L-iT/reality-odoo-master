@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from .utilities import utilities
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -127,27 +128,27 @@ class sync_pricelist:
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(self.sheet[i][columns["sku"]]))):
+            if(not utilities.check_id(str(self.sheet[i][columns["sku"]]))):
                 # msg = self.buildMSG(msg, sheetWidth, i)
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(self.sheet[i][columns["canPLID"]]))):
+            if(not utilities.check_id(str(self.sheet[i][columns["canPLID"]]))):
                 # msg = self.buildMSG(msg, sheetWidth, i)
                 i = i + 1
                 continue
 
-            if(not self.check_id(str(self.sheet[i][columns["usPLID"]]))):
+            if(not utilities.check_id(str(self.sheet[i][columns["usPLID"]]))):
                 # msg = self.buildMSG(msg, sheetWidth, i)
                 i = i + 1
                 continue
 
-            if(not self.check_price(self.sheet[i][columns["canPrice"]])):
+            if(not utilities.check_price(self.sheet[i][columns["canPrice"]])):
                 # msg = self.buildMSG(msg, sheetWidth, i)
                 i = i + 1
                 continue
 
-            if(not self.check_price(self.sheet[i][columns["usPrice"]])):
+            if(not utilities.check_price(self.sheet[i][columns["usPrice"]])):
                 # msg = self.buildMSG(msg, sheetWidth, i)
                 i = i + 1
                 continue
