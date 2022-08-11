@@ -11,7 +11,7 @@ from odoo import models
 _logger = logging.getLogger(__name__)
 
 
-class sync_pricelist():
+class sync_pricelist:
 
     def __init__(self, name, sheet):
         self.name = name
