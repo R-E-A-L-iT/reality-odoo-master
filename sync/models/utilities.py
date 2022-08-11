@@ -12,7 +12,7 @@ class utilities:
             return True
 
     @staticmethod
-    def check_price(self, price):
+    def check_price(price):
         if(price in ("", " ")):
             return True
         try:
