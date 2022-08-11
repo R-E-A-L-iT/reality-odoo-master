@@ -171,7 +171,7 @@ class sync_pricelist:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.info(e)
-                msg = self.buildMSG(msg, sheetWidth, i)
+                # msg = self.buildMSG(msg, sheetWidth, i)
                 return True, msg
 
             i = i + 1
