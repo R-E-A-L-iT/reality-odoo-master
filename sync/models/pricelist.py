@@ -119,7 +119,7 @@ class sync_pricelist:
             return True, msg
         r = ""
         msg = ""
-        msg = self.startTable(msg, sheetWidth)
+        # msg = self.startTable(msg, sheetWidth)
         while(True):
             if(i == len(self.sheet) or str(self.sheet[i][columns["continue"]]) != "TRUE"):
                 break
