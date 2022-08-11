@@ -123,7 +123,7 @@ class sync(models.Model):
             _logger.info("Pricelist")
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
             syncer = sync_pricelist(sheetName, sheet)
-            # quit, msg = syncer.syncPricelist(self, sheetName, sheet)
+            quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
             # quit, msg = self.syncPricelist(sheet)
