@@ -100,8 +100,8 @@
 
 				<div class="product_fold" style="width: 100%;">
 					<span style="float: left;" t-raw="description"></span>
-					<t t-set="val" t-value="line.product_id.canVal"/>
-					<span t-if="sale_order.is_rental" t-esc="cal"/>
+					<t t-set="val" t-value="line.product_id.cadVal"/>
+					<span t-if="sale_order.is_rental" t-esc="val"/>
 					<img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
 				</div>
 			</td>
