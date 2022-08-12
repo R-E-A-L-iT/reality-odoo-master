@@ -71,7 +71,10 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updatePriceTotalsEvent() {
-			console.log("Rental Event");
+			items = document.getElementsByClassName("quoteLineRow");
+			for (var i = 0; i < items.length; i++) {
+				console.log(items[i]);
+			}
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
