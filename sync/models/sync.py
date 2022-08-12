@@ -701,8 +701,8 @@ class sync(models.Model):
         _logger.info("id")
         product_ids = self.env['product.product'].search(
             [('name', '=', sheet[i][columns["name"]])])
-        _logger.info(str(len(product_ids)))
-        _logger.info(str(sheet[i][columns["name"]]))
+        # _logger.info(str(len(product_ids)))
+        # _logger.info(str(sheet[i][columns["name"]]))
 
 #         if(i == 8):
         _logger.info("Id Tupple")
