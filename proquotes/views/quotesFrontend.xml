@@ -81,10 +81,12 @@
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
-				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" t-esc="line.product_id.cadVal">
+				<td t-if="sale_order.partner_id.country_id.name == 'Canada'">
+					<span t-esc="line.product_id.cadVal"/>
 					<span>$</span>
 				</td>
-				<td t-else="" t-esc="line.product_id.usdVal">
+				<td t-else="">
+					<span t-esc="line.product_id.usdVal"/>
 					<span>$</span>
 				</td>
 			</t>
