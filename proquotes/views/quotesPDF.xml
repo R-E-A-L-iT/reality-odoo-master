@@ -143,7 +143,7 @@
 		<!--Remove Subtotal-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
 		<!--Change Total to Subtotal-->
-		<xpath expr="//tr/td/strong" position="replace">
+		<xpath expr="//div[@name=&quot;so_total_summary&quot;" position="replace">
 			<!-- <strong>Subtotal</strong> -->
 		</xpath>
 		<!--Apply HTML-->
