@@ -17,5 +17,8 @@ from odoo import models, fields, api
 
 class product(models.Model):
     _inherit = "product.template"
+    productType = fields.Selection([
+        ('equipment', "Equipment"),
+        ('software', "Software")], default="true", required=True, string="Equipment/Software")
     cadVal = fields.Monetary(string="Canadian Product Value")
     usdVal = fields.Monetary(string="United States Product Value")
