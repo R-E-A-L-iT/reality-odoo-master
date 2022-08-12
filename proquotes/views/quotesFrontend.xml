@@ -217,6 +217,7 @@
 					</div>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
+						<h1>Total Rental Value</h1>
 						<div>
 							<span>
 							Should equipment be shipped to a different address?
