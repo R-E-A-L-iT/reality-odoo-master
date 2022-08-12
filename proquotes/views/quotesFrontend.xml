@@ -436,6 +436,11 @@
 	<!--Sign Page-->
 	<template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
+		<xpath expr="//div[@id=&quot;portal_sale_content"] position="after">
+			<h1>Customer Acceptance</h1>
+			<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+		</xpath>
+
 		<xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
 			<span>
 				<strong t-field="sale_order.partner_id.name"/>
