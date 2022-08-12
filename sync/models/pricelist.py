@@ -145,7 +145,7 @@ class sync_pricelist:
             columnsMissing = True
 
         if(len(self.sheet[i]) != sheetWidth or columnsMissing):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>self.sheet width is: " + \
+            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + self.name + " width is: " + \
                 str(len(self.sheet[i])) + "</p>"
             self.database.sendSyncReport(msg)
             _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
