@@ -68,8 +68,13 @@
 			<span t-raw="name"></span>
 
 			<t t-set="description" t-value="line.name"/>
-			<span t-raw="description" style="margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
-			<span></span>
+			<style>
+				.description-root *{
+					margin-top: 0px !important;
+					margin-bottom: 0px !important;
+				}
+			</style>
+			<span class="description-root" t-raw="description" style="margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
 		</xpath>
 
 		<!--Hide Unselected-->
