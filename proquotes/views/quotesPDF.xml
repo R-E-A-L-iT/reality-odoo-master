@@ -3,9 +3,9 @@
 <odoo>
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<xpath expr="//div" position="after">
+		<!-- <xpath expr="//div" position="after">
 			<link rel="stylesheet" href="../static/src/CSS/pdf.css"/>
-		</xpath>
+		</xpath> -->
 
 		<!--         <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
             <span><p>Testing 1</p></span>
@@ -126,7 +126,7 @@
 			<span t-raw="name"></span>
 
 			<t t-set="description" t-value="line.name"/>
-			<span class="description-root" t-raw="description"/>
+			<span class="description-root" t-raw="description" style="display: none !important"/>
 		</xpath>
 	</template>
 </odoo>
