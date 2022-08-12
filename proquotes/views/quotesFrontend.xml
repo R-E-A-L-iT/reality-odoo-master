@@ -217,7 +217,6 @@
 					</div>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
-						<h1>Total Rental Value</h1>
 						<div>
 							<span>
 							Should equipment be shipped to a different address?
@@ -409,6 +408,7 @@
 						</div>
 						<br/>
 						<div>
+							<span id="total-rental-value">Total Rental Value</span>
 							<span>
 							Please upload your proof of insurance for the total amount in the comments below:
 							</span>
