@@ -65,8 +65,8 @@
 
 		<!--Hide Default Subtotal-->
 		<!--         <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-            <attribute name="style">display: none;</attribute>
-        </xpath> -->
+			<attribute name="style">display: none;</attribute>
+		</xpath> -->
 
 		<!--Mark Original Subtotal locations-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
@@ -82,16 +82,14 @@
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
-					<t t-if="line.product_id.productType == 'equipment'">
-						<span t-esc="line.product_id.cadVal" class="text-right itemValue"/>
-					$
-					</t>
+					<!-- <t t-if="line.product_id.productType == 'equipment'"> -->
+					<span t-esc="line.product_id.cadVal" class="text-right itemValue"/>
+					$							
 				</td>
 				<td t-else="" class="text-right">
-					<t t-if="line.product_id.productType == 'equipment'">
-						<span t-esc="line.product_id.usdVal" class="text-right itemValue"/>
+					<!-- <t t-if="line.product_id.productType == 'equipment'"> -->
+					<span t-esc="line.product_id.usdVal" class="text-right itemValue"/>
 					$
-					</t>
 				</td>
 			</t>
 		</xpath>
@@ -455,7 +453,7 @@
 			<div class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton" t-att-href="sale_order.get_portal_url(report_type='pdf', download=True)" title="Download">
 					<i class="fa fa-download"></i>
-                     Download</a>
+					 Download</a>
 			</div>
 		</xpath>
 
