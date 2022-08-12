@@ -78,6 +78,7 @@ class sync_pricelist:
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Can Rental Missing")
+            _logger.info(msg)
             columnsMissing = True
 
         if("US Rental" in self.sheet[0]):
