@@ -24,6 +24,6 @@ class utilities:
 
     @staticmethod
     def buildMSG(msg: str, sheetName: str, key: str, problem: str):
-        msg = msg + "Error: " + sheetName + \
-            " | Item: " + key + " | " + problem + "\n"
+        msg = msg + "<p>Error: " + sheetName + \
+            " | Item: " + key + " | " + problem + "</p>\n"
         return msg
