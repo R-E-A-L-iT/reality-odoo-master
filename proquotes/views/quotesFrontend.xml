@@ -408,7 +408,10 @@
 						</div>
 						<br/>
 						<div>
-							<span id="total-rental-value">Total Rental Value</span>
+							<span>
+								Total Rental Value: <span id="total-rental-value"></span>
+							</span>
+							<br/>
 							<span>
 							Please upload your proof of insurance for the total amount in the comments below:
 							</span>
