@@ -3,3 +3,4 @@
 from . import models
 from . import invoiceModels
 from . import templates
+from . import product
