@@ -436,7 +436,7 @@
 	<!--Sign Page-->
 	<template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
-		<xpath expr="//div[@id=&quot;portal_sale_content&quot;]" position="after">
+		<xpath expr="//div[@if=&quot;sale_order.has_to_be_signed(True) or sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<h1>Customer Acceptance</h1>
 			<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
 		</xpath>
