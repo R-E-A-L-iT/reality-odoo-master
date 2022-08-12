@@ -239,8 +239,8 @@ class sync_pricelist:
                     i = i + 1
                     continue
 
-                self.pricelist(product, "canPrice", "canPLID", i, columns)
-                self.pricelist(product, "usPrice", "usPLID", i, columns)
+                self.pricelist(product, "canPrice", "canPricelst", i, columns)
+                self.pricelist(product, "usPrice", "usPricelist", i, columns)
 
                 if(new):
                     _logger.info("Blank StringRep")
