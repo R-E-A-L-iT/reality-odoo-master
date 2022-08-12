@@ -144,7 +144,7 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
 		<!--Change Total to Subtotal-->
 		<xpath expr="//tr/td/strong" position="replace">
-			<strong>Subtotal</strong>
+			<!-- <strong>Subtotal</strong> -->
 		</xpath>
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
