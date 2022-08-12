@@ -17,5 +17,5 @@ from odoo import models, fields, api
 
 class product(models.Model):
     _inherit = "product.template"
-    cadVal = fields.Monetary(string="Canadian Product Value")
+    cadVal = fields.Float(digits=(10, 2), string="Canadian Product Value")
     usdVal = fields.Monetary(string="United States Product Value")
