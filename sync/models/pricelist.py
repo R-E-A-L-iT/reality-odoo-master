@@ -149,7 +149,7 @@ class sync_pricelist:
                 str(len(self.sheet[i])) + " Expected" + \
                 str(sheetWidth) + "</p>\n" + msg
             self.database.sendSyncReport(msg)
-            _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
+            _logger.info(msg)
             return True, msg
         r = ""
         # msg = self.startTable(msg, sheetWidth)
