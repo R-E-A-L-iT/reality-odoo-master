@@ -8,9 +8,8 @@
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
 			<style>
 				.footer-root * {
-					margin-top: 0px !important;
-					margin-bottom: 0px !important;
-					display: none !important;
+					margin-top: 0px;
+					margin-bottom: 0px;
 				}
 			</style>
 		</xpath>
