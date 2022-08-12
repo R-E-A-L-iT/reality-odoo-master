@@ -144,6 +144,34 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD PL ID Missing")
             columnsMissing = True
 
+        if("CAN R SEL" in self.sheet[0]):
+            columns["canrPricelist"] = self.sheet[0].index("CAN R SEL")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "USD PL SEL Missing")
+            columnsMissing = True
+
+        if("CAN R ID" in self.sheet[0]):
+            columns["canRID"] = self.sheet[0].index("CAN R ID")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "CAN R ID Missing")
+            columnsMissing = True
+
+        if("US R SEL" in self.sheet[0]):
+            columns["usrPricelist"] = self.sheet[0].index("US R SEL")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "US R SEL Missing")
+            columnsMissing = True
+
+        if("US R ID" in self.sheet[0]):
+            columns["usRID"] = self.sheet[0].index("US R ID")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "USD R ID Missing")
+            columnsMissing = True
+
         if("Continue" in self.sheet[0]):
             columns["continue"] = self.sheet[0].index("Continue")
         else:
