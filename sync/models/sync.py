@@ -694,23 +694,23 @@ class sync(models.Model):
             return
 
 #         if(i == 8):
-        _logger.info("name")
+        # _logger.info("name")
         ccp_item.name = sheet[i][columns["eidsn"]]
 
 #         if(i == 8):
-        _logger.info("id")
+        # _logger.info("id")
         product_ids = self.env['product.product'].search(
             [('name', '=', sheet[i][columns["name"]])])
         # _logger.info(str(len(product_ids)))
         # _logger.info(str(sheet[i][columns["name"]]))
 
 #         if(i == 8):
-        _logger.info("Id Tupple")
+        # _logger.info("Id Tupple")
         ccp_item.product_id = product_ids[-1].id
 
 
 #         if(i == 8):
-        _logger.info("owner")
+        # _logger.info("owner")
         owner_ids = self.env['ir.model.data'].search(
             [('name', '=', sheet[i][columns["ownerId"]]), ('model', '=', 'res.partner')])
         if (len(owner_ids) == 0):
@@ -718,14 +718,14 @@ class sync(models.Model):
 
 
 #         if(i == 8):
-        _logger.info("Owner Tupple")
+        # _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
         if(sheet[i][columns["date"]] != "FALSE"):
             ccp_item.expire = sheet[i][columns["date"]]
         else:
             ccp_item.expire = None
 
-        _logger.info("CCP String Rep")
+        # _logger.info("CCP String Rep")
         ccp_item.stringRep = str(sheet[i][:])
 
     # follows same pattern
@@ -799,10 +799,10 @@ class sync(models.Model):
 
             try:
                 external_id = str(sheet[i][columns["id"]])
-                _logger.info(external_id)
+                # _logger.info(external_id)
                 pageIds = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
-                _logger.info(pageIds)
+                # _logger.info(pageIds)
                 if(len(pageIds) > 0):
                     page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
                     opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
