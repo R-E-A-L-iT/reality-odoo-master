@@ -89,11 +89,14 @@ odoo.define("proquotes.price", function (require) {
 				}
 
 				if (include) {
-					total += parseInt(
-						items[i].getElementsByClassName("itemValue")[0]
-							.innerHTML
-					);
-					console.log(items[i]);
+					if (
+						items[i].getElementsByClassName("itemValue").length > 0
+					) {
+						total += parseInt(
+							items[i].getElementsByClassName("itemValue")[0]
+								.innerHTML
+						);
+					}
 				}
 			}
 
