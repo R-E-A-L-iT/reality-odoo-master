@@ -68,7 +68,7 @@
 			<span t-raw="name"></span>
 
 			<t t-set="description" t-value="line.name"/>
-			<span t-raw="description" style="display: none !important"/>
+			<span t-raw="description" style="margin-top: 0px; margin-bottom: 0px; font-size: 0.5rem;"/>
 			<span></span>
 		</xpath>
 
