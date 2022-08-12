@@ -3,10 +3,9 @@
 <odoo>
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<!--         <xpath expr="//div" position="after">
-            <?xml-stylesheet href="../static/src/CSS/quotePDF.css"?>
-
-        </xpath> -->
+		<xpath expr="//div" position="after">
+			<?xml-stylesheet href="../static/src/CSS/pdf.css"?>
+		</xpath>
 
 		<!--         <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
             <span><p>Testing 1</p></span>
