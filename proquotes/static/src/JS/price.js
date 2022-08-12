@@ -78,7 +78,20 @@ odoo.define("proquotes.price", function (require) {
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
-				console.log(items[i]);
+				var input = items[i].getElementsByTagName("input");
+				var include = true;
+				if (input.length > 0) {
+					if (input.type == "checkbox") {
+						if (input.value != true) {
+							include == false;
+						}
+					}
+				}
+
+				if (include) {
+					total +=
+						items[i].getElementsByClassName("itemValue").innerHTML;
+				}
 			}
 
 			totalLanding.innerHTML = total + "$";
