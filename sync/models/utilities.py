@@ -26,4 +26,4 @@ class utilities:
     def buildMSG(msg, sheetName, key, problem):
         msg = msg + "Error: " + str(sheetName) + \
             " | Item: " + str(key) + " | " + str(problem) + "\n"
-        return msg
+        return str(msg)
