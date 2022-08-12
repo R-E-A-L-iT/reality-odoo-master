@@ -74,7 +74,7 @@
 		</xpath>
 
 		<!-- Rental Item Value Head -->
-		<xpath expr="//section[@id=&quot;details&quot;]//th[1]" position="before">
+		<xpath expr="//section[@id=&quot;details&quot;]//th[1]" position="after">
 			<th class="text-right" t-if="sale_order.is_rental == True">Product Value</th>
 		</xpath>
 
