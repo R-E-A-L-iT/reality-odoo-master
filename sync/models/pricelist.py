@@ -239,7 +239,7 @@ class sync_pricelist:
                     i = i + 1
                     continue
 
-                self.pricelistCAN(product, "canPrice", "canPLID", i, columns)
+                self.pricelist(product, "canPrice", "canPLID", i, columns)
                 self.pricelistUS(product, sheetWidth, i, columns)
 
                 if(new):
@@ -264,10 +264,10 @@ class sync_pricelist:
         else:
             return self.createPricelistProducts(external_id, sheetWidth, i, columns), True
 
-    def pricelistCAN(self, product, priceName, pricelistId, i, columns):
+    def pricelist(self, product, priceName, pricelistId, i, columns):
         external_id = str(self.sheet[i][columns[pricelistId]])
         pricelist_id = self.database.env['product.pricelist'].search(
-            [('name', '=', 'CAN Pricelist')])[0].id
+            [('name', '=', external_id)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0):
