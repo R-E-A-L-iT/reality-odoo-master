@@ -299,7 +299,7 @@ class sync_pricelist:
             product.price = self.sheet[i][columns["canPrice"]]
             product.cadVal = self.sheet[i][columns["canPrice"]]
 
-            if(str(self.sheet[i][columns[usPrice]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
+            if(str(self.sheet[i][columns["usPrice"]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
                 product.usdVal = self.sheet[i][columns["usPrice"]]
 
 
