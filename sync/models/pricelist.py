@@ -95,7 +95,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "Publish_CA Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("Publish_USA" in self.sheet[0]):
             columns["usPublish"] = self.sheet[0].index("Publish_USA")
         else:
@@ -103,7 +102,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "Publish_USA Missing")
             columnsMissing = True
 
-        _logger.info("Before:" + msg)
         if("Can_Be_Sold" in self.sheet[0]):
             columns["canBeSold"] = self.sheet[0].index("Can_Be_Sold")
         else:
@@ -111,7 +109,7 @@ class sync_pricelist:
                 msg, self.name, "Header", "Can_Be_Sold Missing")
             columnsMissing = True
 
-        _logger.info("After:" + msg)
+        _logger.info("Before:" + msg)
         if("E-Commerce_Website_Code" in self.sheet[0]):
             msg = columns["ecommerceWebsiteCode"] = self.sheet[0].index(
                 "E-Commerce_Website_Code")
@@ -119,6 +117,7 @@ class sync_pricelist:
             msg = utilities.buildMSG(msg, self.name, "Header",
                                      "E-Commerce_Website_Code Missing")
             columnsMissing = True
+        _logger.info("After:" + msg)
 
         _logger.info(msg)
         if("CAN PL SEL" in self.sheet[0]):
