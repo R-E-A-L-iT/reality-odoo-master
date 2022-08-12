@@ -239,7 +239,7 @@ class sync_pricelist:
                     i = i + 1
                     continue
 
-                self.pricelistCAN(product, sheetWidth, i, columns)
+                self.pricelistCAN(product, "canPrice", "canPLID", i, columns)
                 self.pricelistUS(product, sheetWidth, i, columns)
 
                 if(new):
@@ -264,8 +264,8 @@ class sync_pricelist:
         else:
             return self.createPricelistProducts(external_id, sheetWidth, i, columns), True
 
-    def pricelistCAN(self, product, sheetWidth, i, columns):
-        external_id = str(self.sheet[i][columns["canPLID"]])
+    def pricelistCAN(self, product, priceName, pricelistId, i, columns):
+        external_id = str(self.sheet[i][columns[pricelistId]])
         pricelist_id = self.database.env['product.pricelist'].search(
             [('name', '=', 'CAN Pricelist')])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
@@ -274,15 +274,15 @@ class sync_pricelist:
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
-            if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
+            if(str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
                 pricelist_item.fixed_price = float(
-                    self.sheet[i][columns["canPrice"]])
+                    self.sheet[i][columns[priceName]])
         else:
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             pricelist_item.applied_on = "1_product"
-            if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
-                pricelist_item.fixed_price = self.sheet[i][columns["canPrice"]]
+            if(str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+                pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
 
     def pricelistUS(self, product, sheetWidth, i, columns):
         external_id = str(self.sheet[i][columns["usPLID"]])
