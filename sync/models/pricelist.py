@@ -109,17 +109,13 @@ class sync_pricelist:
                 msg, self.name, "Header", "Can_Be_Sold Missing")
             columnsMissing = True
 
-        _logger.info("Before:" + msg)
         if("E-Commerce_Website_Code" in self.sheet[0]):
-            msg = columns["ecommerceWebsiteCode"] = self.sheet[0].index(
+            columns["ecommerceWebsiteCode"] = self.sheet[0].index(
                 "E-Commerce_Website_Code")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header",
                                      "E-Commerce_Website_Code Missing")
             columnsMissing = True
-        _logger.info("After:" + msg)
-
-        _logger.info(msg)
         if("CAN PL SEL" in self.sheet[0]):
             columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
         else:
@@ -127,7 +123,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "CAN PL SEL Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("CAN PL ID" in self.sheet[0]):
             columns["canPLID"] = self.sheet[0].index("CAN PL ID")
         else:
@@ -135,7 +130,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "CAN PL ID Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("USD PL SEL" in self.sheet[0]):
             columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
         else:
@@ -143,7 +137,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD PL SEL Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("US PL ID" in self.sheet[0]):
             columns["usPLID"] = self.sheet[0].index("US PL ID")
         else:
@@ -151,7 +144,6 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD PL ID Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("Continue" in self.sheet[0]):
             columns["continue"] = self.sheet[0].index("Continue")
         else:
@@ -159,16 +151,13 @@ class sync_pricelist:
                 msg, self.name, "Header", "Continue Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if("Valid" in self.sheet[0]):
             columns["valid"] = self.sheet[0].index("Valid")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
             columnsMissing = True
 
-        _logger.info(msg)
         if(len(self.sheet[i]) != sheetWidth or columnsMissing):
-            _logger.info(msg)
             msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + \
                 str(len(self.sheet[i])) + " Expected " + \
                 str(sheetWidth) + "</p>\n" + msg
