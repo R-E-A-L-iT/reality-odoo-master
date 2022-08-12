@@ -23,5 +23,7 @@ class utilities:
             return False
 
     @staticmethod
-    def buildError(msg, sheetName, key, problem):
-        pass
+    def buildMSG(msg, sheetName, key, problem):
+        msg = msg + "Error: " + str(sheetName) + \
+            " | Item: " + str(key) + " | " + str(problem) + "\n"
+        return msg

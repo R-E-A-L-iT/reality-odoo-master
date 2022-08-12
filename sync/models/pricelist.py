@@ -26,45 +26,55 @@ class sync_pricelist:
 
         columns = dict()
         columnsMissing = False
-
+        msg = ""
         if("SKU" in self.sheet[0]):
             columns["sku"] = self.sheet[0].index("SKU")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "SKU Missing")
             columnsMissing = True
 
         if("EN-Name" in self.sheet[0]):
             columns["eName"] = self.sheet[0].index("EN-Name")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "EN-Name Missing")
             columnsMissing = True
 
         if("EN-Description" in self.sheet[0]):
             columns["eDisc"] = self.sheet[0].index("EN-Description")
         else:
+            utilities.buildMSG(msg, self.name, "Header",
+                               "EN-Description Missing")
             columnsMissing = True
 
         if("FR-Name" in self.sheet[0]):
             columns["fName"] = self.sheet[0].index("FR-Name")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "FR-Name Missing")
             columnsMissing = True
 
         if("FR-Description" in self.sheet[0]):
             columns["fDisc"] = self.sheet[0].index("FR-Description")
         else:
+            utilities.buildMSG(msg, self.name, "Header",
+                               "FR-Description Missing")
             columnsMissing = True
 
         if("Price" in self.sheet[0]):
             columns["canPrice"] = self.sheet[0].index("Price")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "Price Missing")
             columnsMissing = True
 
         if("USD Price" in self.sheet[0]):
             columns["usPrice"] = self.sheet[0].index("USD Price")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "USD Missing")
             columnsMissing = True
 
         if("Publish_CA" in self.sheet[0]):
             columns["canPublish"] = self.sheet[0].index("Publish_CA")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "Publish_CA Missing")
             columnsMissing = True
 
         if("Publish_USA" in self.sheet[0]):
@@ -75,42 +85,50 @@ class sync_pricelist:
         if("Can_Be_Sold" in self.sheet[0]):
             columns["canBeSold"] = self.sheet[0].index("Can_Be_Sold")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "Can_Be_Sold Missing")
             columnsMissing = True
 
         if("E-Commerce_Website_Code" in self.sheet[0]):
             columns["ecommerceWebsiteCode"] = self.sheet[0].index(
                 "E-Commerce_Website_Code")
         else:
+            utilities.buildMSG(msg, self.name, "Header",
+                               "E-Commerce_Website_Code Missing")
             columnsMissing = True
 
         if("CAN PL SEL" in self.sheet[0]):
             columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "CAN PL SEL Missing")
             columnsMissing = True
 
         if("CAN PL ID" in self.sheet[0]):
             columns["canPLID"] = self.sheet[0].index("CAN PL ID")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "CAN PL ID Missing")
             columnsMissing = True
 
         if("USD PL SEL" in self.sheet[0]):
             columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
             columnsMissing = True
 
         if("US PL ID" in self.sheet[0]):
-            columns["usPLID"] = self.sheet[0].index("US PL ID")
+            columns["usPLID"] = self.sheet[0].index("US PL ID Missing")
         else:
             columnsMissing = True
 
         if("Continue" in self.sheet[0]):
             columns["continue"] = self.sheet[0].index("Continue")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "Continue Missing")
             columnsMissing = True
 
         if("Valid" in self.sheet[0]):
             columns["valid"] = self.sheet[0].index("Valid")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
             columnsMissing = True
 
         if(len(self.sheet[i]) != sheetWidth or columnsMissing):
@@ -120,7 +138,6 @@ class sync_pricelist:
             _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
             return True, msg
         r = ""
-        msg = ""
         # msg = self.startTable(msg, sheetWidth)
         while(True):
             if(i == len(self.sheet) or str(self.sheet[i][columns["continue"]]) != "TRUE"):
@@ -129,28 +146,34 @@ class sync_pricelist:
                 i = i + 1
                 continue
 
-            if(not utilities.check_id(str(self.sheet[i][columns["sku"]]))):
-                # msg = self.buildMSG(msg, sheetWidth, i)
+            key = self.sheet[i][columns["sku"]]
+            if(not utilities.check_id(str(key))):
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "Key Error")
                 i = i + 1
                 continue
 
             if(not utilities.check_id(str(self.sheet[i][columns["canPLID"]]))):
-                # msg = self.buildMSG(msg, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "Canada Pricelist ID Invalid")
                 i = i + 1
                 continue
 
             if(not utilities.check_id(str(self.sheet[i][columns["usPLID"]]))):
-                # msg = self.buildMSG(msg, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "US Pricelist ID Invalid")
                 i = i + 1
                 continue
 
             if(not utilities.check_price(self.sheet[i][columns["canPrice"]])):
-                # msg = self.buildMSG(msg, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "Canada Price Invalid")
                 i = i + 1
                 continue
 
             if(not utilities.check_price(self.sheet[i][columns["usPrice"]])):
-                # msg = self.buildMSG(msg, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "US Price Invalid")
                 i = i + 1
                 continue
 
@@ -172,11 +195,9 @@ class sync_pricelist:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.info(e)
-                # msg = self.buildMSG(msg, sheetWidth, i)
                 return True, msg
 
             i = i + 1
-        # msg = self.endTable(msg)
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
