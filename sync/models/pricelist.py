@@ -115,8 +115,9 @@ class sync_pricelist:
             columnsMissing = True
 
         if("US PL ID" in self.sheet[0]):
-            columns["usPLID"] = self.sheet[0].index("US PL ID Missing")
+            columns["usPLID"] = self.sheet[0].index("US PL ID")
         else:
+            utilities.buildMSG(msg, self.name, "Header", "USD PL ID Missing")
             columnsMissing = True
 
         if("Continue" in self.sheet[0]):
