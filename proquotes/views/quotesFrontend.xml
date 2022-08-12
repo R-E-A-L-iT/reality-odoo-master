@@ -102,8 +102,8 @@
 					<input t-else="" type="checkbox" class="priceChange"/>
 				</t>
 				<t t-else="">
-					<input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"/>
-					<input t-else="" type="radio" style="display: none;"/>
+					<input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange"/>
+					<input t-else="" type="radio" style="display: none;" class="priceChange"/>
 				</t>
 
 				<!--Line Id For User Selection-->
