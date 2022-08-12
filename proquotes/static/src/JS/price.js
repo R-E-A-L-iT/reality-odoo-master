@@ -71,10 +71,17 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updatePriceTotalsEvent() {
+			var totalLanding = document.getElementById("total-rental-value");
+			if (totalLanding == undefined) {
+				return;
+			}
+			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
 				console.log(items[i]);
 			}
+
+			totalLanding.innerHTML = total + "$";
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
