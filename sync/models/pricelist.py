@@ -235,9 +235,9 @@ class sync_pricelist:
             try:
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
-                if(product.stringRep == str(self.sheet[i][:])):
-                    i = i + 1
-                    continue
+                # if(product.stringRep == str(self.sheet[i][:])):
+                #     i = i + 1
+                #     continue
 
                 self.pricelist(product, "canPrice",
                                "CAN Pricelist", i, columns)
@@ -289,14 +289,18 @@ class sync_pricelist:
 
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
 
-        if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != ""):
-            return product
+        # if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != ""):
+        #     return product
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
 
         if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
             product.price = self.sheet[i][columns["canPrice"]]
+            product.canVal = self.sheet[i][columns["canPrice"]]
+
+            if(str(self.sheet[i][columns[usPrice]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
+                product.usdVal = self.sheet[i][columns["usPrice"]]
 
 
 #         _logger.info(str(self.sheet[i][7]))
