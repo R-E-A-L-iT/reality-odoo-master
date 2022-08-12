@@ -240,7 +240,7 @@ class sync_pricelist:
                     continue
 
                 self.pricelist(product, "canPrice", "canPLID", i, columns)
-                self.pricelistUS(product, sheetWidth, i, columns)
+                self.pricelist(product, "usPrice", "usPLID", i, columns)
 
                 if(new):
                     _logger.info("Blank StringRep")
@@ -283,26 +283,6 @@ class sync_pricelist:
             pricelist_item.applied_on = "1_product"
             if(str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
                 pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
-
-    def pricelistUS(self, product, sheetWidth, i, columns):
-        external_id = str(self.sheet[i][columns["usPLID"]])
-        pricelist_id = self.database.env['product.pricelist'].search(
-            [('name', '=', 'USD Pricelist')])[0].id
-        pricelist_item_ids = self.database.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        if(len(pricelist_item_ids) > 0):
-            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
-            pricelist_item.product_tmpl_id = product.id
-            pricelist_item.applied_on = "1_product"
-            if(str(self.sheet[i][columns["usPrice"]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
-                pricelist_item.fixed_price = self.sheet[i][columns["usPrice"]]
-
-        else:
-            pricelist_item = self.database.env['product.pricelist.item'].create(
-                {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-            pricelist_item.applied_on = "1_product"
-            if(str(self.sheet[i][columns["usPrice"]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
-                pricelist_item.fixed_price = self.sheet[i][columns["usPrice"]]
 
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
 
