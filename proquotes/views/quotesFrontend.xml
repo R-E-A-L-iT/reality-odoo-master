@@ -79,12 +79,12 @@
 		</xpath>
 
 		<!-- Rental Item Value -->
-		<!-- <xpath expr="">
+		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country.name == 'Canada'" t-esc="line.product_id.cadVal"></td>
 				<td t-else="" t-else="" t-esc="line.product_id.usdVal"></td>
 			</t>
-		</xpath> -->
+		</xpath>
 
 		<!--Apply HTML tags to description and Names And Add User Control Elements-->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
