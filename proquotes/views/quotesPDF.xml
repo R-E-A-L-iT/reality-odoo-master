@@ -101,8 +101,8 @@
 		<!--Add Signature-->
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
 			<div>
-				<h1 class="white-text">Customer Acceptance</h1>
-				<p class="white-text">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+				<h1>Customer Acceptance</h1>
+				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
 			</div>
 			<div>
 				<span style="height: 40px"> PO #: ____________________________________</span>
