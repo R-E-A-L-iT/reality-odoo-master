@@ -43,7 +43,7 @@ class sync_pricelist:
             columns["eDisc"] = self.sheet[0].index("EN-Description")
         else:
             utilities.buildMSG(msg, self.name, "Header",
-                               "EN-Description Missing")
+                                               "EN-Description Missing")
             columnsMissing = True
 
         if("FR-Name" in self.sheet[0]):
@@ -56,7 +56,7 @@ class sync_pricelist:
             columns["fDisc"] = self.sheet[0].index("FR-Description")
         else:
             utilities.buildMSG(msg, self.name, "Header",
-                               "FR-Description Missing")
+                                               "FR-Description Missing")
             columnsMissing = True
 
         if("Price" in self.sheet[0]):
@@ -69,6 +69,18 @@ class sync_pricelist:
             columns["usPrice"] = self.sheet[0].index("USD Price")
         else:
             utilities.buildMSG(msg, self.name, "Header", "USD Missing")
+            columnsMissing = True
+
+        if("Can Rental" in self.sheet[0]):
+            columns["canRental"] = self.sheet[0].index("Can Rental")
+        else:
+            utilities.buildMSG(msg, self.name, "Header", "Can Rental Missing")
+            columnsMissing = True
+
+        if("US Rental" in self.sheet[0]):
+            columns["usRental"] = self.sheet[0].index("US Rental")
+        else:
+            utilities.buildMSG(msg, self.name, "Header", "US Rental Missing")
             columnsMissing = True
 
         if("Publish_CA" in self.sheet[0]):
@@ -93,7 +105,7 @@ class sync_pricelist:
                 "E-Commerce_Website_Code")
         else:
             utilities.buildMSG(msg, self.name, "Header",
-                               "E-Commerce_Website_Code Missing")
+                                               "E-Commerce_Website_Code Missing")
             columnsMissing = True
 
         if("CAN PL SEL" in self.sheet[0]):
