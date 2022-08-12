@@ -83,7 +83,7 @@ odoo.define("proquotes.price", function (require) {
 				if (input.length > 0) {
 					if (input.type == "checkbox") {
 						if (input.value != true) {
-							include == false;
+							include = false;
 						}
 					}
 				}
@@ -98,7 +98,6 @@ odoo.define("proquotes.price", function (require) {
 							.innerHTML
 					);
 				}
-				console.log(total);
 			}
 
 			totalLanding.innerHTML = total + "$";
