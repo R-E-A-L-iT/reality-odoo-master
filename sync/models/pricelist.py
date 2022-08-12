@@ -239,8 +239,12 @@ class sync_pricelist:
                     i = i + 1
                     continue
 
-                self.pricelist(product, "canPrice", "canPricelst", i, columns)
-                self.pricelist(product, "usPrice", "usPricelist", i, columns)
+                self.pricelist(product, "canPrice",
+                               "CAN Pricelist", i, columns)
+                self.pricelist(product, "canRental",
+                               "CAN RENTAL", i, columns)
+                self.pricelist(product, "usPrice", "USD Pricelist", i, columns)
+                self.pricelist(product, "usRental", "USD RENTAL", i, columns)
 
                 if(new):
                     _logger.info("Blank StringRep")
@@ -264,10 +268,9 @@ class sync_pricelist:
         else:
             return self.createPricelistProducts(external_id, sheetWidth, i, columns), True
 
-    def pricelist(self, product, priceName, pricelistId, i, columns):
-        external_id = str(self.sheet[i][columns[pricelistId]])
+    def pricelist(self, product, priceName, pricelistName, i, columns):
         pricelist_id = self.database.env['product.pricelist'].search(
-            [('name', '=', external_id)])[0].id
+            [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if(len(pricelist_item_ids) > 0):
