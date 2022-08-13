@@ -46,7 +46,7 @@
 	align-items: center;
 }
 
-#user-info .englishMode+#new-address:checked:before {
+#user-info .english-mode+#new-address:checked:before {
 	content: "Yes";
 }
 
