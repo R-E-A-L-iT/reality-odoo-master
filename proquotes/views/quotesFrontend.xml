@@ -220,6 +220,7 @@
 							Should equipment be shipped to a different address?
 							</span>
 							<br/>
+							<span class="english-mode"></span>
 							<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
 							<input t-else="" id="new-address" type="checkbox"/>
 							<br/>
