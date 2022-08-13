@@ -203,10 +203,10 @@
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
 			<section id="user-info">
 				<form autocomplete="on">
-					<div id="POinputLabel">
+					<label id="POinputLabel">
 						<span>Please insert your PO number here:</span>
 						<br />
-					</div>
+					</label>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
 					<br/>
 					<div>
