@@ -46,8 +46,12 @@
 	align-items: center;
 }
 
-#user-info #new-address:checked:before {
+#user-info .english-mode+#new-address:checked:before {
 	content: "Yes";
+}
+
+#user-info .french-mode+#new-address:checked:before {
+	content: "Oui";
 }
 
 #user-info #new-address+br {
