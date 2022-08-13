@@ -122,7 +122,7 @@
                 </xpath> -->
 			</div>
 		</xpath>
-		<xpath expr="tr/td/strong" position="replace">
+		<xpath expr="/tr/td/strong" position="replace">
 			<strong>Subtotal</strong>
 		</xpath>
 	</template>
