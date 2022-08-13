@@ -28,15 +28,18 @@
             'proquotes/static/src/CSS/pdf.css',
             'proquotes/static/src/CSS/user-info.css',
             'proquotes/static/src/CSS/login.css',
-            'proquotes/static/src/CSS/quoteStyle.css',
+            # 'proquotes/static/src/CSS/quoteStyle.css',
             'proquotes/static/src/JS/fold.js',
             'proquotes/static/src/JS/poNumber.js',
             'proquotes/static/src/JS/price.js',
             'proquotes/static/src/JS/rental.js'
         ],
+        'sale_order_portal_content': [
+            'proquotes/static/src/CSS/quoteStyle.css',
+        ]
     },
 
-    'version': '0.6',
+    'version': '0.7',
 
     # always loaded
     'data': [
