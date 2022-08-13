@@ -112,3 +112,9 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 #wrapwrap main {
 	background-color: #000 !important;
 }
+
+.product_fold * {
+	font-size: 0.75rem;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
