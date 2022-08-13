@@ -122,8 +122,8 @@
                 </xpath> -->
 			</div>
 		</xpath>
-		<xpath expr="//tr[@class=&quot;border-black o_total&quot;]/td/strong" position="replace">
-			<strong>Subtotal</strong>
+		<xpath expr="//tr[@class=&quot;border-black o_total&quot;]" position="replace">
+			<!-- <strong>Subtotal</strong> -->
 		</xpath>
 
 	</template>
