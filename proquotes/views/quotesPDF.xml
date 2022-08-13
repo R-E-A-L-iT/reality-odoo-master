@@ -158,6 +158,6 @@
 	</template>
 
 	<template id="proquotes_total_pdf" name="Total PDF" inherit_id="account.document_tax_totals" priority="17">
-		<xpath expr="//td[1]/strong" position="after"></xpath>
+		<xpath expr="//td[2]/strong" position="replace"></xpath>
 	</template>
 </odoo>
