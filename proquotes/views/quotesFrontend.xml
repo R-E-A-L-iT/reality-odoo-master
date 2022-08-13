@@ -392,12 +392,12 @@
 						<br/>
 						<div>
 							<label for="rental-start">
-								<span>Start Of The Rental</span>
+								<span>Start of the rental</span>
 							</label>
 							<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}"/>
 							<br/>
 							<label for="rental-end">
-								<span>Estimated End Of The Rental</span>
+								<span>Estimated end of the rental</span>
 							</label>
 							<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}"/>
 						</div>
