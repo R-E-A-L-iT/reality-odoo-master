@@ -122,9 +122,9 @@
                 </xpath> -->
 			</div>
 		</xpath>
-		<!-- <xpath expr="//tr[@class=&quot;o_total&quot;]/td/strong" position="replace">
+		<xpath expr="//tr[@class=&quot;o_total&quot;]/td/strong" position="replace">
 			<strong>Subtotal</strong>
-		</xpath> -->
+		</xpath>
 
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
