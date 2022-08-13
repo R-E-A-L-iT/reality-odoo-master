@@ -158,7 +158,7 @@
 	</template>
 
 	<template id="proquotes_total_pdf" name="Total PDF" inherit_id="account.document_tax_totals" priority="99">
-		<xpath expr="//t[@name=&quot;account.document_tax_totals&quot;]" position="replace">
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]" position="replace">
 			<!-- <strong>Subtotal</strong> -->
 		</xpath>
 	</template>
