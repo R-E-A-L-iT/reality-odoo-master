@@ -33,10 +33,10 @@
             'proquotes/static/src/JS/poNumber.js',
             'proquotes/static/src/JS/price.js',
             'proquotes/static/src/JS/rental.js'
-        ]
+        ],
     },
 
-    'version': '0.5',
+    'version': '0.6',
 
     # always loaded
     'data': [
