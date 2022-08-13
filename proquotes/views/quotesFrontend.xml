@@ -426,6 +426,7 @@
 
 		<xpath expr="//div[@t-if=&quot;sale_order.has_to_be_signed(True) or sale_order.has_to_be_paid(True)&quot;]" position="before">
 			<h1 class="white-text">Customer Acceptance</h1>
+
 			<p class="white-text">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
 		</xpath>
 
