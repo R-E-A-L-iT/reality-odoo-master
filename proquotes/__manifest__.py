@@ -34,12 +34,12 @@
             'proquotes/static/src/JS/price.js',
             'proquotes/static/src/JS/rental.js'
         ],
-        'sale_order_portal_content': [
+        'sale_order_portal_conten': [
             'proquotes/static/src/CSS/quoteStyle.css',
         ]
     },
 
-    'version': '0.7',
+    'version': '0.8',
 
     # always loaded
     'data': [
