@@ -204,7 +204,7 @@
 			<section id="user-info">
 				<form autocomplete="on">
 					<div id="POlabel">
-						<span>Please insert your PO number here:</span>
+						<span>Please insert your PO number here: </span>
 						<br />
 					</div>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
