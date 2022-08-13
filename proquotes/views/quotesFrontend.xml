@@ -19,7 +19,6 @@
 		</xpath>
 		<!--Add Check Box to control fold Section-->
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<link rel="stylesheet" href="../static/CSS/quoteStyle.css"/>
 			<div style="width: 75%; float: left;">
 				<label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
 
