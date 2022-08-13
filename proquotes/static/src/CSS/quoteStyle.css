@@ -108,3 +108,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 .white-text {
 	color: white;
 }
+
+#wrapwrap main {
+	background-color: #000 !important;
+}
