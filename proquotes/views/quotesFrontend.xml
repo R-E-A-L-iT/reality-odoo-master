@@ -108,8 +108,9 @@
 
 				<!--Line Id For User Selection-->
 				<span class="line_id" t-attf-id="{{line}}"></span>
-				<!--edit-->
-				<t t-set="name" t-value="line.product_id"></t>
+
+				<t t-set="name" t-value="line.product_id.name"></t>
+				<!-- <t t-set="name" t-value="line.applied_name"></t> -->
 				<span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
 				<t t-set="description" t-value="line.name"/>
 
