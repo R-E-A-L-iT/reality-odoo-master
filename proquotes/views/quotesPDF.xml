@@ -161,6 +161,6 @@
 		<xpath expr="//t[@t-as=&quot;subtotal&quot;]" position="replace">
 			<!-- <strong>Subtotal</strong> -->
 		</xpath>
-		<xpath expr="//tr" position="replace"></xpath>
+		<!-- <xpath expr="//tr" position="replace"></xpath> -->
 	</template>
 </odoo>
