@@ -206,26 +206,18 @@
 					<div id="POlabel">
 						<span>Please insert your PO number here:</span>
 						<br />
-						<span>Veuillez insérer votre numéro de bon de commande ici:</span>
-						<br />
 					</div>
 					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
 					<br/>
 					<div>
 						<span>Please Upload your PO File in the comments below:</span>
 						<br/>
-						<span>Veuillez télécharger votre fichier PO dans les commentaires ci-dessous:
-						</span>
 					</div>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
 						<div>
 							<span>
 							Should equipment be shipped to a different address?
-							</span>
-							<br/>
-							<span>
-							L'expédition de l'équipement doit être à une différente adresse?
 							</span>
 							<br/>
 							<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
@@ -399,12 +391,12 @@
 						<br/>
 						<div>
 							<label for="rental-start">
-								<span>Start Of The Rental/Début De La Location</span>
+								<span>Start Of The Rental</span>
 							</label>
 							<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}"/>
 							<br/>
 							<label for="rental-end">
-								<span>Estimated End Of The Rental/Fin Anticipé De La Location</span>
+								<span>Estimated End Of The Rental</span>
 							</label>
 							<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}"/>
 						</div>
@@ -416,10 +408,6 @@
 							<br/>
 							<span>
 							Please upload your proof of insurance for the total amount in the comments below:
-							</span>
-							<br/>
-							<span>
-							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
 							</span>
 							<br/>
 						</div>
