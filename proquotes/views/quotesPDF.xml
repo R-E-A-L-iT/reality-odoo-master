@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" primary="True">
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+			<strong>Subtotal</strong>
+		</xpath>
+	</template>
+
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="attributes">
 			<attribute name="class">footer-root</attribute>
@@ -123,6 +129,10 @@
 			</div>
 		</xpath>
 
+		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+			<t t-call="proquotes.proquotes_total_pdf"/>
+		</xpath>
+
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
         
@@ -155,11 +165,9 @@
 			<t t-set="description" t-value="line.name"/>
 			<span class="description-root" t-raw="description"/>
 		</xpath>
+
+
+
 	</template>
 
-	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17">
-		<!-- <xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
-			<strong>Subtotal</strong>
-		</xpath> -->
-	</template>
 </odoo>
