@@ -123,9 +123,7 @@
 			</div>
 		</xpath>
 
-		<xpath expr="//div[@id=&quot;total&quot;]" position="after">
-
-		</xpath>
+		<xpath expr="//div[@id=&quot;total&quot;]" position="replace"></xpath>
 
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
