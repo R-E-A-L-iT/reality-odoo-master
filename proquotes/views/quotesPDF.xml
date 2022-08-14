@@ -156,12 +156,12 @@
 			<span class="description-root" t-raw="description"/>
 		</xpath>
 
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
-			<strong>Subtotal</strong>
-		</xpath>
 
 	</template>
 
 	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17">
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+			<strong>Subtotal</strong>
+		</xpath>
 	</template>
 </odoo>
