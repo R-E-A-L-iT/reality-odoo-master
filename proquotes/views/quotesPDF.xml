@@ -156,9 +156,9 @@
 			<span class="description-root" t-raw="description"/>
 		</xpath>
 
-		<!-- <xpath expr="//div[@id=&quot;total&quot;]" position="replace"> -->
+		<xpath expr="//div[@id=&quot;total&quot;]" position="replace">
 
-		<!-- </xpath> -->
+		</xpath>
 
 
 	</template>
