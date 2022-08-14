@@ -123,13 +123,29 @@
 			</div>
 		</xpath>
 
-		<xpath expr="//div[@id=&quot;total&quot;]" position="replace">
+		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+			<t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+				<tr class="border-black o_subtotal">
+					<td>
+						<strong t-esc="subtotal['name']"/>
+					</td>
+
+					<td class="text-right">
+						<span t-att-class="oe_subtotal_footer_separator" t-esc="subtotal['formatted_amount']"/>
+					</td>
+				</tr>
+
+				<t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+				<t t-call="account.tax_groups_totals"/>
+			</t>
+
+			<!--Total amount with all taxes-->
 			<tr class="border-black o_total">
 				<td>
 					<strong>Total</strong>
 				</td>
 				<td class="text-right">
-					<span>0 $</span>
+					<span t-esc="tax_totals['formatted_amount_total']"/>
 				</td>
 			</tr>
 		</xpath>
