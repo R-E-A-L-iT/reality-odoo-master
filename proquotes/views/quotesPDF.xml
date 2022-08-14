@@ -187,9 +187,17 @@
 
 	</template>
 
+	<record id="proquotes_total_pdf" model="ir.ui.view">
+		<field name="name">Proquotes Total PDF</field>
+		<field name="inherited_id" ref="account.document_tax_totals" mode="primary"/>
+		<field name="arch" type="xml">
+			<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+				<strong>Subtotal</strong>
+			</xpath>
+
+		</field>
+
+	</record>
 	<!-- <template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" mode="primary">
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
-			<strong>Subtotal</strong>
-		</xpath>
 	</template> -->
 </odoo>
