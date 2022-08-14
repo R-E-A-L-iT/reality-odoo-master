@@ -124,7 +124,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
-			<!-- <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+			<t t-foreach="tax_totals['subtotals']" t-as="subtotal">
 				<tr class="border-black o_subtotal">
 					<td>
 						<strong t-esc="subtotal['name']"/>
@@ -139,7 +139,7 @@
 				<t t-call="account.tax_groups_totals"/>
 			</t>
 
-			Total amount with all taxes
+			<!-- Total amount with all taxes -->
 			<tr class="border-black o_total">
 				<td>
 					<strong>Subtotal</strong>
@@ -147,7 +147,7 @@
 				<td class="text-right">
 					<span t-esc="tax_totals['formatted_amount_total']"/>
 				</td>
-			</tr> -->
+			</tr>
 		</xpath>
 
 	</template>
@@ -187,7 +187,7 @@
 
 	</template>
 
-	<record id="proquotes_total_pdf" model="ir.ui.view">
+	<!-- <record id="proquotes_total_pdf" model="ir.ui.view">
 		<field name="name">Proquotes Total PDF</field>
 		<field name="inherited_id" ref="account.document_tax_totals" mode="primary"/>
 		<field name="arch" type="xml">
@@ -197,7 +197,7 @@
 
 		</field>
 
-	</record>
+	</record> -->
 	<!-- <template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" mode="primary">
 	</template> -->
 </odoo>
