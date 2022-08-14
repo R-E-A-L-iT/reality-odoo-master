@@ -129,7 +129,7 @@
     </template> -->
 
 	<!--Apply HTML-->
-	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
+	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="99">
 
 		<xpath expr="//img" position="after">
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100;" height="20px"/>
@@ -156,7 +156,7 @@
 			<span class="description-root" t-raw="description"/>
 		</xpath>
 
-		<xpath expr="//div#total" position="after">
+		<xpath expr="//div[@id=&quot;total&quot;]" position="after">
 
 		</xpath>
 
