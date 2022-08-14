@@ -123,13 +123,17 @@
 			</div>
 		</xpath>
 
+		<xpath expr="//div[@id=&quot;total&quot;]" position="after">
+
+		</xpath>
+
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
         
     </template> -->
 
 	<!--Apply HTML-->
-	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="99">
+	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//img" position="after">
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100;" height="20px"/>
@@ -156,9 +160,6 @@
 			<span class="description-root" t-raw="description"/>
 		</xpath>
 
-		<xpath expr="//div[@id=&quot;total&quot;]" position="after">
-
-		</xpath>
 
 
 	</template>
