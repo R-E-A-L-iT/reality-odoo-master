@@ -142,7 +142,7 @@
 			<!--Total amount with all taxes-->
 			<tr class="border-black o_total">
 				<td>
-					<strong>Total</strong>
+					<strong>Subtotal</strong>
 				</td>
 				<td class="text-right">
 					<span t-esc="tax_totals['formatted_amount_total']"/>
