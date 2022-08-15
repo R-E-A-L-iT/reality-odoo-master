@@ -52,7 +52,7 @@ odoo.define("proquotes.price", function (require) {
 		_updatePriceTotalsEvent: function () {
 			//Find All Products that Might Change the Price
 			console.log("Function Tag");
-			_rentalValueTotal();
+			this._rentalValueTotal();
 			let self = this;
 			var vpList = document.querySelectorAll(".priceChange");
 			var result = null;
