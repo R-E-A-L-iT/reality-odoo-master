@@ -102,6 +102,7 @@ odoo.define("proquotes.price", function (require) {
 			}
 
 			totalLanding.innerHTML = total + "$";
+			console.log(totalLanding);
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
