@@ -12,14 +12,15 @@ odoo.define("proquotes.price", function (require) {
 
 		async start() {
 			console.log("Start");
-			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
 			this._onLoad();
+			await this._super(...arguments);
 		},
 
 		_onLoad: function () {
 			console.log("load");
 			this._updatePriceTotalsEvent();
+			this._rentalValueTotal();
 		},
 
 		_updateQuantityEvent: function (t) {
@@ -51,7 +52,6 @@ odoo.define("proquotes.price", function (require) {
 
 		_updatePriceTotalsEvent: function () {
 			//Find All Products that Might Change the Price
-			_rentalValueTotal();
 			let self = this;
 			var vpList = document.querySelectorAll(".priceChange");
 			var result = null;
@@ -70,7 +70,7 @@ odoo.define("proquotes.price", function (require) {
 			this._updatePriceTotals(targetsChecked, line_ids);
 		},
 
-		_updatePriceTotalsEvent() {
+		_rentalValueTotal: function () {
 			var totalLanding = document.getElementById("total-rental-value");
 			if (totalLanding == undefined) {
 				return;
@@ -316,6 +316,7 @@ odoo.define("proquotes.price", function (require) {
 			this._multipleChoiceView();
 			this._optionalView();
 			this._updateFoldDisplay();
+			this._rentalValueTotal();
 			this._updateTotal(total);
 		},
 	});
