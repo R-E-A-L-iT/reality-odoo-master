@@ -20,6 +20,7 @@ odoo.define("proquotes.price", function (require) {
 		_onLoad: function () {
 			console.log("load");
 			this._updatePriceTotalsEvent();
+			this._rentalValueTotal();
 		},
 
 		_updateQuantityEvent: function (t) {
