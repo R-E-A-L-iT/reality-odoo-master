@@ -51,7 +51,6 @@ odoo.define("proquotes.price", function (require) {
 
 		_updatePriceTotalsEvent: function () {
 			//Find All Products that Might Change the Price
-			console.log("Function Tag");
 			this._rentalValueTotal();
 			let self = this;
 			var vpList = document.querySelectorAll(".priceChange");
@@ -72,7 +71,6 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_rentalValueTotal: function () {
-			console.log("No Function Tag");
 			var totalLanding = document.getElementById("total-rental-value");
 			if (totalLanding == undefined) {
 				return;
