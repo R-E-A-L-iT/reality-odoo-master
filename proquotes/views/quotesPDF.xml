@@ -130,7 +130,8 @@
 		</xpath>
 
 		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
-			<t t-call="proquotes.proquotes_total_pdf" t-lang="doc.partner_id.lang"/>
+			<!-- <t t-call="proquotes.proquotes_total_pdf" t-lang="doc.partner_id.lang"/> -->
+			<t t-call="proquotes.proquotes_total_pdf"/>
 		</xpath>
 
 	</template>
