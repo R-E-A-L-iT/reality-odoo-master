@@ -442,8 +442,8 @@
 			<t t-set="default_name" t-value="env.user.name"/>
 		</xpath>
 
-		<!-- <xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace">
-		</xpath> -->
+		<xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace">
+		</xpath>
 
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<div class="col-sm-auto mt8">
