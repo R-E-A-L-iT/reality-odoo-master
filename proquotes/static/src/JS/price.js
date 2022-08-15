@@ -12,9 +12,9 @@ odoo.define("proquotes.price", function (require) {
 
 		async start() {
 			console.log("Start");
-			await this._super(...arguments);
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
 			this._onLoad();
+			await this._super(...arguments);
 		},
 
 		_onLoad: function () {
@@ -101,7 +101,6 @@ odoo.define("proquotes.price", function (require) {
 			}
 
 			totalLanding.innerHTML = total + "$";
-			console.log(totalLanding);
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
