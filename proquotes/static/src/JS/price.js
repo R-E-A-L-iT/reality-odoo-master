@@ -71,7 +71,7 @@ odoo.define("proquotes.price", function (require) {
 			this._updatePriceTotals(targetsChecked, line_ids);
 		},
 
-		_updatePriceTotalsEvent() {
+		_rentalValueTotal: function () {
 			console.log("No Function Tag");
 			var totalLanding = document.getElementById("total-rental-value");
 			if (totalLanding == undefined) {
