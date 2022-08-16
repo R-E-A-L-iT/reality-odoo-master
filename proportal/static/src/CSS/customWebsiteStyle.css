@@ -170,7 +170,7 @@
 		border-radius: 15px;
 		box-shadow: 10px 10px 10px #181818;
 		width: calc(37.5vw - 100px);
-		height: auto;
+		height: calc(18.75vw - 50px);
 		max-height: 350px;
 		max-width: 595px;
 		transition: all .5s ease-in-out;
