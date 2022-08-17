@@ -11,12 +11,8 @@
 
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
 		<xpath expr="//thead" position="before">
-			<span class="english-mode">
-				<strong>
-			english-mode
-				</strong>
-				<t t-call="proquotes.renewal-english"/>
-			</span>
+			<span class="english-mode no-display">english-mode</span>
+			<t t-call="proquotes.renewal-english"/>
 		</xpath>
 
 		<xpath expr="//thead" position="attributes">
