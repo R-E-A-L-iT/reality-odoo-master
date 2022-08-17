@@ -1,0 +1,23 @@
+<template id="renewal">
+	<img src="" alt="" id="chart"/>
+</template>
+
+<template id="renewal-english" inherit_id="proquotes.renewal" primary="true">
+	<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
+		<attribute name="src"></attribute>
+		<attribute name="alt">CCP Options Chart</attribute>
+	</xpath>
+</template>
+
+<template id="renewal-french">
+	<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
+		<attribute name="src"></attribute>
+		<attribute name="alt">Tableau des options CCP</attribute>
+	</xpath>
+</template>
+
+<template id="rental-quote-top">
+
+</template>
+
+<template id="rental-quote-bottom"></template>

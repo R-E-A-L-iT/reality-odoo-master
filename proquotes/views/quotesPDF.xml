@@ -122,9 +122,6 @@
 				<t t-set="footer" t-value="doc.footer"></t>
 
 				<footer>
-					<span class="page">TEST</span>
-					<br />
-					<span class="topage"></span>
 					<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 				</footer>
 			</div>
