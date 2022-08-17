@@ -121,52 +121,51 @@
 				<br />
 				<t t-set="footer" t-value="doc.footer"></t>
 				<img id="insert-footer" width="100%" height="auto" t-attf-src="https://r-e-a-l.it/CAPTURE/images/footer/{{footer}}.png" style="position: absolute; z-index: 2; top: 775px;"/>
-			</img>
-			<!--                 <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
+				<!--                 <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
                     <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute>
                 </xpath> -->
-		</div>
-	</xpath>
+			</div>
+		</xpath>
 
-	<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
-		<t t-call="proquotes.proquotes_total_pdf"/>
-	</xpath>
+		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+			<t t-call="proquotes.proquotes_total_pdf"/>
+		</xpath>
 
-</template>
-<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
+	</template>
+	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
         
     </template> -->
 
-<!--Apply HTML-->
-<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
-
-	<xpath expr="//img" position="after">
-		<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100;" height="20px"/>
-		<span>
-			<p>TESTING HI</p>
-		</span>
-	</xpath>
-	<!--Remove Taxes-->
-	<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
-	<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace"/>
-
-	<!--Remove Subtotal-->
-	<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
-	<!--Change Total to Subtotal-->
-	<xpath expr="//div[@id=&quot;total&quot;]" position="replace">
-		<!-- <strong>Subtotal</strong> -->
-	</xpath>
 	<!--Apply HTML-->
-	<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-		<t t-set="name" t-value="line.applied_name"/>
-		<span t-raw="name"></span>
+	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
-		<t t-set="description" t-value="line.name"/>
-		<span class="description-root" t-raw="description"/>
-	</xpath>
+		<xpath expr="//img" position="after">
+			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="100;" height="20px"/>
+			<span>
+				<p>TESTING HI</p>
+			</span>
+		</xpath>
+		<!--Remove Taxes-->
+		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace"/>
+
+		<!--Remove Subtotal-->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
+		<!--Change Total to Subtotal-->
+		<xpath expr="//div[@id=&quot;total&quot;]" position="replace">
+			<!-- <strong>Subtotal</strong> -->
+		</xpath>
+		<!--Apply HTML-->
+		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+			<t t-set="name" t-value="line.applied_name"/>
+			<span t-raw="name"></span>
+
+			<t t-set="description" t-value="line.name"/>
+			<span class="description-root" t-raw="description"/>
+		</xpath>
 
 
 
-</template>
+	</template>
 
 </odoo>
