@@ -120,8 +120,7 @@
 				<br />
 				<br />
 				<t t-set="footer" t-value="doc.footer"></t>
-				<img id="insert-footer" width="100%" height="auto" t-attf-src="https://r-e-a-l.it/CAPTURE/images/footer/{{footer}}.png">
-					<!-- src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png" style="position: absolute; z-index: 2; top: 775px;" -->
+				<img id="insert-footer" width="100%" height="auto" t-attf-src="https://r-e-a-l.it/CAPTURE/images/footer/{{footer}}.png"> src="https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png" style="position: absolute; z-index: 2; top: 775px;"
 				</img>
 				<!--                 <xpath expr="//img[@id=&quot;insert-footer&quot;]" position="attributes">
                     <attribute name="src">https://r-e-a-l.it/CAPTURE/images/footer/Abtech_Quebec_Derek.png</attribute>
