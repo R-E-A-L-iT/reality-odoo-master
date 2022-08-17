@@ -2,7 +2,11 @@
 
 <odoo>
 	<template name="Renewal" id="renewal">
-		<img src="" alt="" id="chart"/>
+		<div id="renewal-text">
+			<img src="" alt="" id="chart"/>
+		</div>
+
+
 	</template>
 
 	<template name="Renewal English" id="renewal-english" inherit_id="proquotes.renewal" primary="True">
