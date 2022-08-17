@@ -1,15 +1,15 @@
-<template id="renewal">
+<template name="Renewal" id="renewal">
 	<img src="" alt="" id="chart"/>
 </template>
 
-<template id="renewal-english" inherit_id="proquotes.renewal" primary="true">
+<template name="Renewal English" id="renewal-english" inherit_id="proquotes.renewal" primary="True">
 	<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
 		<attribute name="src"></attribute>
 		<attribute name="alt">CCP Options Chart</attribute>
 	</xpath>
 </template>
 
-<template id="renewal-french">
+<template name="Renewal French" id="renewal-french" primary="True">
 	<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
 		<attribute name="src"></attribute>
 		<attribute name="alt">Tableau des options CCP</attribute>
