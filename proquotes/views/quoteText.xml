@@ -6,18 +6,18 @@
 	</template>
 
 	<template name="Renewal English" id="renewal-english" inherit_id="proquotes.renewal" primary="True">
-		<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
+		<xpath expr="img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src"></attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
 		</xpath>
 	</template>
 
-	<template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal" primary="True">
-		<xpath expr="img[@id=&quot;chart&quot;" position="attributes">
+	<!-- <template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal" primary="True">
+		<xpath expr="img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src"></attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
 		</xpath>
-	</template>
+	</template> -->
 
 	<template id="rental-quote-top">
 
