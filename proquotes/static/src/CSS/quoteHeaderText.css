@@ -1,0 +1,11 @@
+.no-display {
+	display: none;
+}
+
+.english-mode+div+div {
+	display: none;
+}
+
+.french-mode+div {
+	display: none;
+}
