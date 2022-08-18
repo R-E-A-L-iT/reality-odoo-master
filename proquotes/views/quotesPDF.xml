@@ -39,6 +39,8 @@
 
 				#renewal-text {
 					margin: auto;
+					display: flex;
+					flex-align: center;
 				}
 
 				#renewal-text * {
