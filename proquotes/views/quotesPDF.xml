@@ -42,14 +42,14 @@
 				}
 
 				#renewal-text * {
-					color: #fff;
+					color: #000;
 					text-align: center;
 					margin: auto;
 					line-height: 2.5rem;
 				}
 
 				#renewal-text .red-div {
-					width: 5vw;
+					width: 20px;
 					height: 2px;
 					background-color: #f55;
 					margin: auto;
@@ -62,7 +62,7 @@
 				}
 
 				#renewal-text img {
-					width: 70vw;
+					width: 70%;
 					height: auto;
 				}
 			</style>
