@@ -14,7 +14,7 @@
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
 			<span t-esc="footer"></span>
 
-			<img t-if="footer == ''" id="insert-footer" width="90%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
+			<img t-if="footer != ''" id="insert-footer" width="90%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 			<style>
 				.footer-root * {
 					margin-top: 0px;
