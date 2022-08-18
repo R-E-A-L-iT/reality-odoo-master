@@ -34,7 +34,7 @@
 			<attribute name="alt">CCP Options Chart</attribute>
 		</xpath>
 		<xpath expr="//p[@id=&quot;hardware&quot;]">
-			<xpath expr="//img[@id=&quot;&quot;]" position="move"/>
+			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
 		</xpath>
 	</template>
 
@@ -44,7 +44,7 @@
 			<attribute name="alt">Tableau des options CCP</attribute>
 		</xpath>
 		<xpath expr="//p[@id=&quot;hardware&quot;]">
-			<xpath expr="//img[@id=&quot;&quot;]" position="move"/>
+			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
 		</xpath>
 	</template>
 
