@@ -14,8 +14,13 @@
 	margin: auto;
 }
 
+#renewal-text * {
+	display: flex;
+	align-content: center;
+	margin: auto;
+}
+
 #renewal-text img {
 	width: 75vw;
-	margin: auto;
 	height: auto;
 }
