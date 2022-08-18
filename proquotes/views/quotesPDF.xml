@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																																																				<!--
+																																																																																																																																																																								<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -84,7 +84,7 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]/tr" position="before">
 			<tr t-if="line.display_type == 'line_section'" class="full">
-				<td class="full">
+				<td colspan="100">
 					<style>
 						<!-- td.full {
 							width: 100%;
