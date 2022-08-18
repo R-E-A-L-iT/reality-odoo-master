@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																								<!--
+																																																																																												<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -82,10 +82,12 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="before">
-			<td t-if="line.display_type == 'line_section'">
-				<p>Block Split</p>
-			</td>
+		<xpath expr="//t[@t-foreach=&quot;doc.order_line'&quot;]/tr" position="before">
+			<tr>
+				<td t-if="line.display_type == 'line_section'">
+					<p>Block Split</p>
+				</td>
+			</tr>
 		</xpath>
 
 		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
