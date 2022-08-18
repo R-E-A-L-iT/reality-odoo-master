@@ -23,7 +23,7 @@
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<xpath expr="//div" position="after">
+		<xpath expr="//div" position="before">
 			<style>
 				.no-display {
 					display: none;
@@ -80,11 +80,11 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
+		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
 			<span>
 				<p>Testing 1</p>
 			</span>
-		</xpath>
+		</xpath> -->
 		<!--
         <xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
             <span><p>Testing 2</p></span>
