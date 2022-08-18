@@ -5,7 +5,7 @@
 		<div id="renewal-text">
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
 			<div class="red-div"/>
-			<p>New features and bug fixes to the firmware are constantly being worked on and updates
+			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
 		 	are typically available every few months. It's also important to keep your instrument running 
 		 	smoothly with servicing and calibration. Some of your customers may even require that you have 
 		 	a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
@@ -33,12 +33,18 @@
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.jpg</attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
 		</xpath>
+		<xpath expr="//p[@id=&quot;hardware&quot;]">
+			<xpath expr="//img[@id=&quot;&quot;]" position="move"/>
+		</xpath>
 	</template>
 
 	<template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal" primary="True">
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.jpg</attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
+		</xpath>
+		<xpath expr="//p[@id=&quot;hardware&quot;]">
+			<xpath expr="//img[@id=&quot;&quot;]" position="move"/>
 		</xpath>
 	</template>
 
