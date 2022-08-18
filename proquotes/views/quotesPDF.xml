@@ -80,10 +80,12 @@
 			</t>
 		</xpath>
 
-		<!--         <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
-            <span><p>Testing 1</p></span>
-        </xpath>
-        
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
+			<span>
+				<p>Testing 1</p>
+			</span>
+		</xpath>
+		<!--
         <xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
             <span><p>Testing 2</p></span>
         </xpath>
