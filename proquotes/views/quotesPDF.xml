@@ -37,25 +37,30 @@
 					display: none;
 				}
 
+				#renewal-text h4 {
+				border-botom-style: solid;
+				border-bottom-color: #f55W
+				}
+
 				#renewal-text {
 					margin: auto;
 				}
 
 				#renewal-text * {
 					color: #000;
-										<!-- text-align: center; -->
+																						<!-- text-align: center; -->
 					margin: auto;
 					line-height: 2.5rem;
 				}
 
-				#renewal-text .red-div {
+												<!-- #renewal-text .red-div {
 					width: 60px;
 					height: 2px;
 					background-color: #f55;
 					margin: auto;
 					margin-top: 5vh;
 					margin-bottom: 5vh;
-				}
+				} -->
 
 				#renewal-text p {
 					margin-bottom: 7.5vw;
