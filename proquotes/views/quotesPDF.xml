@@ -68,10 +68,6 @@
 					margin-right: 10%;
 					margin-bottom: 1em;
 				}
-			
-				* {
-					font-size: 1.5rem;
-				}
 			</style>
 			<t t-if="doc.sale_order_template_id.id == 70">
 				<span id="lang-id" class="english-mode no-display">english-mode</span>
