@@ -62,10 +62,14 @@
 				}
 
 				#renewal-text img {
-					width: 70%;
+					width: 80%;
 					height: auto;
-					margin-left: 15%;
-					margin-right: 15%;
+					margin-left: 10%;
+					margin-right: 10%;
+				}
+			
+				* {
+					font-size: 1.5rem;
 				}
 			</style>
 			<t t-if="doc.sale_order_template_id.id == 70">
