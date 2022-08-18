@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																				<!--
+																																																																																																																																																				<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -84,16 +84,21 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]/tr" position="before">
 			<tr t-if="line.display_type == 'line_section'">
-				<style>
-					.section-div {
-						border: none;
-						margin-bottom: 5%;
-						margin-top: 5%;
-					}
-				</style>
-				<div class="section-div">
-					<p>block split</p>
-				</div>
+				<td class="full">
+					<style>
+						td.full {
+							width: 100%;
+						}
+						.section-div {
+							border: none;
+							margin-bottom: 5%;
+							margin-top: 5%;
+						}
+					</style>
+					<div class="section-div">
+						<p>block split</p>
+					</div>
+				</td>
 			</tr>
 		</xpath>
 
