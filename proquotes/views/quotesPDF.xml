@@ -12,6 +12,7 @@
 			<attribute name="class">footer-root</attribute>
 		</xpath>
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
+			<img src="https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.jpg" alt="Nothing"></img>
 			<style>
 				.footer-root * {
 					margin-top: 0px;
@@ -48,19 +49,19 @@
 
 				#renewal-text * {
 					color: #000;
-																																																		<!-- text-align: center; -->
+																																																																																																						<!-- text-align: center; -->
 					margin: auto;
 					line-height: 2.5rem;
 				}
 
-																																								<!-- #renewal-text .red-div {
+				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
 					background-color: #f55;
 					margin: auto;
 					margin-top: 5vh;
 					margin-bottom: 5vh;
-				} -->
+				}
 
 				#renewal-text p {
 					margin-bottom: 7.5vw;
@@ -206,7 +207,10 @@
 
 		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
 			<t t-call="proquotes.proquotes_total_pdf"/>
-			<t t-call="web.external_layout_boxed"/>
+		</xpath>
+
+		<xpath expr="" position="inside">
+			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 		</xpath>
 
 	</template>
@@ -241,9 +245,6 @@
 			<t t-set="description" t-value="line.name"/>
 			<span class="description-root" t-raw="description"/>
 		</xpath>
-
-
-
 	</template>
 
 </odoo>
