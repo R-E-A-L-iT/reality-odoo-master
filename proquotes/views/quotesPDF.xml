@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-								<!--
+																								<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -80,6 +80,10 @@
 				<t t-call="proquotes.renewal-english"/>
 				<t t-call="proquotes.renewal-french"/>
 			</t>
+		</xpath>
+
+		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="before">
+			<p>Block Split</p>
 		</xpath>
 
 		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
