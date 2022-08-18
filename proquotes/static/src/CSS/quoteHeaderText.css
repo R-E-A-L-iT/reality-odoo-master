@@ -10,8 +10,12 @@
 	display: none;
 }
 
+#renewal-text {
+	margin: auto;
+}
+
 #renewal-text img {
-	width: 70%;
+	width: 75vw;
 	margin: auto;
 	height: auto;
 }
