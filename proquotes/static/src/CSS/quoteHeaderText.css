@@ -19,6 +19,13 @@
 	margin: auto;
 }
 
+#renewal-text .red-div {
+	width: 5vw;
+	height: 10px;
+	background-color: red;
+	margin: auto;
+}
+
 #renewal-text img {
 	width: 75vw;
 	height: auto;
