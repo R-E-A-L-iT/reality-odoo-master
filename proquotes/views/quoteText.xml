@@ -3,7 +3,7 @@
 <odoo>
 	<template name="Renewal" id="renewal">
 		<div id="renewal-text">
-			<h3>WHY RENEW YOUR HARDWARE CCP?</h3>
+			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
 			<div class="red-div"/>
 			<p>New features and bug fixes to the firmware are constantly being worked on and updates
 		 	are typically available every few months. It's also important to keep your instrument running 
