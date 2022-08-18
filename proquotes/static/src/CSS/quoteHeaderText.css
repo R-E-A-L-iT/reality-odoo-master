@@ -29,6 +29,10 @@
 	margin-bottom: 5vh;
 }
 
+#renewal-text p {
+	margin-bottom: 10vw;
+}
+
 #renewal-text img {
 	width: 75vw;
 	height: auto;
