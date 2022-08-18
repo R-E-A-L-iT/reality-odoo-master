@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																								<!--
+																												<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -83,7 +83,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="before">
-			<p>Block Split</p>
+			<p t-if="line.display_type == 'line_section'">Block Split</p>
 		</xpath>
 
 		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
