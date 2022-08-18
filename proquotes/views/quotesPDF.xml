@@ -15,7 +15,7 @@
 			<span>
 			Footer: <span t-esc="footer"></span>
 			</span>
-			<span t-if="footer == False">Empty</span>
+			<span t-if="footer == undefined">Empty</span>
 			<img t-if="footer != ''" id="insert-footer" width="90%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 			<style>
 				.footer-root * {
