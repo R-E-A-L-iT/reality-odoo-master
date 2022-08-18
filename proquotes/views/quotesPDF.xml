@@ -39,7 +39,7 @@
 
 				#renewal-text h4 {
 				border-botom-style: solid;
-				border-bottom-color: #f55W
+				border-bottom-color: #f55;
 				}
 
 				#renewal-text {
@@ -48,12 +48,12 @@
 
 				#renewal-text * {
 					color: #000;
-																						<!-- text-align: center; -->
+																										<!-- text-align: center; -->
 					margin: auto;
 					line-height: 2.5rem;
 				}
 
-												<!-- #renewal-text .red-div {
+																<!-- #renewal-text .red-div {
 					width: 60px;
 					height: 2px;
 					background-color: #f55;
