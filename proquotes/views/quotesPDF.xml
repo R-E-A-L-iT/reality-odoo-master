@@ -48,12 +48,12 @@
 
 				#renewal-text * {
 					color: #000;
-																																		<!-- text-align: center; -->
+																																						<!-- text-align: center; -->
 					margin: auto;
 					line-height: 2.5rem;
 				}
 
-																								<!-- #renewal-text .red-div {
+																												<!-- #renewal-text .red-div {
 					width: 60px;
 					height: 2px;
 					background-color: #f55;
@@ -206,6 +206,7 @@
 
 		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
 			<t t-call="proquotes.proquotes_total_pdf"/>
+			<t t-call="report.external_layout_footer"/>
 		</xpath>
 
 	</template>
