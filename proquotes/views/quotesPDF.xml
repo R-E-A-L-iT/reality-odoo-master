@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																																																																								<!--
+																																																																																																																																																																																																								<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -82,7 +82,7 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]/tr" position="before">
+		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]/tr" position="before">
 			<tr t-if="line.display_type == 'line_section'" class="full">
 				<td colspan="100" style="border: solid; border-color: #000;">
 					<style>
@@ -97,7 +97,7 @@
 					</div>
 				</td>
 			</tr>
-		</xpath>
+		</xpath> -->
 
 		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
 			<span>
@@ -180,6 +180,10 @@
 
 		<!--Add Signature-->
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+			<span t-esc="doc.sale_order_template_id.name"></span>
+			<t t-if="doc.sale_order_template_id.name == 'Rental'">
+				<t t-call="proquotes.rental_terms"/>
+			</t>
 			<div>
 				<h1>Customer Acceptance</h1>
 				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>

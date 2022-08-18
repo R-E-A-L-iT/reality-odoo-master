@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+	<template name="Rental Terms" id="rental_terms">
+		<p>
+			<strong>Terms and Conditions</strong>
+		</p>
+		<ol>
+			<li>
+				<h5>
+					<strong>Rental, Effective Date and Term</strong>
+				</h5>
+				<p>
+					The Customer hereby rents Equipment from
+					<span t-esc="doc.company.name"></span>
+					, for the period indicated in the preamble
+					of this Agreement, following the terms and
+					conditions established hereinafter. The
+					Agreement comes into effect on the date
+					it is signed by the Customer and expires
+					at the end of the Equipment rental period
+					indicated in the preamble of this Agreement.</p>
+			</li>
+		</ol>
+	</template>
+
 	<template name="Renewal" id="renewal">
 		<div id="renewal-text">
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
