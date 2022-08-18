@@ -17,13 +17,16 @@
 #renewal-text * {
 	text-align: center;
 	margin: auto;
+	line-height: 2.5rem;
 }
 
 #renewal-text .red-div {
 	width: 5vw;
-	height: 10px;
-	background-color: red;
+	height: 2px;
+	background-color: #f55;
 	margin: auto;
+	margin-top: 5vh;
+	margin-bottom: 5vh;
 }
 
 #renewal-text img {
