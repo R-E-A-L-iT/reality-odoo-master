@@ -49,7 +49,6 @@
 
 				#renewal-text * {
 					color: #000;
-																																																																																																						<!-- text-align: center; -->
 					margin: auto;
 					line-height: 2.5rem;
 				}
@@ -209,9 +208,9 @@
 			<t t-call="proquotes.proquotes_total_pdf"/>
 		</xpath>
 
-		<xpath expr="" position="inside">
+		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
-		</xpath>
+		</xpath> -->
 
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
