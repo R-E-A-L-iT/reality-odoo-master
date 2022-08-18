@@ -2,16 +2,16 @@
 
 <odoo>
 	<template name="Renewal" id="renewal">
-		<h3>WHY RENEW YOUR HARDWARE CCP?</h3>
-		<div class="red-div"/>
-		<p>New features and bug fixes to the firmware are constantly being worked on and updates
+		<div id="renewal-text">
+			<h3>WHY RENEW YOUR HARDWARE CCP?</h3>
+			<div class="red-div"/>
+			<p>New features and bug fixes to the firmware are constantly being worked on and updates
 		 	are typically available every few months. It's also important to keep your instrument running 
 		 	smoothly with servicing and calibration. Some of your customers may even require that you have 
 		 	a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
 			also gives you access to technical support for the product. Further options allow you to extend
 		   	your warranty (BRONZE, SILVER, and GOLD) and the GOLD CCPs include a free loaner instrument while
 		    your instrument is down or away on repair/calibration.</p>
-		<div id="renewal-text">
 			<img src="" alt="" id="chart"/>
 		</div>
 	</template>
