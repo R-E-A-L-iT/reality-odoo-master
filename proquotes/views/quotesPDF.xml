@@ -49,7 +49,7 @@
 				}
 
 				#renewal-text .red-div {
-					width: 20px;
+					width: 60px;
 					height: 2px;
 					background-color: #f55;
 					margin: auto;
