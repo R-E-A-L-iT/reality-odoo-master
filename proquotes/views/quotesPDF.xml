@@ -23,9 +23,62 @@
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<!-- <xpath expr="//div" position="after">
-			<link rel="stylesheet" href="../static/src/CSS/pdf.css"/>
-		</xpath> -->
+		<xpath expr="//div" position="after">
+			<style>
+				.no-display {
+					display: none;
+				}
+
+				.english-mode+div+div {
+					display: none;
+				}
+
+				.french-mode+div {
+					display: none;
+				}
+
+				#renewal-text {
+					margin: auto;
+				}
+
+				#renewal-text * {
+					color: #000;
+					text-align: center;
+					margin: auto;
+					line-height: 2.5rem;
+				}
+
+				#renewal-text .red-div {
+					width: 60px;
+					height: 2px;
+					background-color: #f55;
+					margin: auto;
+					margin-top: 5vh;
+					margin-bottom: 5vh;
+				}
+
+				#renewal-text p {
+					margin-bottom: 7.5vw;
+				}
+
+				#renewal-text img {
+					width: 80%;
+					height: auto;
+					margin-left: 10%;
+					margin-right: 10%;
+					margin-bottom: 1em;
+				}
+			
+				* {
+					font-size: 1.5rem;
+				}
+			</style>
+			<t t-if="doc.sale_order_template_id.id == 70">
+				<span id="lang-id" class="english-mode no-display">english-mode</span>
+				<t t-call="proquotes.renewal-english"/>
+				<t t-call="proquotes.renewal-french"/>
+			</t>
+		</xpath>
 
 		<!--         <xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
             <span><p>Testing 1</p></span>
