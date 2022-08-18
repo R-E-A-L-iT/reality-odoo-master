@@ -12,7 +12,7 @@
 				</h5>
 				<p>
 					The Customer hereby rents Equipment from
-					<span t-esc="doc.company.name"></span>
+					<span t-esc="company.name"></span>
 					, for the period indicated in the preamble
 					of this Agreement, following the terms and
 					conditions established hereinafter. The
