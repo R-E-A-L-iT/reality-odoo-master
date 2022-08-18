@@ -9,3 +9,9 @@
 .french-mode+div {
 	display: none;
 }
+
+#renewal-text img {
+	width: 70%;
+	margin: auto;
+	height: auto;
+}
