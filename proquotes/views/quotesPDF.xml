@@ -23,7 +23,7 @@
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<xpath expr="//div" position="before">
+		<xpath expr="//div" position="after">
 			<style>
 				.no-display {
 					display: none;
@@ -64,6 +64,7 @@
 				#renewal-text img {
 					width: 70%;
 					height: auto;
+					margin: auto;
 				}
 			</style>
 			<t t-if="doc.sale_order_template_id.id == 70">
