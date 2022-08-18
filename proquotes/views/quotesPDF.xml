@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																																																								<!--
+																																																																																																																																																																												<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -86,10 +86,10 @@
 			<tr t-if="line.display_type == 'line_section'" class="full">
 				<td colspan="100">
 					<style>
-						<!-- td.full {
+						td.full {
 							width: 100%;
-							border: none;
-						} -->
+							border: none !important;
+						}
 						.section-div {
 							border: none;
 							margin-bottom: 5%;
