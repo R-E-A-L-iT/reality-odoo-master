@@ -25,9 +25,9 @@
 
 		<xpath expr="//div" position="after">
 			<style>
-				<!-- .no-display {
+				.no-display {
 					display: none;
-				} -->
+				}
 
 				.english-mode+div+div {
 					display: none;
