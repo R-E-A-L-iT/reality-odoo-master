@@ -160,6 +160,39 @@
 					</li>
 				</ol>
 			</li>
+			<li>
+				<h3>
+					<strong>INDEMNIFICATION</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>Non-Liability</h4>
+						<p>
+							<span t-esc="doc.company_id.name"/>
+							shall, at no time, be held liable for any damages, breakage, or partial or full interruption
+							that could result, at any time, during the use of the Equipment. The Customer is solely responsible
+							for the individuals who may be required to use the Equipment, throughout the Term of the Agreement.
+						</p>
+					</li>
+					<li>
+						<h4>Indemnification</h4>
+						<p>
+							The Customer acknowledges that
+							<span t-esc="doc.company_id.name"/>
+							, its directors, officers, employees, agents, volunteers and subcontractors, cannot be held
+							liable for any breakage, loss, destruction of property and/or damage, of any kind, resulting
+							from the use of the Equipment. The Customer waives any right, recourse, claim and action against
+							<span t-esc="doc.company_id.name"/>
+							, its directors, officers, employees, agents, volunteers and subcontractors resulting from the use
+							of the Equipment. The Customer agrees to indemnify and hold
+							<span t-esc="doc.company_id.name"/>
+							harmless against any claim, of any type, resulting from or could result from any failure by the
+							Customer in respecting its obligations under the terms of this Agreement or for any breakage,
+							loss, destruction of property and/or damage, of any type, resulting from the use of the Equipment.
+						</p>
+					</li>
+				</ol>
+			</li>
 		</ol>
 	</template>
 
