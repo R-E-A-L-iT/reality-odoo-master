@@ -38,18 +38,12 @@
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
 		</xpath>
-		<xpath expr="//p[@id=&quot;hardware&quot;]">
-			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
-		</xpath>
 	</template>
 
 	<template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal-hardware" primary="True">
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
-		</xpath>
-		<xpath expr="//p[@id=&quot;hardware&quot;]">
-			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
 		</xpath>
 	</template>
 </odoo>
