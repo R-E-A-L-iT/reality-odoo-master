@@ -41,6 +41,27 @@
 							(including payment of any rent).
 						</p>
 					</li>
+					<li>
+						<h4>
+							Additional Services or Additional Fees
+						</h4>
+						<p>
+							In the event that the Customer requires any other service from AB Tech that is not included in this
+							Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees 
+							to pay
+							<span t-esc="doc.company_id.name"/>
+							any such amount or fee following receipt of an invoice to that effect.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Interest
+						</h4>
+						<p>
+							Any amounts owing to AB Tech by the Customer shall bear interest at the rate of twenty-four percent
+							(24%) per year, as of the date on which such amounts are due.
+						</p>
+					</li>
 				</ol>
 			</li>
 		</ol>
