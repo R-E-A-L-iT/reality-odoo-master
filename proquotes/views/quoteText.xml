@@ -12,7 +12,7 @@
 				</h3>
 				<p>
 					The Customer hereby rents Equipment from
-					<span t-esc="doc.company_id.name"></span>
+					<span t-esc="doc.company_id.name"/>
 					, for the period indicated in the preamble
 					of this Agreement, following the terms and
 					conditions established hereinafter. The
@@ -20,6 +20,28 @@
 					it is signed by the Customer and expires
 					at the end of the Equipment rental period
 					indicated in the preamble of this Agreement.</p>
+			</li>
+			<li>
+				<h3>
+					<strong>Considerations</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>
+							Rent and Fees
+						</h4>
+						<p>
+							In consideration of renting the Equipment, the Customer agrees to pay
+							<span t-esc="doc.company_id.name"/>
+							the rent and fees indicated on the first page of this Agreement, in addition to applicable taxes.
+							If the Customer remains in possession of the Equipment after the Term, with the consent of
+							<span t-esc="doc.company_id.name"/>
+							, this Agreement shall remain in force and the Customer shall be the deemed the renter of the
+							Equipment, following the same terms, conditions and commitments as those stipulated in this Agreement
+							(including payment of any rent).
+						</p>
+					</li>
+				</ol>
 			</li>
 		</ol>
 	</template>
