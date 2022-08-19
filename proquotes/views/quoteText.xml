@@ -7,9 +7,9 @@
 		</p>
 		<ol>
 			<li>
-				<h5>
+				<h2>
 					<strong>Rental, Effective Date and Term</strong>
-				</h5>
+				</h2>
 				<p>
 					The Customer hereby rents Equipment from
 					<span t-esc="doc.company_id.name"></span>
