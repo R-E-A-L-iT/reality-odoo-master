@@ -26,12 +26,7 @@
 					<t t-call="proquotes.renewal-hardware-english"/>
 					<t t-call="proquotes.renewal-hardware-french"/>
 				</t>
-				<t t-if="line.name == '$software'">
-					<tr>
-						<td>
-							<span>Test</span>
-						</td>
-					</tr>
+				<t t-if="line.name != '$software'">
 					<t t-call="proquotes.renewal-software"/>
 				</t>
 			</t>
