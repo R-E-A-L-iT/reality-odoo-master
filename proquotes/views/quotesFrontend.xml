@@ -29,7 +29,7 @@
 			</t>
 		</xpath>
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="attributes">
-			<attribute name="t-else"></attribute>
+			<attribute name="t-if">1 == 2</attribute>
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
