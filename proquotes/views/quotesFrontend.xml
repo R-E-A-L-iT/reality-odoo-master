@@ -18,7 +18,7 @@
 				<td>Quantity</td>
 				<td class="text-right">Unit Price</td>
 				<td>Taxes</td>
-				<td>Amount</td>
+				<td class="text-right">Amount</td>
 			</tr>
 		</xpath>
 
