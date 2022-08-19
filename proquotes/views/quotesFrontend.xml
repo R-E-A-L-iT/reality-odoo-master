@@ -30,8 +30,8 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
-			<!-- <attribute name="t-if">line.name != '$hardware'</attribute> -->
-			<attribute name="t-else"/>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<!-- <attribute name="t-else"/> -->
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
