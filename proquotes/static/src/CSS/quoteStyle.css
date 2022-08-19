@@ -55,8 +55,9 @@ img.quoteFooterContactImage {
 	color: #fff;
 }
 
-.is-subtotal>td {
-	margin-bottom: 5vh;
+.is-subtotal>td>strong {
+	display: inline-block;
+	margin-bottom: 10vh;
 }
 
 button.btn.btn-success {
