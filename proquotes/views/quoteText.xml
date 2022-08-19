@@ -193,6 +193,55 @@
 					</li>
 				</ol>
 			</li>
+			<li>
+				<h3>
+					<strong>END OF AGREEMENT</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>Termination as of Right</h4>
+						<p>
+							This Agreement shall be terminated as of right without any notice or formal demand being required from
+							<span t-esc="doc.company_id.name"/>
+							, if the Customer makes a general assignment of its property for the benefit of its creditors, or if
+							it is declared bankrupt or insolvent or if it allows its assets to be seized further to a writ of
+							execution or other legal proceedings.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Termination on Notice
+						</h4>
+						<p>
+							The Agreement is terminated upon the expiry of a 10 day limit, as of the delivery of a written notice
+							indicating, as applicable, the failure to perform by either party, should the defaulting party not
+							correct such failure within that time limit, in either of the following cases (i) the Customer breaches
+							or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement, and
+							the Customer will be required to pay any amounts owing to
+							<span t-esc="doc.company_id.name"/>
+							or (ii) if
+							<span t-esc="doc.company_id.name"/>
+							breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Effect of Termination
+						</h4>
+						<p>
+							When this Agreement is terminated, the Customer agrees to pay AB Tech any amounts owing under the
+							terms of the Agreement.
+							<span t-esc="doc.company_id.name"/>
+							may, at any time and without prior notice as of termination, retake
+							possession of the Equipment and the Customer hereby authorizes
+							<span t-esc="doc.company_id.name"/>
+							, its agents, employees or
+							representatives to enter onto its property or on any location where the Equipment is found for the
+							purpose of immediately retaking possession of said Equipment, all at the Customer's expense.
+						</p>
+					</li>
+				</ol>
+			</li>
 		</ol>
 	</template>
 
