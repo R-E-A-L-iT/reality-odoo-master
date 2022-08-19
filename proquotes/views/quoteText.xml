@@ -53,7 +53,7 @@
 
 	<template name="Renewal English" id="renewal-english" inherit_id="proquotes.renewal" primary="True">
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
-			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.jpg</attribute>
+			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
 		</xpath>
 		<xpath expr="//p[@id=&quot;hardware&quot;]">
@@ -63,7 +63,7 @@
 
 	<template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal" primary="True">
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
-			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.jpg</attribute>
+			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
 		</xpath>
 		<xpath expr="//p[@id=&quot;hardware&quot;]">
