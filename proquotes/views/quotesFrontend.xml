@@ -11,6 +11,11 @@
 
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/tr" position="before">
+			<tr t-if="line.display_type == 'line_section'">
+				<td>Section</td>
+			</tr>
+		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
 			<!-- <t t-if="sale_order.sale_order_template_id.name == 'Renewal'"> -->
