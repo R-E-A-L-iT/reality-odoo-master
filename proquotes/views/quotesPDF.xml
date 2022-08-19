@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																																																																																																																																																																				<!--
+																																																																																																																																																																																																																																																																																								<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
@@ -75,7 +75,7 @@
 					margin-bottom: 1em;
 				}
 			</style>
-			<t t-if="doc.sale_order_template_id.name == Renewal">
+			<t t-if="doc.sale_order_template_id.name == 'Renewal'">
 				<span id="lang-id" class="english-mode no-display">english-mode</span>
 				<t t-call="proquotes.renewal-english"/>
 				<t t-call="proquotes.renewal-french"/>
