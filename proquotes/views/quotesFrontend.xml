@@ -27,12 +27,7 @@
 					<t t-call="proquotes.renewal-hardware-french"/>
 				</t>
 			</t>
-			<t t-else="">
-				<tr>
-					<td>
-						<span t-esc="line.name"></span>
-					</td>
-				</tr>
+			<t t-if="line.name != '$hardware'">
 				<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="move"/>
 			</t>
 		</xpath>
