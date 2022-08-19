@@ -44,7 +44,7 @@
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[3]" position="attributes">
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="attributes">
 			<!-- <attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute> -->
 			<attribute name="id">subtotal</attribute>
 		</xpath>
