@@ -96,6 +96,70 @@
 					</li>
 				</ol>
 			</li>
+			<li>
+				<h3>
+					<strong>CUSTOMERS COMMITMENTS</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>
+							Equipment Use
+						</h4>
+						<p>
+							The Customer agrees to use the Equipment and its accessories solely for the purposes for which
+							such Equipment and accessories are intended. The Customer agrees to comply with any requirements
+							and regulations on the use of the Equipment that may be required by
+							<span t-esc="doc.company_id.name"/>
+							from time to time. The Customer must not remove any accessory from the Equipment. The Customer
+							must not, at any time, authorize any person other than its employees, representatives or agents to
+							use the Equipment.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Returning the Equipment to
+							<span t-esc="doc.company_id.name"/>
+						</h4>
+						<p>
+							The Customer agrees to return the Equipment to AB Tech in the same operating and clean condition as at
+							the time of delivery, and to the same location as the original point of delivery, or failing that to any
+							AB Tech branch.
+							In such case, the Customer agrees to wash the Equipment prior to its pickup by
+							<span t-esc="doc.company_id.name"/>
+							. The Customer agrees to immediately notify
+							<span t-esc="doc.company_id.name"/>
+							of any damages caused to the Equipment. In such case, the Customer must reimburse
+							<span t-esc="doc.company_id.name"/>
+							for any repairs required as a result of the damages, alterations or stemming from the
+							abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage,
+							alteration or abusive use was intentional by the Customer. Such repairs must be carried out
+							exclusively by
+							<span t-esc="doc.company_id.name"/>
+							or its authorized supplier. Under no circumstances is the Customer authorized
+							or would be authorized to carry out any repair or have any repair carried out on the Equipment.
+						</p>
+					</li>
+					<li>
+						<h3>Insurance</h3>
+						<p>
+							The Customer hereby agrees to hold general liability insurance covering any third-party liability
+							incumbent upon it (including renter’s insurance) under the terms of this Agreement, with minimum
+							coverage of two million dollars ($2,000,000) and to provide a copy of the policy to
+							<span t-esc="doc.company_id.name"/>
+							should
+							<span t-esc="doc.company_id.name"/>
+							so request it.
+						</p>
+					</li>
+					<li>
+						<h3>Standards, Policies and Others</h3>
+						<p>
+							The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by
+							<span t-esc="doc.company_id.name"/>
+							, particularly in regards to the use and safety of the Equipment.</p>
+					</li>
+				</ol>
+			</li>
 		</ol>
 	</template>
 
