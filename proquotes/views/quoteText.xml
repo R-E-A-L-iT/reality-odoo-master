@@ -64,6 +64,35 @@
 					</li>
 				</ol>
 			</li>
+			<li>
+				<h3>
+					<strong>
+						<span t-esc="doc.company_id.name"/>
+						's COMMITMENTS
+					</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>
+							Equipment Condition
+						</h4>
+						<p>
+							<span t-esc="doc.company_id.name"/>
+							agrees to provide functional Equipment in proper maintenance to the Customer
+						</p>
+					</li>
+					<li>
+						<h4>
+							<span t-esc="doc.company_id.name"/>
+							agrees to deliver the Equipment to the Customer at the agreed upon location.
+							The Customer acknowledges having given
+							<span t-esc="doc.company_id.name"/>
+							all relevant information on the Equipment delivery location and that such information
+							complies with whatever is indicated in this Agreement, as applicable.
+						</h4>
+					</li>
+				</ol>
+			</li>
 		</ol>
 	</template>
 
