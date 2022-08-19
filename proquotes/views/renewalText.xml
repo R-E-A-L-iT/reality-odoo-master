@@ -16,7 +16,7 @@
 		</div>
 	</template>
 
-	<template name="Renewal" id="renewal">
+	<template name="Renewal" id="renewal-software">
 		<div id="renewal-text">
 			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
 			<div class="red-div"/>

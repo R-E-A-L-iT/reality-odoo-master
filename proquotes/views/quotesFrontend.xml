@@ -20,18 +20,18 @@
 				<td class="text-right"></td>
 				<td class="text-right">Amount</td>
 			</tr>
-			<t t-if="line.name == '$hardware'">
-				<t t-if="sale_order.sale_order_template_id.name == 'Renewal'"> -->
+			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
+				<t t-if="line.name == '$hardware'">
 					<span id="lang-id" class="english-mode no-display">english-mode</span>
 					<t t-call="proquotes.renewal-hardware-english"/>
 					<t t-call="proquotes.renewal-hardware-french"/>
 				</t>
+				<t t-if="line.name == '$software'" t-call="proquotes.renewal-software"/>
 			</t>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
-			<!-- <attribute name="t-else"/> -->
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
