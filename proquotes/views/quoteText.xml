@@ -234,10 +234,72 @@
 							<span t-esc="doc.company_id.name"/>
 							may, at any time and without prior notice as of termination, retake
 							possession of the Equipment and the Customer hereby authorizes
-							<span t-esc="doc.company_id.name"/>
 							, its agents, employees or
 							representatives to enter onto its property or on any location where the Equipment is found for the
 							purpose of immediately retaking possession of said Equipment, all at the Customer's expense.
+						</p>
+					</li>
+				</ol>
+			</li>
+			<li>
+				<h3>
+					<strong>GENERAL PROVISIONS</strong>
+				</h3>
+				<ol>
+					<li>
+						<h4>
+							Assignment
+						</h4>
+						<p>
+							<span t-esc="doc.company_id.name"/>
+							reserves the right to assign or transfer a portion of or all its rights and obligations resulting
+							from this Agreement to anyone, without the need to request the Customer's consent or approval.
+							However, the Customer may not assign its rights nor request or allow a third party to assume its
+							obligations under this Agreement.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Notice
+						</h4>
+						<p>
+							Any notice required under this Agreement is adequate if it is recorded in writing and sent by a
+							method of communication that allows the sending party to prove that said notice was effectively
+							delivered to the receiving party at the addresses indicated on the first page of the Agreement or
+							any other address the receiving party may have made known in accordance with this Agreement.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Non-Waiver
+						</h4>
+						<p>
+							If either party should waive, neglect or delay the exercise of a right or recourse provided by
+							this Agreement, this shall never be held against said party as a renunciation of its rights and
+							recourses, as long as the conventionally or legally prescribed time for exercising said right or
+							recourse has not expired.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Legal Representatives
+						</h4>
+						<p>
+							The Agreement binds the parties, their successors, legal representatives, liquidators, trustees and assigns.
+						</p>
+					</li>
+					<li>
+						<h4>
+							Applicable Laws and Jurisdiction
+						</h4>
+						<p>
+							This Agreement and its interpretation, execution, application, validity and effects are subject to
+							the applicable laws in force in the province of Ontario and in force in Canada that apply in the
+							province of Ontario, which govern all of the provisions it contains.
+							The parties agree that any claim or any legal action taken for any reason with respect to this
+							Agreement shall be brought to a court located in the judicial district of Toronto, Ontario, Canada,
+							to the exclusion of any other judicial district that may have jurisdiction over such disputes under
+							the law.
 						</p>
 					</li>
 				</ol>
