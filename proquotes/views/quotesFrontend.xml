@@ -10,12 +10,14 @@
 	</template>
 
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+		<xpath expr="table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
+
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
-			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
-				<span id="lang-id" class="english-mode no-display">english-mode</span>
-				<t t-call="proquotes.renewal-hardware-english"/>
-				<t t-call="proquotes.renewal-hardware-french"/>
-			</t>
+			<!-- <t t-if="sale_order.sale_order_template_id.name == 'Renewal'"> -->
+			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
+			<!-- <t t-call="proquotes.renewal-hardware-english"/> -->
+			<!-- <t t-call="proquotes.renewal-hardware-french"/> -->
+			<!-- </t> -->
 		</xpath>
 
 		<xpath expr="//thead" position="attributes">
