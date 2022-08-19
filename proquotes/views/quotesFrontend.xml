@@ -13,11 +13,11 @@
 		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/> -->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<td>Product</td>
+				<td class="text-left">Product</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
-				<td>Quantity</td>
+				<td class="text-right">Quantity</td>
 				<td class="text-right">Unit Price</td>
-				<td>Taxes</td>
+				<td class="text-right">Taxes</td>
 				<td class="text-right">Amount</td>
 			</tr>
 		</xpath>
