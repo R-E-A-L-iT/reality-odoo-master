@@ -30,7 +30,7 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="id">test</attribute>
+			<attribute name="t-else"></attribute>
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
