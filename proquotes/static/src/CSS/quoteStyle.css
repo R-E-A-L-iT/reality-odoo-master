@@ -55,8 +55,7 @@ img.quoteFooterContactImage {
 	color: #fff;
 }
 
-.is-subtotal {
-	display: inline-block;
+.is-subtotal>td {
 	margin-bottom: 5vh;
 }
 
