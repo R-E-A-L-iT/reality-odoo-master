@@ -12,7 +12,7 @@
 			<attribute name="class">footer-root</attribute>
 		</xpath>
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<img t-if="footer != undefined" id="insert-footer" width="auto" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
+			<img t-if="footer != undefined" id="insert-footer" width="auto" height="90%" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 			<style>
 				.footer-root * {
 					margin-top: 0px;
@@ -52,7 +52,7 @@
 					margin: auto;
 					line-height: 2.5rem;
 				}
-																																																																																																																																																																																																																																																																				<!--
+																																																																																																																																																																																																																																																																								<!--
 				#renewal-text .red-div {
 					width: 60px;
 					height: 2px;
