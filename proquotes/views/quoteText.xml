@@ -46,7 +46,9 @@
 							Additional Services or Additional Fees
 						</h4>
 						<p>
-							In the event that the Customer requires any other service from AB Tech that is not included in this
+							In the event that the Customer requires any other service from
+							<span t-esc="doc.company_id.name"/>
+							that is not included in this
 							Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees 
 							to pay
 							<span t-esc="doc.company_id.name"/>
