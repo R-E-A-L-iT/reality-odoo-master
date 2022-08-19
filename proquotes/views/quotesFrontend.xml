@@ -44,11 +44,6 @@
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/t[2]/td" position="attributes">
-			<!-- <attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute> -->
-			<attribute name="id">subtotal</attribute>
-		</xpath>
-
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
 			<!-- <t t-if="sale_order.sale_order_template_id.name == 'Renewal'"> -->
 			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
