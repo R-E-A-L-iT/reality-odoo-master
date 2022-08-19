@@ -36,6 +36,8 @@
 }
 
 #renewal-text img {
-	width: 70vw;
+	width: 100%;
 	height: auto;
+	margin-left: 0px;
+	margin-right: 0px;
 }
