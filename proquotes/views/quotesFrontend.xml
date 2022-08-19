@@ -13,8 +13,8 @@
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
 			<t t-if="sale_order.sale_order_template_id.id == 70">
 				<span id="lang-id" class="english-mode no-display">english-mode</span>
-				<t t-call="proquotes.renewal-english"/>
-				<t t-call="proquotes.renewal-french"/>
+				<!-- <t t-call="proquotes.renewal-english"/> -->
+				<!-- <t t-call="proquotes.renewal-french"/> -->
 			</t>
 		</xpath>
 
