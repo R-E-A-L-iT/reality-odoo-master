@@ -2,7 +2,6 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-
 		<h1>
 			<strong>Terms and Conditions</strong>
 		</h1>
