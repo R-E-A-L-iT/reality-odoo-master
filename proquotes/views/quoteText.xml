@@ -2,14 +2,14 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-		<p>
+		<h1>
 			<strong>Terms and Conditions</strong>
-		</p>
+		</h1>
 		<ol>
 			<li>
-				<h2>
+				<h3>
 					<strong>Rental, Effective Date and Term</strong>
-				</h2>
+				</h3>
 				<p>
 					The Customer hereby rents Equipment from
 					<span t-esc="doc.company_id.name"></span>
