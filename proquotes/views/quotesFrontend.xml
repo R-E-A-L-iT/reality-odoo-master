@@ -15,10 +15,10 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<td>Product</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
-				<td class="text-right">Unit Price</td>
 				<td>Quantity</td>
-				<td>Disc.%</td>
+				<td class="text-right">Unit Price</td>
 				<td>Taxes</td>
+				<td>Amount</td>
 			</tr>
 		</xpath>
 
