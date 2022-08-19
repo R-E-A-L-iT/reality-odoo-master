@@ -122,4 +122,5 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 .quote-head, .quote-head * {
 	color: #fff;
 	background-color: #000;
+	text-align: center;
 }
