@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<template name="Renewal" id="renewal">
+		<div id="renewal-text">
+			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
+			<div class="red-div"/>
+			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
+		 	are typically available every few months. It's also important to keep your instrument running 
+		 	smoothly with servicing and calibration. Some of your customers may even require that you have 
+		 	a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
+			also gives you access to technical support for the product. Further options allow you to extend
+		   	your warranty (BRONZE, SILVER, and GOLD) and the GOLD CCPs include a free loaner instrument while
+		    your instrument is down or away on repair/calibration.</p>
+			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
+			<div class="red-div"/>
+			<p>New features and bug fixes are constantly being worked on and updates to our software are available
+			every few months. It's also important to keep all your products up to date together as they may stop 
+			working properly if some are renewed and others aren't. Having a CCP also gives you access to technical
+			support for the product.</p>
+			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
+			<div class="red-div"/>
+			<p>New features and bug fixes are constantly being worked on and updates to our software are available every
+			few months. It's also important to keep all your products up to date together as they may stop working
+			properly if some are renewed and others aren't. Having a CCP also gives you access to technical support
+			for the product.</p>
+			<img src="" alt="" id="chart"/>
+		</div>
+	</template>
+
+	<template name="Renewal English" id="renewal-english" inherit_id="proquotes.renewal" primary="True">
+		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
+			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute>
+			<attribute name="alt">CCP Options Chart</attribute>
+		</xpath>
+		<xpath expr="//p[@id=&quot;hardware&quot;]">
+			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
+		</xpath>
+	</template>
+
+	<template name="Renewal French" id="renewal-french" inherit_id="proquotes.renewal" primary="True">
+		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
+			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute>
+			<attribute name="alt">Tableau des options CCP</attribute>
+		</xpath>
+		<xpath expr="//p[@id=&quot;hardware&quot;]">
+			<xpath expr="//img[@id=&quot;chart&quot;]" position="move"/>
+		</xpath>
+	</template>
+</odoo>

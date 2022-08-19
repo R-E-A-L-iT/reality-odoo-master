@@ -37,7 +37,7 @@
         ]
     },
 
-    'version': '0.9',
+    'version': '0.0',
 
     # always loaded
     'data': [
@@ -48,7 +48,8 @@
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/quoteLogo.xml',
-        'views/quoteText.xml'
+        'views/renewalText.xml',
+        'views/rentalTerms.xml'
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
