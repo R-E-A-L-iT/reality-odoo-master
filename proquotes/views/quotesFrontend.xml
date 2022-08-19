@@ -83,9 +83,9 @@
 		</xpath>
 
 		<!-- Rental Item Value Head -->
-		<xpath expr="//section[@id=&quot;details&quot;]//th[1]" position="after">
-			<th class="text-right" t-if="sale_order.is_rental == True">Product Value</th>
-		</xpath>
+		<!-- <xpath expr="//section[@id=&quot;details&quot;]//th[1]" position="after"> -->
+		<!-- <th class="text-right" t-if="sale_order.is_rental == True">Product Value</th> -->
+		<!-- </xpath> -->
 
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
