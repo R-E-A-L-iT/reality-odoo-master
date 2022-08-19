@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Renewal Hardware" id="renewal-hardwaer">
+	<template name="Renewal Hardware" id="renewal-hardware">
 		<div id="renewal-text">
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
 			<div class="red-div"/>
