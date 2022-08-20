@@ -28,7 +28,6 @@
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
-				<!-- <tr class="quote-head"> -->
 				<td class="text-left">Product</td>
 				<td class="text-right" t-if="doc.is_rental == True">Product Value</td>
 				<td class="text-right">Quantity</td>
@@ -54,6 +53,11 @@
 					</tr>
 				</t>
 			</t>
+		</xpath>
+
+		<!-- Remove Special Sections for Renewal Quotes -->
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
