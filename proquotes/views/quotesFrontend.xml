@@ -106,7 +106,7 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[1]" position="attributes">
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]//tr[2]" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block'</attribute>
 		</xpath>
 
@@ -122,7 +122,7 @@
 			<attribute name="class">bg-100 quotesTableHead</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr[1]" position="attributes">
+		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr" position="attributes">
 			<attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type == 'line_note' else 'quoteLineRow'</attribute>
 		</xpath>
 
