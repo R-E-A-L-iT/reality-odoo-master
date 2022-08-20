@@ -216,10 +216,10 @@
 				<div class="flex">
 					<span class="line_id" t-attf-id="{{line}}"></span>
 
-					<t t-set="name" t-value="line.product_id.name"></t>
+					<!-- <t t-set="name" t-value="line.product_id.name"></t> -->
 					<!-- <t t-set="name" t-value="line.applied_name"></t> -->
-					<span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-					<t t-set="description" t-value="line.name"/>
+					<span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span>
+					<!-- <t t-set="description" t-value="line.name"/> -->
 
 					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
 						<!-- <span class="detailLabel">Details</span> -->
@@ -228,8 +228,8 @@
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
 
 					<div class="product_fold" style="width: 100%;">
-						<span t-raw="line.product_id.description_sale"/>
-						<span style="color: #777;" t-raw="description"></span>
+						<span style="color: #777;" t-raw="line.product_id.description_sale"/>
+						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
 					</div>
 				</div>
