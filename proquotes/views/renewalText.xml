@@ -34,12 +34,16 @@
 			<h2>
 				Software Subscriptions
 			</h2>
-			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
+			<h4>WHY RENEW YOUR SOFTWARE Subscriptions?</h4>
 			<div class="red-div"/>
-			<p>New features and bug fixes are constantly being worked on and updates to our software are available every
-			few months. It's also important to keep all your products up to date together as they may stop working
-			properly if some are renewed and others aren't. Having a CCP also gives you access to technical support
-			for the product.</p>
+			<p>New features and bug fixes are constantly being released and updates to our software are released several
+				times a year. It is also important to keep all your products up to date together as they may stop working properly
+				if some are renewed and others are not. A subscription gives you the possibility to be up to date and have access
+				to the software at all times until the expiry of the subscription. If the product is not renewed, you lose access
+				to this software on the expiration date.
+				<br/>
+				In the "Additional subscriptions" section, you can choose to add products and their quantities. In the
+				“Existing subscriptions” section, you can choose whether or not to renew the products you already have.</p>
 		</div>
 	</template>
 
