@@ -558,7 +558,8 @@
 					Download
 				</a>
 			</div>
-			<img alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/{{sale_order.footer}}.jpg"/>
+			<br/>
+			<img alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.jpg"/>
 		</xpath>
 
 	</template>
