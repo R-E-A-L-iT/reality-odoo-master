@@ -27,8 +27,13 @@
 		<xpath expr="//table/thead" position="replace"/>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
+			<style>
+				.quote-head * {
+					color: #fff;
+					background: color: #000;
+				}
+			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
-				<!-- <tr> -->
 				<td class="text-left">Product</td>
 				<td class="text-right" t-if="doc.is_rental == True">Product Value</td>
 				<td class="text-right">Quantity</td>
