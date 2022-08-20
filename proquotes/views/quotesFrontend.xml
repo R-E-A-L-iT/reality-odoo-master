@@ -15,13 +15,13 @@
 			<div class="quote-address">
 				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
 				<div class="quote-address-block">
-					<h1>QUOTATION</h1>
-					<p t-field="sale_order.partner_id.name"/>
-					<p t-field="sale_order.partner_id.street"/>
-					<p t-field="sale_order.partner_id.city"/>
-					<p t-field="sale_order.partner_id.state_id"/>
-					<p t-field="sale_order.partner_id.country_id"/>
-					<p t-field="sale_order.partner_id.phone"/>
+					<h1 class="title">QUOTATION</h1>
+					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.city"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.state_id"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.country_id"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.phone"/>
 				</div>
 			</div>
 			<!-- <div class="quoteHeader">
