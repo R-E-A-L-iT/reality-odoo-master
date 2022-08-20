@@ -14,18 +14,15 @@
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
 			<div class="quote-address">
 				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
-				<h3>QUOTATION</h3>
-				<p t-field="sale_order.partner_id.name"/>
-				<br/>
-				<p t-field="sale_order.partner_id.street"/>
-				<br/>
-				<p t-field="sale_order.partner_id.city"/>
-				<br/>
-				<p t-field="sale_order.partner_id.state_id"/>
-				<br/>
-				<p t-field="sale_order.partner_id.country_id"/>
-				<br/>
-				<p t-field="sale_order.partner_id.phone"/>
+				<div class="quote-addreess-block">
+					<h3>QUOTATION</h3>
+					<p t-field="sale_order.partner_id.name"/>
+					<p t-field="sale_order.partner_id.street"/>
+					<p t-field="sale_order.partner_id.city"/>
+					<p t-field="sale_order.partner_id.state_id"/>
+					<p t-field="sale_order.partner_id.country_id"/>
+					<p t-field="sale_order.partner_id.phone"/>
+				</div>
 			</div>
 			<!-- <div class="quoteHeader">
 				<div class="QCback">
