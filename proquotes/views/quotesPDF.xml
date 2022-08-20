@@ -29,7 +29,7 @@
 	</template>
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
-		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="inside">
+		<xpath expr="//t[@t-set=&quot;forced_vat&quot;]" position="before">
 			<p>Test 1</p>
 		</xpath>
 		<!-- <xpath expr="//table" position="before">
