@@ -121,6 +121,7 @@
 		<xpath expr="//thead" position="attributes">
 			<attribute name="class">bg-100 quotesTableHead</attribute>
 		</xpath>
+
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]/tr[1]" position="attributes">
 			<attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type == 'line_note' else 'quoteLineRow'</attribute>
 		</xpath>
