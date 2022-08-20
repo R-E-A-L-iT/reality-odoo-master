@@ -178,12 +178,9 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	margin-top: 5vh;
 }
 
-.left-input {
-	float: left;
-	margin-right: 20px;
-}
-
 .flex {
+	float: right;
+	margin-left: 20px;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
