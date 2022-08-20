@@ -24,7 +24,7 @@
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<!-- <xpath expr="//table/thead" position="replace"/> -->
+		<xpath expr="//table/thead" position="replace"/>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
