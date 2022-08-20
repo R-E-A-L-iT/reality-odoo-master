@@ -36,7 +36,7 @@
 				<td class="text-right"></td>
 				<td class="text-right">Amount</td>
 			</tr>
-			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
+			<t t-if="doc.sale_order_template_id.name == 'Renewal'">
 				<t t-if="line.name == '$hardware'">
 					<tr>
 						<td colspan="100">
