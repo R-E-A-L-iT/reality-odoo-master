@@ -18,9 +18,9 @@
 					<h1 class="title">QUOTATION</h1>
 					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
 					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
-					<h2>
-						<span class="subtitle" t-field="sale_order.partner_id.city"></span>
-						<span class="subtitle" t-field="sale_order.partner_id.state_id.name">
+					<h2 class="subtitle">
+						<span t-field="sale_order.partner_id.city"></span>
+						<span t-field="sale_order.partner_id.state_id.name">
 						</span>
 					</h2>
 					<h2 class="subtitle" t-field="sale_order.partner_id.country_id.name"/>
