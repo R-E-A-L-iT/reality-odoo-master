@@ -148,6 +148,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 
 .quote-address * {
 	z-index: 1;
+	text-align: center;
 }
 
 .quote-address>img {
