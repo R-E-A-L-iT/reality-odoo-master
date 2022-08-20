@@ -56,7 +56,7 @@
 		</xpath>
 
 		<!-- Remove Special Sections for Renewal Quotes -->
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
+		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
 		</xpath>
 
