@@ -20,12 +20,22 @@
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
-				<td class="text-left">Product</td>
-				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
-				<td class="text-right">Quantity</td>
-				<td class="text-right">Unit Price</td>
+				<td class="text-left">
+					<span>Product</span>
+				</td>
+				<td class="text-right" t-if="sale_order.is_rental == True">
+					<span>Product Value</td>
+				</span>
+				<td class="text-right">
+					<span>Quantity</span>
+				</td>
+				<td class="text-right">
+					<span>Unit Price</span>
+				</td>
 				<td class="text-right"></td>
-				<td class="text-right">Amount</td>
+				<td class="text-right">
+					<span>Amount</span>
+				</td>
 			</tr>
 			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
 				<t t-if="line.name == '$hardware'">
