@@ -61,11 +61,11 @@
 						</td>
 					</tr>
 				</t>
-				<t t-if="line.name == '$subscription'">
+				<!-- <t t-if="line.name == '$subscription'">
 					<td colspan="100">
 						<t t-call="proquotes.renewal-subscription"/>
 					</td>
-				</t>
+				</t> -->
 			</t>
 		</xpath>
 
