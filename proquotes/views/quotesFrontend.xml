@@ -91,7 +91,7 @@
 				<t t-if="line.name == '$software'">
 					<tr>
 						<td colspan="100">
-							<t t-call="proquotes.renewal-subscription"/>
+							<t t-call="proquotes.renewal-software"/>
 						</td>
 					</tr>
 				</t>
