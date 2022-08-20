@@ -145,7 +145,7 @@
 
 		<!--Move Cliet Info-->
 		<!-- <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
-			<attribute name="style">margin: auto;</attribute>			<!-- position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;; -->
+			<attribute name="style">margin: auto;</attribute>-->		<!-- position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;; -->
 	</xpath> -->
 	<!--Remove Taxes-->
 	<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/> -->
