@@ -13,7 +13,7 @@
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
 			<div class="quote-address">
-				<img alt="Header Img" t-attf-img="https://cdn.r-e-a-l.it/images/header/{{Sale_Order.Header}}.jpg"/>
+				<img alt="Header Img" t-attf-img="https://cdn.r-e-a-l.it/images/header/{{sale_order.Header}}.jpg"/>
 				<span t-field="sale_order.partner_id.name"/>
 				<br/>
 				<span t-field="sale_order.partner_id.street"/>
