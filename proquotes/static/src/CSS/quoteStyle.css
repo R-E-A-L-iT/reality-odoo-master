@@ -145,3 +145,12 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 #quote_header_11 {
 	color: #fff;
 }
+
+.quote-address * {
+	z-index: 1;
+}
+
+.quote-address>img {
+	width: 100%;
+	z-index: 0;
+}
