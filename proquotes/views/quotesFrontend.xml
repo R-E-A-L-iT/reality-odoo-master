@@ -558,12 +558,13 @@
 					Download
 				</a>
 			</div>
-		</xpath>
+			<img alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/{{footer}}.jpg">
+			</xpath>
 
-	</template>
+		</template>
 
-	<template id="User_Buttons" name="Client Side Buttons" priority="17">
+		<template id="User_Buttons" name="Client Side Buttons" priority="17">
 
-	</template>
+		</template>
 
-</odoo>
+	</odoo>
