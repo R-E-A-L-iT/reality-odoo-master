@@ -2,7 +2,7 @@
 	font-family: 'helvetica';
 }
 
-span>strong {
+span>strong, td>strong {
 	font-family: 'helvetica';
 }
 
