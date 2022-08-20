@@ -26,18 +26,26 @@
 					</strong>
 				</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">
+					<strong style="font-weight: normal;">
 					Product Value
+					</strong>
 				</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
 				<td class="text-right">
+					<strong style="font-weight: normal;">
 					Quantity
+					</strong>
 				</td>
 				<td class="text-right">
+					<strong style="font-weight: normal;">
 					Unit Price
+					</strong>
 				</td>
 				<td class="text-right"></td>
 				<td class="text-right">
+					<strong style="font-weight: normal;">
 					Amount
+					</strong>
 				</td>
 			</tr>
 			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
