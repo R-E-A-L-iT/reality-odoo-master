@@ -178,6 +178,12 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	margin-top: 5vh;
 }
 
+.priceChange {
+	display: inline;
+	float: left;
+	margin-right: 20px;
+}
+
 .flex {
 	margin-left: 20px;
 	display: flex;
