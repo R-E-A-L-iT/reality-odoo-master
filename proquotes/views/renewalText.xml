@@ -3,6 +3,10 @@
 <odoo>
 	<template name="Renewal Hardware" id="renewal-hardware">
 		<div id="renewal-text">
+			<h2>	
+				Hardware CCP
+			</h2>
+			<br/>
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
 			<div class="red-div"/>
 			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
