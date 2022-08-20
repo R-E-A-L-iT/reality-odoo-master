@@ -14,7 +14,7 @@
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
 			<div class="quote-address">
 				<!-- <span t-esc="sales_order.partner_id.name"/> -->
-				<!-- <span t-field="sale_order.partner_id.name"/> -->
+				<span t-field="sale_order.partner_id.name"/>
 			</div>
 		</xpath>
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
