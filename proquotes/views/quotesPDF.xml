@@ -5,6 +5,9 @@
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="attributes">
 			<attribute name="style">background-color: #db0d0d;</attribute>
 		</xpath>
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
+			<attribute name="style">background-color: #db0d0d;</attribute>
+		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
 			<strongs>Subtotal</strongs>
 		</xpath>
@@ -41,7 +44,7 @@
 			<style>
 				.quote-head * {
 					color: #fff;
-					background-color: #000;
+					background-color: #db0d0d;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'">
