@@ -24,9 +24,9 @@
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<xpath expr="//table" position="before">
+		<!-- <xpath expr="//table" position="before">
 
-		</xpath>
+		</xpath> -->
 
 		<xpath expr="//table/thead" position="replace"/>
 
