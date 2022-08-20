@@ -177,3 +177,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	width: 100%;
 	margin-top: 5vh;
 }
+
+.product_fold {
+	margin-left: 50px;
+}
