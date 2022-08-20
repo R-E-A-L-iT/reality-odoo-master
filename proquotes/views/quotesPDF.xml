@@ -26,7 +26,7 @@
 
 		<xpath expr="//table/thead" position="replace"/>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
 		</xpath>
 
