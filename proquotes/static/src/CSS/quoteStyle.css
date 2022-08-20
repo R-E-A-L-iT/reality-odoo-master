@@ -161,3 +161,8 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	height: 50%;
 	position: absolute;
 }
+
+#footer-img {
+	width: 100%;
+	margin-top: 5vh;
+}
