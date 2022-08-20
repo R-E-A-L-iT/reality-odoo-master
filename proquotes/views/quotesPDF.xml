@@ -127,7 +127,7 @@
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
 
 		<!--Remove Subtotal-->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="replace"/>
+		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="replace"/> -->
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
