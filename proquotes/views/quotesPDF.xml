@@ -27,7 +27,7 @@
 		<xpath expr="//table/thead" position="replace"/>
 
 		<xpath expr="//table/tbody/tr" position="before">
-			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
+			<tr class="quote-head" t-if="doc.display_type == 'line_section' and doc.name != '$hardware' and doc.name != '$software'">
 				<td class="text-left">Product</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
 				<td class="text-right">Quantity</td>
@@ -36,7 +36,7 @@
 				<td class="text-right">Amount</td>
 			</tr>
 			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
-				<t t-if="line.name == '$hardware'">
+				<t t-if="doc.name == '$hardware'">
 					<tr>
 						<td colspan="100">
 							<span id="lang-id" class="english-mode no-display">english-mode</span>
@@ -45,7 +45,7 @@
 						</td>
 					</tr>
 				</t>
-				<t t-if="line.name == '$software'">
+				<t t-if="doc.name == '$software'">
 					<tr>
 						<td colspan="100">
 							<t t-call="proquotes.renewal-software"/>
