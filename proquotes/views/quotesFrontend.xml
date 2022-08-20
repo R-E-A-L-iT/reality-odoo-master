@@ -53,7 +53,7 @@
 			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
 				<t t-if="line.name == '$hardware'">
 					<tr>
-						<td colspan="100">
+						<td style="border-style: none;" colspan="100">
 							<span id="lang-id" class="english-mode no-display">english-mode</span>
 							<t t-call="proquotes.renewal-hardware-english"/>
 							<t t-call="proquotes.renewal-hardware-french"/>
@@ -62,14 +62,14 @@
 				</t>
 				<t t-if="line.name == '$software'">
 					<tr>
-						<td colspan="100">
+						<td style="border-style: none;" colspan="100">
 							<t t-call="proquotes.renewal-software"/>
 						</td>
 					</tr>
 				</t>
 				<t t-if="line.name == '$subscription'">
 					<tr>
-						<td colspan="100">
+						<td style="border-style: none;" colspan="100">
 							<t t-call="proquotes.renewal-subscription"/>
 						</td>
 					</tr>
