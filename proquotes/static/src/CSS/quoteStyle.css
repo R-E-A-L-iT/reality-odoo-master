@@ -149,9 +149,9 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 .quote-address * {
 	z-index: 1;
 	text-align: center;
+	width: 100%;
 }
 
 .quote-address>img {
-	width: 100%;
 	z-index: 0;
 }
