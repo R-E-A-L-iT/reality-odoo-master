@@ -178,9 +178,15 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	margin-top: 5vh;
 }
 
-.inline {
-	padding: 0px;
-	display: inline;
+.left-input {
+	float: left;
+	margin-right: 20px;
+}
+
+.flex {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
 }
 
 /* .product_fold {

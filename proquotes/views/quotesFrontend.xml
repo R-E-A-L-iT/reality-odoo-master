@@ -208,12 +208,12 @@
 					<input t-else="" type="checkbox" class="priceChange"/>
 				</t>
 				<t t-else="">
-					<input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange"/>
-					<input t-else="" type="radio" style="display: none;" class="priceChange"/>
+					<input class="left-input" t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange"/>
+					<input class="left-input" t-else="" type="radio" style="display: none;" class="priceChange"/>
 				</t>
 
 				<!--Line Id For User Selection-->
-				<div class="inline">
+				<div class="flex">
 					<span class="line_id" t-attf-id="{{line}}"></span>
 
 					<t t-set="name" t-value="line.product_id.name"></t>
