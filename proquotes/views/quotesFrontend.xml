@@ -43,7 +43,7 @@
 		</xpath>
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
