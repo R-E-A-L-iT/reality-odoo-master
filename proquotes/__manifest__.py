@@ -37,7 +37,7 @@
         ]
     },
 
-    'version': '0.2',
+    'version': '0.3',
 
 
     # always loaded
@@ -45,6 +45,7 @@
         'security/ir.model.access.csv',
         'views/quotesFrontend.xml',
         'views/quotesPDF.xml',
+        'views/invoicePDF.xml',
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
