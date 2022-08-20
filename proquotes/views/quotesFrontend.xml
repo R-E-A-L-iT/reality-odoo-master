@@ -13,7 +13,7 @@
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
 			<div class="quote-address">
-				<img alt="Header Img" t-attf-img="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
+				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
 				<span t-field="sale_order.partner_id.name"/>
 				<br/>
 				<span t-field="sale_order.partner_id.street"/>
@@ -223,7 +223,7 @@
 				<t t-set="description" t-value="line.name"/>
 
 				<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-					<span class="detailLabel">Details</span>
+					<!-- <span class="detailLabel">Details</span> -->
 				</label>
 				<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
 				<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
