@@ -18,10 +18,12 @@
 					<h1 class="title">QUOTATION</h1>
 					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
 					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
-					<h2 class="subtitle" t-field="sale_order.partner_id.city"/>
-					<h2 class="subtitle" t-field="sale_order.partner_id.state_id"/>
-					<h2 class="subtitle" t-field="sale_order.partner_id.country_id"/>
-					<h2 class="subtitle" t-field="sale_order.partner_id.phone"/>
+					<h2>
+						<span>class="subtitle" t-field="sale_order.partner_id.city"</span>
+						<span class="subtitle" t-field="sale_order.partner_id.state_id.name">
+						</span>
+					</h2>
+					<h2 class="subtitle" t-field="sale_order.partner_id.country_id.name"/>
 				</div>
 			</div>
 			<!-- <div class="quoteHeader">
