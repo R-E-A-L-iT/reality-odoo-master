@@ -13,6 +13,7 @@
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
 			<div class="quote-address">
+				<span t-esc="sales_order.partner_id.name"/>
 				<!-- <span t-field="sales_order.partner_id.name"/> -->
 			</div>
 		</xpath>
