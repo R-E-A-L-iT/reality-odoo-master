@@ -19,7 +19,7 @@
 					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
 					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
 					<h2>
-						<span>class="subtitle" t-field="sale_order.partner_id.city"</span>
+						<span class="subtitle" t-field="sale_order.partner_id.city"></span>
 						<span class="subtitle" t-field="sale_order.partner_id.state_id.name">
 						</span>
 					</h2>
