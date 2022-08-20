@@ -155,3 +155,9 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 .quote-address>img {
 	z-index: 0;
 }
+
+.quote-address-block {
+	top: 25%;
+	height: 50%;
+	position: absolute;
+}
