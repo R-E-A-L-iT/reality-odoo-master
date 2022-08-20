@@ -216,7 +216,7 @@
 			<t t-call="proquotes.proquotes_total_pdf"/>
 		</xpath>
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
 			<p>Test 1</p>
 		</xpath>
 		<!-- <xpath expr="" position="inside">
