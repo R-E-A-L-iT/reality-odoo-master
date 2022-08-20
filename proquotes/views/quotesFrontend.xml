@@ -12,8 +12,8 @@
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
-			<div>
-				<p>Test</p>
+			<div class="quote-address">
+				<span t-field="sales_order.partner_id.name"/>
 			</div>
 		</xpath>
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
