@@ -29,9 +29,6 @@
 	</template>
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
-		<xpath expr="//t[@t-set=&quot;forced_vat&quot;]" position="before">
-			<p>Test 1</p>
-		</xpath>
 		<!-- <xpath expr="//table" position="before">
 
 		</xpath> -->
@@ -219,6 +216,9 @@
 			<t t-call="proquotes.proquotes_total_pdf"/>
 		</xpath>
 
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+			<p>Test 1</p>
+		</xpath>
 		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 		</xpath> -->
