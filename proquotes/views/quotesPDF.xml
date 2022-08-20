@@ -26,11 +26,11 @@
 
 		<xpath expr="//table/thead" position="replace"/>
 
-		<xpath expr="//table/tbody/tr" position="before">
+		<xpath expr="//table/tbody/tr" position="replace">
 			<!-- <tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'"> -->
 			<tr class="quote-head">
 				<td class="text-left">Product</td>
-				<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
+				<td class="text-right" t-if="doc.is_rental == True">Product Value</td>
 				<td class="text-right">Quantity</td>
 				<td class="text-right">Unit Price</td>
 				<td class="text-right"></td>
