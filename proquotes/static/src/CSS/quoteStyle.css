@@ -178,6 +178,11 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	margin-top: 5vh;
 }
 
+.inline {
+	padding: 0px;
+	display: inline;
+}
+
 /* .product_fold {
 	margin-left: 50px;
 } */

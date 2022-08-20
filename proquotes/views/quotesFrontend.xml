@@ -213,7 +213,7 @@
 				</t>
 
 				<!--Line Id For User Selection-->
-				<div>
+				<div class="inline">
 					<span class="line_id" t-attf-id="{{line}}"></span>
 
 					<t t-set="name" t-value="line.product_id.name"></t>
