@@ -130,3 +130,10 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	text-align: center;
 	padding: 1.6rem !important;
 }
+
+.cHead {
+	display: block;
+	padding: 0px !important;
+	width: -moz-fit-content;
+	width: fit-content;
+}
