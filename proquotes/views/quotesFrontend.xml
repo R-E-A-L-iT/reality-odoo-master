@@ -14,7 +14,7 @@
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
 			<div class="quote-address">
 				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
-				<div class="quote-addreess-block">
+				<div class="quote-address-block">
 					<h2>QUOTATION</h2>
 					<p t-field="sale_order.partner_id.name"/>
 					<p t-field="sale_order.partner_id.street"/>
