@@ -161,8 +161,8 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 
 h1.title {
 	word-wrap: break-word;
-	font-size: 4em;
-	font-weight: 900;
+	font-size: 4em !important;
+	font-weight: 900 !important;
 	margin: 0;
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
