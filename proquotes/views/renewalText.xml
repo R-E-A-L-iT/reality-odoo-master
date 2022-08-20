@@ -3,8 +3,10 @@
 <odoo>
 	<template name="Renewal Hardware" id="renewal-hardware">
 		<div id="renewal-text">
-			<h2>	
-				Hardware CCP
+			<h2>
+				<strong>
+					Hardware CCP
+				</strong>
 			</h2>
 			<br/>
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
@@ -23,7 +25,9 @@
 	<template name="Renewal" id="renewal-software">
 		<div id="renewal-text">
 			<h2>
-				Software CCP
+				<strong>
+					Software CCP
+				</strong>
 			</h2>
 			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
 			<div class="red-div"/>
@@ -31,10 +35,17 @@
 			every few months. It's also important to keep all your products up to date together as they may stop 
 			working properly if some are renewed and others aren't. Having a CCP also gives you access to technical
 			support for the product.</p>
+		</div>
+	</template>
+
+	<template name="Renewal Subscription" id="renewal-subscription">
+		<div id="renewal-text">
 			<h2>
-				Software Subscriptions
+				<strong>
+					Software Subscriptions
+				</strong>
 			</h2>
-			<h4>WHY RENEW YOUR SOFTWARE Subscriptions?</h4>
+			<h4>WHY RENEW YOUR SOFTWARE SUBSCRIPTIONS?</h4>
 			<div class="red-div"/>
 			<p>New features and bug fixes are constantly being released and updates to our software are released several
 				times a year. It is also important to keep all your products up to date together as they may stop working properly

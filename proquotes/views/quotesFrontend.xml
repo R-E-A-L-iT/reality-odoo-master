@@ -10,16 +10,48 @@
 	</template>
 
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
-
+		<!-- Address -->
+		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
+			<div class="quote-address">
+				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
+				<div class="quote-address-block">
+					<h1 class="title">QUOTATION</h1>
+					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
+					<h2 class="subtitle">
+						<span t-field="sale_order.partner_id.city"></span>
+						<span t-field="sale_order.partner_id.state_id.name">
+						</span>
+					</h2>
+					<h2 class="subtitle" t-field="sale_order.partner_id.country_id.name"/>
+				</div>
+			</div>
+			<!-- <div class="quoteHeader">
+				<div class="QCback">
+					<img id="QH_Background"></img>
+				</div>
+				<div class="QHinfo">
+					<h1 id="QH_Template">QUOTATION</h1>
+					<h1 id="QH_Template" t-field="sale_order.sale_order_template_id"/>
+					<address id="QH_Address" t-field="sale_order.partner_invoice_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+					<p id="QH_quotation" style="font-size: 30%; letter-spacing: 2px;" t-field="sale_order.id"></p> t-field="sale_order.partner_id.name"
+					<p id="QH_companyUUID">58357</p>
+					<img id="QH_companyLogo"></img>
+					<div id="company_logo" style="text-align:center;">
+						<img t-att-src="'data:image/png;base64,sale_order.partner_id.logo'" height="150px" width="150px"/>
+					</div>
+				</div>
+			</div> -->
+		</xpath>
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
-			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'">
 				<td class="text-left">
 					<span class="cHead">
 						Product
@@ -65,11 +97,18 @@
 						</td>
 					</tr>
 				</t>
+				<t t-if="line.name == '$subscription'">
+					<tr>
+						<td colspan="100">
+							<t t-call="proquotes.renewal-subscription"/>
+						</td>
+					</tr>
+				</t>
 			</t>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
@@ -176,22 +215,25 @@
 				</t>
 
 				<!--Line Id For User Selection-->
-				<span class="line_id" t-attf-id="{{line}}"></span>
+				<div class="flex">
+					<span class="line_id" t-attf-id="{{line}}"></span>
 
-				<t t-set="name" t-value="line.product_id.name"></t>
-				<!-- <t t-set="name" t-value="line.applied_name"></t> -->
-				<span t-attf-class="optional{{line.optional}}" t-raw="name"></span>
-				<t t-set="description" t-value="line.name"/>
+					<!-- <t t-set="name" t-value="line.product_id.name"></t> -->
+					<!-- <t t-set="name" t-value="line.applied_name"></t> -->
+					<span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span>
+					<!-- <t t-set="description" t-value="line.name"/> -->
 
-				<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-					<span class="detailLabel">Details</span>
-				</label>
-				<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
-				<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
+						<!-- <span class="detailLabel">Details</span> -->
+					</label>
+					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
 
-				<div class="product_fold" style="width: 100%;">
-					<span style="color: #333; float: left;" t-raw="description"></span>
-					<img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
+					<div class="product_fold" style="width: 100%;">
+						<span style="color: #777;" t-raw="line.product_id.description_sale"/>
+						<!-- <span style="color: #777;" t-raw="description"></span> -->
+						<img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/>
+					</div>
 				</div>
 			</td>
 		</xpath>
@@ -521,6 +563,8 @@
 					Download
 				</a>
 			</div>
+			<br/>
+			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png"/>
 		</xpath>
 
 	</template>

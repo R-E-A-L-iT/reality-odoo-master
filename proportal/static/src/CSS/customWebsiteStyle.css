@@ -238,22 +238,22 @@
 	width: 100px;
 }
 
-#custom-webpage-root .product-landing-text>h1 {
+/* #custom-webpage-root .product-landing-text>h1 {
 	word-wrap: break-word;
 	font-size: 2em;
 	font-weight: 900;
 	margin: 0;
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
-}
+} */
 
-@media screen and (min-width: 750px) {
+/* @media screen and (min-width: 750px) {
 	#custom-webpage-root .product-landing-text>h1 {
 		font-size: 4em;
 	}
-}
+} */
 
-#custom-webpage-root .product-landing-text>h2 {
+/* #custom-webpage-root .product-landing-text>h2 {
 	color: #dbdbdb;
 	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 	font-size: 1em;
@@ -262,13 +262,13 @@
 	text-align: center;
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
-}
+} */
 
-@media screen and (min-width: 750px) {
+/* @media screen and (min-width: 750px) {
 	#custom-webpage-root .product-landing-text>h2 {
 		font-size: 2em;
 	}
-}
+} */
 
 @media (min-width: 750px) {
 	#custom-webpage-root #landing>iframe, #custom-webpage-root #landing>iframe[src=""] {
@@ -804,4 +804,27 @@
 #custom-webpage-root #custom-contact img {
 	height: 7vw;
 	width: 7vw;
+}
+
+h1.title {
+	word-wrap: break-word;
+	font-size: 4em !important;
+	font-weight: 900 !important;
+	margin: 0;
+	text-align: center;
+	text-shadow: 5px 5px 5px #000;
+}
+
+h2.subtitle {
+	color: #dbdbdb;
+	font-size: 2em;
+	font-weight: 100;
+	letter-spacing: 2.75px;
+	text-align: center;
+	text-shadow: 3px 4px 3px #000;
+	text-transform: uppercase;
+}
+
+h2.subtitle>span {
+	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
 }

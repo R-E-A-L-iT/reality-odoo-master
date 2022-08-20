@@ -57,7 +57,7 @@ img.quoteFooterContactImage {
 
 .is-subtotal>td>strong {
 	display: inline-block;
-	margin-bottom: 20vh;
+	margin-bottom: 2vh;
 }
 
 button.btn.btn-success {
@@ -122,6 +122,11 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	font-size: 0.75rem;
 	margin-top: 0px;
 	margin-bottom: 0px;
+	padding: 0px;
+}
+
+.product_fold ul {
+	padding-left: 20px;
 }
 
 .quote-head, .quote-head * {
@@ -136,4 +141,46 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	padding: 0px !important;
 	width: -moz-fit-content;
 	width: fit-content;
+}
+
+.quoteOverlay {
+	display: none;
+}
+
+#quote_header_10 {
+	color: #fff;
+}
+
+.quote-address * {
+	z-index: 1;
+	text-align: center;
+	width: 100%;
+}
+
+.quote-address>img {
+	z-index: 0;
+}
+
+.quote-address-block {
+	top: 25%;
+	height: 50%;
+	position: absolute;
+}
+
+#footer-img {
+	width: 100%;
+	margin-top: 5vh;
+}
+
+.priceChange {
+	display: inline;
+	float: left;
+	margin-right: 20px;
+}
+
+.flex {
+	margin-left: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
 }

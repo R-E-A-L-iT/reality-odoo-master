@@ -1,3 +1,11 @@
+* {
+	font-family: 'helvetica';
+}
+
+span>strong, td>strong {
+	font-family: 'helvetica';
+}
+
 body {
 	overflow-x: hidden;
 	background-color: #000;
