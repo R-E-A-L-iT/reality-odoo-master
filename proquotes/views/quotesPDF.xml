@@ -30,7 +30,7 @@
 			<style>
 				.quote-head * {
 					color: #fff;
-					background: color: #000;
+					background-color: #000;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
