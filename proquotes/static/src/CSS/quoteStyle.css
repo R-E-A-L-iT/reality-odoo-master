@@ -137,3 +137,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	width: -moz-fit-content;
 	width: fit-content;
 }
+
+.quoteOverlay {
+	display: none;
+}
