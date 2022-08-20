@@ -158,22 +158,3 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 .nav-link>span {
 	color: #db0d0d;
 }
-
-h1.title {
-	word-wrap: break-word;
-	font-size: 4em !important;
-	font-weight: 900 !important;
-	margin: 0;
-	text-align: center;
-	text-shadow: 5px 5px 5px #000;
-}
-
-h2.subtitle {
-	color: #dbdbdb;
-	font-size: 2em;
-	font-weight: 100;
-	letter-spacing: 2.75px;
-	text-align: center;
-	text-shadow: 3px 4px 3px #000;
-	text-transform: uppercase;
-}
