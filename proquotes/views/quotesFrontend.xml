@@ -221,7 +221,7 @@
 				<t t-set="description" t-value="line.name"/>
 
 				<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-					<!-- <span class="detailLabel">Details</span> -->
+					<span class="detailLabel">Details</span>
 				</label>
 				<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
 				<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
