@@ -31,13 +31,14 @@
 				</div>
 				<div class="QHinfo">
 					<h1 id="QH_Template">QUOTATION</h1>
-					<!--<h1 id="QH_Template" t-field="sale_order.sale_order_template_id"/>-->
+					<h1 id="QH_Template" t-field="sale_order.sale_order_template_id"/>
 					<address id="QH_Address" t-field="sale_order.partner_invoice_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-					<!--<p id="QH_quotation" style="font-size: 30%; letter-spacing: 2px;" t-field="sale_order.id"></p>-->
-					<!--t-field="sale_order.partner_id.name" -->
-					<!--<p id="QH_companyUUID">58357</p>-->
-					<!--<img id="QH_companyLogo"></img>-->
-					<!--<div id="company_logo" style="text-align:center;"><img t-att-src="'data:image/png;base64,sale_order.partner_id.logo'" height="150px" width="150px"/></div>-->
+					<p id="QH_quotation" style="font-size: 30%; letter-spacing: 2px;" t-field="sale_order.id"></p> t-field="sale_order.partner_id.name"
+					<p id="QH_companyUUID">58357</p>
+					<img id="QH_companyLogo"></img>
+					<div id="company_logo" style="text-align:center;">
+						<img t-att-src="'data:image/png;base64,sale_order.partner_id.logo'" height="150px" width="150px"/>
+					</div>
 				</div>
 			</div>
 		</xpath>
