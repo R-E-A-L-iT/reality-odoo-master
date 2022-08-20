@@ -21,7 +21,9 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
 				<td class="text-left">
-					Product
+					<strong style="font-weight: normal;">
+						Product
+					</strong>
 				</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">
 					Product Value
