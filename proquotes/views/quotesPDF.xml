@@ -12,7 +12,6 @@
 			<attribute name="class">footer-root</attribute>
 		</xpath>
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<span t-esc="footer"/>
 			<img t-if="footer != undefined" id="insert-footer" width="90%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 			<style>
 				.footer-root * {
@@ -224,7 +223,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//img" position="after">
-			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="90%" height="20px"/>
+			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="90%" height="auto"/>
 		</xpath>
 		<!--Remove Taxes-->
 		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
