@@ -24,8 +24,8 @@
 					<span>Product</span>
 				</td>
 				<td class="text-right" t-if="sale_order.is_rental == True">
-					<span>Product Value</td>
-				</span>
+					<span>Product Value</span>
+				</td>
 				<td class="text-right">
 					<span>Quantity</span>
 				</td>
