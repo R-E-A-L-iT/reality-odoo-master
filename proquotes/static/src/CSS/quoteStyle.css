@@ -122,6 +122,11 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	font-size: 0.75rem;
 	margin-top: 0px;
 	margin-bottom: 0px;
+	padding: 0px;
+}
+
+.product_fold ul {
+	padding-left: 20px;
 }
 
 .quote-head, .quote-head * {
@@ -190,7 +195,3 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
-
-/* .product_fold {
-	margin-left: 50px;
-} */
