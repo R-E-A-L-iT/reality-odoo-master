@@ -149,17 +149,17 @@
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<t t-set="name" t-value="line.applied_name"/>
-			<span t-raw="name"></span>
+			<!-- <t t-set="name" t-value="line.applied_name"/> -->
+			<span t-raw="line.product_id.name"></span>
 
-			<t t-set="description" t-value="line.name"/>
+			<!-- <t t-set="description" t-value="line.name"/> -->
 			<style>
 				.description-root *{
 					margin-top: 0px !important;
 					margin-bottom: 0px !important;
 				}
 			</style>
-			<span class="description-root" t-raw="description" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
+			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
 		</xpath>
 
 		<!--Hide Unselected-->
