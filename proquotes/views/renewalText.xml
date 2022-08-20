@@ -31,6 +31,11 @@
 			every few months. It's also important to keep all your products up to date together as they may stop 
 			working properly if some are renewed and others aren't. Having a CCP also gives you access to technical
 			support for the product.</p>
+		</div>
+	</template>
+
+	<template name="Renewal Subscription" id="renewal-subscription">
+		<div id="renewal-text">
 			<h2>
 				Software Subscriptions
 			</h2>

@@ -49,7 +49,7 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
-			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'">
 				<td class="text-left">
 					<span class="cHead">
 						Product
@@ -91,7 +91,14 @@
 				<t t-if="line.name == '$software'">
 					<tr>
 						<td colspan="100">
-							<t t-call="proquotes.renewal-software"/>
+							<t t-call="proquotes.renewal-subscription"/>
+						</td>
+					</tr>
+				</t>
+				<t t-if="line.name == '$subscription'">
+					<tr>
+						<td colspan="100">
+							<t t-call="proquotes.renewal-subscription"/>
 						</td>
 					</tr>
 				</t>
@@ -99,7 +106,7 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' line.name != '$subscription'</attribute>
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">

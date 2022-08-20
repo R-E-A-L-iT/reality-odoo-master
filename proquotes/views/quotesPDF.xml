@@ -37,7 +37,7 @@
 					background-color: #000;
 				}
 			</style>
-			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'">
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'">
 				<td class="text-left">Product</td>
 				<td class="text-right" t-if="doc.is_rental == True">Product Value</td>
 				<td class="text-right">Quantity</td>
@@ -61,6 +61,11 @@
 						</td>
 					</tr>
 				</t>
+				<t t-if="line.name == '$subscription'">
+					<td colspan="100">
+						<t t-call="proquotes.renewal-subscription"/>
+					</td>
+				</t>
 			</t>
 		</xpath>
 
@@ -70,7 +75,7 @@
 
 		<!-- Remove Special Sections for Renewal Quotes -->
 		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
