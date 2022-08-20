@@ -106,7 +106,7 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]//tr[2]" position="attributes">
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[1]//tr[1]" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block'</attribute>
 		</xpath>
 
