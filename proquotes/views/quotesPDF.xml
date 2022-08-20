@@ -26,7 +26,7 @@
 
 		<xpath expr="//table/thead" position="replace"/>
 
-		<xpath expr="//table/tbody/tr" position="replace">
+		<xpath expr="//table/tbody//tr[1]" position="replace">
 			<!-- <tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software'"> -->
 			<tr class="quote-head">
 				<td class="text-left">Product</td>
