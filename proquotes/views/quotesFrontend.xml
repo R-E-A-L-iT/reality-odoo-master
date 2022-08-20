@@ -50,7 +50,32 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
-			<tr class="quote-head" t-if="line.display_type == 'line_section' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'">
+			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
+				<t t-if="line.name == '$hardware'">
+					<tr>
+						<td colspan="100">
+							<span id="lang-id" class="english-mode no-display">english-mode</span>
+							<t t-call="proquotes.renewal-hardware-english"/>
+							<t t-call="proquotes.renewal-hardware-french"/>
+						</td>
+					</tr>
+				</t>
+				<t t-if="line.name == '$software'">
+					<tr>
+						<td colspan="100">
+							<t t-call="proquotes.renewal-software"/>
+						</td>
+					</tr>
+				</t>
+				<t t-if="line.name == '$subscription'">
+					<tr>
+						<td colspan="100">
+							<t t-call="proquotes.renewal-subscription"/>
+						</td>
+					</tr>
+				</t>
+			</t>
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and (line.name == '$hardware' or line.name == '$software' or line.name != '$subscription' or line.name == '$block')">
 				<td class="text-left">
 					<span class="cHead">
 						Product
@@ -79,31 +104,6 @@
 					</span>
 				</td>
 			</tr>
-			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
-				<t t-if="line.name == '$hardware'">
-					<tr>
-						<td colspan="100">
-							<span id="lang-id" class="english-mode no-display">english-mode</span>
-							<t t-call="proquotes.renewal-hardware-english"/>
-							<t t-call="proquotes.renewal-hardware-french"/>
-						</td>
-					</tr>
-				</t>
-				<t t-if="line.name == '$software'">
-					<tr>
-						<td colspan="100">
-							<t t-call="proquotes.renewal-software"/>
-						</td>
-					</tr>
-				</t>
-				<t t-if="line.name == '$subscription'">
-					<tr>
-						<td colspan="100">
-							<t t-call="proquotes.renewal-subscription"/>
-						</td>
-					</tr>
-				</t>
-			</t>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[2]" position="attributes">
