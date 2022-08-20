@@ -134,4 +134,6 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 .cHead {
 	display: block;
 	padding: 0px !important;
+	width: -moz-fit-content;
+	width: fit-content;
 }
