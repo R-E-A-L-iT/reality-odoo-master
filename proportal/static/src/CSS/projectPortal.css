@@ -1,4 +1,8 @@
-*, strong {
+* {
+	font-family: 'helvetica';
+}
+
+span>strong {
 	font-family: 'helvetica';
 }
 
