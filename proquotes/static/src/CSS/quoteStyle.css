@@ -184,3 +184,8 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
+
+td {
+	display: flex;
+	justify-content: center;
+}
