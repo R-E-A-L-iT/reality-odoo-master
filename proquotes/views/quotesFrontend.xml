@@ -39,7 +39,7 @@
 							<t t-call="proquotes.renewal-software"/>
 						</td>
 					</tr>
-				</tr>
+				</t>
 			</t>
 		</xpath>
 
