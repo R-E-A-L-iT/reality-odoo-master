@@ -825,6 +825,6 @@ h2.subtitle {
 	text-transform: uppercase;
 }
 
-h2.subtotal>span {
+h2.subtitle>span {
 	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
 }
