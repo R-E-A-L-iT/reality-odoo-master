@@ -91,6 +91,9 @@
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
 			<style>
+				* {
+					border-style: none !important;
+				}
 				.no-display {
 					display: none;
 				}
