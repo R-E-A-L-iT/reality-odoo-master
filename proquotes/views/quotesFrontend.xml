@@ -74,7 +74,7 @@
 						</td>
 					</tr>
 				</t>
-				<tr class="quote-head" t-if="line.name == '$hardware' or line.name == '$software' or line.name == '$subscription' or line.name == '$block'">
+				<tr class="quote-head" t-if="line.name == '$block'">
 					<td class="text-left">
 						<span class="cHead">
 						Product
