@@ -96,7 +96,7 @@
 				}
 
 				td {
-					border-style: solid;
+					border-style: solid !important;
 				}
 
 				.no-display {
