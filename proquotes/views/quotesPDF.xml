@@ -97,6 +97,7 @@
 
 				td {
 					border-style: solid !important;
+					border-color: black !important;
 				}
 
 				.no-display {
