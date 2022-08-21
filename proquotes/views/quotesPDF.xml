@@ -46,7 +46,7 @@
 					background-color: #db0d0d;
 				}
 			</style>
-			<tr class="quote-head" t-if="line.display_type == 'line_section">
+			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block'">
 					<td class="text-left">Product</td>
 					<td class="text-right" t-if="doc.is_rental == True">Product Value</td>
