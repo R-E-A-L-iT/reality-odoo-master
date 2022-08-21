@@ -96,7 +96,7 @@
 				}
 
 				tr {
-					border-style: none;
+					border-style: none !important;
 				}
 
 				td {
