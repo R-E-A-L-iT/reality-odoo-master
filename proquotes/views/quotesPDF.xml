@@ -223,7 +223,7 @@
 				<p t-field="doc.partner_id.street"/>
 				<p>
 					<span t-field="doc.partner_id.city"/>
-,					<span t-esc="doc.parnter_id.state_id.code"/>
+,					<span t-esc="doc.partner_id.state_id.code"/>
 					<span t-field="doc.partner_id.country_id.name"/>
 				</p>
 				<p t-field="doc.parnter_id.phone"/>
