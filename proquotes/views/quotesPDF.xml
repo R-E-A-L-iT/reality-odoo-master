@@ -100,7 +100,7 @@
 				}
 
 				td {
-					border-style: none;
+					border-style: none !important;
 				}
 
 				.no-display {
