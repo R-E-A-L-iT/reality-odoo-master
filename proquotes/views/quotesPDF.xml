@@ -95,12 +95,8 @@
 					border-style: none !important;
 				}
 
-												<!-- tr {
-					border-style: none !important;
-				} -->
-
 				td {
-					border-style: none;
+					border-style: solid;
 				}
 
 				.no-display {
