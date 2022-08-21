@@ -230,6 +230,7 @@
 				<br/>
 				<span t-field="doc.partner_id.phone"/>
 			</div>
+			<br/>
 		</xpath>
 		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
