@@ -218,6 +218,11 @@
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 			<p>Test 1</p>
+			<div t-field="doc.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+			<p t-if="doc.partner_id.vat">
+				<t t-esc="doc.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>
+:				<span t-field="doc.partner_id.vat"/>
+			</p>
 		</xpath>
 		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
