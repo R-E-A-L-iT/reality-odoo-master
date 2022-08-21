@@ -226,7 +226,7 @@
 ,					<span t-esc="doc.partner_id.state_id.code"/>
 					<span t-field="doc.partner_id.country_id.name"/>
 				</p>
-				<p t-field="doc.parnter_id.phone"/>
+				<p t-field="doc.partner_id.phone"/>
 			</div>
 			<div t-field="doc.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
 			<!-- <p t-if="doc.partner_id.vat">
