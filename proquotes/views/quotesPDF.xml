@@ -65,9 +65,9 @@
 						</td>
 					</tr>
 				</t>
-				<t t-if="line.name == '$software'" style="border-style: none !important;">
+				<t t-if="line.name == '$software'">
 					<tr>
-						<td colspan="100">
+						<td colspan="100" style="border-style: none !important;">
 							<t t-call="proquotes.renewal-software"/>
 						</td>
 					</tr>
