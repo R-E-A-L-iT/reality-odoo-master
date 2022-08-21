@@ -239,7 +239,7 @@
 			<attribute name="style">color: #db0d0d;</attribute>
 		</xpath>
 
-		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;" position="replace"/>
+		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace"/>
 
 		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
