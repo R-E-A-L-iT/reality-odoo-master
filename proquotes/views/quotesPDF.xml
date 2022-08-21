@@ -92,12 +92,12 @@
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
 			<style>
 				table {
-					border-style: none;
-				}
-
-				tr {
 					border-style: none !important;
 				}
+
+								<!-- tr {
+					border-style: none !important;
+				} -->
 
 				td {
 					border-style: none !important;
