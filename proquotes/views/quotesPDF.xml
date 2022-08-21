@@ -244,7 +244,7 @@
 			<br/>
 		</xpath>
 
-		<xpath expr="//h2" position="attributes">
+		<xpath expr="//h2/span[2]" position="attributes">
 			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
