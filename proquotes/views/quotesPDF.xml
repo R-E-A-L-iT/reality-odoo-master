@@ -43,7 +43,8 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
 			<tr>
 				<td colspan="100">
-					<span t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and (current_subtotal == 0)" t-esc="'b' + str(line_index)">
+					<span t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and (current_subtotal == 0)">
+						0 Subtotal
 					</span>
 				</td>
 			</tr>
