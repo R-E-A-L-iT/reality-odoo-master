@@ -58,7 +58,7 @@
 						0 Subtotal
 					</span>
 				</td>
-				<!-- <t t-set="no_select" value="True"/> -->
+				<t t-set="no_select" value="True"/>
 			</tr>
 		</xpath>
 
