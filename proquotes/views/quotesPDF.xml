@@ -7,90 +7,89 @@
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
 			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
-		</xpath>
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
-			<strongs>Subtotal</strongs>
-		</xpath>
-	</template>
+			<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+				<strongs>Subtotal</strongs>
+			</xpath>
+		</template>
 
-	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
-		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="attributes">
-			<attribute name="class">footer-root</attribute>
-		</xpath>
-		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<img t-if="footer != undefined" id="insert-footer" width="95%" style="bottom: 0px;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
-			<style>
+		<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
+			<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="attributes">
+				<attribute name="class">footer-root</attribute>
+			</xpath>
+			<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
+				<img t-if="footer != undefined" id="insert-footer" width="95%" style="bottom: 0px;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
+				<style>
 				.footer-root * {
 					margin-top: 0px;
 					margin-bottom: 0px;
 				}
-			</style>
-		</xpath>
-	</template>
+				</style>
+			</xpath>
+		</template>
 
-	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
-		<!-- <xpath expr="//table" position="before">
+		<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
+			<!-- <xpath expr="//table" position="before">
 
 		</xpath> -->
 
-		<xpath expr="//table/thead" position="replace"/>
+			<xpath expr="//table/thead" position="replace"/>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
-		</xpath>
+			<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
+				<attribute name="t-if">line.name != '$hardware' and line.name != '$software'</attribute>
+			</xpath>
 
-		<xpath expr="//table/tbody//tr[1]" position="before">
-			<style>
+			<xpath expr="//table/tbody//tr[1]" position="before">
+				<style>
 				.quote-head * {
 					color: #fff;
 					background-color: #db0d0d;
 				}
-			</style>
-			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<t t-if="line.name == '$block'">
-					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<td class="text-right" style="border-top-style: none !important" t-if="doc.is_rental == True">Product Value</td>
-					<td class="text-right" style="border-top-style: none !important">Quantity</td>
-					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
-					<td class="text-right" style="border-top-style: none !important">Amount</td>
-				</t>
-			</tr>
-			<t t-if="doc.sale_order_template_id.name == 'Renewal'">
-				<t t-if="line.name == '$hardware'">
-					<tr>
+				</style>
+				<tr class="quote-head" t-if="line.display_type == 'line_section'">
+					<t t-if="line.name == '$block'">
+						<td class="text-left" style="border-top-style: none !important">Product</td>
+						<td class="text-right" style="border-top-style: none !important" t-if="doc.is_rental == True">Product Value</td>
+						<td class="text-right" style="border-top-style: none !important">Quantity</td>
+						<td class="text-right" style="border-top-style: none !important">Unit Price</td>
+						<td class="text-right" style="border-top-style: none !important">Amount</td>
+					</t>
+				</tr>
+				<t t-if="doc.sale_order_template_id.name == 'Renewal'">
+					<t t-if="line.name == '$hardware'">
+						<tr>
+							<td colspan="100" style="border-style: none !important;">
+								<span id="lang-id" class="english-mode no-display">english-mode</span>
+								<t t-call="proquotes.renewal-hardware-english"/>
+								<t t-call="proquotes.renewal-hardware-french"/>
+							</td>
+						</tr>
+					</t>
+					<t t-if="line.name == '$software'">
+						<tr>
+							<td colspan="100" style="border-style: none !important;">
+								<t t-call="proquotes.renewal-software"/>
+							</td>
+						</tr>
+					</t>
+					<t t-if="line.name == '$subscription'">
 						<td colspan="100" style="border-style: none !important;">
-							<span id="lang-id" class="english-mode no-display">english-mode</span>
-							<t t-call="proquotes.renewal-hardware-english"/>
-							<t t-call="proquotes.renewal-hardware-french"/>
+							<t t-call="proquotes.renewal-subscription"/>
 						</td>
-					</tr>
+					</t>
 				</t>
-				<t t-if="line.name == '$software'">
-					<tr>
-						<td colspan="100" style="border-style: none !important;">
-							<t t-call="proquotes.renewal-software"/>
-						</td>
-					</tr>
-				</t>
-				<t t-if="line.name == '$subscription'">
-					<td colspan="100" style="border-style: none !important;">
-						<t t-call="proquotes.renewal-subscription"/>
-					</td>
-				</t>
-			</t>
-		</xpath>
+			</xpath>
 
-		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
-		</xpath>
+			<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
+				<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
+			</xpath>
 
-		<!-- Remove Special Sections for Renewal Quotes -->
-		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$block' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
-		</xpath>
+			<!-- Remove Special Sections for Renewal Quotes -->
+			<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
+				<attribute name="t-if">line.name != '$block' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+			</xpath>
 
-		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
-			<style>
+			<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
+				<style>
 				table {
 					border-style: none !important;
 				}
@@ -145,135 +144,135 @@
 					margin-left: 0px !important;
 					marign-right: 0px !important;
 				}
-			</style>
-			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
-			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
-			<!-- <t t-call="proquotes.renewal-english"/> -->
-			<!-- <t t-call="proquotes.renewal-french"/> -->
-			<!-- </t> -->
-		</xpath>
+				</style>
+				<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
+				<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
+				<!-- <t t-call="proquotes.renewal-english"/> -->
+				<!-- <t t-call="proquotes.renewal-french"/> -->
+				<!-- </t> -->
+			</xpath>
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
-			<attribute name="id">partner_address</attribute>
-		</xpath>
+			<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
+				<attribute name="id">partner_address</attribute>
+			</xpath>
 
-		<!--Move Cliet Info-->
-		<!-- <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
+			<!--Move Cliet Info-->
+			<!-- <xpath expr="//div[@t-field=&quot;doc.partner_shipping_id&quot;]" position="attributes">
 			<attribute name="style">margin: auto;</attribute>
 					position: absolute; z-index: 2; margin-top: -250px; border: 1px solid #333;;
 			</xpath> -->
-		<!--Remove Taxes-->
-		<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/> -->
-		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
+			<!--Remove Taxes-->
+			<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/> -->
+			<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
-			<attribute name="style">margin-bottom: 20vh;</attribute>
-		</xpath>
+			<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
+				<attribute name="style">margin-bottom: 20vh;</attribute>
+			</xpath>
 
-		<!-- Apply HTML-->
-		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<!-- <t t-set="name" t-value="line.applied_name"/> -->
-			<span t-raw="line.product_id.name"></span>
+			<!-- Apply HTML-->
+			<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+				<!-- <t t-set="name" t-value="line.applied_name"/> -->
+				<span t-raw="line.product_id.name"></span>
 
-			<!-- <t t-set="description" t-value="line.name"/> -->
-			<!-- <style>
+				<!-- <t t-set="description" t-value="line.name"/> -->
+				<!-- <style>
 				.description-root *{
 					margin-top: 0px !important;
 					margin-bottom: 0px !important;
 				}
 			</style> -->
-			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
-		</xpath>
+				<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;"/>
+			</xpath>
 
-		<!--Hide Unselected-->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute>
-		</xpath>
+			<!--Hide Unselected-->
+			<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
+				<attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute>
+			</xpath>
 
-		<!--Remove Tax Calculation-->
+			<!--Remove Tax Calculation-->
 
-		<!--Add Signature-->
-		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
-			<t t-if="doc.sale_order_template_id.name == 'Rental'">
-				<t t-call="proquotes.rental_terms"/>
-			</t>
-			<div>
-				<h1>Customer Acceptance</h1>
-				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
-			</div>
-			<div>
-				<span style="height: 40px"> PO #: ____________________________________</span>
-				<br />
-				<span style="height: 40px"> Signature: _______________________________</span>
-				<br />
-				<span style="height: 40px"> Date: ____________________________________</span>
-				<br />
-				<br />
-				<br />
-				<t t-set="footer" t-value="doc.footer"></t>
+			<!--Add Signature-->
+			<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+				<t t-if="doc.sale_order_template_id.name == 'Rental'">
+					<t t-call="proquotes.rental_terms"/>
+				</t>
+				<div>
+					<h1>Customer Acceptance</h1>
+					<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+				</div>
+				<div>
+					<span style="height: 40px"> PO #: ____________________________________</span>
+					<br />
+					<span style="height: 40px"> Signature: _______________________________</span>
+					<br />
+					<span style="height: 40px"> Date: ____________________________________</span>
+					<br />
+					<br />
+					<br />
+					<t t-set="footer" t-value="doc.footer"></t>
 
-				<footer>
-					<p style="width: 100%; text-align: center;">
-						<span>
+					<footer>
+						<p style="width: 100%; text-align: center;">
+							<span>
 							GST/HST: 777 376 542 RT 0001 PST: 1228256885 TQ 0001
-						</span>
-						<br/>
-						<span>
-							<strong>
+							</span>
+							<br/>
+							<span>
+								<strong>
 								Send wire transfers to:
-							</strong>
+								</strong>
 							Transit: 33201 Institution: 001 Account: 1986 858
-						</span>
-					</p>
-				</footer>
-			</div>
-		</xpath>
+							</span>
+						</p>
+					</footer>
+				</div>
+			</xpath>
 
-		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
-			<t t-call="proquotes.proquotes_total_pdf"/>
-		</xpath>
+			<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+				<t t-call="proquotes.proquotes_total_pdf"/>
+			</xpath>
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
-			<xpath expr="//h2" position="move"/>
-			<div>
-				<span t-field="doc.partner_id.name"/>
+			<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+				<xpath expr="//h2" position="move"/>
+				<div>
+					<span t-field="doc.partner_id.name"/>
+					<br/>
+					<span t-field="doc.partner_id.street"/>
+					<br/>
+					<span t-field="doc.partner_id.city"/>
+					<span>,</span>
+					<span t-esc="doc.partner_id.state_id.code"/>
+					<span t-field="doc.partner_id.country_id.name"/>
+					<br/>
+					<span t-field="doc.partner_id.phone"/>
+				</div>
 				<br/>
-				<span t-field="doc.partner_id.street"/>
-				<br/>
-				<span t-field="doc.partner_id.city"/>
-				<span>,</span>
-				<span t-esc="doc.partner_id.state_id.code"/>
-				<span t-field="doc.partner_id.country_id.name"/>
-				<br/>
-				<span t-field="doc.partner_id.phone"/>
-			</div>
-			<br/>
-		</xpath>
+			</xpath>
 
-		<xpath expr="//h2/t/span[1]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
+			<xpath expr="//h2/t/span[1]" position="attributes">
+				<attribute name="style">color: #db0d0d !important;</attribute>
+			</xpath>
 
-		<xpath expr="//h2/t/span[2]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
+			<xpath expr="//h2/t/span[2]" position="attributes">
+				<attribute name="style">color: #db0d0d !important;</attribute>
+			</xpath>
 
-		<xpath expr="//h2/span" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
+			<xpath expr="//h2/span" position="attributes">
+				<attribute name="style">color: #db0d0d !important;</attribute>
+			</xpath>
 
-		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace"/>
+			<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace"/>
 
-		<!-- <xpath expr="" position="inside">
+			<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 		</xpath> -->
 
-	</template>
-	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
+		</template>
+		<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
         
     </template> -->
 
-	<!--Apply HTML-->
+		<!--Apply HTML-->
 
 
-</odoo>
+	</odoo>
