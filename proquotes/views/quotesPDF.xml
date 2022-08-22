@@ -141,9 +141,9 @@
 				}
 
 				img {
-					width: 90vw !important;
-					margin-left: 5vw;
-					marign-right: 5vw;
+					width: 95vw !important;
+					margin-left: 2.5vw;
+					marign-right: 2.5vw;
 				}
 			</style>
 			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
