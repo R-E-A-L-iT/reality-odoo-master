@@ -41,9 +41,13 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
-			<span t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and (current_subtotal == 0)" t-esc="'b' + str(line_index)">
+			<tr>
+				<td>
+					<span t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and (current_subtotal == 0)" t-esc="'b' + str(line_index)">
+					</span>
+				</td>
+			</tr>
 
-			</span>
 		</xpath>
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
