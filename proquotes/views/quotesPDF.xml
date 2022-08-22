@@ -40,9 +40,6 @@
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
-		<xpath expr="//t[@t-foreach]" position="before">
-			<!-- <t t-set="no_select" t-value="True"/> -->
-		</xpath>
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<t t-set="no_select" t-value="False"/>
@@ -290,6 +287,10 @@
 		<!-- <xpath expr="" position="inside">
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 		</xpath> -->
+
+		<xpath expr="//t[@t-foreach]" position="before">
+			<t t-set="no_select" t-value="True"/>
+		</xpath>
 
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
