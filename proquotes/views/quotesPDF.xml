@@ -42,7 +42,7 @@
 
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
-			<t t-if="line.selected == 'true'" t-set="no_select" t-value="false"/>
+			<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
 			<td>
 				<span t-esc="line.selected"/>
 ,				<span t-esc="no_select"/>
@@ -56,7 +56,7 @@
 						0 Subtotal
 					</span>
 				</td>
-				<t t-set="no_select" value="true"/>
+				<t t-set="no_select" value="True"/>
 			</tr>
 		</xpath>
 
@@ -290,7 +290,7 @@
 		</xpath> -->
 
 		<xpath expr="//t[@t-foreach]" position="before">
-			<t t-set="no_select" t-value="true"/>
+			<t t-set="no_select" t-value="True"/>
 		</xpath>
 
 	</template>
