@@ -45,7 +45,8 @@
 			<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
 			<td>
 				<span t-esc="line.selected"/>
-,				<span t-esc="no_select"/>
+,				<span t-if="no_select == True">True</span>
+,				<span t-if="no_select == False">False</span>
 			</td>
 		</xpath>
 
