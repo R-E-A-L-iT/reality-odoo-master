@@ -141,7 +141,8 @@
 				}
 
 				img {
-					width: 100% !important;
+					width: 80% !important;
+					margin: auto;
 				}
 			</style>
 			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
