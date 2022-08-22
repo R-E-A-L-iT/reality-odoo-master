@@ -832,5 +832,7 @@ h2.subtitle>span {
 }
 
 .js_language_selector>.dropdown-menu>a {
-	display: none;
+	height: 2em !important;
+	background-color: #fff;
+	/* display: none; */
 }
