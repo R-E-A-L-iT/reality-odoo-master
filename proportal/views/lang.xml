@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template name="Language Selector" id="language_selector" inherit_id="portal.language_selector" priority="17">
+		<xpath expr="t[@t-as&quot;lg&quot;]" position="replace">
+
+		</xpath>
+	</template>
+</odoo>
