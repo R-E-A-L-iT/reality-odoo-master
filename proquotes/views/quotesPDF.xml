@@ -141,7 +141,7 @@
 				}
 
 				img {
-					width: 95vw !important;
+					width: 10vw !important;
 					margin-left: 2.5vw;
 					marign-right: 2.5vw;
 				}
