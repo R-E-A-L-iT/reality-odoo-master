@@ -17,11 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-<<<<<<< HEAD
-    'version': '0.2',
-=======
-    'version': '0.7',
->>>>>>> parent of f524ffa4 (Remove Language Selector)
+    'version': '0.8',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
