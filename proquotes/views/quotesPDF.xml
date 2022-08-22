@@ -43,7 +43,7 @@
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
-			<t t-set="no_select" t-value="True"/>
+			<t t-else="" t-set="no_select" t-value="no_select"/>
 			<td>
 				<span t-esc="line.selected"/>
 ,				<span t-if="no_select == True">True</span>
