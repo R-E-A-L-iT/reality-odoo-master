@@ -813,6 +813,7 @@ h1.title {
 	margin: 0;
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
+	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
 }
 
 h2.subtitle {
@@ -823,6 +824,7 @@ h2.subtitle {
 	text-align: center;
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
+	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
 }
 
 h2.subtitle>span {
