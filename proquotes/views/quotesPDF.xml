@@ -50,7 +50,7 @@
 				<span t-if="no_select == True">Hello</span>
 			</td>
 		</xpath> -->
-		<!-- 
+
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
 			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select == True">
 				<td colspan="100">
@@ -59,8 +59,8 @@
 					</span>
 				</td>
 			</tr>
+		</xpath>
 
-		</xpath> -->
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
