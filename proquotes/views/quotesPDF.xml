@@ -205,7 +205,7 @@
 
 		<!--Hide Unselected-->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute>
+			<!-- <attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute> -->
 		</xpath>
 
 		<!--Remove Tax Calculation-->
