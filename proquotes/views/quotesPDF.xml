@@ -40,7 +40,7 @@
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
-		<xpath expr="//t[@t-foreach]/t" position="before">
+		<xpath expr="//t[@t-foreach]" position="before">
 			<t t-set="no_select" t-value="True"/>
 		</xpath>
 
@@ -59,6 +59,7 @@
 					</span>
 				</td>
 			</tr>
+			<t t-set="no_select" value="True"/>
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
