@@ -46,11 +46,10 @@
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="before">
 			<t t-set="no_select" t-value="False"/>
-			<td t-esc="no_select"></td>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
-			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select">
+			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select == True">
 				<td colspan="100">
 					<span>
 						0 Subtotal
