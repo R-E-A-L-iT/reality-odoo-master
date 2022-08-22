@@ -830,9 +830,3 @@ h2.subtitle {
 h2.subtitle>span {
 	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
 }
-
-.js_language_selector>.dropdown-menu>a {
-	height: 2em !important;
-	background-color: #fff;
-	/* display: none; */
-}
