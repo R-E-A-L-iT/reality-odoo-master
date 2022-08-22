@@ -831,8 +831,8 @@ h2.subtitle>span {
 	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 }
 
-.js_language_selector>.dropdown-menu>a {
+/* .js_language_selector>.dropdown-menu>a {
 	height: 2em !important;
 	background-color: #fff;
-	/* display: none; */
-}
+	display: none;
+} */
