@@ -52,16 +52,14 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
-			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select == True">
-				<tr>
-					<td colspan="100">
-						<span>
+			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select == True">
+				<td colspan="100">
+					<span>
 						0 Subtotal
-						</span>
-					</td>
-				</tr>
+					</span>
+				</td>
 				<t t-set="no_select" value="True"/>
-			</t>
+			</tr>
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
