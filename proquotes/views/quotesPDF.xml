@@ -43,9 +43,6 @@
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<t t-set="no_select" t-value="False"/>
-			<td>
-				<span t-if="no_select != True">Hello</span>
-			</td>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
