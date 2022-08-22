@@ -41,7 +41,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-foreach]" position="before">
-			<t t-set="no_select" t-value="True"/>
+			<!-- <t t-set="no_select" t-value="True"/> -->
 		</xpath>
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
