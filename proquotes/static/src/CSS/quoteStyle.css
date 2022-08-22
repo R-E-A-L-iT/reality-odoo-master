@@ -186,5 +186,5 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 }
 
 td {
-	display: flex;
+	vertical-align: middle;
 }
