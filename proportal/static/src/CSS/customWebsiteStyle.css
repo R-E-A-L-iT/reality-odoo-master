@@ -813,7 +813,7 @@ h1.title {
 	margin: 0;
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
-	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 }
 
 h2.subtitle {
@@ -824,11 +824,11 @@ h2.subtitle {
 	text-align: center;
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
-	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 }
 
 h2.subtitle>span {
-	font-family: "Darker Grotesque", "Odoo Unicode Support Noto", sans-serif;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 }
 
 .js_language_selector>.dropdown-menu>a {
