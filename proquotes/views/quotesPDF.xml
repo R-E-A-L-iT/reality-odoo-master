@@ -116,7 +116,7 @@
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="after">
 			<td>
 				<p>
-					<span t-esc="current_section.name.replace(' ', '-')"/>
+					<span t-esc="line.name.replace(' ', '-')"/>
  				{
 					background-color: #0f0;
 				}
