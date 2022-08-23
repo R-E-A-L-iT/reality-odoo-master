@@ -44,7 +44,7 @@
 			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
 				<tr>
 					<td colspan="100">
-						<span t-esc="line.name"/>
+						<span>Test</span>
 						<!-- <style>
 					.							<t t-esc="line.name"/>
  					{
