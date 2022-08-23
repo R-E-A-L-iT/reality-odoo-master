@@ -114,12 +114,14 @@
 			<attribute name="class" t-esc="line.name"/>
 		</xpath>
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="after">
-			<style>
-				<t t-esc="line.name"/>
+			<td>
+				<p>
+					<span t-esc="line.name"/>
  				{
 					background-color: #0f0;
 				}
-			</style>
+				</p>
+			</td>
 		</xpath>
 
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
