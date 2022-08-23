@@ -40,16 +40,17 @@
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
-		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="replace">
+		<!--ToDo Hide No Select Sections-->
+		<!-- <xpath expr="//td[@name=&quot;td_section_line&quot;]" position="replace">
 			<td name="td_section_line" colspan="100">
 				<span t-esc="line.name"/>
 				<span t-attf-class="line.name.replace(' ', '').replace('(', '').replace(')', '')">Test</span>
 				<span>Test</span>
 				<span class="AdditionalCycloneSubscriptions">Hard Class Name</span>
 			</td>
-		</xpath>
+		</xpath> -->
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
+		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
 			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
 				<tr>
 					<td colspan="100">
@@ -63,7 +64,7 @@
 					</td>
 				</tr>
 			</t>
-		</xpath>
+		</xpath> -->
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
