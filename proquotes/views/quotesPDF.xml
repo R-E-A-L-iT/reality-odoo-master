@@ -45,7 +45,7 @@
 				<tr>
 					<td>
 						<span>
-							<t t-esc="line.name"/>
+							<strong t-esc="line.name"/>
 						</span>
 						<style>
 					.							<t t-esc="line.name"/>
