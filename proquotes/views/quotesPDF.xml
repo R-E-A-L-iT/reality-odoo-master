@@ -43,6 +43,7 @@
 
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<td>
+				<span t-esc="current_subtotal"></span>,
 				<span t-if="no_select == undefined">Undefined</span>
 				<span t-if="no_select == ''">Blank</span>,
 				<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
