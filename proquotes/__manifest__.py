@@ -37,14 +37,14 @@
         ]
     },
 
-    'version': '0.3',
+    'version': '0.4',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/quotesFrontend.xml',
         'views/quotesPDF.xml',
-        # 'views/invoicePDF.xml',
+        'views/invoicePDF.xml',
         'views/quotesBackend.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
