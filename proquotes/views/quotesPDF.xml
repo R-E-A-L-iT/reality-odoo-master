@@ -113,7 +113,7 @@
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="attributes">
 		</attribute>
 		<t t-esc="line.name.replace(' ', '-').replace('(', '').replace(')', '')"/>
-		<attribute name="class">t
+		<attribute name="class">
 		</xpath>
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="after">
 			<style t-esc="'.' + line.name.replace(' ', '-').replace('(', '').replace(')', '') + '{background-color: #0f0; }'"/>
