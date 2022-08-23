@@ -179,7 +179,7 @@
 					margin-left: 0px !important;
 					marign-right: 0px !important;
 				}
-			</styl>
+			</style>
 			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
 			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
 			<!-- <t t-call="proquotes.renewal-english"/> -->
