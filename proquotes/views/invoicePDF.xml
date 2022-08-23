@@ -36,11 +36,6 @@
 				h2 span {
 					color: #db0d0d !important;
 				}
-				
-				td {
-					border-style: solid !important;
-					border-style-color: #000 !important;
-				}
 			</style>
 		</xpath>
 
