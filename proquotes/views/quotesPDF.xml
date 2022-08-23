@@ -41,7 +41,7 @@
 		</xpath>
 
 
-		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
+		<!-- <xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<td>
 				<span t-esc="current_subtotal"></span>,
 				<span t-if="no_select == undefined">Undefined</span>
@@ -55,7 +55,7 @@
 				<span t-if="no_select == undefined">Undefined</span>
 				<span t-if="no_select == ''">Blank</span>
 			</td>
-		</xpath>
+		</xpath> -->
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
 			<!-- <t t-if="no_select == undefined" t-set="no_select" t-value="True"/> -->
@@ -217,7 +217,7 @@
 
 		<!--Hide Unselected-->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<!-- <attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute> -->
+			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
 		<!--Remove Tax Calculation-->
