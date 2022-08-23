@@ -42,11 +42,19 @@
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
 			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
-				<style>
-					tr {
+				<tr>
+					<td>
+						<span>
+							<t t-esc="line.name"/>
+						</span>
+						<style>
+					.							<t t-esc="line.name"/>
+ 					{
 						display: none;
 					}
-				</style>
+						</style>
+					</td>
+				</tr>
 			</t>
 		</xpath>
 
