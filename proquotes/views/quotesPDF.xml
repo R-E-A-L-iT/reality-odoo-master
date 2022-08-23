@@ -46,6 +46,7 @@
 
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="inside">
 			<span t-attf-class="line.name.replace(' ', '').replace('(', '').replace(')', '')">Test</span>
+			<span>Test</span>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
