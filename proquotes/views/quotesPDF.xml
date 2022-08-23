@@ -111,9 +111,9 @@
 		</xpath>
 
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="attributes">
-		</attribute>
-		<t t-esc="line.name.replace(' ', '-').replace('(', '').replace(')', '')"/>
-		<attribute name="class">
+			<attribute name="class">
+				<t t-esc="line.name.replace(' ', '-').replace('(', '').replace(')', '')"/>
+			</attribute>
 		</xpath>
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="after">
 			<style t-esc="'.' + line.name.replace(' ', '-').replace('(', '').replace(')', '') + '{background-color: #0f0; }'"/>
