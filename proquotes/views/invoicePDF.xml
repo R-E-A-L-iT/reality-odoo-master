@@ -2,6 +2,18 @@
 
 <odoo>
 
+	<template id="proquotes_total_style" name="Proquotes Total Style PDF" inherit_id="account.document_tax_totals" priority="17">
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="attributes">
+			<attribute name="style">background-color: #db0d0d; border-right-color: #db0d0d !important</attribute>
+		</xpath>
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
+			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
+		</xpath>
+		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+			<strongs>Subtotal</strongs>
+		</xpath>
+	</template>
+
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//img" position="after">
@@ -11,13 +23,6 @@
 					border-style: solid;
 				}
 			</style>
-		</xpath>
-
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="attributes">
-			<attribute name="style">background-color: #db0d0d; border-right-color: #db0d0d !important</attribute>
-		</xpath>
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
-			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
 
 		<!--Remove Taxes-->
