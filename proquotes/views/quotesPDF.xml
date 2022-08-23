@@ -44,13 +44,13 @@
 			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
 				<tr>
 					<td colspan="100">
-						<span t-esc="current_section.name"></span>
-						<!-- <style>
-					.							<t t-esc="line.name"/>
- 					{
-						display: none;
-					}
-						</style> -->
+						<span t-esc="'.' + current_section.name"></span>
+						<style>
+							<t t-esc="'.' + current_section.name"/>
+ 						{
+							display: none;
+						}
+						</style>
 					</td>
 				</tr>
 			</t>
