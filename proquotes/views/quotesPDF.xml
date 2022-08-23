@@ -45,6 +45,7 @@
 				<span t-esc="line.name"/>
 				<span t-attf-class="line.name.replace(' ', '').replace('(', '').replace(')', '')">Test</span>
 				<span>Test</span>
+				<span class="AdditionalCycloneSubscriptions">Hard Class Name</span>
 			</td>
 		</xpath>
 
