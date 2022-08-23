@@ -10,7 +10,7 @@
     """,
 
     'author': "Ty Cyr",
-    
+
     'license': "LGPL-3",
 
     # Categories can be used to filter modules in m1dules listing
@@ -18,11 +18,11 @@
     # for the full list
     'category': 'Technical',
 
-    'version': '0.7',
-    
+    'version': '0.4',
+
     # any module necessary for this one to work correctly
-    'depends': ['base', 'proportal', 'product', 'google_account', 'google_drive'],
-    
+    'depends': ['base', 'proportal', 'proquotes', 'product', 'google_account', 'google_drive'],
+
     # always loaded
     'data': [
         'security/ir.model.access.csv',

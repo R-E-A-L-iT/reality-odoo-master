@@ -1,0 +1,39 @@
+.no-display {
+	display: none;
+}
+
+.english-mode+div+div {
+	display: none;
+}
+
+.french-mode+div {
+	display: none;
+}
+
+#renewal-text {
+	margin: auto;
+	margin-bottom: 10vh;
+}
+
+#renewal-text * {
+	color: #fff;
+	text-align: center;
+	margin: auto;
+	line-height: 1.5em;
+}
+
+#renewal-text .red-div {
+	width: 5vw;
+	height: 2px;
+	background-color: #f55;
+	margin: auto;
+	margin-top: 2.5vh;
+	margin-bottom: 2.5vh;
+}
+
+#renewal-text img {
+	width: 100%;
+	height: auto;
+	margin-left: 0px;
+	margin-right: 0px;
+}
