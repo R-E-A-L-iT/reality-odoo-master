@@ -298,7 +298,7 @@
 			<img id="insert-footer" width="100%" height="auto" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png"/>
 		</xpath> -->
 
-		<xpath expr="//t[@t-foreach]" position="before">
+		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True"/>
 		</xpath>
 
