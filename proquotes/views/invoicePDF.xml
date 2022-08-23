@@ -16,14 +16,14 @@
 		<!--Change Total to Subtotal-->
 		<!-- <xpath expr="//div[@id=&quot;total&quot;]" position="replace"> -->
 		<!-- <strong>Subtotal</strong> -->
-	</xpath>
-	<!--Apply HTML-->
-	<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-		<t t-set="name" t-value="line.applied_name"/>
-		<span t-raw="name"></span>
+		<!-- </xpath> -->
+		<!--Apply HTML-->
+		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+			<t t-set="name" t-value="line.applied_name"/>
+			<span t-raw="name"></span>
 
-		<t t-set="description" t-value="line.name"/>
-		<span class="description-root" t-raw="description"/>
-	</xpath>
-</template>
+			<t t-set="description" t-value="line.name"/>
+			<span class="description-root" t-raw="description"/>
+		</xpath>
+	</template>
 </odoo>
