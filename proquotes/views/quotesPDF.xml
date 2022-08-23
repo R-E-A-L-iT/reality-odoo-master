@@ -44,7 +44,7 @@
 		<xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
 			<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
 			<t t-if="no_select == False" t-set="no_select" t-value="False"/>
-			<t t-else="no_select == False" t-set="no_select" t-value="True"/>
+			<t t-else="no_select == True" t-set="no_select" t-value="True"/>
 			<td>
 				<span t-esc="line.selected"/>
 ,				<span t-if="no_select == True">True</span>
@@ -214,7 +214,7 @@
 
 		<!--Hide Unselected-->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<!-- <attribute name="t-if">(not line.display_type) and line.selected=='true' and line.sectionSelected=='true'</attribute> -->
+			<!-- <attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute> -->
 		</xpath>
 
 		<!--Remove Tax Calculation-->
