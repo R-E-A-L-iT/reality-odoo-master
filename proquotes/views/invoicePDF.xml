@@ -11,13 +11,13 @@
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
 			<strongs>Subtotal</strongs>
-		</xpath>
-	</template>
+			<!-- </xpath> -->
+		</template>
 
-	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
+		<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
-			<!-- <xpath expr="//h2" position="move"/>
+			<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+				<!-- <xpath expr="//h2" position="move"/>
 			<div>
 				<span t-field="doc.partner_id.name"/>
 				<br/>
@@ -31,34 +31,34 @@
 				<span t-field="doc.partner_id.phone"/>
 			</div>
 			<br/> -->
-		</xpath>
+			</xpath>
 
-		<xpath expr="//img" position="after">
-			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto"/>
-			<style>
+			<xpath expr="//img" position="after">
+				<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto"/>
+				<style>
 				td {
 					border-style: solid;
 				}
-			</style>
-		</xpath>
+				</style>
+			</xpath>
 
-		<!--Remove Taxes-->
-		<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
+			<!--Remove Taxes-->
+			<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace"/> -->
 
-		<!--Remove Subtotal-->
-		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/> -->
-		<!--Change Total to Subtotal-->
-		<!-- <xpath expr="//div[@id=&quot;total&quot;]" position="replace"> -->
-		<!-- <strong>Subtotal</strong> -->
-		<!-- </xpath> -->
-		<!--Apply HTML-->
-		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<t t-set="name" t-value="line.applied_name"/>
-			<span t-raw="name"></span>
+			<!--Remove Subtotal-->
+			<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/> -->
+			<!--Change Total to Subtotal-->
+			<!-- <xpath expr="//div[@id=&quot;total&quot;]" position="replace"> -->
+			<!-- <strong>Subtotal</strong> -->
+			<!-- </xpath> -->
+			<!--Apply HTML-->
+			<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+				<t t-set="name" t-value="line.applied_name"/>
+				<span t-raw="name"></span>
 
-			<t t-set="description" t-value="line.name"/>
-			<span class="description-root" t-raw="description"/>
-		</xpath>
-	</template>
-</odoo>
+				<t t-set="description" t-value="line.name"/>
+				<span class="description-root" t-raw="description"/>
+			</xpath>
+		</template>
+	</odoo>
