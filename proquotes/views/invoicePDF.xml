@@ -17,7 +17,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
-			<xpath expr="//h2" position="move"/>
+			<!-- <xpath expr="//h2" position="move"/>
 			<div>
 				<span t-field="doc.partner_id.name"/>
 				<br/>
@@ -30,7 +30,7 @@
 				<br/>
 				<span t-field="doc.partner_id.phone"/>
 			</div>
-			<br/>
+			<br/> -->
 		</xpath>
 
 		<xpath expr="//img" position="after">
