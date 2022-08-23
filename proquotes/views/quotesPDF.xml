@@ -40,33 +40,14 @@
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
-
-		<!-- <xpath expr="//t[@t-foreach]//t[@t-if=&quot;not line.display_type&quot;]/td" position="replace">
-			<td>
-				<span t-esc="current_subtotal"></span>,
-				<span t-if="no_select == undefined">Undefined</span>
-				<span t-if="no_select == ''">Blank</span>,
-				<t t-if="line.selected == 'true'" t-set="no_select" t-value="False"/>
-				<t t-if="no_select == False" t-set="no_select" t-value="False"/>
-				<t t-else="no_select == True" t-set="no_select" t-value="True"/>
-				<span t-esc="line.selected"/>
-,				<span t-if="no_select == True">True</span>
-				<span t-if="no_select == False">False</span>
-				<span t-if="no_select == undefined">Undefined</span>
-				<span t-if="no_select == ''">Blank</span>
-			</td>
-		</xpath> -->
-
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
-			<!-- <t t-if="no_select == undefined" t-set="no_select" t-value="True"/> -->
-			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and no_select == True">
+			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
 				<td colspan="100">
 					<span>
 						0 Subtotal
 					</span>
 				</td>
 			</tr>
-			<t t-set="no_select" value="True"/>
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
