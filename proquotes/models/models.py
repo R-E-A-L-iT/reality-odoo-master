@@ -48,8 +48,7 @@ class order(models.Model):
     header = fields.Selection([
         ('ChurchXRAY', "ChurchXRAY"),
         ('Architecture', "Architecture"),
-        ('Software', "Software"),
-        ('Starfield', "Starfield")], default='Starfield', required=True, help="Header selection field")
+        ('Software', "Software")], default='ChurchXRAY', required=True, help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
