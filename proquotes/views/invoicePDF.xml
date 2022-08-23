@@ -19,16 +19,16 @@
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 			<xpath expr="//h2" position="move"/>
 			<div>
-				<span t-field="doc.partner_id.name"/>
+				<span t-field="o.partner_id.name"/>
 				<br/>
-				<span t-field="doc.partner_id.street"/>
+				<span t-field="o.partner_id.street"/>
 				<br/>
-				<span t-field="doc.partner_id.city"/>
+				<span t-field="o.partner_id.city"/>
 				<span>,</span>
-				<span t-esc="doc.partner_id.state_id.code"/>
-				<span t-field="doc.partner_id.country_id.name"/>
+				<span t-esc="o.partner_id.state_id.code"/>
+				<span t-field="o.partner_id.country_id.name"/>
 				<br/>
-				<span t-field="doc.partner_id.phone"/>
+				<span t-field="o.partner_id.phone"/>
 			</div>
 			<br/>
 		</xpath>
