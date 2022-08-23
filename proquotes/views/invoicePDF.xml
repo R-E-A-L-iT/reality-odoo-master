@@ -37,7 +37,8 @@
 					color: #db0d0d !important;
 				}
 				td {
-					border-style: solid !important;
+					border-style: solid;
+					border-style-color: #000;
 				}
 			</style>
 		</xpath>
