@@ -8,9 +8,9 @@
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
 			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
+		<!-- <xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
 			<strong>Subtotal</strong>
-		</xpath>
+		</xpath> -->
 	</template>
 
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
