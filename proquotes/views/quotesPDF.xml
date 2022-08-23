@@ -110,6 +110,10 @@
 			</t>
 		</xpath>
 
+		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="attributes">
+			<attribute name="style">background-color: #0f0;</attribute>
+		</xpath>
+
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
 			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
 		</xpath>
@@ -175,7 +179,7 @@
 					margin-left: 0px !important;
 					marign-right: 0px !important;
 				}
-			</style>
+			</styl>
 			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
 			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
 			<!-- <t t-call="proquotes.renewal-english"/> -->
