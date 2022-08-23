@@ -51,11 +51,9 @@
 		<!-- </xpath> -->
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<t t-set="name" t-value="line.applied_name"/>
-			<span t-raw="name"></span>
+			<span t-raw="line.name"></span>
 
-			<t t-set="description" t-value="line.name"/>
-			<span class="description-root" t-raw="description"/>
+			<span class="description-root" t-raw="line.description_sale"/>
 		</xpath>
 	</template>
 </odoo>
