@@ -40,8 +40,12 @@
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
-		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="attributes">
-			<attribute name="t-attf-class">line.name.replace(' ', '').replace('(', '').replace(')', '')</attribute>
+		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="replace">
+			<td name="td_section_line">
+				<span t-esc="line.name"/>
+				<span t-attf-class="line.name.replace(' ', '').replace('(', '').replace(')', '')">Test</span>
+				<span>Test</span>
+			</td>
 		</xpath>
 
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="inside">
