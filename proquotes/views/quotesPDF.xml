@@ -41,13 +41,13 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]" position="after">
-			<tr t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
-				<td colspan="100">
-					<span>
-						0 Subtotal
-					</span>
-				</td>
-			</tr>
+			<t t-if="(current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')) and current_subtotal == 0">
+				<style>
+					tr {
+						display: none;
+					}
+				</style>
+			</t>
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
