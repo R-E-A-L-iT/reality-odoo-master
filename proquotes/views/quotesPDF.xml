@@ -50,6 +50,7 @@
 ,				<span t-if="no_select == True">True</span>
 				<span t-if="no_select == False">False</span>
 				<span t-if="no_select == undefined">Undefined</span>
+				<span t-if="no_select == ''">Blank</span>
 			</td>
 		</xpath>
 
