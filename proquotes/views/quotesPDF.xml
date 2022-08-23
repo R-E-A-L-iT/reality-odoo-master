@@ -115,12 +115,7 @@
 		</xpath>
 		<xpath expr="//td[@name=&quot;td_section_line&quot;]" position="after">
 			<td>
-				<style>
-					<span t-esc="line.name.replace(' ', '-').replace('(', '').replace(')', '')"/>
- 				{
-					background-color: #0f0;
-				}
-				</style>
+				<span t-esc="line.name.replace(' ', '-').replace('(', '').replace(')', '') + '{background-color: #0f0; }'"/>
 			</td>
 		</xpath>
 
@@ -189,7 +184,7 @@
 					margin-left: 0px !important;
 					marign-right: 0px !important;
 				}
-			</style>
+			</styl>
 			<!-- <t t-if="doc.sale_order_template_id.name == 'Renewal'"> -->
 			<!-- <span id="lang-id" class="english-mode no-display">english-mode</span> -->
 			<!-- <t t-call="proquotes.renewal-english"/> -->
