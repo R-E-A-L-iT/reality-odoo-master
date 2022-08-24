@@ -3,6 +3,11 @@
 <odoo>
 	<template name="Rental Terms" id="rental_terms_pdf">
 		<div>
+			<span t-esc="o.lang"/>
+		</div>
+	</template>
+	<!--<template name="Rental Terms" id="rental_terms_pdf">
+		<div>
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -316,5 +321,5 @@
 				</li>
 			</ol>
 		</div>
-	</template>
+	</template> -->
 </odoo>
