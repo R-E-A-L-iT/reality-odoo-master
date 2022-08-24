@@ -39,7 +39,6 @@
 				<br />
 				<span t-field="o.partner_id.phone" />
 			</div>
-			>
 			<br />
 		</xpath>
 
