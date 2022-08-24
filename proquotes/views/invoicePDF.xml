@@ -58,8 +58,8 @@
 
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
 			<!-- <t t-if="o.company_id.name == ' R-E-A-L.iT Solutions"> -->
-			<div>
-				<p style="margin: auto !important;">Test <span t-esc="o.company_id.id"/>
+			<div style="width: 100%;">
+				<p style="text-align: center; width: 100%;">Test <span t-esc="o.company_id.id"/>
 				</p>
 			</div>
 			<!-- </t> -->
