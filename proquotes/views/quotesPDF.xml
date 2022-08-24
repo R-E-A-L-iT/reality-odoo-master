@@ -17,7 +17,7 @@
 			<attribute name="class">footer-root</attribute>
 		</xpath>
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<img t-if="footer != undefined" id="insert-footer" width="95%" style="bottom: 0px;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+			<img t-if="footer != undefined" id="insert-footer" width="90%" style="bottom: 0px;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 			<!-- <span t-if="footer == undefined">undefined</span> -->
 			<style>
 				.footer-root * {
