@@ -360,27 +360,26 @@
 						</li>
 						<li>
 							<h4>
-							Additional Services or Additional Fees
+								Services additionnels ou frais additionnels
 							</h4>
 							<p>
-								In the event that the Customer requires any other service from
+								Dans l’éventualité où le Client requiert de la part de
 								<span t-esc="doc.company_id.name" />
-								that is not included in this
-							Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees 
-							to pay
+								tout autre service non prévu aux présentes ou que des frais s'ajoutent aux sommes décrites à la présente
+								entente, le Client s’engage à payer à
 								<span t-esc="doc.company_id.name" />
-								any such amount or fee following receipt of an invoice to that effect.
+								toute telle somme ou frais suivant la réception d'une facture à cet effet.
 							</p>
 						</li>
 						<li>
 							<h4>
-							Interest
+								Intérêts
 							</h4>
 							<p>
-								Any amounts owing to
+								Toutes les sommes dues par le Client à
 								<span t-esc="doc.company_id.name" />
-								by the Customer shall bear interest at the rate of twenty-four percent
-							(24%) per year, as of the date on which such amounts are due.
+								porteront intérêt au taux de vingt-quatre pour cent (24 %) par année, à compter de la date à
+								laquelle de telles sommes sont dues.
 							</p>
 						</li>
 					</ol>
@@ -388,31 +387,31 @@
 				<li>
 					<h3>
 						<strong>
+							ENGAGEMENTS DE
 							<span t-esc="doc.company_id.name" />
-							's COMMITMENTS
 						</strong>
 					</h3>
 					<ol>
 						<li>
 							<h4>
-							Equipment Condition
+								État des Équipements
 							</h4>
 							<p>
 								<span t-esc="doc.company_id.name" />
-								agrees to provide functional Equipment in proper maintenance to the Customer
+								s'engage à fournir des Équipements fonctionnels et en bon état d'entretien au Client.
 							</p>
 						</li>
 						<li>
 							<h4>
-							Equipment Delivery
+								Livraison des Équipements
 							</h4>
 							<p>
 								<span t-esc="doc.company_id.name" />
-								agrees to deliver the Equipment to the Customer at the agreed upon location.
-							The Customer acknowledges having given
+								s'engage à livrer au Client, à l'endroit convenu, les Équipements. Le Client reconnaît avoir
+								donné à
 								<span t-esc="doc.company_id.name" />
-								all relevant information on the Equipment delivery location and that such information
-							complies with whatever is indicated in this Agreement, as applicable.
+								toutes les informations pertinentes sur l'endroit de livraison des Équipements et que celles-ci sont
+								conformes à ce qu'indique, le cas échéant, la présente entente.
 							</p>
 						</li>
 					</ol>
