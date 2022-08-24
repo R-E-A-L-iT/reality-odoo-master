@@ -248,7 +248,7 @@
 				<br />
 				<br />
 				<br />
-				<t t-set="footer" t-value="doc.footer"></t>
+				<!-- <t t-set="footer" t-value="doc.footer"></t> -->
 
 				<footer>
 					<p style="width: 100%; text-align: center;">
