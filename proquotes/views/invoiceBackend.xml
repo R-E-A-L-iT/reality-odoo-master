@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-	<template name="Proquotes Invoice Backend" id="proquotes_invoice_backend" inherit_id="account.view_move_form"></template>
+	<template name="Proquotes Invoice Backend" id="proquotes_invoice_backend" inherit_id="account.view_move_form">
+		<xpath expr="//field[@name=&quot;invoice_vendor_bill_id&quot;]" position="after">
+			<field name="footer" />
+		</xpath>
+
+	</template>
 
 </odoo>
