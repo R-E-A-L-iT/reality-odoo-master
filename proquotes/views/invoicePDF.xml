@@ -11,7 +11,7 @@
 		</xpath>
 
 		<!-- Add Tax info -->
-		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/tr" position="replace">
+		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/tr[2]" position="replace">
 			<tr>
 				<td>Test</td>
 			</tr>
