@@ -3,7 +3,7 @@
 <odoo>
 	<template name="Rental Terms" id="rental_terms_pdf">
 		<div>
-			<span t-esc="o.lang"/>
+			<span t-esc="doc.lang"/>
 		</div>
 	</template>
 	<!--<template name="Rental Terms" id="rental_terms_pdf">
