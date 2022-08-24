@@ -418,59 +418,58 @@
 				</li>
 				<li>
 					<h3>
-						<strong>CUSTOMERS COMMITMENTS</strong>
+						<strong>ENGAGEMENT DU CLIENT</strong>
 					</h3>
 					<ol>
 						<li>
 							<h4>
-							Equipment Use
+								Utilisation des Équipements
 							</h4>
 							<p>
-								The Customer agrees to use the Equipment and its accessories solely for the purposes for which
-							such Equipment and accessories are intended. The Customer agrees to comply with any requirements
-							and regulations on the use of the Equipment that may be required by
+								Le Client s'engage à utiliser les Équipements et leurs accessoires uniquement pour les fins
+								auxquelles ces Équipements et ces accessoires sont destinés. Le Client convient de se conformer
+								à toutes les exigences et règlements se rapportant à l'utilisation des Équipements pouvant être
+								imposés de temps à autre par
 								<span t-esc="doc.company_id.name" />
-								from time to time. The Customer must not remove any accessory from the Equipment. The Customer
-							must not, at any time, authorize any person other than its employees, representatives or agents to
-							use the Equipment.
+								Le Client ne doit retirer aucun accessoire des Équipements. Celui-ci ne doit en aucun temps autoriser
+								quelconque personne autre que ses employés, représentants ou mandataires à utiliser les Équipements.
 							</p>
 						</li>
 						<li>
 							<h4>
-								Returning the Equipment to
+								Retour des Équipements à
 								<span t-esc="doc.company_id.name" />
 							</h4>
 							<p>
-								The Customer agrees to return the Equipment to
-							in the same operating and clean condition as at
-							the time of delivery, and to the same location as the original point of delivery, or failing that to any
+								Le Client s'engage à retourner les Équipements à
 								<span t-esc="doc.company_id.name" />
-								branch.
-							In such case, the Customer agrees to wash the Equipment prior to its pickup by
+								dans le même état de fonctionnement et de propreté qu'au moment de leur livraison, et ce, au
+								même emplacement que leur point de livraison original, ou à défaut dans toute succursale d'
 								<span t-esc="doc.company_id.name" />
-								. The Customer agrees to immediately notify
+								. À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par
 								<span t-esc="doc.company_id.name" />
-								of any damages caused to the Equipment. In such case, the Customer must reimburse
+								. Le Client s'engage à aviser immédiatement
 								<span t-esc="doc.company_id.name" />
-								for any repairs required as a result of the damages, alterations or stemming from the
-							abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage,
-							alteration or abusive use was intentional by the Customer. Such repairs must be carried out
-							exclusively by
+								de tout dommage causé aux Équipements. À cet effet, le Client devra rembourser
 								<span t-esc="doc.company_id.name" />
-								or its authorized supplier. Under no circumstances is the Customer authorized
-							or would be authorized to carry out any repair or have any repair carried out on the Equipment.
+								pour toute réparation rendue nécessaire suite à des dommages, altérations ou découlant
+								d'un usage abusif des Équipements, tant sur le plan esthétique que technique, que cela soit
+								intentionnel ou non de la part du Client. Ces réparations devront être effectuées exclusivement par
+								<span t-esc="doc.company_id.name" />
+								ou son fournisseur autorisé. En aucun cas, le Client n'est ou ne sera autorisé à effectuer ou
+								faire effectuer quelque réparation que ce soit sur les Équipements.
 							</p>
 						</li>
 						<li>
-							<h3>Insurance</h3>
+							<h3>Assurances</h3>
 							<p>
-								The Customer hereby agrees to hold general liability insurance covering any third-party liability
-							incumbent upon it (including renter’s insurance) under the terms of this Agreement, with minimum
-							coverage of two million dollars ($2,000,000) and to provide a copy of the policy to
+								Le Client s'engage, par les présentes, à détenir une assurance de responsabilité civile générale
+								le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa
+								responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de
+								deux millions de dollars (2 000 000 $) et à remettre, à
 								<span t-esc="doc.company_id.name" />
-								should
-								<span t-esc="doc.company_id.name" />
-								so request it.
+								, une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une
+								couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements.
 							</p>
 						</li>
 						<li>
