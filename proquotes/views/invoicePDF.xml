@@ -25,6 +25,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+			<t t-set="footer" t-value="o.footer" />
 			<xpath expr="//h2" position="move" />
 			<div>
 				<span t-field="o.partner_id.name" />
