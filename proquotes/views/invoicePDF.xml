@@ -12,8 +12,11 @@
 	</template>
 
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
-		<xpath expr="//td[1]" position="replace">
-			<td>Test</td>
+		<xpath expr="//t[@foreach]/tr/t/td" position="replace">
+			<td>
+				<!--  -->
+				<span t-esc="amount_by_group['tax_group_name']" />
+			</td>
 		</xpath>
 	</template>
 
