@@ -57,23 +57,23 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
-			<!-- <t t-if="o.company_id.id == 15"> -->
-			<div style="width: 100%; !important;">
-				<span>For Wire transfers</span>
-				<br/>
-				<span>BMO Vaudreuil Branch</span>
-				<br/>
-				<span>580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
-				<br/>
-				<span>Transit: 33201</span>
-				<br/>
-				<span>Institution: 001</span>
-				<br/>
-				<span>Account number: 1986 858</span>
-				<br/>
-				<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
-				<br/>
-			</div>
-		</xpath>
-	</template>
-</odoo>
+			<t t-if="o.company_id.id == 15">
+				<div style="width: 100%; !important; text-align: center !imporant;">
+					<span>For Wire transfers</span>
+					<br/>
+					<span>BMO Vaudreuil Branch</span>
+					<br/>
+					<span>580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
+					<br/>
+					<span>Transit: 33201</span>
+					<br/>
+					<span>Institution: 001</span>
+					<br/>
+					<span>Account number: 1986 858</span>
+					<br/>
+					<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
+					<br/>
+				</div>
+			</xpath>
+		</template>
+	</odoo>
