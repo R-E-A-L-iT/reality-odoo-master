@@ -11,7 +11,7 @@
 		</xpath>
 
 		<!-- Add Tax info -->
-		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/t" position="replace"></xpath>
+		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/t[2]" position="replace"></xpath>
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
