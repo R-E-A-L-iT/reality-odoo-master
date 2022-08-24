@@ -54,7 +54,14 @@
 			<span t-raw="line.product_id.name"></span>
 
 			<span class="description-root" t-raw="line.product_id.description_sale"/>
-			<span t-esc="o.company_id.name"/>
+		</xpath>
+
+		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
+			<t t-if="o.company_id.name == ' R-E-A-L.iT Solutions">
+				<div>
+					<p>Test</p>
+				</div>
+			</t>
 		</xpath>
 	</template>
 </odoo>
