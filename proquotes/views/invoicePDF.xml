@@ -57,8 +57,15 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
+			<style>
+			#bank-info span {
+				width: 100% !important;
+				text-align: center !important;
+			}
+			</style>
+			<span t-esc="o.company_id.id"/>
 			<t t-if="o.company_id.id == 15">
-				<div style="width: 100%; !important; text-align: center !imporant;">
+				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 					<span>For Wire transfers</span>
 					<br/>
 					<span>BMO Vaudreuil Branch</span>
@@ -72,6 +79,26 @@
 					<span>Account number: 1986 858</span>
 					<br/>
 					<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
+					<br/>
+				</div>
+			</t>
+			<t t-if="o.company_id.id == 15">
+				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
+					<span>For Wire transfers</span>
+					<br/>
+					<span>Bank Info</span>
+					<br/>
+					<span>BMO Harris Bank N.A. </span>
+					<br/>
+					<span>P.O. Box 755</span>
+					<br/>
+					<span>Chicago, IL 60690</span>
+					<br/>
+					<span>Routing Number: 071025661</span>
+					<br/>
+					<span>Account Number: 3875473</span>
+					<br/>
+					<span>Name on Account REALiT US Inc</span>
 					<br/>
 				</div>
 			</t>
