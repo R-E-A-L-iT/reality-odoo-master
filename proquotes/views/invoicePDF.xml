@@ -61,7 +61,7 @@
 				#bank-info{
 					width: 100%; !important;
 					display: flex !importnat;
-					align-content: center !important;
+					justify-content: center !important;
 				}
 			</style>
 			<t t-if="o.company_id.id == 15">
