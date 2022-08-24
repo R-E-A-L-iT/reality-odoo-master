@@ -58,15 +58,15 @@
 
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
 			<style>
-			#bank-info p {
-				width: 100% !important;
-																<!-- text-align: center !important; -->
-				margin: auto;
-			}
+				#bank-info{
+					width: 100%; !important;
+					display: flex !importnat;
+					align-content: center !important;
+				}
 			</style>
 			<t t-if="o.company_id.id == 15">
 				<br/>
-				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
+				<div id="bank-info">
 					<p>
 						<span>For Wire transfers</span>
 						<br/>
