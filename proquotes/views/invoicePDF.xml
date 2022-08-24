@@ -63,7 +63,6 @@
 				text-align: center !important;
 			}
 			</style>
-			<span t-esc="o.company_id.id"/>
 			<t t-if="o.company_id.id == 15">
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 					<span>For Wire transfers</span>
@@ -82,7 +81,7 @@
 					<br/>
 				</div>
 			</t>
-			<t t-if="o.company_id.id == 15">
+			<t t-if="o.company_id.id == 3">
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 					<span>For Wire transfers</span>
 					<br/>
