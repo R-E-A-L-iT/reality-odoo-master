@@ -2,7 +2,8 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms_pdf">
-		<div t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'">
+		<!-- <div t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'"> -->
+		<div>
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -317,5 +318,6 @@
 				</li>
 			</ol>
 		</div>
+		>
 	</template>
 </odoo>
