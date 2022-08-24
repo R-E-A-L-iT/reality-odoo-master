@@ -314,6 +314,7 @@ class sync_pricelist:
             _logger.info("Publish")
             product.is_published = True
         else:
+            _logger.info("Not Publish")
             product.is_published = False
         if (str(self.sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_ca = True
