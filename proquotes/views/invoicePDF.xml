@@ -15,8 +15,8 @@
 		<xpath expr="//td[1]" position="replace">
 			<td>
 				<!--  -->
-				<span t-if="'GST' in amount_by_group['tax_group_name']">Test</span>
-				<span t-else="" t-esc="amount_by_group['tax_group_name']" />
+				<span t-esc="amount_by_group['tax_group_name']" />
+				<span t-if="'GST' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
 			</td>
 		</xpath>
 	</template>
