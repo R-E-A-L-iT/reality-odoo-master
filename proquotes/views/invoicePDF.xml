@@ -74,6 +74,7 @@
 					<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
 					<br/>
 				</div>
-			</xpath>
-		</template>
-	</odoo>
+			</t>
+		</xpath>
+	</template>
+</odoo>
