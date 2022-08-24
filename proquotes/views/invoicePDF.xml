@@ -57,13 +57,6 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
-			<style>
-				#bank-info{
-					width: 100%; !important;
-					display: flex !importnat;
-					justify-content: center !important;
-				}
-			</style>
 			<t t-if="o.company_id.id == 15">
 				<br/>
 				<div id="bank-info">
