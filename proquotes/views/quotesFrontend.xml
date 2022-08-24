@@ -328,7 +328,7 @@
 					</div>
 					<br/>
 					<t t-if="sale_order.is_rental == True">
-						<t t-call="proquotes.rental_terms"/>
+						<!-- <t t-call="proquotes.rental_terms"/> -->
 						<div>
 							<span>
 							Should equipment be shipped to a different address?
