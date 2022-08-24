@@ -813,22 +813,26 @@ h1.title {
 	margin: 0;
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
-	font-family: HelveticaNeue-Light, Helvetica Neue Light;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light !important;
 }
 
 h2.subtitle {
 	color: #dbdbdb;
-	font-size: 2em;
-	font-weight: 100;
+	font-size: 2em !important;
+	font-weight: 100 !important;
 	letter-spacing: 2.75px;
 	text-align: center;
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
-	font-family: HelveticaNeue-Light, Helvetica Neue Light;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light !important;
 }
 
 h2.subtitle>span {
-	font-family: HelveticaNeue-Light, Helvetica Neue Light;
+	font-family: HelveticaNeue-Light, Helvetica Neue Light !important;
+}
+
+#quote_header_12 {
+	color: #fff;
 }
 
 /* .js_language_selector>.dropdown-menu>a {

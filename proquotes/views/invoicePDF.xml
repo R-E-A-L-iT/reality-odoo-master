@@ -9,9 +9,6 @@
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
 			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td/strong" position="replace">
-			<strongs>Subtotal</strongs>
-		</xpath>
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
@@ -39,6 +36,7 @@
 				h2 span {
 					color: #db0d0d !important;
 				}
+        
 				td {
 					border-style: solid;
 				}
@@ -57,11 +55,56 @@
 		<!-- </xpath> -->
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<t t-set="name" t-value="line.applied_name"/>
-			<span t-raw="name"></span>
+			<span t-raw="line.product_id.name"></span>
 
-			<t t-set="description" t-value="line.name"/>
-			<span class="description-root" t-raw="description"/>
+			<span class="description-root" t-raw="line.product_id.description_sale"/>
+		</xpath>
+
+		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
+			<t t-if="o.company_id.id == 15">
+				<br/>
+				<div id="bank-info">
+					<p>
+						<span>For Wire transfers</span>
+						<br/>
+						<span>BMO Vaudreuil Branch</span>
+						<br/>
+						<span>580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
+						<br/>
+						<span>Transit: 33201</span>
+						<br/>
+						<span>Institution: 001</span>
+						<br/>
+						<span>Account number: 1986 858</span>
+						<br/>
+						<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
+						<br/>
+					</p>
+				</div>
+			</t>
+			<t t-if="o.company_id.id == 3">
+				<br/>
+				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
+					<p>
+						<span>For Wire transfers</span>
+						<br/>
+						<span>Bank Info:</span>
+						<br/>
+						<span>BMO Harris Bank N.A. </span>
+						<br/>
+						<span>P.O. Box 755</span>
+						<br/>
+						<span>Chicago, IL 60690</span>
+						<br/>
+						<span>Routing Number: 071025661</span>
+						<br/>
+						<span>Account Number: 3875473</span>
+						<br/>
+						<span>Name on Account REALiT US Inc</span>
+						<br/>
+					</p>
+				</div>
+			</t>
 		</xpath>
 	</template>
 </odoo>
