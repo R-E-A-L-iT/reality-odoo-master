@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Rental Terms" id="rental_terms">
+	<template name="Rental Terms" id="rental_terms_pdf">
 		<div>
 			<h1>
 				<strong>Terms and Conditions</strong>
