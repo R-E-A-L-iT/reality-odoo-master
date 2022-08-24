@@ -2,7 +2,6 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms_pdf">
-		<!-- <div> -->
 		<div t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'">
 			<h1>
 				<strong>Terms and Conditions</strong>
@@ -318,6 +317,320 @@
 				</li>
 			</ol>
 		</div>
-		>
+
+		<div t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'fr_CA'">
+			<h1>
+				<strong>Termes et Conditions‌</strong>
+			</h1>
+			<ol>
+				<li>
+					<h3>
+						<strong>LOCATION, ENTRÉE EN VIGUEUR ET DURÉE</strong>
+					</h3>
+					<p>
+						Le Client loue, par les présentes, les Équipements de
+						<span t-esc="doc.company_id.name" />
+						, pour la période de temps indiquée au préambule
+						de la présente entente, suivant les termes et conditions ci-après établis.
+						<br />
+						L'entente entre en vigueur à la date de sa signature par le Client et se termine à la fin de la période de
+						location des Équipements indiquée au préambule de la présente entente.
+					</p>
+				</li>
+				<li>
+					<h3>
+						<strong>CONTREPARTIES</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>
+								Loyer et frais
+							</h4>
+							<p>
+								En contrepartie de la location des Équipements, le Client s'engage à payer à
+								<span t-esc="doc.company_id.name" />
+								les loyers et frais prévus à la première (1re) page de la présente entente, en sus des taxes applicables.
+								<br />
+								Si le Client demeure en possession des Équipements après la Durée, avec le consentement de
+								<span t-esc="doc.company_id.name" />
+								, la présente entente demeurera en vigueur et le Client sera réputé locataire des Équipements, suivant
+								les mêmes modalités, engagements et conditions que ceux énoncés dans la présente entente (y compris le
+								paiement de tout loyer).
+							</p>
+						</li>
+						<li>
+							<h4>
+							Additional Services or Additional Fees
+							</h4>
+							<p>
+								In the event that the Customer requires any other service from
+								<span t-esc="doc.company_id.name" />
+								that is not included in this
+							Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees 
+							to pay
+								<span t-esc="doc.company_id.name" />
+								any such amount or fee following receipt of an invoice to that effect.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Interest
+							</h4>
+							<p>
+								Any amounts owing to
+								<span t-esc="doc.company_id.name" />
+								by the Customer shall bear interest at the rate of twenty-four percent
+							(24%) per year, as of the date on which such amounts are due.
+							</p>
+						</li>
+					</ol>
+				</li>
+				<li>
+					<h3>
+						<strong>
+							<span t-esc="doc.company_id.name" />
+							's COMMITMENTS
+						</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>
+							Equipment Condition
+							</h4>
+							<p>
+								<span t-esc="doc.company_id.name" />
+								agrees to provide functional Equipment in proper maintenance to the Customer
+							</p>
+						</li>
+						<li>
+							<h4>
+							Equipment Delivery
+							</h4>
+							<p>
+								<span t-esc="doc.company_id.name" />
+								agrees to deliver the Equipment to the Customer at the agreed upon location.
+							The Customer acknowledges having given
+								<span t-esc="doc.company_id.name" />
+								all relevant information on the Equipment delivery location and that such information
+							complies with whatever is indicated in this Agreement, as applicable.
+							</p>
+						</li>
+					</ol>
+				</li>
+				<li>
+					<h3>
+						<strong>CUSTOMERS COMMITMENTS</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>
+							Equipment Use
+							</h4>
+							<p>
+								The Customer agrees to use the Equipment and its accessories solely for the purposes for which
+							such Equipment and accessories are intended. The Customer agrees to comply with any requirements
+							and regulations on the use of the Equipment that may be required by
+								<span t-esc="doc.company_id.name" />
+								from time to time. The Customer must not remove any accessory from the Equipment. The Customer
+							must not, at any time, authorize any person other than its employees, representatives or agents to
+							use the Equipment.
+							</p>
+						</li>
+						<li>
+							<h4>
+								Returning the Equipment to
+								<span t-esc="doc.company_id.name" />
+							</h4>
+							<p>
+								The Customer agrees to return the Equipment to
+							in the same operating and clean condition as at
+							the time of delivery, and to the same location as the original point of delivery, or failing that to any
+								<span t-esc="doc.company_id.name" />
+								branch.
+							In such case, the Customer agrees to wash the Equipment prior to its pickup by
+								<span t-esc="doc.company_id.name" />
+								. The Customer agrees to immediately notify
+								<span t-esc="doc.company_id.name" />
+								of any damages caused to the Equipment. In such case, the Customer must reimburse
+								<span t-esc="doc.company_id.name" />
+								for any repairs required as a result of the damages, alterations or stemming from the
+							abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage,
+							alteration or abusive use was intentional by the Customer. Such repairs must be carried out
+							exclusively by
+								<span t-esc="doc.company_id.name" />
+								or its authorized supplier. Under no circumstances is the Customer authorized
+							or would be authorized to carry out any repair or have any repair carried out on the Equipment.
+							</p>
+						</li>
+						<li>
+							<h3>Insurance</h3>
+							<p>
+								The Customer hereby agrees to hold general liability insurance covering any third-party liability
+							incumbent upon it (including renter’s insurance) under the terms of this Agreement, with minimum
+							coverage of two million dollars ($2,000,000) and to provide a copy of the policy to
+								<span t-esc="doc.company_id.name" />
+								should
+								<span t-esc="doc.company_id.name" />
+								so request it.
+							</p>
+						</li>
+						<li>
+							<h3>Standards, Policies and Others</h3>
+							<p>
+								The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by
+								<span t-esc="doc.company_id.name" />
+								, particularly in regards to the use and safety of the Equipment.
+							</p>
+						</li>
+					</ol>
+				</li>
+				<li>
+					<h3>
+						<strong>INDEMNIFICATION</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>Non-Liability</h4>
+							<p>
+								<span t-esc="doc.company_id.name" />
+								shall, at no time, be held liable for any damages, breakage, or partial or full interruption
+							that could result, at any time, during the use of the Equipment. The Customer is solely responsible
+							for the individuals who may be required to use the Equipment, throughout the Term of the Agreement.
+							</p>
+						</li>
+						<li>
+							<h4>Indemnification</h4>
+							<p>
+								The Customer acknowledges that
+								<span t-esc="doc.company_id.name" />
+								, its directors, officers, employees, agents, volunteers and subcontractors, cannot be held
+							liable for any breakage, loss, destruction of property and/or damage, of any kind, resulting
+							from the use of the Equipment. The Customer waives any right, recourse, claim and action against
+								<span t-esc="doc.company_id.name" />
+								, its directors, officers, employees, agents, volunteers and subcontractors resulting from the use
+							of the Equipment. The Customer agrees to indemnify and hold
+								<span t-esc="doc.company_id.name" />
+								harmless against any claim, of any type, resulting from or could result from any failure by the
+							Customer in respecting its obligations under the terms of this Agreement or for any breakage,
+							loss, destruction of property and/or damage, of any type, resulting from the use of the Equipment.
+							</p>
+						</li>
+					</ol>
+				</li>
+				<li>
+					<h3>
+						<strong>END OF AGREEMENT</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>Termination as of Right</h4>
+							<p>
+								This Agreement shall be terminated as of right without any notice or formal demand being required from
+								<span t-esc="doc.company_id.name" />
+								, if the Customer makes a general assignment of its property for the benefit of its creditors, or if
+							it is declared bankrupt or insolvent or if it allows its assets to be seized further to a writ of
+							execution or other legal proceedings.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Termination on Notice
+							</h4>
+							<p>
+								The Agreement is terminated upon the expiry of a 10 day limit, as of the delivery of a written notice
+							indicating, as applicable, the failure to perform by either party, should the defaulting party not
+							correct such failure within that time limit, in either of the following cases (i) the Customer breaches
+							or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement, and
+							the Customer will be required to pay any amounts owing to
+								<span t-esc="doc.company_id.name" />
+								or (ii) if
+								<span t-esc="doc.company_id.name" />
+								breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Effect of Termination
+							</h4>
+							<p>
+								When this Agreement is terminated, the Customer agrees to pay
+								<span t-esc="doc.company_id.name" />
+								any amounts owing under the
+							terms of the Agreement.
+								<span t-esc="doc.company_id.name" />
+								may, at any time and without prior notice as of termination, retake
+							possession of the Equipment and the Customer hereby authorizes
+							, its agents, employees or
+							representatives to enter onto its property or on any location where the Equipment is found for the
+							purpose of immediately retaking possession of said Equipment, all at the Customer's expense.
+							</p>
+						</li>
+					</ol>
+				</li>
+				<li>
+					<h3>
+						<strong>GENERAL PROVISIONS</strong>
+					</h3>
+					<ol>
+						<li>
+							<h4>
+							Assignment
+							</h4>
+							<p>
+								<span t-esc="doc.company_id.name" />
+								reserves the right to assign or transfer a portion of or all its rights and obligations resulting
+							from this Agreement to anyone, without the need to request the Customer's consent or approval.
+							However, the Customer may not assign its rights nor request or allow a third party to assume its
+							obligations under this Agreement.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Notice
+							</h4>
+							<p>
+							Any notice required under this Agreement is adequate if it is recorded in writing and sent by a
+							method of communication that allows the sending party to prove that said notice was effectively
+							delivered to the receiving party at the addresses indicated on the first page of the Agreement or
+							any other address the receiving party may have made known in accordance with this Agreement.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Non-Waiver
+							</h4>
+							<p>
+							If either party should waive, neglect or delay the exercise of a right or recourse provided by
+							this Agreement, this shall never be held against said party as a renunciation of its rights and
+							recourses, as long as the conventionally or legally prescribed time for exercising said right or
+							recourse has not expired.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Legal Representatives
+							</h4>
+							<p>
+							The Agreement binds the parties, their successors, legal representatives, liquidators, trustees and assigns.
+							</p>
+						</li>
+						<li>
+							<h4>
+							Applicable Laws and Jurisdiction
+							</h4>
+							<p>
+							This Agreement and its interpretation, execution, application, validity and effects are subject to
+							the applicable laws in force in the province of Ontario and in force in Canada that apply in the
+							province of Ontario, which govern all of the provisions it contains.
+							The parties agree that any claim or any legal action taken for any reason with respect to this
+							Agreement shall be brought to a court located in the judicial district of Toronto, Ontario, Canada,
+							to the exclusion of any other judicial district that may have jurisdiction over such disputes under
+							the law.
+							</p>
+						</li>
+					</ol>
+				</li>
+			</ol>
+		</div>
 	</template>
 </odoo>
