@@ -11,20 +11,7 @@
 		</xpath>
 
 		<!-- Add Tax info -->
-		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]" position="replace">
-			<tr class="border-black o_subtotal">
-				<td>
-					<strong t-esc="subtotal['name']" />
-				</td>
-
-				<td class="text-right">
-					<span t-att-class="oe_subtotal_footer_separator" t-esc="subtotal['formatted_amount']" />
-				</td>
-			</tr>
-
-			<t t-set="subtotal_to_show" t-value="subtotal['name']" />
-			<t t-call="account.tax_groups_totals" />
-		</xpath>
+		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/t" position="replace"></xpath>
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
