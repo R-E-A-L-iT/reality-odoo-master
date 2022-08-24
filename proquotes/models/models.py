@@ -20,7 +20,7 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 
 
-class invoice(modles.Model):
+class invoice(models.Model):
     _inherit = 'account.move'
     footer = fields.Selection([
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
