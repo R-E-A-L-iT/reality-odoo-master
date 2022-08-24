@@ -311,10 +311,10 @@ class sync_pricelist:
 #                 product.image_1920 = req.content
 
         if (str(self.sheet[i][columns["canPublish"]]) == "TRUE"):
-            _logger.info("Publish")
+            _logger.info(str(self.name) + "Publish")
             product.is_published = True
         else:
-            _logger.info("Not Publish")
+            _logger.info(str(self.name) + "Not Publish")
             product.is_published = False
         if (str(self.sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_ca = True
