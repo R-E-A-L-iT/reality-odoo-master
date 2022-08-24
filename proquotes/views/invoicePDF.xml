@@ -9,9 +9,12 @@
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
 			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
+	</template>
 
-		<!-- Add Tax info -->
-		<xpath expr="//t[@t-foreach=&quot;tax_totals['subtotals']&quot;]/t[2]" position="replace"></xpath>
+	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
+		<xpath expr="//td[1]" position="replace">
+			<td>Test</td>
+		</xpath>
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
