@@ -19,7 +19,7 @@
 		</xpath>
 
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<!-- <img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
+			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 		</xpath>
 		<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="attributes">
 			<!-- <attribute name="style"> width: 98%; height: auto; margin-left: 1%; margin-right: 1%</attribute> -->
