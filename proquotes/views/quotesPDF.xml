@@ -18,7 +18,7 @@
 		</xpath>
 
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<img t-if="footer != undefined" id="insert-footer" style="width: 90% !important; bottom: 10px !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+			<img t-if="footer != undefined" id="insert-footer" style="width: 90% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 			<!-- <img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
 		</xpath>
 	</template>
@@ -271,17 +271,20 @@
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 			<div style="">
 				<xpath expr="//h2" position="move" />
-				<span t-field="doc.partner_id.name" />
-				<br />
-				<span t-field="doc.partner_id.street" />
-				<br />
-				<span t-field="doc.partner_id.city" />
-				<span>,</span>
-				<span t-esc="doc.partner_id.state_id.code" />
-				<span t-field="doc.partner_id.country_id.name" />
-				<br />
-				<span t-field="doc.partner_id.phone" />
+				<div>
+					<span t-field="doc.partner_id.name" />
+					<br />
+					<span t-field="doc.partner_id.street" />
+					<br />
+					<span t-field="doc.partner_id.city" />
+					<span>,</span>
+					<span t-esc="doc.partner_id.state_id.code" />
+					<span t-field="doc.partner_id.country_id.name" />
+					<br />
+					<span t-field="doc.partner_id.phone" />
+				</div>
 			</div>
+			>
 			<br />
 		</xpath>
 
