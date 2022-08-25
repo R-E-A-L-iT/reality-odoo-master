@@ -282,10 +282,9 @@
 					<span t-field="doc.partner_id.country_id.name" />
 					<br />
 					<span t-field="doc.partner_id.phone" />
+					<br />
 				</div>
 			</div>
-			>
-			<br />
 		</xpath>
 
 		<!-- <xpath expr="//h2" position="attributes">
