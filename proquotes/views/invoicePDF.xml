@@ -27,7 +27,7 @@
 		<xpath expr="//h2" position="attributes">
 			<attribute name="style">margin-top 0px;</attribute>
 		</xpath>
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<xpath expr="//h2" position="move" />
 			<div>
