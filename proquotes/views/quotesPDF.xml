@@ -266,24 +266,33 @@
 			<t t-call="proquotes.proquotes_total_pdf" />
 		</xpath>
 
+		<xpath expr="//h2" position="replace" />
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
-			<section>
-				<xpath expr="//h2" position="move" />
-				<div>
-					<span t-field="doc.partner_id.name" />
-					<br />
-					<span t-field="doc.partner_id.street" />
-					<br />
-					<span t-field="doc.partner_id.city" />
-					<span>,</span>
-					<span t-esc="doc.partner_id.state_id.code" />
-					<span t-field="doc.partner_id.country_id.name" />
-					<br />
-					<span t-field="doc.partner_id.phone" />
-					<br />
-				</div>
-			</section>
+
+			<div>
+				<h2>
+					<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+						<span t-if="doc.state not in ['draft','sent']">Order # </span>
+						<span t-if="doc.state in ['draft','sent']">Quotation # </span>
+					</t>
+					<t t-if="env.context.get('proforma', False) or is_pro_forma">
+						<span>Pro-Forma Invoice # </span>
+					</t>
+					<span t-field="doc.name" />
+				</h2>
+				<span t-field="doc.partner_id.name" />
+				<br />
+				<span t-field="doc.partner_id.street" />
+				<br />
+				<span t-field="doc.partner_id.city" />
+				<span>,</span>
+				<span t-esc="doc.partner_id.state_id.code" />
+				<span t-field="doc.partner_id.country_id.name" />
+				<br />
+				<span t-field="doc.partner_id.phone" />
+				<br />
+			</div>
 		</xpath>
 
 		<!-- <xpath expr="//h2" position="attributes">
