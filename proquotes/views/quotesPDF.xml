@@ -27,7 +27,7 @@
 			</style>
 		</xpath>
 		<xpath expr="/t/div[3]" position="replace">
-			<div t-attf-class="footer o_boxed_footer">
+			<div t-attf-class="footer" style="height: 1px !important;">
 				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 			</div>
 			<!-- <attribute name="style">height: 1px !important; width: 100% !important; border-style: solid !important; border-color: #000 !important; display: none;</attribute> -->
