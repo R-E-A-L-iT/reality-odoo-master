@@ -25,7 +25,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//h2" position="attributes">
-			<attribute name="style">margin-top 0px;</attribute>
+			<attribute name="style">margin-top 0px; !important</attribute>
 		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
