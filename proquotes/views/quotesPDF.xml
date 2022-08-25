@@ -273,13 +273,13 @@
 			<div style="position: relative; bottom: 50px; margin-bottom: -25px;">
 				<h2 style="color: #db0d0d;">
 					<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-						<span t-if="doc.state not in ['draft','sent']">Order # </span>
-						<span t-if="doc.state in ['draft','sent']">Quotation # </span>
+						<span style="color: #db0d0d;" t-if="doc.state not in ['draft','sent']">Order # </span>
+						<span style="color: #db0d0d;" t-if="doc.state in ['draft','sent']">Quotation # </span>
 					</t>
 					<t t-if="env.context.get('proforma', False) or is_pro_forma">
-						<span>Pro-Forma Invoice # </span>
+						<span style="color: #db0d0d;">Pro-Forma Invoice # </span>
 					</t>
-					<span t-field="doc.name" />
+					<span style="color: #db0d0d;" t-field="doc.name" />
 				</h2>
 				<span t-field="doc.partner_id.name" />
 				<br />
