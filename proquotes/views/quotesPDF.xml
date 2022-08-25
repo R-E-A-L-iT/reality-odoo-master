@@ -17,7 +17,7 @@
 			<attribute name="class">footer-root</attribute>
 		</xpath>
 		<xpath expr="/t/div[3]" position="attributes">
-			<attribute name="style">backround-color: #0f0; display: none !important;</attribute>
+			<attribute name="style">height: 10vh !important</attribute>
 		</xpath>
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
 			<img t-if="footer != undefined" id="insert-footer" style=" width: 100% !important; height: auto !important; display: block !important; !important; position: absolute !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
