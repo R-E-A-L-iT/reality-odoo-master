@@ -10,6 +10,8 @@
 				<strong>Subtotal</strong>
 			</td>
 		</xpath>
+
+		<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace" />
 	</template>
 
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
