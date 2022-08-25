@@ -56,8 +56,8 @@
 		</xpath>
 
 		<!--Remove Taxes-->
-		<!-- <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace"/> -->
+		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace" />
 
 		<!--Remove Subtotal-->
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/> -->
