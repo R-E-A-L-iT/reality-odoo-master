@@ -18,8 +18,8 @@
 		</xpath>
 
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
-			<!-- <img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
-			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+			<!-- <img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; bottom: 20px !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
 		</xpath>
 	</template>
 
