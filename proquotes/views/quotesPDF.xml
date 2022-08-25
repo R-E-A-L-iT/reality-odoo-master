@@ -11,7 +11,6 @@
 			</td>
 		</xpath>
 
-		<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace" />
 	</template>
 
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
@@ -22,6 +21,7 @@
 		<xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="before">
 			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 		</xpath>
+		<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="replace" />
 	</template>
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
