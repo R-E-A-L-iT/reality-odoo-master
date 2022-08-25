@@ -42,10 +42,6 @@
 			<br />
 		</xpath>
 
-		<!-- <xpath expr="//h2" position="attributes">
-			<attribute name="style">margin-top 0px; !important</attribute>
-		</xpath> -->
-
 		<xpath expr="//img" position="after">
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto" style="margin-bottom: 0px;" />
 			<style>
