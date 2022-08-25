@@ -28,7 +28,7 @@
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<div style="position: relative; bottom: 50px; margin-bottom: -25px;">
-				<h2>
+				<h2 style="color: #db0d0d;">
 					<span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
 					<span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
 					<span t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
