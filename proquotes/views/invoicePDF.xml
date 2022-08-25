@@ -16,8 +16,8 @@
 			<td>
 				<!--  -->
 				<span t-esc="amount_by_group['tax_group_name']" />
-				<span t-if="'GST' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
-				<span t-if="'QST' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
+				<span t-if="'GST' in amount_by_group['tax_group_name']">777376542RT0001</span>
+				<span t-if="'QST' in amount_by_group['tax_group_name']">1228256885TQ0001</span>
 			</td>
 		</xpath>
 	</template>
@@ -76,7 +76,7 @@
 				<br />
 				<div id="bank-info">
 					<p>
-						<span>For Wire transfers</span>
+						<span>For Wire Transfers:</span>
 						<br />
 						<span>BMO Vaudreuil Branch</span>
 						<br />
@@ -88,7 +88,7 @@
 						<br />
 						<span>Account number: 1986 858</span>
 						<br />
-						<span>Name on Account: 9435-6714 Québec Inc. / Solutions R-E-A-L.iT</span>
+						<span>Name on Account: 9435-6714 Québec Inc. (DBA: R-E-A-L.iT Solutions)</span>
 						<br />
 					</p>
 				</div>
@@ -98,7 +98,7 @@
 				<br />
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 					<p>
-						<span>For Wire transfers</span>
+						<span>For Wire Transfers:</span>
 						<br />
 						<span>Bank Info:</span>
 						<br />
@@ -112,7 +112,7 @@
 						<br />
 						<span>Account Number: 3875473</span>
 						<br />
-						<span>Name on Account REALiT US Inc</span>
+						<span>Name on Account R-E-A-L.iT U.S. Inc</span>
 						<br />
 					</p>
 				</div>
