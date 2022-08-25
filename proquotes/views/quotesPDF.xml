@@ -268,8 +268,8 @@
 		</xpath>
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+			<xpath expr="//h2" position="move" />
 			<div style="position: relative; bottom: 100px;">
-				<xpath expr="//h2" position="move" />
 				<span t-field="doc.partner_id.name" />
 				<br />
 				<span t-field="doc.partner_id.street" />
