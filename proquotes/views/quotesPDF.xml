@@ -270,7 +270,7 @@
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
-			<div style="position: relative; bottom: 50px;">
+			<div style="position: relative; bottom: 50px; margin-bottom: 0px !important;">
 				<h2>
 					<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
 						<span t-if="doc.state not in ['draft','sent']">Order # </span>
