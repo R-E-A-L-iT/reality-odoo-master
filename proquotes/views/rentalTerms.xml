@@ -183,7 +183,7 @@
 							<h3>Insurance</h3>
 							<p>
 								The Customer hereby agrees to hold general liability insurance covering any third-party liability
-							incumbent upon it (including renter’s insurance) under the terms of this Agreement, with minimum
+							incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum
 							coverage of two million dollars ($2,000,000) and to provide a copy of the policy to
 								<span t-esc="company_name" />
 								should
@@ -336,13 +336,25 @@
 							Applicable Laws and Jurisdiction
 							</h4>
 							<p>
-							This Agreement and its interpretation, execution, application, validity and effects are subject to
-							the applicable laws in force in the province of Ontario and in force in Canada that apply in the
-							province of Ontario, which govern all of the provisions it contains.
-							The parties agree that any claim or any legal action taken for any reason with respect to this
-							Agreement shall be brought to a court located in the judicial district of Toronto, Ontario, Canada,
-							to the exclusion of any other judicial district that may have jurisdiction over such disputes under
-							the law.
+								This Agreement and its interpretation, execution, application, validity and effects are subject to
+								the applicable laws in force in the province of Ontario
+								<span t-esc="state" />
+								and in force in
+								<span t-esc="country" />
+								that apply in the
+								province of
+								<span t-esc="state" />
+								, which govern all of the provisions it contains.
+								The parties agree that any claim or any legal action taken for any reason with respect to this
+								Agreement shall be brought to a court located in the judicial district of
+								Toronto
+								<span t-esc="city" />
+								,
+								<span t-esc="state" />
+								,
+								<span t-esc="country" />
+								, to the exclusion of any other judicial district that may have jurisdiction over such disputes under
+								the law.
 							</p>
 						</li>
 					</ol>
@@ -542,7 +554,7 @@
 								Le Client renonce à tout droit, recours, réclamation et demande quelconque contre
 								<span t-esc="company_name" />
 								, ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses
-								sous-traitants découlant de l’utilisation des Équipements. Le Client convient d'indemniser
+								sous-traitants découlant de l'utilisation des Équipements. Le Client convient d'indemniser
 								et de tenir
 								<span t-esc="company_name" />
 								indemne de toute réclamation, de quelque nature, découlant ou pouvant découler de tout défaut
@@ -564,7 +576,7 @@
 								L'entente est résiliée de plein droit, sans avis ni mise en demeure nécessaire de la part de
 								<span t-esc="company_name" />
 								, si le Client fait cession de ses biens au bénéfice de ses créanciers, ou s'il devient failli
-								ou insolvable ou s’il permet que ses actifs soient saisis à la suite d'un bref d'exécution ou
+								ou insolvable ou s'il permet que ses actifs soient saisis à la suite d'un bref d'exécution ou
 								autre procédure légale;
 							</p>
 						</li>
@@ -660,12 +672,21 @@
 							</h4>
 							<p>
 								La présente entente, son interprétation, son exécution, son application, sa validité et ses
-								effets sont assujettis aux lois en vigueur dans la province de Québec et celles en vigueur au
-								Canada applicables dans la province de Québec lesquelles régissent l'ensemble des dispositions
-								qu'elle contient.
+								effets sont assujettis aux lois en vigueur dans la province de
+								<span t-esc="state" />
+								et celles en vigueur au
+								<span t-esc="country" />
+								applicables dans la province de
+								<span t-esc="state" />
+								lesquelles régissent l'ensemble des dispositions qu'elle contient.
 								Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que
-								ce soit, relativement aux présentes, de choisir le district judiciaire de Saint- François, province
-								de Québec, Canada, comme le lieu approprié pour l'audition desdites réclamations ou poursuites
+								ce soit, relativement aux présentes, de choisir le district judiciaire de
+								<span t-esc="city" />
+								, province de
+								<span t-esc="state" />
+								,
+								<span t-esc="country" />
+								, comme le lieu approprié pour l'audition desdites réclamations ou poursuites
 								judiciaires, à l'exclusion de tout autre district judiciaire qui peut avoir juridiction sur un
 								tel litige selon les prescriptions de la loi.
 							</p>
