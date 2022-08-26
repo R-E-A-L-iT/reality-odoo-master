@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-		<div t-if="clang == 'en_CA' or clang == 'en_US'">
+		<div t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #fff;">
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -318,7 +318,7 @@
 			</ol>
 		</div>
 
-		<div t-if="clang == 'fr_CA'">
+		<div t-if="clang == 'fr_CA'" style="color: #fff;">
 			<h1>
 				<strong>Termes et Conditions‌</strong>
 			</h1>
