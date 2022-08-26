@@ -13,15 +13,16 @@
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
 			<div class="quote-address">
-				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg"/>
+				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg" />
 				<div class="quote-address-block">
 					<h1 class="title">QUOTATION</h1>
-					<h2 class="subtitle" t-field="sale_order.partner_id.name"/>
-					<h2 class="subtitle" t-field="sale_order.partner_id.street"/>
+					<h2 class="subtitle" t-field="sale_order.partner_id.name" />
+					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
 					<h2 class="subtitle">
-						<span t-field="sale_order.partner_id.city"></span>,
-						<span t-field="sale_order.partner_id.state_id.code"/>
-						<span t-field="sale_order.partner_id.country_id.name"/>
+						<span t-field="sale_order.partner_id.city"></span>
+						,
+						<span t-field="sale_order.partner_id.state_id.code" />
+						<span t-field="sale_order.partner_id.country_id.name" />
 					</h2>
 				</div>
 			</div>
@@ -47,7 +48,7 @@
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<t t-if="sale_order.sale_order_template_id.name == 'Renewal'">
@@ -55,22 +56,22 @@
 					<tr>
 						<td style="border-style: none;" colspan="100">
 							<span id="lang-id" class="english-mode no-display">english-mode</span>
-							<t t-call="proquotes.renewal-hardware-english"/>
-							<t t-call="proquotes.renewal-hardware-french"/>
+							<t t-call="proquotes.renewal-hardware-english" />
+							<t t-call="proquotes.renewal-hardware-french" />
 						</td>
 					</tr>
 				</t>
 				<t t-if="line.name == '$software'">
 					<tr>
 						<td style="border-style: none;" colspan="100">
-							<t t-call="proquotes.renewal-software"/>
+							<t t-call="proquotes.renewal-software" />
 						</td>
 					</tr>
 				</t>
 				<t t-if="line.name == '$subscription'">
 					<tr>
 						<td style="border-style: none;" colspan="100">
-							<t t-call="proquotes.renewal-subscription"/>
+							<t t-call="proquotes.renewal-subscription" />
 						</td>
 					</tr>
 				</t>
@@ -138,23 +139,23 @@
 
 
 					<t t-if="line.special == 'optional'">
-						<input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
-						<input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
+						<input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true" />
+						<input t-else="" class="optionalSectionCheckbox" type="checkbox" />
 					</t>
-					<span t-field="line.name"/>
-					<span class="line_id" t-attf-id="{{line}}"/>
+					<span t-field="line.name" />
+					<span class="line_id" t-attf-id="{{line}}" />
 				</label>
 
 				<!--Apply Custom Class to Special Section Types if needed-->
 				<t t-if="line.hiddenSection == 'no'">
-					<input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-					<input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/>
-					<input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
+					<input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" />
+					<input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" />
+					<input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" />
 				</t>
 				<t t-else="">
-					<input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-					<input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
-					<input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
+					<input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true" />
+					<input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true" />
+					<input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true" />
 				</t>
 			</div>
 
@@ -169,7 +170,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
-			<span class="line_id" t-attf-id="{{line}}"/>
+			<span class="line_id" t-attf-id="{{line}}" />
 		</xpath>
 
 		<!--Hide Default Subtotal-->
@@ -192,12 +193,12 @@
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
 					<!-- <t t-if="line.product_id.productType == 'equipment'"> -->
-					<span t-esc="line.product_id.cadVal" class="text-right itemValue"/>
-					$							
+					<span t-esc="line.product_id.cadVal" class="text-right itemValue" />
+					$
 				</td>
 				<td t-else="" class="text-right">
 					<!-- <t t-if="line.product_id.productType == 'equipment'"> -->
-					<span t-esc="line.product_id.usdVal" class="text-right itemValue"/>
+					<span t-esc="line.product_id.usdVal" class="text-right itemValue" />
 					$
 				</td>
 			</t>
@@ -207,12 +208,12 @@
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
 			<td id="product_name">
 				<t t-if="line.optional == 'yes'">
-					<input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true"/>
-					<input t-else="" type="checkbox" class="priceChange"/>
+					<input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" />
+					<input t-else="" type="checkbox" class="priceChange" />
 				</t>
 				<t t-else="">
-					<input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange"/>
-					<input t-else="" type="radio" style="display: none;" class="priceChange"/>
+					<input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange" />
+					<input t-else="" type="radio" style="display: none;" class="priceChange" />
 				</t>
 
 				<!--Line Id For User Selection-->
@@ -227,11 +228,11 @@
 					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
 						<!-- <span class="detailLabel">Details</span> -->
 					</label>
-					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
-					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
+					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 
 					<div class="product_fold" style="width: 100%;">
-						<span style="color: #777;" t-raw="line.product_id.description_sale"/>
+						<span style="color: #777;" t-raw="line.product_id.description_sale" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
@@ -243,12 +244,12 @@
 		<!--End Multiple Choice Section Upon Optional Product-->
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="before">
 			<t t-if="not current_section_ended">
-				<t t-if="current_section and line.optional == 'yes' and current_section.special == 'multiple'" t-set="current_section_ended" t-value="true"/>
+				<t t-if="current_section and line.optional == 'yes' and current_section.special == 'multiple'" t-set="current_section_ended" t-value="true" />
 			</t>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
-			<t t-set="current_section_ended" t-value="false"/>
+			<t t-set="current_section_ended" t-value="false" />
 		</xpath>
 
 		<!--Ensure Subtotal is only calculated if Item is selected-->
@@ -304,13 +305,7 @@
 		</xpath>
 
 
-
-
 		<!-- HERE IS User Entered Information -->
-
-
-
-
 
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
@@ -320,35 +315,37 @@
 						<span>Please insert your PO number here:</span>
 						<br />
 					</div>
-					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}"/>
-					<br/>
+					<input class="poNumber" id="poNumber" t-attf-value="{{sale_order.customer_po_number}}" />
+					<br />
 					<div>
 						<span>Please Upload your PO File in the comments below:</span>
-						<br/>
+						<br />
 					</div>
-					<br/>
+					<br />
 					<t t-if="sale_order.is_rental == True">
-						<!-- <t t-call="proquotes.rental_terms"/> -->
+						<t t-set="company_name" t-value="sale_order.company_id.name" />
+						<t t-set="clang" t-value="lang" />
+						<t t-call="proquotes.rental_terms" />
 						<div>
 							<span>
 							Should equipment be shipped to a different address?
 							</span>
-							<br/>
+							<br />
 							<span class="english-mode"></span>
-							<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
-							<input t-else="" id="new-address" type="checkbox"/>
-							<br/>
+							<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
+							<input t-else="" id="new-address" type="checkbox" />
+							<br />
 							<div id="rental-address" class="rental-address">
 								<label for="street">
 									<span>Street</span>
 								</label>
-								<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}"/>
-								<br/>
+								<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}" />
+								<br />
 								<label for="city">
 									<span>City</span>
 								</label>
-								<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}"/>
-								<br/>
+								<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}" />
+								<br />
 								<label for="state">
 									<span>State/Province</span>
 								</label>
@@ -485,7 +482,7 @@
 									<option t-if="sale_order.rental_state.id == 59" selected="selected" t-attf-class="{{sale_order.rental_country.name}} us-op">Wyoming</option>
 									<option t-else="" t-attf-class="{{sale_order.rental_country.name}} us-op">Wyoming</option>
 								</select>
-								<br/>
+								<br />
 								<label for="country">
 									<span>Country</span>
 								</label>
@@ -496,35 +493,36 @@
 									<option t-if="sale_order.rental_country.id == 233" selected="selected" value="United States">United States</option>
 									<option t-else="" value="United States">United States</option>
 								</select>
-								<br/>
+								<br />
 								<label for="zip">
 									<span>Zip/Postal Code</span>
 								</label>
-								<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}"/>
+								<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}" />
 							</div>
 						</div>
-						<br/>
+						<br />
 						<div>
 							<label for="rental-start">
 								<span>Start of the rental</span>
 							</label>
-							<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}"/>
-							<br/>
+							<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" />
+							<br />
 							<label for="rental-end">
 								<span>Estimated end of the rental</span>
 							</label>
-							<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}"/>
+							<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" />
 						</div>
-						<br/>
+						<br />
 						<div>
 							<span>
-								Total Rental Value: <span id="total-rental-value"></span>
+								Total Rental Value:
+								<span id="total-rental-value"></span>
 							</span>
-							<br/>
+							<br />
 							<span>
 							Please upload your proof of insurance for the total amount in the comments below:
 							</span>
-							<br/>
+							<br />
 						</div>
 					</t>
 				</form>
@@ -547,16 +545,15 @@
 
 		<xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
 			<span>
-				<strong t-field="sale_order.partner_id.name"/>
+				<strong t-field="sale_order.partner_id.name" />
 			</span>
 		</xpath>
 
 		<xpath expr="//t[@t-call=&quot;portal.signature_form&quot;]/t[2]" position="replace">
-			<t t-set="default_name" t-value="env.user.name"/>
+			<t t-set="default_name" t-value="env.user.name" />
 		</xpath>
 
-		<xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace">
-		</xpath>
+		<xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace"></xpath>
 
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<div class="col-sm-auto mt8">
@@ -565,14 +562,12 @@
 					Download
 				</a>
 			</div>
-			<br/>
-			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png"/>
+			<br />
+			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 
 	</template>
 
-	<template id="User_Buttons" name="Client Side Buttons" priority="17">
-
-	</template>
+	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
 
 </odoo>
