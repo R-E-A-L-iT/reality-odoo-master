@@ -324,7 +324,7 @@
 					<br />
 					<t t-if="sale_order.is_rental == True">
 						<t t-set="company_name" t-value="'Company Name'" />
-						<t t-set="clang" t-value="lang.lang" />
+						<t t-set="clang" t-value="lang" />
 						<t t-call="proquotes.rental_terms" />
 						<div>
 							<span>
