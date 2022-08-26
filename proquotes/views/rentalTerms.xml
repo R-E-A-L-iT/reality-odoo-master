@@ -337,7 +337,7 @@
 							</h4>
 							<p>
 								This Agreement and its interpretation, execution, application, validity and effects are subject to
-								the applicable laws in force in the province of Ontario
+								the applicable laws in force in the province of
 								<span t-esc="state" />
 								and in force in
 								<span t-esc="country" />
