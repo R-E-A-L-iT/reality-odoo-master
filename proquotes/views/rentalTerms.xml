@@ -4,18 +4,23 @@
 	<template name="Rental Terms" id="rental_terms">
 		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="city" t-value="'Montreal'" />
 		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="state" t-value="'Quebec'" />
+		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="country" t-value="'Canada'" />
 
 		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="city" t-value="'Dover'" />
 		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="state" t-value="'Delaware'" />
+		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="country" t-value="'United States'" />
 
-		<t t-if="company_name == 'Abtech On. Inc.'" t-set="city" t-value="'Toronto'" />
-		<t t-if="company_name == 'Abtech On. Inc'" t-set="state" t-value="'Ontario'" />
+		<t t-if="company_name == 'Abtech On. Inc..'" t-set="city" t-value="'Toronto'" />
+		<t t-if="company_name == 'Abtech On. Inc.'" t-set="state" t-value="'Ontario'" />
+		<t t-if="company_name == 'Abtech On. Inc.'" t-set="country" t-value="'Canada'" />
 
 		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="city" t-value="'Sherbrook'" />
 		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="state" t-value="'Quebec'" />
+		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="country" t-value="'Canada'" />
 
 		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="city" t-value="'Muncton'" />
 		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="state" t-value="'New Brunswick'" />
+		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="country" t-value="'Canada'" />
 		<div>
 			<p>
 				<span>Results</span>
@@ -25,6 +30,8 @@
 				<span t-esc="city" />
 				<br />
 				<span t-esc="state" />
+				<br />
+				<span t-esc="country" />
 			</p>
 		</div>
 		<div t-if="clang == 'en_CA' or clang == 'en_US'">
