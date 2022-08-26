@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-		<div t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #fff;">
+		<div t-if="clang == 'en_CA' or clang == 'en_US'">
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -318,7 +318,7 @@
 			</ol>
 		</div>
 
-		<div t-if="clang == 'fr_CA'" style="color: #fff;">
+		<div t-if="clang == 'fr_CA'">
 			<h1>
 				<strong>Termes et Conditions‌</strong>
 			</h1>
@@ -363,10 +363,10 @@
 								Services additionnels ou frais additionnels
 							</h4>
 							<p>
-								Dans l’éventualité où le Client requiert de la part de
+								Dans l'éventualité où le Client requiert de la part de
 								<span t-esc="company_name" />
 								tout autre service non prévu aux présentes ou que des frais s'ajoutent aux sommes décrites à la présente
-								entente, le Client s’engage à payer à
+								entente, le Client s'engage à payer à
 								<span t-esc="company_name" />
 								toute telle somme ou frais suivant la réception d'une facture à cet effet.
 							</p>
