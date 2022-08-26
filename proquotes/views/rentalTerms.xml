@@ -2,20 +2,20 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="city" t-value="Montreal" />
-		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="state" t-value="Quebec" />
+		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="city" t-value="'Montreal'" />
+		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="state" t-value="'Quebec'" />
 
-		<t t-if="company_name == 'R-E-A-L.iT US'" t-set="city" t-value="Dover" />
-		<t t-if="company_name == 'R-E-A-L.iT US'" t-set="state" t-value="Delaware" />
+		<t t-if="company_name == 'R-E-A-L.iT US'" t-set="city" t-value="'Dover'" />
+		<t t-if="company_name == 'R-E-A-L.iT US'" t-set="state" t-value="'Delaware'" />
 
-		<t t-if="company_name == 'AB Tech Ontario'" t-set="city" t-value="Toronto" />
-		<t t-if="company_name == 'R-E-A-L.iT Ontario'" t-set="state" t-value="Ontario" />
+		<t t-if="company_name == 'AB Tech Ontario'" t-set="city" t-value="'Toronto'" />
+		<t t-if="company_name == 'R-E-A-L.iT Ontario'" t-set="state" t-value="'Ontario'" />
 
-		<t t-if="company_name == 'AB Tech Quebec'" t-set="city" t-value="Sherbrook" />
-		<t t-if="company_name == 'R-E-A-L.iT Quebec'" t-set="state" t-value="Quebec" />
+		<t t-if="company_name == 'AB Tech Quebec'" t-set="city" t-value="'Sherbrook'" />
+		<t t-if="company_name == 'R-E-A-L.iT Quebec'" t-set="state" t-value="'Quebec'" />
 
-		<t t-if="company_name == 'AB Tech Atlantic'" t-set="city" t-value="Muncton" />
-		<t t-if="company_name == 'R-E-A-L.iT Atlantic'" t-set="state" t-value="New Brunswick" />
+		<t t-if="company_name == 'AB Tech Atlantic'" t-set="city" t-value="'Muncton'" />
+		<t t-if="company_name == 'R-E-A-L.iT Atlantic'" t-set="state" t-value="'New Brunswick'" />
 		<div>
 			<p>
 				<span t-esc="city" />
