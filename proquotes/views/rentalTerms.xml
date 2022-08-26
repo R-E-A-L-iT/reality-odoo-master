@@ -18,6 +18,8 @@
 		<t t-if="company_name == 'R-E-A-L.iT Atlantic'" t-set="state" t-value="'New Brunswick'" />
 		<div>
 			<p>
+				<span>Results</span>
+				<br />
 				<span t-esc="city" />
 				<br />
 				<span t-esc="state" />
