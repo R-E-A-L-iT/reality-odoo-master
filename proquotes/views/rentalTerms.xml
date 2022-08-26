@@ -20,6 +20,8 @@
 			<p>
 				<span>Results</span>
 				<br />
+				<span t-sec="company_name" />
+				<br />
 				<span t-esc="city" />
 				<br />
 				<span t-esc="state" />
