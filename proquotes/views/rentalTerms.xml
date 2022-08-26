@@ -10,7 +10,7 @@
 		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="state" t-value="'Delaware'" />
 		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="country" t-value="'United States'" />
 
-		<t t-if="company_name == 'Abtech On. Inc..'" t-set="city" t-value="'Toronto'" />
+		<t t-if="company_name == 'Abtech On. Inc.'" t-set="city" t-value="'Toronto'" />
 		<t t-if="company_name == 'Abtech On. Inc.'" t-set="state" t-value="'Ontario'" />
 		<t t-if="company_name == 'Abtech On. Inc.'" t-set="country" t-value="'Canada'" />
 
