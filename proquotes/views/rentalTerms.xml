@@ -22,7 +22,7 @@
 		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="state" t-value="'New Brunswick'" />
 		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="country" t-value="'Canada'" />
 
-		<div t-if="clang == 'en_CA' or clang == 'en_US'">
+		<div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -349,7 +349,7 @@
 			</ol>
 		</div>
 
-		<div t-if="clang == 'fr_CA'">
+		<div id="rental-terms" t-if="clang == 'fr_CA'">
 			<h1>
 				<strong>Termes et Conditions‌</strong>
 			</h1>
