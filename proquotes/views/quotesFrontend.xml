@@ -323,7 +323,7 @@
 					</div>
 					<br />
 					<t t-if="sale_order.is_rental == True">
-						<t t-set="company_name" t-value="Company Name" />
+						<t t-set="company_name" t-value="'Company Name'" />
 						<t t-call="proquotes.rental_terms" />
 						<div>
 							<span>
