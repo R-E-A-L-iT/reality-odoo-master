@@ -347,7 +347,6 @@
 								, which govern all of the provisions it contains.
 								The parties agree that any claim or any legal action taken for any reason with respect to this
 								Agreement shall be brought to a court located in the judicial district of
-								Toronto
 								<span t-esc="city" />
 								,
 								<span t-esc="state" />
