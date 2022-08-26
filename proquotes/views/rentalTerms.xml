@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Rental Terms" id="rental_terms_pdf">
+	<template name="Rental Terms" id="rental_terms">
 		<div t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'">
 			<h1>
 				<strong>Terms and Conditions</strong>
