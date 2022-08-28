@@ -73,7 +73,7 @@
 														<td valign="top" style="font-size:13px;">
 															<div>
 																<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">NEW QUOTATION</h1>
-																<h1 style="color: black;">NEW PURCHASE ORDER</h1>
+																<h1 t-else="" style="color: black;">NEW PURCHASE ORDER</h1>
 																<br />
 																<br />
 																<t t-raw="message.body" />
