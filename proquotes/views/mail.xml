@@ -72,14 +72,19 @@
 													<tr>
 														<td valign="top" style="font-size:13px;">
 															<div>
-																<h1 style="color: black;">NEW QUOTATION</h1>
+																<h1 t-if="state == 'draft' or state == 'sent'" style="color: black;">NEW QUOTATION</h1>
+																<h1 style="color: black;">NEW PURCHASE ORDER</h1>
 																<br />
 																<br />
 																<t t-raw="message.body" />
 																<br />
 																<br />
-																<a href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+																<a t-if="state == 'draft' or state == 'sent'" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
                                                                     View Quotation
+                                                                </a>
+
+																<a t-else="" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+                                                                    View Purchase Order
                                                                 </a>
 															</div>
 														</td>
@@ -261,7 +266,8 @@
 
 	<template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
 		<xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
-			<t t-set="access_name">View Quotation</t>
+			<t t-if="state == 'draft' or state == 'sent'" t-set="access_name">View Quotation</t>
+			<t t-else="" t-set="access_name">View Purchase Order</t>
 		</xpath>
 	</template>
 </odoo>
