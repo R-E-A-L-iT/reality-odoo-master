@@ -26,6 +26,7 @@ class invoice(models.Model):
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
         ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
@@ -51,6 +52,7 @@ class order(models.Model):
     footer = fields.Selection([
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
         ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
