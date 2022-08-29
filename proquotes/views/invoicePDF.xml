@@ -28,7 +28,7 @@
 		<xpath expr="//h2" position="replace">
 			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
 				<style>
-					tr {
+					table, td, tr {
 						page-break-inside: avoid !important;
 					}
 				</style>
