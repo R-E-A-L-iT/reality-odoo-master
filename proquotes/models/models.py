@@ -29,6 +29,7 @@ class invoice(models.Model):
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
 
@@ -55,6 +56,7 @@ class order(models.Model):
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
         ('company_name', str(company_name)),
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     header = fields.Selection([
