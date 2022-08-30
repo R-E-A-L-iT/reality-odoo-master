@@ -18,7 +18,7 @@
 			<!-- <attribute name="style">height: fit-content !important;</attribute> -->
 		</xpath>
 
-		<xpath expr="/t/div[3]" position="replace">
+		<xpath expr="//div[t-attf-class=&quot;footer o_boxed_footer o_company_#{company.id}_layout&quot;]" position="replace">
 			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
 			<div class="footer o_boxed_footer_boxed">
 				<div class="text-center">
