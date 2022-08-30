@@ -28,7 +28,7 @@
 		<xpath expr="//h2" position="replace">
 			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
 				<style>
-					table, td, tr {
+					table {
 						page-break-inside: avoid !important;
 					}
 				</style>
@@ -58,7 +58,7 @@
 				<span t-field="o.partner_id.phone" />
 				<br />
 				<t t-if="o.partner_id.id != o.partner_shipping_id.id">
-					<h5 style="color: color: #db0d0d;">Shipping Address</h5>
+					<h5 style="color: #db0d0d;">Shipping Address</h5>
 					<br />
 					<span t-field="o.partner_shipping_id.street" />
 					<br />
@@ -87,6 +87,9 @@
 		</xpath>
 
 		<!--Remove Taxes-->
+		<xpath expr="//table" position="attributes">
+			<attribute name="style">page-break-inside: allow !important;</attribute>
+		</xpath>
 		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace" />
 
