@@ -88,7 +88,7 @@
 
 		<!--Remove Taxes-->
 		<xpath expr="//table" position="attributes">
-			<attribute name="style">page-break-inside: allow !important;</attribute>
+			<attribute name="style">page-break-inside: auto !important;</attribute>
 		</xpath>
 		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace" />
