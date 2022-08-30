@@ -22,7 +22,6 @@
 			<!-- <attribute name="style"> width: 98%; margin-left: 1%; margin-right: 1%</attribute> -->
 		</xpath>
 
-		<xpath expr="//div[@t-att-data-oe-id=&quot;o and o.id&quot;]/div/div[2]" position="replace" />
 
 		<xpath expr="//div[@t-att-data-oe-id=&quot;o and o.id&quot;]/div/div" position="replace">
 			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
@@ -30,6 +29,7 @@
 				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 			</div>
 		</xpath>
+		<xpath expr="//div[@t-att-data-oe-id=&quot;o and o.id&quot;]/div/div[2]" position="replace" />
 	</template>
 
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
