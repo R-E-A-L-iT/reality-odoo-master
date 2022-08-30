@@ -22,7 +22,7 @@
 			<!-- <attribute name="style"> width: 98%; margin-left: 1%; margin-right: 1%</attribute> -->
 		</xpath>
 
-		<xpath expr="//div[t-attf-class=&quot;article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}&quot;]" position="replace">
+		<xpath expr="//div[t-att-data-oe-id=&quot;o and o.id&quot;]" position="replace">
 			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
 			<div class="footer o_boxed_footer_boxed">
 				<div class="text-center">
