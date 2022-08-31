@@ -61,9 +61,7 @@
 					<br />
 				</div>
 				<div t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: inline;">
-					<br />
 					<h5 style="color: #db0d0d;">Ship To</h5>
-					<br />
 					<span t-field="o.partner_shipping_id.street" />
 					<br />
 					<span t-field="o.partner_shipping_id.city" />
