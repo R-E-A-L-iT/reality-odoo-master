@@ -118,20 +118,11 @@
 				<br />
 				<div id="bank-info">
 					<p>
-						<span>For Wire Transfers:</span>
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 						<br />
-						<span>BMO Vaudreuil Branch</span>
+						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
-						<span>580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
-						<br />
-						<span>Transit: 33201</span>
-						<br />
-						<span>Institution: 001</span>
-						<br />
-						<span>Account number: 1986 858</span>
-						<br />
-						<span>Name on Account: 9435-6714 Québec Inc. (DBA: R-E-A-L.iT Solutions)</span>
-						<br />
+						<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
 					</p>
 				</div>
 				<div></div>
@@ -140,22 +131,11 @@
 				<br />
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 					<p>
-						<span>For Wire Transfers:</span>
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
 						<br />
-						<span>Bank Info:</span>
+						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
-						<span>BMO Harris Bank N.A. </span>
-						<br />
-						<span>P.O. Box 755</span>
-						<br />
-						<span>Chicago, IL 60690</span>
-						<br />
-						<span>Routing Number: 071025661</span>
-						<br />
-						<span>Account Number: 3875473</span>
-						<br />
-						<span>Name on Account R-E-A-L.iT U.S. Inc</span>
-						<br />
+						<span>Routing No.: 071025661, Account No.: 3875473</span>
 					</p>
 				</div>
 			</t>
