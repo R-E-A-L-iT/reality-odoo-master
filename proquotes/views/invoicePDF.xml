@@ -36,7 +36,7 @@
 		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
-			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px; background-color: #0f0 !important;">
+			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
 				<h2 style="color: #db0d0d;">
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
@@ -49,7 +49,7 @@
 				<h3 t-field="o.partner_id.name" />
 				<br />
 				<table>
-					<td style="display: block; float: left;">
+					<td style="display: block; float: left; border-style: none !important;">
 						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
 						<span t-field="o.partner_id.street" />
 						<br />
@@ -61,7 +61,7 @@
 						<span t-field="o.partner_id.phone" />
 						<br />
 					</td>
-					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right;">
+					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right; border-style: none !important;">
 						<h5 style="color: #db0d0d;">Ship To</h5>
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
