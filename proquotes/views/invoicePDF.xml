@@ -48,7 +48,7 @@
 				</h2>
 				<h3 t-field="o.partner_id.name" />
 				<br />
-				<table style="border-collapse: collapse !important;" border="0">
+				<table style="border-style: collapse !important;" border="0">
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
 						<span t-field="o.partner_id.street" />
