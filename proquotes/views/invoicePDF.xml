@@ -48,30 +48,32 @@
 				</h2>
 				<h3 t-field="o.partner_id.name" />
 				<br />
-				<table style="border-style: none !important; border-color: #fff !important; background-color: #0f0;">
-					<td style="display: block; float: left; border-style: none !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
-						<span t-field="o.partner_id.street" />
-						<br />
-						<span t-field="o.partner_id.city" />
-						<span>,</span>
-						<span t-esc="o.partner_id.state_id.code" />
-						<span t-field="o.partner_id.country_id.name" />
-						<br />
-						<span t-field="o.partner_id.phone" />
-						<br />
-					</td>
-					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right; border-style: none !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
-						<span t-field="o.partner_shipping_id.street" />
-						<br />
-						<span t-field="o.partner_shipping_id.city" />
-						<span>,</span>
-						<span t-esc="o.partner_shipping_id.state_id.code" />
-						<span t-field="o.partner_shipping_id.country_id.name" />
-						<br />
-						<span t-field="o.partner_shipping_id.phone" />
-					</td>
+				<table style="border-style: none !important; border-color: #fff !important; background-color: #0f0 !important;">
+					<tr style="border-style: none !important;">
+						<td style="display: block; float: left; border-style: none !important; margin-right: 30px;">
+							<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
+							<span t-field="o.partner_id.street" />
+							<br />
+							<span t-field="o.partner_id.city" />
+							<span>,</span>
+							<span t-esc="o.partner_id.state_id.code" />
+							<span t-field="o.partner_id.country_id.name" />
+							<br />
+							<span t-field="o.partner_id.phone" />
+							<br />
+						</td>
+						<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right; border-style: none !important;">
+							<h5 style="color: #db0d0d;">Ship To</h5>
+							<span t-field="o.partner_shipping_id.street" />
+							<br />
+							<span t-field="o.partner_shipping_id.city" />
+							<span>,</span>
+							<span t-esc="o.partner_shipping_id.state_id.code" />
+							<span t-field="o.partner_shipping_id.country_id.name" />
+							<br />
+							<span t-field="o.partner_shipping_id.phone" />
+						</td>
+					</tr>
 				</table>
 			</div>
 		</xpath>
