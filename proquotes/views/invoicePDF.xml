@@ -37,18 +37,18 @@
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
-				<div style="display: inline; background-color: #0f0;">
-					<h2 style="color: #db0d0d;">
-						<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
-						<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
-						<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
-						<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Credit Note</span>
-						<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Vendor Credit Note</span>
-						<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
-						<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
-					</h2>
-					<h3 t-field="o.partner_id.name" />
-					<br />
+				<h2 style="color: #db0d0d;">
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Credit Note</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Vendor Credit Note</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
+					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
+				</h2>
+				<h3 t-field="o.partner_id.name" />
+				<br />
+				<div style="display: inline;">
 					<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
 					<span t-field="o.partner_id.street" />
 					<br />
