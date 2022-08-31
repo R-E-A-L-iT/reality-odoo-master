@@ -49,14 +49,14 @@
 				<h3 t-field="o.partner_id.name" />
 				<br />
 				<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
-				<span t-field="o.partner_id.street" />
+				<span style="float: right" t-field="o.partner_id.street" />
 				<br />
-				<span t-field="o.partner_id.city" />
+				<span style="float: right" t-field="o.partner_id.city" />
 				<span>,</span>
-				<span t-esc="o.partner_id.state_id.code" />
-				<span t-field="o.partner_id.country_id.name" />
+				<span style="float: right" t-esc="o.partner_id.state_id.code" />
+				<span style="float: right" t-field="o.partner_id.country_id.name" />
 				<br />
-				<span t-field="o.partner_id.phone" />
+				<span style="float: right" t-field="o.partner_id.phone" />
 				<br />
 				<t t-if="o.partner_id.id != o.partner_shipping_id.id">
 					<br />
