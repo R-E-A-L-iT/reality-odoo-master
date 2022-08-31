@@ -56,11 +56,11 @@
 				<span t-esc="o.partner_id.state_id.code" />
 				<span t-field="o.partner_id.country_id.name" />
 				<br />
-				<span style="float: right" t-field="o.partner_id.phone" />
+				<span t-field="o.partner_id.phone" />
 				<br />
 				<t t-if="o.partner_id.id != o.partner_shipping_id.id">
 					<br />
-					<h5 style="float: right color: #db0d0d;">Ship To</h5>
+					<h5 style="float: right; color: #db0d0d;">Ship To</h5>
 					<span style="float: right" t-field="o.partner_shipping_id.street" />
 					<br />
 					<span style="float: right" t-field="o.partner_shipping_id.city" />
