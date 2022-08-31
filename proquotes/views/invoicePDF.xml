@@ -48,6 +48,7 @@
 				</h2>
 				<h3 t-field="o.partner_id.name" />
 				<br />
+
 				<style>
 					#addressTable {
 						border-color: #fff !important;
