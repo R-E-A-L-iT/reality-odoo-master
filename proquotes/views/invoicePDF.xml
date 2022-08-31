@@ -48,29 +48,31 @@
 				</h2>
 				<h3 t-field="o.partner_id.name" />
 				<br />
-				<div style="display: block; float: left;">
-					<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
-					<span t-field="o.partner_id.street" />
-					<br />
-					<span t-field="o.partner_id.city" />
-					<span>,</span>
-					<span t-esc="o.partner_id.state_id.code" />
-					<span t-field="o.partner_id.country_id.name" />
-					<br />
-					<span t-field="o.partner_id.phone" />
-					<br />
-				</div>
-				<div t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right;">
-					<h5 style="color: #db0d0d;">Ship To</h5>
-					<span t-field="o.partner_shipping_id.street" />
-					<br />
-					<span t-field="o.partner_shipping_id.city" />
-					<span>,</span>
-					<span t-esc="o.partner_shipping_id.state_id.code" />
-					<span t-field="o.partner_shipping_id.country_id.name" />
-					<br />
-					<span t-field="o.partner_shipping_id.phone" />
-				</div>
+				<table>
+					<td style="display: block; float: left;">
+						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
+						<span t-field="o.partner_id.street" />
+						<br />
+						<span t-field="o.partner_id.city" />
+						<span>,</span>
+						<span t-esc="o.partner_id.state_id.code" />
+						<span t-field="o.partner_id.country_id.name" />
+						<br />
+						<span t-field="o.partner_id.phone" />
+						<br />
+					</td>
+					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right;">
+						<h5 style="color: #db0d0d;">Ship To</h5>
+						<span t-field="o.partner_shipping_id.street" />
+						<br />
+						<span t-field="o.partner_shipping_id.city" />
+						<span>,</span>
+						<span t-esc="o.partner_shipping_id.state_id.code" />
+						<span t-field="o.partner_shipping_id.country_id.name" />
+						<br />
+						<span t-field="o.partner_shipping_id.phone" />
+					</td>
+				</table>
 			</div>
 		</xpath>
 
