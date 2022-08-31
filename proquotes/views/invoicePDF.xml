@@ -60,7 +60,7 @@
 					<span t-field="o.partner_id.phone" />
 					<br />
 				</div>
-				<div t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: inline; float: right;">
+				<div t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: inline; float: right; clear: none;">
 					<h5 style="color: #db0d0d;">Ship To</h5>
 					<span t-field="o.partner_shipping_id.street" />
 					<br />
