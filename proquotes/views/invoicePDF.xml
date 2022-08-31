@@ -59,18 +59,19 @@
 				<span t-field="o.partner_id.phone" />
 				<br />
 				<t t-if="o.partner_id.id != o.partner_shipping_id.id">
-					<br />
-					<h5 style="float: right; color: #db0d0d;">Ship To</h5>
-					<span style="float: right" t-field="o.partner_shipping_id.street" />
-					<br />
-					<span style="float: right;">
+					<div style="float: right;">
+						<br />
+						<h5 style="color: #db0d0d;">Ship To</h5>
+						<br />
+						<span t-field="o.partner_shipping_id.street" />
+						<br />
 						<span t-field="o.partner_shipping_id.city" />
 						<span>,</span>
 						<span t-esc="o.partner_shipping_id.state_id.code" />
 						<span t-field="o.partner_shipping_id.country_id.name" />
-					</span>
-					<br />
-					<span style="float: right" t-field="o.partner_shipping_id.phone" />
+						<br />
+						<span t-field="o.partner_shipping_id.phone" />
+					</div>
 				</t>
 			</div>
 			<br />
