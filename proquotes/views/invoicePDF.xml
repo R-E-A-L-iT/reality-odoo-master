@@ -50,7 +50,7 @@
 				<br />
 				<table style="border-style: hidden !important;">
 					<tr style="border-style: none !important;">
-						<td style="display: block; float: left; border-style: none !important; margin-right: 30px;">
+						<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 							<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
 							<span t-field="o.partner_id.street" />
 							<br />
@@ -62,7 +62,7 @@
 							<span t-field="o.partner_id.phone" />
 							<br />
 						</td>
-						<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right; border-style: none !important;">
+						<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="display: block; float: right; border-style: hidden !important;">
 							<h5 style="color: #db0d0d;">Ship To</h5>
 							<span t-field="o.partner_shipping_id.street" />
 							<br />
