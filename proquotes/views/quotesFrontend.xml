@@ -79,29 +79,29 @@
 				<tr class="quote-head" t-if="line.name == '$block'">
 					<td class="text-left">
 						<span class="cHead">
-						Product
+							Product
 						</span>
 					</td>
 					<td class="text-right" t-if="sale_order.is_rental == True">
 						<span class="cHead">
-					Product Value
+							Product Value
 						</span>
 					</td>
 					<td class="text-right" t-if="sale_order.is_rental == True">Product Value</td>
 					<td class="text-right">
 						<span class="cHead">
-					Quantity
+							Quantity
 						</span>
 					</td>
 					<td class="text-right">
 						<span class="cHead">
-					Unit Price
+							Unit Price
 						</span>
 					</td>
 					<td class="text-right"></td>
 					<td class="text-right">
 						<span class="cHead">
-					Amount
+							Amount
 						</span>
 					</td>
 				</tr>
@@ -130,7 +130,6 @@
 
 		<!--Add Check Box to control fold Section-->
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<span style="" t-esc='"{\"model\":\"" + line.name + "\""' />
 			<div style="width: 75%; float: left;">
 				<label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
 
@@ -145,6 +144,7 @@
 						<input t-else="" class="optionalSectionCheckbox" type="checkbox" />
 					</t>
 					<span t-field="line.name" />
+					<span style="" t-esc='"{\"model\":\"" + line.name + "\""' />
 					<span class="line_id" t-attf-id="{{line}}" />
 				</label>
 
