@@ -233,7 +233,7 @@
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":"
 						+ str(round(line.price_unit, 2)) + ",\"subtotal\":" + str(round(line.price_unit * line.product_uom_qty, 2)) + ",\"quantity\":"
-						+ str(round(line.product_uom_qty, 0)) + ",\"type\":\"new_product\"}"' />
+						+ str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' />
 					<div class="product_fold" style="width: 100%;">
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
