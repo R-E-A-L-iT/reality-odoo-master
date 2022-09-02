@@ -194,13 +194,8 @@ td {
 }
 
 div.hr {
-	display: block;
-	unicode-bidi: isolate;
-	margin-block-start: 0.5em;
-	margin-block-end: 0.5em;
-	margin-inline-start: auto;
-	margin-inline-end: auto;
-	overflow: hidden;
-	border-style: inset;
-	border-width: 1px;
+	border: 2px solid #9e0a0a;
+	background-color: #9e0a0a;
+	margin-left: calc(50vw - 50px);
+	width: 100px;
 }
