@@ -231,7 +231,7 @@
 					</label>
 					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
-					<span style="" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + str(line.product_id.price) + ",\"subtotal\":" + str(line.product_id.price * line.cart_quantity)' />
+					<span style="" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + str(line.product_id.price) + ",\"subtotal\":" + str(line.product_id.price * line.product_uom_qty)' />
 					<div class="product_fold" style="width: 100%;">
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
