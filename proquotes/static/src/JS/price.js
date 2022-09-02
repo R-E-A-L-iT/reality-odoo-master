@@ -21,7 +21,7 @@ odoo.define("proquotes.price", function (require) {
 			console.log("load");
 			this._updatePriceTotalsEvent();
 			this._rentalValueTotal();
-
+			console.log("Aprove")
 			var items = document.getElementsByClassName("approveHandle");
 			var linkItems = "";
 			for (var i = 0; i < items.length; i++) {
