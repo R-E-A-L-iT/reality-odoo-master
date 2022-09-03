@@ -812,6 +812,7 @@ h1.title {
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
 	font-family: Helvetica !important;
+	margin-block-end: 1.5rem !important;
 }
 
 h2.subtitle {
@@ -823,6 +824,14 @@ h2.subtitle {
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
 	font-family: Helvetica !important;
+}
+
+h1.title+hr+h2.subtitle {
+	margin-block-start: 1.5rem !important;
+}
+
+h1.title+div.hr+h2.subtitle {
+	margin-block-start: 1.5rem !important;
 }
 
 h2.subtitle>span {
