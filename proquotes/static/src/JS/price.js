@@ -25,9 +25,9 @@ odoo.define("proquotes.price", function (require) {
 			var items = document.getElementsByClassName("approveHandle");
 			console.log(items)
 			var linkItems = "";
-			for (var i = 15; i < items.length; i++) {
+			for (var i = 0; i < items.length; i++) {
 				linkItems = linkItems + items[i].innerHTML;
-				if (i == 15) {
+				if (i == 14) {
 					break;
 				}
 				if (i < items.length - 1) {
