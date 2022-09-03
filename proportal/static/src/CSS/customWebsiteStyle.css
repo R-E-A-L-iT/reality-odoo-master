@@ -812,6 +812,7 @@ h1.title {
 	text-align: center;
 	text-shadow: 5px 5px 5px #000;
 	font-family: Helvetica !important;
+	margin-block-end: 0.33em !important;
 }
 
 h2.subtitle {
