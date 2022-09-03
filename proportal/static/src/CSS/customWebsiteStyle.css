@@ -830,6 +830,10 @@ h1.title+hr+h2.subtitle {
 	margin-block-start: 1.5rem !important;
 }
 
+h1.title+div.hr+h2.subtitle {
+	margin-block-start: 1.5rem !important;
+}
+
 h2.subtitle>span {
 	font-family: Helvetica !important;
 }
