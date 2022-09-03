@@ -36,6 +36,7 @@ odoo.define("proquotes.price", function (require) {
 				+ "hbFV2MDk4V2RHekZhMThzRzNqdz09IiwibWFjIjoiYWY2MmNiYzc2NWVhMjQzMmQzNTViZWRkZjU1ODE1MGIzMjE1ZThlNDhiNjJlYzc0YjlhZTQxMDE2Mm"
 				+ "ViN2JiOSJ9&items=[" + linkItems + "]&clearcart=true";
 			document.getElementById("approve-button").href = link;
+			console.log(linkItems)
 			console.log(link)
 		},
 
