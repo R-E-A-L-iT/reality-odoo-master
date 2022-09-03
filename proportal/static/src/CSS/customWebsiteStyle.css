@@ -826,6 +826,10 @@ h2.subtitle {
 	font-family: Helvetica !important;
 }
 
+h1.title+div.hr+h2.subtitle {
+	margin-block-start: 0.33em !important;
+}
+
 h2.subtitle>span {
 	font-family: Helvetica !important;
 }
