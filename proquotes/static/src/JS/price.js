@@ -27,7 +27,7 @@ odoo.define("proquotes.price", function (require) {
 			var linkItems = "";
 			for (var i = 0; i < items.length; i++) {
 				linkItems = linkItems + items[i].innerHTML;
-				if (i == 6) {
+				if (i == 8) {
 					break;
 				}
 				if (i < items.length - 1) {
