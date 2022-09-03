@@ -30,6 +30,7 @@ odoo.define("proquotes.price", function (require) {
 				if (i < items.length - 1) {
 					linkItems = linkItems + ",";
 				}
+				break;
 			}
 			var link = "https://www.kwipped.com/approve/finance?approveid=eyJpdiI6InI1enRNZXZWRm1IU0hXTUlyQTRiWlE9PSIsInZhbHVlIjoiRGp"
 				+ "hbFV2MDk4V2RHekZhMThzRzNqdz09IiwibWFjIjoiYWY2MmNiYzc2NWVhMjQzMmQzNTViZWRkZjU1ODE1MGIzMjE1ZThlNDhiNjJlYzc0YjlhZTQxMDE2Mm"
