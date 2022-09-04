@@ -21,6 +21,13 @@ odoo.define("proquotes.price", function (require) {
 			console.log("load");
 			this._updatePriceTotalsEvent();
 			this._rentalValueTotal();
+
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("GET", "cdn.r-e-a-l.it/images/ecommerce/BLK2GO.png", false); // false for synchronous request
+			xmlHttp.send();
+			console.log(theUrl);
+			console.log(xmlHttp.status);
+
 			// var items = document.getElementsByClassName("approveHandle");
 			// var linkItems = "";
 			// for (var i = 0; i < items.length; i++) {
