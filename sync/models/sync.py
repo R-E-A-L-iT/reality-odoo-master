@@ -785,7 +785,6 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
-                _logger.info("No Continue Index: " + str(i))
                 break
 
             if(not self.check_id(str(sheet[i][columns["id"]]))):
@@ -800,6 +799,7 @@ class sync(models.Model):
                 continue
 
             try:
+                _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 # _logger.info(external_id)
                 pageIds = self.env['ir.model.data'].search(
