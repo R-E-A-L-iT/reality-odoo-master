@@ -785,6 +785,7 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while(True):
             if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+                _logger.info("No Continue Index: " + "i")
                 break
 
             if(not self.check_id(str(sheet[i][columns["id"]]))):
