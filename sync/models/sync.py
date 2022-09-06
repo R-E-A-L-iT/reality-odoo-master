@@ -802,8 +802,10 @@ class sync(models.Model):
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 # _logger.info(external_id)
+                # pageIds = self.env['ir.model.data'].search(
+                # [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
                 pageIds = self.env['ir.model.data'].search(
-                    [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
+                    [('name', '=', external_id)])
                 # _logger.info(pageIds)
                 if(len(pageIds) > 0):
                     page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
