@@ -813,7 +813,8 @@ class sync(models.Model):
                         sheet[i][columns["html"]] + closer
                 else:
                     # msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                    msg = str(external_id) + " Page Not Created\n"
+                    msg = "</p>" + str(external_id) + \
+                        " Page Not Created</p><br/>\n"
                     _logger.info(str(pageIds))
                     _logger.info(str(external_id) + " Page Not Created")
                 i = i + 1
