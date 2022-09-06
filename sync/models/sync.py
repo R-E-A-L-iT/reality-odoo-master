@@ -814,6 +814,7 @@ class sync(models.Model):
                 else:
                     # msg = self.buildMSG(msg, sheet, sheetWidth, i)
                     msg = ""
+                    _logger.info(str(pageIds))
                     _logger.info(str(external_id) + " Page Not Created")
                 i = i + 1
             except Exception as e:
