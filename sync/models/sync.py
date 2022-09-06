@@ -787,6 +787,9 @@ class sync(models.Model):
             if(i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
+            if(str(sheet[i][columns["valid"]] != "TRUE")):
+                continue
+
             if(not self.check_id(str(sheet[i][columns["id"]]))):
                 _logger.info("id")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
