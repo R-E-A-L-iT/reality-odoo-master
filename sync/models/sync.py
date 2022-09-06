@@ -788,6 +788,7 @@ class sync(models.Model):
                 break
 
             if(not self.check_id(str(sheet[i][columns["id"]]))):
+                _logger.info("id")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
