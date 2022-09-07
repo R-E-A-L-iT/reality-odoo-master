@@ -788,6 +788,7 @@ class sync(models.Model):
                 break
 
             if(str(sheet[i][columns["valid"]] != "TRUE")):
+                i = i + 1
                 continue
 
             if(not self.check_id(str(sheet[i][columns["id"]]))):
