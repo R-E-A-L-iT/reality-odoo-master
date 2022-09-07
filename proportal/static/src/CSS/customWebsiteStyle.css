@@ -280,10 +280,6 @@
 	}
 }
 
-#custom-webpage-root #landing>iframe * {
-	overflow: hidden;
-}
-
 /*Section Overview*/
 @media (min-width: 750px) {
 	#custom-webpage-root .advertise>h1 {
