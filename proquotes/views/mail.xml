@@ -49,7 +49,7 @@
 															<t t-if="'R-E-A-L.IT' in record.company_id.name.upper()">
 																<img src="https://cdn.r-e-a-l.it//images/icons/product-cycle.gif" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
 															</t>
-															<t t-elif="'ABTECK' in record.company_id.name.upper()">
+															<t t-elif="'ABTECH' in record.company_id.name.upper()">
 																<span>Abtech</span>
 															</t>
 														</td>
