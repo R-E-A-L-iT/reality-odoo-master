@@ -80,13 +80,20 @@
 																<t t-raw="message.body" />
 																<br />
 																<br />
-																<a t-if="record.state == 'draft' or record.state == 'sent'" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+																<a t-if="record.state == 'draft' or record.state == 'sent'" t-attf-href="is_online and share_url and base_url + share_url or ''" style="color:#db0d0d;">
                                                                     View Quotation
                                                                 </a>
 
-																<a t-else="" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+																<a t-else="" t-attf-href="is_online and share_url and base_url + share_url or ''" style="color:#db0d0d;">
                                                                     View Purchase Order
                                                                 </a>
+																<!-- <a t-if="record.state == 'draft' or record.state == 'sent'" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+                                                                    View Quotation
+                                                                </a> -->
+
+																<!-- <a t-else="" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
+                                                                    View Purchase Order
+                                                                </a> -->
 															</div>
 														</td>
 													</tr>
