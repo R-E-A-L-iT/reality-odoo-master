@@ -46,10 +46,10 @@
 												<tbody>
 													<tr>
 														<td colspan="100">
-															<t t-if="'R-E-A-L.iT' in record.company_id.name">
+															<t t-if="'R-E-A-L.IT' in record.company_id.name.toUpper()">
 																<img src="https://cdn.r-e-a-l.it//images/icons/product-cycle.gif" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
 															</t>
-															<t t-elif="'Abtech' in record.company_id.name">
+															<t t-elif="'ABTECK' in record.company_id.name.toUpper()">
 																<span>Abtech</span>
 															</t>
 														</td>
