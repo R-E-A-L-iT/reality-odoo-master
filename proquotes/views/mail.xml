@@ -49,7 +49,7 @@
 															<t t-if="'R-E-A-L.iT' in record.company">
 																<img src="https://cdn.r-e-a-l.it//images/icons/product-cycle.gif" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
 															</t>
-															<t t-elif="'Abtech in record.company">
+															<t t-elif="'Abtech' in record.company">
 																<span>Abtech</span>
 															</t>
 														</td>
