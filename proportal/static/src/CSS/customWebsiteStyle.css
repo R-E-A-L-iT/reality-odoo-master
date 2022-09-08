@@ -856,7 +856,7 @@ h2.subtitle>span {
 	z-index: 1;
 	border-style: solid;
 	padding: 1vw;
-	box-shadow: 10px 10px 10px #161616;
+	box-shadow: -10px 20px 5px #2d2f32;
 }
 
 #custom-webpage-root .product-tile img {
