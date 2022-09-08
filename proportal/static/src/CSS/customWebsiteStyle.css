@@ -857,6 +857,11 @@ h2.subtitle>span {
 	box-shadow: #333;
 }
 
+#custom-webpage-root .product-tile img {
+	width: 100%;
+	height: auto;
+}
+
 #custom-webpage-root .product-tile .btn {
 	float: right;
 }
