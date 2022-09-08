@@ -862,10 +862,15 @@ h2.subtitle>span {
 	height: auto;
 }
 
+#custom-webpage-root .product-tile .price-row {
+	display: flex;
+
+}
+
 #custom-webpage-root .product-tile .btn {
-	float: right;
+	/* float: right; */
 }
 
 #custom-webpage-root .product-tile .price {
-	float: left;
+	/* float: left; */
 }
