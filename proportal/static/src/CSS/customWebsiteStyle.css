@@ -854,7 +854,7 @@ h2.subtitle>span {
 	width: 25vw;
 	color: white;
 	z-index: 1;
-	box-shadow: #333;
+	border-style: solid;
 }
 
 #custom-webpage-root .product-tile img {
@@ -864,13 +864,6 @@ h2.subtitle>span {
 
 #custom-webpage-root .product-tile .price-row {
 	display: flex;
+	justify-content: space-between;
 
-}
-
-#custom-webpage-root .product-tile .btn {
-	/* float: right; */
-}
-
-#custom-webpage-root .product-tile .price {
-	/* float: left; */
 }
