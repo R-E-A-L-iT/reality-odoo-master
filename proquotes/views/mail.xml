@@ -45,15 +45,22 @@
 											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
 												<tbody>
 													<tr>
+														<td colspan="100">
+															<t t-if="'R-E-A-L.IT' in record.company_id.name.upper()">
+																<img src="https://cdn.r-e-a-l.it//images/icons/product-cycle.gif" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
+															</t>
+															<t t-elif="'ABTECH' in record.company_id.name.upper()">
+																<img src="https://cdn.r-e-a-l.it//images/icons/REALiT-Abtech.jpg" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
+															</t>
+														</td>
+													</tr>
+													<tr>
 														<td valign="middle">
 															<span style="font-size:10px;">Your Account</span>
 															<br />
 															<a href="https://my.r-e-a-l.it/" style="font-size:20px;font-weight: bold; color: #36363A; text-decoration: none;">
                                                                 my.R-E-A-L.iT
                                                             </a>
-														</td>
-														<td valign="middle" align="right">
-															<img src="https://cdn.r-e-a-l.it//images/icons/product-cycle.gif" style="vertical-align: middle; width: 100px; height: auto;" alt="logo" />
 														</td>
 													</tr>
 													<tr>
