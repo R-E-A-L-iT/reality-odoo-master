@@ -849,3 +849,9 @@ h2.subtitle>span {
 	background-color: #fff;
 	display: none;
 } */
+
+#custom-webpage-root .product-tile {
+	color: white;
+	z-index: 1;
+	box-shadow: #333;
+}
