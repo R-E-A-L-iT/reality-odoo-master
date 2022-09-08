@@ -851,7 +851,16 @@ h2.subtitle>span {
 } */
 
 #custom-webpage-root .product-tile {
+	width: 25vw;
 	color: white;
 	z-index: 1;
 	box-shadow: #333;
+}
+
+#custom-webpage-root .product-tile .btn {
+	float: left;
+}
+
+#custom-webpage-root .product-tile .price {
+	float: left;
 }
