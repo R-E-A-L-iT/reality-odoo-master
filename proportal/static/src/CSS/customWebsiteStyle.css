@@ -855,6 +855,7 @@ h2.subtitle>span {
 	color: white;
 	z-index: 1;
 	border-style: solid;
+	padding: 1vw;
 }
 
 #custom-webpage-root .product-tile img {
