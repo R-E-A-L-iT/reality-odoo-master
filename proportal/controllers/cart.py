@@ -28,9 +28,6 @@ class CustomerCart(CP):
         except:
             product_id = None
 
-        if product_id:
-            product_id = registry["product.product"].browse(
-                cr, uid, [product_id])
         _logger.info(product_id)
 
         # Is the product ok
