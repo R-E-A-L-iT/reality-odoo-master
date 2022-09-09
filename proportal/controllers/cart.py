@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import binascii
+import logging
 
 from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError, UserError
@@ -10,6 +11,8 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as CP
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
 from odoo.osv import expression
+
+_logger = logging.getLogger(__name__)
 
 
 class CustomerCart(CP):
