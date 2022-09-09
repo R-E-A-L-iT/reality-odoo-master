@@ -17,12 +17,12 @@ _logger = logging.getLogger(__name__)
 
 class CustomerCart(CP):
     def test(self, product_id):
-        product_context = dict(self.env.context)
+        product_context = dict(request.env.context)
         product_context.setdefault('lang', self.sudo().partner_id.lang)
-        SaleOrderLineSudo = self.env['sale.order.line'].sudo(
+        SaleOrderLineSudo = request.env['sale.order.line'].sudo(
         ).with_context(product_context)
         # change lang to get correct name of attributes/values
-        product_with_context = self.env['product.product'].with_context(
+        product_with_context = request.env['product.product'].with_context(
             product_context)
         product = product_with_context.browse(int(product_id)).exists()
         _logger.info(product)
