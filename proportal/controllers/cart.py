@@ -30,8 +30,8 @@ class CustomerCart(CP):
             product_id = None
 
         if product_id:
-            product_id = registry["product.product"].browse(
-                cr, [product_id])
+            product_id = request.env['product.product'].sudo().search(
+                [('id', '=', product_id.id)])
         _logger.info(product_id)
 
         # Is the product ok
