@@ -25,7 +25,7 @@ class CustomerCart(CP):
         # Check user input
         try:
             product_id = request.env['product.template'].sudo().search([
-                ('sku', '=', sku)])[0].id
+                ('sku', '=', sku)])[0]
         except:
             product_id = None
 
