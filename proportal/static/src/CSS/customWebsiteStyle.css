@@ -850,6 +850,14 @@ h2.subtitle>span {
 	display: none;
 } */
 
+#custom-webpage-root .tiles {
+	display: flex;
+	justify-content: space-evenly;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 75vw;
+}
+
 #custom-webpage-root .product-tile {
 	margin-top: 50px;
 	width: 25vw;
