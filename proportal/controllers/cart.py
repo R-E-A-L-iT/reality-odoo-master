@@ -17,7 +17,6 @@ _logger = logging.getLogger(__name__)
 
 class CustomerCart(CP):
     def test(self, product_id):
-        self.ensure_one()
         product_context = dict(self.env.context)
         product_context.setdefault('lang', self.sudo().partner_id.lang)
         SaleOrderLineSudo = self.env['sale.order.line'].sudo(
