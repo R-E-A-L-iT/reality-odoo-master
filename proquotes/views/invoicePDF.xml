@@ -62,7 +62,7 @@
 						<span t-field="o.partner_id.street" />
 						<br />
 						<span t-out="o.partner_id.city" style="margin-right: 0px !important;" />
-						,
+						<span style="margin-left: 0px; !important">,</span>
 						<span t-esc="o.partner_id.state_id.code" />
 						<span t-field="o.partner_id.zip" />
 						<span t-field="o.partner_id.country_id.name" />
