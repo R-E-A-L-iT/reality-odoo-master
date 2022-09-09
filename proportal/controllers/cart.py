@@ -19,7 +19,7 @@ class CustomerCart(CP):
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
         qty = 1
-        _logger.info("Add To Cart" + str(sku))
+        _logger.info("Add To Cart: " + str(sku))
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
 
         # Check user input
@@ -29,10 +29,6 @@ class CustomerCart(CP):
         except:
             product_id = None
 
-        if product_id:
-            pass
-            # product_id = request.env['product.product'].sudo().search(
-            #     [('id', '=', product_id.id)])
         _logger.info(product_id)
 
         # Is the product ok
@@ -40,7 +36,7 @@ class CustomerCart(CP):
             # Get the cart-sale-order
             so = request.website.sale_get_order(force_create=1)
             # Update the cart
-            so._cart_update(product_id=product_id.id, add_qty=qty)
+            so._cart_update(product_id=product_id, add_qty=qty)
 
             # Redirect to cart anyway
             return request.redirect("/shop/cart")
