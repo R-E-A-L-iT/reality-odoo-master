@@ -202,5 +202,5 @@ div.hr {
 }
 
 .header .col-6 {
-	display: none;
+	display: none !important;
 }
