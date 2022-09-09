@@ -16,6 +16,18 @@ _logger = logging.getLogger(__name__)
 
 
 class CustomerCart(CP):
+    def test(self, product_id):
+        self.ensure_one()
+        product_context = dict(self.env.context)
+        product_context.setdefault('lang', self.sudo().partner_id.lang)
+        SaleOrderLineSudo = self.env['sale.order.line'].sudo(
+        ).with_context(product_context)
+        # change lang to get correct name of attributes/values
+        product_with_context = self.env['product.product'].with_context(
+            product_context)
+        product = product_with_context.browse(int(product_id)).exists()
+        _logger.info(product)
+
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
         qty = 1
@@ -28,16 +40,15 @@ class CustomerCart(CP):
                 ('sku', '=', sku)])[0]
         except:
             product_id = None
-
-        _logger.info(product_id.is_add_to_cart_allowed())
         _logger.info(product_id)
 
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
             # Get the cart-sale-order
+            test(product_id.id)
             so = request.website.sale_get_order(force_create=1)
             # Update the cart
-            so._cart_update(product_id=product_id.id, set_qty=qty)
+            so._cart_update(product_id=product_id.id, add_qty=qty)
 
             # Redirect to cart anyway
             return request.redirect("/shop/cart")
