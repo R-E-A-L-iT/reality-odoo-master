@@ -30,6 +30,7 @@ class CustomerCart(CP):
             product_id = None
 
         _logger.info(product_id)
+        _logger.info(product_id.id)
 
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
