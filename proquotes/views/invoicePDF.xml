@@ -61,7 +61,7 @@
 						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
 						<span t-field="o.partner_id.street" />
 						<br />
-						<span t-field="o.partner_id.city" />
+						<span t-out="o.partner_id.city" />
 						<span>,</span>
 						<span t-esc="o.partner_id.state_id.code" />
 						<span t-field="o.partner_id.zip" />
@@ -74,7 +74,7 @@
 						<h5 style="color: #db0d0d;">Ship To</h5>
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
-						<span t-field="o.partner_shipping_id.city" />
+						<span t-out="o.partner_shipping_id.city" />
 						<span>,</span>
 						<span t-esc="o.partner_shipping_id.state_id.code" />
 						<span t-field="o.partner_shipping_id.zip" />
