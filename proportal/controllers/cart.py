@@ -16,16 +16,6 @@ _logger = logging.getLogger(__name__)
 
 
 class CustomerCart(CP):
-    def test(self, product_id):
-        product_context = dict(request.env.context)
-        SaleOrderLineSudo = request.env['sale.order.line'].sudo(
-        ).with_context(product_context)
-        # change lang to get correct name of attributes/values
-        product_with_context = request.env['product.product'].with_context(
-            product_context)
-        product = product_with_context.browse(int(product_id))
-        _logger.info(product)
-
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
         qty = 1
@@ -34,7 +24,7 @@ class CustomerCart(CP):
 
         # Check user input
         try:
-            product_id = request.env['product.template'].sudo().search([
+            product_id = request.env['product.product'].sudo().search([
                 ('sku', '=', sku)])[0]
         except:
             product_id = None
@@ -43,7 +33,6 @@ class CustomerCart(CP):
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
             # Get the cart-sale-order
-            self.test(product_id.id)
             so = request.website.sale_get_order(force_create=1)
             # Update the cart
             so._cart_update(product_id=product_id.id, add_qty=qty)
