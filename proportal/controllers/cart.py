@@ -36,7 +36,7 @@ class CustomerCart(CP):
             # Get the cart-sale-order
             so = request.website.sale_get_order(force_create=1)
             # Update the cart
-            so._cart_update(cr, uid, product_id=product_id.id, add_qty=qty)
+            so._cart_update(product_id=product_id.id, add_qty=qty)
 
             # Redirect to cart anyway
             return request.redirect("/shop/cart")
