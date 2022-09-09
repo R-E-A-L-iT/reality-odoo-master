@@ -19,13 +19,13 @@ class CustomerCart(CP):
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
         qty = 1
-        _logger.info("Add To Cart")
+        _logger.info("Add To Cart: " + str(sku))
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
 
         # Check user input
         try:
             product_id = request.env['product.template'].sudo().search([
-                ('sku', '=', sku)])
+                ('sku', '=', sku)])[0].id
         except:
             product_id = None
 
