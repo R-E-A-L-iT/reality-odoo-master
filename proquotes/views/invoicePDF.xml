@@ -62,7 +62,7 @@
 						<span t-field="o.partner_id.street" />
 						<br />
 						<span t-out="o.partner_id.city" />
-						<span>,</span>
+						,
 						<span t-esc="o.partner_id.state_id.code" />
 						<span t-field="o.partner_id.zip" />
 						<span t-field="o.partner_id.country_id.name" />
@@ -75,7 +75,7 @@
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
 						<span t-out="o.partner_shipping_id.city" />
-						<span>,</span>
+						,
 						<span t-esc="o.partner_shipping_id.state_id.code" />
 						<span t-field="o.partner_shipping_id.zip" />
 						<span t-field="o.partner_shipping_id.country_id.name" />
@@ -122,7 +122,7 @@
 					margin-bottom: 0px !important;
 				}
 			</style>
-
+			<br />
 			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;" />
 		</xpath>
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
