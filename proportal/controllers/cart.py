@@ -23,7 +23,7 @@ class CustomerCart(CP):
         # change lang to get correct name of attributes/values
         product_with_context = request.env['product.product'].with_context(
             product_context)
-        product = product_with_context.browse(int(product_id)).exists()
+        product = product_with_context.browse(int(product_id))
         _logger.info(product)
 
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
