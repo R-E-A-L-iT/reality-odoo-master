@@ -45,7 +45,7 @@ class CustomerCart(CP):
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
             # Get the cart-sale-order
-            test(product_id.id)
+            self.test(product_id.id)
             so = request.website.sale_get_order(force_create=1)
             # Update the cart
             so._cart_update(product_id=product_id.id, add_qty=qty)
