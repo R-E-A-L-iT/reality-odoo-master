@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 
 class CustomerCart(CP):
-    @http.route('/shop/add-to-cart', '/shop/add-to-cart/<int:sku>', type='http', auth="public", website=True)
+    @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
         _logger.info("Add To Cart")
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
