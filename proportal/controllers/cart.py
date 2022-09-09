@@ -18,6 +18,7 @@ _logger = logging.getLogger(__name__)
 class CustomerCart(CP):
     @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
     def add_to_cart(self, sku):
+        qty = 1
         _logger.info("Add To Cart")
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
 
@@ -27,10 +28,6 @@ class CustomerCart(CP):
                 ('sku', '=', sku)])
         except:
             product_id = None
-
-        if product_id:
-            product_id = registry["product.product"].browse(
-                cr, uid, [product_id])
 
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
