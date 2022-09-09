@@ -29,6 +29,8 @@ class CustomerCart(CP):
         except:
             product_id = None
 
+            _logger.info(product_id)
+
         # Is the product ok
         if product_id and product_id.sale_ok and product_id.website_published:
             # Get the cart-sale-order
