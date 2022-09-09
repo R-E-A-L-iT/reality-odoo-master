@@ -73,8 +73,7 @@
 						<h5 style="color: #db0d0d;">Ship To</h5>
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
-						<span t-out="o.partner_shipping_id.city" />
-						,
+						<span t-out="o.partner_shipping_id.city + ','" />
 						<span t-esc="o.partner_shipping_id.state_id.code" />
 						<span t-field="o.partner_shipping_id.zip" />
 						<span t-field="o.partner_shipping_id.country_id.name" />
