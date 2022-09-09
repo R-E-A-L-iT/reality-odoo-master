@@ -29,6 +29,7 @@ class CustomerCart(CP):
         except:
             product_id = None
 
+        _logger.info(product_id.is_add_to_cart_allowed())
         _logger.info(product_id)
 
         # Is the product ok
