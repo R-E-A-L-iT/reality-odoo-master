@@ -14,6 +14,7 @@
 	</template>
 
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
+		<xpath expr="//div[@name=&quot;company_address&quot;]" position="replace" />
 		<xpath expr="/t/div[3]" position="attributes">
 			<!-- <attribute name="style">height: fit-content !important;</attribute> -->
 		</xpath>
