@@ -200,8 +200,3 @@ div.hr {
 	width: 100px;
 	z-index: 10;
 }
-
-.header .col-6 {
-	display: none !important;
-	background-color: #000;
-}
