@@ -3,7 +3,7 @@
 <odoo>
 	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.products_description">
 		<xpath expr="//div[@itemprop=&quot;description&quot;]" position="">
-			<div itemprop="description" t-esc="product.description_sale" />
+			<!-- <div itemprop="description" t-esc="product.description_sale" /> -->
 		</xpath>
 	</template>
 </odoo>
