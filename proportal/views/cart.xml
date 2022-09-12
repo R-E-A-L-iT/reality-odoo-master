@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_lines" priority="17">
-		<xpath expr="//td[@class=&quot;td-product_name&quot;]" position="replace">
+		<xpath expr="//td[hasclass=&quot;td-product_name&quot;]" position="replace">
 			<td />
 		</xpath>
 	</template>
