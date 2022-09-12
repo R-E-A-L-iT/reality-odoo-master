@@ -859,13 +859,19 @@ h2.subtitle>span {
 }
 
 #custom-webpage-root .product-tile {
+	width: 75vw;
 	margin-top: 50px;
-	width: 25vw;
 	color: white;
 	z-index: 1;
 	border-style: solid;
 	padding: 1vw;
 	box-shadow: 5px -5px 20px 1px #555
+}
+
+@media (min-width: 750px) {
+	#customer-webpage-root .product-tile {
+		width: 25vw;
+	}
 }
 
 #custom-webpage-root .product-tile img {
