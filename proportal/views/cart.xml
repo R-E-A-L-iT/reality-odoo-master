@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.products_description">
-		<xpath expr="//div[@itemprop=&quot;description&quot;]" position="replace">
+	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_summery">
+		<xpath expr="//div[@t-if=&quot;line.product_id.product_tmpl_id&quot;]" position="replace">
 			<!-- <div itemprop="description" t-esc="product.description_sale" /> -->
 		</xpath>
 	</template>
