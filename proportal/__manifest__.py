@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.4',
+    'version': '0.6',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -30,7 +30,8 @@
                 'proportal/static/src/CSS/customWebsiteStyle.css',
                 'proportal/static/src/CSS/header.css',
                 'proportal/static/src/CSS/footer.css',
-                'proportal/static/src/CSS/mobileWebsite.css'
+                'proportal/static/src/CSS/mobileWebsite.css',
+                'proportal/static/src/CSS/cart.css'
             ]
     },
 
@@ -45,6 +46,7 @@
         'views/portalProject.xml',
         'views/navButton.xml',
         'views/navbarCustom.xml',
+        'views/cart.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
