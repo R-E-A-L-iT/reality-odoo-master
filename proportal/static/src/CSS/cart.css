@@ -13,3 +13,12 @@
 	font-size: 0.75rem;
 	padding-top: 0.5em;
 }
+
+.cart-button {
+	background-color: #db0d0d;
+	border: 2px solid #d90c0c;
+	border-radius: 10px;
+	text-transform: capitalize;
+	padding-left: 3rem;
+	padding-right: 3rem;
+}
