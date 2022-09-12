@@ -2,8 +2,8 @@
 
 <odoo>
 	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_lines" priority="17">
-		<xpath expr="//td[@t-if=&quot;line.product_id.product_tmpl_id&quot;]/div" position="replace">
-			<!-- <div itemprop="description" t-esc="product.description_sale" /> -->
+		<xpath expr="//td[@t-if=&quot;line.product_id.product_tmpl_id&quot;]" position="replace">
+			<td />
 		</xpath>
 	</template>
 </odoo>
