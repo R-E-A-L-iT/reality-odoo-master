@@ -5,6 +5,8 @@
 		<xpath expr="//td[hasclass(&quot;td-product_name&quot;)]" position="replace">
 			<td t-if="line.product_id.product_tmpl_id" class="td-product_name">
 				<strong t-field="line.product_id.name" />
+				<br />
+				<div t-esc="line.product_id.description_sale" />
 			</td>
 		</xpath>
 	</template>
