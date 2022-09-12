@@ -3,7 +3,9 @@
 <odoo>
 	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_lines" priority="17">
 		<xpath expr="//td[hasclass(&quot;td-product_name&quot;)]" position="replace">
-			<td />
+			<td t-if="line.product_id.product_tmpl_id" class="td-product_name">
+				<strong t-field="line.product_id.name" />
+			</td>
 		</xpath>
 	</template>
 </odoo>
