@@ -2,7 +2,12 @@
 	color: #db0d0d;
 }
 
+.cart-description ul {
+	margin-bottom: 0px;
+}
+
 .cart-description li {
+	color: #fff;
 	margin-top: 0px;
 	margin-bottom: 0px;
 	font-size: 0.75rem;
