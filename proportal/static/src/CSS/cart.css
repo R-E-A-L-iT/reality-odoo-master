@@ -15,10 +15,13 @@
 }
 
 .cart-button {
+	font-weight: 700;
 	background-color: #db0d0d;
 	border: 2px solid #d90c0c;
 	border-radius: 10px;
 	text-transform: capitalize;
 	padding-left: 3rem;
 	padding-right: 3rem;
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
 }
