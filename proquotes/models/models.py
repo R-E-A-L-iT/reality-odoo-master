@@ -62,6 +62,7 @@ class order(models.Model):
         ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     header = fields.Selection([
+        ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
         ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
         ('Architecture.jpg', "Architecture.jpg"),
         ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
