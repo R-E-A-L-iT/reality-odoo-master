@@ -62,9 +62,9 @@ class order(models.Model):
         ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     header = fields.Selection([
-        ('ChurchXRAY', "ChurchXRAY"),
-        ('Architecture', "Architecture"),
-        ('Software', "Software")], default='ChurchXRAY', required=True, help="Header selection field")
+        ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
+        ('Architecture.jpg', "Architecture.jpg"),
+        ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
