@@ -63,7 +63,7 @@ class order(models.Model):
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
-        ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
+        ('ChurchXRAY.jpg', "ChurchXRAY.jpg "),
         ('Architecture.jpg', "Architecture.jpg"),
         ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
 
