@@ -155,6 +155,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	z-index: 1;
 	text-align: center;
 	width: 100%;
+	height: auto;
 }
 
 .quote-address>img {
