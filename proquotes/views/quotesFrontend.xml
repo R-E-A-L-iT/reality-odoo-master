@@ -13,7 +13,7 @@
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
 			<div class="quote-address">
-				<img alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg" />
+				<iframe alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}.jpg" />
 				<div class="quote-address-block">
 					<h1 class="title">QUOTATION</h1>
 					<div class="hr"></div>
