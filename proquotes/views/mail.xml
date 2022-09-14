@@ -86,7 +86,7 @@
 																<t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()" />
 																<t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'" />
 																<t t-set="base_url" t-value="record.get_base_url()" />
-																<t t-set="share_url" t-value="is_online and record._get_share_url(redirect=True, signup_partner=notification_is_customer, share_token=notification_is_customer)" />
+																<t t-set="share_url" t-value="is_online and record._get_share_url(redirect=True, signup_partner=False, share_token=False)" />
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 
 																<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
