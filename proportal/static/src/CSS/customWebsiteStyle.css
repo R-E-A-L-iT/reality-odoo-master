@@ -839,8 +839,10 @@ h2.subtitle {
 	font-family: Helvetica !important;
 }
 
-h1.title+hr+h2.subtitle {
-	margin-block-start: 1.5rem !important;
+@media (min-width: 750px) {
+	h1.title+hr+h2.subtitle {
+		margin-block-start: 1.5rem !important;
+	}
 }
 
 h1.title+div.hr+h2.subtitle {
