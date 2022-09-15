@@ -258,4 +258,9 @@
 	h2.subtitle {
 		font-size: 0.75em !important;
 	}
+
+	#custom-webpage-root hr {
+		margin-block-start: 0.25em;
+		margin-block-end: 0.25em;
+	}
 }
