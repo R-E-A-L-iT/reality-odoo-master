@@ -250,7 +250,7 @@
 			</div>
 			<div>
 				<span style="height: 40px"> PO #:</span>
-				<span style="background-color: #f0f;">
+				<span style="background-color: #f0f; border-style: solid !important;">
 					<span style="">____________________________________</span>
 				</span>
 				<br />
