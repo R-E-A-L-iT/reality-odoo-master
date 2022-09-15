@@ -22,8 +22,10 @@
 	text-transform: capitalize;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
-	/* padding-left: 1%; */
-	/* padding-right: 1%; */
+	min-width: -webkit-fill-available;
+	min-width: -moz-fit-content;
+	min-width: fit-content;
+	text-align: center;
 	width: 45% !important;
 }
 
