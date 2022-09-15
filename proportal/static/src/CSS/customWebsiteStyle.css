@@ -806,9 +806,14 @@
 	width: 7vw;
 }
 
+@media (min-width: 750px) {
+	h1.title {
+		font-size: 4em !important;
+	}
+}
+
 h1.title {
 	word-wrap: break-word;
-	font-size: 4em !important;
 	font-weight: 900 !important;
 	margin: 0;
 	text-align: center;
@@ -817,9 +822,15 @@ h1.title {
 	margin-block-end: 1.5rem !important;
 }
 
+
+@media (min-width: 750px) {
+	h2.subtitle {
+		font-size: 2em !important;
+	}
+}
+
 h2.subtitle {
 	color: #dbdbdb;
-	font-size: 2em !important;
 	font-weight: 100 !important;
 	letter-spacing: 2.75px;
 	text-align: center;
@@ -843,12 +854,6 @@ h2.subtitle>span {
 #quote_header_12 {
 	color: #fff;
 }
-
-/* .js_language_selector>.dropdown-menu>a {
-	height: 2em !important;
-	background-color: #fff;
-	display: none;
-} */
 
 #custom-webpage-root .tiles {
 	display: flex;
