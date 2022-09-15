@@ -897,3 +897,11 @@ h2.subtitle>span {
 	justify-content: space-between;
 
 }
+
+.product-tile a {
+	max-width: 45% important;
+}
+
+.product-tile div>span {
+	max-width: 45% !important;
+}
