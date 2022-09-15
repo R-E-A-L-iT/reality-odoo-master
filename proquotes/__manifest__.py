@@ -36,8 +36,12 @@
             ]
     },
 
+<<<<<<< HEAD
     'version': '0.1',
 
+=======
+    'version': '0.0',
+>>>>>>> 583812c70a417daa15ec02cbbd439c982d69422e
     # always loaded
     'data': [
         'security/ir.model.access.csv',
