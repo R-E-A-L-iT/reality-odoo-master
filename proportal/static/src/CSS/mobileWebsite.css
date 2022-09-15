@@ -252,10 +252,10 @@
 	}
 
 	h1.title {
-		font-size: 1em !important;
+		font-size: 1.5em !important;
 	}
 
 	h2.subtitle {
-		font-size: 0.5em !important;
+		font-size: 0.75em !important;
 	}
 }
