@@ -249,11 +249,14 @@
 				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
 			</div>
 			<div>
-				<span style="height: 40px"> PO #: ____________________________________</span>
+				<span style="height: 40px"> PO #:</span>
+				<span style="color: #fff; border-bottom-style: solid">____________________________________</span>
 				<br />
-				<span style="height: 40px"> Signature: _______________________________</span>
+				<span style="height: 40px"> Signature:</span>
+				<span style="color: #fff; border-bottom-style: solid">____________________________________</span>
 				<br />
-				<span style="height: 40px"> Date: ____________________________________</span>
+				<span style="height: 40px"> Date:</span>
+				<span style="color: #fff; border-bottom-style: solid">____________________________________</span>
 				<br />
 				<br />
 				<br />
