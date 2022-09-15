@@ -36,7 +36,7 @@
             ]
     },
 
-    'version': '0.7PDF',
+    'version': '0.8',
 
     # always loaded
     'data': [
