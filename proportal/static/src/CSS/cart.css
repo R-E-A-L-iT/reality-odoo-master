@@ -22,6 +22,9 @@
 	text-transform: capitalize;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
+	padding-left: 1%;
+	padding-right: 1%;
+	max-width: 45% !important;
 }
 
 @media (min-width: 750px) {
