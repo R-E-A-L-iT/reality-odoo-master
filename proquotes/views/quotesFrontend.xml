@@ -263,6 +263,11 @@
 			<attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
 		</xpath>
 
+		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
+			<span t-if="line.product_uom_qty == round(line.line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
+			<span t-else="" t-field="line.product_uom_qty" />
+		</xpath>
+
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
 			<attribute name="class">proquotesLineTotal oe_order_line_price_subtotal</attribute>
 		</xpath>
