@@ -253,7 +253,7 @@
 				<span style="border-bottom: double !important; width:500px !important;">____________________________________</span>
 				<br />
 				<span style="height: 40px"> Signature:</span>
-				<span style="border-bottom: double !important; fon: #f0f; border-color: #000; !important">____________________________________</span>
+				<span style="border-bottom: double !important; color: #f0f; border-color: #000; !important">____________________________________</span>
 				<br />
 				<span style="height: 40px"> Date:</span>
 				<span style="border-bottom: double !important; color: #fff;">____________________________________</span>
