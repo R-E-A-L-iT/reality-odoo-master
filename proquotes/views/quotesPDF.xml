@@ -83,7 +83,7 @@
 					<td class="text-left" style="border-top-style: none !important">Product</td>
 					<td class="text-right" style="border-top-style: none !important" t-if="doc.is_rental == True">Product Value</td>
 					<td class="text-right" style="border-top-style: none !important">Quantity</td>
-					<!-- <td class="text-right" style="border-top-style: none !important">Unit Price</td> -->
+					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
 					<td class="text-right" style="border-top-style: none !important">Amount</td>
 				</t>
 			</tr>
