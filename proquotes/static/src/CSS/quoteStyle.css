@@ -205,3 +205,7 @@ div.hr {
 td#product_name#product_name {
 	padding-top: 0.3rem !important;
 }
+
+ol.o_portal_submenu * {
+	color: #db0d0d;
+}
