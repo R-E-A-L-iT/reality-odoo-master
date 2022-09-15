@@ -36,7 +36,8 @@
             ]
     },
 
-    'version': '0.6',
+    'version': '0.7PDF',
+
     # always loaded
     'data': [
         'security/ir.model.access.csv',
