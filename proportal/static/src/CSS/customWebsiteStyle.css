@@ -899,7 +899,7 @@ h2.subtitle>span {
 }
 
 .product-tile a {
-	max-width: 45% important;
+	max-width: 45% !important;
 }
 
 .product-tile div>span {
