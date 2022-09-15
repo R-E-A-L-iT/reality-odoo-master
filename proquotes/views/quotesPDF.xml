@@ -250,7 +250,7 @@
 			</div>
 			<div>
 				<span style="height: 40px"> PO #:</span>
-				<table style="border-style: hidden !important; display: inline;">
+				<table style="border-style: hidden  !important; display: inline;">
 					<tr>
 						<td>
 							<span style="">____________________________________</span>
