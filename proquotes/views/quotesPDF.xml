@@ -250,13 +250,13 @@
 			</div>
 			<div>
 				<span style="height: 40px"> PO #:</span>
-				<!-- <table style="background-color: #f0f; border-style: solid !important; border-color: #000 !important; border-visiblity: visible;"> -->
-				<!-- <tr> -->
-				<td>
-					<span style="">____________________________________</span>
-				</td>
-				<!-- </tr> -->
-				<!-- </table> -->
+				<table>
+					<tr>
+						<td>
+							<span style="">____________________________________</span>
+						</td>
+					</tr>
+				</table>
 				<br />
 				<span style="height: 40px"> Signature:</span>
 				<span style="">____________________________________</span>
