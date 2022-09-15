@@ -253,9 +253,11 @@
 
 	h1.title {
 		font-size: 1.5em !important;
+		margin-bottom: 7px !important;
 	}
 
 	h2.subtitle {
+		margin-top: 7px !important;
 		font-size: 0.75em !important;
 	}
 
