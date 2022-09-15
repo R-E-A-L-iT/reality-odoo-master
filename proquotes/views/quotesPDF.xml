@@ -250,7 +250,7 @@
 			</div>
 			<div>
 				<span style="height: 40px"> PO #:</span>
-				<span style="border-bottom: double !important; width:500px !important;">____________________________________</span>
+				<span style="border-bottom: double !important; width:500px !important;" />
 				<br />
 				<span style="height: 40px"> Signature:</span>
 				<span style="border-bottom: double !important; color: #fff; border-color: #000; !important">____________________________________</span>
