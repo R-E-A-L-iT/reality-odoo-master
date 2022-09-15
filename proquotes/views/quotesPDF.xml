@@ -301,7 +301,7 @@
 				<br />
 				<span t-if="doc.partner_id.city != False" t-esc="doc.partner_id.city + ','" />
 				<span t-esc="doc.partner_id.state_id.code" />
-				<span t-field="o.partner_shipping_id.zip" />
+				<span t-field="doc.partner_shipping_id.zip" />
 				<span t-field="doc.partner_id.country_id.name" />
 				<br />
 				<span t-field="doc.partner_id.phone" />

@@ -24,6 +24,7 @@
 						<span t-field="sale_order.partner_id.city"></span>
 						,
 						<span t-field="sale_order.partner_id.state_id.code" />
+						<span t-field="sale_order.partner_id.state_id.zip" />
 						<span t-field="sale_order.partner_id.country_id.name" />
 					</h2>
 				</div>
