@@ -252,7 +252,7 @@
 				<span style="height: 40px"> PO #:</span>
 				<table>
 					<tr>
-						<td style="border-style: hidden !important; display: inline;">
+						<td style="border-style: hidden; display: inline;">
 							<span style="">____________________________________</span>
 						</td>
 					</tr>
