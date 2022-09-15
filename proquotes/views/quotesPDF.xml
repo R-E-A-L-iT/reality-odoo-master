@@ -255,10 +255,14 @@
 				</span>
 				<br />
 				<span style="height: 40px"> Signature:</span>
-				<span style="border-bottom: double !important; color: #f0f; border-color: #000; !important">____________________________________</span>
+				<span style="border-bottom: double !important; width:500px !important;">
+					<span style="color: #fff;">____________________________________</span>
+				</span>
 				<br />
 				<span style="height: 40px"> Date:</span>
-				<span style="border-bottom: double !important; color: #fff;">____________________________________</span>
+				<span style="border-bottom: double !important; width:500px !important;">
+					<span style="color: #fff;">____________________________________</span>
+				</span>
 				<br />
 				<br />
 				<br />
