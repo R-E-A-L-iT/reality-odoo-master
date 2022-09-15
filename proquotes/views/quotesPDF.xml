@@ -251,7 +251,11 @@
 			<div>
 				<span style="height: 40px"> PO #:</span>
 				<table style="background-color: #f0f; border-style: solid !important; border-color: #000 !important; border-visiblity: visible;">
-					<span style="">____________________________________</span>
+					<tr>
+						<td>
+							<span style="">____________________________________</span>
+						</td>
+					</tr>
 				</table>
 				<br />
 				<span style="height: 40px"> Signature:</span>
