@@ -346,8 +346,8 @@
 
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="inside">
 			<style>
-				#total table.table * {
-					color: #db0d0d;
+				#total table.table th {
+					color: # !important;
 				}
 			</style>
 		</xpath>
