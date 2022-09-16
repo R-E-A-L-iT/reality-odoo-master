@@ -345,7 +345,7 @@
 		</xpath>
 
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="attributes">
-			<attribute name="style">color: #db0d0d !important; display: none !important;</attribute>
+			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
 	</template>
