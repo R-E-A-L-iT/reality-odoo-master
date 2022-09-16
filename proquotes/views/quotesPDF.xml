@@ -344,8 +344,12 @@
 			<t t-set="no_select" t-value="True" />
 		</xpath>
 
-		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
+		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="inside">
+			<style>
+				#total table.table * {
+					color: #db0d0d;
+				}
+			</style>
 		</xpath>
 
 	</template>
