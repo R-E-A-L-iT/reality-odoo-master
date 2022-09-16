@@ -261,13 +261,13 @@
 				<br />
 				<br />
 				<span style="height: 40px"> Signature:</span>
-				<span style="border-bottom: double !important; width:500px !important;">
+				<span style="border-bottom: solid !important; width:500px !important;">
 					<span style="color: #fff;">____________________________________</span>
 				</span>
 				<br />
 				<br />
 				<span style="height: 40px"> Date:</span>
-				<span style="border-bottom: double !important; width:500px !important;">
+				<span style="border-bottom: single !important; width:500px !important;">
 					<span style="color: #fff;">________________________________________</span>
 				</span>
 				<br />
