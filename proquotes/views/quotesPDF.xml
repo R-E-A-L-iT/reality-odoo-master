@@ -355,7 +355,7 @@
 	</template>
 
 	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">
-		<xpath expr="//strong[@t-esc=&quot;subtota['name']&quot;]" position="replace">
+		<xpath expr="//strong[@t-esc=&quot;subtotal['name']&quot;]" position="replace">
 			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
 		</xpath>
 	</template>
