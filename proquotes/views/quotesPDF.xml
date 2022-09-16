@@ -2,9 +2,6 @@
 
 <odoo>
 	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" primary="True">
-		<xpath expr="th[1]" position="attributes">
-			<attribute name="style">color: #db0d0d;</attribute>
-		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
 			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
@@ -345,6 +342,10 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
+		</xpath>
+
+		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="attributes">
+			<attribute name="style">color: #db0d0d;</attribute>
 		</xpath>
 
 	</template>
