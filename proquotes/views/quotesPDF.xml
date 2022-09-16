@@ -355,8 +355,8 @@
 	</template>
 
 	<template name="Tax Colour" id="tax_colour" inherit_id="account.tax_groups_totals">
-		<xpath expr="//span[@t-esc=&quot;amount_by_group['tax_group_name']&quot;]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
+		<xpath expr="//span[@t-esc=&quot;amount_by_group['tax_group_name']&quot;]" position="replace">
+			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
 		</xpath>
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
