@@ -276,7 +276,7 @@
 				<t t-set="footer" t-value="doc.footer"></t>
 
 				<footer>
-					<t t-if="o.company_id.id == 15">
+					<t t-if="doc.company_id.id == 15">
 						<div id="bank-info" style="width: 100%; text-align: center;">
 							<p>
 								<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
@@ -288,7 +288,7 @@
 						</div>
 					</t>
 
-					<t t-if="o.company_id.id == 3">
+					<t t-if="doc.company_id.id == 3">
 						<br />
 						<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
 							<p>
