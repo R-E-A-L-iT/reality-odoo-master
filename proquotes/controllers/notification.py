@@ -17,3 +17,7 @@ import logging
 
 # class notification(CP):
 # pass
+
+class notification:
+    def something():
+        x = 1 + 1
