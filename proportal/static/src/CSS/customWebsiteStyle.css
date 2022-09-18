@@ -831,12 +831,14 @@ h1.title {
 
 h2.subtitle {
 	color: #dbdbdb;
+	opacity: 50%;
 	font-weight: 100 !important;
 	letter-spacing: 2.75px;
 	text-align: center;
 	text-shadow: 3px 4px 3px #000;
 	text-transform: uppercase;
 	font-family: Helvetica !important;
+	background-color: #000;
 }
 
 @media (min-width: 750px) {
