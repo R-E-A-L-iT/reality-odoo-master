@@ -14,4 +14,6 @@ import logging
 
 from odoo.mail import CustomerPortalINH as CP
 
-# class notification(CP):
+
+class notification(CP):
+    pass
