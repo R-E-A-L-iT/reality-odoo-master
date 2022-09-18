@@ -213,6 +213,8 @@ ol.o_portal_submenu * {
 #wrapwrap>main>div.o_portal.container.mt-3 {
 	margin-left: 0px;
 	margin-right: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
 #wrapwrap>main>div.o_portal.container.mt-3>div {
