@@ -209,3 +209,8 @@ td#product_name#product_name {
 ol.o_portal_submenu * {
 	color: #db0d0d;
 }
+
+div.o_portal>div.row {
+	width: 100%;
+	border-style: none;
+}
