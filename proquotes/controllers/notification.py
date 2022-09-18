@@ -12,8 +12,8 @@ from odoo.addons.sale.controllers.portal import CustomerPortal
 from odoo.osv import expression
 import logging
 
-from odoo.mail import CustomerPortalINH as CP
+# from odoo.mail import CustomerPortalINH as CP
 
 
-class notification(CP):
-    pass
+# class notification(CP):
+# pass
