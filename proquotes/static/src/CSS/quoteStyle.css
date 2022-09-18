@@ -217,9 +217,10 @@ ol.o_portal_submenu * {
 	padding-right: 0px;
 }
 
-#wrapwrap>main>div.o_portal.container.mt-3>div {
+html #wrapwrap>main>div.o_portal.container.mt-3>div {
 	width: 100vw !important;
 	border: 0px none #000 !important;
+	border-radius: 0px !important;
 }
 
 /* #wrapwrap>main>div.o_portal.container.mt-3>div>div>ol {
