@@ -17,7 +17,7 @@
 				<video t-if="sale_order.header[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
 				<div class="quote-address-block">
 					<h1 class="title">QUOTATION</h1>
-					<h2 t-esc="sale_order.salesperson"></h2>
+					<h2 t-esc="sale_order.user_id.name"></h2>
 					<div class="hr"></div>
 					<h2 class="subtitle" t-field="sale_order.partner_id.name" />
 					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
