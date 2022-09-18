@@ -210,7 +210,12 @@ ol.o_portal_submenu * {
 	color: #db0d0d;
 }
 
-div.o_portal>div.row {
-	width: 100%;
-	border-style: none;
+#wrapwrap>main>div.o_portal.container.mt-3 {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+#wrapwrap>main>div.o_portal.container.mt-3>div {
+	width: 100vw !important;
+	border-style: none !important;
 }
