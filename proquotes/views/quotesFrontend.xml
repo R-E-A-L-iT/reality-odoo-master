@@ -317,7 +317,7 @@
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
 			<section id="user-info">
 				<form autocomplete="on">
-					<div id="POinputLabel">
+					<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
 						<br />
 					</div>
@@ -326,7 +326,7 @@
 					<div>
 						<span>Please Upload your PO File in the comments below:</span>
 						<br />
-					</div>
+					</div> -->
 					<br />
 					<t t-if="sale_order.is_rental == True">
 						<t t-set="company_name" t-value="sale_order.company_id.name" />
