@@ -223,7 +223,12 @@ html #wrapwrap>main>div.o_portal.container.mt-3>div {
 	border-radius: 0px !important;
 }
 
-/* #wrapwrap>main>div.o_portal.container.mt-3>div>div>ol {
-	padding-left: 0px;
-	padding-right: 0px;
-} */
+@media (max-width: 750px) {
+	#details {
+		margin-top: 0px !important;
+	}
+
+	.card-body {
+		padding: 0px;
+	}
+}
