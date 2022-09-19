@@ -6,7 +6,7 @@
 			<td>
 				<t if="o.company_id.id == 15 or o.company_id.id == 3">
 					<span t-esc="lang != 'fr_CA' and lang == undefined" />
-					<!-- <span t-if="(lang != 'fr_CA' and lang == undefined) or doc.partner_id.lang != 'fr_CA'" t-out="amount_by_group['tax_group_name']" /> -->
+					<span t-if="(lang != 'fr_CA' and lang != undefined) or doc.partner_id.lang != 'fr_CA'" t-out="amount_by_group['tax_group_name']" />
 					<t t-else="">
 						<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
 						<span t-elif="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">TVH</span>
