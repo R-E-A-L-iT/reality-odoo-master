@@ -294,10 +294,6 @@
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath> -->
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
-			<attribute name="t-attf-class">tax-column text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
-		</xpath>
-
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[3]" position="attributes">
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath>
