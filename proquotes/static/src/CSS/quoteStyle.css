@@ -232,3 +232,7 @@ html #wrapwrap>main>div.o_portal.container.mt-3>div {
 		padding: 0px;
 	}
 }
+
+span.qtySpan {
+	padding-right: 0px;
+}
