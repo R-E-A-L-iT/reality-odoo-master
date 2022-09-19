@@ -269,7 +269,7 @@
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
-			<attribute name="class">proquotesLineTotal oe_order_line_price_total</attribute>
+			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>
 		</xpath>
 
 		<!--Enable Variable Quantities-->
