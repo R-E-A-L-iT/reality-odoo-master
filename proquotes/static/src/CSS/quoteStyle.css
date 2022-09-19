@@ -237,8 +237,8 @@ span.qtySpan {
 	padding-right: 0px !important;
 }
 
-span.rp-20 {
-	padding-right: 20px;
+.qtySpan+span {
+	padding-right: 20px !important;
 }
 
 td.tax-column {
