@@ -237,6 +237,14 @@ span.qtySpan {
 	padding-right: 0px !important;
 }
 
+.pr-0 {
+	padding: 0px !important;
+}
+
+.pr-20 {
+	padding: 20px !important;
+}
+
 .qtySpan+span {
 	padding-right: 20px !important;
 }
