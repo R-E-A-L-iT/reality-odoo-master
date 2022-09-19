@@ -242,5 +242,5 @@ span.rp-20 {
 }
 
 td.tax-column {
-	display: none;
+	display: none !important;
 }
