@@ -5,9 +5,7 @@
 		<xpath expr="//td[1]" position="replace">
 			<td>
 				<t if="o.company_id.id == 15 or o.company_id.id == 3">
-					<span t-if="lang != undefined" t-esc="lang" />
-					<span t-if="doc.partner_id.lang != undefined" t-esc="" />
-					<span t-if="lang !='fr_CA' and doc.partner_id.lang !='fr_CA' amount_by_group['tax_group_name' ]" />
+					<span t-if="lang !='fr_CA' and doc.partner_id.lang !='fr_CA'" t-esc="amount_by_group['tax_group_name' ]" />
 					<span t-if=" in amount_by_group['tax_group_name' ] or'TPS' in amount_by_group['tax_group_name' ]">777 376 542 RT 0001</span>
 					<span t-if=" in amount_by_group['tax_group_name' ] or'TVH' in amount_by_group['tax_group_name' ]">777 376 542 RT 0001</span>
 					<span t-if=" in amount_by_group['tax_group_name' ] or'TVQ' in amount_by_group['tax_group_name' ]">1228256885 TQ 0001</span>
