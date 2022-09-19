@@ -820,8 +820,8 @@ h1.title {
 	text-shadow: 5px 5px 5px #000;
 	font-family: Helvetica !important;
 	margin-block-end: 1.5rem !important;
-	background-color: #000;
-	opacity: 50%;
+	/* background-color: #000; */
+	/* opacity: 50%; */
 }
 
 
@@ -841,7 +841,7 @@ h2.subtitle {
 	text-transform: uppercase;
 	font-family: Helvetica !important;
 	/* background-color: #000; */
-	opacity: 50%;
+	/* opacity: 50%; */
 }
 
 @media (min-width: 750px) {
