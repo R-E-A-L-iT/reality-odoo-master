@@ -275,8 +275,8 @@
 		<!--Enable Variable Quantities-->
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
 			<t t-if="line.quantityLocked == 'yes'">
-				<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
-				<span t-else="" t-field="line.product_uom_qty" />
+				<span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
+				<span t-else="qtySpan" t-field="line.product_uom_qty" />
 			</t>
 			<t t-if="line.quantityLocked =='no'">
 				<input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input>
