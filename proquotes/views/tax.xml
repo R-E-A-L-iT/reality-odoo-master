@@ -2,15 +2,14 @@
 <odoo>
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
 
-		<xpath expr="//td[1]" position="replace">
+		<!-- <xpath expr="//td[1]" position="replace">
 			<td>
-				<!--  -->
 				<t if="o.company_id.id == 15 or o.company_id.id == 3">
 					<span t-esc="amount_by_group['tax_group_name']" />
 					<span t-if="'GST' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
 					<span t-if="'QST' in amount_by_group['tax_group_name']">1228256885 TQ 0001</span>
 				</t>
 			</td>
-		</xpath>
+		</xpath> -->
 	</template>
 </odoo>
