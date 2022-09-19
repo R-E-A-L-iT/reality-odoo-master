@@ -234,5 +234,9 @@ html #wrapwrap>main>div.o_portal.container.mt-3>div {
 }
 
 span.qtySpan {
-	padding-right: 0px;
+	padding-right: 0px !important;
+}
+
+td.tax-column {
+	display: none;
 }

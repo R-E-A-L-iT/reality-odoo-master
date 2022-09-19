@@ -276,7 +276,7 @@
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
 			<t t-if="line.quantityLocked == 'yes'">
 				<span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
-				<span t-else="qtySpan" t-field="line.product_uom_qty" />
+				<span class="qtySpan" t-else="" t-field="line.product_uom_qty" />
 			</t>
 			<t t-if="line.quantityLocked =='no'">
 				<input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input>
@@ -294,9 +294,10 @@
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath> -->
 
-		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[5]" position="attributes">
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[5]" position="attributes">
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
-		</xpath> -->
+			<attribute name="class">tax-column</attribute>
+		</xpath>
 
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[3]" position="attributes">
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
