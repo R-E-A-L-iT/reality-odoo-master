@@ -5,7 +5,7 @@
 		<xpath expr="//td[1]" position="replace">
 			<td>
 				<t if="o.company_id.id == 15 or o.company_id.id == 3">
-					<span t-esc="lang" />
+					<span t-esc="lang == undefined">PDF</span>
 					<!-- <span t-out="amount_by_group['tax_group_name']" /> -->
 					<!-- <span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
 					<span t-if="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
