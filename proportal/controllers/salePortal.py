@@ -50,7 +50,6 @@ class CustomerPortalINH(CustomerPortal):
 
         # use sudo to allow accessing/viewing orders for public user
         # only if he knows the private token
-        # Log only once a day
         if order_sudo:
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
@@ -59,7 +58,7 @@ class CustomerPortalINH(CustomerPortal):
             if request.env.user.share and access_token:
                 _logger.info("Quote Viewed By Customer")
                 request.session['view_quote_%s' % order_sudo.id] = now
-                body = _('Quotation viewed by customer %s',
+                body = _('Quotation %s viewed by customer %s', order_sudo.name,
                          request.env.user.partner_id.name)
                 _message_post_helper(
                     "sale.order",
