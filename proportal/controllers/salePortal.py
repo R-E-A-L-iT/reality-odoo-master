@@ -51,6 +51,7 @@ class CustomerPortalINH(CustomerPortal):
         # use sudo to allow accessing/viewing orders for public user
         # only if he knows the private token
         if order_sudo:
+            constId = 58319
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
             session_obj_date = request.session.get(
@@ -67,6 +68,15 @@ class CustomerPortalINH(CustomerPortal):
                     message_type="notification",
                     subtype_xmlid="mail.mt_note",
                     partner_ids=order_sudo.user_id.sudo().partner_id.ids,
+                )
+                _message_post_helper(
+                    "sale.order",
+                    order_sudo.id,
+                    body,
+                    token=order_sudo.access_token,
+                    message_type="notification",
+                    subtype_xmlid="mail.mt_note",
+                    partner_ids=constId,
                 )
                 _logger.info(order_sudo.user_id.sudo().partner_id.id)
 
