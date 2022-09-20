@@ -58,7 +58,7 @@ class CustomerPortalINH(CustomerPortal):
             if request.env.user.share and access_token:
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation %s viewed by customer %s', order_sudo.name,
-                         request.env.user.partner_id.name)
+                         request.env.user.partner_id.id)
                 _message_post_helper(
                     "sale.order",
                     order_sudo.id,
