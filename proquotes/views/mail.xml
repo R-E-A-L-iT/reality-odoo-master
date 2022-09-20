@@ -85,7 +85,7 @@
 																	<h1 t-else="" style="color: black;">PURCHASE ORDER
 																	</h1>
 																</t>
-																<t t-elif="record.partner_id.lang ''= 'fr_CA'">
+																<t t-elif="record.partner_id.lang == 'fr_CA'">
 																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
 																		<span>
 																		SOUMISSION																	</span>
