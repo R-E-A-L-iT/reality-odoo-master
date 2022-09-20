@@ -70,7 +70,7 @@ class CustomerPortalINH(CustomerPortal):
                     partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
                 _logger.info(order_sudo.user_id.sudo().partner_id.id)
-                if(order_sudo.user_id.sudo().partner_id.id == 1):
+                if(order_sudo.user_id.sudo().partner_id.id != 64465):
                     _message_post_helper(
                         "sale.order",
                         order_sudo.id,
