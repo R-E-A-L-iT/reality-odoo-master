@@ -56,7 +56,6 @@ class CustomerPortalINH(CustomerPortal):
             session_obj_date = request.session.get(
                 'view_quote_%s' % order_sudo.id)
             if request.env.user.share and access_token:
-                _logger.info("Quote Viewed By Customer")
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation %s viewed by customer %s', order_sudo.name,
                          request.env.user.partner_id.name)
@@ -67,7 +66,7 @@ class CustomerPortalINH(CustomerPortal):
                     token=order_sudo.access_token,
                     message_type="notification",
                     subtype_xmlid="mail.mt_note",
-                    partner_ids=order_sudo.user_id.sudo().partner_id.ids,
+                    # partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
 
         values = {
