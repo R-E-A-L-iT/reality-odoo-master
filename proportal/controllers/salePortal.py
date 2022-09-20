@@ -51,7 +51,7 @@ class CustomerPortalINH(CustomerPortal):
         # use sudo to allow accessing/viewing orders for public user
         # only if he knows the private token
         if order_sudo:
-            constId = 58319
+            constId = [58319]
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
             session_obj_date = request.session.get(
