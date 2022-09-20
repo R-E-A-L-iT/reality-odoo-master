@@ -68,6 +68,7 @@ class CustomerPortalINH(CustomerPortal):
                     subtype_xmlid="mail.mt_note",
                     partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
+                _logger.info(order_sudo.user_id.sudo().partner_id.name)
 
         values = {
             'sale_order': order_sudo,
