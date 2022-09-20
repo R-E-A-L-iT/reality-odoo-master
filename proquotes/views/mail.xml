@@ -49,7 +49,7 @@
 															</t>
 														</td>
 													</tr>
-													<tr>
+													<!-- <tr>
 														<td valign="middle">
 															<span style="font-size:10px;">Your Account</span>
 															<br />
@@ -58,7 +58,7 @@
                                                             </a>
 															<span t-esc="lang" />
 														</td>
-													</tr>
+													</tr> -->
 													<tr>
 														<td colspan="2" style="text-align:center;">
 															<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;" />
@@ -76,8 +76,8 @@
 													<tr>
 														<td valign="top" style="font-size:13px;">
 															<div>
-																<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">NEW QUOTATION</h1>
-																<h1 t-else="" style="color: black;">NEW PURCHASE ORDER</h1>
+																<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">QUOTATION</h1>
+																<h1 t-else="" style="color: black;">PURCHASE ORDER</h1>
 																<br />
 																<br />
 																<t t-raw="message.body" />
