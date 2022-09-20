@@ -66,7 +66,7 @@ class CustomerPortalINH(CustomerPortal):
                     token=order_sudo.access_token,
                     message_type="notification",
                     subtype_xmlid="mail.mt_note",
-                    # partner_ids=order_sudo.user_id.sudo().partner_id.ids,
+                    partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
 
         values = {
