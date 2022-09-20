@@ -78,11 +78,11 @@
 															<div>
 																<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
 																	<span>
-																	QUOTATION
-																	</span>
+																	SOUMISSION																	</span>
 																	<span t-esc="message.record_name" />
 																</h1>
-																<h1 t-else="" style="color: black;">PURCHASE ORDER</h1>
+																<h1 t-else="" style="color: black;">BON DE COMMANDE
+																</h1>
 																<br />
 																<br />
 																<t t-raw="message.body" />
@@ -103,13 +103,16 @@
                                                                     View Purchase Order
                                                                 </a>
 																</t>
-																<!-- <a t-if="record.state == 'draft' or record.state == 'sent'" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
-                                                                    View Quotation
-                                                                </a> -->
+																<t t-if="record.partner_id.lang == 'fr_CA'">
+																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
+																	Voir Soumission 
+                                                                </a>
 
-																<!-- <a t-else="" href="https://www.r-e-a-l.it/my/quotes" style="color:#db0d0d;">
-                                                                    View Purchase Order
-                                                                </a> -->
+																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
+                                                                    Voir Bon de commande
+
+                                                                </a>
+																</t>
 															</div>
 														</td>
 													</tr>
