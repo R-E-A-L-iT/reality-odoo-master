@@ -128,7 +128,7 @@
 													<tr>
 														<td colspan="100">
 															<footer>
-																<span t-esc="message.record"></span>
+																<span t-esc="str(document)"></span>
 															</footer>
 														</td>
 													</tr>
