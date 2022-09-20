@@ -69,15 +69,17 @@ class CustomerPortalINH(CustomerPortal):
                     subtype_xmlid="mail.mt_note",
                     partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
-                _message_post_helper(
-                    "sale.order",
-                    order_sudo.id,
-                    body,
-                    token=order_sudo.access_token,
-                    message_type="notification",
-                    subtype_xmlid="mail.mt_note",
-                    partner_ids=constId,
-                )
+                _logger.info(order_sudo.user_id.sudo().partner_id.id)
+                if(order_sudo.user_id.sudo().partner_id.id == 1):
+                    _message_post_helper(
+                        "sale.order",
+                        order_sudo.id,
+                        body,
+                        token=order_sudo.access_token,
+                        message_type="notification",
+                        subtype_xmlid="mail.mt_note",
+                        partner_ids=constId,
+                    )
 
         values = {
             'sale_order': order_sudo,
