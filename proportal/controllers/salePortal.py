@@ -69,7 +69,6 @@ class CustomerPortalINH(CustomerPortal):
                     subtype_xmlid="mail.mt_note",
                     partner_ids=order_sudo.user_id.sudo().partner_id.ids,
                 )
-                _logger.info(order_sudo.user_id.sudo().partner_id.id)
                 if(order_sudo.user_id.sudo().partner_id.id != 64465):
                     _message_post_helper(
                         "sale.order",
