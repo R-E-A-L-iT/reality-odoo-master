@@ -76,13 +76,23 @@
 													<tr>
 														<td valign="top" style="font-size:13px;">
 															<div>
-																<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
-																	<span>
-																	SOUMISSION																	</span>
-																	<span t-esc="message.record_name" />
-																</h1>
-																<h1 t-else="" style="color: black;">BON DE COMMANDE
-																</h1>
+																<t t-if="record.partner_id.lang != 'fr_CA'">
+																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																		<span>
+																		QUOTATION																	</span>
+																		<span t-esc="message.record_name" />
+																	</h1>
+																	<h1 t-else="" style="color: black;">PURCHASE ORDER
+																	</h1>
+																</t>
+																<t t-elif="record.partner_id.lang ''= 'fr_CA'">
+																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																		<span>
+																		SOUMISSION																	</span>
+																		<span t-esc="message.record_name" />
+																	</h1>
+																	<h1 t-else="" style="color: black;">BON DE COMMANDE</h1>
+																</t>
 																<br />
 																<br />
 																<t t-raw="message.body" />
