@@ -9,13 +9,12 @@
 		<xpath expr="//tr/t[2]/td" position="replace">
 			<t t-call="proquotes.tax_group_name_content" />
 		</xpath>
-		>
 	</template>
 
 	<template name="tax_group_name_content" id="tax_group_name_content">
 		<td>
 			<t t-if="o == undefined" t-set="source" t-value="doc" />
-			<t t-elif="o != undefined" t-set="source" t-value="doc" />
+			<t t-elif="o != undefined" t-set="source" t-value="o" />
 			<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
 			<t t-else="">
 				<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
