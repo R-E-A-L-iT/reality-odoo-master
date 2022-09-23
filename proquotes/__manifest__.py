@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.1',
+    'version': '0.3',
 
     # always loaded
     'data': [
@@ -46,7 +46,7 @@
         'views/quotesPDF.xml',
         'views/invoicePDF.xml',
         'views/quotesBackend.xml',
-        'views/tax.xml',
+        # 'views/tax.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/quoteLogo.xml',
