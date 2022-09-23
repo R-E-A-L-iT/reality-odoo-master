@@ -2,10 +2,9 @@
 <odoo>
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
 
-		<xpath expr="//tr[1]" position="replace">
+		<xpath expr="//td[1]" position="replace">
 			<tr>
 				<td>
-					<span t-out="" />
 					<t t-if="o == undefined" t-set="source" t-value="doc" />
 					<t t-elif="o != undefined" t-set="source" t-value="doc" />
 					<span t-out="source.company_id.id" />
