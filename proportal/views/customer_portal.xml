@@ -10,7 +10,7 @@
         </xpath>
     </template>-->
 
-	<template name="Proportal Logout" id="logout" inherit_id="portal_layout">
+	<template id="logout" name="proportal_logout" inherit_id="portal_layout" priority="17">
 		<xpath expr="//div[@id=&quot;o_my_sidebar&quot;]//div[3]" position="after">
 			<div>
 				<!-- <a t-attf-href="/web/session/logout?redirect={{share_redirect_URL}}" role="menuitem">LOGOUT</a> -->
