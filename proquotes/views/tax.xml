@@ -3,41 +3,13 @@
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
 
 		<xpath expr="//tr/t[1]/td" position="replace">
-			<td>
-				<t t-if="o == undefined" t-set="source" t-value="doc" />
-				<t t-elif="o != undefined" t-set="source" t-value="doc" />
-				<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
-				<t t-else="">
-					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
-					<span t-elif="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">TVH</span>
-					<span t-elif="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">TVQ</span>
-					<span t-else="" t-out="amount_by_group['tax_group_name']" />
-				</t>
-				<!--R-E-A-L.iT Solutions-->
-				<t t-if="source.company_id.id == 15">
-					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
-					<span t-if="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
-					<span t-if="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">1228256885 TQ 0001</span>
-				</t>
-				<!--Abtech Quebec-->
-				<t t-elif="source.company_id.id == 6">
-					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">141 558 296 RT 0001</span>
-					<span t-if="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">1019504774 TQ 0001</span>
-				</t>
-				<!--Abtech Ontario-->
-				<t t-elif="source.company_id.id == 5">
-					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">750 579 674 RT 0001</span>
-				</t>
-				<!--Abtech Atlantic-->
-				<t t-elif="source.company_id.id == 7">
-					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">750 147 936 RT 0001</span>
-				</t>
-			</td>
+			<t t-call="proquotes.tax_group_name_content" />
 		</xpath>
 
 		<xpath expr="//tr/t[2]/td" position="replace">
 			<t t-call="proquotes.tax_group_name_content" />
 		</xpath>
+		>
 	</template>
 
 	<template name="tax_group_name_content" id="tax_group_name_content">
