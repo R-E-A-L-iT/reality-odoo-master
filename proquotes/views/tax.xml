@@ -5,8 +5,10 @@
 		<xpath expr="//tr[1]" position="replace">
 			<tr>
 				<td>
-					<span t-out="o==undefined" />
-					<!-- <span t-out="o.company_id.id" /> -->
+					<span t-out="" />
+					<t t-if="o == undefined" t-set="source" t-value="doc" />
+					<t t-elif="o != undefined" t-set="source" t-value="doc" />
+					<span t-out="source.company_id.id" />
 					<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
 					<t t-else="">
 						<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
