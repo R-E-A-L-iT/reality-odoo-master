@@ -2,7 +2,7 @@
 <odoo>
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
 
-		<xpath expr="//tr/t[1]" position="replace">
+		<xpath expr="//tr/t" position="replace">
 			<t t-if="len(tax_totals['groups_by_subtotal'][subtotal_to_show]) &gt; 1">
 				<td>
 					<t t-if="o == undefined" t-set="source" t-value="doc" />
