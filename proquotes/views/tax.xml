@@ -2,7 +2,7 @@
 <odoo>
 	<template id="proquote_tax_display" name="Proquotes Tax Display" inherit_id="account.tax_groups_totals">
 
-		<xpath expr="//td[1]" position="replace">
+		<xpath expr="//tr" position="replace">
 			<tr>
 				<td>
 					<t t-if="o == undefined" t-set="source" t-value="doc" />
