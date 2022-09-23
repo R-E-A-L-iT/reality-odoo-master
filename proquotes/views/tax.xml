@@ -4,14 +4,20 @@
 
 		<xpath expr="//td[1]" position="replace">
 			<td>
-				<t if="o.company_id.id == 15 or o.company_id.id == 3">
-					<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
-					<t t-else="">
-						<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
-						<span t-elif="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">TVH</span>
-						<span t-elif="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">TVQ</span>
-						<span t-else="" t-out="amount_by_group['tax_group_name']" />
-					</t>
+				<span t-out="o.company.id" />
+				<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
+				<t t-else="">
+					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
+					<span t-elif="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">TVH</span>
+					<span t-elif="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">TVQ</span>
+					<span t-else="" t-out="amount_by_group['tax_group_name']" />
+				</t>
+				<t if="o.company_id.id == 15">
+					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
+					<span t-if="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
+					<span t-if="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">1228256885 TQ 0001</span>
+				</t>
+				<t if="o.company_id.id == 2">
 					<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
 					<span t-if="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">777 376 542 RT 0001</span>
 					<span t-if="'QST' in amount_by_group['tax_group_name'] or 'TVQ' in amount_by_group['tax_group_name']">1228256885 TQ 0001</span>
