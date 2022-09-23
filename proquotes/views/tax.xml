@@ -24,5 +24,6 @@
 				</t>
 			</td>
 		</xpath>
+		<xpath expr="//td[1]" position="replace" />
 	</template>
 </odoo>
