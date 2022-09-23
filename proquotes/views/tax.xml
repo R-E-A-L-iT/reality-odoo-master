@@ -35,6 +35,9 @@
 						<t t-elif="source.company_id.id == 7">
 							<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">750 147 936 RT 0001</span>
 						</t>
+						<t t-else="">
+							<span>No Company</span>
+						</t>
 					</td>
 				</t>
 			</tr>
