@@ -21,7 +21,7 @@ class productType(models.Model):
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
-    imgCount = fields.Integer(str="Img Count", required=True, default=0)
+    imgCount = fields.Integer(string="Img Count", required=True, default=0)
 
 
 class person(models.Model):
