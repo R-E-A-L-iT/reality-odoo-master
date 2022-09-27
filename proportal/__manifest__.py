@@ -47,6 +47,7 @@
         'views/navButton.xml',
         'views/navbarCustom.xml',
         'views/cart.xml',
+        'views/carousel.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
