@@ -18,6 +18,8 @@
 				<div class="quote-address-block">
 					<h1 class="title">QUOTATION</h1>
 					<div class="hr"></div>
+					<span t-if="sale_order.partner_id.company_id != False">Has Company</span>
+					<strong t-out="str(sale_order.partner_id.company_id)" />
 					<h2 class="subtitle" t-field="sale_order.partner_id.name" />
 					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
 					<h2 class="subtitle">
@@ -551,8 +553,6 @@
 
 		<xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
 			<span>
-				<span t-if="sale_order.partner_id.company_id != False">Has Company</span>
-				<span t-out="str(sale_order.partner_id.company_id)" />
 				<strong t-field="sale_order.partner_id.name" />
 			</span>
 		</xpath>
