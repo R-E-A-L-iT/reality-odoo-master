@@ -311,7 +311,7 @@ class sync_pricelist:
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
 
-        product.ecom_folder = self.sheet[i][columns["folder"]].upper()
+        product.ecom_folder = self.sheet[i][columns["folder"]]
         product.ecom_media = self.sheet[i][columns["media"]].upper()
 
         if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
