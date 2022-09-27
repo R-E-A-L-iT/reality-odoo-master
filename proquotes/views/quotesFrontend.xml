@@ -18,7 +18,7 @@
 				<div class="quote-address-block">
 					<h1 class="title">QUOTATION</h1>
 					<div class="hr"></div>
-					<h2 t-if="sale_order.partner_id.company_name != False" t-out="sale_order.partner_id.company_name" />
+					<h2 t-if="sale_order.partner_id.parent_id != False" t-out="sale_order.partner_id.parent_id.name" />
 					<h2 t-else="">No Company</h2>
 					<h2 class="subtitle" t-field="sale_order.partner_id.name" />
 					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
