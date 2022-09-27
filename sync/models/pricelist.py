@@ -172,6 +172,13 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD R ID Missing")
             columnsMissing = True
 
+        if("ECOM-FOLDER" in self.sheet[0]):
+            columns["folder"] = self.sheet[0].index("ECOM-FOLDER")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "ECOM-FOLDER Missing")
+            columnsMissing = True
+
         if("ECOM-MEDIA" in self.sheet[0]):
             columns["media"] = self.sheet[0].index("ECOM-MEDIA")
         else:
@@ -302,6 +309,7 @@ class sync_pricelist:
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
 
+        product.ecom_folder = self.sheet[i][columns["folder"]].upper()
         product.ecom_media = self.sheet[i][columns["media"]].upper()
 
         if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
