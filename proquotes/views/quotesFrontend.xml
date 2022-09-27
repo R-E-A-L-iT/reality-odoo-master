@@ -552,6 +552,7 @@
 		<xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
 			<span>
 				<span t-if="sale_order.partner_id.company_id != False">Has Company</span>
+				<span t-out="str(partner_id.company_id)" />
 				<strong t-field="sale_order.partner_id.name" />
 			</span>
 		</xpath>
