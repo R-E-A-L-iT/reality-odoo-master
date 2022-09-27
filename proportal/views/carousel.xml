@@ -5,7 +5,7 @@
 			<t t-foreach="product.ecom_media" t-as="c">
 				<span t-out="str(product.sku) + '-' + str(c_index) + '.jpg'"></span>
 				<img t-if="c == 'J'" t-attf-alt="{{str(product.sku) + ': ' + str(c_index + 1)}}" t-attf-src="https://cdn.r-e-a-l.it/images/ecommerce/Leica/{{product.sku}}/{{product.sku}}-{{'{:02}'.format(c_index + 1)}}.png" />
-				<img t-if="c == 'P'" t-attf-alt="{{str(product.sku) + ': 'str(c_index + 1)}}" t-attf-src="https://cdn.r-e-a-l.it/images/ecommerce/Leica/{{product.sku}}/{{product.sku}}-{{'{:02}'.format(c_index + 1)}}.png" />
+				<img t-if="c == 'P'" t-attf-alt="{{str(product.sku) + ': ' + str(c_index + 1)}}" t-attf-src="https://cdn.r-e-a-l.it/images/ecommerce/Leica/{{product.sku}}/{{product.sku}}-{{'{:02}'.format(c_index + 1)}}.png" />
 			</t>
 		</xpath>
 	</template>
