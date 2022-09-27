@@ -2,7 +2,7 @@
 <odoo>
 	<template name="carousel" id="carousel" inherit_id="website_sale.shop_product_carousel" priority="99">
 		<xpath expr="//t[@t-foreach]" position="replace">
-			<t t-foreach="product.ecom_media" t-as="cr">
+			<t t-foreach="product.econ_media" t-as="c">
 				<span t-esc="c" />
 				<br />
 			</t>
