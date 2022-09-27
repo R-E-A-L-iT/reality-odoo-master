@@ -3,6 +3,7 @@
 	<template name="carousel" id="carousel" inherit_id="website_sale.shop_product_carousel" priority="99">
 		<xpath expr="//t[@t-foreach]" position="replace">
 			<t t-foreach="product.ecom_media" t-as="c">
+				<span t-out="str(product.sku) + '-' + str(index) + '.jpg'"></span>
 				<img t-if="c == 'J'" t-attf-alt="str(product.sku) + index" t-attf-src="str(product.sku) + '-' + str(index) + '.jpg'" />
 				<img t-if="c != 'J'" t-attf-alt="str(product.sku) + index" t-attf-src="str(product.sku) + '-' + str(index) + '.png'" />
 			</t>
