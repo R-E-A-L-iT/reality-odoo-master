@@ -11,6 +11,8 @@ from odoo import models
 
 _logger = logging.getLogger(__name__)
 
+SKIP_NO_CHANGE = False
+
 
 class sync_pricelist:
 
@@ -249,7 +251,7 @@ class sync_pricelist:
             try:
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
-                if(product.stringRep == str(self.sheet[i][:])):
+                if(product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
                     i = i + 1
                     continue
 
@@ -303,7 +305,7 @@ class sync_pricelist:
 
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
 
-        if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != ""):
+        if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
 
         product.name = self.sheet[i][columns["eName"]]
@@ -353,8 +355,6 @@ class sync_pricelist:
             _logger.info("Translate")
             self.translatePricelist(
                 product, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
-            self.translatePricelist(
-                product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new)
             self.translatePricelist(
                 product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new)
 
