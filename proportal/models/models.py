@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import ast
 import base64
@@ -15,27 +15,34 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+
 class productType(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
+    imgCount = fields.Integer(str="Img Count", required=True, default=0)
+
 
 class person(models.Model):
     _inherit = "res.partner"
-    
-    products = fields.One2many('stock.production.lot', 'owner', string="Products", readonly=True)
-    parentProducts = fields.One2many(related='parent_id.products', string="Company Products", readonly=True)
-    
+
+    products = fields.One2many(
+        'stock.production.lot', 'owner', string="Products", readonly=True)
+    parentProducts = fields.One2many(
+        related='parent_id.products', string="Company Products", readonly=True)
+
+
 class productInstance(models.Model):
     _inherit = "stock.production.lot"
-    
+
     owner = fields.Many2one('res.partner', string="Owner")
     equipment_number = fields.Char(string="Equipment Number")
     sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
-    expire = fields.Date(string='Expiration Date', default=lambda self: fields.Date.today(), required=False)
+    expire = fields.Date(string='Expiration Date',
+                         default=lambda self: fields.Date.today(), required=False)
     formated_label = fields.Char(compute='_label')
-    
+
     def _label(self):
         for i in self:
             r = i.name + " " + " " + i.product_id.name
@@ -44,27 +51,32 @@ class productInstance(models.Model):
             i.formated_label = r
             return
 
+
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     def init(self):
         internal_group = self.env.ref('base.group_user')
-        portal_purchase_order_user_rule = self.env.ref('purchase.portal_purchase_order_user_rule')
+        portal_purchase_order_user_rule = self.env.ref(
+            'purchase.portal_purchase_order_user_rule')
         if portal_purchase_order_user_rule:
             portal_purchase_order_user_rule.sudo().write({
                 'domain_force': "['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]"
             })
-        portal_purchase_order_line_rule = self.env.ref('purchase.portal_purchase_order_line_rule')
+        portal_purchase_order_line_rule = self.env.ref(
+            'purchase.portal_purchase_order_line_rule')
         if portal_purchase_order_line_rule:
             portal_purchase_order_line_rule.sudo().write({
                 'domain_force': "['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]"
             })
-        portal_purchase_order_comp_rule = self.env.ref('purchase.purchase_order_comp_rule')
+        portal_purchase_order_comp_rule = self.env.ref(
+            'purchase.purchase_order_comp_rule')
         if portal_purchase_order_comp_rule and internal_group:
             portal_purchase_order_comp_rule.sudo().write({
                 'groups': [(4, internal_group.id)]
             })
-        portal_purchase_order_line_comp_rule = self.env.ref('purchase.purchase_order_line_comp_rule')
+        portal_purchase_order_line_comp_rule = self.env.ref(
+            'purchase.purchase_order_line_comp_rule')
         if portal_purchase_order_line_comp_rule and internal_group:
             portal_purchase_order_line_comp_rule.sudo().write({
                 'groups': [(4, internal_group.id)]
@@ -74,7 +86,8 @@ class PurchaseOrder(models.Model):
             portal_project_comp_rule.sudo().write({
                 'groups': [(4, internal_group.id)]
             })
-        portal_project_project_rule_portal = self.env.ref('project.project_project_rule_portal')
+        portal_project_project_rule_portal = self.env.ref(
+            'project.project_project_rule_portal')
         if portal_project_project_rule_portal:
             portal_project_project_rule_portal.sudo().write({
                 'domain_force': "['&', ('privacy_visibility', '=', 'portal'), ('partner_id', 'child_of', [user.partner_id.id])]"
@@ -84,7 +97,8 @@ class PurchaseOrder(models.Model):
             portal_task_comp_rule.sudo().write({
                 'groups': [(4, internal_group.id)]
             })
-        portal_project_task_rule_portal = self.env.ref('project.project_task_rule_portal')
+        portal_project_task_rule_portal = self.env.ref(
+            'project.project_task_rule_portal')
         if portal_project_task_rule_portal:
             portal_project_task_rule_portal.sudo().write({
                 'domain_force': """[
@@ -95,12 +109,14 @@ class PurchaseOrder(models.Model):
             ('partner_id', 'child_of', [user.partner_id.id]),
         ]"""
             })
-        portal_account_move_comp_rule = self.env.ref('account.account_move_comp_rule')
+        portal_account_move_comp_rule = self.env.ref(
+            'account.account_move_comp_rule')
         if portal_account_move_comp_rule and internal_group:
             portal_account_move_comp_rule.sudo().write({
                 'groups': [(4, internal_group.id)]
             })
-        portal_account_invoice_rule_portal = self.env.ref('account.account_invoice_rule_portal')
+        portal_account_invoice_rule_portal = self.env.ref(
+            'account.account_invoice_rule_portal')
         if portal_account_invoice_rule_portal:
             portal_account_invoice_rule_portal.sudo().write({
                 'domain_force': "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
