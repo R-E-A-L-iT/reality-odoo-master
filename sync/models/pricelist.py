@@ -172,6 +172,13 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD R ID Missing")
             columnsMissing = True
 
+        if("ECOM-MEDIA" in self.sheet[0]):
+            columns["media"] = self.sheet[0].index("ECOM-MEDIA")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "ECOM-MEDIA Missing")
+            columnsMissing = True
+
         if("Continue" in self.sheet[0]):
             columns["continue"] = self.sheet[0].index("Continue")
         else:
