@@ -302,6 +302,8 @@ class sync_pricelist:
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
 
+        product.ecom_media = self.sheet[i][columns["media"]]
+
         if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
             product.price = self.sheet[i][columns["canPrice"]]
             product.cadVal = self.sheet[i][columns["canPrice"]]
