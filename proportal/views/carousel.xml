@@ -4,8 +4,8 @@
 		<xpath expr="//t[@t-foreach]" position="replace">
 			<t t-foreach="product.ecom_media" t-as="c">
 				<span t-out="str(product.sku) + '-' + str(c_index) + '.jpg'"></span>
-				<img t-if="c == 'J'" t-attf-alt="{{str(product.sku) + str(c_index)}}" t-attf-src="{{str(product.sku) + '-' + str(c_index) + '.png'}}" />
-				<img t-if="c == 'P'" t-attf-alt="{{str(product.sku) + str(c_index)}}" t-attf-src="{{str(product.sku) + '-' + str(c_index) + '.png'}}" />
+				<img t-if="c == 'J'" t-attf-alt="{{str(product.sku) + str(c_index)}}" t-attf-src="cdn.r-e-a-l.it/images/eccommerce/leica/{{str(product.sku) + '-' + str(c_index) + '.png'}}" />
+				<img t-if="c == 'P'" t-attf-alt="{{str(product.sku) + str(c_index)}}" t-attf-src="cdn.r-e-a-l.it/images/eccommerce/leica/{{str(product.sku) + '-' + str(c_index) + '.png'}}" />
 			</t>
 		</xpath>
 	</template>
