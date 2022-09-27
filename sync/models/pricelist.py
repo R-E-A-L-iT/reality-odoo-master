@@ -11,6 +11,8 @@ from odoo import models
 
 _logger = logging.getLogger(__name__)
 
+SKIP_NO_CHANGE = False
+
 
 class sync_pricelist:
 
@@ -21,7 +23,7 @@ class sync_pricelist:
 
 # follows same pattern
     def syncPricelist(self):
-        sheetWidth = 29
+        sheetWidth = 30
         i = 1
 
         columns = dict()
@@ -172,6 +174,13 @@ class sync_pricelist:
                 msg, self.name, "Header", "USD R ID Missing")
             columnsMissing = True
 
+        if("ECOM-FOLDER" in self.sheet[0]):
+            columns["folder"] = self.sheet[0].index("ECOM-FOLDER")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "ECOM-FOLDER Missing")
+            columnsMissing = True
+
         if("ECOM-MEDIA" in self.sheet[0]):
             columns["media"] = self.sheet[0].index("ECOM-MEDIA")
         else:
@@ -242,7 +251,7 @@ class sync_pricelist:
             try:
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
-                if(product.stringRep == str(self.sheet[i][:])):
+                if(product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
                     i = i + 1
                     continue
 
@@ -296,12 +305,13 @@ class sync_pricelist:
 
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
 
-        if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != ""):
+        if(product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
 
+        product.ecom_folder = self.sheet[i][columns["folder"]]
         product.ecom_media = self.sheet[i][columns["media"]].upper()
 
         if(str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
@@ -345,8 +355,6 @@ class sync_pricelist:
             _logger.info("Translate")
             self.translatePricelist(
                 product, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
-            self.translatePricelist(
-                product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_CA", new)
             self.translatePricelist(
                 product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new)
 

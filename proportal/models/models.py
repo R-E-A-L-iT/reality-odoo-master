@@ -7,6 +7,7 @@ import re
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
+from urllib import request
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -21,6 +22,7 @@ class productType(models.Model):
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
+    ecom_folder = fields.Char(string="folder", required=True, default="")
     ecom_media = fields.Char(string="Img Count", required=True, default="")
 
 
