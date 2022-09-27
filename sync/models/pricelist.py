@@ -11,7 +11,7 @@ from odoo import models
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = False
+SKIP_NO_CHANGE = True
 
 
 class sync_pricelist:
