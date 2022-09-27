@@ -323,7 +323,7 @@
 					</t>
 					<span style="color: #db0d0d;" t-field="doc.name" />
 				</h2>
-				<span t-if="doc.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />
+				<span t-if="doc.partner_id.parent_id != False" t-field="doc.partner_id.parent_id.name" />
 				<br t-if="doc.partner_id.parent_id != False" />
 				<span t-field="doc.partner_id.name" />
 				<br />
