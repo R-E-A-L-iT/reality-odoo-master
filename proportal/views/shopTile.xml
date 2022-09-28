@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.product">
+	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.product" priority="17">
 		<!-- <xpath expr="//img" position="replace" /> -->
 	</template>
 </odoo>
