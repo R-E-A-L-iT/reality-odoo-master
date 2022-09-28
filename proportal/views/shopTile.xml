@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.product" priority="99">
+	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.products_item" priority="99">
 		<!-- inherit_id="website_sale.product" -->
-		<xpath expr="//span[@itemprop=&quot;image&quot;]" position="replace" />
+		<xpath expr="//span[@t-field=&quot;image_holder.image_1920&quot;]" position="replace" />
 	</template>
 </odoo>
