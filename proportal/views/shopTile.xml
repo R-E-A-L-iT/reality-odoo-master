@@ -3,6 +3,6 @@
 <odoo>
 	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.products" priority="17">
 		<!-- inherit_id="website_sale.product" -->
-		<!-- <xpath expr="//img" position="replace" /> -->
+		<xpath expr="//span[@itemprop=&quot;image&quot;]" position="replace" />
 	</template>
 </odoo>
