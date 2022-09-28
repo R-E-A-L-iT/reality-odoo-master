@@ -102,7 +102,7 @@
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
 			<span t-raw="line.product_id.name"></span>
-			<span t-esc="line.product_id.formated_label"></span>
+			<span t-esc="line.formated_label"></span>
 
 			<style>
 				.description-root *{
