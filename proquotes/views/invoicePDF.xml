@@ -111,7 +111,7 @@
 					margin-bottom: 0px !important;
 				}
 			</style>
-			<t t-if="line.name != line.product_id.description_sale">
+			<t t-if="str(line.name) != str(line.product_id.description_sale)">
 				<span class="description-root">
 					<span t-raw="line.name" />
 				</span>
