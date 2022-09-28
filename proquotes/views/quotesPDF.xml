@@ -222,13 +222,16 @@
 
 			<!-- <t t-set="description" t-value="line.name"/> -->
 			<style>
-				.description-root *{
+				description-root, .description-root *{
+					font-size: .75rem;
 					margin-top: 0px !important;
 					margin-bottom: 0px !important;
 				}
 			</style>
-			<span t-raw="line.name" />
-			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;" />
+			<span class="description-root">
+				<span t-raw="line.name" />
+			</span>
+			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
 		</xpath>
 
 		<!--Hide Unselected-->
