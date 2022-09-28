@@ -235,11 +235,11 @@
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<!-- <span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' /> -->
 					<div class="product_fold" style="width: 100%;">
-						<t t-if="str(line.name) != str(line.product_id.description_sale)">
-							<span class="description-root">
-								<span t-raw="line.name" />
-							</span>
-						</t>
+						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)"> -->
+						<span class="description-root">
+							<span t-raw="line.name" />
+						</span>
+						<!-- </t> -->
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
