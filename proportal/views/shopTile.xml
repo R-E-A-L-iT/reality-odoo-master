@@ -4,7 +4,7 @@
 	<template id="shop-tile" name="Shop_Tile" inherit_id="website_sale.products_item" priority="99">
 		<!-- inherit_id="website_sale.product" -->
 		<xpath expr="//span[@t-field=&quot;image_holder.image_1920&quot;]" position="replace">
-			<img t-attf-src="https://cdn.r-e-a-l.it/images/eccommerce/{{product.sku}}/{{product.sku}}-01.png" t-attf-alt="{{product.name}}" />
+			<img t-attf-src="https://cdn.r-e-a-l.it/images/eccommerce/{{product.ecom_folder}}/{{product.sku}}/{{product.sku}}-01.png" t-attf-alt="{{product.name}}" />
 		</xpath>
 	</template>
 </odoo>
