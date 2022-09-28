@@ -102,16 +102,22 @@
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
 			<span t-raw="line.product_id.name"></span>
-			<!-- <span t-esc="line.product_id.formated_label"></span> -->
+			<br />
 
 			<style>
-				.description-root *{
+				.description-root, .description-root *{
+					font-size: 0.75rem
 					margin-top: 0px !important;
 					margin-bottom: 0px !important;
 				}
 			</style>
+			<t t-if="str(line.name) != str(line.product_id.description_sale)">
+				<span class="description-root">
+					<span t-raw="line.name" />
+				</span>
+			</t>
 			<br />
-			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777; margin-top: 0px !important; margin-bottom: 0px !important; font-size: .75rem;" />
+			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
 		</xpath>
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
 			<t t-if="o.company_id.id == 15">
