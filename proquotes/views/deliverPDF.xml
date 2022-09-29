@@ -6,7 +6,8 @@
 			<t t-set="footer" t-value="o.footer"></t>
 		</xpath>
 
-		<xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace">
+		<xpath expr="//div[hasclass('row')][1]" position="replace">
+			<!-- <xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace"> -->
 			<style>
 				#addressTable, #addressTable * {
 					margin-left: 0px;
