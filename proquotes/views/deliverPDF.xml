@@ -32,7 +32,7 @@
 					<span t-field="o.partner_id.phone" />
 					<br />
 				</td>
-				<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
+				<!-- <td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
 					<h5 style="color: #db0d0d;">Ship To</h5>
 					<span t-field="o.partner_shipping_id.street" />
 					<br />
@@ -42,7 +42,7 @@
 					<span t-field="o.partner_shipping_id.country_id.name" />
 					<br />
 					<span t-field="o.partner_shipping_id.phone" />
-				</td>
+				</td> -->
 			</table>
 		</xpath>
 	</template>
