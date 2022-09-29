@@ -2,12 +2,11 @@
 
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
-		<xpath expr="//div[hasclass('page')]" position="after">
-			<t t-set="footer" t-value="o.footer"></t>
-		</xpath>
+		<xpath expr="//div[hasclass('page')]" position="after"></xpath>
 
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
 			<t t-set="src" t-value="o.sale_id" />
+			<t t-set="footer" t-value="src.footer"></t>
 			<!-- <xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace"> -->
 			<style>
 				#addressTable, #addressTable * {
