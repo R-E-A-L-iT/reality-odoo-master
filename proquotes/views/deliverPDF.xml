@@ -9,6 +9,7 @@
 		<xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace">
 			<style>
 				#addressTable, #addressTable * {
+					margin-left: 0px;
 					border-color: #fff !important;
 					border-width: 0px !important;
 					border-style: none !important;
