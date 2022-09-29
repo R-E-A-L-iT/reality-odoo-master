@@ -42,6 +42,7 @@
 						<h5 style="color: #db0d0d;">Ship To</h5>
 						<span t-out="src.partner_shipping_id.name" />
 						<span t-out="src.partner_shipping_id.id" />
+						<span t-out="src.partner_shipping_id.street" />
 						<br />
 						<span t-field="src.partner_shipping_id.street" />
 						<br />
