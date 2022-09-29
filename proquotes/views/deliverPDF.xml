@@ -52,6 +52,6 @@
 			</table>
 		</xpath>
 
-		<xpath expr="//tr[@t-foreach=&quot;lineslines&quot;]" position="replace" />
+		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]" position="replace" />
 	</template>
 </odoo>
