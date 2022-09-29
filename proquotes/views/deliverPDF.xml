@@ -25,8 +25,19 @@
 					</td>
 				</tr>
 				<tr>
+					<!-- <td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
+						<h5 style="color: #db0d0d;">Ship To</h5>
+						<span t-field="o.partner_shipping_id.street" />
+						<br />
+						<span t-if="o.partner_shipping_id.city != False" t-out="o.partner_shipping_id.city + ','" />
+						<span t-esc="o.partner_shipping_id.state_id.code" />
+						<span t-field="o.partner_shipping_id.zip" />
+						<span t-field="o.partner_shipping_id.country_id.name" />
+						<span t-field="o.partner_shipping_id.phone" />
+						<br />
+					</td> -->
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Bill To</h5>
+						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Ship To</h5>
 						<span t-field="o.partner_id.street" />
 						<br />
 						<span t-if="o.partner_id.city != False" t-out="o.partner_id.city + ','" />
@@ -35,17 +46,6 @@
 						<span t-field="o.partner_id.country_id.name" />
 						<br />
 						<span t-field="o.partner_id.phone" />
-						<br />
-					</td>
-					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
-						<!-- <span t-field="o.partner_shipping_id.street" />
-						<br />
-						<span t-if="o.partner_shipping_id.city != False" t-out="o.partner_shipping_id.city + ','" />
-						<span t-esc="o.partner_shipping_id.state_id.code" />
-						<span t-field="o.partner_shipping_id.zip" />
-						<span t-field="o.partner_shipping_id.country_id.name" />
-						<span t-field="o.partner_shipping_id.phone" /> -->
 						<br />
 					</td>
 				</tr>
