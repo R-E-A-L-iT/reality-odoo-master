@@ -10,12 +10,13 @@
 			<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />
 			<h3 t-field="o.partner_id.name" />
 			<br />
-			<br />
 			<style>
 					#addressTable {
 						border-color: #fff !important;
 						border-width: 0px !important;
 						border-style: none !important;
+						clear: both;
+						display: block;
 					}
 				</style>
 			<table id="addressTable" style="border-style: collapse !important;" border="0">
