@@ -36,7 +36,7 @@
                 'proquotes/static/src/JS/rental.js',
             ]
     },
-    'version': '0.2',
+    'version': '0.3',
 
     # always loaded
     'data': [
@@ -52,7 +52,7 @@
         'views/renewalText.xml',
         'views/rentalTerms.xml',
         'views/invoiceBackend.xml',
-        'views/deliverPDF.xml',
+        # 'views/deliverPDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
