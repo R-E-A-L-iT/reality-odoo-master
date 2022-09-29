@@ -6,7 +6,7 @@
 			<t t-set="footer" t-value="o.footer"></t>
 		</xpath>
 
-		<xpath expr="//div[hasclass('div_outgoing_address')]" position="replace">
+		<xpath expr="//div[@name=&quot;div_outgoing_address&quot;]" position="replace">
 			<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />
 			<h3 t-field="o.partner_id.name" />
 			<br />
