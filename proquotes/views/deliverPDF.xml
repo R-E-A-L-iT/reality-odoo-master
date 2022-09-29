@@ -38,6 +38,7 @@
 					</td> -->
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 						<h5 style="color: #db0d0d" if="o.partner_id.id != o.partner_shipping_id.id">Ship To</h5>
+						<span t-out="str(o.partner_shipping_id.id" />
 						<span t-field="o.partner_id.street" />
 						<br />
 						<span t-if="o.partner_id.city != False" t-out="o.partner_id.city + ','" />
