@@ -26,29 +26,28 @@
 					</td>
 				</tr>
 				<tr>
-					<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
-						<span t-field="src.partner_shipping_id.street" />
+					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
+						<h5 style="color: #db0d0d" if="src.artner_id.id != src.artner_shipping_id.id">Bill To</h5>
+						<span t-field="src.artner_id.street" />
 						<br />
-						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
-						<span t-esc="src.partner_shipping_id.state_id.code" />
-						<span t-field="src.partner_shipping_id.zip" />
-						<span t-field="src.partner_shipping_id.country_id.name" />
-						<span t-field="src.partner_shipping_id.phone" />
+						<span t-if="src.artner_id.city != False" t-out="src.artner_id.city + ','" />
+						<span t-esc="src.artner_id.state_id.code" />
+						<span t-field="src.artner_id.zip" />
+						<span t-field="src.artner_id.country_id.name" />
+						<br />
+						<span t-field="src.artner_id.phone" />
 						<br />
 					</td>
-					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
-						<span t-out="str(src.partner_shipping_id.id)" />
-						<span t-field="src.partner_id.street" />
+					<td t-if="src.artner_id.id != src.artner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
+						<h5 style="color: #db0d0d;">Ship To</h5>
+						<span t-field="src.artner_shipping_id.street" />
 						<br />
-						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
-						<span t-esc="src.partner_id.state_id.code" />
-						<span t-field="src.partner_id.zip" />
-						<span t-field="src.partner_id.country_id.name" />
+						<span t-if="src.artner_shipping_id.city != False" t-out="src.artner_shipping_id.city + ','" />
+						<span t-esc="src.artner_shipping_id.state_id.code" />
+						<span t-field="src.artner_shipping_id.zip" />
+						<span t-field="src.artner_shipping_id.country_id.name" />
 						<br />
-						<span t-field="src.partner_id.phone" />
-						<br />
+						<span t-field="src.artner_shipping_id.phone" />
 					</td>
 				</tr>
 			</table>
