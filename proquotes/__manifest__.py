@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.3',
+    'version': '0.4',
 
     # always loaded
     'data': [
@@ -53,7 +53,7 @@
         'views/renewalText.xml',
         'views/rentalTerms.xml',
         'views/invoiceBackend.xml',
-        # 'views/deliverPDF.xml',
+        'views/deliverPDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
