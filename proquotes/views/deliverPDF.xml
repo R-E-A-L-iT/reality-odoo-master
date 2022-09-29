@@ -52,7 +52,7 @@
 			</table>
 		</xpath>
 
-		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]/span[@t-field=&quot;move.description_picking&quot;]" position="after">
+		<!-- <xpath expr="//tr[@t-foreach=&quot;lines&quot;]/span[@t-field=&quot;move.description_picking&quot;]" position="after">
 			<style>
 				.description-root, .description-root *{
 					font-size: 0.75rem
@@ -67,6 +67,6 @@
 			</t>
 			<br />
 			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
-		</xpath>
+		</xpath> -->
 	</template>
 </odoo>
