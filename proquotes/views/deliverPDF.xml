@@ -2,7 +2,7 @@
 
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
-		<xpath expr="//div[hasclas('page')]" position="after">
+		<xpath expr="//div[hasclass('page')]" position="after">
 			<t t-set="footer" t-value="o.footer"></t>
 		</xpath>
 	</template>
