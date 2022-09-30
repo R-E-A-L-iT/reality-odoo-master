@@ -52,7 +52,7 @@
 			</table>
 		</xpath>
 
-		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]" position="after">
+		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]" position="replace">
 			<style>
 				.description-root, .description-root *{
 					font-size: 0.75rem
