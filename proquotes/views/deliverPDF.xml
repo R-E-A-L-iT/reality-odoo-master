@@ -54,6 +54,10 @@
 
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<style>
+				td {
+					border-style: solid;
+				}
+
 				.description-root, .description-root *{
 					font-size: 0.75rem
 					margin-top: 0px !important;
