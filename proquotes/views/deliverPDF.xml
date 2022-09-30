@@ -5,7 +5,6 @@
 
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
 			<t t-set="src" t-value="o.sale_id" />
-			<t t-set="footer" t-value="o.footer"></t>
 			<!-- <xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace"> -->
 			<style>
 				#addressTable, #addressTable * {
@@ -71,6 +70,31 @@
 			</t>
 			<br />
 			<span class="description-root" t-raw="move.product_id.description_sale" style="color: #777;" />
+		</xpath>
+
+		<xpath expr="//div[@t-if=&quot;o.signature&quot;]" position="replace">
+			<div>
+				<span style="height: 40px"> PO #:</span>
+				<span style="border-bottom: solid !important; width:500px !important;">
+					<span style="color: #fff;">________________________________________</span>
+				</span>
+				<br />
+				<br />
+				<span style="height: 40px"> Signature:</span>
+				<span style="border-bottom: solid !important; width:500px !important;">
+					<span style="color: #fff;">____________________________________</span>
+				</span>
+				<br />
+				<br />
+				<span style="height: 40px"> Date:</span>
+				<span style="border-bottom: solid !important; width:500px !important;">
+					<span style="color: #fff;">________________________________________</span>
+				</span>
+				<br />
+				<br />
+				<br />
+				<t t-set="footer" t-value="doc.footer"></t>
+			</div>
 		</xpath>
 	</template>
 </odoo>
