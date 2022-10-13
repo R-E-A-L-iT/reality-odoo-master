@@ -252,3 +252,7 @@ span.qtySpan {
 td.tax-column {
 	display: none !important;
 }
+
+#portal_sale_content>div.oe_no_empty {
+	display: none;
+}
