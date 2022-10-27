@@ -6,7 +6,7 @@
 			<td t-if="line.product_id.product_tmpl_id" class="td-product_name">
 				<strong class="cart-name" t-field="line.product_id.name" />
 				<br />
-				<!-- <div class="cart-description" t-raw="line.product_id.description_sale" /> -->
+				<div class="cart-description" t-raw="line.product_id.description_sale" />
 			</td>
 		</xpath>
 	</template>
