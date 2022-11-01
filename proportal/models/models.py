@@ -33,7 +33,6 @@ class person(models.Model):
         'stock.production.lot', 'owner', string="Products", readonly=True)
     parentProducts = fields.One2many(
         related='parent_id.products', string="Company Products", readonly=True)
-    publish = fields.Boolean(string="publish", default="True")
 
 
 class productInstance(models.Model):
@@ -45,6 +44,7 @@ class productInstance(models.Model):
     expire = fields.Date(string='Expiration Date',
                          default=lambda self: fields.Date.today(), required=False)
     formated_label = fields.Char(compute='_label')
+    publish = fields.Boolean(string="publish", default="True")
 
     def _label(self):
         for i in self:
