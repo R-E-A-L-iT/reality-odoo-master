@@ -6,7 +6,6 @@ import json
 import re
 
 import requests
-from sync.models.ccp import sync_ccp
 import werkzeug.urls
 import base64
 
@@ -25,6 +24,7 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
+from .ccp import sync_ccp
 
 _logger = logging.getLogger(__name__)
 
