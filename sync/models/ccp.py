@@ -98,10 +98,9 @@ class sync_ccp:
                     [('name', '=', external_id), ('model', '=', 'stock.production.lot')])
                 if (len(ccp_ids) > 0):
                     self.updateCCP(self.database.env['stock.production.lot'].browse(
-                        ccp_ids[-1].res_id), self.sheet, sheetWidth, i, columns)
+                        ccp_ids[-1].res_id), i, columns)
                 else:
-                    self.createCCP(external_id,
-                                   sheetWidth, i, columns)
+                    self.createCCP(external_id, i, columns)
             except Exception as e:
                 _logger.info("CCP")
                 _logger.info(e)
@@ -155,7 +154,7 @@ class sync_ccp:
         ccp_item.stringRep = str(self.sheet[i][:])
 
     # follows same pattern
-    def createCCP(self, external_id, sheetWidth, i, columns):
+    def createCCP(self, external_id, i, columns):
         ext = self.database.env['ir.model.data'].create(
             {'name': external_id, 'model': "stock.production.lot"})[0]
 
@@ -170,4 +169,4 @@ class sync_ccp:
         ccp_item = self.database.env['stock.production.lot'].create({'name': self.sheet[i][columns["eidsn"]],
                                                                      'product_id': product_id, 'company_id': company_id})[0]
         ext.res_id = ccp_item.id
-        self.updateCCP(ccp_item, sheetWidth, i, columns)
+        self.updateCCP(ccp_item, i, columns)
