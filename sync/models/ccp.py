@@ -86,7 +86,8 @@ class sync_ccp:
                 continue
 
             if (not utilities.check_id(str(self.sheet[i][columns["externalId"]]))):
-                msg = utilities.buildMSG(msg, self.sheet, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, "Header", "Invalid SKU")
                 i = i + 1
                 continue
 
@@ -105,7 +106,8 @@ class sync_ccp:
                 _logger.info("CCP")
                 _logger.info(e)
                 _logger.info(i)
-                msg = utilities.buildMSG(msg, self.sheet, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, str(external_id), str(e))
                 msg = self.endTable(msg)
                 msg = msg + str(e)
                 return True, msg
