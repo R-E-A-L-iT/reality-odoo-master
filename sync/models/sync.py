@@ -119,7 +119,7 @@ class sync(models.Model):
         elif (syncType == "CCP"):
             _logger.info("CCP")
             syncer = sync_ccp(sheetName, sheet, self)
-            quit, msg = syncer.syncCCP(sheet)
+            quit, msg = syncer.syncCCP()
             _logger.info("DoneCCP")
         elif (syncType == "Pricelist"):
             _logger.info("Pricelist")
