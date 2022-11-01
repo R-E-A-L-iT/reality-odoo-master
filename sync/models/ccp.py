@@ -108,7 +108,6 @@ class sync_ccp:
                 _logger.info(i)
                 msg = utilities.buildMSG(
                     msg, self.name, str(external_id), str(e))
-                msg = self.endTable(msg)
                 msg = msg + str(e)
                 return True, msg
             i = i + 1
