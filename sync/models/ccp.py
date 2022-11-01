@@ -111,7 +111,7 @@ class sync_ccp:
                 msg = msg + str(e)
                 return True, msg
             i = i + 1
-        msg = self.endTable(msg)
+
         return False, msg
 
     # follows same pattern
