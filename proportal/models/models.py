@@ -21,6 +21,7 @@ class productType(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
+    publish = fields.Boolean(string="Publish", default=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
     ecom_folder = fields.Char(string="folder", required=True, default="")
     ecom_media = fields.Char(string="Img Count", required=True, default="")
@@ -48,7 +49,7 @@ class productInstance(models.Model):
     def _label(self):
         for i in self:
             r = i.name + " " + " " + i.product_id.name
-            if(i.expire != False):
+            if (i.expire != False):
                 r = r + " Expiration: " + str(i.expire)
             i.formated_label = r
             return
