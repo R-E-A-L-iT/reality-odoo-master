@@ -96,6 +96,7 @@ class sync_ccp:
 
                 ccp_ids = self.database['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'stock.production.lot')])
+                _logger.info("Here")
                 if (len(ccp_ids) > 0):
                     self.updateCCP(self.database['stock.production.lot'].browse(
                         ccp_ids[-1].res_id), self.sheet, sheetWidth, i, columns)
