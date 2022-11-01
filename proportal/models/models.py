@@ -21,7 +21,6 @@ class productType(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
     sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
-    publish = fields.Boolean(string="Publish", default=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
     ecom_folder = fields.Char(string="folder", required=True, default="")
     ecom_media = fields.Char(string="Img Count", required=True, default="")
@@ -34,6 +33,7 @@ class person(models.Model):
         'stock.production.lot', 'owner', string="Products", readonly=True)
     parentProducts = fields.One2many(
         related='parent_id.products', string="Company Products", readonly=True)
+    publish = fields.Boolean(string="publish", default="True")
 
 
 class productInstance(models.Model):
