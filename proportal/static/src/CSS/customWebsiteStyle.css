@@ -910,3 +910,7 @@ h2.subtitle>span {
 .product-tile div>span {
 	max-width: 45% !important;
 }
+
+.custom-product-table td {
+	color: #fff;
+}
