@@ -93,7 +93,9 @@ class sync_ccp:
 
         i = 1
         if (len(self.sheet[i]) != sheetWidth or columnsMissing):
-            msg = "<h1>Sync Page Invalid<h1>\n<h2>syncCCP function</h2>"
+            msg = "<h1>CCP page Invalid</h1>\n<p>" + str(self.name) + " width is: " + \
+                str(len(self.sheet[i])) + " Expected " + \
+                str(sheetWidth) + "</p>\n" + msg
             self.database.sendSyncReport(msg)
             _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
             return True, msg
