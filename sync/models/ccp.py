@@ -28,6 +28,7 @@ class sync_ccp:
 
         columns = dict()
         columnsMissing = False
+        msg = ""
 
         if ("Owner ID" in self.sheet[0]):
             columns["ownerId"] = self.sheet[0].index("Owner ID")
