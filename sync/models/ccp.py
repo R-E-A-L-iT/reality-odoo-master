@@ -175,6 +175,8 @@ class sync_ccp:
         else:
             ccp_item.expire = None
 
+        ccp_item.publish = self.sheet[i][columns["publish"]]
+
         # _logger.info("CCP String Rep")
         ccp_item.stringRep = str(self.sheet[i][:])
 
