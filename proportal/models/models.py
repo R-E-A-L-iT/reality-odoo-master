@@ -44,11 +44,12 @@ class productInstance(models.Model):
     expire = fields.Date(string='Expiration Date',
                          default=lambda self: fields.Date.today(), required=False)
     formated_label = fields.Char(compute='_label')
+    publish = fields.Boolean(string="publish", default="True")
 
     def _label(self):
         for i in self:
             r = i.name + " " + " " + i.product_id.name
-            if(i.expire != False):
+            if (i.expire != False):
                 r = r + " Expiration: " + str(i.expire)
             i.formated_label = r
             return

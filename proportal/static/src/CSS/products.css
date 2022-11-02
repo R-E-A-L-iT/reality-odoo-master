@@ -1,10 +1,15 @@
-.productTable > .active > .customerPortalProducts {
-    padding: 0.75rem !important;
-}
-.customerPortalProducts, .customerPortalProducts > span {
-    color: #333;
+.productTable>.active>.customerPortalProducts {
+	padding: 0.75rem !important;
 }
 
-#product_detail > div {
-    margin: auto;
+.custom-product-table td {
+	color: #fff;
+}
+
+.customerPortalProducts, .customerPortalProducts>span {
+	color: #333;
+}
+
+#product_detail>div {
+	margin: auto;
 }

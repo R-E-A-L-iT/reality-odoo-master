@@ -42,7 +42,7 @@
 					</tr>
 				</thead>
 				<t t-foreach="company.products" t-as="product">
-					<tr>
+					<tr t-if="product.publish != False" class="custom-product-table">
 						<td class="customerPortalProducts">
 							<t t-esc="product.product_id.name" />
 						</td>
