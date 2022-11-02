@@ -156,7 +156,8 @@ class sync_ccp:
 
 #         if(i == 8):
         # _logger.info("Id Tupple")
-        _logger.info(len(self.sheet[i][columns["name"]]))
+
+        _logger.info(self.sheet[i][columns["name"]])
         _logger.info(len(product_ids))
         ccp_item.product_id = product_ids[-1].id
 
