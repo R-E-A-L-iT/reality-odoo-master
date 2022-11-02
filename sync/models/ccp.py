@@ -24,7 +24,7 @@ class sync_ccp:
     # follows same pattern
     def syncCCP(self):
 
-        sheetWidth = 9
+        sheetWidth = 10
 
         columns = dict()
         columnsMissing = False
