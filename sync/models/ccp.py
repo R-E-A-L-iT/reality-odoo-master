@@ -24,8 +24,7 @@ class sync_ccp:
     # follows same pattern
     def syncCCP(self):
 
-        sheetWidth = 10
-
+        sheetWidth = 11
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -157,8 +156,6 @@ class sync_ccp:
 #         if(i == 8):
         # _logger.info("Id Tupple")
 
-        _logger.info(self.sheet[i][columns["name"]])
-        _logger.info(len(product_ids))
         ccp_item.product_id = product_ids[-1].id
 
 
