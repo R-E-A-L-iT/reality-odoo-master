@@ -14,7 +14,7 @@
 		<t t-if="company_name == 'Abtech On. Inc.'" t-set="state" t-value="'Ontario'" />
 		<t t-if="company_name == 'Abtech On. Inc.'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="city" t-value="'Sherbrook'" />
+		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="city" t-value="'Sherbrooke'" />
 		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="state" t-value="'Quebec'" />
 		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="country" t-value="'Canada'" />
 
@@ -93,7 +93,7 @@
 				<li>
 					<h3>
 						<strong>
-							<span t-esc="company_name" />
+							<strong t-esc="company_name" />
 							's COMMITMENTS
 						</strong>
 					</h3>
