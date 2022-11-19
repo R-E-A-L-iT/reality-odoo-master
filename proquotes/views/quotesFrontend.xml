@@ -195,10 +195,10 @@
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
-					<span t-raw="{{'{value:.2f}$'.format(value=line.product_id.cadVal)}}" class="text-right itemValue" />
+					<span t-esc="'{value:.2f}$'.format(value=line.product_id.cadVal" class="text-right itemValue" />
 				</td>
 				<td t-else="" class="text-right">
-					<span t-raw="{{'{value:.f}$'.format(value=line.product_id.usdVal)}}" class="text-right itemValue" />
+					<span t-esc="'{value:.f}$'.format(value=line.product_id.usdVal" class="text-right itemValue" />
 				</td>
 			</t>
 		</xpath>
