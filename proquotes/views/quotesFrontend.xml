@@ -188,7 +188,7 @@
 
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
-			<t t-if="sale_order.is_rental == True and False">
+			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
 					<span t-esc="'{value:.2f}$'.format(value=line.product_id.cadVal)" class="text-right itemValue test" />
 				</td>
