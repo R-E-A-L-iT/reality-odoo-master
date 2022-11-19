@@ -29,9 +29,6 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if (not self.validate(newAdd)):
-            return
-
         order_sudo.rental_diff_add = newAdd
 
         return
