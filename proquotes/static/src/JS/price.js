@@ -263,7 +263,6 @@ odoo.define("proquotes.price", function (require) {
 
 				for (var j = 0; j < tdList.length; j++) {
 					var inner = tdList[j].innerHTML;
-					console.log(inner);
 					var l = document.createElement("label");
 					l.setAttribute("for", "optional" + i.toString() + "O");
 					l.style.width = "100%";
