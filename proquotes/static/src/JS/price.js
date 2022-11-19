@@ -113,7 +113,7 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 			}
-
+			console.log(total)
 			totalLanding.innerHTML = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
 		},
 
