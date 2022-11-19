@@ -23,7 +23,7 @@ class sync_pricelist:
 
 # follows same pattern
     def syncPricelist(self):
-        sheetWidth = 30
+        sheetWidth = 31
         i = 1
 
         columns = dict()
