@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 class RentalCustomerPortal(cPortal):
 
     def validate(self, string):
-        reg = "^[a-zA-Z0-9-]*$"
+        reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
 
     @http.route(["/my/orders/<int:order_id>/newAddress"], type='json', auth="public", website=True)
