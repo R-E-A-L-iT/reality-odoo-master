@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import logging
+import base64
 import binascii
 
 from odoo import fields, http, _
@@ -10,13 +12,16 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.osv import expression
-import base64
+import re
 
-import logging
 _logger = logging.getLogger(__name__)
 
 
 class QuoteCustomerPortal(cPortal):
+
+    def validate(string):
+        reg = "^[a-zA-Z0-9- ]*$"
+        return not (re.search(reg, string) == None)
 
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
@@ -26,6 +31,9 @@ class QuoteCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not validate(ponumber)):
+            return
 
         order_sudo.customer_po_number = ponumber
 
@@ -41,18 +49,18 @@ class QuoteCustomerPortal(cPortal):
             return request.redirect('/my')
 
         i = 0
-        while(i < len(line_ids)):
+        while (i < len(line_ids)):
 
             digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
             line_id_formated = ""
 
             for c in line_ids[i]:
-                if(c in digits):
+                if (c in digits):
                     line_id_formated = line_id_formated + c
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
-            if(selected[i] == 'true'):
+            if (selected[i] == 'true'):
                 select_sudo.selected = 'true'
             else:
                 select_sudo.selected = 'false'
@@ -85,28 +93,28 @@ class QuoteCustomerPortal(cPortal):
         digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
         section_id_formated = ""
         for c in section_id:
-            if(c in digits):
+            if (c in digits):
                 section_id_formated = section_id_formated + c
 
         select_sudo = request.env['sale.order.line'].sudo().browse(
             int(section_id_formated))
-        if(selected):
+        if (selected):
             select_sudo.selected = 'true'
         else:
             select_sudo.selected = 'false'
 
-        while(i < len(line_ids)):
+        while (i < len(line_ids)):
 
             digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
             line_id_formated = ""
 
             for c in line_ids[i]:
-                if(c in digits):
+                if (c in digits):
                     line_id_formated = line_id_formated + c
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
-            if(selected):
+            if (selected):
                 select_sudo.sectionSelected = 'true'
             else:
                 select_sudo.sectionSelected = 'false'
@@ -138,12 +146,12 @@ class QuoteCustomerPortal(cPortal):
         line_id_formated = ""
 
         for c in line_id:
-            if(c in digits):
+            if (c in digits):
                 line_id_formated = line_id_formated + c
 
         select_sudo = request.env['sale.order.line'].sudo().browse(
             int(line_id_formated))
-        if(checked):
+        if (checked):
             select_sudo.hiddenSection = 'yes'
         else:
             select_sudo.hiddenSection = 'no'
@@ -171,13 +179,13 @@ class QuoteCustomerPortal(cPortal):
         line_id_formated = ""
 
         for c in line_id:
-            if(c in digits):
+            if (c in digits):
                 line_id_formated = line_id_formated + c
 
         select_sudo = request.env['sale.order.line'].sudo().browse(
             int(line_id_formated))
         select_sudo.product_uom_qty = quantity
-        if(quantity <= 0):
+        if (quantity <= 0):
             raise UserError(_("Product Quantity Must Be At Least 1"))
 
         if order_sudo != select_sudo.order_id:
