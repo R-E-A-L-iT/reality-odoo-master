@@ -114,7 +114,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 			}
 
-			totalLanding.innerHTML = total.toFixed(2).toLocaleString() + "$";
+			totalLanding.innerHTML = total.toFixed(2) + "$";
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
