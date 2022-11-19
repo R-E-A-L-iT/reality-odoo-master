@@ -419,7 +419,7 @@
 					<h3>
 						<strong>
 							ENGAGEMENTS DE
-							<span t-esc="company_name" />
+							<t t-esc="company_name" />
 						</strong>
 					</h3>
 					<ol>
@@ -469,7 +469,7 @@
 						<li>
 							<h4>
 								Retour des Équipements à
-								<span t-esc="company_name" />
+								<t t-esc="company_name" />
 							</h4>
 							<p>
 								Le Client s'engage à retourner les Équipements à
