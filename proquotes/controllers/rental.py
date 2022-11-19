@@ -7,6 +7,7 @@ from random import sample
 from odoo import http, _, registry
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
+import re
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 
 import logging
@@ -14,6 +15,11 @@ _logger = logging.getLogger(__name__)
 
 
 class RentalCustomerPortal(cPortal):
+
+    def validate(string):
+        reg = "^[a-zA-Z0-9-]*$"
+        return not (re.search(reg, string) == None)
+
     @http.route(["/my/orders/<int:order_id>/newAddress"], type='json', auth="public", website=True)
     def newAdd(self, order_id, newAdd, access_token=None, **post):
 
@@ -22,6 +28,9 @@ class RentalCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not self.validate(newAdd)):
+            return
 
         order_sudo.rental_diff_add = newAdd
 
@@ -36,6 +45,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        if (not self.validate(street)):
+            return
+
         order_sudo.rental_street = street
 
         return
@@ -48,6 +60,9 @@ class RentalCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not self.validate(city)):
+            return
 
         order_sudo.rental_city = city
 
@@ -62,6 +77,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        if (not self.validate(zip)):
+            return
+
         order_sudo.rental_zip = zip
 
         return
@@ -75,7 +93,7 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if(state == "Select"):
+        if (state == "Select"):
             order_sudo.rental_state = False
             return
 
@@ -147,6 +165,9 @@ class RentalCustomerPortal(cPortal):
         stateCodes['Wisconsin'] = 58
         stateCodes['Wyoming'] = 59
 
+        if (state not in stateCodes):
+            order_sudo.rental_state = False
+
         order_sudo.rental_state = stateCodes[state]
 
         return
@@ -178,6 +199,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        if (not self.validate(start)):
+            return
+
         order_sudo.rental_start = start
 
         return
@@ -190,6 +214,9 @@ class RentalCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not self.validate(end)):
+            return
 
         order_sudo.rental_end = end
 
