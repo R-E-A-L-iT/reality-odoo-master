@@ -186,21 +186,16 @@
 			<attribute name="class">subtotal-source</attribute>
 		</xpath>
 
-		<!-- Rental Item Value Head -->
-		<!-- <xpath expr="//section[@id=&quot;details&quot;]//th[1]" position="after"> -->
-		<!-- <th class="text-right" t-if="sale_order.is_rental == True">Product Value</th> -->
-		<!-- </xpath> -->
-
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
-			<t t-if="sale_order.is_rental == True">
+			<!-- <t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
 					<span t-esc="{{1 + '' + '{value:.2f}$'.format(value=line.product_id.cadVal}}" class="text-right itemValue" />
 				</td>
 				<td t-else="" class="text-right">
 					<span t-esc="{{1 + '' + '{value:.f}$'.format(value=line.product_id.usdVal}}" class="text-right itemValue" />
 				</td>
-			</t>
+			</t> -->
 		</xpath>
 
 		<!--Apply HTML tags to description and Names And Add User Control Elements-->
