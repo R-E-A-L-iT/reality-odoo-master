@@ -261,15 +261,15 @@ odoo.define("proquotes.price", function (require) {
 
 				var tdList = row.querySelectorAll("td");
 
-				for (var j = 0; j < tdList.length; j++) {
-					var inner = tdList[j].innerHTML;
-					var l = document.createElement("label");
-					l.setAttribute("for", "optional" + i.toString() + "O");
-					l.style.width = "100%";
-					l.innerHTML = inner;
-					tdList[j].innerHTML = "";
-					tdList[j].append(l);
-				}
+				// for (var j = 0; j < tdList.length; j++) {
+				// 	var inner = tdList[j].innerHTML;
+				// 	var l = document.createElement("label");
+				// 	l.setAttribute("for", "optional" + i.toString() + "O");
+				// 	l.style.width = "100%";
+				// 	l.innerHTML = inner;
+				// 	tdList[j].innerHTML = "";
+				// 	tdList[j].append(l);
+				// }
 			}
 		},
 
