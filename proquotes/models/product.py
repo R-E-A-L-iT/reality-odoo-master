@@ -23,4 +23,4 @@ class product(models.Model):
     cadVal = fields.Monetary(string="Canadian Product Value")
     usdVal = fields.Monetary(string="United States Product Value")
     isSoftware = fields.Boolean(
-        string="Is Software", required=True, default=False)
+        string="Is Software", default=False)
