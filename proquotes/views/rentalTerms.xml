@@ -144,7 +144,7 @@
 						<li>
 							<h4>
 								Returning the Equipment to
-								<span t-esc="company_name" />
+								<t t-esc="company_name" />
 							</h4>
 							<p>
 								The Customer agrees to return the Equipment to
