@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 class RentalCustomerPortal(cPortal):
 
-    def validate(string):
+    def validate(self, string):
         reg = "^[a-zA-Z0-9-]*$"
         return not (re.search(reg, string) == None)
 
