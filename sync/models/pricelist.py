@@ -63,6 +63,13 @@ class sync_pricelist:
                                      "FR-Description Missing")
             columnsMissing = True
 
+        if ("isSoftware" in self.sheet[0]):
+            columns["isSoftware"] = self.sheet[0].index("isSoftware")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "isSoftwareMissing")
+            columnsMissing = True
+
         if ("Price" in self.sheet[0]):
             columns["canPrice"] = self.sheet[0].index("Price")
         else:
@@ -202,8 +209,7 @@ class sync_pricelist:
             columnsMissing = True
 
         if (len(self.sheet[i]) != sheetWidth or columnsMissing):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + \
-                str(len(self.sheet[i])) + " Expected " + \
+            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
                 str(sheetWidth) + "</p>\n" + msg
             self.database.sendSyncReport(msg)
             _logger.info(msg)
@@ -313,6 +319,11 @@ class sync_pricelist:
 
         product.ecom_folder = self.sheet[i][columns["folder"]]
         product.ecom_media = self.sheet[i][columns["media"]].upper()
+
+        if (str(self.sheet[i][columns["isSoftware"]]) == "TRUE"):
+            product.is_software = True
+        else:
+            product.is_software = False
 
         if (str(self.sheet[i][columns["canPrice"]]) != " " and str(self.sheet[i][columns["canPrice"]]) != ""):
             product.price = self.sheet[i][columns["canPrice"]]
