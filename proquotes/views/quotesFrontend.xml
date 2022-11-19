@@ -193,7 +193,7 @@
 					<span t-esc="'{value:.2f}$'.format(value=line.product_id.cadVal)" class="text-right itemValue test" />
 				</td>
 				<td t-else="" class="text-right">
-					<span t-esc="'{value:.f}$'.format(value=line.product_id.usdVal)" class="text-right itemValue test" />
+					<span t-esc="'{value:.2f}$'.format(value=line.product_id.usdVal)" class="text-right itemValue test" />
 				</td>
 			</t>
 		</xpath>
