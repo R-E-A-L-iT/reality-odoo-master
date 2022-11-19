@@ -195,16 +195,12 @@
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-right">
-					<t t-if="line.product_id.isSoftware != True">
-						<span t-esc="line.product_id.cadVal" class="text-right itemValue" />
-						$
-					</t>
+					<span t-esc="line.product_id.cadVal" class="text-right itemValue" />
+					$
 				</td>
 				<td t-else="" class="text-right">
-					<t t-if="line.product_id.isSoftware != True">
-						<span t-esc="line.product_id.usdVal" class="text-right itemValue" />
-						$
-					</t>
+					<span t-esc="line.product_id.usdVal" class="text-right itemValue" />
+					$
 				</td>
 			</t>
 		</xpath>
