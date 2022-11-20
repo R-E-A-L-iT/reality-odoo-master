@@ -33,8 +33,8 @@
 					</h3>
 					<p>
 						The Customer hereby rents Equipment from
-						<t t-esc="company_name" />
-						, for the period indicated in the preamble
+						<t t-esc="company_name + ','" />
+						for the period indicated in the preamble
 					of this Agreement, following the terms and
 					conditions established hereinafter. The
 					Agreement comes into effect on the date
@@ -57,8 +57,8 @@
 								<t t-esc="company_name" />
 								the rent and fees indicated on the first page of this Agreement, in addition to applicable taxes.
 							If the Customer remains in possession of the Equipment after the Term, with the consent of
-								<t t-esc="company_name" />
-								, this Agreement shall remain in force and the Customer shall be the deemed the renter of the
+								<t t-esc="company_name + ','" />
+								this Agreement shall remain in force and the Customer shall be the deemed the renter of the
 							Equipment, following the same terms, conditions and commitments as those stipulated in this Agreement
 							(including payment of any rent).
 							</p>
@@ -93,8 +93,8 @@
 				<li>
 					<h3>
 						<strong>
-							<t t-esc="company_name" />
-							's COMMITMENTS
+							<t t-esc="company_name + '\'s'" />
+							COMMITMENTS
 						</strong>
 					</h3>
 					<ol>
@@ -153,8 +153,8 @@
 								<t t-esc="company_name" />
 								branch.
 							In such case, the Customer agrees to wash the Equipment prior to its pickup by
-								<t t-esc="company_name" />
-								. The Customer agrees to immediately notify
+								<t t-esc="company_name + '.'" />
+								The Customer agrees to immediately notify
 								<t t-esc="company_name" />
 								of any damages caused to the Equipment. In such case, the Customer must reimburse
 								<t t-esc="company_name" />
@@ -183,8 +183,8 @@
 							<h3>Standards, Policies and Others</h3>
 							<p>
 								The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by
-								<t t-esc="company_name" />
-								, particularly in regards to the use and safety of the Equipment.
+								<t t-esc="company_name + ','" />
+								particularly in regards to the use and safety of the Equipment.
 							</p>
 						</li>
 					</ol>
@@ -207,12 +207,12 @@
 							<h4>Indemnification</h4>
 							<p>
 								The Customer acknowledges that
-								<t t-esc="company_name" />
-								, its directors, officers, employees, agents, volunteers and subcontractors, cannot be held
+								<t t-esc="company_name + ','" />
+								its directors, officers, employees, agents, volunteers and subcontractors, cannot be held
 							liable for any breakage, loss, destruction of property and/or damage, of any kind, resulting
 							from the use of the Equipment. The Customer waives any right, recourse, claim and action against
-								<t t-esc="company_name" />
-								, its directors, officers, employees, agents, volunteers and subcontractors resulting from the use
+								<t t-esc="company_name + ','" />
+								its directors, officers, employees, agents, volunteers and subcontractors resulting from the use
 							of the Equipment. The Customer agrees to indemnify and hold
 								<t t-esc="company_name" />
 								harmless against any claim, of any type, resulting from or could result from any failure by the
@@ -231,8 +231,8 @@
 							<h4>Termination as of Right</h4>
 							<p>
 								This Agreement shall be terminated as of right without any notice or formal demand being required from
-								<t t-esc="company_name" />
-								, if the Customer makes a general assignment of its property for the benefit of its creditors, or if
+								<t t-esc="company_name + ','" />
+								if the Customer makes a general assignment of its property for the benefit of its creditors, or if
 							it is declared bankrupt or insolvent or if it allows its assets to be seized further to a writ of
 							execution or other legal proceedings.
 							</p>
@@ -331,16 +331,14 @@
 								<t t-esc="country" />
 								that apply in the
 								province of
-								<t t-esc="state" />
-								, which govern all of the provisions it contains.
+								<t t-esc="state + ','" />
+								which govern all of the provisions it contains.
 								The parties agree that any claim or any legal action taken for any reason with respect to this
 								Agreement shall be brought to a court located in the judicial district of
-								<t t-esc="city" />
-								,
-								<t t-esc="state" />
-								,
-								<t t-esc="country" />
-								, to the exclusion of any other judicial district that may have jurisdiction over such disputes under
+								<t t-esc="city + ','" />
+								<t t-esc="state + ','" />
+								<t t-esc="country + ','" />
+								to the exclusion of any other judicial district that may have jurisdiction over such disputes under
 								the law.
 							</p>
 						</li>
@@ -360,8 +358,8 @@
 					</h3>
 					<p>
 						Le Client loue, par les présentes, les Équipements de
-						<t t-esc="company_name" />
-						, pour la période de temps indiquée au préambule
+						<t t-esc="company_name + ','" />
+						pour la période de temps indiquée au préambule
 						de la présente entente, suivant les termes et conditions ci-après établis.
 						<br />
 						L'entente entre en vigueur à la date de sa signature par le Client et se termine à la fin de la période de
@@ -383,8 +381,8 @@
 								les loyers et frais prévus à la première (1re) page de la présente entente, en sus des taxes applicables.
 								<br />
 								Si le Client demeure en possession des Équipements après la Durée, avec le consentement de
-								<t t-esc="company_name" />
-								, la présente entente demeurera en vigueur et le Client sera réputé locataire des Équipements, suivant
+								<t t-esc="company_name + ','" />
+								la présente entente demeurera en vigueur et le Client sera réputé locataire des Équipements, suivant
 								les mêmes modalités, engagements et conditions que ceux énoncés dans la présente entente (y compris le
 								paiement de tout loyer).
 							</p>
@@ -476,10 +474,10 @@
 								<t t-esc="company_name" />
 								dans le même état de fonctionnement et de propreté qu'au moment de leur livraison, et ce, au
 								même emplacement que leur point de livraison original, ou à défaut dans toute succursale d'
-								<t t-esc="company_name" />
-								. À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par
-								<t t-esc="company_name" />
-								. Le Client s'engage à aviser immédiatement
+								<t t-esc="company_name + '.'" />
+								À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par
+								<t t-esc="company_name + '.'" />
+								Le Client s'engage à aviser immédiatement
 								<t t-esc="company_name" />
 								de tout dommage causé aux Équipements. À cet effet, le Client devra rembourser
 								<t t-esc="company_name" />
@@ -498,8 +496,8 @@
 								le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa
 								responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de
 								deux millions de dollars (2 000 000 $) et à remettre, à
-								<t t-esc="company_name" />
-								, une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une
+								<t t-esc="company_name + ','" />
+								une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une
 								couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements.
 							</p>
 						</li>
@@ -534,13 +532,13 @@
 							<h4>Indemnisation</h4>
 							<p>
 								Le Client reconnaît que
-								<t t-esc="company_name" />
-								, ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses
+								<t t-esc="company_name + ','" />
+								ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses
 								sous-traitants, ne peuvent être tenus responsables de tout bris, perte, destruction de
 								biens et/ou dommage, de quelque nature que ce soit, découlant de l'utilisation des Équipements.
 								Le Client renonce à tout droit, recours, réclamation et demande quelconque contre
-								<t t-esc="company_name" />
-								, ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses
+								<t t-esc="company_name + ','" />
+								ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses
 								sous-traitants découlant de l'utilisation des Équipements. Le Client convient d'indemniser
 								et de tenir
 								<t t-esc="company_name" />
@@ -561,8 +559,8 @@
 							<h4>Résiliation de plein droit</h4>
 							<p>
 								L'entente est résiliée de plein droit, sans avis ni mise en demeure nécessaire de la part de
-								<t t-esc="company_name" />
-								, si le Client fait cession de ses biens au bénéfice de ses créanciers, ou s'il devient failli
+								<t t-esc="company_name + ','" />
+								si le Client fait cession de ses biens au bénéfice de ses créanciers, ou s'il devient failli
 								ou insolvable ou s'il permet que ses actifs soient saisis à la suite d'un bref d'exécution ou
 								autre procédure légale;
 							</p>
@@ -595,8 +593,8 @@
 								<t t-esc="company_name" />
 								pourra, en tout temps et sans préavis à compter de la résiliation, reprendre possession des
 								Équipements et le Client, par les présentes, autorise
-								<t t-esc="company_name" />
-								, ses agents, employés ou représentants à entrer sur sa propriété ou à tout autre endroit où
+								<t t-esc="company_name + ','" />
+								ses agents, employés ou représentants à entrer sur sa propriété ou à tout autre endroit où
 								se trouve les Équipements dans le but de prendre possession immédiate desdits Équipements, le
 								tout aux frais du Client.
 							</p>
@@ -668,12 +666,11 @@
 								lesquelles régissent l'ensemble des dispositions qu'elle contient.
 								Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que
 								ce soit, relativement aux présentes, de choisir le district judiciaire de
-								<t t-esc="city" />
-								, province de
-								<t t-esc="state" />
-								,
-								<t t-esc="country" />
-								, comme le lieu approprié pour l'audition desdites réclamations ou poursuites
+								<t t-esc="city + ','" />
+								province de
+								<t t-esc="state + ','" />
+								<t t-esc="country + ','" />
+								comme le lieu approprié pour l'audition desdites réclamations ou poursuites
 								judiciaires, à l'exclusion de tout autre district judiciaire qui peut avoir juridiction sur un
 								tel litige selon les prescriptions de la loi.
 							</p>
