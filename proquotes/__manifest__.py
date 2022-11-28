@@ -36,7 +36,7 @@
                 'proquotes/static/src/JS/rental.js',
             ]
     },
-	# oc test-2
+	# oc test-3-AA
     'version': '0.4',
 
     # always loaded
