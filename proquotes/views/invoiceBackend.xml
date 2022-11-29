@@ -6,7 +6,7 @@
 			<field name="footer" invisible="0" />
 		</xpath>
 		<xpath expr="//group[@id=&quot;header_right_group&quot;]//div" position="after">
-			<span></span>
+			<field name="pricelist_id" />
 		</xpath>
 	</template>
 
