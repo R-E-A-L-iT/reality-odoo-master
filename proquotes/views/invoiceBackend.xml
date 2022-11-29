@@ -7,7 +7,6 @@
 		</xpath>
 		<xpath expr="//field[name=&quot;tax_cash_basis_created_move_ids&quot;]" position="after">
 			<span></span>
-			>
 		</xpath>
 	</template>
 
