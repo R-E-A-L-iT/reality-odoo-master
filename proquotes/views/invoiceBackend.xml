@@ -6,7 +6,8 @@
 			<field name="footer" invisible="0" />
 		</xpath>
 		<xpath expr="//field[name=&quot;suitable_journal_ids&quot;]" position="after">
-			<!-- <field></field> -->
+			<span></span>
+			>
 		</xpath>
 	</template>
 
