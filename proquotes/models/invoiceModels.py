@@ -23,7 +23,7 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
-    @api.depends('pricelist_id')
+    @api.onchange('pricelist_id')
     def _update_prices():
         _logger.info("Pricelist Change")
 
