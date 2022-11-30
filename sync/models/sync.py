@@ -55,7 +55,11 @@ class sync(models.Model):
 
     def getSyncData(self, psw):
 
-        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        # DEV R-E-A-L.iT Master Database
+        template_id = "1eE7jgDOiznclX3HsB0nrveKYAEeJWT0HIZj9m4EsxEc"
+        
+        # R-E-A-L.iT Master Database
+        #template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
 
         # get the database data; reading in the sheet
         try:
