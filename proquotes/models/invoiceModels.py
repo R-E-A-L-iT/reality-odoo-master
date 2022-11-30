@@ -24,7 +24,7 @@ class InvoiceMain(models.Model):
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
     @api.onchange('pricelist_id')
-    def _update_prices():
+    def _update_prices(self):
         _logger.info("Pricelist Change")
 
 
