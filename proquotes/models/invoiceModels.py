@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import ast
 import base64
@@ -18,21 +18,29 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
+
+class InvoiceMain(models.Model):
+    _inherit = "account.move"
+    pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
+
+
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
-    
-    applied_name = fields.Char(compute='get_applied_name', string="Applied Name")
-    
+
+    applied_name = fields.Char(
+        compute='get_applied_name', string="Applied Name")
+
     def get_applied_name(self):
         for record in self:
             id = self.env['ir.translation'].search([('value', '=', record.product_id.name),
-                                                   ('name', '=', 'product.template,name')])
-            if(len(id) > 1):
+                                                    ('name', '=', 'product.template,name')])
+            if (len(id) > 1):
                 id = id[-1]
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
-                                                      ('name', '=', 'product.template,name'),
+                                                      ('name', '=',
+                                                       'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
-            if(name == False or name  == ""):
+            if (name == False or name == ""):
                 name = record.product_id.name
             record.applied_name = name
