@@ -31,8 +31,9 @@ class InvoiceMain(models.Model):
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
-            product.price = pricelist.item_ids.search(
-                [('product_id', '=', id)])[0].price
+            priceResult = pricelist.item_ids.search(
+                [('product_id', '=', id)])
+            _logger.info(str(priceResult))
         _logger.info("Prices Updated")
 
 
