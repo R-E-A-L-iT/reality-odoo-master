@@ -39,7 +39,7 @@ class InvoiceMain(models.Model):
             _logger.info(str(id))
             for item in pricelist.item_ids:
                 # if (item.product_id == product):
-                _logger.info("id: " + str(id))
+                _logger.info("id: " + str(item.product_id) + " " + str(id))
             _logger.info("Search" + str(priceResult))
         _logger.info("Prices Updated")
 
