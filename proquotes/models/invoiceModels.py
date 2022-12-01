@@ -36,10 +36,7 @@ class InvoiceMain(models.Model):
             id = product.id
             priceResult = pricelist.item_ids.search(
                 [('product_id', '=', id)])
-            _logger.info(str(id))
-            for item in pricelist.item_ids:
-                # if (item.product_id == product):
-                _logger.info("id: " + str(item.product_id.id) + " " + str(id))
+            _logger.info(pricelist.item_ids)
             _logger.info("Search" + str(priceResult))
         _logger.info("Prices Updated")
 
