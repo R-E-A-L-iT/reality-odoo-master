@@ -25,10 +25,13 @@ class InvoiceMain(models.Model):
 
     @api.onchange('pricelist_id')
     def _update_prices(self):
+        pricelist = self.env['product.pricelist'].search(
+            [('id', '=', self.pricelist_id)])[0]
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
-            _logger.info(str(id) + str(product.name))
+            product.price = pricelist.item_ids.search(
+                [('product_id', '=', id)])[0].price
         _logger.info("Prices Updated")
 
 
