@@ -33,6 +33,7 @@ class InvoiceMain(models.Model):
             id = product.id
             priceResult = pricelist.item_ids.search(
                 [('product_id', '=', id)])
+            _logger.info(str(id))
             _logger.info("Search" + str(priceResult))
             _logger.info(pricelist.item_ids)
         _logger.info("Prices Updated")
@@ -53,7 +54,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
-                                                       'product.template,name'),
+                                                     'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
             if (name == False or name == ""):
                 name = record.product_id.name
