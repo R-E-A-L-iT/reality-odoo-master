@@ -29,6 +29,7 @@ class InvoiceMain(models.Model):
             [('id', '=', self.pricelist_id.id)])
         if (len(pricelist) < 1):
             return
+        _logger.info(len(pricelist))
         pricelist = pricelist[-1]
         _logger.info(str(pricelist))
         for record in self.invoice_line_ids:
