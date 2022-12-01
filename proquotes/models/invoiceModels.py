@@ -26,7 +26,10 @@ class InvoiceMain(models.Model):
     @api.onchange('pricelist_id')
     def _update_prices(self):
         pricelist = self.env['product.pricelist'].search(
-            [('id', '=', self.pricelist_id.id)])[-1]
+            [('id', '=', self.pricelist_id.id)])
+        if (len(pricelist) < 1):
+            return
+        pricelist = pricelist[-1]
         _logger.info(str(pricelist))
         for record in self.invoice_line_ids:
             product = record.product_id
@@ -54,7 +57,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
-                                                     'product.template,name'),
+                                                       'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
             if (name == False or name == ""):
                 name = record.product_id.name
