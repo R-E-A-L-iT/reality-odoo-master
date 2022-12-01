@@ -32,10 +32,10 @@ class InvoiceMain(models.Model):
             product = record.product_id
             id = product.id
             priceResult = pricelist.item_ids.search(
-                [('product_id', '=', id)])
+                [('product_id', '=', id)])[-1]
             _logger.info(str(id))
             _logger.info("Search" + str(priceResult))
-            _logger.info(pricelist.item_ids)
+            # _logger.info(pricelist.item_ids)
         _logger.info("Prices Updated")
 
 
