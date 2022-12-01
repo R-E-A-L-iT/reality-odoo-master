@@ -27,6 +27,7 @@ class InvoiceMain(models.Model):
     def _update_prices(self):
         pricelist = self.env['product.pricelist'].search(
             [('id', '=', self.pricelist_id.id)])[0]
+        _logger.info(str(pricelist))
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
