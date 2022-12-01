@@ -27,7 +27,7 @@ class InvoiceMain(models.Model):
     def _update_prices(self):
         for record in self.invoice_line_ids:
             _logger.info(str(record.name))
-            _logger.info("Prices Updated")
+        _logger.info("Prices Updated")
 
 
 class invoiceLine(models.Model):
