@@ -25,7 +25,7 @@ class InvoiceMain(models.Model):
 
     @api.onchange('pricelist_id')
     def _update_prices(self):
-        _logger.info("Pricelist update")
+        _logger.info(str(self))
 
 
 class invoiceLine(models.Model):
