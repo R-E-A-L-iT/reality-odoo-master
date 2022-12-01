@@ -33,6 +33,8 @@ class InvoiceMain(models.Model):
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
+            name = product.name
+            _logger.info(str(name))
             priceResult = pricelist.item_ids.search(
                 [('product_id', '=', id)])
             _logger.info(len(pricelist.item_ids))
