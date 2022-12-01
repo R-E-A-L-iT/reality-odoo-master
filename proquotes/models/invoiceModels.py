@@ -35,7 +35,7 @@ class InvoiceMain(models.Model):
             product = record.product_id
             id = product.id
             priceResult = pricelist.item_ids.search(
-                [('product_id', '=', product)])
+                [('product_id', '=', id)])
             _logger.info(str(id))
             for item in pricelist.item_ids:
                 if (item.product_id == product):
