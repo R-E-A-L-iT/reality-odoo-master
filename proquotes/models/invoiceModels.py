@@ -39,7 +39,10 @@ class InvoiceMain(models.Model):
             priceResult = pricelist.item_ids.search(
                 [('product_tmpl_id.sku', '=', sku)])
             for i in pricelist.item_ids:
-                _logger.info(i.product_tmpl_id.sku)
+                pass
+                # _logger.info(i.product_tmpl_id.sku)
+
+            _logger.info(product.name)
             _logger.info(priceResult)
         _logger.info("Prices Updated")
 
