@@ -40,6 +40,7 @@ class InvoiceMain(models.Model):
             for i in pricelist.item_ids:
                 if (i.product_tmpl_id.id == id):
                     _logger.info(id)
+                    _logger.info(priceResult)
         _logger.info("Prices Updated")
 
 
