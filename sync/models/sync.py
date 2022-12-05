@@ -563,6 +563,11 @@ class sync(models.Model):
                 i = i + 1
                 continue
 
+            if (not self.check_price(sheet[i][columns["priceUSD"]])):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i = i + 1
+                continue
+
             try:
                 external_id = str(sheet[i][columns["sku"]])
                 
@@ -575,7 +580,7 @@ class sync(models.Model):
                     self.createProducts(sheet, external_id,
                                         sheetWidth, i, columns)
             except Exception as e:
-                _logger.info("Products")
+                _logger.info("Products Exception")
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
@@ -584,7 +589,8 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-    def pricelist(self, product, priceName, pricelistName, i, columns):                
+    def pricelist(self, product, priceName, pricelistName, i, columns):
+        _logger.info("sync pricelist")                
         pricelist_id = self.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.env['product.pricelist.item'].search(
