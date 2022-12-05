@@ -34,15 +34,14 @@ class InvoiceMain(models.Model):
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
                 [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
-            _logger.info(priceResult)
-            _logger.info(len(priceResult))
             if (len(priceResult) < 1):
-                _logger.error(str(product.price))
                 record.price_unit = product.price
+                record.price_subtotal = product.price
                 continue
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
+            record.price_subtotal = priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
 
