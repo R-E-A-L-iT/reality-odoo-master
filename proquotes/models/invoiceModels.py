@@ -37,6 +37,8 @@ class InvoiceMain(models.Model):
             if (len(priceResult) < 1):
                 _logger.info("No Price: ", product.sku)
                 continue
+            _logger.info(priceResult[-1].product_tmpl_id.id)
+            _logger.info(product.id)
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
