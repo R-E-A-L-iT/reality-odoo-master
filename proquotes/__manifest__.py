@@ -39,20 +39,21 @@
 
     'version': '0.9',
 
+
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'views/quotesBackend.xml',
         'views/quotesFrontend.xml',
         'views/quotesPDF.xml',
+        'views/invoiceBackend.xml',
         'views/invoicePDF.xml',
-        'views/quotesBackend.xml',
         'views/tax.xml',
         'views/mail.xml',
         'views/quotesTemplates.xml',
         'views/quoteLogo.xml',
         'views/renewalText.xml',
         'views/rentalTerms.xml',
-        'views/invoiceBackend.xml',
         'views/deliverPDF.xml',
         #         'models/quoteNotify.py'
     ],
