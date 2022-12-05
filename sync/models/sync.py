@@ -590,24 +590,47 @@ class sync(models.Model):
         return False, msg
 
     def pricelist(self, product, priceName, pricelistName, i, columns):
-        _logger.info("sync pricelist")                
-        pricelist_id = self.env['product.pricelist'].search(
-            [('name', '=', pricelistName)])[0].id
+        _logger.info("sync pricelist enter")                        
+        pricelist_id = self.env['product.pricelist'].search([('name', '=', pricelistName)])[0].id
+
+        _logger.info("sync pricelist Step 1") 
         pricelist_item_ids = self.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+
+        _logger.info("sync pricelist Step 2") 
         if (len(pricelist_item_ids) > 0):
+
+            _logger.info("sync pricelist Step 2.1") 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            
+            _logger.info("sync pricelist Step 2.1.1")
             pricelist_item.product_tmpl_id = product.id
+
+            _logger.info("sync pricelist Step 2.1.2")
             pricelist_item.applied_on = "1_product"
+
+            _logger.info("sync pricelist Step 2.1.3")
             if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
-                pricelist_item.fixed_price = float(
-                    self.sheet[i][columns[priceName]])
+
+                _logger.info("sync pricelist Step 2.1.3.1")
+                pricelist_item.fixed_price = float(self.sheet[i][columns[priceName]])
         else:
+            _logger.info("sync pricelist Step 2.2") 
             pricelist_item = self.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
+            
+            _logger.info("sync pricelist Step 2.2.1")             
             pricelist_item.applied_on = "1_product"
+
+            _logger.info("sync pricelist Step 2.2.2") 
             if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+
+                _logger.info("sync pricelist Step 2.2.2.1") 
                 pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
+
+                _logger.info("sync pricelist Step 2.2.2.2") 
+
+        _logger.info("sync pricelist END")
 
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
