@@ -56,7 +56,7 @@ class sync(models.Model):
     def getSyncData(self, psw):
 
         # DEV R-E-A-L.iT Master Database
-        template_id = "1eE7jgDOiznclX3HsB0nrveKYAEeJWT0HIZj9m4EsxEc"
+        template_id = "17qHJGr_dhUm7B_hKYuKS32nQ1-5iIWBqVhtkHOEb5ls"
         
         # R-E-A-L.iT Master Database
         #template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
