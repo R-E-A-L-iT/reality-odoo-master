@@ -37,11 +37,9 @@ class InvoiceMain(models.Model):
             _logger.info(priceResult)
             _logger.info(len(priceResult))
             if (len(priceResult) < 1):
-                _logger.info(product.price)
+                _logger.error(str(product.price))
                 record.price_unit = product.price
                 continue
-            else:
-                _logger.info("Price")
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
