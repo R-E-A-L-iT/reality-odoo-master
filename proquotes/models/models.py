@@ -26,6 +26,8 @@ class invoice(models.Model):
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
         ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
         ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
@@ -54,6 +56,8 @@ class order(models.Model):
         ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
         ('Geoplus_Canada', "Geoplus_Canada"),
         ('Geoplus_America', "Geoplus_America"),
         ('Leica_Various_Ali', "Leica_Various_Ali"),
@@ -85,7 +89,7 @@ class order(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
-                if(line.selected == 'true' and line.sectionSelected == 'true'):
+                if (line.selected == 'true' and line.sectionSelected == 'true'):
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
             order.update({
@@ -98,7 +102,7 @@ class order(models.Model):
         for order in self:
             total = 0.0
             for line in order.order_line:
-                if(line.selected == 'true' and line.sectionSelected == 'true'):
+                if (line.selected == 'true' and line.sectionSelected == 'true'):
                     # why is there a discount in a field named amount_undiscounted ??
                     total += line.price_subtotal + line.price_unit * \
                         ((line.discount or 0.0) / 100.0) * line.product_uom_qty
@@ -118,7 +122,7 @@ class order(models.Model):
                     group = tax.tax_group_id
                     res.setdefault(group, {'amount': 0.0, 'base': 0.0})
                     for t in taxes:
-                        if(line.selected != 'true' or line.sectionSelected != 'true'):
+                        if (line.selected != 'true' or line.sectionSelected != 'true'):
                             break
                         if (t['id'] == tax.id or t['id'] in tax.children_tax_ids.ids):
                             res[group]['amount'] += t['amount']
@@ -168,14 +172,14 @@ class orderLineProquotes(models.Model):
         for record in self:
             id = self.env['ir.translation'].search([('value', '=', record.product_id.name),
                                                     ('name', '=', 'product.template,name')])
-            if(len(id) > 1):
+            if (len(id) > 1):
                 id = id[-1]
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
                                                        'product.template,name'),
                                                       ('lang', '=', self.order_partner_id.lang)]).value
-            if(name == False or name == ""):
+            if (name == False or name == ""):
                 name = record.product_id.name
             record.applied_name = name
 
