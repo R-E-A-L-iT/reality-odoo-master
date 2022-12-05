@@ -584,6 +584,25 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
+    def pricelist(self, product, priceName, pricelistName, i, columns):
+                pricelist_id = self.database.env['product.pricelist'].search(
+                    [('name', '=', pricelistName)])[0].id
+                pricelist_item_ids = self.database.env['product.pricelist.item'].search(
+                    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+                if (len(pricelist_item_ids) > 0):
+                    pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+                    pricelist_item.product_tmpl_id = product.id
+                    pricelist_item.applied_on = "1_product"
+                    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+                        pricelist_item.fixed_price = float(
+                            self.sheet[i][columns[priceName]])
+                else:
+                    pricelist_item = self.database.env['product.pricelist.item'].create(
+                        {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
+                    pricelist_item.applied_on = "1_product"
+                    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+                        pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
+
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
 
@@ -594,8 +613,8 @@ class sync(models.Model):
         product.description_sale = sheet[i][columns["description"]]
         product.price = sheet[i][columns["priceCAD"]]    
         
-        sync_pricelist.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
-        sync_pricelist.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
+        self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
+        self.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
 
         #product.cadVal = sheet[i][columns["priceCAD"]]
         #product.usdVal = sheet[i][columns["priceUSD"]]
@@ -613,6 +632,8 @@ class sync(models.Model):
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = product.id
         self.updateProducts(product, sheet, sheetWidth, i, columns)
+
+    
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
