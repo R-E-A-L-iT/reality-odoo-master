@@ -29,7 +29,7 @@ class InvoiceMain(models.Model):
             [('id', '=', self.pricelist_id.id)])
         if (len(pricelist) < 1):
             return
-        pricelist = pricelist[-1]
+        pricelist = pricelist[0]
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
