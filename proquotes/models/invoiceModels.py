@@ -42,7 +42,7 @@ class InvoiceMain(models.Model):
             _logger.info(pricelist.name)
             _logger.info(priceResult)
             for i in range(len(priceResult)):
-                _logger.info(priceResult[i].base_pricelist_id.name)
+                _logger.info(priceResult[i].base_pricelist_id)
                 _logger.info(priceResult[i])
                 _logger.info(priceResult[i].name)
                 _logger.info(priceResult[i].fixed_price)
