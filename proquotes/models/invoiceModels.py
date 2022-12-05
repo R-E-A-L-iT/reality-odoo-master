@@ -37,8 +37,8 @@ class InvoiceMain(models.Model):
             name = product.name
             _logger.info(str(name))
             priceResult = self.env['product.pricelist.item'].search(
-                [('base_pricelist_id.id', '=', self.pricelist_id.id), ('product_tmpl_id.sku', '=', sku)])
-            # record.price_unit = priceResult[-1].fixed_price
+                [('product_tmpl_id.sku', '=', sku)])
+            record.price_unit = priceResult[-1].fixed_price
             _logger.info(pricelist.name)
             _logger.info(priceResult)
             for i in range(len(priceResult)):
