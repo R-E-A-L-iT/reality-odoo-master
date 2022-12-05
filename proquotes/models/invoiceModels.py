@@ -38,7 +38,7 @@ class InvoiceMain(models.Model):
             if (len(priceResult) < 1):
                 continue
 
-                # Appy Price from Pricelist
+            # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
