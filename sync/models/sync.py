@@ -584,7 +584,6 @@ class sync(models.Model):
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
         product.price = sheet[i][columns["price"]]
-        product.list_price = sheet[i][columns["price"]]
         product.tracking = "serial"
         product.type = "product"
 
