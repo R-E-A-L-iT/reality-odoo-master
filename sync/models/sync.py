@@ -594,8 +594,8 @@ class sync(models.Model):
         product.description_sale = sheet[i][columns["description"]]
         product.price = sheet[i][columns["priceCAD"]]    
         
-        sync_pricelist.pricelist(self, product,"priceCAD", "CAN Pricelist", i, columns)
-        sync_pricelist.pricelist(self, product, "priceUSD", "USD Pricelist", i, columns)
+        sync_pricelist.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
+        sync_pricelist.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
 
         #product.cadVal = sheet[i][columns["priceCAD"]]
         #product.usdVal = sheet[i][columns["priceUSD"]]
