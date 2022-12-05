@@ -515,8 +515,13 @@ class sync(models.Model):
         else:
             columnsMissing = True
 
-        if ("Price" in sheet[0]):
-            columns["price"] = sheet[0].index("Price")
+        if ("Price CAD" in sheet[0]):
+            columns["priceCAD"] = sheet[0].index("Price CAD")
+        else:
+            columnsMissing = True
+
+        if ("Price USD" in sheet[0]):
+            columns["priceUSD"] = sheet[0].index("Price USD")
         else:
             columnsMissing = True
 
@@ -587,7 +592,9 @@ class sync(models.Model):
 
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["price"]]
+        product.price = sheet[i][columns["priceCAD"]]
+        product.cadVal = sheet[i][columns["priceCAD"]]
+        product.usdVal = sheet[i][columns["priceUSD"]]
         product.tracking = "serial"
         product.type = "product"
 
