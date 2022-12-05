@@ -603,7 +603,10 @@ class sync(models.Model):
             _logger.info("sync pricelist Step 2.1") 
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             
-            _logger.info("sync pricelist Step 2.1.1")
+            _logger.info("sync pricelist Step 2.1.1a")
+            _logger.info("product.id: " + str(product.id))
+
+            _logger.info("sync pricelist Step 2.1.1b")
             pricelist_item.product_tmpl_id = product.id
 
             _logger.info("sync pricelist Step 2.1.2")
