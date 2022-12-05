@@ -30,12 +30,12 @@ class InvoiceMain(models.Model):
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
-            id = product.id
 
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
-                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.id', '=', id)])
+                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.id', '=', product.id)])
             if (len(priceResult) < 1):
+                _logger.info("No Price: ", product.sku)
                 continue
 
             # Appy Price from Pricelist
@@ -59,7 +59,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
-                                                     'product.template,name'),
+                                                       'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
             if (name == False or name == ""):
                 name = record.product_id.name
