@@ -35,10 +35,8 @@ class InvoiceMain(models.Model):
             priceResult = self.env['product.pricelist.item'].search(
                 [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
             if (len(priceResult) < 1):
-                _logger.info("No Price: ", product.sku)
+                record.price_unit = product.price
                 continue
-            _logger.info(priceResult[-1].product_tmpl_id.id)
-            _logger.info(product.id)
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
