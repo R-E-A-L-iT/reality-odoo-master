@@ -565,7 +565,7 @@ class sync(models.Model):
 
             try:
                 external_id = str(sheet[i][columns["sku"]])
-
+                
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
                 if (len(product_ids) > 0):
@@ -584,24 +584,24 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-    def pricelist(self, product, priceName, pricelistName, i, columns):
-                pricelist_id = self.database.env['product.pricelist'].search(
-                    [('name', '=', pricelistName)])[0].id
-                pricelist_item_ids = self.database.env['product.pricelist.item'].search(
-                    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-                if (len(pricelist_item_ids) > 0):
-                    pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
-                    pricelist_item.product_tmpl_id = product.id
-                    pricelist_item.applied_on = "1_product"
-                    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
-                        pricelist_item.fixed_price = float(
-                            self.sheet[i][columns[priceName]])
-                else:
-                    pricelist_item = self.database.env['product.pricelist.item'].create(
-                        {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-                    pricelist_item.applied_on = "1_product"
-                    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
-                        pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
+    def pricelist(self, product, priceName, pricelistName, i, columns):                
+        pricelist_id = self.env['product.pricelist'].search(
+            [('name', '=', pricelistName)])[0].id
+        pricelist_item_ids = self.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        if (len(pricelist_item_ids) > 0):
+            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            pricelist_item.product_tmpl_id = product.id
+            pricelist_item.applied_on = "1_product"
+            if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+                pricelist_item.fixed_price = float(
+                    self.sheet[i][columns[priceName]])
+        else:
+            pricelist_item = self.env['product.pricelist.item'].create(
+                {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
+            pricelist_item.applied_on = "1_product"
+            if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+                pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
 
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
