@@ -593,8 +593,8 @@ class sync(models.Model):
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
         product.price = sheet[i][columns["priceCAD"]]
-        product.cadVal = sheet[i][columns["priceCAD"]]
-        product.usdVal = sheet[i][columns["priceUSD"]]
+        #product.cadVal = sheet[i][columns["priceCAD"]]
+        #product.usdVal = sheet[i][columns["priceUSD"]]
         product.tracking = "serial"
         product.type = "product"
 
