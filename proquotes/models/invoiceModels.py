@@ -35,6 +35,7 @@ class InvoiceMain(models.Model):
             priceResult = self.env['product.pricelist.item'].search(
                 [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
             _logger.info(priceResult)
+            _logger.info(len(priceResult))
             if (len(priceResult) < 1):
                 _logger.info(product.price)
                 record.price_unit = product.price
