@@ -38,10 +38,11 @@ class InvoiceMain(models.Model):
             _logger.info(str(name))
             priceResult = pricelist.item_ids.search(
                 [('product_tmpl_id.sku', '=', sku)])
-            record.price_subtotal = priceResult[1].fixed_price
+            record.price_subtotal = priceResult[-1].fixed_price
             _logger.info(pricelist.name)
-            _logger.info(priceResult[1])
-            _logger.info(priceResult[1].fixed_price)
+            _logger.info(priceResult[-1])
+            _logger.info(priceResult[-1].name)
+            _logger.info(priceResult[-1].fixed_price)
         _logger.info("Prices Updated")
 
 
