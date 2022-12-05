@@ -37,9 +37,10 @@ class InvoiceMain(models.Model):
             name = product.name
             _logger.info(str(name))
             priceResult = pricelist.item_ids.search(
-                [('product_tmpl_id.sku', '>', 0)])
+                [('product_tmpl_id.sku', '=', 0)])
             record.price_unit = priceResult[-1].fixed_price
             _logger.info(pricelist.name)
+            _logger.info(priceResult)
             _logger.info(priceResult[-1])
             _logger.info(priceResult[-1].name)
             _logger.info(priceResult[-1].fixed_price)
