@@ -494,7 +494,7 @@ class sync(models.Model):
     # follows same pattern
     def syncProducts(self, sheet):
 
-        sheetWidth = 7
+        sheetWidth = 8
         i = 1
 
         columns = dict()
