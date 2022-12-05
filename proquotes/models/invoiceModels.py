@@ -26,16 +26,19 @@ class InvoiceMain(models.Model):
     @api.onchange('pricelist_id', 'invoice_line_ids')
     def _update_prices(self):
         pricelist = self.pricelist_id.id
+
+        # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
-            sku = product.sku
-            name = product.name
-            _logger.info(str(name))
+
+            # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
-                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', sku)])
+                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.id', '=', id)])
             if (len(priceResult) < 1):
                 continue
+
+                # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
