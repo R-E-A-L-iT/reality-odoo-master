@@ -41,7 +41,7 @@ class InvoiceMain(models.Model):
             record.price_subtotal = priceResult[-1].fixed_price
             _logger.info(pricelist.name)
             _logger.info(priceResult[-1])
-            _logger.info(priceResult[-1].price)
+            _logger.info(priceResult[-1].fixed_price)
         _logger.info("Prices Updated")
 
 
