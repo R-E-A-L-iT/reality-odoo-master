@@ -558,7 +558,7 @@ class sync(models.Model):
                 i = i + 1
                 continue
 
-            if (not self.check_price(sheet[i][columns["price"]])):
+            if (not self.check_price(sheet[i][columns["priceCAD"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i = i + 1
                 continue
