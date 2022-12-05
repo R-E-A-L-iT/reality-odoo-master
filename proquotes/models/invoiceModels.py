@@ -25,11 +25,7 @@ class InvoiceMain(models.Model):
 
     @api.onchange('pricelist_id')
     def _update_prices(self):
-        pricelist = self.env['product.pricelist'].search(
-            [('id', '=', self.pricelist_id.id)])
-        if (len(pricelist) < 1):
-            return
-        pricelist = pricelist[0]
+        pricelist = self.pricelist_id.id
         for record in self.invoice_line_ids:
             product = record.product_id
             id = product.id
@@ -37,16 +33,11 @@ class InvoiceMain(models.Model):
             name = product.name
             _logger.info(str(name))
             priceResult = self.env['product.pricelist.item'].search(
-                [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', sku)])
+                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', sku)])
+            if (len(priceResult) < 1):
+                continue
             record.price_unit = priceResult[-1].fixed_price
-            _logger.info(pricelist.name)
-            _logger.info(priceResult)
-            for i in range(len(priceResult)):
-                _logger.info(priceResult[i].pricelist_id)
-                _logger.info(priceResult[i])
-                _logger.info(priceResult[i].name)
-                _logger.info(priceResult[i].fixed_price)
-                _logger.info(priceResult[i].price)
+
         _logger.info("Prices Updated")
 
 
@@ -65,7 +56,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
-                                                       'product.template,name'),
+                                                     'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
             if (name == False or name == ""):
                 name = record.product_id.name
