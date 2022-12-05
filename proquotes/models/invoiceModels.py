@@ -33,7 +33,7 @@ class InvoiceMain(models.Model):
 
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
-                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.id', '=', product.id)])
+                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
             if (len(priceResult) < 1):
                 _logger.info("No Price: ", product.sku)
                 continue
