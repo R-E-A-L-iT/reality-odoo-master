@@ -89,6 +89,8 @@ class sync(models.Model):
                                             psw, template_id, sheetIndex, syncType)
             msg = msg + msgr
             i = i + 1
+           
+            _logger.info("while (True): i = " + str(i))
             if (quit):
                 self.syncCancel(msg)
                 return
