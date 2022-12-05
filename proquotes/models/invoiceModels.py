@@ -41,10 +41,11 @@ class InvoiceMain(models.Model):
             record.price_unit = priceResult[-1].fixed_price
             _logger.info(pricelist.name)
             _logger.info(priceResult)
-            _logger.info(priceResult[-1])
-            _logger.info(priceResult[-1].name)
-            _logger.info(priceResult[-1].fixed_price)
-            _logger.info(priceResult[-1].price)
+            for i in range(len(priceResult)):
+                _logger.info(priceResult[i])
+                _logger.info(priceResult[i].name)
+                _logger.info(priceResult[i].fixed_price)
+                _logger.info(priceResult[i].price)
         _logger.info("Prices Updated")
 
 
@@ -63,7 +64,7 @@ class invoiceLine(models.Model):
             id = id.res_id
             name = self.env['ir.translation'].search([('res_id', '=', id),
                                                       ('name', '=',
-                                                       'product.template,name'),
+                                                     'product.template,name'),
                                                       ('lang', '=', self.partner_id.lang)]).value
             if (name == False or name == ""):
                 name = record.product_id.name
