@@ -40,6 +40,8 @@ class InvoiceMain(models.Model):
                 _logger.info(product.price)
                 record.price_unit = product.price
                 continue
+            else:
+                _logger.info("Price")
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
