@@ -41,7 +41,8 @@ class InvoiceMain(models.Model):
 
             # Appy Price from Pricelist
             record.price_unit = priceResult[-1].fixed_price
-            record.price_subtotal = priceResult[-1].fixed_price
+            record.price_subtotal = record.quantity * \
+                priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
 
