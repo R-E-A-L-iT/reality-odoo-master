@@ -498,52 +498,57 @@ class sync(models.Model):
         i = 1
 
         columns = dict()
-        columnsMissing = False
+        columnsMissing = ""
 
         if ("SKU" in sheet[0]):
             columns["sku"] = sheet[0].index("SKU")
-        else:
-            columnsMissing = True
+        else:            
+            columnsMissing = "SKU"
 
         if ("Name" in sheet[0]):
             columns["name"] = sheet[0].index("Name")
         else:
-            columnsMissing = True
+            columnsMissing = "Name"            
 
         if ("Description" in sheet[0]):
             columns["description"] = sheet[0].index("Description")
         else:
-            columnsMissing = True
+            columnsMissing = "Description"
 
         if ("Price CAD" in sheet[0]):
             columns["priceCAD"] = sheet[0].index("Price CAD")
         else:
-            columnsMissing = True
+            columnsMissing = "Price CAD"
 
         if ("Price USD" in sheet[0]):
             columns["priceUSD"] = sheet[0].index("Price USD")
         else:
-            columnsMissing = True
+            columnsMissing = "Price USD"
 
         if ("Product Type" in sheet[0]):
             columns["type"] = sheet[0].index("Product Type")
         else:
-            columnsMissing = True
+            columnsMissing = "Product Type"
 
         if ("Tracking" in sheet[0]):
             columns["tracking"] = sheet[0].index("Tracking")
         else:
-            columnsMissing = True
+            columnsMissing = "Tracking"
 
         if ("Valid" in sheet[0]):
             columns["valid"] = sheet[0].index("Valid")
         else:
-            columnsMissing = True
+            columnsMissing = "Valid"
 
-        if (len(sheet[i]) != sheetWidth or columnsMissing):
+        if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            _logger.info("Sheet Width: " + str(len(sheet[i])))
+            if (sheetWidth != len(sheet[i])):
+                _logger.info("Sheet Width: " + str(len(sheet[i])))
+
+            if (columnsMissing != ""):
+                _logger.info("columnsMissing: " + columnsMissing)
+                
             return True, msg
 
         r = ""
