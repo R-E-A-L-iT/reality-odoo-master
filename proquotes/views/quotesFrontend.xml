@@ -178,9 +178,9 @@
 		</xpath>
 
 		<!--Hide Default Subtotal-->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
+		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
 			<attribute name="style">display: none;</attribute>
-		</xpath>
+		</xpath> -->
 
 		<!--Mark Original Subtotal locations-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
@@ -225,7 +225,7 @@
 					</label>
 					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
-					<!-- <span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' /> -->
+					<span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' />
 					<div class="product_fold" style="width: 100%;">
 						<!-- todo double check this removed line-->
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
