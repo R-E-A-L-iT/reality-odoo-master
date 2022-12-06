@@ -59,7 +59,9 @@ class QuoteCustomerPortal(cPortal):
                     line_id_formated = line_id_formated + c
 
             if (str(order_sudo.state) == "state"):
+                _logger.info("Locked Quote")
                 return request.redirect(order_sudo.get_portal_url())
+            _logger.info("Unlocked Quote")
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
