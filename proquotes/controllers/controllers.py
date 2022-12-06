@@ -32,7 +32,7 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if (not validate(ponumber)):
+        if (not self.validate(ponumber)):
             return
 
         order_sudo.customer_po_number = ponumber
@@ -60,6 +60,9 @@ class QuoteCustomerPortal(cPortal):
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
+
+            _logger.error(str(order_sudo))
+
             if (selected[i] == 'true'):
                 select_sudo.selected = 'true'
             else:
