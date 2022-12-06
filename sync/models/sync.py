@@ -569,7 +569,7 @@ class sync(models.Model):
                 continue
 
             try:
-                _logger.info("try1")
+                _logger.info("try1")                
                 external_id = str(sheet[i][columns["sku"]])
                 _logger.info("sku: " + external_id)
 
@@ -577,29 +577,34 @@ class sync(models.Model):
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
                 _logger.info("product_ids: " + str(product_ids))
+                _logger.info("len(product_ids): " + str(len(product_ids)))
 
                 if (len(product_ids) > 0):
                     _logger.info("try3")
                     self.updateProducts(self.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
+
                 else:
                     _logger.info("try4")
                     self.createProducts(sheet, external_id,
                                         sheetWidth, i, columns)
 
-                    _logger.info("End try")
+                _logger.info("End try")
+
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
+
             i += 1
+
         msg = self.endTable(msg)
         return False, msg
 
-    def pricelist(self, product, priceName, pricelistName, i, columns):
-        _logger.info("sync pricelist enter")                        
+    def pricelist(self, product, priceName, pricelistName, i, columns):  
+        _logger.info("Enter in: pricelist")                     
         pricelist_id = self.env['product.pricelist'].search([('name', '=', pricelistName)])[0].id
 
         _logger.info("sync pricelist Step 1") 
@@ -626,6 +631,7 @@ class sync(models.Model):
 
                 _logger.info("sync pricelist Step 2.1.3.1")
                 pricelist_item.fixed_price = float(self.sheet[i][columns[priceName]])
+
         else:
             _logger.info("sync pricelist Step 2.2") 
             pricelist_item = self.env['product.pricelist.item'].create(
@@ -646,7 +652,7 @@ class sync(models.Model):
 
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
-
+        _logger.info("Enter in: updateProducts")
         if (product.stringRep == str(sheet[i][:])):
             return
 
