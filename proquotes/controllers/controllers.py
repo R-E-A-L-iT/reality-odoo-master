@@ -58,7 +58,7 @@ class QuoteCustomerPortal(cPortal):
                 if (c in digits):
                     line_id_formated = line_id_formated + c
 
-                    _logger.info(order_sudo)
+                    _logger.info(order_sudo.name)
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
