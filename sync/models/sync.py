@@ -653,6 +653,8 @@ class sync(models.Model):
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
         _logger.info("Enter in: updateProducts")
+        _logger.info("product.stringRep: " + str(product.stringRep))
+        _logger.info("str(sheet[i][:]): " + str(sheet[i][:]))
         if (product.stringRep == str(sheet[i][:])):
             return
 
