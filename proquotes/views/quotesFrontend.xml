@@ -163,13 +163,13 @@
 			</div>
 
 			<div style="width: 25%; float: right">
-				<!-- <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
+				<label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
 					<span>
 						<strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal
 					</strong>
 					</span>
 					<span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
-				</label> -->
+				</label>
 			</div>
 		</xpath>
 
@@ -225,7 +225,7 @@
 					</label>
 					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
-					<span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' />
+					<!-- <span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' /> -->
 					<div class="product_fold" style="width: 100%;">
 						<!-- todo double check this removed line-->
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
