@@ -629,7 +629,7 @@ class sync(models.Model):
             _logger.info("product.id: " + str(product.id))
 
             _logger.info("sync pricelist Step 2.1.1b")
-            _logger.info(product)
+            _logger.info("product: " + product)
             pricelist_item.product_tmpl_id = product.id
 
             _logger.info("sync pricelist Step 2.1.2")
@@ -674,8 +674,6 @@ class sync(models.Model):
         self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
         self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
 
-        #product.cadVal = sheet[i][columns["priceCAD"]]
-        #product.usdVal = sheet[i][columns["priceUSD"]]
         product.tracking = "serial"
         product.type = "product"
 
