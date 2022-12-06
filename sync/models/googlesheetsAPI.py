@@ -11,6 +11,12 @@ class sheetsAPI(models.Model):
     _name = "sync.sheets"
     _inherit = "google.drive.config"
     _description = "Google Sheets API Handler"
+    
+    # R-E-A-L.iT Master Database
+    #template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+    #
+    # DEV R-E-A-L.iT Master Database
+    #template_id = "17qHJGr_dhUm7B_hKYuKS32nQ1-5iIWBqVhtkHOEb5ls"
     _master_database_template_id = "17qHJGr_dhUm7B_hKYuKS32nQ1-5iIWBqVhtkHOEb5ls"
     
     def getDoc(self, psw, spreadsheetID, sheet_num):

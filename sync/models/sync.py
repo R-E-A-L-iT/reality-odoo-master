@@ -54,14 +54,7 @@ class sync(models.Model):
         _logger.info("Ending Sync")
 
     def getSyncData(self, psw):
-
-        # DEV R-E-A-L.iT Master Database
-        #template_id = "17qHJGr_dhUm7B_hKYuKS32nQ1-5iIWBqVhtkHOEb5ls"
         template_id = self._master_database_template_id
-        
-        # R-E-A-L.iT Master Database
-        #template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-
         # get the database data; reading in the sheet
         try:
             sync_data = self.getDoc(psw, template_id, 0)
@@ -137,8 +130,10 @@ class sync(models.Model):
             quit, msg = self.syncWebCode(sheet)
 
         _logger.info("Done with " + syncType)
-        _logger.info("quit: " + str(quit) + "\n")
-        _logger.info("msg:  " + str(msg))
+        
+        if (quit):
+            _logger.info("quit: " + str(quit) + "\n")       
+            _logger.info("msg:  " + str(msg))
         
         return quit, msg
 
