@@ -611,7 +611,7 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-    def pricelist(self, product, priceName, pricelistName, i, columns):  
+    def pricelist(self, product, priceName, pricelistName, i, columns, sheet):  
         _logger.info("Enter in: pricelist")                     
         pricelist_id = self.env['product.pricelist'].search([('name', '=', pricelistName)])[0].id
 
@@ -636,10 +636,10 @@ class sync(models.Model):
             pricelist_item.applied_on = "1_product"
 
             _logger.info("sync pricelist Step 2.1.3")
-            if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+            if (str(sheet[i][columns[priceName]]) != " " and str(sheet[i][columns[priceName]]) != ""):
 
                 _logger.info("sync pricelist Step 2.1.3.1")
-                pricelist_item.fixed_price = float(self.sheet[i][columns[priceName]])
+                pricelist_item.fixed_price = float(sheet[i][columns[priceName]])
 
         else:
             _logger.info("sync pricelist Step 2.2") 
@@ -650,10 +650,10 @@ class sync(models.Model):
             pricelist_item.applied_on = "1_product"
 
             _logger.info("sync pricelist Step 2.2.2") 
-            if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
+            if (str(sheet[i][columns[priceName]]) != " " and str(sheet[i][columns[priceName]]) != ""):
 
                 _logger.info("sync pricelist Step 2.2.2.1") 
-                pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
+                pricelist_item.fixed_price = sheet[i][columns[priceName]]
 
                 _logger.info("sync pricelist Step 2.2.2.2") 
 
@@ -671,8 +671,8 @@ class sync(models.Model):
         product.description_sale = sheet[i][columns["description"]]
         product.price = sheet[i][columns["priceCAD"]]    
         
-        self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
-        self.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
+        self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
+        self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
 
         #product.cadVal = sheet[i][columns["priceCAD"]]
         #product.usdVal = sheet[i][columns["priceUSD"]]
