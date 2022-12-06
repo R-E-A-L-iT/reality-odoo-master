@@ -93,6 +93,9 @@ class QuoteCustomerPortal(cPortal):
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
+
+            # _logger.error(str(order_sudo))
+
             if (selected[i] == 'true'):
                 select_sudo.selected = 'true'
             else:
