@@ -621,6 +621,7 @@ class sync(models.Model):
             _logger.info("product.id: " + str(product.id))
 
             _logger.info("sync pricelist Step 2.1.1b")
+            _logger.info(product)
             pricelist_item.product_tmpl_id = product.id
 
             _logger.info("sync pricelist Step 2.1.2")
