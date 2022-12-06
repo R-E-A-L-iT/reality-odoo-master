@@ -580,7 +580,11 @@ class sync(models.Model):
                 _logger.info("len(product_ids): " + str(len(product_ids)))
 
                 if (len(product_ids) > 0):
-                    _logger.info("try3")
+                    _logger.info("try3")                    
+                    product = self.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id)
+                    _logger.info(product)   
+                    _logger.info(product_ids[-1])  
+                     
                     self.updateProducts(self.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
 
