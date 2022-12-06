@@ -58,7 +58,7 @@ class QuoteCustomerPortal(cPortal):
                 if (c in digits):
                     line_id_formated = line_id_formated + c
 
-            if (str(order_sudo.state) == "state"):
+            if (str(order_sudo.state) == "sale"):
                 _logger.info("Locked Quote")
                 return request.redirect(order_sudo.get_portal_url())
             _logger.info("Unlocked Quote")
