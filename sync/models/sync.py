@@ -77,17 +77,23 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
+            _logger.info("a1")
             _logger.info(sync_data[i][3])
+            _logger.info("a2")
             if (str(sync_data[i][3]) != "TRUE"):
                 break
-
+            _logger.info("a3")
             sheetName = str(sync_data[i][0])
+            _logger.info("a4")
             sheetIndex = int(sync_data[i][1])
+            _logger.info("a5")
             syncType = str(sync_data[i][2])
-
+            _logger.info("a6")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw, template_id, sheetIndex, syncType)
+            _logger.info("a7")                                            
             msg = msg + msgr
+            _logger.info("a8")
             i = i + 1
            
             _logger.info("while (True): i = " + str(i))
