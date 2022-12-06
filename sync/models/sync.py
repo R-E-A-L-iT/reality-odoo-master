@@ -87,11 +87,10 @@ class sync(models.Model):
                 break
 
             quit, msgr = self.getSyncValues(sheetName,
-                                            psw, template_id, sheetIndex, syncType)                                           
+                                            psw, template_id, sheetIndex, syncType)                                         
             msg = msg + msgr
-            i = i + 1
+            i += 1
            
-            _logger.info("while (True): i = " + str(i))
             if (quit):
                 self.syncCancel(msg)
                 return
@@ -110,38 +109,36 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             return False, ""
 
-        # identify the type of sheet
+        _logger.info("Sync Type is: " + syncType)    
+        # identify the type of sheet        
         if (syncType == "Companies"):
-            _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
-            _logger.info("Done Companies")
+            
         elif (syncType == "Contacts"):
-            _logger.info("Contacts")
             quit, msg = self.syncContacts(sheet)
-            _logger.info("Done Contacts")
+            
         elif (syncType == "Products"):
-            _logger.info("Products")
             quit, msg = self.syncProducts(sheet)
-            _logger.info("Done Products")
+            
         elif (syncType == "CCP"):
-            _logger.info("CCP")
             syncer = sync_ccp(sheetName, sheet, self)
             quit, msg = syncer.syncCCP()
-            _logger.info("DoneCCP")
+            
         elif (syncType == "Pricelist"):
-            _logger.info("Pricelist")
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
             syncer = sync_pricelist(sheetName, sheet, self)
             quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
             # quit, msg = self.syncPricelist(sheet)
-            _logger.info("Done Pricelist")
+            
         elif (syncType == "WebHTML"):
-            _logger.info("Website")
             quit, msg = self.syncWebCode(sheet)
-            _logger.info("Done Website")
-        _logger.info(str(quit) + "\n" + str(msg))
+
+        _logger.info("Done with " + syncType)
+        _logger.info("quit: " + str(quit) + "\n")
+        _logger.info("msg:  " + str(msg))
+        
         return quit, msg
 
     # same pattern for all sync items
@@ -246,13 +243,13 @@ class sync(models.Model):
             if (str(sheet[i][columns["valid"]]) != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
 
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             # if it gets here data should be valid
@@ -274,7 +271,7 @@ class sync(models.Model):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+            i += 1
         msg = self.endTable(msg)
         return False, msg
 
@@ -414,17 +411,17 @@ class sync(models.Model):
 
             if (str(sheet[i][columns["valid"]]) != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["company"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
             try:
                 external_id = str(sheet[i][columns["id"]])
@@ -443,7 +440,7 @@ class sync(models.Model):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+            i += 1
         msg = self.endTable(msg)
         return False, msg
 
@@ -558,17 +555,17 @@ class sync(models.Model):
 
             if (not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_price(sheet[i][columns["priceCAD"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_price(sheet[i][columns["priceUSD"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             try:
@@ -580,15 +577,17 @@ class sync(models.Model):
                     self.updateProducts(self.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
+                    _logger.info("c1")
                     self.createProducts(sheet, external_id,
                                         sheetWidth, i, columns)
+                    _logger.info("c2")
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+            i += 1
         msg = self.endTable(msg)
         return False, msg
 
