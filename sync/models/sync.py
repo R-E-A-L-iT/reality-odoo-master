@@ -571,10 +571,12 @@ class sync(models.Model):
             try:
                 _logger.info("try1")
                 external_id = str(sheet[i][columns["sku"]])
+                _logger.info("sku: " + str(sku))
 
                 _logger.info("try2")
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
+                _logger.info("product_ids: " + str(product_ids))
 
                 if (len(product_ids) > 0):
                     _logger.info("try3")
