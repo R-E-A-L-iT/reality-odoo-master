@@ -32,7 +32,21 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if (not validate(ponumber)):
+        if (str(order_sudo.state) == "sale"):
+            _logger.info("Locked Quote")
+            order_sudo._amount_all()
+            results = self._get_portal_order_details(order_sudo)
+
+            results['sale_inner_template'] = \
+                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+                    'sale_order': order_sudo,
+                    'report_type': "html",
+                })
+
+            return results
+        _logger.info("Unlocked Quote")
+
+        if (not self.validate(ponumber)):
             return
 
         order_sudo.customer_po_number = ponumber
@@ -106,6 +120,20 @@ class QuoteCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (str(order_sudo.state) == "sale"):
+            _logger.info("Locked Quote")
+            order_sudo._amount_all()
+            results = self._get_portal_order_details(order_sudo)
+
+            results['sale_inner_template'] = \
+                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+                    'sale_order': order_sudo,
+                    'report_type': "html",
+                })
+
+            return results
+        _logger.info("Unlocked Quote")
 
         i = 0
 
@@ -193,6 +221,20 @@ class QuoteCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (str(order_sudo.state) == "sale"):
+            _logger.info("Locked Quote")
+            order_sudo._amount_all()
+            results = self._get_portal_order_details(order_sudo)
+
+            results['sale_inner_template'] = \
+                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+                    'sale_order': order_sudo,
+                    'report_type': "html",
+                })
+
+            return results
+        _logger.info("Unlocked Quote")
 
         digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
         line_id_formated = ""
