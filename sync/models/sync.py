@@ -569,18 +569,23 @@ class sync(models.Model):
                 continue
 
             try:
+                _logger.info("try1")
                 external_id = str(sheet[i][columns["sku"]])
-                
+
+                _logger.info("try2")
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
+
                 if (len(product_ids) > 0):
+                    _logger.info("try3")
                     self.updateProducts(self.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
                 else:
-                    _logger.info("c1")
+                    _logger.info("try4")
                     self.createProducts(sheet, external_id,
                                         sheetWidth, i, columns)
-                    _logger.info("c2")
+
+                    _logger.info("End try")
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.info(e)
