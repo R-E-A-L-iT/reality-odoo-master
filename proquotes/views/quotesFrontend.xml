@@ -163,13 +163,13 @@
 			</div>
 
 			<div style="width: 25%; float: right">
-				<label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
+				<!-- <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
 					<span>
 						<strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal
 					</strong>
 					</span>
 					<span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
-				</label>
+				</label> -->
 			</div>
 		</xpath>
 
