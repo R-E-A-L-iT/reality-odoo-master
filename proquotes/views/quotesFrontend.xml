@@ -178,10 +178,10 @@
 			<span class="line_id" t-attf-id="{{line}}" />
 		</xpath>
 
-		<!--Hide Default Subtotal-->
-		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
+		<!-- Hide Default Subtotal-->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
 			<attribute name="style">display: none;</attribute>
-		</xpath> -->
+		</xpath>
 
 		<!--Mark Original Subtotal locations-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
