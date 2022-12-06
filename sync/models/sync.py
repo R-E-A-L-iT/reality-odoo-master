@@ -577,6 +577,10 @@ class sync(models.Model):
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
                 _logger.info("product_ids: " + str(product_ids))
+
+                for p in product_ids:
+                    _logger.info("p: " + str(p))
+
                 _logger.info("len(product_ids): " + str(len(product_ids)))
 
                 if (len(product_ids) > 0):
