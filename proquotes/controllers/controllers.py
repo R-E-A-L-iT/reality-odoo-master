@@ -58,7 +58,8 @@ class QuoteCustomerPortal(cPortal):
                 if (c in digits):
                     line_id_formated = line_id_formated + c
 
-                    _logger.info(order_sudo.state)
+            if (str(order_sudo.state) == "state"):
+                return request.redirect(order_sudo.get_portal_url())
 
             select_sudo = request.env['sale.order.line'].sudo().browse(
                 int(line_id_formated))
