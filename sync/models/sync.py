@@ -571,7 +571,7 @@ class sync(models.Model):
             try:
                 _logger.info("try1")
                 external_id = str(sheet[i][columns["sku"]])
-                _logger.info("sku: " + str(sku))
+                _logger.info("sku: " + str(external_id))
 
                 _logger.info("try2")
                 product_ids = self.env['ir.model.data'].search(
