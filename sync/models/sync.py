@@ -130,7 +130,7 @@ class sync(models.Model):
             quit, msg = self.syncWebCode(sheet)
 
         _logger.info("Done with " + syncType)
-        
+
         if (quit):
             _logger.info("quit: " + str(quit) + "\n")       
             _logger.info("msg:  " + str(msg))
@@ -620,10 +620,15 @@ class sync(models.Model):
 
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["priceCAD"]]    
+        product.price = sheet[i][columns["priceCAD"]] 
+
+        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)   
         
-        self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
-        self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
+        syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
+        syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
+
+        #self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
+        #self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
 
         product.tracking = "serial"
         product.type = "product"
