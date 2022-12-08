@@ -490,7 +490,7 @@ class sync(models.Model):
     # follows same pattern
     def syncProducts(self, sheet):
 
-        sheetWidth = 8
+        sheetWidth = 9
         i = 1
 
         columns = dict()
@@ -536,6 +536,11 @@ class sync(models.Model):
         else:
             columnsMissing = "Valid"
 
+        if ("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = "Continue"
+
         if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
@@ -551,7 +556,11 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
-            if (i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
+            
+            #if (i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
+            #    break
+
+            if (str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["sku"]]))):
@@ -594,25 +603,6 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-    def pricelist(self, product, priceName, pricelistName, i, columns, sheet):                     
-        pricelist_id = self.env['product.pricelist'].search([('name', '=', pricelistName)])[0].id
-        pricelist_item_ids = self.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-
-        if (len(pricelist_item_ids) > 0):
-            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
-            pricelist_item.product_tmpl_id = product.id
-            pricelist_item.applied_on = "1_product"
-            if (str(sheet[i][columns[priceName]]) != " " and str(sheet[i][columns[priceName]]) != ""):
-                pricelist_item.fixed_price = float(sheet[i][columns[priceName]])
-
-        else:
-            pricelist_item = self.env['product.pricelist.item'].create(
-                {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]             
-            pricelist_item.applied_on = "1_product"
-            if (str(sheet[i][columns[priceName]]) != " " and str(sheet[i][columns[priceName]]) != ""):
-                pricelist_item.fixed_price = sheet[i][columns[priceName]]
-
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
         if (product.stringRep == str(sheet[i][:])):
@@ -626,9 +616,6 @@ class sync(models.Model):
         
         syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
         syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
-
-        #self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
-        #self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
 
         product.tracking = "serial"
         product.type = "product"
@@ -693,13 +680,13 @@ class sync(models.Model):
             if (not self.check_id(str(sheet[i][columns["id"]]))):
                 _logger.info("id")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not sheet[i][columns["valid"]] == "TRUE"):
                 _logger.info("Web Valid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             try:
@@ -754,7 +741,7 @@ class sync(models.Model):
         j = 0
         while (j < sheetWidth):
             msg = msg + "<td>" + str(sheet[i][j])
-            j = j + 1
+            j += 1
         msg = msg + "</tr>"
         return msg
 
@@ -765,13 +752,13 @@ class sync(models.Model):
             while (j < sheetWidth):
                 msg = msg + "<th><strong>" + \
                     str(sheet[0][j]) + "</strong></th>"
-                j = j + 1
+                j += 1
             msg = msg + "</tr>"
         elif (msg != ""):
             msg = msg + "<table><tr>"
             while (j < sheetWidth):
                 msg = msg + "<th>" + str(sheet[0][j]) + "</th>"
-                j = j + 1
+                j += 1
             msg = msg + "</tr>"
 
         return msg
