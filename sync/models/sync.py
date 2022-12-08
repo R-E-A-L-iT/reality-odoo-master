@@ -624,8 +624,8 @@ class sync(models.Model):
 
         syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)   
         
-        syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
-        syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
+        syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
+        syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
 
         #self.pricelist(product,"priceCAD", "CAN Pricelist", i, columns, sheet)
         #self.pricelist(product, "priceUSD", "USD Pricelist", i, columns, sheet)
