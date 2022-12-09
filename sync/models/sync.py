@@ -74,10 +74,13 @@ class sync(models.Model):
             sheetName   = str(sync_data[i][0])
             sheetIndex  = int(sync_data[i][1])
             syncType    = str(sync_data[i][2])
-            validity    = str(sync_data[i][3])
+            validity    = str(sync_data[i][3])            
             
             if (validity != "TRUE"):
-                _logger.info("Valid: " + sheetName + " is " + validity + "  .ABORTING sync process!")
+                if (i <= 9):
+                    _logger.info("Valid: " + sheetName + " is " + validity + "  .ABORTING sync process!")
+                else:
+                    _logger.info("Sync process has finish after updating 9 tabs.")
                 break
 
             _logger.info("Valid: " + sheetName + " is " + validity + ".")
