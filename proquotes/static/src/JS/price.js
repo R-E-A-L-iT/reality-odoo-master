@@ -48,7 +48,7 @@ odoo.define("proquotes.price", function (require) {
 			var lineId = p.querySelector(".line_id").id;
 			var qty = Math.round(target.value);
 			return this._rpc({
-				route: this.orderDetail.orderId + "/changeQuantity/" + lineId,
+				route: "/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId,
 				params: {
 					access_token: this.orderDetail.token,
 					line_id: lineId,
