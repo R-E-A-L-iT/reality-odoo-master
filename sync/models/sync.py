@@ -54,9 +54,7 @@ class sync(models.Model):
         _logger.info("Ending Sync")
 
     def getSyncData(self, psw):
-
-        template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-
+        template_id = self._master_database_template_id
         # get the database data; reading in the sheet
         try:
             sync_data = self.getDoc(psw, template_id, 0)
@@ -73,18 +71,27 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            _logger.info(sync_data[i][3])
-            if (str(sync_data[i][3]) != "TRUE"):
+            sheetName   = str(sync_data[i][0])
+            sheetIndex  = int(sync_data[i][1])
+            syncType    = str(sync_data[i][2])
+            validity    = str(sync_data[i][3])            
+            
+            if (validity != "TRUE"):
+                if (i <= 9):
+                    _logger.info("Valid: " + sheetName + " is " + validity + "  .ABORTING sync process!")
+                else:
+                    _logger.info("Sync process has finish after updating 9 tabs.")
                 break
 
-            sheetName = str(sync_data[i][0])
-            sheetIndex = int(sync_data[i][1])
-            syncType = str(sync_data[i][2])
-
+            _logger.info("Valid: " + sheetName + " is " + validity + ".")
             quit, msgr = self.getSyncValues(sheetName,
-                                            psw, template_id, sheetIndex, syncType)
+                                            psw, 
+                                            template_id, 
+                                            sheetIndex, 
+                                            syncType)                                         
             msg = msg + msgr
-            i = i + 1
+            i += 1
+           
             if (quit):
                 self.syncCancel(msg)
                 return
@@ -103,38 +110,38 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             return False, ""
 
-        # identify the type of sheet
+        _logger.info("Sync Type is: " + syncType)    
+        # identify the type of sheet        
         if (syncType == "Companies"):
-            _logger.info("Companies")
             quit, msg = self.syncCompanies(sheet)
-            _logger.info("Done Companies")
+            
         elif (syncType == "Contacts"):
-            _logger.info("Contacts")
             quit, msg = self.syncContacts(sheet)
-            _logger.info("Done Contacts")
+            
         elif (syncType == "Products"):
-            _logger.info("Products")
             quit, msg = self.syncProducts(sheet)
-            _logger.info("Done Products")
+            
         elif (syncType == "CCP"):
-            _logger.info("CCP")
             syncer = sync_ccp(sheetName, sheet, self)
             quit, msg = syncer.syncCCP()
-            _logger.info("DoneCCP")
+            
         elif (syncType == "Pricelist"):
-            _logger.info("Pricelist")
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
             syncer = sync_pricelist(sheetName, sheet, self)
             quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
             # quit, msg = self.syncPricelist(sheet)
-            _logger.info("Done Pricelist")
+            
         elif (syncType == "WebHTML"):
-            _logger.info("Website")
             quit, msg = self.syncWebCode(sheet)
-            _logger.info("Done Website")
-        _logger.info(str(quit) + "\n" + str(msg))
+
+        _logger.info("Done with " + syncType)
+
+        if (quit):
+            _logger.info("quit: " + str(quit) + "\n")       
+            _logger.info("msg:  " + str(msg))
+        
         return quit, msg
 
     # same pattern for all sync items
@@ -239,13 +246,13 @@ class sync(models.Model):
             if (str(sheet[i][columns["valid"]]) != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
 
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             # if it gets here data should be valid
@@ -267,7 +274,7 @@ class sync(models.Model):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+            i += 1
         msg = self.endTable(msg)
         return False, msg
 
@@ -407,17 +414,17 @@ class sync(models.Model):
 
             if (str(sheet[i][columns["valid"]]) != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not self.check_id(str(sheet[i][columns["company"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
             try:
                 external_id = str(sheet[i][columns["id"]])
@@ -436,7 +443,7 @@ class sync(models.Model):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+            i += 1
         msg = self.endTable(msg)
         return False, msg
 
@@ -490,104 +497,133 @@ class sync(models.Model):
     # follows same pattern
     def syncProducts(self, sheet):
 
-        sheetWidth = 7
+        sheetWidth = 9
         i = 1
 
         columns = dict()
-        columnsMissing = False
+        columnsMissing = ""
 
         if ("SKU" in sheet[0]):
             columns["sku"] = sheet[0].index("SKU")
-        else:
-            columnsMissing = True
+        else:            
+            columnsMissing = "SKU"
 
         if ("Name" in sheet[0]):
             columns["name"] = sheet[0].index("Name")
         else:
-            columnsMissing = True
+            columnsMissing = "Name"            
 
         if ("Description" in sheet[0]):
             columns["description"] = sheet[0].index("Description")
         else:
-            columnsMissing = True
+            columnsMissing = "Description"
 
-        if ("Price" in sheet[0]):
-            columns["price"] = sheet[0].index("Price")
+        if ("Price CAD" in sheet[0]):
+            columns["priceCAD"] = sheet[0].index("Price CAD")
         else:
-            columnsMissing = True
+            columnsMissing = "Price CAD"
+
+        if ("Price USD" in sheet[0]):
+            columns["priceUSD"] = sheet[0].index("Price USD")
+        else:
+            columnsMissing = "Price USD"
 
         if ("Product Type" in sheet[0]):
             columns["type"] = sheet[0].index("Product Type")
         else:
-            columnsMissing = True
+            columnsMissing = "Product Type"
 
         if ("Tracking" in sheet[0]):
             columns["tracking"] = sheet[0].index("Tracking")
         else:
-            columnsMissing = True
+            columnsMissing = "Tracking"
 
         if ("Valid" in sheet[0]):
             columns["valid"] = sheet[0].index("Valid")
         else:
-            columnsMissing = True
+            columnsMissing = "Valid"
 
-        if (len(sheet[i]) != sheetWidth or columnsMissing):
+        if ("Continue" in sheet[0]):
+            columns["continue"] = sheet[0].index("Continue")
+        else:
+            columnsMissing = "Continue"
+
+        if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
-            _logger.info("Sheet Width: " + str(len(sheet[i])))
+
+            if (sheetWidth != len(sheet[i])):
+                _logger.info("Sheet Width: " + str(len(sheet[i])))
+
+            if (columnsMissing != ""):
+                _logger.info("columnsMissing: " + columnsMissing)
+
             return True, msg
 
         r = ""
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
-            if (i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
+            
+            if (str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["sku"]]))):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
-            if (not self.check_price(sheet[i][columns["price"]])):
+            if (not self.check_price(sheet[i][columns["priceCAD"]])):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
-            try:
-                external_id = str(sheet[i][columns["sku"]])
+            if (not self.check_price(sheet[i][columns["priceUSD"]])):
+                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                i += 1
+                continue
 
+            try:              
+                external_id = str(sheet[i][columns["sku"]])
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
+
                 if (len(product_ids) > 0):
                     self.updateProducts(self.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
+
                 else:
                     self.createProducts(sheet, external_id,
                                         sheetWidth, i, columns)
+
             except Exception as e:
-                _logger.info("Products")
+                _logger.info("Products Exception")
                 _logger.info(e)
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 msg = self.endTable(msg)
                 return True, msg
-            i = i + 1
+
+            i += 1
+
         msg = self.endTable(msg)
         return False, msg
 
     # follows same pattern
     def updateProducts(self, product, sheet, sheetWidth, i, columns):
-
         if (product.stringRep == str(sheet[i][:])):
             return
 
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["price"]]
+        product.price = sheet[i][columns["priceCAD"]] 
+
+        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)   
+        
+        syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
+        syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
+
         product.tracking = "serial"
         product.type = "product"
-
-        _logger.info("Product String Rep")
         product.stringRep = str(sheet[i][:])
 
     # follows same pattern
@@ -597,7 +633,10 @@ class sync(models.Model):
         product = self.env['product.template'].create(
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = product.id
+        _logger.info("str(product.id)")
+        _logger.info(str(product.id))
         self.updateProducts(product, sheet, sheetWidth, i, columns)
+ 
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
@@ -645,13 +684,13 @@ class sync(models.Model):
             if (not self.check_id(str(sheet[i][columns["id"]]))):
                 _logger.info("id")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             if (not sheet[i][columns["valid"]] == "TRUE"):
                 _logger.info("Web Valid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i = i + 1
+                i += 1
                 continue
 
             try:
@@ -673,7 +712,7 @@ class sync(models.Model):
                         " Page Not Created</p><br/>\n"
                     _logger.info(str(pageIds))
                     _logger.info(str(external_id) + " Page Not Created")
-                i = i + 1
+                i += 1
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.info(e)
@@ -706,7 +745,7 @@ class sync(models.Model):
         j = 0
         while (j < sheetWidth):
             msg = msg + "<td>" + str(sheet[i][j])
-            j = j + 1
+            j += 1
         msg = msg + "</tr>"
         return msg
 
@@ -717,13 +756,13 @@ class sync(models.Model):
             while (j < sheetWidth):
                 msg = msg + "<th><strong>" + \
                     str(sheet[0][j]) + "</strong></th>"
-                j = j + 1
+                j += 1
             msg = msg + "</tr>"
         elif (msg != ""):
             msg = msg + "<table><tr>"
             while (j < sheetWidth):
                 msg = msg + "<th>" + str(sheet[0][j]) + "</th>"
-                j = j + 1
+                j += 1
             msg = msg + "</tr>"
 
         return msg
