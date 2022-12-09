@@ -16,10 +16,9 @@ class sheetsAPI(models.Model):
     # 1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8
     #
     # DEV R-E-A-L.iT Master Database
-    # 17qHJGr_dhUm7B_hKYuKS32nQ1-5iIWBqVhtkHOEb5ls
     # 1nvQBk5fBQ544OipNBVG431mzmGV31qfUf_J3EbicLjU copy
     
-    _master_database_template_id ="1nvQBk5fBQ544OipNBVG431mzmGV31qfUf_J3EbicLjU"
+    _master_database_template_id ="1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
     
     def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
