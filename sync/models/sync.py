@@ -75,13 +75,12 @@ class sync(models.Model):
             sheetIndex  = int(sync_data[i][1])
             syncType    = str(sync_data[i][2])
             validity    = str(sync_data[i][3])
-            validity_str = "Valid: " + sheetName + " is " + validity + "."
             
             if (validity != "TRUE"):
-                validity_str += "  ABORTING sync process!"
+                _logger.info("Valid: " + sheetName + " is " + validity + ".ABORTING sync process!")
                 break
 
-            _logger.info(validity_str)
+            _logger.info("Valid: " + sheetName + " is " + validity + ".")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw, 
                                             template_id, 
