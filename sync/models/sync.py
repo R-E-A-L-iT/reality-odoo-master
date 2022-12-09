@@ -75,13 +75,18 @@ class sync(models.Model):
             sheetIndex  = int(sync_data[i][1])
             syncType    = str(sync_data[i][2])
             validity    = str(sync_data[i][3])
-            _logger.info("Valid: " + sheetName + " is " + validity)
-
+            validity_str = "Valid: " + sheetName + " is " + validity + "."
+            
             if (validity != "TRUE"):
+                validity_str += "  ABORTING sync process!"
                 break
 
+            _logger.info(validity_str)
             quit, msgr = self.getSyncValues(sheetName,
-                                            psw, template_id, sheetIndex, syncType)                                         
+                                            psw, 
+                                            template_id, 
+                                            sheetIndex, 
+                                            syncType)                                         
             msg = msg + msgr
             i += 1
            
@@ -544,6 +549,7 @@ class sync(models.Model):
         if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
             msg = "<h1>Sync Page Invalid<h1>"
             self.sendSyncReport(msg)
+
             if (sheetWidth != len(sheet[i])):
                 _logger.info("Sheet Width: " + str(len(sheet[i])))
 
@@ -557,9 +563,6 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
             
-            #if (i == len(sheet) or str(sheet[i][columns["valid"]]) != "TRUE"):
-            #    break
-
             if (str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
@@ -631,8 +634,7 @@ class sync(models.Model):
         _logger.info("str(product.id)")
         _logger.info(str(product.id))
         self.updateProducts(product, sheet, sheetWidth, i, columns)
-
-    
+ 
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
@@ -708,7 +710,7 @@ class sync(models.Model):
                         " Page Not Created</p><br/>\n"
                     _logger.info(str(pageIds))
                     _logger.info(str(external_id) + " Page Not Created")
-                i = i + 1
+                i += 1
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.info(e)
