@@ -77,7 +77,7 @@ class sync(models.Model):
             validity    = str(sync_data[i][3])
             
             if (validity != "TRUE"):
-                _logger.info("Valid: " + sheetName + " is " + validity + ".ABORTING sync process!")
+                _logger.info("Valid: " + sheetName + " is " + validity + "  .ABORTING sync process!")
                 break
 
             _logger.info("Valid: " + sheetName + " is " + validity + ".")
