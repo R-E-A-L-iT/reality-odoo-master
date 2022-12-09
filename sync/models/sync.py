@@ -72,7 +72,12 @@ class sync(models.Model):
         # loop through entries in first sheet
         while (True):
             sheetName   = str(sync_data[i][0])
-            sheetIndex  = int(sync_data[i][1])
+
+            try:
+                sheetIndex  = int(sync_data[i][1])
+            except:
+                _logger.info("BREAK: check the tab ODOO_SYNC_DATA, there must have a none numeric value in column B called 'Sheet Index', line " + str(i) + ".")
+
             syncType    = str(sync_data[i][2])
             validity    = str(sync_data[i][3])            
             
