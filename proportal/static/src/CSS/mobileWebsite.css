@@ -3,6 +3,32 @@
 		max-width: 100vw;
 		text-align: center;
 	}
+    
+    #custom-webpage-root .specs-above>hr {
+
+    display:  none;
+    
+    }
+    
+    #ordering {
+     
+        margin-top: 25px;
+        
+    }
+    
+    .v-div > span {
+        float: left;
+    }
+    
+    .v-div > h3 {
+        padding-top: 10;
+    }
+    
+    #custom-webpage-root #landing>iframe {
+     
+        height: 75vh;
+        
+    }
 
 	#custom-navbar #custom-navbar-logo {
 		display: block;
@@ -388,4 +414,23 @@
     font-family: "Source Sans Pro", sans-serif;
   }
 
+.o_menu_brand {
 
+    position: absolute !important;
+    
+}
+                
+#custom-webpage-root .subheader {
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+}
+
+.subheader > a {
+
+    margin-left: 2px;
+    margin-right: 2px;
+    
+}
+            
