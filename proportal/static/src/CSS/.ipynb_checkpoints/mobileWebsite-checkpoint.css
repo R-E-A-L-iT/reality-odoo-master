@@ -293,6 +293,13 @@
 		margin-block-start: 0.25em;
 		margin-block-end: 0.25em;
 	}
+    
+    #custom-webpage-root .yt-vid {
+     
+        width: 100%;
+        margin: 15p;
+        
+    }
 }
 
       @media (max-width: 565px) {
