@@ -4,13 +4,13 @@
 		text-align: center;
 	}
     
-    #custom-webpage-root .specs-above>hr {
+    #custom-webpage-root .specs-above > hr {
 
     display:  none;
     
     }
     
-    #ordering {
+    .ordering-below > img {
      
         margin-top: 25px;
         
