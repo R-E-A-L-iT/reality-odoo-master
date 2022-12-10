@@ -432,10 +432,10 @@
     
 }
                 
-#custom-webpage-root .subheader {
+.subheader {
 
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
     
 }
 
