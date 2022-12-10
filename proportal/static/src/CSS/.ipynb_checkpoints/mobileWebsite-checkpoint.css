@@ -114,6 +114,8 @@
 
 	#custom-webpage-root .subheader {
 		flex-wrap: wrap;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
 	}
 
 	#custom-webpage-root .subheader>a>h3 {
