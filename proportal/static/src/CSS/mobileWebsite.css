@@ -10,6 +10,12 @@
     
     }
     
+    #custom-navbar {
+            
+/*         position: fixed !important; */
+        
+    }
+    
     .ordering-below > img {
      
         margin-top: 25px;
@@ -114,6 +120,8 @@
 
 	#custom-webpage-root .subheader {
 		flex-wrap: wrap;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
 	}
 
 	#custom-webpage-root .subheader>a>h3 {
@@ -340,8 +348,8 @@
             padding-bottom: 10px;
             }
             #custom-navbar img {
-                position: fixed;
-                padding-top: 55px;
+/*                 position: fixed; */
+/*                 padding-top: 55px; */
                 padding-left: 15px;
             }
             }
@@ -432,10 +440,10 @@
     
 }
                 
-#custom-webpage-root .subheader {
+.subheader {
 
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
     
 }
 
