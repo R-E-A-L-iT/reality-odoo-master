@@ -440,4 +440,14 @@
     margin-right: 2px;
     
 }
-            
+
+@media (min-width:540px) and (max-width: 749px) {
+    
+
+    #custom-navbar img {
+     
+        padding-right: calc(10vw + 30px);
+        
+    }
+    
+}
