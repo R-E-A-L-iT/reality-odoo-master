@@ -71,34 +71,38 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            sheetName   = str(sync_data[i][0])
+            sheetName = str(sync_data[i][0])
 
             try:
-                sheetIndex  = int(sync_data[i][1])
+                sheetIndex = int(sync_data[i][1])
             except:
-                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a none numeric value in column B called 'Sheet Index', line " + str(i) + "."
-                _logger.info("BREAK: check the tab ODOO_SYNC_DATA, there must have a none numeric value in column B called 'Sheet Index', line " + str(i) + ".")
+                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
+                    str(i) + ": " + str(sync_data[i][1]) + "."
+                _logger.info(
+                    "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
                 break
 
-            syncType    = str(sync_data[i][2])
-            validity    = str(sync_data[i][3])            
-            
+            syncType = str(sync_data[i][2])
+            validity = str(sync_data[i][3])
+
             if (validity != "TRUE"):
                 if (i <= 9):
-                    _logger.info("Valid: " + sheetName + " is " + validity + "  .ABORTING sync process!")
+                    _logger.info("Valid: " + sheetName + " is " +
+                                 validity + "  .ABORTING sync process!")
                 else:
-                    _logger.info("Sync process has finish after updating 9 tabs.")
+                    _logger.info(
+                        "Sync process has finish after updating 9 tabs.")
                 break
 
             _logger.info("Valid: " + sheetName + " is " + validity + ".")
             quit, msgr = self.getSyncValues(sheetName,
-                                            psw, 
-                                            template_id, 
-                                            sheetIndex, 
-                                            syncType)                                         
+                                            psw,
+                                            template_id,
+                                            sheetIndex,
+                                            syncType)
             msg = msg + msgr
             i += 1
-           
+
             if (quit):
                 self.syncCancel(msg)
                 return
@@ -117,21 +121,21 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             return False, ""
 
-        _logger.info("Sync Type is: " + syncType)    
-        # identify the type of sheet        
+        _logger.info("Sync Type is: " + syncType)
+        # identify the type of sheet
         if (syncType == "Companies"):
             quit, msg = self.syncCompanies(sheet)
-            
+
         elif (syncType == "Contacts"):
             quit, msg = self.syncContacts(sheet)
-            
+
         elif (syncType == "Products"):
             quit, msg = self.syncProducts(sheet)
-            
+
         elif (syncType == "CCP"):
             syncer = sync_ccp(sheetName, sheet, self)
             quit, msg = syncer.syncCCP()
-            
+
         elif (syncType == "Pricelist"):
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
             syncer = sync_pricelist(sheetName, sheet, self)
@@ -139,16 +143,16 @@ class sync(models.Model):
             quit = False
             msg = ""
             # quit, msg = self.syncPricelist(sheet)
-            
+
         elif (syncType == "WebHTML"):
             quit, msg = self.syncWebCode(sheet)
 
         _logger.info("Done with " + syncType)
 
         if (quit):
-            _logger.info("quit: " + str(quit) + "\n")       
+            _logger.info("quit: " + str(quit) + "\n")
             _logger.info("msg:  " + str(msg))
-        
+
         return quit, msg
 
     # same pattern for all sync items
@@ -512,13 +516,13 @@ class sync(models.Model):
 
         if ("SKU" in sheet[0]):
             columns["sku"] = sheet[0].index("SKU")
-        else:            
+        else:
             columnsMissing = "SKU"
 
         if ("Name" in sheet[0]):
             columns["name"] = sheet[0].index("Name")
         else:
-            columnsMissing = "Name"            
+            columnsMissing = "Name"
 
         if ("Description" in sheet[0]):
             columns["description"] = sheet[0].index("Description")
@@ -571,7 +575,7 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
-            
+
             if (str(sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
@@ -590,7 +594,7 @@ class sync(models.Model):
                 i += 1
                 continue
 
-            try:              
+            try:
                 external_id = str(sheet[i][columns["sku"]])
                 product_ids = self.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'product.template')])
@@ -622,11 +626,11 @@ class sync(models.Model):
 
         product.name = sheet[i][columns["name"]]
         product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["priceCAD"]] 
+        product.price = sheet[i][columns["priceCAD"]]
 
-        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)   
-        
-        syncer.pricelist(product,"priceCAD", "CAN Pricelist", i, columns)
+        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)
+
+        syncer.pricelist(product, "priceCAD", "CAN Pricelist", i, columns)
         syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
 
         product.tracking = "serial"
@@ -643,7 +647,6 @@ class sync(models.Model):
         _logger.info("str(product.id)")
         _logger.info(str(product.id))
         self.updateProducts(product, sheet, sheetWidth, i, columns)
- 
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
