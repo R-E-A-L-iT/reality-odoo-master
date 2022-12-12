@@ -71,20 +71,7 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            sheetName = str(sync_data[i][0])
-
-            try:
-                sheetIndex = int(sync_data[i][1])
-            except:
-                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
-                    str(i) + ": " + str(sync_data[i][1]) + "."
-                _logger.info(
-                    "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
-                break
-
-            syncType = str(sync_data[i][2])
             validity = str(sync_data[i][3])
-
             if (validity != "TRUE"):
                 if (i <= 9):
                     _logger.info("Valid: " + sheetName + " is " +
@@ -93,6 +80,20 @@ class sync(models.Model):
                     _logger.info(
                         "Sync process has finish after updating 9 tabs.")
                 break
+
+            sheetName = str(sync_data[i][0])
+            try:
+                sheetIndex = int(sync_data[i][1])
+            except:
+                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
+                    str(i) + ": " + str(sync_data[i][1]) + "."
+                _logger.info(
+                    "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
+                break
+            syncType = str(sync_data[i][2])
+            
+
+            
 
             _logger.info("Valid: " + sheetName + " is " + validity + ".")
             quit, msgr = self.getSyncValues(sheetName,
