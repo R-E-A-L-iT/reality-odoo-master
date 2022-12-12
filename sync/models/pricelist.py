@@ -70,16 +70,16 @@ class sync_pricelist:
                 msg, self.name, "Header", "isSoftwareMissing")
             columnsMissing = True
 
-        if ("Price" in self.sheet[0]):
-            columns["canPrice"] = self.sheet[0].index("Price")
+        if ("Price CAD" in self.sheet[0]):
+            columns["canPrice"] = self.sheet[0].index("Price CAD")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Price Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
             columnsMissing = True
 
-        if ("USD Price" in self.sheet[0]):
-            columns["usPrice"] = self.sheet[0].index("USD Price")
+        if ("Price USD" in self.sheet[0]):
+            columns["usPrice"] = self.sheet[0].index("Price USD")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "USD Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Price USD Missing")
             columnsMissing = True
 
         if ("Can Rental" in self.sheet[0]):
