@@ -24,7 +24,13 @@ class QuoteCustomerPortal(cPortal):
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return {}
+        results = {}
+        try:
+            results['order_totals_table'] = request.env['ir.ui.view']._render_template(
+                'sale.sale_order_portal_content_totals_table', {'sale_order': order_sudo})
+        except ValueError:
+            pass
+        return results
 
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
