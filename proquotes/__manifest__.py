@@ -23,7 +23,7 @@
     'depends': ['base', 'web', 'mail', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
 
     'assets': {
-            'web.assets_frontend': [
+            'web.assets_common': [
                 'proquotes/static/src/CSS/foldProducts.css',
                 'proquotes/static/src/CSS/pdf.css',
                 'proquotes/static/src/CSS/user-info.css',
@@ -38,7 +38,6 @@
     },
 
     'version': '0.8',
-
 
     # always loaded
     'data': [

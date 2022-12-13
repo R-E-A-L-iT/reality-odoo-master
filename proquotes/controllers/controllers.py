@@ -19,248 +19,258 @@ _logger = logging.getLogger(__name__)
 
 class QuoteCustomerPortal(cPortal):
 
-    def validate(string):
-        reg = "^[a-zA-Z0-9- ]*$"
-        return not (re.search(reg, string) == None)
+	def validate(string):
+		reg = "^[a-zA-Z0-9- ]*$"
+		return not (re.search(reg, string) == None)
 
-    @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
-    def poNumber(self, order_id, ponumber, access_token=None, **post):
+	def _get_portal_order_details(self, order_sudo):
+		results = {}
+		try:
+			results['order_totals_table'] = request.env['ir.ui.view']._render_template(
+				'sale.sale_order_portal_content_totals_table', {'sale_order': order_sudo})
+		except ValueError:
+			_logger.log("Value Error")
+			pass
+		return results
 
-        try:
-            order_sudo = self._document_check_access(
-                'sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+	@http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
+	def poNumber(self, order_id, ponumber, access_token=None, **post):
 
-        if (str(order_sudo.state) == "sale"):
-            _logger.info("Locked Quote")
-            order_sudo._amount_all()
-            results = self._get_portal_order_details(order_sudo)
+		try:
+			order_sudo = self._document_check_access(
+				'sale.order', order_id, access_token=access_token)
+		except (AccessError, MissingError):
+			return request.redirect('/my')
 
-            results['sale_inner_template'] = \
-                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-                    'sale_order': order_sudo,
-                    'report_type': "html",
-                })
+		if (str(order_sudo.state) == "sale"):
+			_logger.info("Locked Quote")
+			order_sudo._amount_all()
+			results = self._get_portal_order_details(order_sudo)
 
-            return results
-        _logger.info("Unlocked Quote")
+			results['sale_inner_template'] = \
+				request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+					'sale_order': order_sudo,
+					'report_type': "html",
+				})
 
-        if (not self.validate(ponumber)):
-            return
+			return results
+		_logger.info("Unlocked Quote")
 
-        order_sudo.customer_po_number = ponumber
+		if (not self.validate(ponumber)):
+			return
 
-        return
+		order_sudo.customer_po_number = ponumber
 
-    @ http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
-    def select(self, order_id, line_ids, selected,  access_token=None, **post):
+		return
 
-        try:
-            order_sudo = self._document_check_access(
-                'sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+	@ http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
+	def select(self, order_id, line_ids, selected,  access_token=None, **post):
 
-        if (str(order_sudo.state) == "sale"):
-            _logger.info("Locked Quote")
-            order_sudo._amount_all()
-            results = self._get_portal_order_details(order_sudo)
+		try:
+			order_sudo = self._document_check_access(
+				'sale.order', order_id, access_token=access_token)
+		except (AccessError, MissingError):
+			return request.redirect('/my')
 
-            results['sale_inner_template'] = \
-                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-                    'sale_order': order_sudo,
-                    'report_type': "html",
-                })
+		if (str(order_sudo.state) == "sale"):
+			_logger.info("Locked Quote")
+			order_sudo._amount_all()
+			results = self._get_portal_order_details(order_sudo)
 
-            return results
-        _logger.info("Unlocked Quote")
+			results['sale_inner_template'] = \
+				request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+					'sale_order': order_sudo,
+					'report_type': "html",
+				})
 
-        i = 0
-        while (i < len(line_ids)):
+			return results
+		_logger.info("Unlocked Quote")
 
-            digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-            line_id_formated = ""
+		i = 0
+		while (i < len(line_ids)):
 
-            for c in line_ids[i]:
-                if (c in digits):
-                    line_id_formated = line_id_formated + c
+			digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+			line_id_formated = ""
 
-            if (str(order_sudo.state) == "sale"):
-                _logger.info("Locked Quote")
-                return request.redirect(order_sudo.get_portal_url())
-            _logger.info("Unlocked Quote")
+			for c in line_ids[i]:
+				if (c in digits):
+					line_id_formated = line_id_formated + c
 
-            select_sudo = request.env['sale.order.line'].sudo().browse(
-                int(line_id_formated))
+			if (str(order_sudo.state) == "sale"):
+				_logger.info("Locked Quote")
+				return request.redirect(order_sudo.get_portal_url())
+			_logger.info("Unlocked Quote")
 
-            # _logger.error(str(order_sudo))
+			select_sudo = request.env['sale.order.line'].sudo().browse(
+				int(line_id_formated))
 
-            if (selected[i] == 'true'):
-                select_sudo.selected = 'true'
-            else:
-                select_sudo.selected = 'false'
-            i = i + 1
+			# _logger.error(str(order_sudo))
 
-            if order_sudo != select_sudo.order_id:
-                return request.redirect(order_sudo.get_portal_url())
+			if (selected[i] == 'true'):
+				select_sudo.selected = 'true'
+			else:
+				select_sudo.selected = 'false'
+			i = i + 1
 
-        order_sudo._amount_all()
-        results = self._get_portal_order_details(order_sudo)
+			if order_sudo != select_sudo.order_id:
+				return request.redirect(order_sudo.get_portal_url())
 
-        results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': order_sudo,
-            'report_type': "html",
-        })
+		order_sudo._amount_all()
+		results = self._get_portal_order_details(order_sudo)
 
-        return results
+		results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+			'sale_order': order_sudo,
+			'report_type': "html",
+		})
 
-    @ http.route(["/my/orders/<int:order_id>/sectionSelect"], type='json', auth="public", website=True)
-    def sectionSelect(self, order_id, section_id, line_ids, selected,  access_token=None, **post):
+		return results
 
-        try:
-            order_sudo = self._document_check_access(
-                'sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+	@ http.route(["/my/orders/<int:order_id>/sectionSelect"], type='json', auth="public", website=True)
+	def sectionSelect(self, order_id, section_id, line_ids, selected,  access_token=None, **post):
 
-        if (str(order_sudo.state) == "sale"):
-            _logger.info("Locked Quote")
-            order_sudo._amount_all()
-            results = self._get_portal_order_details(order_sudo)
+		try:
+			order_sudo = self._document_check_access(
+				'sale.order', order_id, access_token=access_token)
+		except (AccessError, MissingError):
+			return request.redirect('/my')
 
-            results['sale_inner_template'] = \
-                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-                    'sale_order': order_sudo,
-                    'report_type': "html",
-                })
+		if (str(order_sudo.state) == "sale"):
+			_logger.info("Locked Quote")
+			order_sudo._amount_all()
+			results = self._get_portal_order_details(order_sudo)
 
-            return results
-        _logger.info("Unlocked Quote")
+			results['sale_inner_template'] = \
+				request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+					'sale_order': order_sudo,
+					'report_type': "html",
+				})
 
-        i = 0
+			return results
+		_logger.info("Unlocked Quote")
 
-        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-        section_id_formated = ""
-        for c in section_id:
-            if (c in digits):
-                section_id_formated = section_id_formated + c
+		i = 0
 
-        select_sudo = request.env['sale.order.line'].sudo().browse(
-            int(section_id_formated))
-        if (selected):
-            select_sudo.selected = 'true'
-        else:
-            select_sudo.selected = 'false'
+		digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+		section_id_formated = ""
+		for c in section_id:
+			if (c in digits):
+				section_id_formated = section_id_formated + c
 
-        while (i < len(line_ids)):
+		select_sudo = request.env['sale.order.line'].sudo().browse(
+			int(section_id_formated))
+		if (selected):
+			select_sudo.selected = 'true'
+		else:
+			select_sudo.selected = 'false'
 
-            digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-            line_id_formated = ""
+		while (i < len(line_ids)):
 
-            for c in line_ids[i]:
-                if (c in digits):
-                    line_id_formated = line_id_formated + c
+			digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+			line_id_formated = ""
 
-            select_sudo = request.env['sale.order.line'].sudo().browse(
-                int(line_id_formated))
-            if (selected):
-                select_sudo.sectionSelected = 'true'
-            else:
-                select_sudo.sectionSelected = 'false'
-            i = i + 1
+			for c in line_ids[i]:
+				if (c in digits):
+					line_id_formated = line_id_formated + c
 
-            if order_sudo != select_sudo.order_id:
-                return request.redirect(order_sudo.get_portal_url())
+			select_sudo = request.env['sale.order.line'].sudo().browse(
+				int(line_id_formated))
+			if (selected):
+				select_sudo.sectionSelected = 'true'
+			else:
+				select_sudo.sectionSelected = 'false'
+			i = i + 1
 
-        order_sudo._amount_all()
-        results = self._get_portal_order_details(order_sudo)
+			if order_sudo != select_sudo.order_id:
+				return request.redirect(order_sudo.get_portal_url())
 
-        results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': order_sudo,
-            'report_type': "html",
-        })
+		order_sudo._amount_all()
+		results = self._get_portal_order_details(order_sudo)
 
-        return results
+		results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+			'sale_order': order_sudo,
+			'report_type': "html",
+		})
 
-    @ http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
-    def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
+		return results
 
-        try:
-            order_sudo = self._document_check_access(
-                'sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+	@ http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
+	def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
 
-        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-        line_id_formated = ""
+		try:
+			order_sudo = self._document_check_access(
+				'sale.order', order_id, access_token=access_token)
+		except (AccessError, MissingError):
+			return request.redirect('/my')
 
-        for c in line_id:
-            if (c in digits):
-                line_id_formated = line_id_formated + c
+		digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+		line_id_formated = ""
 
-        select_sudo = request.env['sale.order.line'].sudo().browse(
-            int(line_id_formated))
-        if (checked):
-            select_sudo.hiddenSection = 'yes'
-        else:
-            select_sudo.hiddenSection = 'no'
+		for c in line_id:
+			if (c in digits):
+				line_id_formated = line_id_formated + c
 
-        if order_sudo != select_sudo.order_id:
-            return request.redirect(order_sudo.get_portal_url())
+		select_sudo = request.env['sale.order.line'].sudo().browse(
+			int(line_id_formated))
+		if (checked):
+			select_sudo.hiddenSection = 'yes'
+		else:
+			select_sudo.hiddenSection = 'no'
 
-        results = self._get_portal_order_details(order_sudo)
-        results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': order_sudo,
-            'report_type': "html",
-        })
+		if order_sudo != select_sudo.order_id:
+			return request.redirect(order_sudo.get_portal_url())
 
-        return results
+		results = self._get_portal_order_details(order_sudo)
+		results['sale_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+			'sale_order': order_sudo,
+			'report_type': "html",
+		})
 
-    @ http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
-    def change_quantity(self, order_id, line_id, quantity, access_token=None, **post):
-        try:
-            order_sudo = self._document_check_access(
-                'sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+		return results
 
-        if (str(order_sudo.state) == "sale"):
-            _logger.info("Locked Quote")
-            order_sudo._amount_all()
-            results = self._get_portal_order_details(order_sudo)
+	@ http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
+	def change_quantity(self, order_id, line_id, quantity, access_token=None, **post):
+		try:
+			order_sudo = self._document_check_access(
+				'sale.order', order_id, access_token=access_token)
+		except (AccessError, MissingError):
+			return request.redirect('/my')
 
-            results['sale_inner_template'] = \
-                request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-                    'sale_order': order_sudo,
-                    'report_type': "html",
-                })
+		if (str(order_sudo.state) == "sale"):
+			_logger.info("Locked Quote")
+			order_sudo._amount_all()
+			results = self._get_portal_order_details(order_sudo)
 
-            return results
-        _logger.info("Unlocked Quote")
+			results['sale_inner_template'] = \
+				request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+					'sale_order': order_sudo,
+					'report_type': "html",
+				})
 
-        digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-        line_id_formated = ""
+			return results
+		_logger.info("Unlocked Quote")
 
-        for c in line_id:
-            if (c in digits):
-                line_id_formated = line_id_formated + c
+		digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+		line_id_formated = ""
 
-        select_sudo = request.env['sale.order.line'].sudo().browse(
-            int(line_id_formated))
-        select_sudo.product_uom_qty = quantity
-        if (quantity <= 0):
-            raise UserError(_("Product Quantity Must Be At Least 1"))
+		for c in line_id:
+			if (c in digits):
+				line_id_formated = line_id_formated + c
 
-        if order_sudo != select_sudo.order_id:
-            return request.redirect(order_sudo.get_portal_url())
-        order_sudo._amount_all()
+		select_sudo = request.env['sale.order.line'].sudo().browse(
+			int(line_id_formated))
+		select_sudo.product_uom_qty = quantity
+		if (quantity <= 0):
+			raise UserError(_("Product Quantity Must Be At Least 1"))
 
-        results = self._get_portal_order_details(order_sudo)
+		if order_sudo != select_sudo.order_id:
+			return request.redirect(order_sudo.get_portal_url())
+		order_sudo._amount_all()
 
-        results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
-            'sale_order': order_sudo,
-            'report_type': "html",
-        })
+		results = self._get_portal_order_details(order_sudo)
 
-        return results
+		results['sale_inner_template'] = request.env['ir.ui.view']._render_template("sale.sale_order_portal_content", {
+			'sale_order': order_sudo,
+			'report_type': "html",
+		})
+
+		return results
