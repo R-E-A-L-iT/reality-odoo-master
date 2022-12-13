@@ -17,7 +17,7 @@
 			<t t-if="doc != undefined" t-set="source" t-value="doc" />
 			<t t-elif="o != undefined" t-set="source" t-value="o" />
 			<t t-elif="sale_order != undefined" t-set="source" t-value="sale_order" />
-			<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and doc.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
+			<span t-if="(lang != 'fr_CA' and lang != undefined) or (lang == undefined and source.partner_id.lang != 'fr_CA')" t-out="amount_by_group['tax_group_name']" />
 			<t t-else="">
 				<span t-if="'GST' in amount_by_group['tax_group_name'] or 'TPS' in amount_by_group['tax_group_name']">TPS</span>
 				<span t-elif="'HST' in amount_by_group['tax_group_name'] or 'TVH' in amount_by_group['tax_group_name']">TVH</span>
