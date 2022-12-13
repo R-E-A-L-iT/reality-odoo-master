@@ -31,7 +31,7 @@
 				<img t-if="footer != undefined" id="insert-footer" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 				<t t-else="">
 					<span t-out="o.company_id.name" />
-					<span t-out="o.company_id.company_address" />
+					<span t-out="o.company_id.address" />
 				</t>
 			</div>
 		</xpath>
