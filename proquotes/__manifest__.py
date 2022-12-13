@@ -23,21 +23,19 @@
     'depends': ['base', 'web', 'mail', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
 
     'assets': {
-            'web.asse_ts_frontend': [
-                'proquotes/static/src/CSS/foldProducts.css',
-                'proquotes/static/src/CSS/pdf.css',
-                'proquotes/static/src/CSS/user-info.css',
-                'proquotes/static/src/CSS/login.css',
-                'proquotes/static/src/CSS/quoteStyle.css',
-                'proquotes/static/src/CSS/quoteHeaderText.css',
-                'proquotes/static/src/JS/fold.js',
-                'proquotes/static/src/JS/poNumber.js',
-                'proquotes/static/src/JS/price.js',
-                'proquotes/static/src/JS/rental.js',
-            ]
+        'proquotes/static/src/CSS/foldProducts.css',
+        'proquotes/static/src/CSS/pdf.css',
+        'proquotes/static/src/CSS/user-info.css',
+        'proquotes/static/src/CSS/login.css',
+        'proquotes/static/src/CSS/quoteStyle.css',
+        'proquotes/static/src/CSS/quoteHeaderText.css',
+        'proquotes/static/src/JS/fold.js',
+        'proquotes/static/src/JS/poNumber.js',
+        'proquotes/static/src/JS/price.js',
+        'proquotes/static/src/JS/rental.js',
     },
 
-    'version': '0.2',
+    'version': '0.3',
 
 
     # always loaded
