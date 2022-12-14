@@ -30,12 +30,17 @@
 				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 				<img t-if="footer != undefined" id="insert-footer" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 				<t t-else="">
-					<span t-out="o.company_id.name" />
-					<span t-out="o.company_id.street" />
-					<span t-out="o.company_id.city" />
-					<span t-out="o.company_id.state" />
-					<span t-out="o.company_id.country" />
-					<span t-out="o.company_id.zip" />
+					<t t-if="doc != undefined" t-set="source" t-value="doc" />
+					<t t-elif="o != undefined" t-set="source" t-value="o" />
+					<t t-elif="sale_order != undefined" t-set="source" t-value="sale_order" />
+					<t t-if="source != undefined">
+						<span t-out="source.company_id.name" />
+						<span t-out="source.company_id.street" />
+						<span t-out="source.company_id.city" />
+						<span t-out="source.company_id.state" />
+						<span t-out="source.company_id.country" />
+						<span t-out="source.company_id.zip" />
+					</t>
 				</t>
 			</div>
 		</xpath>
