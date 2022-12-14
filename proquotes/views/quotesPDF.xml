@@ -37,10 +37,11 @@
 						<span t-out="source.company_id.name" />
 						<br />
 						<span t-out="source.company_id.street" />
-						<span t-out="source.company_id.city" />
+						<br />
+						<span t-if="source.company_id.city != False" t-out="source.company_id.city + ','" />
 						<span t-out="source.company_id.state_id.code" />
-						<span t-out="source.company_id.country_id.name" />
 						<span t-out="source.company_id.zip" />
+						<span t-out="source.company_id.country_id.name" />
 					</t>
 				</t>
 			</div>
