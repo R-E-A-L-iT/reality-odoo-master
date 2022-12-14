@@ -23,7 +23,7 @@ class QuoteCustomerPortal(cPortal):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
 
-    def _get_portal_order_detains(self, order_sudo):
+    def _get_portal_order_details(self, order_sudo):
         return {}
 
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
