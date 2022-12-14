@@ -20,6 +20,20 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 
 
+class purchase_order(models.Model):
+    _inherit = 'purchase.order'
+    footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
+        ('Geoplus_Canada', "Geoplus_Canada"),
+        ('Geoplus_America', "Geoplus_America"),
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+
+
 class invoice(models.Model):
     _inherit = 'account.move'
     footer = fields.Selection([
