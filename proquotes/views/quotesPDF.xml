@@ -35,6 +35,7 @@
 					<t t-elif="sale_order != undefined" t-set="source" t-value="sale_order" />
 					<t t-if="source != undefined">
 						<span t-out="source.company_id.name" />
+						<br />
 						<span t-out="source.company_id.street" />
 						<span t-out="source.company_id.city" />
 						<span t-out="source.company_id.state_id.code" />
