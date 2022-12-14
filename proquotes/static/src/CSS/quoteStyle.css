@@ -147,7 +147,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	display: none;
 }
 
-#quote_header_10 {
+[id^=quote_header_] {
 	color: #fff;
 }
 
@@ -255,8 +255,4 @@ td.tax-column {
 
 #portal_sale_content div.oe_no_empty {
 	display: none !important;
-}
-
-#quote_header_19 {
-	color: #fff;
 }
