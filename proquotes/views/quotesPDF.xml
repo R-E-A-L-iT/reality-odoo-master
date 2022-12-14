@@ -37,7 +37,7 @@
 						<span t-out="source.company_id.name" />
 						<span t-out="source.company_id.street" />
 						<span t-out="source.company_id.city" />
-						<span t-out="source.company_id.state" />
+						<span t-out="source.company_id.state_id" />
 						<span t-out="source.company_id.country" />
 						<span t-out="source.company_id.zip" />
 					</t>
