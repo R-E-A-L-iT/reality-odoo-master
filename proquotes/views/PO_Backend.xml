@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo id="purchase_backend" name="Purchase Backend">
-	<xpath expr="//field[@name=&quot;currency_id&quot;]" position="after">
-		<field name="footer" invisible="0" />
-	</xpath>
+<odoo>
+	<template id="purchase_backend" name="Purchase Backend" inherit_id="purchase.purchase_order_form">
+		<xpath expr="//field[@name=&quot;currency_id&quot;]" position="after">
+			<field name="footer" invisible="0" />
+		</xpath>
+	</template>
 </odoo>
