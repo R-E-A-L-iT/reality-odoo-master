@@ -56,7 +56,7 @@
         'views/deliverPDF.xml',
         'views/PO_PDF.xml',
         'views/PO_Backend.xml',
-        'views/PO_Frontent.xml',
+        'views/PO_Frontend.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode

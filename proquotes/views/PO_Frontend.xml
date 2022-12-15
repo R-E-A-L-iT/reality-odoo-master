@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="purchase_pdf"></template>
+	<template id="purchase_frontend"></template>
 </odoo>
