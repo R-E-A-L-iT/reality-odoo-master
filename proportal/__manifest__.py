@@ -38,7 +38,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/web_base',
+        'views/web_base.xml',
         'views/partnerView.xml',
         # 'views/portalAccess.xml',
         'views/stockView.xml',
