@@ -54,6 +54,9 @@
         'views/renewalText.xml',
         'views/rentalTerms.xml',
         'views/deliverPDF.xml',
+        'views/PO_PDF.xml',
+        'views/PO_Backend.xml',
+        'views/PO_Frontent.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
