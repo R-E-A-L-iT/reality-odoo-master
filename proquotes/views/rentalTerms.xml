@@ -2,25 +2,25 @@
 
 <odoo>
 	<template name="Rental Terms" id="rental_terms">
-		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="city" t-value="'Montreal'" />
-		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="state" t-value="'Quebec'" />
-		<t t-if="company_name == 'R-E-A-L.iT Solutions'" t-set="country" t-value="'Canada'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="city" t-value="'Montreal'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Quebec'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="city" t-value="'Dover'" />
-		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="state" t-value="'Delaware'" />
-		<t t-if="company_name == 'R-E-A-L.iT U.S. Inc.'" t-set="country" t-value="'United States'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="city" t-value="'Dover'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="state" t-value="'Delaware'" />
+		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="country" t-value="'United States'" />
 
-		<t t-if="company_name == 'Abtech On. Inc.'" t-set="city" t-value="'Toronto'" />
-		<t t-if="company_name == 'Abtech On. Inc.'" t-set="state" t-value="'Ontario'" />
-		<t t-if="company_name == 'Abtech On. Inc.'" t-set="country" t-value="'Canada'" />
+		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="city" t-value="'Toronto'" />
+		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="state" t-value="'Ontario'" />
+		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="city" t-value="'Sherbrooke'" />
-		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="state" t-value="'Quebec'" />
-		<t t-if="company_name == 'ABTECH Services Polytechnique Inc.'" t-set="country" t-value="'Canada'" />
+		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="city" t-value="'Sherbrooke'" />
+		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="state" t-value="'Quebec'" />
+		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="city" t-value="'Muncton'" />
-		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="state" t-value="'New Brunswick'" />
-		<t t-if="company_name == 'Abtech Atl. Inc.'" t-set="country" t-value="'Canada'" />
+		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="city" t-value="'Muncton'" />
+		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="state" t-value="'New Brunswick'" />
+		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="country" t-value="'Canada'" />
 
 		<div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
 			<p>
