@@ -3,7 +3,7 @@
 	<template id="web_base" name="Website Base" inherit_id="web.layout" priority="17">
 		<xpath expr="//head//script[1]" position="before">
 			<!-- Google Tag Manager -->
-			<script src="/static/JS/analytics.js" />
+			<script src="proportal/static/JS/analytics.js" />
 			<!-- End Google Tag Manager -->
 		</xpath>
 		<xpath expr="//body/t" position="before">
