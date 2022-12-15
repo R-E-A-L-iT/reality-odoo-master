@@ -17,6 +17,8 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+from .translation import name_translation
+
 _logger = logging.getLogger(__name__)
 
 
@@ -178,19 +180,8 @@ class orderLineProquotes(models.Model):
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
 
     def get_applied_name(self):
-        for record in self:
-            id = self.env['ir.translation'].search([('value', '=', record.product_id.name),
-                                                    ('name', '=', 'product.template,name')])
-            if (len(id) > 1):
-                id = id[-1]
-            id = id.res_id
-            name = self.env['ir.translation'].search([('res_id', '=', id),
-                                                      ('name', '=',
-                                                       'product.template,name'),
-                                                      ('lang', '=', self.order_partner_id.lang)]).value
-            if (name == False or name == ""):
-                name = record.product_id.name
-            record.applied_name = name
+        n = name_translation(self)
+        n.get_applied_name()            
 
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:

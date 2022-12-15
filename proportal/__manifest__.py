@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.7',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -38,6 +38,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/web_base.xml',
         'views/partnerView.xml',
         # 'views/portalAccess.xml',
         'views/stockView.xml',
