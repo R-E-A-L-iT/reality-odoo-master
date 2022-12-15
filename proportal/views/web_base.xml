@@ -3,7 +3,17 @@
 	<template id="web_base" name="Website Base" inherit_id="web.layout" priority="17">
 		<xpath expr="//head//script[1]" position="before">
 			<!-- Google Tag Manager -->
-			<script src="proportal/static/JS/analytics.js" />
+			<!-- <script src="proportal/static/JS/analytics.js" /> -->
+			<script>
+				(function (w, d, s, l, i) {
+					w[l] = w[l] || []; w[l].push({
+						'gtm.start':
+							new Date().getTime(), event: 'gtm.js'
+					}); var f = d.getElementsByTagName(s)[0],
+						j = d.createElement(s), dl = l != 'dataLayer' ? '&amp;l=' + l : ''; j.async = true; j.src =
+							'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+				})(window, document, 'script', 'dataLayer', 'GTM-P29CMWQ');
+			</script>
 			<!-- End Google Tag Manager -->
 		</xpath>
 		<xpath expr="//body/t" position="before">
