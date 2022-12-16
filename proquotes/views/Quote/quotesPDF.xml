@@ -26,8 +26,7 @@
 		<xpath
 			expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td"
 			position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and \
-				line.name != '$subscription'</attribute>
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
@@ -245,8 +244,7 @@
 
 		<!--Hide Unselected-->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and \
-				line.sectionSelected == 'true'</attribute>
+			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
