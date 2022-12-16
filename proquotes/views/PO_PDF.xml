@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="purchase_pdf"></template>
+	<template name="Purchase Order PDf" id="purchase_pdf" inherit_id="purchase.purchase_order_portal_content">
+		<xpath expr="//div[1]" position="after">
+			<t t-set="footer" t-value="o.footer" />
+		</xpath>
+	</template>
 </odoo>
