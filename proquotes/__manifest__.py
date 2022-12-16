@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.3',
+    'version': '0.4',
 
     # always loaded
     'data': [
@@ -55,7 +55,7 @@
         'views/Other/tax.xml',
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
-        'views/PO/PO_Frontend.xml',
+        # 'views/PO/PO_Frontend.xml',
         # 'views/PO/PO_Backend.xml',
         # 'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
