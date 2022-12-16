@@ -37,14 +37,14 @@
             ]
     },
 
-    'version': '0.8',
+    'version': '0.9',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/Quote/quotesFrontend.xml',
         'views/Quote/quotesBackend.xml',
-        'views/Quote/quotesPDF.xml',
+        # 'views/Quote/quotesPDF.xml',
         'views/Quote/quoteLogo.xml',
         'views/Quote/quotesTemplates.xml',
         'views/Quote/renewalText.xml',
@@ -55,9 +55,9 @@
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
         'views/Other/pdf_boxed.xml',
-        # 'views/PO/PO_Frontend.xml',
-        # 'views/PO/PO_Backend.xml',
-        # 'views/PO/PO_PDF.xml',
+        'views/PO/PO_Frontend.xml',
+        'views/PO/PO_Backend.xml',
+        'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
