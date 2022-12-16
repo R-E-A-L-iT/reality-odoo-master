@@ -37,11 +37,10 @@
             ]
     },
 
-    'version': '0.1',
+    'version': '0.2',
 
     # always loaded
     'data': [
-        'views/Other/pdf_boxed.xml',
         'security/ir.model.access.csv',
         'views/Quote/quotesFrontend.xml',
         'views/Quote/quotesBackend.xml',
@@ -58,6 +57,7 @@
         'views/PO/PO_Frontend.xml',
         'views/PO/PO_Backend.xml',
         'views/PO/PO_PDF.xml',
+        'views/Other/pdf_boxed.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
