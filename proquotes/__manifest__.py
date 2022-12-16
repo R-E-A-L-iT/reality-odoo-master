@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.9',
+    'version': '0.0',
 
     # always loaded
     'data': [
@@ -51,7 +51,7 @@
         'views/Quote/rentalTerms.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoicePDF.xml',
-        # 'views/Other/pdf_boxed.xml',
+        'views/Other/pdf_boxed.xml',
         'views/Other/tax.xml',
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
