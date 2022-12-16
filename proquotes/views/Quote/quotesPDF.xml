@@ -26,7 +26,7 @@
 		<xpath
 			expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td"
 			position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and
+			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and \
 				line.name != '$subscription'</attribute>
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
@@ -126,8 +126,7 @@
 
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]"
 			position="attributes">
-			<!-- <attribute name="t-if">line.selected == 'true' and not
-			current_section_ended</attribute> -->
+			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
 		</xpath>
 
 		<!-- Remove Special Sections for Renewal Quotes -->
@@ -246,7 +245,7 @@
 
 		<!--Hide Unselected-->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and
+			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and \
 				line.sectionSelected == 'true'</attribute>
 		</xpath>
 
