@@ -42,8 +42,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/Quote/quotesBackend.xml',
         'views/Quote/quotesFrontend.xml',
+        'views/Quote/quotesBackend.xml',
         'views/Quote/quotesPDF.xml',
         'views/Quote/quoteLogo.xml',
         'views/Quote/quotesTemplates.xml',
@@ -55,9 +55,9 @@
         'views/Other/tax.xml',
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
-        'views/PO/PO_PDF.xml',
-        'views/PO/PO_Backend.xml',
         'views/PO/PO_Frontend.xml',
+        # 'views/PO/PO_Backend.xml',
+        'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
