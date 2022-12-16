@@ -37,13 +37,13 @@
             ]
     },
 
-    'version': '0.4',
+    'version': '0.5',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/Quote/quotesFrontend.xml',
-        'views/Quote/quotesBackend.xml',
+        'views/Quote/quotestBackend.xml',
         'views/Quote/quotesPDF.xml',
         'views/Quote/quoteLogo.xml',
         'views/Quote/quotesTemplates.xml',
