@@ -56,7 +56,7 @@
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
         'views/PO/PO_Frontend.xml',
-        'views/PO/PO_Backend.xml',
+        # 'views/PO/PO_Backend.xml',
         # 'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
     ],
