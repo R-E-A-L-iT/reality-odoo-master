@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.8',
+    'version': '0.9',
 
     # always loaded
     'data': [
@@ -52,12 +52,12 @@
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoicePDF.xml',
         # 'views/Other/pdf_boxed.xml',
-        # 'views/Other/tax.xml',
-        # 'views/Other/mail.xml',
-        # 'views/Other/deliverPDF.xml',
-        # 'views/PO/PO_Frontend.xml',
-        # 'views/PO/PO_Backend.xml',
-        # 'views/PO/PO_PDF.xml',
+        'views/Other/tax.xml',
+        'views/Other/mail.xml',
+        'views/Other/deliverPDF.xml',
+        'views/PO/PO_Frontend.xml',
+        'views/PO/PO_Backend.xml',
+        'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
