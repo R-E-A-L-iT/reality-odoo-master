@@ -37,20 +37,20 @@
             ]
     },
 
-    'version': '0.7',
+    'version': '0.8',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/Quote/quotesFrontend.xml',
-        # 'views/Quote/quotesBackend.xml',
-        # 'views/Quote/quotesPDF.xml',
-        # 'views/Quote/quoteLogo.xml',
-        # 'views/Quote/quotesTemplates.xml',
-        # 'views/Quote/renewalText.xml',
-        # 'views/Quote/rentalTerms.xml',
-        # 'views/Invoice/invoiceBackend.xml',
-        # 'views/Invoice/invoicePDF.xml',
+        'views/Quote/quotesFrontend.xml',
+        'views/Quote/quotesBackend.xml',
+        'views/Quote/quotesPDF.xml',
+        'views/Quote/quoteLogo.xml',
+        'views/Quote/quotesTemplates.xml',
+        'views/Quote/renewalText.xml',
+        'views/Quote/rentalTerms.xml',
+        'views/Invoice/invoiceBackend.xml',
+        'views/Invoice/invoicePDF.xml',
         # 'views/Other/pdf_boxed.xml',
         # 'views/Other/tax.xml',
         # 'views/Other/mail.xml',
