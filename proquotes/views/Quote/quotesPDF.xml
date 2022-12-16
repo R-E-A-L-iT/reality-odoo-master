@@ -15,7 +15,7 @@
 
 	</template>
 
-	<template id="quote_pdf" name="Sales Order PDF Content"
+	<template id="sale_order_pdf_content" name="Sales Order PDF Content"
 		inherit_id="sale.report_saleorder_document" priority="17">
 		<!-- <xpath expr="//table" position="before">
 			
