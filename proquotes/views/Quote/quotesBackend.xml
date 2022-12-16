@@ -61,7 +61,8 @@
 
 			<xpath expr="//field"
 			position="after">
-		</xpath>
+
+			</xpath>
 			-->
 			<xpath
 				expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
