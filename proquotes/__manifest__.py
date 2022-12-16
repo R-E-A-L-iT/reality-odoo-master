@@ -43,7 +43,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/Quote/quotesFrontend.xml',
-        'views/Quote/quotestBackend.xml',
+        'views/Quote/quotesBackend.xml',
         'views/Quote/quotesPDF.xml',
         'views/Quote/quoteLogo.xml',
         'views/Quote/quotesTemplates.xml',
