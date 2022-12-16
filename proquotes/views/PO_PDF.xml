@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template name="Purchase Order PDf" id="purchase_pdf" inherit_id="purchase.purchase_order_portal_content">
+	<template name="Purchase Order PDf" id="purchase_pdf"
+		inherit_id="purchase.purchase_order_portal_content">
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer" />
+			<span t-out="o.footer" />
 		</xpath>
 	</template>
 </odoo>
