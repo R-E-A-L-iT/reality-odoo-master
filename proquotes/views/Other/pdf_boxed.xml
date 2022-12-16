@@ -1,39 +1,43 @@
-<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
-	<xpath expr="//div[@name=&quot;company_address&quot;]" position="replace" />
-	<xpath expr="/t/div[3]" position="attributes">
-		<!-- <attribute name="style">height: fit-content !important;</attribute> -->
-	</xpath>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed"
+		priority="17">
+		<xpath expr="//div[@name=&quot;company_address&quot;]" position="replace" />
+		<xpath expr="/t/div[3]" position="attributes">
+			<!-- <attribute name="style">height: fit-content !important;</attribute> -->
+		</xpath>
 
-	<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="attributes">
-		<!-- <attribute name="style"> width: 98%; margin-left: 1%; margin-right: 1%</attribute> -->
-	</xpath>
+		<xpath expr="//img[@t-if=&quot;company.logo&quot;]" position="attributes">
+			<!-- <attribute name="style"> width: 98%; margin-left: 1%; margin-right: 1%</attribute> -->
+		</xpath>
 
 
-	<xpath expr="/t/div[3]/div/div" position="replace">
-		<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
-		<div>
-			<img t-if="footer != undefined" id="insert-footer"
-				style="width: 100% !important; display: block !important; position: relative !important;"
-				t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
-			<img t-if="footer != undefined" id="insert-footer"
-				t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
-			<t t-else="">
-				<t t-if="doc != undefined" t-set="source" t-value="doc" />
-				<t t-elif="o != undefined" t-set="source" t-value="o" />
-				<t t-elif="sale_order != undefined" t-set="source" t-value="sale_order" />
-				<t t-if="source != undefined">
-					<span t-out="source.company_id.name" />
-					<br />
-					<span t-out="source.company_id.street" />
-					<br />
-					<span t-if="source.company_id.city != False"
-						t-out="source.company_id.city + ','" />
-					<span t-out="source.company_id.state_id.code" />
-					<span t-out="source.company_id.zip" />
-					<span t-out="source.company_id.country_id.name" />
+		<xpath expr="/t/div[3]/div/div" position="replace">
+			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
+			<div>
+				<img t-if="footer != undefined" id="insert-footer"
+					style="width: 100% !important; display: block !important; position: relative !important;"
+					t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+				<img t-if="footer != undefined" id="insert-footer"
+					t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+				<t t-else="">
+					<t t-if="doc != undefined" t-set="source" t-value="doc" />
+					<t t-elif="o != undefined" t-set="source" t-value="o" />
+					<t t-elif="sale_order != undefined" t-set="source" t-value="sale_order" />
+					<t t-if="source != undefined">
+						<span t-out="source.company_id.name" />
+						<br />
+						<span t-out="source.company_id.street" />
+						<br />
+						<span t-if="source.company_id.city != False"
+							t-out="source.company_id.city + ','" />
+						<span t-out="source.company_id.state_id.code" />
+						<span t-out="source.company_id.zip" />
+						<span t-out="source.company_id.country_id.name" />
+					</t>
 				</t>
-			</t>
-		</div>
-	</xpath>
-	<xpath expr="/t/div[3]/div/div[2]" position="replace" />
-</template>
+			</div>
+		</xpath>
+		<xpath expr="/t/div[3]/div/div[2]" position="replace" />
+	</template>
+</odoo>
