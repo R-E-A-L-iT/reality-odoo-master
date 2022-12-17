@@ -79,7 +79,7 @@
 					</tr>
 				</t>
 			</t>
-			<tr class="quote-head" t-if="line.name == '$block'">
+			<tr t-if="line.name == '$block'">
 				<td class="text-left">
 					<span class="cHead">
 						Product
