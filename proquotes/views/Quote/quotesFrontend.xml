@@ -139,7 +139,7 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[1]" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block and line.name != 'block+'</attribute>
+			<!-- <attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block and line.name != 'block+'</attribute> -->
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
