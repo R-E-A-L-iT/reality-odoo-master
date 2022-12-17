@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_order_form_PO"
+		model="ir.ui.view">
+		<field name="name">purchase.order.form</field>
+		<field
+			name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name=&quot;currency_id&quot;]"
+				position="after">
+				<field name="footer" invisible="0" />
+			</xpath>
+		</field>
+	</record>
+</odoo>

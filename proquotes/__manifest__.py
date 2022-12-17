@@ -37,23 +37,27 @@
             ]
     },
 
-    'version': '0.4',
+    'version': '0.7',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/quotesBackend.xml',
-        'views/quotesFrontend.xml',
-        'views/quotesPDF.xml',
-        'views/invoiceBackend.xml',
-        'views/invoicePDF.xml',
-        'views/tax.xml',
-        'views/mail.xml',
-        'views/quotesTemplates.xml',
-        'views/quoteLogo.xml',
-        'views/renewalText.xml',
-        'views/rentalTerms.xml',
-        'views/deliverPDF.xml',
+        'views/Quote/quotesBackend.xml',
+        'views/Quote/quotesFrontend.xml',
+        'views/Quote/quotesPDF.xml',
+        'views/Quote/rentalTerms.xml',
+        'views/Quote/quotesTemplates.xml',
+        'views/Quote/quoteLogo.xml',
+        'views/Quote/renewalText.xml',
+        'views/Other/tax.xml',
+        'views/Other/mail.xml',
+        'views/Other/deliverPDF.xml',
+        'views/Other/pdf_boxed.xml',
+        'views/Invoice/invoicePDF.xml',
+        'views/Invoice/invoiceBackend.xml',
+        'views/PO/PO_Frontend.xml',
+        'views/PO/PO_Backend.xml',
+        'views/PO/PO_PDF.xml',
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
