@@ -111,7 +111,7 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr[1]" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block'</attribute>
+			<!-- <attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription' and line.name != '$block'</attribute> -->
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;details&quot;]" position="before">
@@ -167,7 +167,7 @@
 				<label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
 					<span>
 						<strong class="text-right subtotal-label" style="font-weight: bolder">Subtotal
-					</strong>
+						</strong>
 					</span>
 					<span class="subtotal-destination text-right" style="font-weight: 400 !important;"></span>
 				</label>
@@ -338,7 +338,7 @@
 						<t t-call="proquotes.rental_terms" />
 						<div>
 							<span>
-							Should equipment be shipped to a different address?
+								Should equipment be shipped to a different address?
 							</span>
 							<br />
 							<span class="english-mode"></span>
@@ -524,13 +524,11 @@
 						</div>
 						<br />
 						<div>
-							<span>
-								Total Rental Value:
-								<span id="total-rental-value"></span>
+							<span> Total Rental Value: <span id="total-rental-value"></span>
 							</span>
 							<br />
 							<span>
-							Please upload your proof of insurance for the total amount in the comments below:
+								Please upload your proof of insurance for the total amount in the comments below:
 							</span>
 							<br />
 						</div>
@@ -568,9 +566,7 @@
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<div class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton" t-att-href="sale_order.get_portal_url(report_type='pdf', download=True)" title="Download">
-					<i class="fa fa-download"></i>
-					Download
-				</a>
+					<i class="fa fa-download"></i> Download </a>
 			</div>
 			<!-- <div style="padding-left: 0px;" class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="approve-button">
