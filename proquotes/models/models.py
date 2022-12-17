@@ -22,6 +22,20 @@ from .translation import name_translation
 _logger = logging.getLogger(__name__)
 
 
+class purchase_order(models.Model):
+    _inherit = 'purchase.order'
+    footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
+        ('Geoplus_Canada', "Geoplus_Canada"),
+        ('Geoplus_America', "Geoplus_America"),
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+
+
 class invoice(models.Model):
     _inherit = 'account.move'
     footer = fields.Selection([
@@ -45,8 +59,8 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
-    #customer_po_file_name = fields.Char(string="PO File Name")
-    #customer_po_file = fields.Binary(string="PO File")
+    # customer_po_file_name = fields.Char(string="PO File Name")
+    # customer_po_file = fields.Binary(string="PO File")
 
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True)
@@ -80,7 +94,7 @@ class order(models.Model):
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
-    #rental_insurance = fields.Binary(string="Insurance")
+    # rental_insurance = fields.Binary(string="Insurance")
 
     def _amount_all(self):
         for order in self:
@@ -167,7 +181,7 @@ class orderLineProquotes(models.Model):
 
     def get_applied_name(self):
         n = name_translation(self)
-        n.get_applied_name()            
+        n.get_applied_name()
 
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
