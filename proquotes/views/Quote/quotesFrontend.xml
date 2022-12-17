@@ -86,8 +86,11 @@
 							Product
 						</span>
 					</td>
-					<td t-if="False"></td>
-					<td t-else="" />
+					<td class="text-right" t-if="sale_order.is_rental == True">
+						<span class="cHead">
+							Product Value
+						</span>
+					</td>
 					<td class="text-right">
 						<span class="cHead">
 							Quantity
