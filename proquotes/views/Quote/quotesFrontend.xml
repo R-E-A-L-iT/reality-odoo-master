@@ -92,7 +92,6 @@
 							Quantity
 						</span>
 					</td>
-					<td class="text-right"></td>
 					<td class="text-right">
 						<span class="cHead">
 							Unit Price
@@ -122,7 +121,6 @@
 							Quantity
 						</span>
 					</td>
-					<td class="text-right"></td>
 					<td class="text-right">
 						<span class="cHead">
 							Unit Price
