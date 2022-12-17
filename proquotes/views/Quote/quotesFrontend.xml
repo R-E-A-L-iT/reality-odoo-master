@@ -86,6 +86,8 @@
 							Product
 						</span>
 					</td>
+					<td t-if="True"></td>
+					<td t-else="" />
 					<td class="text-right">
 						<span class="cHead">
 							Quantity
