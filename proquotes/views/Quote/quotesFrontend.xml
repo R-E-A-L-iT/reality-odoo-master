@@ -80,7 +80,7 @@
 				</t>
 			</t>
 			<t t-if="line.name == '$block'">
-				<tr class="">
+				<tr class="quote-head">
 					<td class="text-left">
 						<span class="cHead">
 							Product
