@@ -78,7 +78,7 @@
 						</td>
 					</tr>
 				</t>
-				<tr class="quote-head" t-if="line.name == '$block' or True">
+				<tr class="quote-head" t-if="line.name == '$block'">
 					<td class="text-left">
 						<span class="cHead">
 							Product
