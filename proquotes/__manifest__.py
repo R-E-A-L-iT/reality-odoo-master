@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.8',
+    'version': '0.9',
 
     # always loaded
     'data': [
@@ -49,6 +49,7 @@
         'views/Quote/quotesTemplates.xml',
         'views/Quote/quoteLogo.xml',
         'views/Quote/renewalText.xml',
+        'views/Quote/quoteRentalAddress.xml',
         'views/Other/tax.xml',
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
