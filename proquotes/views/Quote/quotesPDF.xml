@@ -110,7 +110,7 @@
 
 		<!-- Remove Special Sections for Renewal Quotes -->
 		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$block' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
