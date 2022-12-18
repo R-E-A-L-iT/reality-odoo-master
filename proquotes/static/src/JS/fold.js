@@ -58,7 +58,6 @@ odoo.define('proquotes.fold', function (require) {
 		_onChange: function (cb) {
 			var TRstyle;
 			var expandHTML;
-			console.log("Display Change")
 			if (cb.currentTarget.checked == true) {
 				TRstyle = "none";
 				expandHTML = "+";
@@ -75,10 +74,8 @@ odoo.define('proquotes.fold', function (require) {
 			while (y != null && y != undefined) {
 				if (y.className.includes("is-subtotal")) {
 					break;
-				} else {
-					if (y.style != undefined && y.style != null) {
-						y.style.display = TRstyle;
-					}
+				} else if (y.style != undefined && y.style != null) {
+					y.style.display = TRstyle;
 				}
 				y = y.nextElementSibling;
 			}
