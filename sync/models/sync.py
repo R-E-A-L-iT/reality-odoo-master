@@ -808,3 +808,43 @@ class sync(models.Model):
         email.email_to = "sync@store.r-e-a-l.it"
         email_id = {email.id}
         email.process_email_queue(email_id)
+
+    def archive_product(product_id):
+        product = self.env['product.template'].search([('id', '=', product_id)])
+        _logger.info("------------------------------------------- product_id: " + str(product.id) + " would be deleted: " + str(product.name))
+       
+
+    #Sku cleaning
+    def start_sku_cleaning(self, psw=None):
+        _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
+
+        catalog_odoo = dict()
+        catalog_gs = dict()
+
+        to_archives = []
+        products = self.env['product.template'].search([])
+
+        _logger.info("products: " + str(len(products)))
+        _logger.info("products type:" + str(type(products)))
+
+        i = 0
+        for product in products:            
+            #if (i >= 500):
+            #    _logger.info("products: " + str(product.sku))
+
+            if (str(product.sku) == "False"):
+                to_archives.append(str(product.id))
+                _logger.info("To archives: product id: " + str(product.id))
+
+            if (str(product.sku) not in catalog_odoo):
+                catalog_odoo[str(product.sku)] = 0
+            else:
+                catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
+            i += 1
+
+        _logger.info("catalog_odoo len: " + str(len(catalog_odoo)))
+
+        for item in to_archives:
+            self.archive_product(str(item))
+
+        _logger.info("------------------------------------------- END start_sku_cleaning")    
