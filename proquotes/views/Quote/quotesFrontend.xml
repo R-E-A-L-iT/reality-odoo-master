@@ -82,12 +82,12 @@
 			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
 					<td style="border-style: none;" colspan="100">
-						<p t-if="lang == 'en_CA' or lang == 'en_US'">
+						<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
 							* The final rental cost will be calculated once the equipement is returned.
 							Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
 							Monthly rental cost is equivalent to 12x the indicated daily rental rate (above). ‌
 						</p>
-						<p t-elif="lang == 'fr_CA'">
+						<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
 							* Le coût final sera calculé lorsque l'équipement sera retourné.
 							Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 							Le taux de location au mois est équivalent à 12x le taux journalier ci-haut.

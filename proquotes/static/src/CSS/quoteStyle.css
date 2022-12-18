@@ -256,3 +256,7 @@ td.tax-column {
 #portal_sale_content div.oe_no_empty {
 	display: none !important;
 }
+
+.rental_price_explain {
+	color: #fff;
+}
