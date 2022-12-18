@@ -38,19 +38,19 @@ class sync(models.Model):
     # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
+        
         template_id = self._master_database_template_id
+        i = 1
+        sheetIndex = ""
+        syncType = ""
+        msg = ""
 
         # Checks authentication values
         if (self.is_psw_empty(psw)):
             return
 
         # Get the ODOO_SYNC_DATA
-        sync_data = self.getOdooSyncData(template_id, psw)
-
-        i = 1
-        sheetIndex = ""
-        syncType = ""
-        msg = ""
+        sync_data = self.getOdooSyncData(template_id, psw)        
 
         # loop through entries in first sheet
         while (True):
