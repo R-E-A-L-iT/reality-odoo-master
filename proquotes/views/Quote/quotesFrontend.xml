@@ -14,7 +14,6 @@
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
 			<t t-set="company_name" t-value="sale_order.company_id.name" />
 			<t t-set="clang" t-value="lang" />
-			<t t-call="proquotes.rental_terms" />
 			<div class="quote-address">
 				<img t-if="sale_order.header[-4:] == '.jpg'" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
 				<video t-if="sale_order.header[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
@@ -375,6 +374,7 @@
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
+			<t t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
