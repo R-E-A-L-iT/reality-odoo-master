@@ -809,7 +809,7 @@ class sync(models.Model):
         email_id = {email.id}
         email.process_email_queue(email_id)
 
-    def archive_product(product_id):
+    def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
         _logger.info("------------------------------------------- product_id: " + str(product.id) + " would be deleted: " + str(product.name))
        
