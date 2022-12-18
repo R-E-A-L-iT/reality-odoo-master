@@ -92,17 +92,17 @@
 							Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 							Le taux de location au mois est équivalent à 12x le taux journalier ci-haut.
 						</p>
+						<br />
+						<div>
+							<span> Total Rental Value: <span id="total-rental-value"></span>
+							</span>
+							<br />
+							<span>
+								Please upload your proof of insurance for the total amount in the comments below:
+							</span>
+							<br />
+						</div>
 					</td>
-					<br />
-					<div>
-						<span> Total Rental Value: <span id="total-rental-value"></span>
-						</span>
-						<br />
-						<span>
-							Please upload your proof of insurance for the total amount in the comments below:
-						</span>
-						<br />
-					</div>
 				</tr>
 			</t>
 
