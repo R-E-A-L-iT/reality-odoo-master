@@ -812,7 +812,7 @@ class sync(models.Model):
     def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
         product.active = False
-        productarchived = self.env['product.template'].search([('id', '=', product_id)])
+        productarchived = self.env['product.template'].search([('id', '=', product_id), ('active', '=', 'False')])
         _logger.info("------------------------------------------- product_id requested: " + str(product_id) + ": " + str(productarchived.id) + ", active is: " + str(productarchived.active))
        
 
