@@ -260,3 +260,7 @@ td.tax-column {
 .rental_price_explain {
 	color: #fff;
 }
+
+.rental_product_value, .rental_product_value * {
+	color: #fff;
+}

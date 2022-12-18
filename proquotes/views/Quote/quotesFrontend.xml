@@ -93,7 +93,7 @@
 							Le taux de location au mois est équivalent à 12x le taux journalier ci-haut.
 						</p>
 						<br />
-						<div>
+						<div class="rental_product_value">
 							<span> Total Rental Value: <span id="total-rental-value"></span>
 							</span>
 							<br />
