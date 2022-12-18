@@ -374,7 +374,7 @@
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
-			<t t-call="proquotes.rental_terms" />
+			<t t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
