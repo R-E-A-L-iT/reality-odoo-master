@@ -811,7 +811,9 @@ class sync(models.Model):
 
     def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
-        _logger.info("------------------------------------------- product_id: " + str(product.id) + " would be deleted: " + str(product.name))
+        product.active = False
+        productarchived = self.env['product.template'].search([('id', '=', product_id)])
+        _logger.info("------------------------------------------- product_id requested: " + str(product_id) + ": " + str(productarchived.id) + ", active is: " + str(productarchived.active))
        
 
     #Sku cleaning
