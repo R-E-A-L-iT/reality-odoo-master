@@ -20,7 +20,8 @@
 						Should equipment be shipped to a different address?
 					</span>
 					<br />
-					<span class="english-mode"></span>
+					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
+					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
 					<input t-if="sale_order.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
 					<input t-else="" id="new-address" type="checkbox" />
 					<br />
