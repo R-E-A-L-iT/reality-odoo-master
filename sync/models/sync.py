@@ -834,6 +834,7 @@ class sync(models.Model):
             if (product.active == False):
                 if (str(product.sku) == "False"):
                     product.active = True
+                    _logger.info("------------------------------------------- product_id requested: " + str(product.id) + ", active is: " + str(product.active))
                 continue
 
             if (str(product.sku) == "False"):
