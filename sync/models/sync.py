@@ -31,38 +31,21 @@ _logger = logging.getLogger(__name__)
 
 class sync(models.Model):
     _name = "sync.sync"
-
     _inherit = "sync.sheets"
-
     DatabaseURL = fields.Char(default="")
-
     _description = "Sync App"
 
     # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
+        template_id = self._master_database_template_id
 
         # Checks authentication values
-        if (psw == None):
-            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
-            _logger.info(msg)
-            self.sendSyncReport(msg)
+        if (self.is_psw_empty(psw)):
             return
 
-        # next funct
-        self.getSyncData(psw)
-        _logger.info("Ending Sync")
-
-    def getSyncData(self, psw):
-        template_id = self._master_database_template_id
-        # get the database data; reading in the sheet
-        try:
-            sync_data = self.getDoc(psw, template_id, 0)
-        except Exception as e:
-            _logger.info(e)
-            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
-            self.sendSyncReport(msg)
-            return
+        # Get the ODOO_SYNC_DATA
+        sync_data = self.getOdooSyncData(template_id, psw)
 
         i = 1
         sheetIndex = ""
@@ -71,17 +54,13 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            validity = str(sync_data[i][3])
-            if (validity != "TRUE"):
-                if (i <= 9):
-                    _logger.info("Valid: " + sheetName + " is " +
-                                 validity + "  .ABORTING sync process!")
-                else:
-                    _logger.info(
-                        "Sync process has finish after updating 9 tabs.")
+            
+            validity = self.isSyncDataValid(sync_data, i)
+            if (not validity):
                 break
 
             sheetName = str(sync_data[i][0])
+
             try:
                 sheetIndex = int(sync_data[i][1])
             except:
@@ -90,11 +69,8 @@ class sync(models.Model):
                 _logger.info(
                     "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
                 break
+
             syncType = str(sync_data[i][2])
-            
-
-            
-
             _logger.info("Valid: " + sheetName + " is " + validity + ".")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw,
@@ -111,6 +87,47 @@ class sync(models.Model):
         # error
         if (msg != ""):
             self.syncFail(msg)
+
+        _logger.info("Ending Sync")
+
+    #isSyncDataValid
+    #Method to check if a line of the Sync Data in GS is valid or not
+    #Input
+    #   sync_data:  GS Odoo_Sync_data tab
+    #   i:          Line to check         
+    #Output
+    #   True:   line is valide
+    #   False:  line is NOT valide
+    def isSyncDataValid(self, sync_data, i):
+        validity = str(sync_data[i][3])
+        sheetName = str(sync_data[i][0])
+
+        if (validity != "TRUE"):
+            if (i <= 9):
+                _logger.info("Valid: " + sheetName + " is " +
+                    validity + "  .ABORTING sync process!")
+            else:
+                _logger.info(
+                   "Sync process has finish after updating 9 tabs.")
+            return False
+
+        return True
+
+
+    #Get the ODOO_SYNC_DATA tab in GoogleSheet
+    #Return the first tab in the GS database that contain the Sync model types
+    def getOdooSyncData(self, template_id, psw):        
+        # get the database data; reading in the sheet
+        try:
+            return (self.getDoc(psw, template_id, 0))
+        except Exception as e:
+            _logger.info(e)
+            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
+            #self.sendSyncReport(msg)
+            #return
+            self.syncFail(msg)            
+            quit
+
 
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
         try:
@@ -812,13 +829,31 @@ class sync(models.Model):
     def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
         product.active = False
-        productarchived = self.env['product.template'].search([('id', '=', product_id), ('active', '=', 'False')])
-        _logger.info("------------------------------------------- product_id requested: " + str(product_id) + ": " + str(productarchived.id) + ", active is: " + str(productarchived.active))
        
+    #check_psw
+    #Check is the password to acces the googlesheet is empty.
+    #Return:
+    #   True : Password is empty
+    #   False: Password is not empty
+    def is_psw_empty(self, psw):
+        # Checks authentication values
+        if (psw == None):
+            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
+            _logger.info(msg)
+            self.sendSyncReport(msg)
+            return True
+        return False
 
     #Sku cleaning
     def start_sku_cleaning(self, psw=None):
         _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
+
+        # Checks authentication values
+        if (self.is_psw_empty(psw)):
+            _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
+            return
+
+        
 
         catalog_odoo = dict()
         catalog_gs = dict()
@@ -832,12 +867,12 @@ class sync(models.Model):
         i = 0
         for product in products:            
             if (product.active == False):
-                _logger.info("------------------------------------------- product_id: " + str(product.id) + ", active is: " + str(product.active))
+                _logger.info("------------------------------------------- product_id: " + str(product.id) + ", active is: " + str(product.active) + ", name: " + str(product.name))
                 continue
 
             if (str(product.sku) == "False"):
                 to_archives.append(str(product.id))
-                _logger.info("To archives: product id: " + str(product.id))
+                _logger.info("------------------------------------------- To archives: product id: " + str(product.id) + ", active is: " + str(product.active) + ", name: " + str(product.name))
 
             if (str(product.sku) not in catalog_odoo):
                 catalog_odoo[str(product.sku)] = 0
@@ -849,5 +884,7 @@ class sync(models.Model):
 
         for item in to_archives:
             self.archive_product(str(item))
+
+        
 
         _logger.info("------------------------------------------- END start_sku_cleaning")    
