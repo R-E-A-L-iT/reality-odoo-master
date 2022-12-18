@@ -38,7 +38,7 @@ class sync(models.Model):
     # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
-        
+
         template_id = self._master_database_template_id
         i = 1
         sheetIndex = ""
@@ -71,7 +71,7 @@ class sync(models.Model):
                 break
 
             syncType = str(sync_data[i][2])
-            _logger.info("Valid: " + sheetName + " is " + validity + ".")
+            _logger.info("Valid: " + sheetName + " is " + str(validity) + ".")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw,
                                             template_id,
