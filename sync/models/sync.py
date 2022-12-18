@@ -832,6 +832,8 @@ class sync(models.Model):
         i = 0
         for product in products:            
             if (product.active == False):
+                if (str(product.sku) == "False"):
+                    product.active = True
                 continue
 
             if (str(product.sku) == "False"):
