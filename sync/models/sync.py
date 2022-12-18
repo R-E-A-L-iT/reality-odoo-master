@@ -831,8 +831,8 @@ class sync(models.Model):
 
         i = 0
         for product in products:            
-            #if (i >= 500):
-            #    _logger.info("products: " + str(product.sku))
+            if (product.active == False):
+                continue
 
             if (str(product.sku) == "False"):
                 to_archives.append(str(product.id))
