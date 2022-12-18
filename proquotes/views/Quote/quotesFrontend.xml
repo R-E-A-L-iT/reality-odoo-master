@@ -214,7 +214,6 @@
 
 		<!--Mark Original Subtotal locations-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
-			<attribute name="t-if">current_section and (line_last or (sale_order.order_line[line_index+1].display_type == 'line_section' and sale_order.order_line[line_index+1].name != '$block' and sale_order.order_line[line_index+1].name != '$block+'))</attribute>
 			<attribute name="class">subtotal-source</attribute>
 		</xpath>
 
