@@ -102,7 +102,7 @@
 							</span>
 							<br />
 						</div>
-						<div class="rental_product_value" t-if="clang == 'fr_CA">
+						<div class="rental_product_value" t-if="clang == 'fr_CA'">
 							<span>Valeur locative totale: &#160;<span id="total-rental-value"></span>
 							</span>
 							<br />
