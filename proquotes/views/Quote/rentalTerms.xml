@@ -23,11 +23,6 @@
 		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="country" t-value="'Canada'" />
 
 		<div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
-			<p>
-				* The final rental cost will be calculated once the equipement is returned.
-				Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-				Monthly rental cost is equivalent to 12x the indicated daily rental rate (above). ‌
-			</p>
 			<h1>
 				<strong>Terms and Conditions</strong>
 			</h1>
@@ -206,11 +201,6 @@
 		</div>
 
 		<div id="rental-terms" t-if="clang == 'fr_CA'">
-			<p>
-				* Le coût final sera calculé lorsque l'équipement sera retourné.
-				Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-				Le taux de location au mois est équivalent à 12x le taux journalier ci-haut.
-			</p>
 			<h1>
 				<strong>Termes et Conditions‌</strong>
 			</h1>
