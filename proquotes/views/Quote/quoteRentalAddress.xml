@@ -26,17 +26,20 @@
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">
-							<span>Street</span>
+							<span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
+							<span t-elif="clang == 'fr_CA'">Rue</span>
 						</label>
 						<input id="street" type="text" t-attf-value="{{sale_order.rental_street}}" />
 						<br />
 						<label for="city">
-							<span>City</span>
+							<span t-if="clang == 'en_CA' or clang == 'en_US'">City</span>
+							<span t-elif="clang == 'fr_CA'">Ville</span>
 						</label>
 						<input id="city" type="text" t-attf-value="{{sale_order.rental_city}}" />
 						<br />
 						<label for="state">
-							<span>State/Province</span>
+							<span t-if="clang == 'en_CA' or clang == 'en_US'">State/Province</span>
+							<span t-elif="clang == 'fr_CA'">Province/État</span>
 						</label>
 						<select id="state">
 							<option t-if="sale_order.rental_state.id == False" id="state-select" value="Select">Select</option>
@@ -173,14 +176,17 @@
 						</select>
 						<br />
 						<label for="country">
-							<span>Country</span>
+							<span t-if="clang == 'en_CA' or clang == 'en_US'">Country</span>
+							<span t-elif="clang == 'fr_CA'">Pays</span>
 						</label>
 						<select id="country">
 							<option t-if="sale_order.rental_country.id == False" value="Select">Select</option>
 							<option t-if="sale_order.rental_country.id == 38" selected="selected" value="Canada">Canada</option>
 							<option t-else="" value="Canada">Canada</option>
-							<option t-if="sale_order.rental_country.id == 233" selected="selected" value="United States">United States</option>
-							<option t-else="" value="United States">United States</option>
+							<option t-if="sale_order.rental_country.id == 233 and (clang == 'en_CA' or clang == 'en_US')" selected="selected" value="United States">United States</option>
+							<option t-elif="sale_order.rental_country.id == 233 and (clang == 'fr_CA')" selected="selected" value="United States">États-Unis</option>
+							<option t-elif="clang == 'en_CA' or clang == 'en_US'" value="United States">United States</option>
+							<option t-elif="clang == 'fr_CA'" value="United States">États-Unis</option>
 						</select>
 						<br />
 						<label for="zip">
@@ -192,24 +198,16 @@
 				<br />
 				<div>
 					<label for="rental-start">
-						<span>Start of the rental</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental</span>
+						<span t-if="clang == 'fr_CA'">Début de la Location</span>
 					</label>
 					<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" />
 					<br />
 					<label for="rental-end">
-						<span>Estimated end of the rental</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental</span>
+						<span t-if="clang == 'fr_CA'">Fin estimée de la Location</span>
 					</label>
 					<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" />
-				</div>
-				<br />
-				<div>
-					<span> Total Rental Value: <span id="total-rental-value"></span>
-					</span>
-					<br />
-					<span>
-						Please upload your proof of insurance for the total amount in the comments below:
-					</span>
-					<br />
 				</div>
 			</form>
 		</section>
