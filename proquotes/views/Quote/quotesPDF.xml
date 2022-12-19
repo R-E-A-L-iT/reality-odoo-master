@@ -112,7 +112,7 @@
 		</xpath> -->
 
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-			<attribute name="t-if">line.selected == 'true' and not current_section_ended and False</attribute>
+			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
 		</xpath>
 
 		<!-- Remove Special Sections for Renewal Quotes -->
@@ -366,6 +366,7 @@
 
 	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">
 		<xpath expr="//strong[@t-esc=&quot;subtotal['name']&quot;]" position="attributes">
+			<attribute name="t-if">False</attribute>
 			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 	</template>
