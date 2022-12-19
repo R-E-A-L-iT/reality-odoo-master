@@ -11,6 +11,8 @@ _logger = logging.getLogger(__name__)
 #@tagged('standard') 
 #class StandardTestCase(TransactionCase):
 
+
+_logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! UNIT TEST CLASS")
 class TestStringMethods(unittest.TestCase):
     def test_01(self):
        _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test_01")
