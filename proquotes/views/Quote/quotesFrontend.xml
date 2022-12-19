@@ -126,57 +126,48 @@
 			<t t-if="line.name == '$block'">
 				<tr class="quote-head">
 					<td class="text-left">
-						<span class="cHead">
-							Product
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Product</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Product</span>
 					</td>
 					<td></td>
 					<td class="text-right">
-						<span class="cHead">
-							Quantity
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Quantity</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Quantity</span>
 					</td>
 					<td />
 					<td class="text-right">
-						<span class="cHead">
-							Unit Price
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Unit Price</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Unit Price</span>
 					</td>
 					<td />
 					<td class="text-right">
-						<span class="cHead">
-							Amount
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Amount</span>
 					</td>
 				</tr>
 			</t>
 			<t t-if="line.name == '$block+'">
 				<tr class="quote-head">
 					<td class="text-left">
-						<span class="cHead">
-							Product
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Product</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Product</span>
 					</td>
 					<td class="text-right">
-						<span class="cHead">
-							Product Value
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Product Value</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Product Value</span>
 					</td>
 					<td class="text-right">
-						<span class="cHead">
-							Quantity
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Quantity</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Quantity</span>
 					</td>
 					<td class="text-right">
-						<span class="cHead">
-							Unit Price
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Unit Price</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Unit Price</span>
 					</td>
 					<td />
 					<td class="text-right">
-						<span class="cHead">
-							Amount
-						</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Amount</span>
 					</td>
 				</tr>
 			</t>
