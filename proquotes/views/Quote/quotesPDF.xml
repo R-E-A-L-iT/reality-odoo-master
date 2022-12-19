@@ -18,7 +18,9 @@
 			
 		</xpath> -->
 
-		<xpath expr="//table/thead" position="replace" />
+		<xpath expr="//table/thead" position="replace">
+			<t t-set="clang" t-value="doc.partner_id.lang" />
+		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
@@ -64,7 +66,7 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<!-- <t t-if="lang == 'en_CA or lang == 'en_US'"> -->
-					<td class="text-left" style="border-top-style: none !important"><t t-out="doc.partner_id.lang" /> Product</td>
+					<td class="text-left" style="border-top-style: none !important"><t t-out="clang" /> Product</td>
 					<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">Product Value</td> -->
 					<!-- <td t-elif="" /> -->
 					<td class="text-right" style="border-top-style: none !important">Quantity</td>
@@ -238,7 +240,6 @@
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
 			<t t-if="doc.sale_order_template_id.name == 'Rental'">
 				<t t-set="company_name" t-value="doc.company_id.name" />
-				<t t-set="clang" t-value="doc.partner_id.lang" />
 				<t t-call="proquotes.rental_terms" />
 			</t>
 			<div>
