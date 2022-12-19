@@ -120,6 +120,7 @@ class sync(models.Model):
     #   data:           A tab in the GoogleSheet Master Database
     def getMasterDatabaseSheet(self, template_id, psw, index):  
         # get the database data; reading in the sheet
+        
         try:
             return (self.getDoc(psw, template_id, index))
         except Exception as e:

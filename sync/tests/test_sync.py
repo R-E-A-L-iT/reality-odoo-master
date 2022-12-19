@@ -17,5 +17,18 @@ class TestModuleDemo(TransactionCase):
 
         result = synce_model.is_psw_empty("password")
         self.assertEqual(result, True)
+
+
+    def test_getMasterDatabaseSheet(self):
+    #def getMasterDatabaseSheet(self, template_id, psw, index): 
+        synce_model = self.env['sync.sync']
+
+        template_id = synce_model._master_database_template_id
+        psw = "pass"
+        index = 0
+
+        result = synce_model.getMasterDatabaseSheet(None, None, None)
+        self.assertEqual(result, None)
+
         
            
