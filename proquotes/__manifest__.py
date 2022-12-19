@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.3',
+    'version': '0.4',
 
     # always loaded
     'data': [
@@ -54,6 +54,7 @@
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
         'views/Other/pdf_boxed.xml',
+        'views/Other/section_name.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/PO/PO_Frontend.xml',
