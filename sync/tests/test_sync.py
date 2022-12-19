@@ -14,5 +14,8 @@ class TestModuleDemo(TransactionCase):
 
         result = synce_model.is_psw_empty(None)
         self.assertEqual(result, True)
-        print('test_is_psw_empty: Your test was successful!')
+
+        result = synce_model.is_psw_empty("password")
+        self.assertEqual(result, True)
+        
            
