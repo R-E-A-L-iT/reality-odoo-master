@@ -28,116 +28,129 @@ from .ccp import sync_ccp
 
 _logger = logging.getLogger(__name__)
 
-
 class sync(models.Model):
     _name = "sync.sync"
     _inherit = "sync.sheets"
     DatabaseURL = fields.Char(default="")
     _description = "Sync App"
 
+    _sync_cancel_reason = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>"
+    _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"
+
+    _odoo_sync_data_index = 0
+
     # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
-        template_id = self._master_database_template_id
+        template_id = self._master_database_template_id       
+
+        sheetName = ""
+        sheetIndex = -1
+        modelType = ""
+        valid = False
+
         i = 1
-        sheetIndex = ""
-        syncType = ""
         msg = ""
 
         # Checks authentication values
         if (self.is_psw_empty(psw)):
             return
 
-        # Get the ODOO_SYNC_DATA
-        sync_data = self.getOdooSyncData(template_id, psw)        
+        # Get the ODOO_SYNC_DATA tab
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)                
 
         # loop through entries in first sheet
         while (True):
-            
-            validity = self.isSyncDataValid(sync_data, i)
-            if (not validity):
-                break
-
             sheetName = str(sync_data[i][0])
+            sheetIndex = self.getSheetIndex(sync_data, i)
+            modelType = str(sync_data[i][2])
+            valid = (str(sync_data[i][3]) == "True")
 
-            try:
-                sheetIndex = int(sync_data[i][1])
-            except:
-                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
-                    str(i) + ": " + str(sync_data[i][1]) + "."
-                _logger.info(
-                    "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
+            if (not valid):
+                _logger.info("Valid: " + sheetName + " is " +  valid + "  .ABORTING sync process!")
                 break
 
-            syncType = str(sync_data[i][2])
-            _logger.info("Valid: " + sheetName + " is " + str(validity) + ".")
+            if (sheetIndex < 0):
+                break
+            
+            _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw,
                                             template_id,
                                             sheetIndex,
-                                            syncType)
+                                            modelType)
             msg = msg + msgr
             i += 1
 
             if (quit):
-                self.syncCancel(msg)
+                self.syncFail(msg, self._sync_cancel_reason)
                 return
 
         # error
         if (msg != ""):
-            self.syncFail(msg)
+            self.syncFail(msg, self._sync_fail_reason)
 
         _logger.info("Ending Sync")
 
-    #isSyncDataValid
-    #Method to check if a line of the Sync Data in GS is valid or not
+    #Check is the password to acces the googlesheet is empty.
     #Input
-    #   sync_data:  GS Odoo_Sync_data tab
-    #   i:          Line to check         
+    #   psw:    The password to open the googlesheet
     #Output
-    #   True:   line is valide
-    #   False:  line is NOT valide
-    def isSyncDataValid(self, sync_data, i):
-        validity = str(sync_data[i][3])
-        sheetName = str(sync_data[i][0])
+    #   True : Password is empty
+    #   False: Password is not empty
+    def is_psw_empty(self, psw):
+        # Checks authentication values
+        if (psw == None):
+            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
+            _logger.info(msg)
+            self.sendSyncReport(msg)
+            return True
+        return False
 
-        if (validity != "TRUE"):
-            if (i <= 9):
-                _logger.info("Valid: " + sheetName + " is " +
-                    validity + "  .ABORTING sync process!")
-            else:
-                _logger.info(
-                   "Sync process has finish after updating 9 tabs.")
-            return False
-
-        return True
-
-
-    #Get the ODOO_SYNC_DATA tab in GoogleSheet
-    #Return the first tab in the GS database that contain the Sync model types
-    def getOdooSyncData(self, template_id, psw):        
+    #Get a tab in the GoogleSheet Master Database
+    #Input
+    #   template_id:    The GoogleSheet Template ID to acces the master database
+    #   psw:            The password to acces the DB
+    #   index:          The index of the tab to pull
+    #Output
+    #   data:           A tab in the GoogleSheet Master Database
+    def getMasterDatabaseSheet(self, template_id, psw, index):  
         # get the database data; reading in the sheet
         try:
-            return (self.getDoc(psw, template_id, 0))
+            return (self.getDoc(psw, template_id, index))
         except Exception as e:
             _logger.info(e)
             msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
-            #self.sendSyncReport(msg)
-            #return
-            self.syncFail(msg)            
+            self.syncFail(msg, self._sync_fail_reason)            
             quit
 
+    #Get the Sheet Index of the Odoo Sync Data tab, column B
+    # Input
+    #   sync_data:  The GS ODOO_SYNC_DATA tab
+    #   lineIndex:  The index of the line to get the SheetIndex
+    # Output
+    #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
+    def getSheetIndex(self, sync_data, lineIndex):
+        sheetIndex = -1
+
+        if (lineIndex < 1):
+            return -1
+
+        try:
+            sheetIndex = int(sync_data[lineIndex][1])
+        except:
+            sheetIndex = -1
+            msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
+                str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            _logger.info(
+                "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[self._odoo_sync_data_index][1]) + ".")
+        
+        return sheetIndex
 
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
-        try:
-            sheet = self.getDoc(psw, template_id, sheetIndex)
-        except Exception as e:
-            _logger.info(e)
-            msg = (
-                "<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex)
-            self.sendSyncReport(msg)
-            return False, ""
+
+        sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
 
         _logger.info("Sync Type is: " + syncType)
         # identify the type of sheet
@@ -800,16 +813,14 @@ class sync(models.Model):
             msg = msg + "</table>"
         return msg
 
-    def syncCancel(self, msg):
+    #Build the message when a sync fail occurs.  Once builded, it will display the message
+    #in the logger, and send a repport by email.
+    #Input
+    #   msg:    The msg that contain information on the failling issue
+    #   reason: The reason that lead to the faillur.
+    def syncFail(self, msg, reason):
         link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + \
-            msg + "<a href=\"" + link + "\">Manual Retry</a>"
-        _logger.info(msg)
-        self.sendSyncReport(msg)
-
-    def syncFail(self, msg):
-        link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>" + \
+        msg = reason + \
             msg + "<a href=\"" + link + "\">Manual Retry</a>"
         _logger.info(msg)
         self.sendSyncReport(msg)
@@ -829,62 +840,132 @@ class sync(models.Model):
     def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
         product.active = False
-       
-    #check_psw
-    #Check is the password to acces the googlesheet is empty.
-    #Return:
-    #   True : Password is empty
-    #   False: Password is not empty
-    def is_psw_empty(self, psw):
-        # Checks authentication values
-        if (psw == None):
-            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
-            _logger.info(msg)
-            self.sendSyncReport(msg)
-            return True
-        return False
+
+    def getListSkuGS(self, psw, template_id):
+        _logger.info("------------------------------------------- Starting getListSkuGS")               
+        catalog_gs = dict()
+
+        sheetName = ""
+        sheetIndex = -1
+        modelType = ""
+        valid = False
+
+        i = 1
+        msg = ""        
+
+        # Get the ODOO_SYNC_DATA tab
+        sync_data = self.getOdooSyncData(template_id, psw, self._odoo_sync_data_index)
+
+        # loop through entries in first sheet
+        while (True):
+            sheetName = str(sync_data[i][0])
+            sheetIndex = self.getSheetIndex(sync_data, i)
+            modelType = str(sync_data[i][2])
+            valid = (str(sync_data[i][3]) == "True")
+
+            if (not valid):
+                _logger.info("Valid: " + sheetName + " is " + valid + ".  Ending Sku Cleaning process!")
+                break
+
+            if (sheetIndex < 0):
+                break         
+
+            sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
+            validColumnIndex = self.getColumnIndex(sheet, "Valid")
+            skuColumnIndex  = self.getColumnIndex(sheet, "SKU")
+
+            if (validColumnIndex < 0):
+                _logger.info("Sheet: " + sheetName + " does not have a Valid column.")
+                continue
+
+            if ((modelType == "Pricelist") or (modelType == "CCP")):
+                lineIndex = 0
+                for line in sheet:
+                    line_valid = (str(line[validColumnIndex]) == "True")
+                    sku = str(line[skuColumnIndex])
+
+                    #Validation on the line
+                    if(not line_valid):
+                        break
+
+                    if (sku == "False" or sku == ""):
+                        _logger.info("An item SKU is empty in the tab " +  sheetName + ", line number " + str(lineIndex))
+                        continue
+                    
+                    if (sku not in catalog_gs):
+                        catalog_gs[sku] = 1
+                    else:
+                        catalog_gs[sku] = catalog_gs[sku] + 1
+                    
+                    lineIndex += 1
+            
+            i += 1
+
+                
+
+        _logger.info("Ending Sync")
+        return catalog_gs
+
+    #Return the column index of the columnName
+    #Input
+    #   sheet:      The sheet to find the Valid column index
+    #   columnName: The name of the column to find
+    #Output
+    #   columnIndex: -1 if could not find it
+    #                > 0 if a column name exist
+    def getColumnIndex (self, sheet, columnName):
+        header = sheet[0]
+        columnIndex = 0
+
+        for column in header:
+            if (column == columnName):
+                return columnIndex
+            
+            columnIndex += 1
+        
+        return -1
+
 
     #Sku cleaning
     def start_sku_cleaning(self, psw=None):
         _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
+
+        catalog_odoo = dict()
+        catalog_gs = dict()
+        to_archives = []
 
         # Checks authentication values
         if (self.is_psw_empty(psw)):
             _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
             return
 
-        
-
-        catalog_odoo = dict()
-        catalog_gs = dict()
-
-        to_archives = []
+        #################################
+        # Odoo Section        
         products = self.env['product.template'].search([])
-
-        _logger.info("products: " + str(len(products)))
-        _logger.info("products type:" + str(type(products)))
-
-        i = 0
+        _logger.info("products length befor clean up: " + str(len(products)))
+        
         for product in products:            
-            if (product.active == False):
-                _logger.info("------------------------------------------- product_id: " + str(product.id) + ", active is: " + str(product.active) + ", name: " + str(product.name))
+            if (product.active == False):               
                 continue
 
-            if (str(product.sku) == "False"):
+            if ((str(product.sku) == "False") or (str(product.sku) == None)):
                 to_archives.append(str(product.id))
                 _logger.info("------------------------------------------- To archives: product id: " + str(product.id) + ", active is: " + str(product.active) + ", name: " + str(product.name))
 
             if (str(product.sku) not in catalog_odoo):
-                catalog_odoo[str(product.sku)] = 0
+                catalog_odoo[str(product.sku)] = 1
             else:
                 catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
-            i += 1
 
-        _logger.info("catalog_odoo len: " + str(len(catalog_odoo)))
+        _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
+
+        #######################################
+        # GoogleSheet Section        
+        catalog_gs = self.getListSkuGS(psw, self._master_database_template_id)
+
+
 
         for item in to_archives:
             self.archive_product(str(item))
-
         
-
         _logger.info("------------------------------------------- END start_sku_cleaning")    
