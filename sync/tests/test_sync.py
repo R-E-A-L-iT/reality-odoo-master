@@ -20,4 +20,5 @@ class TestStringMethods(unittest.TestCase):
        _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test_02")
        self.assertEqual('bar'.upper(), 'FOO')        
 
-
+if __name__ == '__main__':
+    unittest.main()
