@@ -45,6 +45,6 @@ class TestModuleDemo(TransactionCase):
         result = synce_model.getSheetIndex(sync_data, 1)
         self.assertEqual(10, result)
 
-        self.assertRaises(ValueError, getSheetIndex, sync_data, 6)
+        self.assertRaises(ValueError, synce_model.getSheetIndex, sync_data, 6)
            
 
