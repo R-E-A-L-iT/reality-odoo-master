@@ -1,6 +1,5 @@
 #from odoo.tests import common
 import logging
-#
 _logger = logging.getLogger(__name__)
 _logger.info('********************************  test_sync logger')
 #
