@@ -68,11 +68,13 @@ class sync(models.Model):
             valid = (str(sync_data[i][3]) == "True")
 
             if (not valid):
-                _logger.info("Valid: " + sheetName + " is " + str(valid) + "  .ABORTING sync process!")
+
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " + str(sync_data[i][3]) + ".  Ending sync process!")
                 break
 
             if (sheetIndex < 0):
                 break
+
             
             _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
             quit, msgr = self.getSyncValues(sheetName,
