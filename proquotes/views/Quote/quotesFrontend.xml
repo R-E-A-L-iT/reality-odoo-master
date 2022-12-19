@@ -56,6 +56,14 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
+			<t t-if="line.name[0] == '#'">
+				<tr>
+					<td colspan="100">
+						<t t-set="cname" t-value="line.name[1:]" />
+						<t t-call="proquotes.section_name_resolution" />
+					</td>
+				</tr>
+			</t>
 			<t t-if="line.name == '$hardware'">
 				<tr>
 					<td style="border-style: none;" colspan="100">
