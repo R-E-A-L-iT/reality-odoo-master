@@ -7,7 +7,7 @@
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">
 			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">
-				<strong>Subtotal</strong>
+				<strong>Subtotal 1</strong>
 			</td>
 		</xpath>
 
@@ -366,8 +366,7 @@
 
 	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">
 		<xpath expr="//strong[@t-esc=&quot;subtotal['name']&quot;]" position="attributes">
-			<attribute name="style">color: #f0f !important;</attribute>
-			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
+			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 	</template>
 	<!--     <template id="sale_order_portal_content2" name="Sales Order Portal Content" inherit_id="sale.order" priority="17">
