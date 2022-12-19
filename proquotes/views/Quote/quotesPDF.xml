@@ -64,7 +64,7 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<!-- <t t-if="lang == 'en_CA or lang == 'en_US'"> -->
-					<td class="text-left" style="border-top-style: none !important">Product</td>
+					<td class="text-left" style="border-top-style: none !important"><t t-out="doc.partner_id" /> Product</td>
 					<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">Product Value</td> -->
 					<!-- <td t-elif="" /> -->
 					<td class="text-right" style="border-top-style: none !important">Quantity</td>
