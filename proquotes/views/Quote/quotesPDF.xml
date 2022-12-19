@@ -20,7 +20,9 @@
 
 		<xpath expr="//table/thead" position="replace" />
 
-		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes"></xpath> -->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
+			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>
+		</xpath>
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 			<!-- <attribute name="style">display: none;</attribute> -->
