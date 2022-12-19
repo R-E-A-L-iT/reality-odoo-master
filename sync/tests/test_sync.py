@@ -16,7 +16,7 @@ class TestModuleDemo(TransactionCase):
         self.assertEqual(result, True)
 
         result = synce_model.is_psw_empty("password")
-        self.assertEqual(result, True)
+        self.assertEqual(result, False)
 
 
     def test_getMasterDatabaseSheet(self):
