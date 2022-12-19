@@ -68,7 +68,7 @@ class sync(models.Model):
             valid = (str(sync_data[i][3]) == "True")
 
             if (not valid):
-                _logger.info("Valid: " + sheetName + " is " +  valid + "  .ABORTING sync process!")
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + "  .ABORTING sync process!")
                 break
 
             if (sheetIndex < 0):
@@ -864,7 +864,7 @@ class sync(models.Model):
             valid = (str(sync_data[i][3]) == "True")
 
             if (not valid):
-                _logger.info("Valid: " + sheetName + " is " + valid + ".  Ending Sku Cleaning process!")
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + ".  Ending Sku Cleaning process!")
                 break
 
             if (sheetIndex < 0):
