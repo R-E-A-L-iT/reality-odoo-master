@@ -21,9 +21,9 @@ class TestModuleDemo(TransactionCase):
 
     def test_getMasterDatabaseSheet(self):
     #def getMasterDatabaseSheet(self, template_id, psw, index): 
-        synce_model = self.env['sync.sync']
+        sync_model = self.env['sync.sync']
 
-        template_id = synce_model._master_database_template_id
+        template_id = sync_model._master_database_template_id
         psw = {
             "type": "service_account",
             "project_id": "odoo-sync-321221",
@@ -36,13 +36,12 @@ class TestModuleDemo(TransactionCase):
             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
             "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/odoo-sync%40odoo-sync-321221.iam.gserviceaccount.com"
         }
+        index = sync_model._odoo_sync_data_index
 
-        index = 0
-
-        result = synce_model.getMasterDatabaseSheet(template_id, psw, index)
-        print (len(result))
-        print (str(result))
-        self.assertEqual(len(result) > 0, False)
+        result = sync_model.getMasterDatabaseSheet(template_id, psw, index)
+        print (index)
+        
+        self.assertEqual(len(result) > 0, True)
 
         
            
