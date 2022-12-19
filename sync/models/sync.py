@@ -109,6 +109,7 @@ class sync(models.Model):
             self.sendSyncReport(msg)
             return True
         return False
+    
 
     #Get a tab in the GoogleSheet Master Database
     #Input
