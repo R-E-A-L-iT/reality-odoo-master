@@ -107,7 +107,7 @@ class sync(models.Model):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
-            return True
+            return False #SHOULD BE TRUE, ONLY FOR TEST
         return False
     
 
