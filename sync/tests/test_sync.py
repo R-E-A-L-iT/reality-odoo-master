@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 # The CI will run these tests after all the modules are installed,
 # not right after installing the one defining it.
 @tagged('standard') 
-class PostInstallTestCase(TransactionCase):
+class StandardTestCase(TransactionCase):
     def test_01(self):
        _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test_01")
        self.assertEqual('foo'.upper(), 'FOO') 
