@@ -61,14 +61,14 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block'">
 					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<td />
+					<!-- <td /> -->
 					<td class="text-right" style="border-top-style: none !important">Quantity</td>
 					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
 					<td class="text-right" style="border-top-style: none !important">Amount</td>
 				</t>
 				<t t-elif="line.name == '$block+'">
 					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<td class="text-right" style="border-top-style: none !important">Product Value</td>
+					<!-- <td class="text-right" style="border-top-style: none !important">Product Value</td> -->
 					<td class="text-right" style="border-top-style: none !important">Quantity</td>
 					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
 					<td class="text-right" style="border-top-style: none !important">Amount</td>
