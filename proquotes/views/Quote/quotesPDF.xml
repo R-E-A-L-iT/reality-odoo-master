@@ -56,6 +56,14 @@
 			</t>
 		</xpath> -->
 
+		<xpath expr="//t[@t-if=&quot;line.display_type == 'line.section'&quot;]/td/span" position="replace">
+			<span t-if="line.name[0] != '#'" t-field="line.name" />
+			<span t-elif="line.name[0] == '#'">
+				<t t-set="cname" t-value="line.name[1:]" />
+				<t t-call="proquotes.section_name_resolution" />
+			</span>
+		</xpath>
+
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
@@ -230,7 +238,7 @@
 			</style>
 			<t t-if="str(line.name) != str(line.product_id.description_sale)">
 				<span class="description-root">
-					<!-- <span t-raw="line.name" /> -->
+					<span t-raw="line.name" />
 				</span>
 			</t>
 			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
