@@ -44,8 +44,7 @@ class TestModuleDemo(TransactionCase):
         ]
         result = synce_model.getSheetIndex(sync_data, 1)
         self.assertEqual(10, result)
-        
-        with self.assertRaises(Exception) as context:
-            result = synce_model.getSheetIndex(sync_data, 6)
-        self.assertTrue('ValueError' in context.exception)             
+
+        self.assertRaises(ValueError, getSheetIndex, sync_data, 6)
+           
 
