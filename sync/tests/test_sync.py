@@ -1,5 +1,5 @@
 from odoo.tests import TransactionCase
-from sync import sync
+from odoo.addons.sync import sync
 
 #from odoo.tests.common import TransactionCase
 
