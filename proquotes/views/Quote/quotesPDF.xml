@@ -18,10 +18,15 @@
 			
 		</xpath> -->
 
-		<xpath expr="//table/thead" position="replace" />
+		<xpath expr="//table/thead" position="replace">
+			<t t-set="clang" t-value="doc.partner_id.lang" />
+		</xpath>
 
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
+			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
+		</xpath>
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+			<attribute name="t-if">line.name[0] != '$'</attribute>
 			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
@@ -51,6 +56,14 @@
 			</t>
 		</xpath> -->
 
+		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+			<span t-if="line.name[0] != '#'" t-field="line.name" />
+			<span t-elif="line.name[0] == '#'">
+				<t t-set="cname" t-value="line.name[1:]" />
+				<t t-call="proquotes.section_name_resolution" />
+			</span>
+		</xpath>
+
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
@@ -59,12 +72,27 @@
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<t t-if="line.name == '$block'">
-					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<td class="text-right" style="border-top-style: none !important" t-if="doc.is_rental == True">Product Value</td>
-					<td class="text-right" style="border-top-style: none !important">Quantity</td>
-					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
-					<td class="text-right" style="border-top-style: none !important">Amount</td>
+				<t t-if="line.name == '$block' or line.name == '$block+'">
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<td class="text-left" style="border-top-style: none !important">Product</td>
+						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+							Product Value
+						</td> -->
+						<!-- <td t-elif="" /> -->
+						<td class="text-right" style="border-top-style: none !important">Quantity</td>
+						<td class="text-right" style="border-top-style: none !important">Unit Price</td>
+						<td class="text-right" style="border-top-style: none !important">Amount</td>
+					</t>
+					<t t-if="clang == 'fr_CA'">
+						<td class="text-left" style="border-top-style: none !important">Produit</td>
+						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+							Valeur du Produit
+						</td> -->
+						<!-- <td t-elif="" /> -->
+						<td class="text-right" style="border-top-style: none !important">Quantité</td>
+						<td class="text-right" style="border-top-style: none !important">Prix ​​Unitaire</td>
+						<td class="text-right" style="border-top-style: none !important">Montant</td>
+					</t>
 				</t>
 			</tr>
 			<t t-if="doc.sale_order_template_id.name == 'Renewal'">
@@ -110,7 +138,7 @@
 
 		<!-- Remove Special Sections for Renewal Quotes -->
 		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name != '$block' and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
@@ -232,7 +260,6 @@
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
 			<t t-if="doc.sale_order_template_id.name == 'Rental'">
 				<t t-set="company_name" t-value="doc.company_id.name" />
-				<t t-set="clang" t-value="doc.partner_id.lang" />
 				<t t-call="proquotes.rental_terms" />
 			</t>
 			<div>
