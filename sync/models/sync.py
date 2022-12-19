@@ -54,7 +54,7 @@ class sync(models.Model):
         msg = ""
 
         # Checks authentication values
-        if (not self.is_psw_format_good(psw)):
+        if (not self.is_psw_filled(psw)):
             return
 
         # Get the ODOO_SYNC_DATA tab
@@ -95,21 +95,22 @@ class sync(models.Model):
 
         _logger.info("Ending Sync")
 
-    #Check is the password format is valid.
+    #Check is the password if contains informations
     #Input
-    #   psw:    The password to open the googlesheet
+    #   psw:   The password to open the googlesheet
     #Output
-    #   True : Password format is good
-    #   False: Password format is not valid
-    def is_psw_format_good(self, psw):  
+    #   True : Password is contains informations
+    #   False: Password is not present
+    def is_psw_filled(self, psw):  
 
         # Checks authentication values
-        if (psw == None):
+        if ((psw == None) or (str(type(psw)) == "<class 'dict'>")):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
             return False
-        return True     
+        
+        return True
 
 
     #Get a tab in the GoogleSheet Master Database
@@ -940,7 +941,7 @@ class sync(models.Model):
         to_archives = []
 
         # Checks authentication values
-        if (not self.is_psw_format_good(psw)):
+        if (not self.is_psw_filled(psw)):
             _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
             return
 

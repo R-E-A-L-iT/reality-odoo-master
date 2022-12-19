@@ -10,14 +10,22 @@ class TestModuleDemo(TransactionCase):
     #def setUp(self):
     #    super(TestModuleDemo, self).setUp()
             
-    def test_is_psw_empty(self):
+    def test_is_psw_filled(self):
         synce_model = self.env['sync.sync']
 
-        result = synce_model.is_psw_empty(None)
-        self.assertEqual(result, True)
+        psw = {
+            "key1": "value1",
+            "key2": "value2"
+        }
 
-        result = synce_model.is_psw_empty("password")
+        result = synce_model.is_psw_filled(None)
         self.assertEqual(result, False)
+
+        result = synce_model.is_psw_filled("password")
+        self.assertEqual(result, False)
+
+        result = synce_model.is_psw_filled(psw)
+        self.assertEqual(result, True)
 
     
     def test_getSheetIndex(self):
