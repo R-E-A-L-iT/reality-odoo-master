@@ -6,5 +6,16 @@
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">EQUIPMENT rental: choose desired items along with quantities</t>
 			<t t-if="clang == 'fr_CA'">Location d'équipement: choisissez les items et quantités désirés</t>
 		</t>
+		<t t-elif="sname == rental_accessories">
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">Additional accessories: choose desired items along with quantities</t>
+			<t t-if="clang == 'fr_CA'">Accessoires additionnels: choisissez les items et quantités désirés</t>
+		</t>
+		<t t-elif="sname == rental_accessories">
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">Software rental: choose desired software along with quantities (in weeks)</t>
+			<t t-if="clang == 'fr_CA'">Location de logiciel: choisissez les items et quantités désirés (en semaines)</t>
+		</t>
+		<t t-else="">
+			<t t-out="sname" />
+		</t>
 	</template>
 </odoo>
