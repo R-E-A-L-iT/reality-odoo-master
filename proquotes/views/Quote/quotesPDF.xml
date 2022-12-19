@@ -62,19 +62,15 @@
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<t t-if="line.name == '$block'">
-					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<!-- <td /> -->
-					<td class="text-right" style="border-top-style: none !important">Quantity</td>
-					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
-					<td class="text-right" style="border-top-style: none !important">Amount</td>
-				</t>
-				<t t-elif="line.name == '$block+'">
-					<td class="text-left" style="border-top-style: none !important">Product</td>
-					<!-- <td class="text-right" style="border-top-style: none !important">Product Value</td> -->
-					<td class="text-right" style="border-top-style: none !important">Quantity</td>
-					<td class="text-right" style="border-top-style: none !important">Unit Price</td>
-					<td class="text-right" style="border-top-style: none !important">Amount</td>
+				<t t-if="line.name == '$block' or line.name == '$block+'">
+					<t t-if="doc.partner_id.lang == 'en_CA || doc.partner_id.lang == 'en_US'">
+						<td class="text-left" style="border-top-style: none !important">Product</td>
+						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">Product Value</td> -->
+						<!-- <td t-elif="" /> -->
+						<td class="text-right" style="border-top-style: none !important">Quantity</td>
+						<td class="text-right" style="border-top-style: none !important">Unit Price</td>
+						<td class="text-right" style="border-top-style: none !important">Amount</td>
+					</t>
 				</t>
 			</tr>
 			<t t-if="doc.sale_order_template_id.name == 'Renewal'">
