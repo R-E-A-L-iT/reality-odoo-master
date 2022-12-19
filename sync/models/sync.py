@@ -65,7 +65,7 @@ class sync(models.Model):
             sheetName = str(sync_data[i][0])
             sheetIndex = self.getSheetIndex(sync_data, i)
             modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]) == "True")
+            valid = (str(sync_data[i][3]).upper() == "TRUE")
 
             if (not valid):
 
@@ -283,11 +283,11 @@ class sync(models.Model):
         while (True):
 
             # check if should continue
-            if (str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             # validation checks (vary depending on tab/function)
-            if (str(sheet[i][columns["valid"]]) != "TRUE"):
+            if (str(sheet[i][columns["valid"]]).upper() != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
@@ -453,10 +453,10 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
 
-            if (i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
-            if (str(sheet[i][columns["valid"]]) != "TRUE"):
+            if (str(sheet[i][columns["valid"]]).upper() != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
                 continue
@@ -609,7 +609,7 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
 
-            if (str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["sku"]]))):
@@ -721,7 +721,7 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
             _logger.info("Website: " + str(i))
-            if (i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
@@ -730,7 +730,7 @@ class sync(models.Model):
                 i += 1
                 continue
 
-            if (not sheet[i][columns["valid"]] == "TRUE"):
+            if (not sheet[i][columns["valid"]].upper() == "TRUE"):
                 _logger.info("Web Valid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
@@ -863,7 +863,7 @@ class sync(models.Model):
             sheetName = str(sync_data[i][0])
             sheetIndex = self.getSheetIndex(sync_data, i)
             modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]) == "True")
+            valid = (str(sync_data[i][3]).upper() == "TRUE")
 
             if (not valid):
                 _logger.info("Valid: " + sheetName + " is " + str(valid) + ".  Ending Sku Cleaning process!")
@@ -883,7 +883,7 @@ class sync(models.Model):
             if ((modelType == "Pricelist") or (modelType == "CCP")):
                 lineIndex = 0
                 for line in sheet:
-                    line_valid = (str(line[validColumnIndex]) == "True")
+                    line_valid = (str(line[validColumnIndex]).upper() == "TRUE")
                     sku = str(line[skuColumnIndex])
 
                     #Validation on the line
