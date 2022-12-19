@@ -56,7 +56,7 @@
 			</t>
 		</xpath> -->
 
-		<xpath expr="//t[@t-if=&quot;line.display_type == 'line.section'&quot;]/td/span" position="replace">
+		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<!-- <span t-if="line.name[0] != '#'" t-field="line.name" /> -->
 			<!-- <span t-elif="line.name[0] == '#'"> -->
 			<!-- <t t-set="cname" t-value="line.name[1:]" /> -->
