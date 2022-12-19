@@ -66,12 +66,24 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<td class="text-left" style="border-top-style: none !important"><t t-out="clang" /> Product</td>
-						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">Product Value</td> -->
+						<td class="text-left" style="border-top-style: none !important">Product</td>
+						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+							Product Value
+						</td> -->
 						<!-- <td t-elif="" /> -->
 						<td class="text-right" style="border-top-style: none !important">Quantity</td>
 						<td class="text-right" style="border-top-style: none !important">Unit Price</td>
 						<td class="text-right" style="border-top-style: none !important">Amount</td>
+					</t>
+					<t t-if="clang == 'fr_CA'">
+						<td class="text-left" style="border-top-style: none !important">Produit</td>
+						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+							Valeur du Produit
+						</td> -->
+						<!-- <td t-elif="" /> -->
+						<td class="text-right" style="border-top-style: none !important">Quantité</td>
+						<td class="text-right" style="border-top-style: none !important">Prix ​​Unitaire</td>
+						<td class="text-right" style="border-top-style: none !important">Montant</td>
 					</t>
 				</t>
 			</tr>
