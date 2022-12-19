@@ -104,7 +104,7 @@ class sync(models.Model):
     def is_psw_filled(self, psw):  
 
         # Checks authentication values
-        if ((psw == None) or (str(type(psw)) == "<class 'dict'>")):
+        if ((psw == None) or (str(type(psw)) != "<class 'dict'>")):
             msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
             _logger.info(msg)
             self.sendSyncReport(msg)
