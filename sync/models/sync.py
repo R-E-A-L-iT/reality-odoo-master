@@ -32,7 +32,7 @@ class sync(models.Model):
     _name = "sync.sync"
     _inherit = "sync.sheets"
     DatabaseURL = fields.Char(default="")
-    _description = "Sync App"
+    _description = "Sync App22"
 
     _sync_cancel_reason = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>"
     _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"

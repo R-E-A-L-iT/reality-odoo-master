@@ -15,7 +15,10 @@ class TestModuleDemo(TransactionCase):
             
     def test_is_psw_empty(self):
         synce_model = self.env['sync.sync']
-        print (synce_model._name)
-        self.assertEqual("AAA", "AAA")
+        print ("Model name: " + synce_model._name)
+        print ("Model description: " + synce_model._description)
+
+        result = synce_model.is_psw_empty(None)
+        self.assertEqual(result, True)
         print('test_is_psw_empty: Your test was successful!')
            
