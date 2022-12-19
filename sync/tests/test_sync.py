@@ -40,6 +40,8 @@ class TestModuleDemo(TransactionCase):
         index = 0
 
         result = synce_model.getMasterDatabaseSheet(None, None, None)
+        print (len(result))
+        print (str(result))
         self.assertEqual(len(result) > 0, False)
 
         
