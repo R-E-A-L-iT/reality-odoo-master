@@ -4,7 +4,10 @@ from odoo.tests import TransactionCase
 
 class TestModuleDemo(TransactionCase):
 
-    def test_some_action(self):
+    def test_that_pass(self):
             self.assertEqual("AAA", "AAA")
-            #self.assertEqual("AAA", "BBB")
-            print('Your test was successful!')
+            print('test_that_pass: Your test was successful!')
+
+    def test_that_fail(self):
+            self.assertEqual("AAA", "BBB")
+            print('test_that_fail: Your test was successful!')            
