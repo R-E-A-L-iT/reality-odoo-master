@@ -225,7 +225,7 @@
 						<input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true" />
 						<input t-else="" class="optionalSectionCheckbox" type="checkbox" />
 					</t>
-					<span t-field="line.name" />
+					<span t-field="line.name + 'Test'" />
 					<span class="line_id" t-attf-id="{{line}}" />
 				</label>
 
