@@ -107,11 +107,11 @@ odoo.define("proquotes.price", function (require) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
 					) {
+						console.log(items[i].getElementsByClassName("itemValue")[0]).replace(",", "").replace("$", "").replace(" ", "")
 						total += parseInt(
 							items[i].getElementsByClassName("itemValue")[0]
 								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
 						);
-						console.log(items[i].getElementsByClassName("itemValue")[0]).replace(",", "").replace("$", "").replace(" ", "")
 					}
 				}
 			}
