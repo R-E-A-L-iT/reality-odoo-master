@@ -628,6 +628,9 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
+            
+
+            _logger.info("sheet[i][:]: " + str(sheet[i][:]))
 
             if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break

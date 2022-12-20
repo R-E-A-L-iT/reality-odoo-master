@@ -95,6 +95,11 @@ class TestModuleSync(TransactionCase):
         self.assertEqual((product_not_updated.name == product_name), True)
 
         self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
+        self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
+        #self.assertEqual((product_not_updated.price == product_price_cad), False)
+        ##self.assertEqual((product_not_updated.stringRep == product_price_usd), False)
+        #self.assertEqual((product_not_updated.tracking == product_tracking), False)
+        #self.assertEqual((product_not_updated.type == product_type), False)
 
 
 
