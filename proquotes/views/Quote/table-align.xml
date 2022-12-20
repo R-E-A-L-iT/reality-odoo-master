@@ -2,10 +2,25 @@
 <odoo>
 	<template id="quote_table_align" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="18">
 		<!-- Adjust Alignment For Cells -->
+
+		<!-- Value Alignment -->
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
+			<attribute name="class">text-middle</attribute>
+		</xpath>
+
 		<!-- Quantity Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
 			<attribute name="class">text-middle</attribute>
 		</xpath>
-		<!-- <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="replace" /> -->
+
+		<!-- Tax Alignment -->
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
+			<attribute name="class">text-middle</attribute>
+		</xpath>
+
+		<!-- Line_Total Alignment -->
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
+			<attribute name="class">text-middle</attribute>
+		</xpath>
 	</template>
 </odoo>
