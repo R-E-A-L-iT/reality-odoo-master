@@ -25,17 +25,20 @@ class TestModulePricelist(TransactionCase):
         product_name = "New product"  
         product = self.sync_model.createProducts(external_id, product_name)
 
+        pricelistName = "CAN Pricelist"
+        price = 5595.00
         pricelist = self.sync_model.env['product.pricelist'].search(
             [('name', '=', pricelistName)])
-        self.assertEqual(pricelist > 0, False)
+        self.assertEqual(len(pricelist) == 1, False)
+
+        pricelist_id = pricelist[0].id
 
         #pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
         #    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
 
         #self.assertEqual((len(pricelist_item_ids) == 0), False)
 
-        pricelistName = "CAN Pricelist"
-        price = 5595.00
+        
         #self.sync_pricelist.addProductToPricelist(self, product, pricelistName, price)
 
         
