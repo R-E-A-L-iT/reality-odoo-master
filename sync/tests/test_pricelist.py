@@ -44,6 +44,3 @@ class TestModulePricelist(TransactionCase):
 
 
 
-        #self.sync_pricelist.addProductToPricelist(product, pricelistName, price)
-        #self.assertEqual(True, True)
-

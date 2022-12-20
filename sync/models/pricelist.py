@@ -291,10 +291,8 @@ class sync_pricelist():
             return self.createPricelistProducts(external_id, sheetWidth, i, columns), True
 
     def pricelist(self, product, priceName, pricelistName, i, columns):
-        #syncer.pricelist(product, "priceCAD", "CAN Pricelist", i, columns)
         price = self.sheet[i][columns[priceName]]
         self.addProductToPricelist(product, pricelistName, price)
-
 
         #pricelist_id = self.database.env['product.pricelist'].search(
         #    [('name', '=', pricelistName)])[0].id
