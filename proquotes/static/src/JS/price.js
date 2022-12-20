@@ -178,7 +178,7 @@ odoo.define("proquotes.price", function (require) {
 					node = node.parentNode;
 				}
 				var inputs = node.getElementsByTagName("input");
-				if (inputs.length < 1) {
+				if (inputs.length > 0) {
 					if (inputs[0].type == "checkbox") {
 						if (inputs[0].checked != true) {
 							continue;
