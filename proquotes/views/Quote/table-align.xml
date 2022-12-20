@@ -14,7 +14,7 @@
 		</xpath>
 
 		<!-- Tax Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
 			<attribute name="t-attf-class">text-middle</attribute>
 		</xpath>
 
@@ -22,6 +22,6 @@
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
 			<attribute name="class">text-middle</attribute>
 		</xpath>
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="replace" />
+		<!-- <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="replace" /> -->
 	</template>
 </odoo>
