@@ -95,10 +95,10 @@
 						<br />
 
 						<t t-if="clang == 'en_CA' or clang == 'en_US'">
-							<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: </span>
+							<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-engligh" /></span>
 						</t>
 						<t t-elif="clang == 'fr_CA'">
-							<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires:</span>
+							<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-french" /></span>
 						</t>
 						<br />
 						<br />
