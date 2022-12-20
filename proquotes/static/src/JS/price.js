@@ -107,7 +107,6 @@ odoo.define("proquotes.price", function (require) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
 					) {
-						console.log(items[i].getElementsByClassName("itemValue")[0].innerHTML.replace(",", "").replace("$", "").replace(" ", ""))
 						total += parseInt(
 							items[i].getElementsByClassName("itemValue")[0]
 								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
@@ -122,7 +121,7 @@ odoo.define("proquotes.price", function (require) {
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			startDate = document.getElementById("rental_start");
+			startDate = document.getElementById("rental-start");
 			endDate = document.getElementById("rental-end");
 			console.log(startDate);
 			console.log(endDate);
