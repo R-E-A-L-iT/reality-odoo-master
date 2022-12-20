@@ -257,7 +257,7 @@ td.tax-column {
 	display: none !important;
 }
 
-.rental_price_explain {
+.rental_price_explain, .rental_price_estimate {
 	color: #fff;
 }
 
