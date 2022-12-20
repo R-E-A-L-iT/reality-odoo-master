@@ -42,10 +42,10 @@ class TestModuleDemo(TransactionCase):
             ['',                'Loading...',   '',             'FALSE'],
             ['',                'Loading...',   '',             'FALSE']
         ]
-        result = synce_model.getSheetIndex(sync_data, 1)
+        result, msg = synce_model.getSheetIndex(sync_data, 1)
         self.assertEqual(10, result)
 
-        result = synce_model.getSheetIndex(sync_data, 6)
+        result, msg = synce_model.getSheetIndex(sync_data, 6)
         self.assertEqual(-1, result)
 
 
