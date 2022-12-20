@@ -8,6 +8,8 @@ odoo.define("proquotes.price", function (require) {
 			"change .optionalSectionCheckbox": "_updateSectionSelectionEvent",
 			"change .priceChange": "_updatePriceTotalsEvent",
 			"change .quantityChange": "_updateQuantityEvent",
+			"change #rental-start": "_updatePriceTotalsEvent",
+			"change #rental-end": "_updatePriceTotalsEvent",
 		},
 
 		async start() {
@@ -123,8 +125,19 @@ odoo.define("proquotes.price", function (require) {
 
 			var startDate = document.getElementById("rental-start");
 			var endDate = document.getElementById("rental-end");
+
+			startDateDate = new Date(startDate);
+			endDateDate = new Date(endDate);
+
+			let milliInSeconds = 100
+			let secondsInMinute = 60
+			let minuteInHour = 60
+			let hourInDay = 24
+			var rentalLength = (endDateDate.getTime() - startdateDate.endDate()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
+
 			console.log("Start Date" + startDate.value);
 			console.log("End Dare" + endDate.value);
+			console.log("Rental Length: " + rentalLength)
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
