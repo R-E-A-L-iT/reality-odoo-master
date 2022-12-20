@@ -83,7 +83,7 @@ class TestModuleDemo(TransactionCase):
         product_exsiting = self.env['product.template'].search(
             [('sku', '=', external_id)]
         )
-        self.assertEqual((len(product_exsiting) == 0), True)
+        self.assertEqual((len(product_exsiting) == 0), False)
 
 
 
