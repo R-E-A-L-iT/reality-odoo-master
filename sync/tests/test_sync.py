@@ -61,7 +61,7 @@ class TestModuleDemo(TransactionCase):
         product.active = True          
         ext.res_id = product.id
 
-        print ("product.id: " +  product.id)
+        print ("product.id: " +  str(product.id))
 
         self.sync_model.archive_product(external_id)
         product_modified = self.env['product.template'].search(
