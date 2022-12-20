@@ -85,8 +85,9 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_rentalValueTotal: function () {
-			var totalLanding = document.getElementById("total-rental-value");
-			if (totalLanding == undefined) {
+			var totalLandingEnglish = document.getElementById("total-rental-value-english");
+			var totalLandingFrench = document.getElementById("total-rental-value-french");
+			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
 				return;
 			}
 			var total = 0;
@@ -113,7 +114,12 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 			}
-			totalLanding.innerHTML = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
+			if (totalLandingEnglish != undefined) {
+				totalLandingEnglish.innerHTML = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
+			}
+			if (totalLandingFrench != undefined) {
+				totalLandingFrench.innerHTML = Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'USD' }).format(total);
+			}
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
