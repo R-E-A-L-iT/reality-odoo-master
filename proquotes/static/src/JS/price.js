@@ -121,8 +121,8 @@ odoo.define("proquotes.price", function (require) {
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			startDate = document.getElementById("rental-start");
-			endDate = document.getElementById("rental-end");
+			var startDate = document.getElementById("rental-start");
+			var endDate = document.getElementById("rental-end");
 			console.log(startDate);
 			console.log(endDate);
 		},
