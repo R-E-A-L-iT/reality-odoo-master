@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="quote_table_align" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+	<template id="quote_table_align" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="18">
 		<!-- Adjust Alignment For Cells -->
 		<!-- Quantity Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
 			<attribute name="class">text-middle</attribute>
 		</xpath>
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="replace" />
 	</template>
 </odoo>
