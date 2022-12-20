@@ -97,7 +97,7 @@
 						<t t-if="clang == 'en_CA' or clang == 'en_US'">
 							<span>Estimated rental cost of chosen hardware + accessories: </span>
 						</t>
-						<t t-elif="clang == 'fr_CA">
+						<t t-elif="clang == 'fr_CA'">
 							<span>Coût estimé de la location de l'équipement et les accessoires:</span>
 						</t>
 
