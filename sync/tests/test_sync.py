@@ -96,7 +96,7 @@ class TestModuleSync(TransactionCase):
         self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
         self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
         self.assertEqual((product_not_updated.price == product_price_cad), False)        
-        self.assertEqual((product_not_updated.tracking == product_tracking), False)
+        self.assertEqual((product_not_updated.tracking == product_tracking), True)
         self.assertEqual((product_not_updated.type == product_type), False)
 
         pricelist = self.sync_model.env['product.pricelist'].search(
