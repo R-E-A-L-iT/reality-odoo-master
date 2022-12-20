@@ -79,9 +79,9 @@
 							Product Value
 						</td> -->
 						<!-- <td t-elif="" /> -->
-						<td class="text-right" style="border-top-style: none !important">Qty</td>
-						<td class="text-right" style="border-top-style: none !important">Price</td>
-						<td class="text-right" style="border-top-style: none !important">Amount</td>
+						<td class="text-center" style="border-top-style: none !important">Qty</td>
+						<td class="text-center" style="border-top-style: none !important">Price</td>
+						<td class="text-center" style="border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if="clang == 'fr_CA'">
 						<td class="text-left" style="border-top-style: none !important">Produit</td>
@@ -89,9 +89,9 @@
 							Valeur du Produit
 						</td> -->
 						<!-- <td t-elif="" /> -->
-						<td class="text-right" style="border-top-style: none !important">Qté</td>
-						<td class="text-right" style="border-top-style: none !important">Prix</td>
-						<td class="text-right" style="border-top-style: none !important">Montant</td>
+						<td class="text-center" style="border-top-style: none !important">Qté</td>
+						<td class="text-center" style="border-top-style: none !important">Prix</td>
+						<td class="text-center" style="border-top-style: none !important">Montant</td>
 					</t>
 				</t>
 			</tr>
