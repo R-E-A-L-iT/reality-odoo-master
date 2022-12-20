@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 SKIP_NO_CHANGE = True
 
 
-class sync_pricelist:
+class sync_pricelist(models.Model):
 
     def __init__(self, name, sheet, database):
         self.name = name
