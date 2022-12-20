@@ -123,7 +123,8 @@ class TestModuleSync(TransactionCase):
             product_tracking,
             product_type)
 
-         
+        print ("product_updated.price: " + str(product_updated.price))
+        print ("product_price_cad: " + str(product_price_cad))
 
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
@@ -180,6 +181,7 @@ class TestModuleSync(TransactionCase):
 
         result = self.sync_model.getColumnIndex(self.sync_data, "Does not exists")
         self.assertEqual((result == -1), True) 
+
 
 
 
