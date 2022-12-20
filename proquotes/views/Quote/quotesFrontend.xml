@@ -337,10 +337,9 @@
 			<t t-if="line.quantityLocked =='no'">
 				<input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}}" style="display: inline; width: 60px;"></input>
 			</t>
-			<t>Test</t>
 		</xpath>
 
-		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace"></xpath>
+		<!-- <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace"></xpath> -->
 
 		<!--Hide Unwanted Columns-->
 		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[3]" position="attributes">
