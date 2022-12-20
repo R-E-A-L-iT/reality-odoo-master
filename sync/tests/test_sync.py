@@ -123,11 +123,15 @@ class TestModuleSync(TransactionCase):
             product_tracking,
             product_type)
 
-        print ("product_updated.price: " + str(product_updated.price))
-        print ("product_price_cad: " + str(product_price_cad))
+
 
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
+
+        print ("product_updated.price: " + str(product_updated.price))
+        print ("product_price_cad: " + str(product_price_cad))
+        
+                    
         self.assertEqual((product_updated.sku == external_id), True)
         self.assertEqual((product_updated.name == product_name), True)
         self.assertEqual((product_updated.stringRep == product_stringRep), True)
