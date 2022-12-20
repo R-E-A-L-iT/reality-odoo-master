@@ -130,18 +130,18 @@
 						<span t-elif="clang == 'fr_CA'" class="cHead">Produit</span>
 					</td>
 					<td t-if="line.name == '$block+'" class="text-right">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Product Value</span>
-						<span t-elif="clang == 'fr_CA'" class="cHead">Valeur du Produit</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
 					</td>
 					<td t-else=""></td>
 					<td class="text-right">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Quantity</span>
-						<span t-elif="clang == 'fr_CA'" class="cHead">Quantité</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
 					</td>
 					<td />
 					<td class="text-right">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Unit Price</span>
-						<span t-elif="clang == 'fr_CA'" class="cHead">Prix ​​Unitaire</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
 					</td>
 					<td />
 					<td class="text-right">
