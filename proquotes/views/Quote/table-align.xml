@@ -19,8 +19,8 @@
 		</xpath>
 
 		<!-- Line_Total Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
-			<attribute name="t-attf-class">text-middle</attribute>
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
+			<attribute name="class">text-middle</attribute>
 		</xpath>
 	</template>
 </odoo>
