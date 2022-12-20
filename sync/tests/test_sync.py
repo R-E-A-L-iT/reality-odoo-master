@@ -84,7 +84,7 @@ class TestModuleSync(TransactionCase):
         product_price_cad           = "3850"
         product_price_usd           = "2980"
         product_tracking            = "serial"
-        product_type                = "Product Type of the product"
+        product_type                = "product"
 
         product = self.sync_model.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
@@ -97,7 +97,7 @@ class TestModuleSync(TransactionCase):
         self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
         self.assertEqual((product_not_updated.price == product_price_cad), False)        
         self.assertEqual((product_not_updated.tracking == product_tracking), True)
-        self.assertEqual((product_not_updated.type == product_type), False)
+        self.assertEqual((product_not_updated.type == product_type), True)
 
         pricelist = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "CAN Pricelist")])            
