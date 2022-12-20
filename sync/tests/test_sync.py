@@ -52,18 +52,17 @@ class TestModuleDemo(TransactionCase):
 
     #def archive_product(self, product_id):
     def test_archive_product(self):
-        external_id = "SKU-123456"
         product_name = "New product"
+        product_sku = "SKU-1234123"
         ext = self.env['ir.model.data'].create(
-            {'name': external_id, 'model': "product.template"})[0]
+            {'name': product_sku, 'model': "product.template"})[0]
         product = self.env['product.template'].create(
-            {'name': product_name})[0]  
-        product.active = True          
+            {'name': product_name})[0]
         ext.res_id = product.id
-
         print ("product.id: " +  str(product.id))
 
-        self.sync_model.archive_product(external_id)
+        self.sync_model.archive_product(str(product.id))
+
         product_modified = self.env['product.template'].search(
             [('id', '=', product.id)]
         )
