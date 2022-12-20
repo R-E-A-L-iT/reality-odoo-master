@@ -7,31 +7,10 @@ from odoo.addons.sync.models import sync
 
 class TestModuleDemo(TransactionCase):
 
-    #def setUp(self):
-    #    super(TestModuleDemo, self).setUp()
-            
-    def test_is_psw_filled(self):
-        synce_model = self.env['sync.sync']
-
-        psw = {
-            "key1": "value1",
-            "key2": "value2"
-        }
-
-        result = synce_model.is_psw_filled(None)
-        self.assertEqual(result, False)
-
-        result = synce_model.is_psw_filled("password")
-        self.assertEqual(result, False)
-
-        result = synce_model.is_psw_filled(psw)
-        self.assertEqual(result, True)
-
-    
-    def test_getSheetIndex(self):
-    #def getSheetIndex(self, sync_data, lineIndex):
-        synce_model = self.env['sync.sync']
-        sync_data = [
+    def setUp(self):
+        super(TestModuleDemo, self).setUp()
+        self.synce_model = self.env['sync.sync']
+        self.sync_data = [
             ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid'], 
             ['Companies_',	    '10',           'Companies',    'TRUE'], 
             ['Contacts_',       '20',           'Contacts',     'TRUE'], 
@@ -39,19 +18,43 @@ class TestModuleDemo(TransactionCase):
             ['Pricelist-2_',    '40',           'Pricelist',    'TRUE'], 
             ['Products_',       '50',           'Products',     'TRUE'], 
             ['CCP_',            'sdf',          'CCP',          'TRUE'], 
-            ['',                'Loading...',   '',             'FALSE'],
+            ['',                '',             '',             'FALSE'],
             ['',                'Loading...',   '',             'FALSE']
         ]
-        result, msg = synce_model.getSheetIndex(sync_data, 1)
+            
+    #def is_psw_filled(self, psw):          
+    def test_is_psw_filled(self):    
+        #synce_model = self.env['sync.sync']
+
+        psw = {
+            "key1": "value1",
+            "key2": "value2"
+        }
+
+        result = self.synce_model.is_psw_filled(None)
+        self.assertEqual(result, False)
+
+        result = self.synce_model.is_psw_filled("password")
+        self.assertEqual(result, False)
+
+        result = self.synce_model.is_psw_filled(psw)
+        self.assertEqual(result, True)
+
+    #def getSheetIndex(self, sync_data, lineIndex):
+    def test_getSheetIndex(self):    
+        #synce_model = self.env['sync.sync']
+
+        result, msg = self.synce_model.getSheetIndex(self.sync_data, 1)
         self.assertEqual(10, result)
 
-        result, msg = synce_model.getSheetIndex(sync_data, 6)
+        result, msg = self.synce_model.getSheetIndex(self.sync_data, 6)
         self.assertEqual(-1, result)
 
-
-        #with self.assertRaises(ValueError) as context:
-        #    synce_model.getSheetIndex(sync_data, 6)
-        #
-        #self.assertTrue('This is broken' in context.exception)
+        result, msg = self.synce_model.getSheetIndex(self.sync_data, 7)
+        self.assertEqual(-1, result)
            
+
+    #def archive_product(self, product_id):
+    def test_archive_product(self):
+
 
