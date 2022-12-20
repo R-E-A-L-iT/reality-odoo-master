@@ -69,5 +69,20 @@ class TestModuleDemo(TransactionCase):
 
         self.assertEqual(product_modified.active, False)
 
+    #def createProducts(self, external_id, product_name):
+    def test_createProducts(self):
+        external_id = "SKU-1234123"
+        product_name = "New product"  
+
+        product_unexsiting = self.env['product.template'].search(
+            [('sku', '=', external_id)]
+        )
+
+        result_len = len(product_unexsiting)        
+        self.assertEqual((result_len == 0), False)
+
+        #sync_model.createProducts(external_id, product_name)
+
+
 
 
