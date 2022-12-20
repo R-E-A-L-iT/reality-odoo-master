@@ -189,6 +189,7 @@ odoo.define("proquotes.price", function (require) {
 				rentalEstimateTotal += 12 * months * price;
 				rentalEstimateTotal += 4 * weeks * price;
 				rentalEstimateTotal += 1 * days * price;
+				console.log(rentalEstimateTotal);
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
