@@ -333,8 +333,8 @@
 
 
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-			<span t-if="clang == 'en_CA' or clang == 'en_US'" t-attf-class="proquotesLineTotal oe_order_line_price_subtotal pr-0 {{line.product_id.isSoftware}}" t-out="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
-			<span t-if="clang == 'fr_CA'" t-attf-class="proquotesLineTotal oe_order_line_price_subtotal pr-0 {{line.product_id.isSoftware}}" t-out="'{value:,.2f} $'.format(value= line.price_subtotal)" />
+			<span t-if="clang == 'en_CA' or clang == 'en_US'" t-attf-class="proquotesLineTotal oe_order_line_price_subtotal pr-0 {{line.product_id.is_software}}" t-out="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
+			<span t-if="clang == 'fr_CA'" t-attf-class="proquotesLineTotal oe_order_line_price_subtotal pr-0 {{line.product_id.is-software}}" t-out="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
