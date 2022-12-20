@@ -52,7 +52,7 @@ class TestModuleDemo(TransactionCase):
 
     #def archive_product(self, product_id):
     def test_archive_product(self):
-        external_id = 123456789123
+        external_id = "SKU-123456"
         product_name = "New product"
         ext = self.env['ir.model.data'].create(
             {'name': external_id, 'model': "product.template"})[0]
@@ -61,11 +61,13 @@ class TestModuleDemo(TransactionCase):
         product.active = True          
         ext.res_id = product.id
 
-        self.sync_model.archive_product(123456789123)
+        print ("product.id: " +  product.id)
+
+        self.sync_model.archive_product(external_id)
         product_modified = self.env['product.template'].search(
             [('id', '=', product.id)]
         )
-        
+
         self.assertEqual(product_modified.active, True)
 
 

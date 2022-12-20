@@ -687,8 +687,7 @@ class sync(models.Model):
         product = self.env['product.template'].create(
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = product.id
-        _logger.info("str(product.id)")
-        _logger.info(str(product.id))
+        _logger.info("str(product.id): " + str(product.id))
         self.updateProducts(product, sheet, sheetWidth, i, columns)
 
     def syncWebCode(self, sheet):
