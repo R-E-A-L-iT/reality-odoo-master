@@ -270,5 +270,5 @@ td.tax-column {
 }
 
 .text-middle>label>span {
-	padding: 0px;
+	padding: 0px !important;
 }
