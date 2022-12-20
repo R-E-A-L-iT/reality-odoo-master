@@ -272,3 +272,8 @@ td.tax-column {
 .text-middle>label>span {
 	padding: 0px !important;
 }
+
+.text-middle span {
+	white-space: nowrap;
+	min-width: fit-content;
+}
