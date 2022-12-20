@@ -69,16 +69,12 @@ class sync(models.Model):
             modelType = str(sync_data[i][2])
             valid = (str(sync_data[i][3]).upper() == "TRUE")
 
-            
-
             if (not valid):
-
                 _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " + str(sync_data[i][3]) + ".  Ending sync process!")
                 break
 
             if (sheetIndex < 0):
                 break
-
             
             _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
             quit, msgr = self.getSyncValues(sheetName,
@@ -160,6 +156,17 @@ class sync(models.Model):
         
         return sheetIndex, msg
 
+    #Method to get the sync_pricelist calss.
+    #Input
+    #   sheetName: The name of the tab
+    #   sheet:     The sheet in format 
+    #      [['ColumnName1','ColumnName2',...,'ColumnNameX'],
+    #       ['Line1 Column1','Line1 Column2',...,'Line1 ColumnX'],
+    #       ['Line2 Column1','Line2 Column2',...,'Line2 ColumnX'],
+    #       ...,
+    #       ['LineZ Column1','LineZ Column2',...,'LineZ ColumnX']]
+    #Output
+    #   An instance of sync_pricelist
     def getSync_pricelist(self, sheetName, sheet):
         return sync_pricelist(sheetName, sheet, self)
 
@@ -646,12 +653,27 @@ class sync(models.Model):
                     [('name', '=', external_id), ('model', '=', 'product.template')])
 
                 if (len(product_ids) > 0):
-                    self.updateProducts(self.env['product.template'].browse(
-                        product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
-
+                    product=self.env['product.template'].browse(
+                        product_ids[len(product_ids) - 1].res_id)
+                    self.updateProducts(
+                        product, 
+                        str(sheet[i][:]),                   #product_stringRep
+                        sheet[i][columns["name"]],          #product_name
+                        sheet[i][columns["description"]],   #product_description_sale
+                        sheet[i][columns["priceCAD"]],      #product_price_cad
+                        sheet[i][columns["priceUSD"]],      #product_price_usd
+                        "serial",                           #product_tracking
+                        "product")                          #product_type
                 else:
-                    self.createAndUpdateProducts(sheet, external_id,
-                                        sheetWidth, i, columns)
+                    self.createAndUpdateProducts(
+                        external_id, 
+                        str(sheet[i][:]),                   #product_stringRep
+                        sheet[i][columns["name"]],          #product_name
+                        sheet[i][columns["description"]],   #product_description_sale
+                        sheet[i][columns["priceCAD"]],      #product_price_cad
+                        sheet[i][columns["priceUSD"]],      #product_price_usd
+                        "serial",                           #product_tracking
+                        "product")                          #product_type
 
             except Exception as e:
                 _logger.info("Products Exception")
@@ -664,27 +686,6 @@ class sync(models.Model):
 
         msg = self.endTable(msg)
         return False, msg
-
-    # follows same pattern
-    def updateProducts(self, product, sheet, sheetWidth, i, columns):
-        if (product.stringRep == str(sheet[i][:])):
-            return
-        
-        product.name = sheet[i][columns["name"]]
-        product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["priceCAD"]]
-        product.tracking = "serial"
-        product.type = "product"
-        product.stringRep = str(sheet[i][:])
-
-        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)
-        syncer.addProductToPricelist(product, "CAN Pricelist", self.sheet[i][columns["priceCAD"]])
-        syncer.addProductToPricelist(product, "USD Pricelist", self.sheet[i][columns["priceUSD"]])        
-
-    
-    def createAndUpdateProducts(self, sheet, external_id, sheetWidth, i, columns):
-        product = self.createProducts(self, external_id, sheet[i][columns["name"]])        
-        self.updateProducts(product, sheet, sheetWidth, i, columns)
 
     #Method to create a product
     #Input
@@ -704,6 +705,71 @@ class sync(models.Model):
         ext.res_id = product.id
 
         return product
+
+    #Methode to update product information.
+    #Input
+    #   product:                    The product generated with product.template model
+    #   product_stringRep:          The GoogleSheet line that represent all the informations of the product
+    #   product_name:               Product Name
+    #   product_description_sale:   English dercription
+    #   product_price_cad:          Price in CAD
+    #   product_price_usd:          Price in USD
+    #   product_tracking:           Tracking
+    #   product_type:               Type
+    def updateProducts(
+        self, 
+        product, 
+        product_stringRep, 
+        product_name, 
+        product_description_sale, 
+        product_price_cad, 
+        product_price_usd,
+        product_tracking,
+        product_type):
+
+        if (product.stringRep == product_stringRep):
+            return
+        product.name                = product_name
+        product.description_sale    = product_description_sale
+        product.price               = product_price_cad
+        product.tracking            = product_tracking
+        product.type                = product_type
+        product.stringRep           = product_stringRep
+        syncer                      = sync_pricelist("", [], self)
+        syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
+        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd)             
+
+    #Method to create and update a product
+    #Input
+    #   external_id:                The SKU in GoogleSheet
+    #   product_stringRep:          The GoogleSheet line that represent all the informations of the product
+    #   product_name:               Product Name
+    #   product_description_sale:   English dercription
+    #   product_price_cad:          Price in CAD
+    #   product_price_usd:          Price in USD
+    #   product_tracking:           Tracking
+    #   product_type:               Type
+    def createAndUpdateProducts(
+        self, 
+        external_id, 
+        product_stringRep, 
+        product_name, 
+        product_description_sale, 
+        product_price_cad, 
+        product_price_usd,
+        product_tracking,
+        product_type):
+
+        product = self.createProducts(self, external_id, product_name)
+        self.updateProducts(
+            product, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type)        
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets

@@ -65,6 +65,36 @@ class TestModuleSync(TransactionCase):
         )
         self.assertEqual((len(product_exsiting) == 0), False)
 
+    def test_updateProducts(self):
+    #def updateProducts(
+    #   self, 
+    #   product, 
+    #   product_stringRep, 
+    #   product_name, 
+    #   product_description_sale, 
+    #   product_price_cad, 
+    #   product_price_usd,
+    #   product_tracking,
+    #   product_type):
+
+        external_id                 = "SKU-1234123"
+        product_stringRep           = ""
+        product_name                = "New product" 
+        product_description_sale    = ""
+        product_price_cad           = ""
+        product_price_usd           = ""
+        product_tracking            = ""
+        product_type                = ""
+
+        product = self.sync_model.createProducts(external_id, product_name)
+        product_not_updated = self.env['product.template'].search(
+            [('sku', '=', product.sku)]
+        )
+
+        self.assertEqual((product_not_updated.sku == external_id), False)
+
+            
+
     #def archive_product(self, product_id):
     def test_archive_product(self):
         external_id = "SKU-1234123"
