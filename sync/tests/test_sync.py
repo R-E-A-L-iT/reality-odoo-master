@@ -1,14 +1,14 @@
 from odoo.tests import TransactionCase
-from odoo.addons.sync.models import sync
+#from odoo.addons.sync.models import sync
 
 #To run the test, open the console and type : 
 # odoo-bin --test-enable -i sync
 
 
-class TestModuleDemo(TransactionCase):
+class TestModuleSync(TransactionCase):
 
     def setUp(self):
-        super(TestModuleDemo, self).setUp()
+        super(TestModuleSync, self).setUp()
         self.sync_model = self.env['sync.sync']
         self.sync_data = [
             ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid'], 
@@ -78,9 +78,6 @@ class TestModuleDemo(TransactionCase):
         )
         self.assertEqual(product_modified.active, False)
         
-        external_id = "SKU-555555"
-        product_name = "New product555555"        
-        self.sync_model.createProducts(external_id, product_name)
 
 
 
