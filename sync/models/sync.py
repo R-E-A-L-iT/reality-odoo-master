@@ -62,10 +62,14 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
+            msg_temp = ""
             sheetName = str(sync_data[i][0])
-            sheetIndex = self.getSheetIndex(sync_data, i)
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
+            msg += msg_temp
             modelType = str(sync_data[i][2])
             valid = (str(sync_data[i][3]).upper() == "TRUE")
+
+            
 
             if (not valid):
 
@@ -137,22 +141,24 @@ class sync(models.Model):
     #   lineIndex:  The index of the line to get the SheetIndex
     # Output
     #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
+    #   msg:        Message to append to the repport
     def getSheetIndex(self, sync_data, lineIndex):
-        sheetIndex = -2
+        sheetIndex = -1
+        msg = ""
 
         if (lineIndex < 1):
-            return -2
+            return -1
 
         try:
             sheetIndex = int(sync_data[lineIndex][1])
         except ValueError:
-            sheetIndex = -2
+            sheetIndex = -1
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
                 str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
             _logger.info(
                 "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[self._odoo_sync_data_index][1]) + ".")
         
-        return sheetIndex
+        return sheetIndex, msg
 
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
@@ -864,10 +870,12 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
+            msg_temp = ""
             sheetName = str(sync_data[i][0])
-            sheetIndex = self.getSheetIndex(sync_data, i)
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
+            msg += msg_temp
             modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]).upper() == "TRUE")
+            valid = (str(sync_data[i][3]).upper() == "TRUE")            
 
             if (not valid):
                 _logger.info("Valid: " + sheetName + " is " + str(valid) + ".  Ending Sku Cleaning process!")
