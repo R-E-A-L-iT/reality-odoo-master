@@ -337,7 +337,7 @@
 				<span t-else="" class="rp-20" t-field="line.product_uom_qty" />
 			</t>
 			<t t-if="line.quantityLocked =='no'">
-				<t t-set="qty" t-value="f'{line.product_uom_qty:0.0f}'" />
+				<t t-set="qty" t-value="round(line.product_uom_qty)" />
 				<span t-out="qty" />
 				<input type="number" class="quantityChange" min="1" t-attf-value="{{line.product_uom_qty}})" style="display: inline; width: 60px;"></input>
 			</t>
