@@ -81,10 +81,10 @@ class TestModuleSync(TransactionCase):
     #def getColumnIndex (self, sheet, columnName):
     def test_getColumnIndex (self):
         result = self.sync_model.getColumnIndex(self.sync_data, "Sheet Index")
-        self.assertEqual((result == 1), False)
+        self.assertEqual((result == 1), True)
 
-        #result = self.sync_model.getColumnIndex(self.sync_data, "Does not exists")
-        #self.assertEqual((result == -1), False) 
+        result = self.sync_model.getColumnIndex(self.sync_data, "Does not exists")
+        self.assertEqual((result == -1), False) 
 
 
 
