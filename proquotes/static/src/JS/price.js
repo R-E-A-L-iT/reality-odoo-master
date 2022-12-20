@@ -116,10 +116,10 @@ odoo.define("proquotes.price", function (require) {
 				}
 			}
 			if (totalLandingEnglish != undefined) {
-				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', {}).format(total);
+				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal" }).format(total);
 			}
 			if (totalLandingFrench != undefined) {
-				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', {}).format(total) + '$';
+				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal" }).format(total) + ' $';
 			}
 		},
 
