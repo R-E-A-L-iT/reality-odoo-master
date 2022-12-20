@@ -173,7 +173,7 @@ odoo.define("proquotes.price", function (require) {
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
-				while (node.classList.contains("quoteLineRow")) {
+				while (node.classList.contains("quoteLineRow") == false) {
 					console.log(node)
 					node = node.parentNode;
 				}
