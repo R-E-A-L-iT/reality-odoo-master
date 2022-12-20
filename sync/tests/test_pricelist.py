@@ -17,7 +17,8 @@ class TestModulePricelist(TransactionCase):
 	        [	'Not valid SKU', 'Not valid Name', 'Not valid Description', '-1', '-1', 'Not valid product', 'Not valid serial', 'FALSE', 'FALSE'],		
         ]     
         self.sync_model = self.env['sync.sync']
-        #self.sync_pricelist = sync_pricelist("CCP CSV_ODOO", self.pricelist_data, self.sync_model)
+        self.sync_pricelist = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
+       
 
     def test_01(self):
          self.assertEqual(False, True)

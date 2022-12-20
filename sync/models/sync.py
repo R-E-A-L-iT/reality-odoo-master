@@ -160,6 +160,9 @@ class sync(models.Model):
         
         return sheetIndex, msg
 
+    def getSync_pricelist(self, sheetName, sheet):
+        return sync_pricelist(sheetName, sheet, self)
+
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
         sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
@@ -181,7 +184,7 @@ class sync(models.Model):
 
         elif (syncType == "Pricelist"):
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
-            syncer = sync_pricelist(sheetName, sheet, self)
+            syncer = self.getSync_pricelist(sheetName, sheet)
             quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
