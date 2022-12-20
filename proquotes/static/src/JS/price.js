@@ -174,7 +174,6 @@ odoo.define("proquotes.price", function (require) {
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
 				while (node.classList.contains("quoteLineRow") == false) {
-					console.log(node)
 					node = node.parentNode;
 				}
 				var inputs = node.getElementsByTagName("input");
@@ -187,11 +186,9 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				console.log("Price: " + price)
 				rentalEstimateTotal += 12 * months * price;
 				rentalEstimateTotal += 4 * weeks * price;
 				rentalEstimateTotal += 1 * days * price;
-				console.log("Total: " + rentalEstimateTotal);
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
