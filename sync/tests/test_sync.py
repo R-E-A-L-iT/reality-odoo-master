@@ -40,12 +40,13 @@ class TestModuleDemo(TransactionCase):
         result = self.synce_model.is_psw_filled(psw)
         self.assertEqual(result, True)
 
-        self.sync_data = []
         
+
 
     #def getSheetIndex(self, sync_data, lineIndex):
     def test_getSheetIndex(self):    
         #synce_model = self.env['sync.sync']
+        self.sync_data = []
 
         result, msg = self.synce_model.getSheetIndex(self.sync_data, 1)
         self.assertEqual(10, result)
