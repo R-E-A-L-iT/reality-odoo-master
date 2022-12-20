@@ -91,8 +91,8 @@ class TestModuleSync(TransactionCase):
             [('id', '=', product.id)]
         )
 
-        self.assertEqual((product_not_updated.sku == external_id), False)
-        #self.assertEqual((product_not_updated.name == product_name), False)
+        self.assertEqual((product_not_updated.sku == external_id), True)
+        self.assertEqual((product_not_updated.name == product_name), False)
 
 
             
