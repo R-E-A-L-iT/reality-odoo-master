@@ -138,11 +138,25 @@ odoo.define("proquotes.price", function (require) {
 			let minuteInHour = 60
 			let hourInDay = 24
 			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
-			var months = rentalLength / 30;
-			var weeks = (rentalLength % 30) / 7;
-			var days = (rentalLength % 30) % 7;
+			var months = 0;
+			var weeks = 0;
+			var days = 0;
+			while (rentalLength >= 30) {
+				months += 1
+				rentalLength -= 30;
+			}
+			while (rentalLength >= 7) {
+				weeks += 1
+				rentalLength -= 7
+			}
+			while (rentalLength >= 1) {
+				days += 1;
+				rentalLength -= 1;
+			}
 
-			console.log("Rental cost: " + 100 * 12 * months + 100 * 4 * weeks + 100 * days)
+			console.log("Months: " + months);
+			console.log("Weeks: " + weeks);
+			console.log("Days: " + days);
 
 		},
 
