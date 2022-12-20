@@ -250,8 +250,8 @@
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
-			<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
-			<span t-else="" t-field="line.product_uom_qty" />
+			<span class="text-center" t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
+			<span class="text-center" t-else="" t-field="line.product_uom_qty" />
 		</xpath>
 
 		<!-- Remove Unit From PDF-->
