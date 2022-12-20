@@ -37,7 +37,7 @@
             ]
     },
 
-    'version': '0.3',
+    'version': '0.4',
 
     # always loaded
     'data': [
@@ -50,6 +50,7 @@
         'views/Quote/quoteLogo.xml',
         'views/Quote/renewalText.xml',
         'views/Quote/quoteRentalAddress.xml',
+        'views/Quote/table-align.xml',
         'views/Other/tax.xml',
         'views/Other/mail.xml',
         'views/Other/deliverPDF.xml',
