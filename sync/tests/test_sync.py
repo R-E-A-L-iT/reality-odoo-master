@@ -77,14 +77,14 @@ class TestModuleSync(TransactionCase):
     #   product_tracking,
     #   product_type):
 
-        external_id                 = "SKU-1234123"
-        product_stringRep           = ""
-        product_name                = "New product" 
-        product_description_sale    = ""
-        product_price_cad           = ""
-        product_price_usd           = ""
-        product_tracking            = ""
-        product_type                = ""
+        external_id                 = "SKU-123456"
+        product_stringRep           = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
+        product_name                = "Name of the product" 
+        product_description_sale    = "Description of the product"
+        product_price_cad           = "3850"
+        product_price_usd           = "2980"
+        product_tracking            = "Tracking of the product"
+        product_type                = "Product Type of the product"
 
         product = self.sync_model.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
@@ -93,13 +93,29 @@ class TestModuleSync(TransactionCase):
 
         self.assertEqual((product_not_updated.sku == external_id), True)
         self.assertEqual((product_not_updated.name == product_name), True)
-
         self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
         self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
-        #self.assertEqual((product_not_updated.price == product_price_cad), False)
-        ##self.assertEqual((product_not_updated.stringRep == product_price_usd), False)
-        #self.assertEqual((product_not_updated.tracking == product_tracking), False)
-        #self.assertEqual((product_not_updated.type == product_type), False)
+        self.assertEqual((product_not_updated.price == product_price_cad), False)        
+        self.assertEqual((product_not_updated.tracking == product_tracking), False)
+        self.assertEqual((product_not_updated.type == product_type), False)
+
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "CAN Pricelist")])            
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 0), True)
+
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "USD Pricelist")])            
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 0), True)
+
+
+
+
 
 
 
