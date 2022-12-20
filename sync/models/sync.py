@@ -325,7 +325,7 @@ class sync(models.Model):
                 # attempts to access existing item (item/row)
                 external_id = str(sheet[i][columns["id"]])
                 company_ids = self.env['ir.model.data'].search(
-                    )
+                    [('name', '=', external_id), ('model', '=', 'res.partner')])
                 if (len(company_ids) > 0):
                     self.updateCompany(self.env['res.partner'].browse(
                         company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i, columns)
