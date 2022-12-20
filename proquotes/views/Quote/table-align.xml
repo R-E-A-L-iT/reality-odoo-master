@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="18">
+	<template id="quote_table_align" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
 		<!-- Adjust Alignment For Cells -->
 	</template>
 </odoo>
