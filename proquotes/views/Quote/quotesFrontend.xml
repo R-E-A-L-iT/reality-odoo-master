@@ -93,6 +93,14 @@
 							Le taux de location au mois(30 jours) est équivalent à 12x le taux journalier ci-haut.
 						</p>
 						<br />
+
+						<t t-if="clang == 'en_CA' or clang == 'en_US'">
+							<span>Estimated rental cost of chosen hardware + accessories: </span>
+						</t>
+						<t t-elif="clang == 'fr_CA">
+							<span>Coût estimé de la location de l'équipement et les accessoires:</span>
+						</t>
+
 						<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 							<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
 							<br />
