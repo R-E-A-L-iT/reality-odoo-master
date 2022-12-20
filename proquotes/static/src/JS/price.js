@@ -118,7 +118,7 @@ odoo.define("proquotes.price", function (require) {
 				totalLandingEnglish.innerHTML = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
 			}
 			if (totalLandingFrench != undefined) {
-				totalLandingFrench.innerHTML = Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'USD' }).format(total);
+				totalLandingFrench.innerHTML = Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(total);
 			}
 		},
 
