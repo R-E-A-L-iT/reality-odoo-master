@@ -79,9 +79,9 @@ class TestModuleDemo(TransactionCase):
         )      
         self.assertEqual((len(product_unexsiting) == 0), True)
 
-        self.sync_model.createProducts(external_id, product_name)
+        product = self.sync_model.createProducts(external_id, product_name)
         product_exsiting = self.env['product.template'].search(
-            [('sku', '=', external_id)]
+            [('sku', '=', product.sku)]
         )
         self.assertEqual((len(product_exsiting) == 0), False)
 
