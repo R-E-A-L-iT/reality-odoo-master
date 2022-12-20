@@ -126,8 +126,8 @@ odoo.define("proquotes.price", function (require) {
 			var startDate = document.getElementById("rental-start");
 			var endDate = document.getElementById("rental-end");
 
-			startDateDate = new Date(startDate);
-			endDateDate = new Date(endDate);
+			var startDateDate = new Date(startDate);
+			var endDateDate = new Date(endDate);
 
 			let milliInSeconds = 100
 			let secondsInMinute = 60
