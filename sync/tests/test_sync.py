@@ -67,7 +67,7 @@ class TestModuleDemo(TransactionCase):
             [('id', '=', product.id)]
         )
 
-        self.assertEqual(product_modified.active, True)
+        self.assertEqual(product_modified.active, False)
 
 
 
