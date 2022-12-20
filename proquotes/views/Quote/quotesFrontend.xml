@@ -134,11 +134,11 @@
 						<span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
 					</td>
 					<td t-else=""></td>
+					<td />
 					<td class="text-right">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
 					</td>
-					<td />
 					<td class="text-right">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
