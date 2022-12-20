@@ -19,11 +19,25 @@ class TestModulePricelist(TransactionCase):
         self.sync_model = self.env['sync.sync']
         self.sync_pricelist = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
        
-    #def addProductToPricelist(self, product, pricelistName, price):
+    #def addProductToPricelist(self, product, pricelistName, price): 
     def test_addProductToPricelist(self):
-        product = None
-        pricelistName = "cad"
-        price = 22
-        self.sync_pricelist.addProductToPricelist(product, pricelistName, price)
-        self.assertEqual(True, True)
+        external_id = "SKU-1234123"
+        product_name = "New product"  
+        product = self.sync_model.createProducts(external_id, product_name)
+
+        pricelistName = "CAN Pricelist"
+        price = 5595.00
+        self.sync_model.createProducts(external_id, product_name)
+
+        pricelist_id = self.database.env['product.pricelist'].search(
+            [('name', '=', pricelistName)])[0].id
+        pricelist_item_ids = self.database.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+
+        self.assertEqual((len(pricelist_item_ids) == 0), False)
+
+
+
+        #self.sync_pricelist.addProductToPricelist(product, pricelistName, price)
+        #self.assertEqual(True, True)
 
