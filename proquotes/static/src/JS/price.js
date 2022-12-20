@@ -138,7 +138,7 @@ odoo.define("proquotes.price", function (require) {
 			let minuteInHour = 60
 			let hourInDay = 24
 			// var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
-			var rentalLength = endDateDate.getDay() - startDateDate.getDay();
+			var rentalLength = endDateDate.getUTCDay() - startDateDate.getUTCDay();
 			console.log("Start Date" + startDate.value);
 			console.log("End Date" + endDate.value);
 			console.log("Rental Length: " + rentalLength)
