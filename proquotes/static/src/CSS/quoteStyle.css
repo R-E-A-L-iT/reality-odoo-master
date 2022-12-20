@@ -268,3 +268,7 @@ td.tax-column {
 .text-middle, .text-middle * {
 	text-align: center !important;
 }
+
+.text-middle>label>span {
+	padding: 0px;
+}
