@@ -123,8 +123,8 @@ odoo.define("proquotes.price", function (require) {
 
 			var startDate = document.getElementById("rental-start");
 			var endDate = document.getElementById("rental-end");
-			console.log(startDate);
-			console.log(endDate);
+			console.log(startDate.value);
+			console.log(endDate.value);
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
