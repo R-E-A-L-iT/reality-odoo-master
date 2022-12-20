@@ -339,7 +339,7 @@
 			</t>
 		</xpath>
 
-		<!-- <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace"></xpath> -->
+		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"></xpath>
 
 		<!--Hide Unwanted Columns-->
 		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[3]" position="attributes">
