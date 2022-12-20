@@ -311,6 +311,8 @@ class sync_pricelist():
 
     #Methode to add a product to a pricelist
     def addProductToPricelist(self, product, pricelistName, price):
+        print (pricelistName)
+        print (price)
         pass
 
 

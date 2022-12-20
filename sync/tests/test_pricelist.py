@@ -19,7 +19,11 @@ class TestModulePricelist(TransactionCase):
         self.sync_model = self.env['sync.sync']
         self.sync_pricelist = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
        
-
-    def test_01(self):
-         self.assertEqual(False, True)
+    #def addProductToPricelist(self, product, pricelistName, price):
+    def test_addProductToPricelist(self):
+        product = None
+        pricelistName = "cad"
+        price = 22
+        self.sync_pricelist.addProductToPricelist(product, pricelistName, price)
+        self.assertEqual(True, True)
 
