@@ -55,6 +55,6 @@ class TestModuleDemo(TransactionCase):
            
 
     #def archive_product(self, product_id):
-    def test_archive_product(self):
-
+    #def test_archive_product(self):
+    #    pass
 
