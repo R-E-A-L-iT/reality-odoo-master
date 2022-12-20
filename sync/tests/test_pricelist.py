@@ -21,7 +21,7 @@ class TestModulePricelist(TransactionCase):
        
     #def addProductToPricelist(self, product, pricelistName, price): 
     def test_addProductToPricelist(self):
-        external_id = "SKU-1234123"
+        external_id = "SKU-addProductToPricelist"
         product_name = "New product"  
         product = self.sync_model.createProducts(external_id, product_name)
 
