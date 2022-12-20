@@ -83,7 +83,7 @@ class TestModuleSync(TransactionCase):
         product_description_sale    = "Description of the product"
         product_price_cad           = "3850"
         product_price_usd           = "2980"
-        product_tracking            = "Tracking of the product"
+        product_tracking            = "serial"
         product_type                = "Product Type of the product"
 
         product = self.sync_model.createProducts(external_id, product_name)
@@ -122,6 +122,8 @@ class TestModuleSync(TransactionCase):
             product_price_usd,
             product_tracking,
             product_type)
+
+         
 
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
