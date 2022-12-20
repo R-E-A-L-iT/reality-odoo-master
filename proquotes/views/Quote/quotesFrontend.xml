@@ -143,6 +143,9 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
 					</td>
+					<td>
+						<span>Tax</span>
+					</td>
 					<td class="text-right">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Montant</span>
@@ -341,9 +344,9 @@
 		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"></xpath>
 
 		<!--Hide Unwanted Columns-->
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[3]" position="attributes">
+		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[3]" position="attributes">
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
-		</xpath>
+		</xpath> -->
 
 		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]//th[4]" position="attributes">
 			<attribute name="t-attf-class">text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
