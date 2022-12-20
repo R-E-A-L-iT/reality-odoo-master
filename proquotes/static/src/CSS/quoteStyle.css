@@ -265,6 +265,6 @@ td.tax-column {
 	color: #fff;
 }
 
-.text-middle {
+.text-middle, .text-middle * {
 	text-align: center !important;
 }
