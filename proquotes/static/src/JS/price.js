@@ -123,10 +123,21 @@ odoo.define("proquotes.price", function (require) {
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
+			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
+			var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
 			var startDate = document.getElementById("rental-start");
 			var endDate = document.getElementById("rental-end");
 
+			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
+				return;
+			}
+
 			if (startDate.value == "" || endDate.value == "") {
+				if (rentalEstimateEnglish != undefined) {
+					rentalEstimateEnglish.innerHTML = "$ 0.00"
+				} else if (rentalEstimateFrench != undefined) {
+					rentalEstimateFrench.innerHTML = "0.00 $"
+				}
 				return;
 			}
 
@@ -141,6 +152,7 @@ odoo.define("proquotes.price", function (require) {
 			var months = 0;
 			var weeks = 0;
 			var days = 0;
+
 			while (rentalLength >= 30) {
 				months += 1
 				rentalLength -= 30;
@@ -157,7 +169,32 @@ odoo.define("proquotes.price", function (require) {
 			console.log("Months: " + months);
 			console.log("Weeks: " + weeks);
 			console.log("Days: " + days);
-
+			var rentalEstimateTotal = 0
+			var productPrices = document.getElementsByClassName("rental_rate_calc")
+			for (var i = 0; i < productPrices.length; i++) {
+				var node = productPrices[i]
+				while (node.classList.contains("quoteLineRow")) {
+					console.log(node)
+					node = node.parentNode;
+				}
+				inputs = node.getElementsByTagName("input");
+				if (inputs.length < 1) {
+					if (inputs[0].type == "checkbox") {
+						if (inputs[0].checked != true) {
+							continue;
+						}
+					}
+				}
+				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
+				rentalEstimateTotal += 12 * months * price;
+				rentalEstimateTotal += 4 * weeks * price;
+				rentalEstimateTotal += 1 * days * price;
+			}
+			if (rentalEstimateEnglish != undefined) {
+				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
+			} else if (rentalEstimateFrench != undefined) {
+				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
+			}
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
