@@ -254,6 +254,9 @@
 			<span t-else="" t-field="line.product_uom_qty" />
 		</xpath>
 
+		<!-- Remove Unit From PDF-->
+		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace" />
+
 		<!--Remove Tax Calculation-->
 
 		<!--Add Signature-->
