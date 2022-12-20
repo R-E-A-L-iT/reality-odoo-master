@@ -323,6 +323,9 @@
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="attributes">
 			<attribute name="class">proquotesLineTotal oe_order_line_price_subtotal pr-0</attribute>
 		</xpath>
+		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
+
+		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
 			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>
