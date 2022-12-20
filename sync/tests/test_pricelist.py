@@ -40,7 +40,7 @@ class TestModulePricelist(TransactionCase):
 
         pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        self.assertEqual((len(pricelist_item_ids) == 1), False)
+        self.assertEqual((len(pricelist_item_ids) == 1), True)
 
 
 
