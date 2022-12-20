@@ -113,6 +113,42 @@ class TestModuleSync(TransactionCase):
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 0), True)
 
+        self.sync_model.updateProducts(
+            product, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type)
+
+        product_updated = self.env['product.template'].search(
+            [('id', '=', product.id)])
+        self.assertEqual((product_updated.sku == external_id), True)
+        self.assertEqual((product_updated.name == product_name), True)
+        self.assertEqual((product_updated.stringRep == product_stringRep), True)
+        self.assertEqual((product_updated.description_sale == product_description_sale), True)
+        self.assertEqual((product_updated.price == product_price_cad), True)        
+        self.assertEqual((product_updated.tracking == product_tracking), True)
+        self.assertEqual((product_updated.type == product_type), True)
+
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "CAN Pricelist")])            
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 1), True)
+
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "USD Pricelist")])            
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 1), True)
+
+
+
 
 
 

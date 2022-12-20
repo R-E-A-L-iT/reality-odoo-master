@@ -3,7 +3,7 @@ from odoo.addons.sync.models import sync
 
 
 #To run the test, open the console and type : 
-# odoo-bin --test-enable -i pricelist
+# odoo-bin --test-enable -i sync
 
 class TestModulePricelist(TransactionCase):
 
@@ -44,6 +44,8 @@ class TestModulePricelist(TransactionCase):
         pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 1), True)
+
+        
 
 
 
