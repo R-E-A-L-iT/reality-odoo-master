@@ -309,6 +309,11 @@ class sync_pricelist:
             if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
                 pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
 
+    #Methode to add a product to a pricelist
+    def addProductToPricelist(self, product, pricelistName, price):
+        pass
+
+
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):

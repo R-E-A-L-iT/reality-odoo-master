@@ -49,26 +49,6 @@ class TestModuleDemo(TransactionCase):
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 7)
         self.assertEqual(-1, result)
            
-
-    #def archive_product(self, product_id):
-    def test_archive_product(self):
-        product_name = "New product"
-        product_sku = "SKU-1234123"
-        ext = self.env['ir.model.data'].create(
-            {'name': product_sku, 'model': "product.template"})[0]
-        product = self.env['product.template'].create(
-            {'name': product_name})[0]
-        ext.res_id = product.id
-        print ("product.id: " +  str(product.id))
-
-        self.sync_model.archive_product(str(product.id))
-
-        product_modified = self.env['product.template'].search(
-            [('id', '=', product.id)]
-        )
-
-        self.assertEqual(product_modified.active, False)
-
     #def createProducts(self, external_id, product_name):
     def test_createProducts(self):
         external_id = "SKU-1234123"
@@ -84,6 +64,24 @@ class TestModuleDemo(TransactionCase):
             [('sku', '=', product.sku)]
         )
         self.assertEqual((len(product_exsiting) == 0), False)
+
+    #def archive_product(self, product_id):
+    def test_archive_product(self):
+        external_id = "SKU-1234123"
+        product_name = "New product"        
+        product = self.sync_model.createProducts(external_id, product_name)
+
+        self.sync_model.archive_product(str(product.id))
+
+        product_modified = self.env['product.template'].search(
+            [('id', '=', product.id)]
+        )
+        self.assertEqual(product_modified.active, False)
+        
+        external_id = "SKU-555555"
+        product_name = "New product555555"        
+        self.sync_model.createProducts(external_id, product_name)
+
 
 
 
