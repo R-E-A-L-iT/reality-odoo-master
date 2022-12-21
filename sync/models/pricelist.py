@@ -370,8 +370,11 @@ class sync_pricelist():
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             print("product.price-step3: " + str(product.price))
+            print("price:         " + str(price))
             pricelist_item.applied_on = "1_product"
+            print("price:         " + str(price))
             print("product.price-step4: " + str(product.price))
+            print("price:         " + str(price))
             if (str(price) != " " and str(price) != ""):
                 print("product.price-step5: " + str(product.price))
                 print("price:         " + str(price)) 
