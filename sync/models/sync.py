@@ -750,9 +750,9 @@ class sync(models.Model):
         print("")     
         print("") 
 
-        syncer = sync_pricelist("", [], self)
-        syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
-        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+        #syncer = sync_pricelist("", [], self)
+        #syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
+        #syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
 
 
     #Method to create and update a product
