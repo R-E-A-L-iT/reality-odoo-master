@@ -739,9 +739,16 @@ class sync(models.Model):
         if (product.stringRep == product_stringRep):
             return
 
+        # pricelist need to be donne before modifiyng the product.price
+        # since it will be erased be the addProductToPricelist.  Apparently,
+        # Odoo set to price to 0 if we set the product in a pricelist.
+        syncer = sync_pricelist("", [], self)
+        syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
+        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+
         product.name                = product_name
-        product.description_sale    = product_description_sale
-        #product.price               = product_price_cad
+        product.description_sale    = product_description_sale        
+        product.price               = product_price_cad 
         product.tracking            = product_tracking
         product.type                = product_type
         product.stringRep           = product_stringRep
@@ -751,9 +758,7 @@ class sync(models.Model):
         print("product_price_cad: " + str(product_price_cad))   
         print("")     
 
-        syncer = sync_pricelist("", [], self)
-        syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
-        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+
 
         product.price               = product_price_cad # patch ??
 
