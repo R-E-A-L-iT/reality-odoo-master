@@ -74,6 +74,10 @@
 				#rental-terms, #rental-terms * {
 				font-size: 0.75rem;
 				}
+
+				#rental-terms h1 {
+				font-size: 1rem;
+				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
