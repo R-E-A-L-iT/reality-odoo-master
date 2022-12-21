@@ -325,7 +325,7 @@ class sync_pricelist():
         print("")
         print("product.price: " + str(product.price))
         print("pricelistName: " + str(pricelistName))   
-        print("price:         " + str(price))  
+        print("price:         " + str(price))          
         print("")     
 
         #Olivier dev
@@ -349,6 +349,8 @@ class sync_pricelist():
         #    print("float(price): " + str(float(price)))
         #    pricelist_item.fixed_price = float(price)
 
+
+
         #Previous version
         # ONLY MOD: price = self.sheet[i][columns[priceName]]
         pricelist_id = self.database.env['product.pricelist'].search(
@@ -357,6 +359,7 @@ class sync_pricelist():
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if (len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            print("pricelist_item.applied_on:         " + str(pricelist_item.applied_on)) 
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if (str(price) != " " and str(price) != ""):
@@ -364,10 +367,12 @@ class sync_pricelist():
         else:
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
+            print("pricelist_item.applied_on:         " + str(pricelist_item.applied_on)) 
             pricelist_item.applied_on = "1_product"
             if (str(price) != " " and str(price) != ""):
                 pricelist_item.fixed_price = price
 
+        print("pricelist_item.applied_on:         " + str(pricelist_item.applied_on)) 
         print("After")
         print("product.price: " + str(product.price))
         print("pricelistName: " + str(pricelistName))   
