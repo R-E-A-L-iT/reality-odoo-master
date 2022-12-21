@@ -325,8 +325,10 @@ class sync_pricelist():
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
 
         if (len(pricelist_item_ids) > 0):
+            print ("if (len(pricelist_item_ids) > 0):")
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]            
         else:
+            print ("if (len(pricelist_item_ids) <= 0):")
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
 
