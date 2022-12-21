@@ -43,11 +43,6 @@ class sync(models.Model):
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
-        msgg = "BLA BLA BLA BLA BLA un back slash " + \
-                "blo blo blo blo blo blo."
-        _logger.info(msgg)
-
-
         template_id = self._master_database_template_id       
 
         sheetName = ""
@@ -145,17 +140,19 @@ class sync(models.Model):
     #   msg:        Message to append to the repport
     def getSheetIndex(self, sync_data, lineIndex):
         sheetIndex = -1
+        i = -1        
         msg = ""
 
         if (lineIndex < 1):
             return -1
 
         try:
-            sheetIndex = int(sync_data[lineIndex][1])
+            i = sync_data[0].index("Sheet Index")
+            sheetIndex = int(sync_data[lineIndex][i])
         except ValueError:
             sheetIndex = -1
-            msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
-                str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
+                str(i) + "called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
             _logger.info(msg)
         
         return sheetIndex, msg

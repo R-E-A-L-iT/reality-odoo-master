@@ -16,10 +16,22 @@ class TestModuleSync(TransactionCase):
             ['Contacts_',       '20',           'Contacts',     'TRUE'], 
             ['Pricelist-1_',    '30',           'Pricelist',    'TRUE'], 
             ['Pricelist-2_',    '40',           'Pricelist',    'TRUE'], 
-            ['Products_',       '50',           'Products',     'TRUE'], 
+            ['Products_',       '50.1',         'Products',     'TRUE'], 
             ['CCP_',            'sdf',          'CCP',          'TRUE'], 
             ['',                '',             '',             'FALSE'],
             ['',                'Loading...',   '',             'FALSE']
+        ]
+
+        self.sync_data_order_changed = [
+            ['Sheet Name',      'Model Type',   'Valid', 'Sheet Index'], 
+            ['Companies_',	    '11',           'TRUE' , '10'         ], 
+            ['Contacts_',       '21',           'TRUE' , '20'         ], 
+            ['Pricelist-1_',    '31',           'TRUE' , '30'         ], 
+            ['Pricelist-2_',    '41',           'TRUE' , '40'         ], 
+            ['Products_',       '51.1',         'TRUE' , '50'         ], 
+            ['CCP_',            '60',           'TRUE' , 'sdf'        ], 
+            ['',                '',             'FALSE', ''           ],
+            ['',                '',             'FALSE', 'Loading...' ]
         ]
             
     #def is_psw_format_good(self, psw):              
@@ -44,29 +56,51 @@ class TestModuleSync(TransactionCase):
 
     #def getSheetIndex(self, sync_data, lineIndex):
     def test_getSheetIndex(self):    
-        #
+        #Check that it return the right is value
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 1)
         self.assertEqual(10, result)
 
-        result, msg = self.sync_model.getSheetIndex(self.sync_data, 6)
+        #Check that it return -1 is the value is a float
+        result, msg = self.sync_model.getSheetIndex(self.sync_data, 5)
         self.assertEqual(-1, result)
 
+        #Check that it return -1 is the value is a string
+        result, msg = self.sync_model.getSheetIndex(self.sync_data, 6)
+        self.assertEqual(-1, result)        
+
+        #Check that it return -1 is the value is an empty string
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 7)
         self.assertEqual(-1, result)
+
+        #Same test, but check that we can change the order of the tab and it will still work
+        result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 1)
+        self.assertEqual(10, result)
+
+        result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 5)
+        self.assertEqual(-1, result)
+        
+        result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 6)
+        self.assertEqual(-1, result)
+
+        result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 7)
+        self.assertEqual(-1, result)
+
            
     #def createProducts(self, external_id, product_name):
     def test_createProducts(self):
         external_id = "SKU-1234123"
         product_name = "New product"  
 
+        #Check that the product to be created does not exist to validate the test.
         product_unexsiting = self.env['product.template'].search(
             [('sku', '=', external_id)])      
         self.assertEqual((len(product_unexsiting) == 0), True)
 
+        #
         product = self.sync_model.createProducts(external_id, product_name)
         product_exsiting = self.env['product.template'].search(
             [('sku', '=', product.sku)])
-        self.assertEqual((len(product_exsiting) == 0), False)
+        self.assertEqual((len(product_exsiting) == 1), True)
 
     def test_updateProducts(self):
     #def updateProducts(
