@@ -123,13 +123,18 @@
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Start of the Rental <span t-out="doc.rental_start" /></span>
+						<span t-out="'Start of the Rental' + str(doc.rental_start)" />
 						<br />
-						<span>End of the Rental <span t-out="doc.rental_end" /></span>
+						<span t-out="'End of the Rental' + str(doc.rental_end)" />
 						<br />
 						<br />
 						<t t-if="doc.rental_diff_add == True">
-							<span>Address</span>
+							<span t-out="Street + str(doc.rental_street)" />
+							<br />
+							<span t-out="City + str(doc.rental_city)" />
+							<br />
+							<span t-out="State + str(doc.rental_state)" />
+							<br />
 						</t>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
