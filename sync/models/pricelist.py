@@ -341,8 +341,9 @@ class sync_pricelist():
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
         
-        pricelist_item.applied_on = "1_product"        
         print("product.price 1: " + str(product.price))
+        pricelist_item.applied_on = "1_product"        
+        print("product.price 2: " + str(product.price))
         if ((str(price) != " ") and (str(price) != "") and (price != None)):
             print('if ((str(price) != " ") and (str(price) != "") and (price != None)):')
             print("float(price): " + str(float(price)))
