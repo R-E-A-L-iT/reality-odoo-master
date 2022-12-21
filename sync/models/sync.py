@@ -740,7 +740,7 @@ class sync(models.Model):
 
         product.name                = product_name
         product.description_sale    = product_description_sale
-        product.price               = float(product_price_cad)
+        product.price               = 99999#float(product_price_cad)
         product.tracking            = product_tracking
         product.type                = product_type
         product.stringRep           = product_stringRep
