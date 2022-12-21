@@ -142,7 +142,7 @@
 					</t>
 
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" />rentalValue</span>
+						<span>Total Rental Value:&#160; <span t-out="rentalValue" /></span>
 						<br />
 						<span>
 							Please provide your proof of insurance:
@@ -150,8 +150,7 @@
 						<br />
 					</div>
 					<div class="rental_product_value" t-if="clang == 'fr_CA'">
-						<span>Valeur locative totale: &#160;<span id="total-rental-value-french">rentalValue</span>
-						</span>
+						<span>Valeur locative totale: &#160;<span t-out="rentalValue" /></span>
 						<br />
 						<span>
 							Merci de fournir votre attestation d'assurance :
