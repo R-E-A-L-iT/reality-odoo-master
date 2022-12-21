@@ -321,7 +321,7 @@ class sync_pricelist():
     def addProductToPricelist(self, product, pricelistName, price):  
 
         print("") 
-        print("ENTER: addProductToPricelist")
+        print("ENTER: syncPricelist.addProductToPricelist")
         print("")
         print("product.price: " + str(product.price))
         print("pricelistName: " + str(pricelistName))   
@@ -357,6 +357,8 @@ class sync_pricelist():
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        
+        print("product.price-step1: " + str(product.price))
         if (len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]            
             pricelist_item.product_tmpl_id = product.id
@@ -368,15 +370,16 @@ class sync_pricelist():
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             pricelist_item.applied_on = "1_product"
             if (str(price) != " " and str(price) != ""):
+                print("product.price-step2: " + str(product.price))
                 pricelist_item.fixed_price = price
-
-        print("pricelist_item.applied_on:         " + str(pricelist_item.applied_on)) 
+                print("product.price-step3: " + str(product.price))
+ 
         print("After")
         print("product.price: " + str(product.price))
         print("pricelistName: " + str(pricelistName))   
         print("price:         " + str(price))  
         print("") 
-        print("EXIT") 
+        print("EXIT: syncPricelist.addProductToPricelist") 
         print("") 
         print("") 
         

@@ -730,12 +730,14 @@ class sync(models.Model):
             product_tracking,
             product_type):
 
-        if (product.stringRep == product_stringRep):
-            return
+        print("ENTER sync.updateProducts")
         print("Before")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(float(product_price_cad)))
         print("") 
+
+        if (product.stringRep == product_stringRep):
+            return
 
         product.name                = product_name
         product.description_sale    = product_description_sale
@@ -744,15 +746,22 @@ class sync(models.Model):
         product.type                = product_type
         product.stringRep           = product_stringRep
 
-        print("After")
+        print("After Part 1")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(product_price_cad))   
         print("")     
-        print("") 
-
+        
         syncer = sync_pricelist("", [], self)
         syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
         syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+
+        print("After Part 2")
+        print("product.price: " + str(product.price))
+        print("product_price_cad: " + str(product_price_cad))   
+        print("")  
+        print("EXIT sync.updateProducts")
+        print("") 
+        print("")
 
 
     #Method to create and update a product
