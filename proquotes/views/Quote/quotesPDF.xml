@@ -126,9 +126,20 @@
 						<span>Start of the Rental <span t-out="doc.rental_start" /></span>
 						<br />
 						<span>End of the Rental <span t-out="doc.rental_end" /></span>
+						<br />
+						<br />
+						<t t-if="doc.rental_address == True">
+							<span>Address</span>
+						</t>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-
+						<span>Début de la Location <span t-out="doc.rental_start" /></span>
+						<br />
+						<span>Fin estimée de la Location <span t-out="doc.rental_end" /></span>
+						<br />
+						<br />
+						<t t-if="doc.rental_address == True">
+						</t>
 					</t>
 				</td>
 			</t>
