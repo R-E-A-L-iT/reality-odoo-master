@@ -148,6 +148,7 @@ class sync(models.Model):
 
         try:
             i = sync_data[0].index("Sheet Index")
+            print (i)
             sheetIndex = int(sync_data[lineIndex][i])
         except ValueError:
             sheetIndex = -1
