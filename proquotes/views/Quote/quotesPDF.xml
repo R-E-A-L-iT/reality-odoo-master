@@ -133,7 +133,7 @@
 							<br />
 							<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
 							<span t-esc="doc.rental_state.code" />
-							<span t-field="doc.partner_shipping_id.rental_zip" />
+							<span t-field="doc.rental_zip" />
 						</t>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
