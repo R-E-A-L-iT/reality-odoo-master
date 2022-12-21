@@ -122,7 +122,14 @@
 			</t>
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
-					<t t-call="proquotes.rental_address_form" />
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span>Start of the Rental <span t-out="doc.rental_start" /></span>
+						<br />
+						<span>End of the Rental <span t-out="doc.rental_end" /></span>
+					</t>
+					<t t-elif="clang == 'fr_CA'">
+
+					</t>
 				</td>
 			</t>
 			<t t-if="line.name == '$rental_pricenote'">

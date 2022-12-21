@@ -3,6 +3,7 @@
 	<template name="Rental Address Form" id="rental_address_form">
 		<t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
+		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
 				<div>
