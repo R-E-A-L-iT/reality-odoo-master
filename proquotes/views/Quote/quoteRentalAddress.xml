@@ -4,6 +4,19 @@
 
 		<section id="user-info">
 			<form autocomplete="on">
+				<div>
+					<label for="rental-start">
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental</span>
+						<span t-if="clang == 'fr_CA'">Début de la Location</span>
+					</label>
+					<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" />
+					<br />
+					<label for="rental-end">
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental</span>
+						<span t-if="clang == 'fr_CA'">Fin estimée de la Location</span>
+					</label>
+					<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" />
+				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
 						<br />
@@ -198,20 +211,6 @@
 						</label>
 						<input id="zip" type="text" t-attf-value="{{sale_order.rental_zip}}" />
 					</div>
-				</div>
-				<br />
-				<div>
-					<label for="rental-start">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental</span>
-						<span t-if="clang == 'fr_CA'">Début de la Location</span>
-					</label>
-					<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" />
-					<br />
-					<label for="rental-end">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental</span>
-						<span t-if="clang == 'fr_CA'">Fin estimée de la Location</span>
-					</label>
-					<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" />
 				</div>
 			</form>
 		</section>
