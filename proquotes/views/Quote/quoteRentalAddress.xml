@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template name="Rental Address Form" id="rental_address_form">
-
+		<t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
+		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<section id="user-info">
 			<form autocomplete="on">
 				<div>
