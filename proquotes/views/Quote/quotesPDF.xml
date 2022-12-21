@@ -120,7 +120,7 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
-			<t t-if="line.name == $rental_address">
+			<t t-if="line.name == '$rental_address'">
 				<td>
 					<p>Rental-Address</p>
 				</td>
