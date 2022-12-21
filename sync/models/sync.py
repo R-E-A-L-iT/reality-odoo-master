@@ -761,6 +761,8 @@ class sync(models.Model):
     #   product_price_usd:          Price in USD
     #   product_tracking:           Tracking
     #   product_type:               Type
+    #Output
+    #   product:                    The product created
     def createAndUpdateProducts(
             self, 
             external_id, 
@@ -781,7 +783,11 @@ class sync(models.Model):
             product_price_cad, 
             product_price_usd,
             product_tracking,
-            product_type)        
+            product_type)    
+
+        product_created = self.env['product.template'].search(
+            [('sku', '=', external_id)]) 
+        return product_created    
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
