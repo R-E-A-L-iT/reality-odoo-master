@@ -118,7 +118,6 @@
 					</td>
 				</t>
 				<t t-if="$rental_pricenote">
-					<t t-set="clang" t-value="en_CA" />
 					<tr>
 						<td style="border-style: none;" colspan="100">
 							<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
@@ -136,7 +135,7 @@
 							<t t-if="clang == 'en_CA' or clang == 'en_US'">
 								<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
 							</t>
-							<t t-elif="clang == 'fr_CA'">
+							<t t-if="clang == 'fr_CA'">
 								<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-french" /></span>
 							</t>
 						</td>
