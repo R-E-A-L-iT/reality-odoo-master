@@ -329,24 +329,21 @@ class sync_pricelist():
         print("")     
 
         pricelist_id = self.database.env['product.pricelist'].search(
-            [('name', '=', pricelistName)])[0].id
-        print("product.price: " + str(product.price))
+            [('name', '=', pricelistName)])[0].id        
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        print("product.price: " + str(product.price))
-        if (len(pricelist_item_ids) > 0):
-            print ("if (len(pricelist_item_ids) > 0):")
+        
+        if (len(pricelist_item_ids) > 0):            
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]            
-        else:
-            print ("if (len(pricelist_item_ids) <= 0):")
+        else:            
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-        print("product.price: " + str(product.price))
 
+        print("product.price 1: " + str(product.price))
         pricelist_item.product_tmpl_id = product.id
-        print("product.price: " + str(product.price))
-        pricelist_item.applied_on = "1_product"
-        print("product.price: " + str(product.price))
+        print("product.price 2: " + str(product.price))
+
+        pricelist_item.applied_on = "1_product"        
         if (str(price) != " " and str() != ""):
             pricelist_item.fixed_price = float(price)
 
