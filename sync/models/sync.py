@@ -758,10 +758,6 @@ class sync(models.Model):
         print("product_price_cad: " + str(product_price_cad))   
         print("")     
 
-
-
-        product.price               = product_price_cad # patch ??
-
         print("After Part 2")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(product_price_cad))   
