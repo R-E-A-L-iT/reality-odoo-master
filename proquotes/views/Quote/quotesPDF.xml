@@ -428,6 +428,7 @@
 
 		<!-- For rental quotes calculate relevant sums -->
 		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<t t-out="from datetime import date" />
 			<t t-set="rentalValue" t-value="0" />
 			<t t-set="rentalRatePreCalc" t-value="0" />
 		</xpath>
