@@ -31,19 +31,19 @@ class TestModulePricelist(TransactionCase):
         pricelist_usd = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "USD Pricelist")])        
         self.assertEqual(len(pricelist_usd) == 1, True)
-        pricelist_usd_id = pricelist_usd[0].id
-        print ("pricelist_usd len: " + str(len(pricelist_usd)))
+        #pricelist_usd_id = pricelist_usd[0].id
+        #print ("pricelist_usd len: " + str(len(pricelist_usd)))
        
         #Assert that "CAN Pricelist" is unique as a pricelist name
         pricelist_can = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "CAN Pricelist")])
         self.assertEqual(len(pricelist_can) == 1, True)
-        print ("pricelist_can len: " + str(len(pricelist_can)))
-        pricelist_can_id = pricelist_can[0].id
+        #print ("pricelist_can len: " + str(len(pricelist_can)))
+        #pricelist_can_id = pricelist_can[0].id
 
         #Assert that the product.id doest not exist in the 'CAN pricelist'
         pricelist_can_item_ids = self.sync_model.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can_id)])
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can.id)])
         self.assertEqual((len(pricelist_can_item_ids) == 0), True)
 
         #Calling the method to test
@@ -51,12 +51,12 @@ class TestModulePricelist(TransactionCase):
 
         #Assert that their is only one price.
         pricelist_can_item_ids = self.sync_model.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can_id)])        
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can.id)])        
         self.assertEqual((len(pricelist_can_item_ids) == 1), True)
 
         #Assert that the price is not introduc in an other pricelist
         pricelist_usd_item_ids = self.sync_model.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_usd_id)])
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=',  pricelist_usd.id)])
         self.assertEqual((len(pricelist_usd_item_ids) == 0), True)        
 
 
