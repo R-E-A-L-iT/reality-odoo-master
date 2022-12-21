@@ -54,11 +54,13 @@ class sync(models.Model):
         msg = ""
 
         # Checks authentication values
-        if (not self.is_psw_filled(psw)):
+        if (not self.is_psw_format_good(psw)):
             return
 
         # Get the ODOO_SYNC_DATA tab
-        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)                
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)   
+
+        _logger.info(str(sync_data))             
 
         # loop through entries in first sheet
         while (True):
@@ -95,13 +97,13 @@ class sync(models.Model):
 
         _logger.info("Ending Sync")
 
-    #Check is the password if contains informations
+    #Check the password format
     #Input
     #   psw:   The password to open the googlesheet
     #Output
-    #   True : Password is contains informations
-    #   False: Password is not present
-    def is_psw_filled(self, psw):  
+    #   True : Password format is good
+    #   False: Password format if bad
+    def is_psw_format_good(self, psw):  
 
         # Checks authentication values
         if ((psw == None) or (str(type(psw)) != "<class 'dict'>")):
@@ -152,7 +154,8 @@ class sync(models.Model):
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
                 str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
             _logger.info(
-                "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[self._odoo_sync_data_index][1]) + ".")
+                "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + 
+                str(lineIndex) + ": " + str(sync_data[self._odoo_sync_data_index][1]) + ".")
         
         return sheetIndex, msg
 
@@ -730,16 +733,10 @@ class sync(models.Model):
             product_tracking,
             product_type):
 
-        print("ENTER sync.updateProducts")
-        print("Before")
-        print("product.price: " + str(product.price))
-        print("product_price_cad: " + str(float(product_price_cad)))
-        print("") 
-
         if (product.stringRep == product_stringRep):
             return
 
-        # pricelist need to be donne before modifiyng the product.price
+        # pricelist need to be done before modifiyng the product.price
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
         syncer = sync_pricelist("", [], self)
@@ -752,20 +749,6 @@ class sync(models.Model):
         product.tracking            = product_tracking
         product.type                = product_type
         product.stringRep           = product_stringRep
-
-        print("After Part 1")
-        print("product.price: " + str(product.price))
-        print("product_price_cad: " + str(product_price_cad))   
-        print("")     
-
-        print("After Part 2")
-        print("product.price: " + str(product.price))
-        print("product_price_cad: " + str(product_price_cad))   
-        print("")  
-        print("EXIT sync.updateProducts")
-        print("") 
-        print("")
-
 
     #Method to create and update a product
     #Input
@@ -1054,7 +1037,7 @@ class sync(models.Model):
         to_archives = []
 
         # Checks authentication values
-        if (not self.is_psw_filled(psw)):
+        if (not self.is_psw_format_good(psw)):
             _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
             return
 

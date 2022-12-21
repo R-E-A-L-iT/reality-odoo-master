@@ -22,24 +22,29 @@ class TestModuleSync(TransactionCase):
             ['',                'Loading...',   '',             'FALSE']
         ]
             
-    #def is_psw_filled(self, psw):              
-    def test_is_psw_filled(self):    
+    #def is_psw_format_good(self, psw):              
+    def test_is_psw_format_good(self):    
         psw = {
             "key1": "value1",
             "key2": "value2"
         }
 
-        result = self.sync_model.is_psw_filled(None)
+        #Test that with no passware, it return False.
+        result = self.sync_model.is_psw_format_good(None)
         self.assertEqual(result, False)
 
-        result = self.sync_model.is_psw_filled("password")
+        #Test that passing a password in a string, it return False.
+        result = self.sync_model.is_psw_format_good("Password")
         self.assertEqual(result, False)
 
-        result = self.sync_model.is_psw_filled(psw)
+        #Test that with dictionnary, it return True.
+        #Note that we are not testing if the password is valid or not, but the format
+        result = self.sync_model.is_psw_format_good(psw)
         self.assertEqual(result, True)
 
     #def getSheetIndex(self, sync_data, lineIndex):
     def test_getSheetIndex(self):    
+        #
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 1)
         self.assertEqual(10, result)
 
@@ -65,22 +70,15 @@ class TestModuleSync(TransactionCase):
 
     def test_updateProducts(self):
     #def updateProducts(
-    #   self, 
-    #   product, 
-    #   product_stringRep, 
-    #   product_name, 
-    #   product_description_sale, 
-    #   product_price_cad, 
-    #   product_price_usd,
-    #   product_tracking,
-    #   product_type):
-        print("")
-        print("Enter test_updateProducts")
-
-
-
-
-
+    #       self, 
+    #       product, 
+    #       product_stringRep, 
+    #       product_name, 
+    #       product_description_sale, 
+    #       product_price_cad, 
+    #       product_price_usd,
+    #       product_tracking,
+    #       product_type):
         external_id                 = "SKU-123456"
         product_stringRep           = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
         product_name                = "Name of the product" 
@@ -89,16 +87,10 @@ class TestModuleSync(TransactionCase):
         product_price_usd           = "2980"
         product_tracking            = "serial"
         product_type                = "product"
-        
-        print ("product_price_cad: " + str(product_price_cad))
-        print("      test_updateProducts: createProducts")
-        product = self.sync_model.createProducts(external_id, product_name)
-        print("product.id: " + (str(product.id)))
 
+        product = self.sync_model.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
-        print("product_not_updated.id: " + (str(product_not_updated.id)))
-
         self.assertEqual((product_not_updated.sku == external_id), True)
         self.assertEqual((product_not_updated.name == product_name), True)
         self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
@@ -121,8 +113,6 @@ class TestModuleSync(TransactionCase):
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 0), True)
 
-
-        print("      test_updateProducts: updateProducts")
         self.sync_model.updateProducts(
             product, 
             product_stringRep, 
@@ -133,19 +123,11 @@ class TestModuleSync(TransactionCase):
             product_tracking,
             product_type)
 
-
-
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
-        print("product.id: " + (str(product.id)))
-        print("product.price: " + (str(product.price)))
-        print("product_not_updated.id: " + (str(product_not_updated.id)))            
-        print ("product_updated.price: " + str(product_updated.price))
-        
-
 
         self.assertEqual((product_updated.sku == external_id), True)
         self.assertEqual((product_updated.name == product_name), True)
@@ -168,17 +150,6 @@ class TestModuleSync(TransactionCase):
         pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 1), True)
-
-
-
-
-
-
-
-
-
-
-            
 
     #def archive_product(self, product_id):
     def test_archive_product(self):

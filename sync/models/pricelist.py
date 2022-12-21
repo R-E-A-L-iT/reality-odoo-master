@@ -292,26 +292,7 @@ class sync_pricelist():
 
     def pricelist(self, product, priceName, pricelistName, i, columns):
         price = self.sheet[i][columns[priceName]]
-        self.addProductToPricelist(product, pricelistName, price)
-
-        #pricelist_id = self.database.env['product.pricelist'].search(
-        #    [('name', '=', pricelistName)])[0].id
-        #pricelist_item_ids = self.database.env['product.pricelist.item'].search(
-        #    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        #if (len(pricelist_item_ids) > 0):
-        #    pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
-        #    pricelist_item.product_tmpl_id = product.id
-        #    pricelist_item.applied_on = "1_product"
-        #    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
-        #        pricelist_item.fixed_price = float(
-        #            self.sheet[i][columns[priceName]])
-        #else:
-        #    pricelist_item = self.database.env['product.pricelist.item'].create(
-        #        {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-        #    pricelist_item.applied_on = "1_product"
-        #    if (str(self.sheet[i][columns[priceName]]) != " " and str(self.sheet[i][columns[priceName]]) != ""):
-        #        pricelist_item.fixed_price = self.sheet[i][columns[priceName]]
-                      
+        self.addProductToPricelist(product, pricelistName, price)                     
 
     #Methode to add a product to a pricelist
     #Input
@@ -319,32 +300,6 @@ class sync_pricelist():
     #   pricelistName:  The name of the list to add the product
     #   price           The price
     def addProductToPricelist(self, product, pricelistName, price):  
-
-        print("") 
-        print("ENTER: syncPricelist.addProductToPricelist")
-        print("")
-        print("product.price: " + str(product.price))
-        print("pricelistName: " + str(pricelistName))   
-        print("price:         " + str(price))          
-        print("")     
-
-        #Olivier dev
-        #pricelist_id = self.database.env['product.pricelist'].search(
-        #    [('name', '=', pricelistName)])[0].id        
-        #pricelist_item_ids = self.database.env['product.pricelist.item'].search(
-        #    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        #
-        #if (len(pricelist_item_ids) > 0):            
-        #    pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]                        
-        #else:            
-        #    pricelist_item = self.database.env['product.pricelist.item'].create(
-        #        {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-        #
-        #pricelist_item.product_tmpl_id = product.id
-        #pricelist_item.applied_on = "1_product"        
-        #if ((str(price) != " ") and (str(price) != "") and (price != None)):
-        #    pricelist_item.fixed_price = float(price)
-
         pricelist_id = self.database.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
@@ -359,19 +314,7 @@ class sync_pricelist():
         pricelist_item.product_tmpl_id = product.id
         pricelist_item.applied_on = "1_product"
         if ((str(price) != " ") and (str(price) != "")):
-                pricelist_item.fixed_price = float(price)                                        
-        
- 
-        print("After")
-        print("product.price: " + str(product.price))
-        print("pricelistName: " + str(pricelistName))   
-        print("price:         " + str(price))  
-        print("") 
-        print("EXIT: syncPricelist.addProductToPricelist") 
-        print("") 
-        print("") 
-        
-        
+                pricelist_item.fixed_price = float(price)      
 
 
     def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
