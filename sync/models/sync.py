@@ -732,6 +732,11 @@ class sync(models.Model):
 
         if (product.stringRep == product_stringRep):
             return
+        print("Before")
+        print("product.price: " + str(product.price))
+        print("product_price_cad: " + str(product_price_cad))
+
+
         product.name                = product_name
         product.description_sale    = product_description_sale
         product.price               = product_price_cad
@@ -740,7 +745,11 @@ class sync(models.Model):
         product.stringRep           = product_stringRep
         syncer                      = sync_pricelist("", [], self)
         syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
-        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd)             
+        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd)    
+
+        print("After")
+        print("product.price: " + str(product.price))
+        print("product_price_cad: " + str(product_price_cad))         
 
     #Method to create and update a product
     #Input
