@@ -28,7 +28,7 @@ class TestModuleSync(TransactionCase):
             ['Contacts_',       '21',           'TRUE' , '20'         ], 
             ['Pricelist-1_',    '31',           'TRUE' , '30'         ], 
             ['Pricelist-2_',    '41',           'TRUE' , '40'         ], 
-            ['Products_',       '51.1',         'TRUE' , '50'         ], 
+            ['Products_',       '51.1',         'TRUE' , '50.1'       ], 
             ['CCP_',            '60',           'TRUE' , 'sdf'        ], 
             ['',                '',             'FALSE', ''           ],
             ['',                '',             'FALSE', 'Loading...' ]
