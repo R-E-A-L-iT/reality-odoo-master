@@ -117,7 +117,7 @@
 						<t t-call="proquotes.renewal-subscription" />
 					</td>
 				</t>
-				<t t-if="$rental_pricenote">
+				<t t-if="line.name == '$rental_pricenote'">
 					<tr>
 						<td style="border-style: none;" colspan="100">
 							<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
