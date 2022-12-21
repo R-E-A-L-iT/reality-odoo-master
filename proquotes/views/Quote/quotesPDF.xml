@@ -118,7 +118,6 @@
 			</t>
 			<t t-if="line.name == '$rental_pricenote'">
 				<td style="border-style: none;" colspan="100">
-					<span t-out="clang" />
 					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
 						* The final rental cost will be calculated once the equipement is returned.
 						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
@@ -137,6 +136,24 @@
 					<t t-elif="clang == 'fr_CA'">
 						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-french" /></span>
 					</t>
+
+					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
+						<br />
+						<span>
+							Please upload your proof of insurance for the total amount in the comments below:
+						</span>
+						<br />
+					</div>
+					<div class="rental_product_value" t-if="clang == 'fr_CA'">
+						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
+						</span>
+						<br />
+						<span>
+							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
+						</span>
+						<br />
+					</div>
 				</td>
 			</t>
 		</xpath>
