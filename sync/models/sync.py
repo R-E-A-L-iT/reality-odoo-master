@@ -741,7 +741,7 @@ class sync(models.Model):
 
         product.name                = product_name
         product.description_sale    = product_description_sale
-        product.price               = product_price_cad
+        #product.price               = product_price_cad
         product.tracking            = product_tracking
         product.type                = product_type
         product.stringRep           = product_stringRep
@@ -750,10 +750,12 @@ class sync(models.Model):
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(product_price_cad))   
         print("")     
-        
+
         syncer = sync_pricelist("", [], self)
         syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
         syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+
+        product.price               = product_price_cad # patch ??
 
         print("After Part 2")
         print("product.price: " + str(product.price))
