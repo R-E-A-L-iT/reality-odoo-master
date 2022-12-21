@@ -72,7 +72,7 @@
 				}
 
 				#rental-terms, #rental-terms * {
-				font-size: 0.5em !important;
+				font-size: 0.75rem !important;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
