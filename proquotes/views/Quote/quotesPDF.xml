@@ -133,7 +133,8 @@
 						Le taux de location au mois(30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
 					<br />
-
+					<!-- <t t-set="rentalLength" t-value="(datetime.date()-datetime.date()).days" /> -->
+					<t t-out="doc.rental-start" />
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRatePreCalc" /></span>
 					</t>
@@ -428,7 +429,6 @@
 
 		<!-- For rental quotes calculate relevant sums -->
 		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-out="str(datetime.date(2018, 12, 13))" />
 			<t t-set="rentalValue" t-value="0" />
 			<t t-set="rentalRatePreCalc" t-value="0" />
 		</xpath>
