@@ -22,6 +22,16 @@
 			<t t-set="clang" t-value="doc.partner_id.lang" />
 		</xpath>
 
+		<!-- For rental quotes calculate relevant sums -->
+		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<t t-set="rentalValue" t-value="0" />
+			<t t-set="rentalRatePreCalc" t-value="0" />
+		</xpath>
+		<xpath expr="//t[@foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<t t-set="rentalValue" t-value="rentalValue + line.cadVal" />
+			<t t-set="rentalRatePreCalc" t-value="rentalRatePreCalc + line.price_subtotal" />
+		</xpath>
+
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
@@ -135,14 +145,14 @@
 					<br />
 
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
+						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" />rentalValue</span>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-french" /></span>
+						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-french" />rentalValue</span>
 					</t>
 
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" />rentalValue</span>
 						<br />
 						<span>
 							Please provide your proof of insurance:
@@ -150,7 +160,7 @@
 						<br />
 					</div>
 					<div class="rental_product_value" t-if="clang == 'fr_CA'">
-						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
+						<span>Valeur locative totale: &#160;<span id="total-rental-value-french">rentalValue</span>
 						</span>
 						<br />
 						<span>
