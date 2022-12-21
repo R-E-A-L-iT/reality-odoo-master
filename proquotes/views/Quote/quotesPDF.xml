@@ -136,7 +136,7 @@
 					<!-- <t t-set="rentalLength" t-value="(datetime.date()-datetime.date()).days" /> -->
 					<t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
 					<t t-set="edate" t-value="str(doc.rental_end).split('-')" />
-					<t t-set="rentalLength" t-value="(datetime.date(edate[0], edate[1], edate[2]) - datetime.date(sdate[0], sdate[1], sdate[2])).days" />
+					<t t-set="rentalLength" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
 					<p t-out="rentalLength" />
 					<t t-if=" clang== 'en_CA' or clang == 'en_US'">
 						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRatePreCalc" /></span>
