@@ -343,7 +343,8 @@ class sync_pricelist():
         
         print("product.price 1: " + str(product.price))
         pricelist_item.applied_on = "1_product"        
-        if (str(price) != " " and str(price) != ""):
+        if ((str(price) != " ") and (str(price) != "") and (price != None)):
+            print('if (str(price) != " " and str(price) != ""):')
             pricelist_item.fixed_price = float(price)
 
         print("After")
