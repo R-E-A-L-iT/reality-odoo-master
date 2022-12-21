@@ -41,38 +41,38 @@ class TestModuleSync(TransactionCase):
             "key2": "value2"
         }
 
-        #Test that with no passware, it return False.
+        #Assert that with no passware, it return False.
         result = self.sync_model.is_psw_format_good(None)
         self.assertEqual(result, False)
 
-        #Test that passing a password in a string, it return False.
+        #Assert that passing a password in a string, it return False.
         result = self.sync_model.is_psw_format_good("Password")
         self.assertEqual(result, False)
 
-        #Test that with dictionnary, it return True.
+        #Assert that with dictionnary, it return True.
         #Note that we are not testing if the password is valid or not, but the format
         result = self.sync_model.is_psw_format_good(psw)
         self.assertEqual(result, True)
 
     #def getSheetIndex(self, sync_data, lineIndex):
     def test_getSheetIndex(self):    
-        #Check that it return the right is value
+        #Assert that it return the right is value
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 1)
         self.assertEqual(10, result)
 
-        #Check that it return -1 is the value is a float
+        #Assert that it return -1 is the value is a float
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 5)
         self.assertEqual(-1, result)
 
-        #Check that it return -1 is the value is a string
+        #Assert that it return -1 is the value is a string
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 6)
         self.assertEqual(-1, result)        
 
-        #Check that it return -1 is the value is an empty string
+        #Assert that it return -1 is the value is an empty string
         result, msg = self.sync_model.getSheetIndex(self.sync_data, 7)
         self.assertEqual(-1, result)
 
-        #Same test, but check that we can change the order of the tab and it will still work
+        #Same asserts, but check that we can change the order of the tab and it will still work
         result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 1)
         self.assertEqual(10, result)
 
@@ -91,18 +91,18 @@ class TestModuleSync(TransactionCase):
         external_id = "SKU-1234123"
         product_name = "New product"  
 
-        #Check that the product to be created does not exist to validate the test.
+        #Assert that the product to be created does not exist to validate the test.
         product_unexsiting = self.env['product.template'].search(
             [('sku', '=', external_id)])      
         self.assertEqual((len(product_unexsiting) == 0), True)
 
-        #
+        #Assert that if a product is created, it their is only on SKU with this value
         product = self.sync_model.createProducts(external_id, product_name)
         product_exsiting = self.env['product.template'].search(
             [('sku', '=', product.sku)])
         self.assertEqual((len(product_exsiting) == 1), True)
 
-    def test_updateProducts(self):
+
     #def updateProducts(
     #       self, 
     #       product, 
@@ -113,6 +113,7 @@ class TestModuleSync(TransactionCase):
     #       product_price_usd,
     #       product_tracking,
     #       product_type):
+    def test_updateProducts(self):        
         external_id                 = "SKU-123456"
         product_stringRep           = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
         product_name                = "Name of the product" 
@@ -125,14 +126,18 @@ class TestModuleSync(TransactionCase):
         product = self.sync_model.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
+        #Assert that the product created match the tests values.
         self.assertEqual((product_not_updated.sku == external_id), True)
         self.assertEqual((product_not_updated.name == product_name), True)
-        self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
-        self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
-        self.assertEqual((product_not_updated.price == product_price_cad), False)
         self.assertEqual((product_not_updated.tracking == product_tracking), True)
         self.assertEqual((product_not_updated.type == product_type), True)
 
+        #Validate that the test value are not set before the method is executed.
+        self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
+        self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
+        self.assertEqual((product_not_updated.price == product_price_cad), False)
+ 
+        #Assert that the 'CAN pricelist' and 'USD priclist' doest not contain information on the product.
         pricelist = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "CAN Pricelist")])            
         pricelist_id = pricelist[0].id
@@ -147,6 +152,7 @@ class TestModuleSync(TransactionCase):
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 0), True)
 
+        #calling the method to test
         self.sync_model.updateProducts(
             product, 
             product_stringRep, 
@@ -160,9 +166,7 @@ class TestModuleSync(TransactionCase):
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
-        product_not_updated = self.env['product.template'].search(
-            [('id', '=', product.id)])
-
+        #Assert that all the test data is properly set in the updated product
         self.assertEqual((product_updated.sku == external_id), True)
         self.assertEqual((product_updated.name == product_name), True)
         self.assertEqual((product_updated.stringRep == product_stringRep), True)
@@ -171,6 +175,7 @@ class TestModuleSync(TransactionCase):
         self.assertEqual((product_updated.tracking == product_tracking), True)
         self.assertEqual((product_updated.type == product_type), True)
 
+        #Assert that there is only one price per product in 'CAN pricelist' and 'USD pricelist'
         pricelist = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "CAN Pricelist")])            
         pricelist_id = pricelist[0].id
@@ -185,24 +190,32 @@ class TestModuleSync(TransactionCase):
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         self.assertEqual((len(pricelist_item_ids) == 1), True)
 
+
     #def archive_product(self, product_id):
     def test_archive_product(self):
         external_id = "SKU-1234123"
         product_name = "New product"        
         product = self.sync_model.createProducts(external_id, product_name)
 
+        #Validate that the product to archived is active before calling the method
+        self.assertEqual(product.active, True)
+
+        #calling the method
         self.sync_model.archive_product(str(product.id))
 
         product_modified = self.env['product.template'].search(
-            [('id', '=', product.id)]
-        )
+            [('id', '=', product.id)])
+        #Assert that once archived, it is not active.
         self.assertEqual(product_modified.active, False)
+
       
     #def getColumnIndex (self, sheet, columnName):
     def test_getColumnIndex (self):
+        #Assert that the method return the good data
         result = self.sync_model.getColumnIndex(self.sync_data, "Sheet Index")
         self.assertEqual((result == 1), True)
 
+        #Assert that the method return -1 when column does not exist
         result = self.sync_model.getColumnIndex(self.sync_data, "Does not exists")
         self.assertEqual((result == -1), True) 
 

@@ -19,33 +19,45 @@ class TestModulePricelist(TransactionCase):
         self.sync_model = self.env['sync.sync']
         self.sync_pricelist = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
        
+
     #def addProductToPricelist(self, product, pricelistName, price): 
     def test_addProductToPricelist(self):
         external_id = "SKU-1234123"
-        product_name = "New product"  
+        product_name = "New product" 
+        price = 5595.00         
         product = self.sync_model.createProducts(external_id, product_name)
 
-        pricelist = self.sync_model.env['product.pricelist'].search(
-            [('name', '=', "USD Pricelist")])
-        self.assertEqual(len(pricelist) == 1, True)
+        #Assert that "USD Pricelist" is unique as a pricelist name
+        pricelist_usd = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "USD Pricelist")])        
+        self.assertEqual(len(pricelist_usd) == 1, True)
+        pricelist_usd_id = pricelist_usd[0].id
+        print ("pricelist_usd len: " + str(len(pricelist_usd)))
        
-        pricelist = self.sync_model.env['product.pricelist'].search(
+        #Assert that "CAN Pricelist" is unique as a pricelist name
+        pricelist_can = self.sync_model.env['product.pricelist'].search(
             [('name', '=', "CAN Pricelist")])
-        self.assertEqual(len(pricelist) == 1, True)
+        self.assertEqual(len(pricelist_can) == 1, True)
+        print ("pricelist_can len: " + str(len(pricelist_can)))
+        pricelist_can_id = pricelist_can[0].id
 
-        pricelist_id = pricelist[0].id
-        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        self.assertEqual((len(pricelist_item_ids) == 0), True)
+        #Assert that the product.id doest not exist in the 'CAN pricelist'
+        pricelist_can_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can_id)])
+        self.assertEqual((len(pricelist_can_item_ids) == 0), True)
 
-        price = 5595.00
+        #Calling the method to test
         self.sync_pricelist.addProductToPricelist(product, "CAN Pricelist", price)
 
-        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
-            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
-        self.assertEqual((len(pricelist_item_ids) == 1), True)
+        #Assert that their is only one price.
+        self.assertEqual((len(pricelist_can_item_ids) == 1), True)
 
-        
+        #Assert that the price is not introduc in an other pricelist
+        pricelist_usd_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_usd_id)])
+        self.assertEqual((len(pricelist_usd_item_ids) == 0), True)        
+
+
 
 
 

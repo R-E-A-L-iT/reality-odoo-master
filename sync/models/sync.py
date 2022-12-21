@@ -146,9 +146,11 @@ class sync(models.Model):
         if (lineIndex < 1):
             return -1
 
+        i = self.getColumnIndex(sync_data, "Sheet Index")
+        if (i < 0):
+            return -1            
+
         try:
-            i = sync_data[0].index("Sheet Index")
-            print (i)
             sheetIndex = int(sync_data[lineIndex][i])
         except ValueError:
             sheetIndex = -1
