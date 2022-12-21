@@ -720,21 +720,22 @@ class sync(models.Model):
     #   product_tracking:           Tracking
     #   product_type:               Type
     def updateProducts(
-        self, 
-        product, 
-        product_stringRep, 
-        product_name, 
-        product_description_sale, 
-        product_price_cad, 
-        product_price_usd,
-        product_tracking,
-        product_type):
+            self, 
+            product, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type):
 
         if (product.stringRep == product_stringRep):
             return
         print("Before")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(float(product_price_cad)))
+        print("product.description_sale: " + str(product.description_sale))
 
 
         product.name                = product_name
@@ -749,7 +750,9 @@ class sync(models.Model):
 
         print("After")
         print("product.price: " + str(product.price))
-        print("product_price_cad: " + str(product_price_cad))         
+        print("product_price_cad: " + str(product_price_cad))   
+        print("product.description_sale: " + str(product.description_sale))
+        print("")      
 
     #Method to create and update a product
     #Input
@@ -762,15 +765,15 @@ class sync(models.Model):
     #   product_tracking:           Tracking
     #   product_type:               Type
     def createAndUpdateProducts(
-        self, 
-        external_id, 
-        product_stringRep, 
-        product_name, 
-        product_description_sale, 
-        product_price_cad, 
-        product_price_usd,
-        product_tracking,
-        product_type):
+            self, 
+            external_id, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type):
 
         product = self.createProducts(self, external_id, product_name)
         self.updateProducts(
