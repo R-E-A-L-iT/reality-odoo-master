@@ -129,12 +129,11 @@
 						<br />
 						<br />
 						<t t-if="doc.rental_diff_add == True">
-							<span t-out="'Street' + str(doc.rental_street)" />
+							<span t-field="doc.partner_id.rental_street" />
 							<br />
-							<span t-out="'City' + str(doc.rental_city)" />
-							<br />
-							<span t-out="'State' + str(doc.rental_state)" />
-							<br />
+							<span t-if="doc.partner_id.rental_city != False" t-esc="doc.partner_id.rental_city + ','" />
+							<span t-esc="doc.partner_id.rental_state_id.code" />
+							<span t-field="doc.partner_shipping_id.rental_zip" />
 						</t>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
