@@ -91,12 +91,12 @@ class TestModuleSync(TransactionCase):
             [('id', '=', product.id)]
         )
 
-        self.assertEqual((product_not_updated.sku == external_id), True)
-        self.assertEqual((product_not_updated.name == product_name), True)
-        self.assertEqual((product_not_updated.stringRep == product_stringRep), False)
-        self.assertEqual((product_not_updated.description_sale == product_description_sale), False)
-        self.assertEqual((product_not_updated.price == product_price_cad), False)        
-        self.assertEqual((product_not_updated.tracking == product_tracking), True)
+        self.assertEqual((product_not_updated.sku == external_id), True, "eeeeeeeeeeeeeeeeeeeeee")
+        self.assertEqual((product_not_updated.name == product_name), True, "eeeeeeeeeeeeeeeeeeeeee")
+        self.assertEqual((product_not_updated.stringRep == product_stringRep), False, "eeeeeeeeeeeeeeeeeeeeee")
+        self.assertEqual((product_not_updated.description_sale == product_description_sale), False, "eeeeeeeeeeeeeeeeeeeeee")
+        self.assertEqual((product_not_updated.price == product_price_cad), False, "eeeeeeeeeeeeeeeeeeeeee")        
+        self.assertEqual((product_not_updated.tracking == product_tracking), True, "eeeeeeeeeeeeeeeeeeeeee")
         self.assertEqual((product_not_updated.type == product_type), True)
 
         pricelist = self.sync_model.env['product.pricelist'].search(
@@ -130,8 +130,8 @@ class TestModuleSync(TransactionCase):
 
         print ("product_updated.price: " + str(product_updated.price))
         print ("product_price_cad: " + str(product_price_cad))
-        
-                    
+
+
         self.assertEqual((product_updated.sku == external_id), True)
         self.assertEqual((product_updated.name == product_name), True)
         self.assertEqual((product_updated.stringRep == product_stringRep), True)
