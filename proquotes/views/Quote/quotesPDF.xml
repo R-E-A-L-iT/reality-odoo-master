@@ -140,6 +140,7 @@
 						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRate" /></span>
 					</t>
 					<br />
+					<br />
 
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValue" /></span>
