@@ -358,7 +358,7 @@ class sync_pricelist():
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         if (len(pricelist_item_ids) > 0):
-            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]de
             print("pricelist_item.applied_on:         " + str(pricelist_item.applied_on)) 
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
