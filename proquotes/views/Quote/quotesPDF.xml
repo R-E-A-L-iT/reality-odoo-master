@@ -129,11 +129,11 @@
 						<br />
 						<br />
 						<t t-if="doc.rental_diff_add == True">
-							<span t-out="Street + str(doc.rental_street)" />
+							<span t-out="'Street' + str(doc.rental_street)" />
 							<br />
-							<span t-out="City + str(doc.rental_city)" />
+							<span t-out="'City' + str(doc.rental_city)" />
 							<br />
-							<span t-out="State + str(doc.rental_state)" />
+							<span t-out="'State' + str(doc.rental_state)" />
 							<br />
 						</t>
 					</t>
