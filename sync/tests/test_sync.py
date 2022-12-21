@@ -125,6 +125,7 @@ class TestModuleSync(TransactionCase):
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
+        print("TEST")
         print ("product_updated.price: " + str(product_updated.price))
         print ("product_price_cad: " + str(product_price_cad))
 
@@ -133,7 +134,7 @@ class TestModuleSync(TransactionCase):
         self.assertEqual((product_updated.name == product_name), True)
         self.assertEqual((product_updated.stringRep == product_stringRep), True)
         self.assertEqual((product_updated.description_sale == product_description_sale), True)
-        self.assertEqual((product_updated.price == product_price_cad), True)        
+        self.assertEqual((str(product_updated.price) == str(product_price_cad)), True)        
         self.assertEqual((product_updated.tracking == product_tracking), True)
         self.assertEqual((product_updated.type == product_type), True)
 

@@ -735,8 +735,7 @@ class sync(models.Model):
         print("Before")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(float(product_price_cad)))
-        print("product.description_sale: " + str(product.description_sale))
-
+        print("") 
 
         product.name                = product_name
         product.description_sale    = product_description_sale
@@ -751,8 +750,8 @@ class sync(models.Model):
         print("After")
         print("product.price: " + str(product.price))
         print("product_price_cad: " + str(product_price_cad))   
-        print("product.description_sale: " + str(product.description_sale))
         print("")     
+        print("") 
         
         #syncer = sync_pricelist("", [], self)
         #syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
