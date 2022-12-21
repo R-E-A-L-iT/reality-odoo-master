@@ -126,7 +126,6 @@
 						<p t-out="'Start of the Rental ' + str(doc.rental_start)" />
 						<p t-out="'End of the Rental ' + str(doc.rental_end)" />
 						<t t-if="doc.rental_diff_add == True">
-							<br />
 							<span t-field="doc.rental_street" />
 							<br />
 							<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
