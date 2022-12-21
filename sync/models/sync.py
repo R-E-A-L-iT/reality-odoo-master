@@ -734,7 +734,7 @@ class sync(models.Model):
             return
         print("Before")
         print("product.price: " + str(product.price))
-        print("product_price_cad: " + str(product_price_cad))
+        print("product_price_cad: " + str(float(product_price_cad)))
 
 
         product.name                = product_name
