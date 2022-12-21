@@ -443,7 +443,13 @@
 			</t>
 		</xpath>
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+			<span t-out="doc.partner_id.country" />
+			<t t-if="doc.partner_id.country == ''">
+				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+			</t>
+			<t t-elif="doc.partner_id.country == ''">
+				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+			</t>
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekRate" t-value="4 * line.price_subtotal * rentalWeeks" />
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
