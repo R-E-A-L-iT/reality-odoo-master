@@ -32,7 +32,7 @@ class sync(models.Model):
     _name = "sync.sync"
     _inherit = "sync.sheets"
     DatabaseURL = fields.Char(default="")
-    _description = "Sync App22"
+    _description = "Sync App"
 
     _sync_cancel_reason = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>"
     _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"
@@ -43,6 +43,11 @@ class sync(models.Model):
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
+        msgg = "BLA BLA BLA BLA BLA un back slash " + \
+                "blo blo blo blo blo blo."
+        _logger.info(msgg)
+
+
         template_id = self._master_database_template_id       
 
         sheetName = ""
@@ -50,7 +55,7 @@ class sync(models.Model):
         modelType = ""
         valid = False
 
-        i = 1
+        line_index = 1
         msg = ""
 
         # Checks authentication values
@@ -60,19 +65,17 @@ class sync(models.Model):
         # Get the ODOO_SYNC_DATA tab
         sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)   
 
-        _logger.info(str(sync_data))             
-
         # loop through entries in first sheet
         while (True):
             msg_temp = ""
-            sheetName = str(sync_data[i][0])
-            sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
+            sheetName = str(sync_data[line_index][0])
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
             msg += msg_temp
-            modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]).upper() == "TRUE")
+            modelType = str(sync_data[line_index][2])
+            valid = (str(sync_data[line_index][3]).upper() == "TRUE")
 
             if (not valid):
-                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " + str(sync_data[i][3]) + ".  Ending sync process!")
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " + str(sync_data[line_index][3]) + ".  Ending sync process!")
                 break
 
             if (sheetIndex < 0):
@@ -85,7 +88,7 @@ class sync(models.Model):
                                             sheetIndex,
                                             modelType)
             msg = msg + msgr
-            i += 1
+            line_index += 1
 
             if (quit):
                 self.syncFail(msg, self._sync_cancel_reason)
@@ -153,9 +156,7 @@ class sync(models.Model):
             sheetIndex = -1
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
                 str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
-            _logger.info(
-                "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + 
-                str(lineIndex) + ": " + str(sync_data[self._odoo_sync_data_index][1]) + ".")
+            _logger.info(msg)
         
         return sheetIndex, msg
 
