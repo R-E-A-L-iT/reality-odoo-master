@@ -366,13 +366,16 @@ class sync_pricelist():
             if (str(price) != " " and str(price) != ""):
                 pricelist_item.fixed_price = float(price)
         else:
+            print("product.price-step2: " + str(product.price))
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
+            print("product.price-step3: " + str(product.price))
             pricelist_item.applied_on = "1_product"
+            print("product.price-step4: " + str(product.price))
             if (str(price) != " " and str(price) != ""):
-                print("product.price-step2: " + str(product.price))
+                print("product.price-step5: " + str(product.price))
                 pricelist_item.fixed_price = price
-                print("product.price-step3: " + str(product.price))
+                print("product.price-step6: " + str(product.price))
  
         print("After")
         print("product.price: " + str(product.price))
