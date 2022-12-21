@@ -74,6 +74,12 @@ class TestModuleSync(TransactionCase):
     #   product_price_usd,
     #   product_tracking,
     #   product_type):
+        print("")
+        print("Enter test_updateProducts")
+
+
+
+
 
         external_id                 = "SKU-123456"
         product_stringRep           = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
@@ -83,10 +89,15 @@ class TestModuleSync(TransactionCase):
         product_price_usd           = "2980"
         product_tracking            = "serial"
         product_type                = "product"
-
+        
+        print ("product_price_cad: " + str(product_price_cad))
+        print("      test_updateProducts: createProducts")
         product = self.sync_model.createProducts(external_id, product_name)
+        print("product.id: " + (str(product.id)))
+
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
+        print("product_not_updated.id: " + (str(product_not_updated.id)))
 
         self.assertEqual((product_not_updated.sku == external_id), True)
         self.assertEqual((product_not_updated.name == product_name), True)
@@ -110,6 +121,8 @@ class TestModuleSync(TransactionCase):
         #    [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
         #self.assertEqual((len(pricelist_item_ids) == 0), True)
 
+
+        print("      test_updateProducts: updateProducts")
         self.sync_model.updateProducts(
             product, 
             product_stringRep, 
@@ -125,9 +138,13 @@ class TestModuleSync(TransactionCase):
         product_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
-        print("TEST")
+        product_not_updated = self.env['product.template'].search(
+            [('id', '=', product.id)])
+        print("product.id: " + (str(product.id)))
+        print("product.price: " + (str(product.price)))
+        print("product_not_updated.id: " + (str(product_not_updated.id)))            
         print ("product_updated.price: " + str(product_updated.price))
-        print ("product_price_cad: " + str(product_price_cad))
+        
 
 
         self.assertEqual((product_updated.sku == external_id), True)
