@@ -371,7 +371,7 @@ class sync_pricelist():
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
             print("product.price-step3: " + str(product.price))
             print("price:         " + str(price))
-            #pricelist_item.applied_on = "1_product"
+            pricelist_item.applied_on = "1_product"
             print("price:         " + str(price))
             print("product.price-step4: " + str(product.price))
             print("price:         " + str(price))
