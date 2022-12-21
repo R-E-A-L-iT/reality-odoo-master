@@ -128,7 +128,7 @@
 						<span>End of the Rental <span t-out="doc.rental_end" /></span>
 						<br />
 						<br />
-						<t t-if="doc.rental_address == True">
+						<t t-if="doc.rental_diff_address == True">
 							<span>Address</span>
 						</t>
 					</t>
