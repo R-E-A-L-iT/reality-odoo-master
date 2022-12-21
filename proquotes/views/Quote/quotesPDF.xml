@@ -121,7 +121,7 @@
 				</td>
 			</t>
 			<t t-if="line.name == '$rental_address'">
-				<td>
+				<td colspan="99">
 					<p>Rental-Address</p>
 				</td>
 			</t>
