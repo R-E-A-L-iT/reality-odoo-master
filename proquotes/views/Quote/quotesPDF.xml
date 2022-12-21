@@ -27,7 +27,7 @@
 			<t t-set="rentalValue" t-value="0" />
 			<t t-set="rentalRatePreCalc" t-value="0" />
 		</xpath>
-		<xpath expr="//t[@foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-set="rentalValue" t-value="rentalValue + line.cadVal" />
 			<t t-set="rentalRatePreCalc" t-value="rentalRatePreCalc + line.price_subtotal" />
 		</xpath>
