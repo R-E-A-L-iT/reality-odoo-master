@@ -4,7 +4,7 @@
 
 		<section id="user-info">
 			<form autocomplete="on">
-				<div>
+				<!-- <div>
 					<label for="rental-start">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental</span>
 						<span t-if="clang == 'fr_CA'">Début de la Location</span>
@@ -16,7 +16,7 @@
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location</span>
 					</label>
 					<input id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" />
-				</div>
+				</div> -->
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
 						<br />
