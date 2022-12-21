@@ -134,7 +134,6 @@
 					</p>
 					<br />
 
-					<p t-out="str(rentalMonths) + ' ' + str(rentalWeeks) + ' ' + str(rentalDays)" />
 					<t t-if=" clang== 'en_CA' or clang == 'en_US'">
 						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRate" /></span>
 					</t>
