@@ -328,7 +328,7 @@ class sync_pricelist():
         print("price:         " + str(price))  
         print("")     
 
-        print("product.price 1: " + str(product.price))
+        
         pricelist_id = self.database.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id        
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
@@ -340,13 +340,10 @@ class sync_pricelist():
         else:            
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
-
         
-       
-        print("product.price 2: " + str(product.price))
-
+        print("product.price 1: " + str(product.price))
         pricelist_item.applied_on = "1_product"        
-        if (str(price) != " " and str() != ""):
+        if (str(price) != " " and str(price) != ""):
             pricelist_item.fixed_price = float(price)
 
         print("After")
