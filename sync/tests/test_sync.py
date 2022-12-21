@@ -261,7 +261,6 @@ class TestModuleSync(TransactionCase):
             product_type)
 
         self.aftertest_updateProducts(
-            self, 
             product.id, 
             external_id, 
             product_name, 
@@ -270,7 +269,7 @@ class TestModuleSync(TransactionCase):
             product_price_cad, 
             product_tracking, 
             product_type)
-            
+
 
     #def archive_product(self, product_id):
     def test_archive_product(self):
