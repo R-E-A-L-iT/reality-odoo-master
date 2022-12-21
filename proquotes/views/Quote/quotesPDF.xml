@@ -22,16 +22,6 @@
 			<t t-set="clang" t-value="doc.partner_id.lang" />
 		</xpath>
 
-		<!-- For rental quotes calculate relevant sums -->
-		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-set="rentalValue" t-value="0" />
-			<t t-set="rentalRatePreCalc" t-value="0" />
-		</xpath>
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-set="rentalValue" t-value="rentalValue + line.cadVal" />
-			<t t-set="rentalRatePreCalc" t-value="rentalRatePreCalc + line.price_subtotal" />
-		</xpath>
-
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
@@ -435,6 +425,16 @@
 					color: #db0d0d !important;
 				} -->
 			</style>
+		</xpath>
+
+		<!-- For rental quotes calculate relevant sums -->
+		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<t t-set="rentalValue" t-value="0" />
+			<t t-set="rentalRatePreCalc" t-value="0" />
+		</xpath>
+		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<t t-set="rentalValue" t-value="rentalValue + line.cadVal" />
+			<t t-set="rentalRatePreCalc" t-value="rentalRatePreCalc + line.price_subtotal" />
 		</xpath>
 
 	</template>
