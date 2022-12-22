@@ -1070,9 +1070,9 @@ class sync(models.Model):
                 raise Exception('MissingSheetError', error_msg)       
 
             #Get the reffered sheet
-            sheet = self.getMasterDatabaseSheet(template_id, psw, refered_sheet_index)
-            refered_sheet_valid_column_index = self.getColumnIndex(sheet, "Valid")
-            refered_sheet_sku_column_index  = self.getColumnIndex(sheet, "SKU")
+            refered_sheet = self.getMasterDatabaseSheet(template_id, psw, refered_sheet_index)
+            refered_sheet_valid_column_index = self.getColumnIndex(refered_sheet, "Valid")
+            refered_sheet_sku_column_index   = self.getColumnIndex(refered_sheet, "SKU")
 
             #Validation
             if (refered_sheet_valid_column_index < 0):
@@ -1083,40 +1083,17 @@ class sync(models.Model):
                 error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
                 raise Exception('MissingTabError', error_msg)  
 
-
+            #main purpose
             if ((modelType == "Pricelist") or (modelType == "CCP")):
-                sku_dict = self.getAllSkuFromSheet(sheet)
+                sku_dict = self.getAllSkuFromSheet(refered_sheet)
+
                 if (self.checkIfKeyExistInTwoDict(sku_dict, catalog_gs)):
                     error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
-                    raise Exception('SkiUnicityErre', error_msg)                    
+                    raise Exception('SkuUnicityErre', error_msg)  
 
+                for sku in sku_dict:
+                    catalog_gs[sku] = "sku"
 
-
-
-
-
-
-
-                lineIndex = 0
-                for line in sheet:
-                    line_valid = (str(line[validColumnIndex]).upper() == "TRUE")
-                    sku = str(line[skuColumnIndex])
-
-                    #Validation on the line
-                    if(not line_valid):
-                        break
-
-                    if (sku == "False" or sku == ""):
-                        _logger.info("An item SKU is empty in the tab " +  sheetName + ", line number " + str(lineIndex))
-                        continue
-                    
-                    if (sku not in catalog_gs):
-                        catalog_gs[sku] = 1
-                    else:
-                        catalog_gs[sku] = catalog_gs[sku] + 1
-                    
-                    lineIndex += 1
-            
             i += 1               
 
         return catalog_gs
