@@ -34,6 +34,7 @@ class TestModuleSync(TransactionCase):
             ['',                '',             'FALSE', 'Loading...' ]
         ]
             
+
     #def is_psw_format_good(self, psw):              
     def test_is_psw_format_good(self):    
         psw = {
@@ -83,6 +84,7 @@ class TestModuleSync(TransactionCase):
         result, msg = self.sync_model.getSheetIndex(self.sync_data_order_changed, 7)
         self.assertEqual(-1, result)
    
+
     #Test to be executer befor creating a product
     #Input
     #   external_id: Sku to check if not existing
@@ -91,6 +93,7 @@ class TestModuleSync(TransactionCase):
         product_unexsiting = self.env['product.template'].search(
             [('sku', '=', external_id)])      
         self.assertEqual((len(product_unexsiting) == 0), True)
+
 
     #def createProducts(self, external_id, product_name):
     def test_createProducts(self):
@@ -153,6 +156,7 @@ class TestModuleSync(TransactionCase):
         pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product_id), ('pricelist_id', '=', pricelist_usd.id)])
         self.assertEqual((len(pricelist_item_ids) == 1), True)        
+
 
     #def updateProducts(
     #       self, 
