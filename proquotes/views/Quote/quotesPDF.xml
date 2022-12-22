@@ -406,9 +406,6 @@
 			</t>
 		</xpath>
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<p>Test</p>
-			<p t-out="doc.partner_id.country_id.name" />
-			<span t-out="doc.partner_id.country_id.name" />
 			<t t-if="doc.partner_id.country_id.name == 'Canada'">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>
