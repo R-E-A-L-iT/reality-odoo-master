@@ -447,7 +447,7 @@ class TestModuleSync(TransactionCase):
 
 
     #def getAllValueFromColumn(self, sheet, column_name):
-    def test_getAllSkuFromSheet(self):
+    def test_getAllValueFromColumn(self):
         sheet = [
             ['SKU', 	 'EN-Name'     ], 	 
             ['SKU-1111', 'EN-Name-1111'], 
@@ -455,7 +455,7 @@ class TestModuleSync(TransactionCase):
             ['SKU-1113', 'EN-Name-1113'], 
         ]
         column_name = "SKU"
-        sku_dict = self.sync_model.getAllSkuFromSheet(sheet, column_name)
+        sku_dict = self.sync_model.getAllValueFromColumn(sheet, column_name)
 
         self.assertEqual('SKU-1111' in sku_dict, True) 
         self.assertEqual(sku_dict['SKU-1111'] == column_name, True) 
@@ -467,7 +467,8 @@ class TestModuleSync(TransactionCase):
         self.assertEqual('SKU-1114' in sku_dict, False) 
 
         column_name = "NOT_EXISTING"
-        sku_dict = self.sync_model.getAllSkuFromSheet(sheet, column_name)
-        self.assertEqual(len(sku_dict) == 0, True) 
+        with self.assertRaises(Exception):            
+            sku_dict = self.sync_model.getAllValueFromColumn(sheet, column_name)
+
 
 

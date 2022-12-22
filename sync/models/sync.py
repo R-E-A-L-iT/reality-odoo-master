@@ -973,24 +973,25 @@ class sync(models.Model):
         product.active = False
 
 
-    #Get All SKU in a sheet
+    #Get all value in column of a sheet.  If column does not exist, it will return an empty dict()
+    #Exception
+    #   MissingColumnError:  If thrown, the column name is missing.
     #Input
     #   sheet: The sheet to look for all the SKU
     #Output
     #   sku_dict: A dictionnary that contain all the SKU as key, and the value is set to 'SKU'
-
     def getAllValueFromColumn(self, sheet, column_name):
         sku_dict = dict()
         columnIndex = self.getColumnIndex(sheet, column_name)
 
         if (columnIndex < 0):
-            return sku_dict
-            
+            error_msg = ("The following column name is missing: " + str(column_name))
+            #raise Exception('MissingColumnError', error_msg)            
+
         sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
 
         for i in range(1, len(sheet)):
             sku_dict[sheet[i][sheet_sku_column_index]] = column_name
-            print (i)
 
         return sku_dict
 
@@ -1013,7 +1014,7 @@ class sync(models.Model):
 
     #Method to get the ODOO_SYNC_DATA column index
     #Exception
-    #   MissingTabError:  If thrown, this eception is thrown.  Further logic should not execute since the MasterDataBase does not have the right format.
+    #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
     #Input
     #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
     #Output
