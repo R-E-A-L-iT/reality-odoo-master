@@ -1076,15 +1076,11 @@ class sync(models.Model):
         i = 0
         msg = ""        
 
-        # Get the ODOO_SYNC_DATA tab
-        _logger.info("------------------------------------------- START getMasterDatabaseSheet") 
+        # Get the ODOO_SYNC_DATA tab 
         sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index) 
-        _logger.info("------------------------------------------- END getMasterDatabaseSheet") 
       
         #check ODOO_SYNC_DATA tab        
-        _logger.info("------------------------------------------- START checkOdooSyncDataTab") 
         result_dict = self.checkOdooSyncDataTab(sync_data)
-        _logger.info("------------------------------------------- END checkOdooSyncDataTab") 
 
         odoo_sync_data_sheet_name_column_index  = result_dict['odoo_sync_data_sheet_name_column_index'] 
         odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
@@ -1149,6 +1145,8 @@ class sync(models.Model):
             for sku in sku_dict:
                 sku_catalog_gs[sku] = "sku"              
 
+        _logger.info("------------------------------------------- END return sku_catalog_gs") 
+        _logger.info("------------------------------------------- END getListSkuGS")      
         return sku_catalog_gs
 
 
