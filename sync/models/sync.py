@@ -1230,5 +1230,5 @@ class sync(models.Model):
         except Exception as e:
             _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
 
-        _logger.info("-------------------------------------------END test_getListSkuGS"
+        _logger.info("-------------------------------------------END test_getListSkuGS")
 
