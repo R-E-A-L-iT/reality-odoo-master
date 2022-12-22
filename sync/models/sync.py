@@ -964,14 +964,15 @@ class sync(models.Model):
     #   dict_small: the smallest dictionnary
     #   dict_big:   The largest dictionnary
     #Output
-    #   True: There is at least one key that exists in both dictionary
-    #   False: All key are unique
+    #   1st:    True: There is at least one key that exists in both dictionary
+    #           False: All key are unique
+    #   2nd:    The name of the duplicated Sku
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):        
         for sku in dict_small.keys():
             if sku in dict_big.keys():
                 errorMsg = "Following sku is duplicated: " + str(sku)
-                return True
-        return False        
+                return True, errorMsg
+        return False, ""      
 
 
     #Method to get the ODOO_SYNC_DATA column index
@@ -990,24 +991,24 @@ class sync(models.Model):
         odoo_sync_data_continue_column_index      = self.getColumnIndex(odoo_sync_data_sheet, "Continue")
 
         if (odoo_sync_data_sheet_name_column_index < 0):
-            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
-            raise Exception('MissingTabError', errormsg)
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
+            raise Exception('MissingTabError', error_msg)
 
         if (odoo_sync_data_sheet_index_column_index < 0):
-            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
-            raise Exception('MissingTabError', errormsg)
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
+            raise Exception('MissingTabError', error_msg)
 
         if (odoo_sync_data_model_type_column_index < 0):
-            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
-            raise Exception('MissingTabError', errormsg)
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
+            raise Exception('MissingTabError', error_msg)
 
         if (odoo_sync_data_valid_column_index < 0):
-            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
-            raise Exception('MissingTabError', errormsg)
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
+            raise Exception('MissingTabError', error_msg)
 
         if (odoo_sync_data_continue_column_index < 0):
-            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
-            raise Exception('MissingTabError', errormsg) 
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
+            raise Exception('MissingTabError', error_msg) 
 
         result = dict()
 
@@ -1024,11 +1025,6 @@ class sync(models.Model):
         _logger.info("------------------------------------------- Starting getListSkuGS")               
         catalog_gs = dict()
 
-        sheetName = ""
-        sheetIndex = -1
-        modelType = ""
-        valid = False
-
         i = 1
         msg = ""        
 
@@ -1042,47 +1038,60 @@ class sync(models.Model):
         odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
         odoo_sync_data_model_type_column_index  = result_dict['odoo_sync_data_model_type_column_index'] 
         odoo_sync_data_valid_column_index       = result_dict['odoo_sync_data_valid_column_index']      
-        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']   
+        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']                                      
 
-                                   
-
-        while (True):
-
-
-            
+        while (i < len(sync_data)):
+            sheet_name = ""        
+            refered_sheet_index = -1
             msg_temp = ""
-            sheetName = str(sync_data[i][0])
-            sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
+            modelType = ""        
+            valid_value = False
+            continue_value = False
+            sku_dict = dict()   
+            refered_sheet_valid_column_index = -1        
+            refered_sheet_sku_column_index = -1  
+
+            sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
+            refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
-            modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]).upper() == "TRUE")    
+            modelType = str(sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")    
+            continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
+            #Validation for the current loop
+            if (not continue_value):
+                break
 
-            sku_dict = dict()        
-
-            if (not valid):
+            if (not valid_value):
                 continue
 
-            if (sheetIndex < 0):
-                break         
+            if (refered_sheet_index < 0):
+                error_msg = ("Sheet Name: " + sheet_name + " is missing in the GoogleData Master DataBase.  The Sku Cleaning task could not be executed!")
+                raise Exception('MissingSheetError', error_msg)       
 
-            sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
-            validColumnIndex = self.getColumnIndex(sheet, "Valid")
-            skuColumnIndex  = self.getColumnIndex(sheet, "SKU")
+            #Get the reffered sheet
+            sheet = self.getMasterDatabaseSheet(template_id, psw, refered_sheet_index)
+            refered_sheet_valid_column_index = self.getColumnIndex(sheet, "Valid")
+            refered_sheet_sku_column_index  = self.getColumnIndex(sheet, "SKU")
 
-            if (validColumnIndex < 0):
-                _logger.info("Sheet: " + sheetName + " does not have a 'Valid' column.")
-                continue
+            #Validation
+            if (refered_sheet_valid_column_index < 0):
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'Valid' column. The Sku Cleaning task could not be executed!")
+                raise Exception('MissingTabError', error_msg)                
 
-            if (skuColumnIndex < 0):
-                _logger.info("Sheet: " + sheetName + " does not have a 'SKU' column.")
-                continue
+            if (refered_sheet_sku_column_index < 0):
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
+                raise Exception('MissingTabError', error_msg)  
+
 
             if ((modelType == "Pricelist") or (modelType == "CCP")):
-
                 sku_dict = self.getAllSkuFromSheet(sheet)
+                if (self.checkIfKeyExistInTwoDict(sku_dict, catalog_gs)):
+                    error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
+                    raise Exception('SkiUnicityErre', error_msg)                    
 
-                self.checkIfKeyExistInTwoDict(sku_dict, catalog_gs)
+
+
 
 
 
@@ -1166,8 +1175,12 @@ class sync(models.Model):
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
 
         #######################################
-        # GoogleSheet Section        
-        catalog_gs = self.getListSkuGS(psw, self._master_database_template_id)
+        # GoogleSheet Section  
+        try:     
+            catalog_gs = self.getListSkuGS(psw, self._master_database_template_id)
+        except Exception as e:
+            _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+            return
 
 
 

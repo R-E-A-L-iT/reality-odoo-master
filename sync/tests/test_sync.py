@@ -337,11 +337,13 @@ class TestModuleSync(TransactionCase):
         c[6] = "66"
         c[3] = "33"
 
-        result = self.sync_model.checkIfKeyExistInTwoDict(a, b)
-        self.assertEqual(result, False) 
+        result_bool, result_str = self.sync_model.checkIfKeyExistInTwoDict(a, b)
+        self.assertEqual(result_bool, False) 
+        self.assertEqual(result_str == "", True) 
 
-        result = self.sync_model.checkIfKeyExistInTwoDict(a, c)
-        self.assertEqual(result, True) 
+        result_bool, result_str = self.sync_model.checkIfKeyExistInTwoDict(a, c)
+        self.assertEqual(result_bool, True)
+        self.assertEqual(result_str == "3", True)  
 
 
     #def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
@@ -439,7 +441,7 @@ class TestModuleSync(TransactionCase):
 
         with self.assertRaises(Exception):            
             result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_valid)
-            
+
         with self.assertRaises(Exception):            
             result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_continue)
 
