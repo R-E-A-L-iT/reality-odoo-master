@@ -1058,15 +1058,25 @@ class sync(models.Model):
         return result
 
 
+    #Get all SKU from the model type 'CCP' and 'Pricelist'
+    #Exception
+    #   MissingSheetError:  A sheet is missing
+    #   MissingTabError:    A tab in a sheet is missing
+    #   SkuUnicityError:    A SKU is not unique
+    #Input
+    #   psw:            password to acces the Database
+    #   template_id:    GoogleSheet TemplateID
+    #Output
+    #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
     def getListSkuGS(self, psw, template_id):
         _logger.info("------------------------------------------- Starting getListSkuGS")               
-        catalog_gs = dict()
+        sku_catalog_gs = dict()
 
         i = 1
         msg = ""        
 
         # Get the ODOO_SYNC_DATA tab
-        sync_data = self.getOdooSyncData(template_id, psw, self._odoo_sync_data_index)
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index) 
       
         #check ODOO_SYNC_DATA tab        
         result_dict = self.checkOdooSyncDataTab(sync_data)
@@ -1122,18 +1132,18 @@ class sync(models.Model):
 
             #main purpose
             if ((modelType == "Pricelist") or (modelType == "CCP")):
-                sku_dict = self.getAllSkuFromSheet(refered_sheet)
+                sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
 
-                if (self.checkIfKeyExistInTwoDict(sku_dict, catalog_gs)):
+                if (self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)):
                     error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
-                    raise Exception('SkuUnicityErre', error_msg)  
-
+                    raise Exception('SkuUnicityError', error_msg)  
+                    
                 for sku in sku_dict:
-                    catalog_gs[sku] = "sku"
+                    sku_catalog_gs[sku] = "sku"
 
             i += 1               
 
-        return catalog_gs
+        return sku_catalog_gs
 
 
     #Return the column index of the columnName
@@ -1155,7 +1165,7 @@ class sync(models.Model):
         
         return -1
 
-
+    
     #Sku cleaning
     def start_sku_cleaning(self, psw=None):
         _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
@@ -1203,3 +1213,11 @@ class sync(models.Model):
             self.archive_product(str(item))
         
         _logger.info("------------------------------------------- END start_sku_cleaning")    
+
+
+def test_getListSkuGS(self, psw=None):
+    sku_dict = dict()
+    sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
+
+    for sku in sku_dict:
+         _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
