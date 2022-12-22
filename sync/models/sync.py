@@ -958,12 +958,20 @@ class sync(models.Model):
 
         return sku_dict
 
-    def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
-        #for sku in dict_small.keys():
-        #    if sku in dict_big.keys():
-        #        errorMsg = "Following sku is duplicated: " + str(sku)
-        #        raise Exception('ERROR', errorMsg)
-        pass        
+
+    #Check if a all key unique in two dictionnary
+    #Input
+    #   dict_small: the smallest dictionnary
+    #   dict_big:   The largest dictionnary
+    #Output
+    #   True: There is at least one key that exists in both dictionary
+    #   False: All key are unique
+    def checkIfKeyExistInTwoDict(self, dict_small, dict_big):        
+        for sku in dict_small.keys():
+            if sku in dict_big.keys():
+                errorMsg = "Following sku is duplicated: " + str(sku)
+                return True
+        return False        
 
 
     def getListSkuGS(self, psw, template_id):
