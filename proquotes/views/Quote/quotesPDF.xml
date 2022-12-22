@@ -72,8 +72,8 @@
 
 				#rental-terms{
 				font-size: 0.75em;
-				margin: 0px;
-				padding: 0.5em;
+				margin: 0px !important;
+				padding: 0em !important;
 				}
 
 				#rental-terms h1 {
