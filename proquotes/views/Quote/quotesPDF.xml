@@ -126,17 +126,23 @@
 						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 						Le taux de location au mois(30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
-
+					<!-- Format Estimated Rental Rate Number -->
+					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
+					<t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
 					<t t-if=" clang== 'en_CA' or clang == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRate" /></span>
+						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRate" /></span>
+						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
 					</t>
 					<br />
 					<br />
+
+					<!-- Format Remtal Value Number -->
+					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Total Rental Value:&#160; <span t-out="rentalValue" /></span>
+						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
 						<span>
@@ -145,7 +151,7 @@
 						<br />
 					</div>
 					<div class="rental_product_value" t-elif="clang == 'fr_CA' or True">
-						<span>Valeur locative totale: &#160;<span t-out="rentalValue" /></span>
+						<span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
 						<span>
@@ -424,6 +430,9 @@
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-out="line_price" />
 		</xpath>
+		<sxpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
+			<span t-out="'{value:,.2f}'.format(value= line.price_subtotal)" />
+		</sxpath>
 	</template>
 
 </odoo>
