@@ -227,7 +227,6 @@
 				border-style: solid !important;
 				border-color: black !important;
 				whitespace: nowrap !important;
-				text-align: center !important;
 				}
 
 				.no-display {
