@@ -183,6 +183,7 @@
 				td {
 				border-style: solid !important;
 				border-color: black !important;
+				white-space: nowrap;
 				}
 
 				span {
