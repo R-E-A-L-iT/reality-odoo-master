@@ -173,8 +173,8 @@
 					</t>
 					<br />
 					<br />
-
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<div>
+						<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'"> -->
 						<span>Total Rental Value:&#160; <span t-out="rentalValue" /></span>
 						<br />
 						<br />
