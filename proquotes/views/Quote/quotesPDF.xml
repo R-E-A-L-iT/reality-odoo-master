@@ -54,20 +54,20 @@
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td class="text-left" style="border-top-style: none !important">Product</td>
-						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Product Value
-						</td> -->
-						<!-- <td t-elif="" /> -->
+						</td>
+						<td t-elif="" />
 						<td class="text-center" style="border-top-style: none !important">Qty</td>
 						<td class="text-center" style="border-top-style: none !important">Price</td>
 						<td class="text-center" style="border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if="clang == 'fr_CA'">
 						<td class="text-left" style="border-top-style: none !important">Produit</td>
-						<!-- <td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Valeur du Produit
-						</td> -->
-						<!-- <td t-elif="" /> -->
+						</td>
+						<td t-elif="" />
 						<td class="text-center" style="border-top-style: none !important">Qté</td>
 						<td class="text-center" style="border-top-style: none !important">Prix</td>
 						<td class="text-center" style="border-top-style: none !important">Montant</td>
