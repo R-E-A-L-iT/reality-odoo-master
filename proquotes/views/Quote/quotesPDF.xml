@@ -138,22 +138,18 @@
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<p t-out="'Start of the Rental ' + str(doc.rental_start)" />
 						<p t-out="'End of the Rental ' + str(doc.rental_end)" />
-						<t t-if="doc.rental_diff_add == True">
-							<span t-field="doc.rental_street" />
-							<br />
-							<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
-							<span t-esc="doc.rental_state.code" />
-							<span t-field="doc.rental_zip" />
-						</t>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<span>Début de la Location <span t-out="doc.rental_start" /></span>
+						<p t-out="'Début de la Location' + doc.rental_start" />
 						<br />
-						<span>Fin estimée de la Location <span t-out="doc.rental_end" /></span>
+						<p t-out="'Fin estimée de la Location' + doc.rental_end" />
+					</t>
+					<t t-if="doc.rental_diff_add == True">
+						<span t-field="doc.rental_street" />
 						<br />
-						<br />
-						<t t-if="doc.rental_diff_add == True">
-						</t>
+						<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
+						<span t-esc="doc.rental_state.code" />
+						<span t-field="doc.rental_zip" />
 					</t>
 				</td>
 			</t>
