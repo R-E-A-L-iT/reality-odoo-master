@@ -1219,7 +1219,7 @@ class sync(models.Model):
 
 
     def test_getListSkuGS(self, psw=None):
-        _logger.info("-------------------------------------------START test_getListSkuGS"
+        _logger.info("-------------------------------------------START test_getListSkuGS")
 
         sku_dict = dict()
         sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
