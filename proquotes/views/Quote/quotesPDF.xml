@@ -449,7 +449,7 @@
 		<!-- Remove Right Border When Product Value Not Displayed -->
 		<xpath expr="//td[@name=&quot;td_name&quot;]" position="attributes">
 			<attribute name="t-attf-style">
-				t-attf-style="{{'border-right-style: none !important' if (doc.is_Rental and line.product_id.is_software == False) else ''}}"
+				t-attf-style="{{'border-right-style: none !important' if (doc.is_rental and line.product_id.is_software == False) else ''}}"
 			</attribute>
 		</xpath>
 	</template>
