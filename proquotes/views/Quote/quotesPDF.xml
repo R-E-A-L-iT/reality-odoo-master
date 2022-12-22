@@ -180,9 +180,13 @@
 				border-style: none !important;
 				}
 
-				td{
+				td {
 				border-style: solid !important;
 				border-color: black !important;
+				}
+
+				td, td * {
+				text-align: center !important;
 				}
 
 				span {
