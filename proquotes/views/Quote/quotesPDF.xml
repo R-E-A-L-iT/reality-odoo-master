@@ -183,7 +183,8 @@
 						</span>
 						<br />
 					</div>
-					<div class="rental_product_value" t-elif="clang == 'fr_CA' or True">
+					<!-- <div class="rental_product_value" t-elif="clang == 'fr_CA' or True"> -->
+					<div>
 						<span>Valeur locative totale: &#160;<span t-out="rentalValue" /></span>
 						<br />
 						<br />
