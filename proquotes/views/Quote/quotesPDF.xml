@@ -65,7 +65,29 @@
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="before">
-			<style> .quote-head * { color: #fff; background-color: #db0d0d; } #rental-terms, #rental-terms *{ font-size: 1em; margin: 0px !important; padding: 0.2em !important; } #rental-terms h3 { font-size: 2em !important; } #rental-terms h1 strong { font-size: 2em !important; } ol { <!-- list-style: none; --> } </style>
+			<style>
+				.quote-head * {
+				color: #fff; background-color: #db0d0d;
+				}
+
+				#rental-terms, #rental-terms *{
+				font-size: 1em;
+				margin: 0px !important;
+				padding: 0.2em !important;
+				}
+
+				#rental-terms h3 {
+				font-size: 2em !important;
+				}
+
+				#rental-terms h1 strong {
+				font-size: 2em !important;
+				}
+
+				ol ol{
+				list-style: lower-alpha;
+				}
+			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
