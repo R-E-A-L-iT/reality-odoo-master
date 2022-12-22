@@ -71,16 +71,15 @@
 				}
 
 				#rental-terms ol{
-				font-size: 0.75rem;
+				font-size: 0.75em;
 				}
 
 				#rental-terms h1 {
-				font-size: 1rem !important;
+				font-size: 1em !important;
 				}
 
 				#rental-terms h1 strong {
-				color: #fof !important;
-				font-size: 10rem !important;
+				font-size: 1em !important;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
