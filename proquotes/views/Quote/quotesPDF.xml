@@ -58,7 +58,7 @@
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Product Value
 						</td>
-						<td t-else="" colspan="0" style="border-top-style: none !important border-left-style: none !important" />
+						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-center" style=" border-top-style: none !important">Qty</td>
 						<td class=" text-center" style=" border-top-style: none !important">Price</td>
 						<td class=" text-center" style=" border-top-style: none !important">Amount</td>
@@ -69,7 +69,7 @@
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Valeur du Produit
 						</td>
-						<td t-else="" colspan="0" style="border-top-style: none !important border-left-style: none !important" />
+						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-center" style=" border-top-style: none !important">Qté</td>
 						<td class=" text-center" style=" border-top-style: none !important">Prix</td>
 						<td class=" text-center" style=" border-top-style: none !important">Montant</td>
@@ -443,7 +443,7 @@
 					<t t-elif="doc.partner_id.country_id.name == 'United States' or doc.partner_id.country_id.name == 'États Unis'" t-out="line.product_id.usdVal" />
 				</t>
 			</td>
-			<td t-else=""></td>
+			<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 		</xpath>
 
 		<!-- Remove Right Border When Product Value Not Displayed -->
