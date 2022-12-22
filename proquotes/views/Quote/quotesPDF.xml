@@ -437,13 +437,13 @@
 		</xpath>
 
 		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
-			<td t-if="doc.is_rental == True">
+			<td t-if="doc.is_rental == True and line.product_id.is_software == False">
 				<t t-if="line.product_id.is_software == False">
 					<t t-if="doc.partner_id.country_id.name == 'Canada'" t-out="line.product_id.cadVal" />
 					<t t-elif="doc.partner_id.country_id.name == 'United States' or doc.partner_id.country_id.name == 'États Unis'" t-out="line.product_id.usdVal" />
 				</t>
 			</td>
-			<!-- <td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" /> -->
+			<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 		</xpath>
 
 		<!-- Remove Right Border When Product Value Not Displayed -->
