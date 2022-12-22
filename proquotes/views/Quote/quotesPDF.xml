@@ -416,7 +416,7 @@
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekRate" t-value="4 * line.price_subtotal * rentalWeeks" />
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
-			<t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekRate + rentalDayRate" />
+			<!-- <t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekRate + rentalDayRate" /> -->
 		</xpath>
 
 		<!-- Price Format Update -->
