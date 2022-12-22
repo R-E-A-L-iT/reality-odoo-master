@@ -1113,7 +1113,7 @@ class sync(models.Model):
                 _logger.info("------------------------------------------- BREAK not continue_valu while i: " + str(i))
                 break
 
-            if ((modelType != "Pricelist") or (modelType != "CCP")):
+            if ((modelType not in ["Pricelist", "CCP"])):
                 _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'CCP') while i: " + str(i) + " model: " + str(modelType))
                 continue
 
