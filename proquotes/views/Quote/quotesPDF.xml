@@ -70,8 +70,10 @@
 				color: #fff; background-color: #db0d0d;
 				}
 
-				#rental-terms ol{
+				#rental-terms{
 				font-size: 0.75em;
+				margin: 0px;
+				padding: 0.5em;
 				}
 
 				#rental-terms h1 {
