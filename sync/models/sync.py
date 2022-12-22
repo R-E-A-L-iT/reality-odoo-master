@@ -951,6 +951,21 @@ class sync(models.Model):
         product = self.env['product.template'].search([('id', '=', product_id)])
         product.active = False
 
+
+
+    def getAllSkuFromSheet(self, sheet):
+        sku_dict = dict()
+
+        return sku_dict
+
+    def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
+        #for sku in dict_small.keys():
+        #    if sku in dict_big.keys():
+        #        errorMsg = "Following sku is duplicated: " + str(sku)
+        #        raise Exception('ERROR', errorMsg)
+        pass        
+
+
     def getListSkuGS(self, psw, template_id):
         _logger.info("------------------------------------------- Starting getListSkuGS")               
         catalog_gs = dict()
@@ -973,7 +988,8 @@ class sync(models.Model):
             sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
             modelType = str(sync_data[i][2])
-            valid = (str(sync_data[i][3]).upper() == "TRUE")            
+            valid = (str(sync_data[i][3]).upper() == "TRUE")    
+            sku_dict = dict()        
 
             if (not valid):
                 _logger.info("Valid: " + sheetName + " is " + str(valid) + ".  Ending Sku Cleaning process!")
@@ -991,6 +1007,15 @@ class sync(models.Model):
                 continue
 
             if ((modelType == "Pricelist") or (modelType == "CCP")):
+
+                sku_dict = self.getAllSkuFromSheet(sheet)
+
+                self.checkIfKeyExistInTwoDict(sku_dict, catalog_gs)
+
+
+
+
+
                 lineIndex = 0
                 for line in sheet:
                     line_valid = (str(line[validColumnIndex]).upper() == "TRUE")
