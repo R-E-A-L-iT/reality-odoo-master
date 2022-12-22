@@ -172,7 +172,7 @@
 				border-style: none !important;
 				}
 
-				td {
+				td *{
 				border-style: solid !important;
 				border-color: black !important;
 				white-space: nowrap !important;
