@@ -385,6 +385,7 @@ class sync(models.Model):
         _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
 
+
     # creates object and updates it
     def createCompany(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create(
@@ -1215,13 +1216,13 @@ class sync(models.Model):
         _logger.info("------------------------------------------- END start_sku_cleaning")    
 
 
-def test_getListSkuGS(self, psw=None):
-    sku_dict = dict()
-    sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
+    def test_getListSkuGS(self, psw=None):
+        sku_dict = dict()
+        sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
 
-    try:
-        for sku in sku_dict:
-            _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
-    except Exception as e:
-        _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+        try:
+            for sku in sku_dict:
+                _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
+        except Exception as e:
+            _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
 
