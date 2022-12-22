@@ -175,6 +175,7 @@
 				td {
 				border-style: solid !important;
 				border-color: black !important;
+				whitespace: nobreak !important;
 				}
 
 				.no-display {
