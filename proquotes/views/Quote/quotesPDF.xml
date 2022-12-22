@@ -226,6 +226,8 @@
 				td {
 				border-style: solid !important;
 				border-color: black !important;
+				width: fit-content !important;
+				align-text: center !important;
 				}
 
 				.no-display {
