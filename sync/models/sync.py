@@ -774,7 +774,7 @@ class sync(models.Model):
             product_tracking,
             product_type):
 
-        product = self.createProducts(self, external_id, product_name)
+        product = self.createProducts(external_id, product_name)
         self.updateProducts(
             product, 
             product_stringRep, 
