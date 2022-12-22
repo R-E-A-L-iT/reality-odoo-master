@@ -79,7 +79,7 @@
 				}
 
 				#rental-terms h1 strong {
-				font-size: 1em !important;
+				font-size: 5em !important;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
