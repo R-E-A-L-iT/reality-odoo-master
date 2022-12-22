@@ -970,7 +970,7 @@ class sync(models.Model):
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):        
         for sku in dict_small.keys():
             if sku in dict_big.keys():
-                errorMsg = "Following sku is duplicated: " + str(sku)
+                errorMsg = str(sku)
                 return True, errorMsg
         return False, ""      
 
