@@ -457,10 +457,10 @@ class TestModuleSync(TransactionCase):
 
         sku_dict = self.sync_model.getAllSkuFromSheet(referred_sheet)
 
-        self.assertEqual(sku_dict.has_key('SKU-1111'), True) 
-        self.assertEqual(sku_dict.has_key('SKU-1112'), True) 
-        self.assertEqual(sku_dict.has_key('SKU-1113'), True) 
+        self.assertEqual('SKU-1111' in sku_dict, True) 
+        self.assertEqual('SKU-1112' in sku_dict, True) 
+        self.assertEqual('SKU-1113' in sku_dict, True) 
         self.assertEqual(len(sku_dict) == 3, True)         
-        self.assertEqual(sku_dict.has_key('SKU-1114'), False) 
+        self.assertEqual('SKU-1114' in sku_dict, False) 
 
 
