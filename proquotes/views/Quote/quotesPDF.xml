@@ -178,8 +178,9 @@
 				}
 
 				span {
-				white-space: no-wrap !important;
+				white-space: nowrap !important;
 				}
+
 				.no-display {
 				display: none;
 				}
