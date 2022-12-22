@@ -222,10 +222,9 @@
 				border-style: none !important;
 				}
 
-				td, td * {
+				td {
 				border-style: solid !important;
 				border-color: black !important;
-				whitespace: nowrap !important;
 				}
 
 				.no-display {
