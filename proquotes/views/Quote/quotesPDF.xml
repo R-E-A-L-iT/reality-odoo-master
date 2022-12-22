@@ -83,6 +83,10 @@
 				#rental-terms h1 strong {
 				font-size: 2em !important;
 				}
+
+				ol {
+				list-style: none;
+				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
