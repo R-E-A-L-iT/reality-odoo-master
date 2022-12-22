@@ -436,8 +436,8 @@
 
 		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
 			<td t-if="doc.is_rental == True">
-				<t if="doc.partner_id.country == 'Canada'" t-out="line.cadVal" />
-				<t if="doc.partner_id.country == 'United States' or doc.partner_id.country == 'États Unis'" t-out="line.usdVal" />
+				<t if="doc.partner_id.country == 'Canada'" t-out="line.product_id.cadVal" />
+				<t if="doc.partner_id.country == 'United States' or doc.partner_id.country == 'États Unis'" t-out="line.product_id.usdVal" />
 			</td>
 			<td t-else=""></td>
 		</xpath>
