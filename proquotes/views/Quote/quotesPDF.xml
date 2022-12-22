@@ -414,6 +414,8 @@
 			</t>
 		</xpath>
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+			<p t-out="'1' if True else '2'" />
+			<p t-out="'1' if False else '2'" />
 			<t t-if="doc.partner_id.country_id.name == 'Canada'">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>
@@ -445,6 +447,11 @@
 			</td>
 			<td t-else=""></td>
 		</xpath>
+
+		<!-- Remove Right Border When Product Value Not Displayed -->
+		<!-- <xpath expr="" position="attributes">
+
+		</xpath> -->
 	</template>
 
 </odoo>
