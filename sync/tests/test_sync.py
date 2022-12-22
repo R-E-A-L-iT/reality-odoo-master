@@ -446,21 +446,28 @@ class TestModuleSync(TransactionCase):
             result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_continue)
 
 
-    #def getAllSkuFromSheet(self, sheet):   
+    #def getAllValueFromColumn(self, sheet, column_name):
     def test_getAllSkuFromSheet(self):
-        referred_sheet = [
+        sheet = [
             ['SKU', 	 'EN-Name'     ], 	 
             ['SKU-1111', 'EN-Name-1111'], 
             ['SKU-1112', 'EN-Name-1112'], 
             ['SKU-1113', 'EN-Name-1113'], 
         ]
-
-        sku_dict = self.sync_model.getAllSkuFromSheet(referred_sheet)
+        column_name = "SKU"
+        sku_dict = self.sync_model.getAllSkuFromSheet(sheet, column_name)
 
         self.assertEqual('SKU-1111' in sku_dict, True) 
+        self.assertEqual(sku_dict['SKU-1111'] == column_name, True) 
         self.assertEqual('SKU-1112' in sku_dict, True) 
+        self.assertEqual(sku_dict['SKU-1112'] == column_name, True) 
         self.assertEqual('SKU-1113' in sku_dict, True) 
+        self.assertEqual(sku_dict['SKU-1113'] == column_name, True) 
         self.assertEqual(len(sku_dict) == 3, True)         
         self.assertEqual('SKU-1114' in sku_dict, False) 
+
+        column_name = "NOT_EXISTING"
+        sku_dict = self.sync_model.getAllSkuFromSheet(sheet, column_name)
+        self.assertEqual(len(sku_dict) == 0, True) 
 
 

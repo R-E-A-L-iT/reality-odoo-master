@@ -131,6 +131,7 @@ class sync(models.Model):
             self.syncFail(msg, self._sync_fail_reason)            
             quit
 
+
     #Get the Sheet Index of the Odoo Sync Data tab, column B
     # Input
     #   sync_data:  The GS ODOO_SYNC_DATA tab
@@ -160,6 +161,7 @@ class sync(models.Model):
         
         return sheetIndex, msg
 
+
     #Method to get the sync_pricelist calss.
     #Input
     #   sheetName: The name of the tab
@@ -173,6 +175,7 @@ class sync(models.Model):
     #   An instance of sync_pricelist
     def getSync_pricelist(self, sheetName, sheet):
         return sync_pricelist(sheetName, sheet, self)
+
 
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
@@ -211,6 +214,7 @@ class sync(models.Model):
             _logger.info("msg:  " + str(msg))
 
         return quit, msg
+
 
     # same pattern for all sync items
     def syncCompanies(self, sheet):
@@ -346,6 +350,7 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
+
     def updateCompany(self, company, sheet, sheetWidth, i, columns):
 
         # check if any update to item is needed and skips if there is none
@@ -388,6 +393,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["companyName"]]})[0]
         ext.res_id = company.id
         self.updateCompany(company, sheet, sheetWidth, i, columns)
+
 
     # follows same pattern
     def syncContacts(self, sheet):
@@ -515,6 +521,7 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
+
     # follows same pattern
     def updateContacts(self, contact, sheet, sheetWidth, i, columns):
 
@@ -553,6 +560,7 @@ class sync(models.Model):
         _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
 
+
     # follows same pattern
     def createContacts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create(
@@ -561,6 +569,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i, columns)
+
 
     # follows same pattern
     def syncProducts(self, sheet):
@@ -694,6 +703,7 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
+
     #Method to create a product
     #Input
     #   external_id:    The external id, wich is the SKU key in the GoogleSheet Database.  
@@ -712,6 +722,7 @@ class sync(models.Model):
         ext.res_id = product.id
 
         return product
+
 
     #Methode to update product information.
     #Input
@@ -751,6 +762,7 @@ class sync(models.Model):
         product.type                = product_type
         product.stringRep           = product_stringRep
 
+
     #Method to create and update a product
     #Input
     #   external_id:                The SKU in GoogleSheet
@@ -788,6 +800,7 @@ class sync(models.Model):
         product_created = self.env['product.template'].search(
             [('sku', '=', external_id)]) 
         return product_created    
+
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
@@ -872,12 +885,14 @@ class sync(models.Model):
                 return True, msg
         return False, msg
 
+
     def check_id(self, id):
         if (" " in id):
             _logger.info("ID: " + str(id))
             return False
         else:
             return True
+
 
     def check_price(self, price):
         if (price in ("", " ")):
@@ -889,6 +904,7 @@ class sync(models.Model):
             _logger.info(e)
             return False
 
+
     def buildMSG(self, msg, sheet, sheetWidth, i):
         if (msg == ""):
             msg = self.startTable(msg, sheet, sheetWidth, True)
@@ -899,6 +915,7 @@ class sync(models.Model):
             j += 1
         msg = msg + "</tr>"
         return msg
+
 
     def startTable(self, msg, sheet, sheetWidth, force=False):
         if (force):
@@ -918,10 +935,12 @@ class sync(models.Model):
 
         return msg
 
+
     def endTable(self, msg):
         if (msg != ""):
             msg = msg + "</table>"
         return msg
+
 
     #Build the message when a sync fail occurs.  Once builded, it will display the message
     #in the logger, and send a repport by email.
@@ -935,6 +954,7 @@ class sync(models.Model):
         _logger.info(msg)
         self.sendSyncReport(msg)
 
+
     def sendSyncReport(self, msg):
         values = {'subject': 'Sync Report'}
         message = self.env['mail.message'].create(values)[0]
@@ -947,14 +967,30 @@ class sync(models.Model):
         email_id = {email.id}
         email.process_email_queue(email_id)
 
+
     def archive_product(self, product_id):
         product = self.env['product.template'].search([('id', '=', product_id)])
         product.active = False
 
 
+    #Get All SKU in a sheet
+    #Input
+    #   sheet: The sheet to look for all the SKU
+    #Output
+    #   sku_dict: A dictionnary that contain all the SKU as key, and the value is set to 'SKU'
 
-    def getAllSkuFromSheet(self, sheet):
+    def getAllValueFromColumn(self, sheet, column_name):
         sku_dict = dict()
+        columnIndex = self.getColumnIndex(sheet, column_name)
+
+        if (columnIndex < 0):
+            return sku_dict
+            
+        sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
+
+        for i in range(1, len(sheet)):
+            sku_dict[sheet[i][sheet_sku_column_index]] = column_name
+            print (i)
 
         return sku_dict
 
@@ -1097,6 +1133,7 @@ class sync(models.Model):
             i += 1               
 
         return catalog_gs
+
 
     #Return the column index of the columnName
     #Input
