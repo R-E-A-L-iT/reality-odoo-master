@@ -167,7 +167,66 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
-			<style> table { border-style: none !important; } td{ border-style: solid !important; border-color: black !important; } span { <!-- white-space: nowrap; --> backround-color: #fff !important; } .no-display { display: none; } .english-mode+div+div { display: none; } .french-mode+div { display: none; } #renewal-text h4 { border-bottom-style: solid; border-bottom-color: #f55; } #renewal-text { margin: auto; } #renewal-text * { color: #000; margin: auto; line-height: 2.5rem; } #renewal-text p { margin-bottom: 7.5vw; line-height: 1.5em; } #renewal-text img { width: 80%; height: auto; margin-left: 10%; margin-right: 10%; margin-bottom: 1em; } img { width: 100% !important; margin-left: 0px !important; marign-right: 0px !important; } </style>
+			<style>
+				table {
+				border-style: none !important;
+				}
+
+				td{
+				border-style: solid !important;
+				border-color: black !important;
+				}
+
+				span {
+				white-space: nowrap;
+				}
+
+				.no-display {
+				display: none;
+				}
+
+				.english-mode+div+div {
+				display: none;
+				}
+
+				.french-mode+div {
+				display: none;
+				}
+
+				#renewal-text h4 {
+				border-bottom-style: solid;
+				border-bottom-color: #f55;
+				}
+
+				#renewal-text {
+				margin: auto;
+				}
+
+				#renewal-text * {
+				color: #000;
+				margin: auto;
+				line-height: 2.5rem;
+				}
+
+				#renewal-text p {
+				margin-bottom: 7.5vw;
+				line-height: 1.5em;
+				}
+
+				#renewal-text img {
+				width: 80%;
+				height: auto;
+				margin-left: 10%;
+				margin-right: 10%;
+				margin-bottom: 1em;
+				}
+
+				img {
+				width: 100% !important;
+				margin-left: 0px !important;
+				marign-right: 0px !important;
+				}
+			</style>
 		</xpath>
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
