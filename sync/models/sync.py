@@ -1229,6 +1229,7 @@ class sync(models.Model):
 
         try:
             _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
+            _logger.info("-------------------------------------------len(sku_dict): " + str(len(sku_dict)))  
             for sku in sku_dict:
                 _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
         except Exception as e:
