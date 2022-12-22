@@ -1219,5 +1219,9 @@ def test_getListSkuGS(self, psw=None):
     sku_dict = dict()
     sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
 
-    for sku in sku_dict:
-         _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
+    try:
+        for sku in sku_dict:
+            _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
+    except Exception as e:
+        _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+
