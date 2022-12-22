@@ -59,3 +59,4 @@ class TestModulePricelist(TransactionCase):
 
 
 
+

@@ -974,6 +974,52 @@ class sync(models.Model):
         return False        
 
 
+    #Method to get the ODOO_SYNC_DATA column index
+    #Exception
+    #   MissingTabError:  If thrown, this eception is thrown.  Further logic should not execute since the MasterDataBase does not have the right format.
+    #Input
+    #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
+    #Output
+    #   result: A dictionnary:  Key: named of the column
+    #                           Value: the index number of that column.
+    def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
+        odoo_sync_data_sheet_name_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Name")
+        odoo_sync_data_sheet_index_column_index   = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Index")
+        odoo_sync_data_model_type_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Model Type")
+        odoo_sync_data_valid_column_index         = self.getColumnIndex(odoo_sync_data_sheet, "Valid")
+        odoo_sync_data_continue_column_index      = self.getColumnIndex(odoo_sync_data_sheet, "Continue")
+
+        if (odoo_sync_data_sheet_name_column_index < 0):
+            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
+            raise Exception('MissingTabError', errormsg)
+
+        if (odoo_sync_data_sheet_index_column_index < 0):
+            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
+            raise Exception('MissingTabError', errormsg)
+
+        if (odoo_sync_data_model_type_column_index < 0):
+            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
+            raise Exception('MissingTabError', errormsg)
+
+        if (odoo_sync_data_valid_column_index < 0):
+            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
+            raise Exception('MissingTabError', errormsg)
+
+        if (odoo_sync_data_continue_column_index < 0):
+            errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
+            raise Exception('MissingTabError', errormsg) 
+
+        result = dict()
+
+        result['odoo_sync_data_sheet_name_column_index']  = odoo_sync_data_sheet_name_column_index  
+        result['odoo_sync_data_sheet_index_column_index'] = odoo_sync_data_sheet_index_column_index
+        result['odoo_sync_data_model_type_column_index']  = odoo_sync_data_model_type_column_index 
+        result['odoo_sync_data_valid_column_index']       = odoo_sync_data_valid_column_index      
+        result['odoo_sync_data_continue_column_index']    = odoo_sync_data_continue_column_index   
+        
+        return result
+
+
     def getListSkuGS(self, psw, template_id):
         _logger.info("------------------------------------------- Starting getListSkuGS")               
         catalog_gs = dict()
@@ -988,20 +1034,34 @@ class sync(models.Model):
 
         # Get the ODOO_SYNC_DATA tab
         sync_data = self.getOdooSyncData(template_id, psw, self._odoo_sync_data_index)
+      
+        #check ODOO_SYNC_DATA tab        
+        result_dict = self.checkOdooSyncDataTab(sync_data)
 
-        # loop through entries in first sheet
+        odoo_sync_data_sheet_name_column_index  = result_dict['odoo_sync_data_sheet_name_column_index'] 
+        odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
+        odoo_sync_data_model_type_column_index  = result_dict['odoo_sync_data_model_type_column_index'] 
+        odoo_sync_data_valid_column_index       = result_dict['odoo_sync_data_valid_column_index']      
+        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']   
+
+                                   
+
         while (True):
+
+
+            
             msg_temp = ""
             sheetName = str(sync_data[i][0])
             sheetIndex, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
             modelType = str(sync_data[i][2])
             valid = (str(sync_data[i][3]).upper() == "TRUE")    
+
+
             sku_dict = dict()        
 
             if (not valid):
-                _logger.info("Valid: " + sheetName + " is " + str(valid) + ".  Ending Sku Cleaning process!")
-                break
+                continue
 
             if (sheetIndex < 0):
                 break         
@@ -1011,7 +1071,11 @@ class sync(models.Model):
             skuColumnIndex  = self.getColumnIndex(sheet, "SKU")
 
             if (validColumnIndex < 0):
-                _logger.info("Sheet: " + sheetName + " does not have a Valid column.")
+                _logger.info("Sheet: " + sheetName + " does not have a 'Valid' column.")
+                continue
+
+            if (skuColumnIndex < 0):
+                _logger.info("Sheet: " + sheetName + " does not have a 'SKU' column.")
                 continue
 
             if ((modelType == "Pricelist") or (modelType == "CCP")):

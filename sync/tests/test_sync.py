@@ -11,27 +11,27 @@ class TestModuleSync(TransactionCase):
         super(TestModuleSync, self).setUp()
         self.sync_model = self.env['sync.sync']
         self.sync_data = [
-            ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid'], 
-            ['Companies_',	    '10',           'Companies',    'TRUE'], 
-            ['Contacts_',       '20',           'Contacts',     'TRUE'], 
-            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE'], 
-            ['CCP_-1_',         '40',           'CCP',          'TRUE'], 
-            ['Products_',       '50.1',         'Products',     'TRUE'], 
-            ['CCP_-2_',         'sdf',          'CCP',          'TRUE'], 
-            ['',                '',             '',             'FALSE'],
-            ['',                'Loading...',   '',             'FALSE']
+            ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid', 'Continue'], 
+            ['Companies_',	    '10',           'Companies',    'TRUE' , 'TRUE'], 
+            ['Contacts_',       '20',           'Contacts',     'TRUE' , 'TRUE'], 
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE' , 'TRUE'], 
+            ['CCP_-1_',         '40',           'CCP',          'TRUE' , 'TRUE'], 
+            ['Products_',       '50.1',         'Products',     'TRUE' , 'TRUE'], 
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE' , 'TRUE'], 
+            ['',                '',             '',             'FALSE', 'FALSE'],
+            ['',                'Loading...',   '',             'FALSE', 'FALSE']
         ]
 
         self.sync_data_order_changed = [
-            ['Sheet Name',      'Model Type',   'Valid', 'Sheet Index'], 
-            ['Companies_',	    '11',           'TRUE' , '10'         ], 
-            ['Contacts_',       '21',           'TRUE' , '20'         ], 
-            ['Pricelist-1_',    '31',           'TRUE' , '30'         ], 
-            ['CCP_-1_',         '41',           'TRUE' , '40'         ], 
-            ['Products_',       '51.1',         'TRUE' , '50.1'       ], 
-            ['CCP_-2_',         '60',           'TRUE' , 'sdf'        ], 
-            ['',                '',             'FALSE', ''           ],
-            ['',                '',             'FALSE', 'Loading...' ]
+            ['Sheet Name',      'Model Type',   'Valid', 'Sheet Index', 'Continue'], 
+            ['Companies_',	    '11',           'TRUE' , '10'         , 'TRUE'], 
+            ['Contacts_',       '21',           'TRUE' , '20'         , 'TRUE'], 
+            ['Pricelist-1_',    '31',           'TRUE' , '30'         , 'TRUE'], 
+            ['CCP_-1_',         '41',           'TRUE' , '40'         , 'TRUE'], 
+            ['Products_',       '51.1',         'TRUE' , '50.1'       , 'TRUE'], 
+            ['CCP_-2_',         '60',           'TRUE' , 'sdf'        , 'TRUE'], 
+            ['',                '',             'FALSE', ''           , 'FALSE'],
+            ['',                '',             'FALSE', 'Loading...' , 'FALSE']
         ]
 
         self.sheet_index_30 = [
@@ -344,6 +344,32 @@ class TestModuleSync(TransactionCase):
         self.assertEqual(result, True) 
 
 
+    #def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
+    def test_checkOdooSyncDataTab(self):
+
+        self.sync_bad_data = [
+            ['C1',              'B4',           'A',            'S',     'Z'    ], 
+            ['Companies_',	    '10',           'Companies',    'TRUE' , 'TRUE' ], 
+            ['Contacts_',       '20',           'Contacts',     'TRUE' , 'TRUE' ], 
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE' , 'TRUE' ], 
+            ['CCP_-1_',         '40',           'CCP',          'TRUE' , 'TRUE' ], 
+            ['Products_',       '50.1',         'Products',     'TRUE' , 'TRUE' ], 
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE' , 'TRUE' ], 
+            ['',                '',             '',             'FALSE', 'FALSE'],
+            ['',                'Loading...',   '',             'FALSE', 'FALSE']
+        ]
+
+        #Assert that it return the right information
+        result = self.sync_model.checkOdooSyncDataTab(self.sync_data)
+        self.assertEqual(result['odoo_sync_data_sheetName_columnIndex']   == 0, True) 
+        self.assertEqual(result['odoo_sync_data_sheetIndex_columnIndex']  == 1, True) 
+        self.assertEqual(result['odoo_sync_data_model_type_columnIndex']  == 2, True) 
+        self.assertEqual(result['odoo_sync_data_valid_columnIndex']       == 3, True) 
+        self.assertEqual(result['odoo_sync_data_continue_columnIndex']    == 4, True) 
+
+        #Assert it raise the exception when one column is missing.
+        with self.assertRaises(Exception):
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_bad_data)
 
 
 
