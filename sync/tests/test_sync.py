@@ -250,7 +250,7 @@ class TestModuleSync(TransactionCase):
         self.pretest_createProducts(external_id)
 
         #Callind the method
-        product = self.createAndUpdateProducts(
+        product = self.sync_model.createAndUpdateProducts(
             external_id, 
             product_stringRep, 
             product_name, 
