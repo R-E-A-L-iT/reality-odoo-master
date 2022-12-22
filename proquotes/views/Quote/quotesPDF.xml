@@ -141,7 +141,6 @@
 					</t>
 					<t t-elif="clang == 'fr_CA'">
 						<p t-out="'Début de la Location' + str(doc.rental_start)" />
-						<br />
 						<p t-out="'Fin estimée de la Location' + str(doc.rental_end)" />
 					</t>
 					<t t-if="doc.rental_diff_add == True">
