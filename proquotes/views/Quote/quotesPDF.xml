@@ -416,7 +416,7 @@
 		</xpath>
 
 		<!-- Price Format Update -->
-		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="after" />
+		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace" />
 	</template>
 
 </odoo>
