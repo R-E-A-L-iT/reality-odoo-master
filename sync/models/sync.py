@@ -986,7 +986,7 @@ class sync(models.Model):
 
         if (columnIndex < 0):
             error_msg = ("The following column name is missing: " + str(column_name))
-            #raise Exception('MissingColumnError', error_msg)            
+            raise Exception('MissingColumnError', error_msg)            
 
         sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
 
