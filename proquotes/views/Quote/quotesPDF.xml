@@ -431,7 +431,7 @@
 			<span t-out="line_price" />
 		</xpath>
 		<sxpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
-			<span t-out="'{value:,.2f}'.format(value= line.price_subtotal)" />
+			<span t-out="'{value:,.2f}'.format(value= line.price_unit)" />
 		</sxpath>
 	</template>
 
