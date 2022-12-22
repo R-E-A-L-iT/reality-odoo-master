@@ -1105,6 +1105,9 @@ class sync(models.Model):
             refered_sheet_valid_column_index = -1        
             refered_sheet_sku_column_index = -1  
 
+            _logger.info("-------------------------------------------  sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])") 
+            _logger.info("------------------------------------------- i: " + str(i)) 
+            _logger.info("------------------------------------------- odoo_sync_data_sheet_name_column_index: " + str(odoo_sync_data_sheet_name_column_index)) 
             sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
