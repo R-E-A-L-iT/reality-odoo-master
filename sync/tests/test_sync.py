@@ -361,11 +361,11 @@ class TestModuleSync(TransactionCase):
 
         #Assert that it return the right information
         result = self.sync_model.checkOdooSyncDataTab(self.sync_data)
-        self.assertEqual(result['odoo_sync_data_sheetName_columnIndex']   == 0, True) 
-        self.assertEqual(result['odoo_sync_data_sheetIndex_columnIndex']  == 1, True) 
-        self.assertEqual(result['odoo_sync_data_model_type_columnIndex']  == 2, True) 
-        self.assertEqual(result['odoo_sync_data_valid_columnIndex']       == 3, True) 
-        self.assertEqual(result['odoo_sync_data_continue_columnIndex']    == 4, True) 
+        self.assertEqual(result['odoo_sync_data_sheet_name_column_index' ]  == 0, True) 
+        self.assertEqual(result['odoo_sync_data_sheet_index_column_index']  == 1, True) 
+        self.assertEqual(result['odoo_sync_data_model_type_column_index' ]  == 2, True) 
+        self.assertEqual(result['odoo_sync_data_valid_column_index'      ]  == 3, True) 
+        self.assertEqual(result['odoo_sync_data_continue_column_index'   ]  == 4, True) 
 
         #Assert it raise the exception when one column is missing.
         with self.assertRaises(Exception):
