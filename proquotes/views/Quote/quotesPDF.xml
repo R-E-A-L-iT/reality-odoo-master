@@ -179,7 +179,7 @@
 
 				span {
 				white-space: nowrap;
-				backround-color: #fff'
+				backround-color: #fff !important;
 				}
 
 				.no-display {
