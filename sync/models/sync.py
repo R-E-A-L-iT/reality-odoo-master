@@ -1022,6 +1022,7 @@ class sync(models.Model):
     #   result: A dictionnary:  Key: named of the column
     #                           Value: the index number of that column.
     def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
+        _logger.info("------------------------------------------- str(odoo_sync_data_sheet[0]: " + str(odoo_sync_data_sheet[0]))
         odoo_sync_data_sheet_name_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Name")
         odoo_sync_data_sheet_index_column_index   = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Index")
         odoo_sync_data_model_type_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Model Type")
