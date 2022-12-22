@@ -1110,16 +1110,20 @@ class sync(models.Model):
 
             #Validation for the current loop
             if (not continue_value):
+                _logger.info("------------------------------------------- BREAK not continue_valu while i: " + str(i))
                 break
 
             if ((modelType != "Pricelist") or (modelType != "CCP")):
+                _logger.info("------------------------------------------- continue (modelType != "Pricelist") or (modelType != "CCP") while i: " + str(i))
                 continue
 
             if (not valid_value):
+                _logger.info("------------------------------------------- continue (not valid_value) while i: " + str(i))
                 continue
 
             if (refered_sheet_index < 0):
                 error_msg = ("Sheet Name: " + sheet_name + " is missing in the GoogleData Master DataBase.  The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('MissingSheetError', error_msg)       
 
             #Get the reffered sheet
@@ -1130,10 +1134,12 @@ class sync(models.Model):
             #Validation
             if (refered_sheet_valid_column_index < 0):
                 error_msg = ("Sheet: " + sheet_name + " does not have a 'Valid' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('MissingTabError', error_msg)                
 
             if (refered_sheet_sku_column_index < 0):
                 error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('MissingTabError', error_msg)  
 
             #main purpose            
@@ -1141,6 +1147,7 @@ class sync(models.Model):
 
             if (self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)):
                 error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('SkuUnicityError', error_msg)  
                 
             for sku in sku_dict:
