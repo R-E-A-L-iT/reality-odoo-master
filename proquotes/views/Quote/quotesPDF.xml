@@ -433,6 +433,14 @@
 		<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
 			<span t-out="'{value:,.2f}'.format(value= line.price_unit)" />
 		</xpath>
+
+		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
+			<td t-if="doc.is_rental == True">
+				<t if="doc.partner_id.country == 'Canada'" t-out="line.cadVal" />
+				<t if="doc.partner_id.country == 'United States' or doc.partner_id.country == 'États Unis'" t-out="line.usdVal" />
+			</td>
+			<td t-else=""></td>
+		</xpath>
 	</template>
 
 </odoo>
