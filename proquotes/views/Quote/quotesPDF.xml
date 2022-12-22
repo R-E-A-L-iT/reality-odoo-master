@@ -17,8 +17,6 @@
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
-		<!-- Price Format Update -->
-		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace" />
 
 		<xpath expr="// t[@t-if= &quot;line.display_type== 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name[0] != '#'" t-field="line.name" />
@@ -417,6 +415,8 @@
 			<t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekRate + rentalDayRate" />
 		</xpath>
 
+		<!-- Price Format Update -->
+		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace" />
 	</template>
 
 </odoo>
