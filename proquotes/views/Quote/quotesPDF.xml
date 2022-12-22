@@ -173,8 +173,7 @@
 					</t>
 					<br />
 					<br />
-					<div>
-						<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'"> -->
+					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValue" /></span>
 						<br />
 						<br />
@@ -183,8 +182,7 @@
 						</span>
 						<br />
 					</div>
-					<!-- <div class="rental_product_value" t-elif="clang == 'fr_CA' or True"> -->
-					<div>
+					<div class="rental_product_value" t-elif="clang == 'fr_CA' or True">
 						<span>Valeur locative totale: &#160;<span t-out="rentalValue" /></span>
 						<br />
 						<br />
