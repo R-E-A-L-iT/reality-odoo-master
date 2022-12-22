@@ -1106,6 +1106,9 @@ class sync(models.Model):
             valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")    
             continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
+            if ((modelType != "Pricelist") or (modelType != "CCP")):
+                continue
+
             #Validation for the current loop
             if (not continue_value):
                 break
@@ -1131,16 +1134,15 @@ class sync(models.Model):
                 error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
                 raise Exception('MissingTabError', error_msg)  
 
-            #main purpose
-            if ((modelType == "Pricelist") or (modelType == "CCP")):
-                sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
+            #main purpose            
+            sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
 
-                if (self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)):
-                    error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
-                    raise Exception('SkuUnicityError', error_msg)  
-                    
-                for sku in sku_dict:
-                    sku_catalog_gs[sku] = "sku"
+            if (self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)):
+                error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
+                raise Exception('SkuUnicityError', error_msg)  
+                
+            for sku in sku_dict:
+                sku_catalog_gs[sku] = "sku"
 
             i += 1               
 
