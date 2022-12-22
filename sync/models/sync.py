@@ -1125,7 +1125,9 @@ class sync(models.Model):
                 continue
 
             #Validation for the current loop
+            _logger.info("------------------------------------------- (not continue_value) " + str (not continue_value))
             if (not continue_value):
+                _logger.info("------------------------------------------- BREAK")
                 break
 
             if (not valid_value):
