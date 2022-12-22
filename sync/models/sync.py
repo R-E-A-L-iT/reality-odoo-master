@@ -1094,7 +1094,6 @@ class sync(models.Model):
 
         while (i < len(sync_data)):
             i += 1
-            _logger.info("------------------------------------------- while (i < len(sync_data)): i: " + str(i)) 
             sheet_name = ""        
             refered_sheet_index = -1
             msg_temp = ""
@@ -1105,9 +1104,6 @@ class sync(models.Model):
             refered_sheet_valid_column_index = -1        
             refered_sheet_sku_column_index = -1  
 
-            _logger.info("-------------------------------------------  sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])") 
-            _logger.info("------------------------------------------- i: " + str(i)) 
-            _logger.info("------------------------------------------- odoo_sync_data_sheet_name_column_index: " + str(odoo_sync_data_sheet_name_column_index)) 
             sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
@@ -1115,16 +1111,8 @@ class sync(models.Model):
             valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")    
             continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
-            _logger.info("------------------------------------------- sheet_name: " + str(sheet_name))
-            _logger.info("------------------------------------------- refered_sheet_index: " + str(refered_sheet_index))
-            _logger.info("------------------------------------------- modelType: " + str(modelType))
-            _logger.info("------------------------------------------- valid_value: " + str(valid_value))
-            _logger.info("------------------------------------------- continue_value: " + str(continue_value))
-
             #Validation for the current loop
-            _logger.info("------------------------------------------- (not continue_value) " + str (not continue_value))
             if (not continue_value):
-                _logger.info("------------------------------------------- BREAK")
                 break
 
             if ((modelType != "Pricelist") or (modelType != "CCP")):
@@ -1240,10 +1228,11 @@ class sync(models.Model):
         sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
 
         try:
+            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
             for sku in sku_dict:
                 _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
         except Exception as e:
-            _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cleaning Sku job is interrupted with the following error : \n" + str(e) )
 
         _logger.info("-------------------------------------------END test_getListSkuGS")
 
