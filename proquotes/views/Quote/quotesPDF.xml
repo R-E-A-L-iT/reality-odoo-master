@@ -185,10 +185,6 @@
 				border-color: black !important;
 				}
 
-				td, td * {
-				text-align: center !important;
-				}
-
 				span {
 				white-space: nowrap;
 				}
