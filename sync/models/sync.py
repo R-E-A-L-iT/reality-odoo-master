@@ -1114,7 +1114,7 @@ class sync(models.Model):
                 break
 
             if ((modelType != "Pricelist") or (modelType != "CCP")):
-                _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'CCP') while i: " + str(i))
+                _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'CCP') while i: " + str(i) + " model: " + str(modelType))
                 continue
 
             if (not valid_value):
