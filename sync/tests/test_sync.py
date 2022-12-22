@@ -216,7 +216,6 @@ class TestModuleSync(TransactionCase):
             product_type)
 
         self.aftertest_updateProducts(
-            self, 
             product.id, 
             external_id, 
             product_name, 
