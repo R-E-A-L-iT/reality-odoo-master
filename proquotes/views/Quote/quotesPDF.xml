@@ -406,7 +406,7 @@
 			</t>
 		</xpath>
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<p t-out="doc.partner_id.country_id.name" />
+			<!-- <p t-out="doc.partner_id.country_id.name" /> -->
 			<t t-if="doc.partner_id.country_id.name == 'Canada'">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>
@@ -425,12 +425,6 @@
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-out="line_price" />
 		</xpath>
-
-		<!-- <xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'{value:,.2f}'.format(value= line.price_unit)" />
-			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f}'.format(value= line.price_unit)" />
-			<span t-out="line_price" />
-		</xpath> -->
 	</template>
 
 </odoo>
