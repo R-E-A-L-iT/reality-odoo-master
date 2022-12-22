@@ -1219,6 +1219,8 @@ class sync(models.Model):
 
 
     def test_getListSkuGS(self, psw=None):
+        _logger.info("-------------------------------------------START test_getListSkuGS"
+
         sku_dict = dict()
         sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
 
@@ -1227,4 +1229,6 @@ class sync(models.Model):
                 _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
         except Exception as e:
             _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+
+        _logger.info("-------------------------------------------END test_getListSkuGS"
 
