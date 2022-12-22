@@ -1089,6 +1089,7 @@ class sync(models.Model):
         odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']                                      
 
         while (i < len(sync_data)):
+            _logger.info("------------------------------------------- START while (i < len(sync_data)): " + str(i)) 
             i += 1
             sheet_name = ""        
             refered_sheet_index = -1
@@ -1143,7 +1144,9 @@ class sync(models.Model):
                 raise Exception('SkuUnicityError', error_msg)  
                 
             for sku in sku_dict:
-                sku_catalog_gs[sku] = "sku"              
+                sku_catalog_gs[sku] = "sku"  
+
+            _logger.info("------------------------------------------- End of loop " + str(i))             
 
         _logger.info("------------------------------------------- END return sku_catalog_gs") 
         _logger.info("------------------------------------------- END getListSkuGS")      
