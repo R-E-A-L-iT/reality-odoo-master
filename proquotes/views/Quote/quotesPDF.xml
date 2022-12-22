@@ -12,11 +12,15 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
+
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+		<!-- Price Format Update -->
+		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace" />
+
+		<xpath expr="// t[@t-if= &quot;line.display_type== 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name[0] == '#'">
 				<t t-set="sname" t-value="line.name[1:]" />
