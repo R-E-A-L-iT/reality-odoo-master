@@ -431,7 +431,7 @@
 			<span t-field="line_price" />
 		</xpath>
 		<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
-			<span t-field="'{value:,.2f}'.format(value= line.price_unit)" />
+			<!-- <span t-field="'{value:,.2f}'.format(value= line.price_unit)" /> -->
 		</xpath>
 	</template>
 
