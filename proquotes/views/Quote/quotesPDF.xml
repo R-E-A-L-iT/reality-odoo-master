@@ -73,15 +73,7 @@
 				#rental-terms, #rental-terms *{
 				font-size: 1em;
 				margin: 0px !important;
-				padding: 0em !important;
-				}
-
-				#rental-terms h3 {
-				font-size: 1em !important;
-				}
-
-				#rental-terms h1 strong {
-				font-size: 3em !important;
+				padding: 0.5em !important;
 				}
 			</style>
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
