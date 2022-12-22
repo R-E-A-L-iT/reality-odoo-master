@@ -53,7 +53,8 @@
 			<tr class="quote-head" t-if="line.display_type == 'line_section'">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<td class="text-left" style="border-top-style: none !important">Product</td>
+						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
+						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Product Value
 						</td>
@@ -63,6 +64,7 @@
 						<td class=" text-center" style=" border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if=" clang== 'fr_CA'">
+						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
 						<td class="text-left" style="border-top-style: none !important">Produit</td>
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
 							Valeur du Produit
