@@ -1145,8 +1145,9 @@ class sync(models.Model):
             #main purpose            
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
 
-            if (self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)):
-                error_msg = ("The folowing SKU appear twice in the Master Database: " + str(1))
+            result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
+            if (result):
+                error_msg = ("The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
                 _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('SkuUnicityError', error_msg)  
                 
