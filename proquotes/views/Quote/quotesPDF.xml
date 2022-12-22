@@ -392,7 +392,7 @@
 
 		<!-- For rental quotes calculate relevant sums -->
 		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-set="rentalValue" t-value="0" />
+			<!-- <t t-set="rentalValue" t-value="0" /> -->
 			<t t-set="rentalRate" t-value="0" />
 
 			<t t-if="doc.rental_start != False and doc.rental_end != False">
