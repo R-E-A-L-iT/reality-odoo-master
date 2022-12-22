@@ -12,14 +12,14 @@ class TestModuleSync(TransactionCase):
         self.sync_model = self.env['sync.sync']
         self.sync_data = [
             ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid', 'Continue'], 
-            ['Companies_',	    '10',           'Companies',    'TRUE' , 'TRUE'], 
-            ['Contacts_',       '20',           'Contacts',     'TRUE' , 'TRUE'], 
-            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE' , 'TRUE'], 
-            ['CCP_-1_',         '40',           'CCP',          'TRUE' , 'TRUE'], 
-            ['Products_',       '50.1',         'Products',     'TRUE' , 'TRUE'], 
-            ['CCP_-2_',         'sdf',          'CCP',          'TRUE' , 'TRUE'], 
-            ['',                '',             '',             'FALSE', 'FALSE'],
-            ['',                'Loading...',   '',             'FALSE', 'FALSE']
+            ['Companies_',	    '10',           'Companies',    'TRUE' , 'TRUE'    ], 
+            ['Contacts_',       '20',           'Contacts',     'TRUE' , 'TRUE'    ], 
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE' , 'TRUE'    ], 
+            ['CCP_-1_',         '40',           'CCP',          'TRUE' , 'TRUE'    ], 
+            ['Products_',       '50.1',         'Products',     'TRUE' , 'TRUE'    ], 
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE' , 'TRUE'    ], 
+            ['',                '',             '',             'FALSE', 'FALSE'   ],
+            ['',                'Loading...',   '',             'FALSE', 'FALSE'   ]
         ]
 
         self.sync_data_order_changed = [
@@ -359,6 +359,66 @@ class TestModuleSync(TransactionCase):
             ['',                'Loading...',   '',             'FALSE', 'FALSE']
         ]
 
+        self.sync_data_missing_sheet_name = [
+            ['Sheet Index',  'Model Type',   'Valid', 'Continue'], 
+            ['10',           'Companies',    'TRUE' , 'TRUE'    ], 
+            ['20',           'Contacts',     'TRUE' , 'TRUE'    ], 
+            ['30',           'Pricelist',    'TRUE' , 'TRUE'    ], 
+            ['40',           'CCP',          'TRUE' , 'TRUE'    ], 
+            ['50.1',         'Products',     'TRUE' , 'TRUE'    ], 
+            ['sdf',          'CCP',          'TRUE' , 'TRUE'    ], 
+            ['',             '',             'FALSE', 'FALSE'   ],
+            ['Loading...',   '',             'FALSE', 'FALSE'   ]
+        ]
+
+        self.sync_data_missing_sheet_index = [
+            ['Sheet Name',   'Model Type',   'Valid', 'Continue'], 
+            ['Companies_',	 'Companies',    'TRUE' , 'TRUE'    ], 
+            ['Contacts_',    'Contacts',     'TRUE' , 'TRUE'    ], 
+            ['Pricelist-1_', 'Pricelist',    'TRUE' , 'TRUE'    ], 
+            ['CCP_-1_',      'CCP',          'TRUE' , 'TRUE'    ], 
+            ['Products_',    'Products',     'TRUE' , 'TRUE'    ], 
+            ['CCP_-2_',      'CCP',          'TRUE' , 'TRUE'    ], 
+            ['',             '',             'FALSE', 'FALSE'   ],
+            ['',             '',             'FALSE', 'FALSE'   ]
+        ]
+
+        self.sync_data_missing_model_type = [
+            ['Sheet Name',      'Sheet Index',  'Valid', 'Continue'], 
+            ['Companies_',	    '10',           'TRUE' , 'TRUE'    ], 
+            ['Contacts_',       '20',           'TRUE' , 'TRUE'    ], 
+            ['Pricelist-1_',    '30',           'TRUE' , 'TRUE'    ], 
+            ['CCP_-1_',         '40',           'TRUE' , 'TRUE'    ], 
+            ['Products_',       '50.1',         'TRUE' , 'TRUE'    ], 
+            ['CCP_-2_',         'sdf',          'TRUE' , 'TRUE'    ], 
+            ['',                '',             'FALSE', 'FALSE'   ],
+            ['',                'Loading...',   'FALSE', 'FALSE'   ]
+        ]
+
+        self.sync_data_missing_valid = [
+            ['Sheet Name',      'Sheet Index',  'Model Type',   'Continue'], 
+            ['Companies_',	    '10',           'Companies',    'TRUE'    ], 
+            ['Contacts_',       '20',           'Contacts',     'TRUE'    ], 
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE'    ], 
+            ['CCP_-1_',         '40',           'CCP',          'TRUE'    ], 
+            ['Products_',       '50.1',         'Products',     'TRUE'    ], 
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE'    ], 
+            ['',                '',             '',             'FALSE'   ],
+            ['',                'Loading...',   '',             'FALSE'   ]
+        ]    
+
+        self.sync_data_missing_continue = [
+            ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid'], 
+            ['Companies_',	    '10',           'Companies',    'TRUE'    ], 
+            ['Contacts_',       '20',           'Contacts',     'TRUE'    ], 
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE'    ], 
+            ['CCP_-1_',         '40',           'CCP',          'TRUE'    ], 
+            ['Products_',       '50.1',         'Products',     'TRUE'    ], 
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE'    ], 
+            ['',                '',             '',             'FALSE'   ],
+            ['',                'Loading...',   '',             'FALSE'   ]
+        ]                              
+
         #Assert that it return the right information
         result = self.sync_model.checkOdooSyncDataTab(self.sync_data)
         self.assertEqual(result['odoo_sync_data_sheet_name_column_index' ]  == 0, True) 
@@ -369,7 +429,19 @@ class TestModuleSync(TransactionCase):
 
         #Assert it raise the exception when one column is missing.
         with self.assertRaises(Exception):
-            result = self.sync_model.checkOdooSyncDataTab(self.sync_bad_data)
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_sheet_name)
+
+        with self.assertRaises(Exception):            
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_sheet_index)
+
+        with self.assertRaises(Exception):            
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_model_type)
+
+        with self.assertRaises(Exception):            
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_valid)
+            
+        with self.assertRaises(Exception):            
+            result = self.sync_model.checkOdooSyncDataTab(self.sync_data_missing_continue)
 
 
 

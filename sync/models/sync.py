@@ -991,23 +991,23 @@ class sync(models.Model):
 
         if (odoo_sync_data_sheet_name_column_index < 0):
             errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
-            raise Exception('MissingTabError', errormsg)
+            #raise Exception('MissingTabError', errormsg)
 
         if (odoo_sync_data_sheet_index_column_index < 0):
             errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
-            raise Exception('MissingTabError', errormsg)
+            #raise Exception('MissingTabError', errormsg)
 
         if (odoo_sync_data_model_type_column_index < 0):
             errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
-            raise Exception('MissingTabError', errormsg)
+            #raise Exception('MissingTabError', errormsg)
 
         if (odoo_sync_data_valid_column_index < 0):
             errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
-            raise Exception('MissingTabError', errormsg)
+            #raise Exception('MissingTabError', errormsg)
 
         if (odoo_sync_data_continue_column_index < 0):
             errormsg = ("Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
-            raise Exception('MissingTabError', errormsg) 
+            #raise Exception('MissingTabError', errormsg) 
 
         result = dict()
 
