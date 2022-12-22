@@ -1121,14 +1121,14 @@ class sync(models.Model):
             _logger.info("------------------------------------------- valid_value: " + str(valid_value))
             _logger.info("------------------------------------------- continue_value: " + str(continue_value))
 
-            if ((modelType != "Pricelist") or (modelType != "CCP")):
-                continue
-
             #Validation for the current loop
             _logger.info("------------------------------------------- (not continue_value) " + str (not continue_value))
             if (not continue_value):
                 _logger.info("------------------------------------------- BREAK")
                 break
+
+            if ((modelType != "Pricelist") or (modelType != "CCP")):
+                continue
 
             if (not valid_value):
                 continue
