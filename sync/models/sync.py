@@ -1007,8 +1007,9 @@ class sync(models.Model):
     #   2nd:    The name of the duplicated Sku
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):        
         for sku in dict_small.keys():
-            if sku in dict_big.keys():
+            if sku in dict_big.keys():      
                 errorMsg = str(sku)
+                _logger.info("------------------------------------------- errorMsg = str(sku): " + str(sku))   
                 return True, errorMsg
         return False, ""      
 
