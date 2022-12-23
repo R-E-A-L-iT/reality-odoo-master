@@ -1256,22 +1256,16 @@ class sync(models.Model):
 
 
     def test_getListSkuGS(self, psw=None):
-        _logger.info("-------------------------------------------START test_getListSkuGS")
-
-        sku_dict = dict()
-
-        
-
+        _logger.info("-------------------------------------------START test start_sku_cleaning")
+        #sku_dict = dict()
         try:
-            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
-            sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
-            _logger.info("-------------------------------------------len(sku_dict): " + str(len(sku_dict)))  
-            for sku in sku_dict:
-                _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
+            #_logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
+            #sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
+            #_logger.info("-------------------------------------------len(sku_dict): " + str(len(sku_dict)))    
+            self.start_sku_cleaning(psw)
         except Exception as e:
             _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cleaning Sku job is interrupted with the following error : \n" + str(e) )
-
-        _logger.info("-------------------------------------------END test_getListSkuGS")
+        _logger.info("-------------------------------------------END test start_sku_cleaning")
 
         
 
