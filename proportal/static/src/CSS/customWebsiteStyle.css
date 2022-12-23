@@ -914,3 +914,11 @@ h2.subtitle>span {
 .custom-product-table td {
 	color: #fff;
 }
+
+#wrap {
+	height: fit-content;
+}
+
+#book-a-demo-form-focus {
+	margin-top: 3vh;
+}
