@@ -492,8 +492,9 @@ class TestModuleSync(TransactionCase):
 
         try:
             self.assertEqual(True, False)
-        except:
-            pass
+        except Exception as e:
+            print (e)
+            
 
         self.assertEqual(True, False)
         self.assertEqual(True, False)
