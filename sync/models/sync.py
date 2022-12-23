@@ -1145,6 +1145,8 @@ class sync(models.Model):
 
             #main purpose            
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
+            for s in sku_dict:
+                _logger.info("-------------------- sku: " + str(s) + " added.") 
 
             result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
             if (result):
