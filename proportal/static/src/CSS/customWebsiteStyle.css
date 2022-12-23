@@ -926,3 +926,7 @@ h2.subtitle>span {
 #form-div {
 	justify-content: center;
 }
+
+#question-icon {
+	margin-top: 2rem !important;
+}
