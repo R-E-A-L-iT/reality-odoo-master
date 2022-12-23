@@ -1219,7 +1219,7 @@ class sync(models.Model):
 
             if ((str(product.sku) == "False") or (str(product.sku) == None)):
                 to_archives.append(str(product.id))
-                _logger.info("---------------- To archived: Product with NO SKU: product id: " + str(product.id) + ", active is: " + str(product.active) + ", name: " + str(product.name))
+                _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
 
             if (str(product.sku) not in catalog_odoo):
                 catalog_odoo[str(product.sku)] = 1
@@ -1244,7 +1244,7 @@ class sync(models.Model):
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
-                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id: " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
+                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
         #######################################
