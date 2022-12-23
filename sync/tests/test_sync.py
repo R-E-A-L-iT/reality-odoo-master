@@ -453,24 +453,52 @@ class TestModuleSync(TransactionCase):
             ['SKU-1111', 'EN-Name-1111', 'TRUE' , 'TRUE'    ], 
             ['SKU-1112', 'EN-Name-1112', 'TRUE' , 'TRUE'    ], 
             ['SKU-1113', 'EN-Name-1113', 'FALSE', 'TRUE'    ],
-            ['SKU-1114', 'EN-Name-1113', 'TRUE' , 'FALSE'   ]            
-            ['SKU-1115', 'EN-Name-1113', 'FALSE', 'FALSE'   ]            
+            ['SKU-1114', 'EN-Name-1114', 'TRUE' , 'FALSE'   ],            
+            ['SKU-1115', 'EN-Name-1115', 'FALSE', 'FALSE'   ]            
         ]
-        column_name = "SKU"
-        sku_dict = self.sync_model.getAllValueFromColumn(sheet, column_name)
+
+        sheet_no_valid = [
+            ['SKU', 	 'EN-Name'     , 'Continue'], 	 
+            ['SKU-1111', 'EN-Name-1111', 'TRUE'    ], 
+            ['SKU-1112', 'EN-Name-1112', 'TRUE'    ], 
+            ['SKU-1113', 'EN-Name-1113', 'TRUE'    ],
+            ['SKU-1114', 'EN-Name-1114', 'FALSE'   ],            
+            ['SKU-1115', 'EN-Name-1115', 'FALSE'   ]            
+        ]      
+
+        sheet_no_continue = [
+            ['SKU', 	 'EN-Name'     , 'Valid'], 	 
+            ['SKU-1111', 'EN-Name-1111', 'TRUE'    ], 
+            ['SKU-1112', 'EN-Name-1112', 'TRUE'    ], 
+            ['SKU-1113', 'EN-Name-1113', 'TRUE'    ],
+            ['SKU-1114', 'EN-Name-1114', 'FALSE'   ],            
+            ['SKU-1115', 'EN-Name-1115', 'FALSE'   ]            
+        ]     
+
+        sku_dict = self.sync_model.getAllValueFromColumn(sheet, "SKU")
 
         self.assertEqual('SKU-1111' in sku_dict, True) 
-        self.assertEqual(sku_dict['SKU-1111'] == column_name, True) 
+        self.assertEqual(sku_dict['SKU-1111'] == "SKU", True) 
+        
         self.assertEqual('SKU-1112' in sku_dict, True) 
-        self.assertEqual(sku_dict['SKU-1112'] == column_name, True) 
-        self.assertEqual('SKU-1113' in sku_dict, True) 
-        self.assertEqual(sku_dict['SKU-1113'] == column_name, True) 
-        self.assertEqual(len(sku_dict) == 3, True)         
-        self.assertEqual('SKU-1114' in sku_dict, False) 
+        self.assertEqual(sku_dict['SKU-1112'] == "SKU", True) 
+        
+        self.assertEqual('SKU-1113' in sku_dict, False) 
 
-        column_name = "NOT_EXISTING"
+        self.assertEqual('SKU-1114' in sku_dict, True) 
+        self.assertEqual(sku_dict['SKU-1114'] == "SKU", True) 
+
+        self.assertEqual('SKU-1115' in sku_dict, False)
+
         with self.assertRaises(Exception):            
-            sku_dict = self.sync_model.getAllValueFromColumn(sheet, column_name)
+            sku_dict = self.sync_model.getAllValueFromColumn(sheet, "NOT_EXISTING")
+
+        with self.assertRaises(Exception):            
+            sku_dict = self.sync_model.getAllValueFromColumn(sheet_no_valid, "SKU")
+
+        with self.assertRaises(Exception):            
+            sku_dict = self.sync_model.getAllValueFromColumn(sheet_no_continue, "SKU")
+
 
 
 
