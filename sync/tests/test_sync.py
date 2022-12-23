@@ -449,10 +449,12 @@ class TestModuleSync(TransactionCase):
     #def getAllValueFromColumn(self, sheet, column_name):
     def test_getAllValueFromColumn(self):
         sheet = [
-            ['SKU', 	 'EN-Name'     ], 	 
-            ['SKU-1111', 'EN-Name-1111'], 
-            ['SKU-1112', 'EN-Name-1112'], 
-            ['SKU-1113', 'EN-Name-1113'], 
+            ['SKU', 	 'EN-Name'     , 'Valid', 'Continue'], 	 
+            ['SKU-1111', 'EN-Name-1111', 'TRUE' , 'TRUE'    ], 
+            ['SKU-1112', 'EN-Name-1112', 'TRUE' , 'TRUE'    ], 
+            ['SKU-1113', 'EN-Name-1113', 'FALSE', 'TRUE'    ],
+            ['SKU-1114', 'EN-Name-1113', 'TRUE' , 'FALSE'   ]            
+            ['SKU-1115', 'EN-Name-1113', 'FALSE', 'FALSE'   ]            
         ]
         column_name = "SKU"
         sku_dict = self.sync_model.getAllValueFromColumn(sheet, column_name)

@@ -975,9 +975,14 @@ class sync(models.Model):
 
 
     #Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
-    #IMPORTANT: value with "" will be skypped.
+    #IMPORTANT:     Row must containt a Valid and Continue column.  
+    #               Row is skippd if valid is False
+    #               Method is exit if the Continue is False
+    #               
     #Exception
     #   MissingColumnError:  If thrown, the column name is missing.
+    #                        If thrown, the column "Valid" is missing.
+    #                        If thrown, the column "Continue" is missing.
     #Input
     #   sheet: The sheet to look for all the SKU
     #Output
@@ -985,16 +990,28 @@ class sync(models.Model):
     def getAllValueFromColumn(self, sheet, column_name):
         sku_dict = dict()
         columnIndex = self.getColumnIndex(sheet, column_name)
+        sheet_valid_column_index    = self.getColumnIndex(sheet, "Valid")
+        sheet_continue_column_index    = self.getColumnIndex(sheet, "Continue")
 
         if (columnIndex < 0):
-            error_msg = ("The following column name is missing: " + str(column_name))
-            raise Exception('MissingColumnError', error_msg)            
+            raise Exception('MissingColumnError', ("The following column name is missing: " + str(column_name)))    
+
+        if (sheet_valid_column_index < 0):
+            raise Exception('MissingColumnError', ("The following column name is missing: Valid")) 
+
+        if (sheet_continue_column_index < 0):
+            raise Exception('MissingColumnError', ("The following column name is missing: Continue"))                                 
+
 
         sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
 
         for i in range(1, len(sheet)):
-            if (sheet[i][sheet_sku_column_index] == ""):
+            if (not str(sheet[i][sheet_continue_column_index]).upper() == "TRUE"):
+                break
+
+            if (not str(sheet[i][sheet_valid_column_index]).upper() == "TRUE"):
                 continue
+
             sku_dict[sheet[i][sheet_sku_column_index]] = column_name
 
         return sku_dict
