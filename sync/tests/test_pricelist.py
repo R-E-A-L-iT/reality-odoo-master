@@ -54,7 +54,7 @@ class TestModulePricelist(TransactionCase):
         #Assert that the price is not introduc in an other pricelist
         pricelist_usd_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=',  pricelist_usd.id)])
-        self.assertEqual((len(pricelist_usd_item_ids) == 1), True)        
+        self.assertEqual((len(pricelist_usd_item_ids) == 0), True)        
 
 
 
