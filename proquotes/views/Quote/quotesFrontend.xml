@@ -229,12 +229,9 @@
 							Sous-total
 						</strong>
 					</span>
-					<!-- <span t-field="line.special" /> -->
-					<span t-out="'Optional? ' + str(line.special) + str(line.special != 'optional')" />
-					<span t-out="'selected' + str(line.selected) + str(line.selected == 'true')" />
 					<span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-middle" style="font-weight: 400 !important;" />
-					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="subtotal-destination text-middle" style="font-weight: 400 !important;">$ 0.00</span>
-					<span t-elif="clang == 'fr_CA'" class="subtotal-destination text-middle" style="font-weight: 400 !important;">0.00 $</span>
+					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-middle" style="font-weight: 400 !important;">$ 0.00</span>
+					<span t-elif="clang == 'fr_CA'" class="text-middle" style="font-weight: 400 !important;">0.00 $</span>
 				</label>
 			</div>
 		</xpath>
