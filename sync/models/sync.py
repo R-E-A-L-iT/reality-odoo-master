@@ -1236,16 +1236,18 @@ class sync(models.Model):
             _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
             return
 
+        _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
+
         #######################################
+        #listing product in Odoo and not in GS
         for item in catalog_odoo:
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
-
                 to_archives.append(str(product.id))
 
-
-
+        #######################################
+        #Archiving all unwanted products
         for item in to_archives:
             _logger.info("------------------------------------------- Product to archived: " + str(item))   
             #self.archive_product(str(item))
