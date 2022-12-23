@@ -1244,12 +1244,13 @@ class sync(models.Model):
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
+                _logger.info("------------------------------------------- Product to archived, id: " + str(product.id) + ", sku: " + str(product.sku) + ", name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
         #######################################
         #Archiving all unwanted products
         for item in to_archives:
-            _logger.info("------------------------------------------- Product to archived: " + str(item))   
+            break
             #self.archive_product(str(item))
         
         _logger.info("------------------------------------------- END start_sku_cleaning")    
