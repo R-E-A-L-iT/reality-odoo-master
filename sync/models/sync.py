@@ -1090,8 +1090,7 @@ class sync(models.Model):
     #   template_id:    GoogleSheet TemplateID
     #Output
     #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
-    def getListSkuGS(self, psw, template_id):
-        _logger.info("------------------------------------------- Starting getListSkuGS")               
+    def getListSkuGS(self, psw, template_id):              
         sku_catalog_gs = dict()
 
         i = 0
@@ -1110,7 +1109,6 @@ class sync(models.Model):
         odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']                                      
 
         while (i < len(sync_data)):
-            _logger.info("------------------------------------------- START while (i < len(sync_data)): " + str(i)) 
             i += 1
             sheet_name = ""        
             refered_sheet_index = -1
@@ -1165,9 +1163,6 @@ class sync(models.Model):
 
             #main purpose            
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
-            for s in sku_dict:
-                _logger.info("-------------------- sku: " + str(s) + " added.") 
-
             result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
             if (result):
                 error_msg = ("The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
@@ -1176,11 +1171,7 @@ class sync(models.Model):
                 
             for sku in sku_dict:
                 sku_catalog_gs[sku] = "sku"  
-
-            _logger.info("------------------------------------------- End of loop " + str(i))             
-
-        _logger.info("------------------------------------------- END return sku_catalog_gs") 
-        _logger.info("------------------------------------------- END getListSkuGS")      
+  
         return sku_catalog_gs
 
 
@@ -1245,10 +1236,19 @@ class sync(models.Model):
             _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
             return
 
+        #######################################
+        for item in catalog_odoo:
+            if (not item in catalog_gs):
+                product = self.env['product.template'].search(
+                    [('sku', '=', item)])
+
+                to_archives.append(str(product.id))
+
 
 
         for item in to_archives:
-            self.archive_product(str(item))
+            _logger.info("------------------------------------------- Product to archived: " + str(item))   
+            #self.archive_product(str(item))
         
         _logger.info("------------------------------------------- END start_sku_cleaning")    
 
