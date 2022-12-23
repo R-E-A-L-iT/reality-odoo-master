@@ -216,6 +216,8 @@ odoo.define("proquotes.price", function (require) {
 			}
 			let self = this;
 
+			console.log("Option Choice Section Click")
+
 			return this._rpc({
 				route:
 					"/my/orders/" + this.orderDetail.orderId + "/sectionSelect",
