@@ -1244,7 +1244,7 @@ class sync(models.Model):
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
-                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id: " + str(product.id).ljust(10) + ", sku: " + str(product.sku).ljust(70) + ", name: " + str(product.name))                     
+                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id: " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
         #######################################
