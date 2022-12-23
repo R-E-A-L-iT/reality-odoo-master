@@ -1063,7 +1063,7 @@ class sync(models.Model):
         return result
 
 
-    #Get all SKU from the model type 'CCP' and 'Pricelist'
+    #Get all SKU from the model type 'Products' and 'Pricelist'
     #Exception
     #   MissingSheetError:  A sheet is missing
     #   MissingTabError:    A tab in a sheet is missing
@@ -1117,8 +1117,8 @@ class sync(models.Model):
                 _logger.info("------------------------------------------- BREAK not continue_valu while i: " + str(i))
                 break
 
-            if ((modelType not in ["Pricelist", "CCP"])):
-                _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'CCP') while i: " + str(i) + " model: " + str(modelType))
+            if ((modelType not in ["Pricelist", "Products"])):
+                _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'Products') while i: " + str(i) + " model: " + str(modelType))
                 continue
 
             if (not valid_value):
