@@ -215,7 +215,7 @@ odoo.define("proquotes.price", function (require) {
 				y = y.nextElementSibling;
 			}
 			let self = this;
-			return;
+
 			return this._rpc({
 				route:
 					"/my/orders/" + this.orderDetail.orderId + "/sectionSelect",
