@@ -495,10 +495,10 @@ class TestModuleSync(TransactionCase):
         except Exception as e:
             print (e)
             
+        a = 1
+        b = 2
+        self.assertEqual((a == b), True)
 
-        self.assertEqual(True, False)
-        self.assertEqual(True, False)
-        self.assertEqual(True, False)
 
         with self.assertRaises(Exception):            
             sku_dict = self.sync_model.getAllValueFromColumn(sheet, "NOT_EXISTING")
