@@ -49,7 +49,7 @@ class TestModulePricelist(TransactionCase):
         pricelist_can_item_ids = self.sync_model.env['product.pricelist.item'].search(
             [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_can.id)])        
         #self.assertEqual((len(pricelist_can_item_ids) == 1), True)
-        self.assertEqual((len(pricelist_can_item_ids)), 1, "This is a message for fail (len(pricelist_can_item_ids)")
+        self.assertEqual((len(pricelist_can_item_ids)), 2, "This is a message for fail (len(pricelist_can_item_ids)")
 
         #Assert that the price is not introduc in an other pricelist
         pricelist_usd_item_ids = self.sync_model.env['product.pricelist.item'].search(
