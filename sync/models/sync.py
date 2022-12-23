@@ -1129,15 +1129,15 @@ class sync(models.Model):
 
             #Validation for the current loop
             if (not continue_value):
-                _logger.info("------------------------------------------- BREAK not continue_valu while i: " + str(i))
+                #_logger.info("------------------------------------------- BREAK not continue_value while i: " + str(i))
                 break
 
             if ((modelType not in ["Pricelist", "Products"])):
-                _logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'Products') while i: " + str(i) + " model: " + str(modelType))
+                #_logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'Products') while i: " + str(i) + " model: " + str(modelType))
                 continue
 
             if (not valid_value):
-                _logger.info("------------------------------------------- continue (not valid_value) while i: " + str(i))
+                #_logger.info("------------------------------------------- continue (not valid_value) while i: " + str(i))
                 continue
 
             if (refered_sheet_index < 0):
@@ -1249,6 +1249,7 @@ class sync(models.Model):
 
         #######################################
         #Archiving all unwanted products
+        _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
         for item in to_archives:
             break
             #self.archive_product(str(item))
@@ -1257,16 +1258,7 @@ class sync(models.Model):
 
 
     def test_getListSkuGS(self, psw=None):
-        _logger.info("-------------------------------------------START test start_sku_cleaning")
-        #sku_dict = dict()
-        try:
-            #_logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
-            #sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
-            #_logger.info("-------------------------------------------len(sku_dict): " + str(len(sku_dict)))    
-            self.start_sku_cleaning(psw)
-        except Exception as e:
-            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cleaning Sku job is interrupted with the following error : \n" + str(e) )
-        _logger.info("-------------------------------------------END test start_sku_cleaning")
+        self.start_sku_cleaning(psw)
 
         
 
