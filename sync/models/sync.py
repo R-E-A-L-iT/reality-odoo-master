@@ -974,7 +974,8 @@ class sync(models.Model):
         product.active = False
 
 
-    #Get all value in column of a sheet.  If column does not exist, it will return an empty dict()
+    #Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
+    #IMPORTANT: value with "" will be skypped.
     #Exception
     #   MissingColumnError:  If thrown, the column name is missing.
     #Input
@@ -992,6 +993,8 @@ class sync(models.Model):
         sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
 
         for i in range(1, len(sheet)):
+            if (sheet[i][sheet_sku_column_index] == ""):
+                continue
             sku_dict[sheet[i][sheet_sku_column_index]] = column_name
 
         return sku_dict
