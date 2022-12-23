@@ -1,3 +1,7 @@
+p {
+	color: #fff;
+}
+
 #custom-webpage-root {
 	height: -moz-fit-content;
 	height: fit-content;
