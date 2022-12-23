@@ -230,9 +230,9 @@
 						</strong>
 					</span>
 					<span t-field="line.special" />
-					<span t-if="line.special != Optional or line.selected == True" class="subtotal-destination text-middle" style="font-weight: 400 !important;" />
+					<span t-if="line.special != 'Optional' or line.selected == True" class="subtotal-destination text-middle" style="font-weight: 400 !important;" />
 					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="subtotal-destination text-middle" style="font-weight: 400 !important;">$ 0.00</span>
-					<span t-elif="clang == 'fr_CA'" class="subtotal-destination text-middle" style="font-weight: 400 !important;">$ 0.00</span>
+					<span t-elif="clang == 'fr_CA'" class="subtotal-destination text-middle" style="font-weight: 400 !important;">0.00 $</span>
 				</label>
 			</div>
 		</xpath>
