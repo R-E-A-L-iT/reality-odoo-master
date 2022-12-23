@@ -1235,10 +1235,12 @@ class sync(models.Model):
         _logger.info("-------------------------------------------START test_getListSkuGS")
 
         sku_dict = dict()
-        sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
+
+        
 
         try:
             _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! try: ")
+            sku_dict = self.getListSkuGS(psw, self._master_database_template_id)
             _logger.info("-------------------------------------------len(sku_dict): " + str(len(sku_dict)))  
             for sku in sku_dict:
                 _logger.info("-------------------------------------------test1 sku identified: " + str(sku))    
