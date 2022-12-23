@@ -1208,6 +1208,7 @@ class sync(models.Model):
             _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
             return
 
+
         #################################
         # Odoo Section        
         products = self.env['product.template'].search([])
@@ -1226,7 +1227,6 @@ class sync(models.Model):
             else:
                 catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
 
-        _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
 
         #######################################
         # GoogleSheet Section  
@@ -1236,7 +1236,6 @@ class sync(models.Model):
             _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
             return
 
-        _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
 
         #######################################
         #listing product in Odoo and not in GS
@@ -1247,6 +1246,7 @@ class sync(models.Model):
                 _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
+
         #######################################
         #Archiving all unwanted products
         _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
@@ -1254,11 +1254,6 @@ class sync(models.Model):
             break
             #self.archive_product(str(item))
         
+        _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
+        _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("------------------------------------------- END start_sku_cleaning")    
-
-
-    def test_getListSkuGS(self, psw=None):
-        self.start_sku_cleaning(psw)
-
-        
-
