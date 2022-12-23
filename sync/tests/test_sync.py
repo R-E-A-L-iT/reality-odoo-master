@@ -453,7 +453,7 @@ class TestModuleSync(TransactionCase):
             ['SKU-1111', 'EN-Name-1111', 'TRUE' , 'TRUE'    ], 
             ['SKU-1112', 'EN-Name-1112', 'TRUE' , 'TRUE'    ], 
             ['SKU-1113', 'EN-Name-1113', 'FALSE', 'TRUE'    ],
-            ['SKU-1114', 'EN-Name-1114', 'TRUE' , 'FALSE'   ],            
+            ['SKU-1114', 'EN-Name-1114', 'TRUE' , 'TRUE'   ],            
             ['SKU-1115', 'EN-Name-1115', 'FALSE', 'FALSE'   ]            
         ]
 
