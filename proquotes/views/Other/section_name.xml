@@ -36,7 +36,7 @@
 			</t>
 			<t t-elif="clang == 'fr_CA'">
 				<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
-				<t t-out="str(name) + '(' + str(id) + ') - Expiration: ' + str(day) + monthList[int(monthNum)] + ', ' + str(year)" />
+				<t t-out="str(name) + '(' + str(id) + ') - Expiration: ' + str(day) + ' ' + monthList[int(monthNum)] + ', ' + str(year)" />
 			</t>
 		</t>
 		<t t-else="">
