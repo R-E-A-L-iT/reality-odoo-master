@@ -14,13 +14,13 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//h2" position="replace">
-			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
-				<style>
-					table {
-					page-break-inside: avoid !important;
-					}
-				</style>
-			</xpath>
+			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
+			<style>
+				table {
+				page-break-inside: avoid !important;
+				}
+			</style>
+			<!-- </xpath> -->
 		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
