@@ -14,13 +14,14 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
 		<xpath expr="//h2" position="replace">
-			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
-				<style>
-					table {
-						page-break-inside: avoid !important;
-					}
-				</style>
-			</xpath>
+			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
+			<!-- todo Restore Or Delete 2022-12-23 -->
+			<!-- <style>
+				table {
+				page-break-inside: avoid !important;
+				}
+			</style> -->
+			<!-- </xpath> -->
 		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
@@ -40,9 +41,9 @@
 
 				<style>
 					#addressTable {
-						border-color: #fff !important;
-						border-width: 0px !important;
-						border-style: none !important;
+					border-color: #fff !important;
+					border-width: 0px !important;
+					border-style: none !important;
 					}
 				</style>
 				<table id="addressTable" style="border-style: collapse !important;" border="0">
@@ -77,11 +78,11 @@
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto" style="margin-bottom: 0px;" />
 			<style>
 				h2 span {
-					color: #db0d0d !important;
+				color: #db0d0d !important;
 				}
-        
+
 				td {
-					border-style: solid;
+				border-style: solid;
 				}
 			</style>
 		</xpath>
@@ -106,9 +107,9 @@
 
 			<style>
 				.description-root, .description-root *{
-					font-size: 0.75rem
-					margin-top: 0px !important;
-					margin-bottom: 0px !important;
+				font-size: 0.75rem
+				margin-top: 0px !important;
+				margin-bottom: 0px !important;
 				}
 			</style>
 			<t t-if="str(line.name) != str(line.product_id.description_sale)">
