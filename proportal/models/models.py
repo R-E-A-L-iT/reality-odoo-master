@@ -48,8 +48,11 @@ class productInstance(models.Model):
 
     def _label(self):
         for i in self:
+            parsedLabel = i.product_id.name.split(" - ")
+            parsedLabel = parsedLabel[0] if len(
+                parsedLabel == 0) else parsedLabel[1:]
             r = '#cpplabel+' + str(i.name) + '+' + \
-                str(i.product_id.name.split(" - ")[-1])
+                str(parsedLabel)
             if (i.expire != False):
                 r = r + '+' + str(i.expire)
             i.formated_label = r
