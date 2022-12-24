@@ -52,7 +52,6 @@ class productInstance(models.Model):
             if (i.expire != False):
                 r = r + "\t" + str(i.expire)
             i.formated_label = r
-            i.formated_label = ""
             return
 
 
