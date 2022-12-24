@@ -19,7 +19,7 @@
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="id" t-value="labelList[1]" />
 			<t t-set="name" t-value="labelList[2]" />
-			<t t-if="len(labelList == 4)" t-set="date" t-value="labelList[3]" />
+			<t t-if="len(labelList) == 4" t-set="date" t-value="labelList[3]" />
 			<span t-out="'id' + str(id)" />
 			<br />
 			<span t-out="'name' + str(name)" />
