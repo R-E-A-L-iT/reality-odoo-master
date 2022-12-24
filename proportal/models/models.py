@@ -49,9 +49,9 @@ class productInstance(models.Model):
     def _label(self):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
-            if len(parsedLabel) < 0:
+            if len(parsedLabel) > 0:
                 result = ""
-                for section in parsedLabel:
+                for section in parsedLabel[1:]:
                     result = result + str(section)
                 parsedLabel = result
             else:
