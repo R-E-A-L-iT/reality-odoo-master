@@ -15,7 +15,7 @@
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">Software rental: choose desired software along with quantities (in weeks)</t>
 			<t t-if="clang == 'fr_CA'">Location de logiciel: choisissez les items et quantités désirés (en semaines)</t>
 		</t>
-		<t t-elif="sname[:10] == '#ccplabel+'">
+		<t t-elif="sname[:9] == '#ccplabel+'">
 			Custom Label
 		</t>
 		<t t-else="">
