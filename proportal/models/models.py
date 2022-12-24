@@ -52,7 +52,7 @@ class productInstance(models.Model):
             if len(parsedLabel) > 0:
                 result = ""
                 for section in parsedLabel[1:]:
-                    result = result + str(section)
+                    result = result + " - " + str(section)
                 parsedLabel = result
             else:
                 parsedLabel = parsedLabel[0]
