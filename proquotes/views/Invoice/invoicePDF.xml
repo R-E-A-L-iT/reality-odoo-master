@@ -15,11 +15,12 @@
 
 		<xpath expr="//h2" position="replace">
 			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
-			<style>
+			<!-- todo Restore Or Delete 2022-12-23 -->
+			<!-- <style>
 				table {
 				page-break-inside: avoid !important;
 				}
-			</style>
+			</style> -->
 			<!-- </xpath> -->
 		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
