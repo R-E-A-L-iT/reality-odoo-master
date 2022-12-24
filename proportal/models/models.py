@@ -43,7 +43,7 @@ class productInstance(models.Model):
     sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
     expire = fields.Date(string='Expiration Date',
                          default=lambda self: fields.Date.today(), required=False)
-    formated_label = fields.Char(compute='_label')
+    formated_label = fields.Char(compute='_label', readonly="True")
     publish = fields.Boolean(string="publish", default="True")
 
     def _label(self):
