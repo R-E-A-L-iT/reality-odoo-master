@@ -57,7 +57,7 @@ class productInstance(models.Model):
             else:
                 parsedLabel = parsedLabel[0]
 
-            r = '#cpplabel+' + str(i.name) + '+' + \
+            r = '#ccplabel+' + str(i.name) + '+' + \
                 str(parsedLabel)
             if (i.expire != False):
                 r = r + '+' + str(i.expire)
