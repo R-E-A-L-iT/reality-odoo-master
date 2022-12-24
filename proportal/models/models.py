@@ -50,7 +50,7 @@ class productInstance(models.Model):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
             parsedLabel = parsedLabel[0] if len(
-                parsedLabel) == 0 else parsedLabel[1:]
+                parsedLabel) == 0 else str(parsedLabel[1:])
             r = '#cpplabel+' + str(i.name) + '+' + \
                 str(parsedLabel)
             if (i.expire != False):
