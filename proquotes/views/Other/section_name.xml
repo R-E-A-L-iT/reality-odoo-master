@@ -32,7 +32,7 @@
 			</t>
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<t t-set="monthList" t-value="['', 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
-				<t t-out="str(name) + '(' + str(id) + ') - Expiration: ' + monthList[int(monthNum)] + str(day) + ', ' + str(year)" />
+				<t t-out="str(name) + '(' + str(id) + ') - Expiration: ' + monthList[int(monthNum)] + ' ' + str(day) + ', ' + str(year)" />
 			</t>
 			<t t-elif="clang == 'fr_CA'">
 				<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
