@@ -18,7 +18,7 @@
 			Custom Label
 		</t>
 		<t t-else="">
-			<t t-out="snam_e[:10]" />
+			<t t-out="sname[:10]" />
 		</t>
 	</template>
 </odoo>
