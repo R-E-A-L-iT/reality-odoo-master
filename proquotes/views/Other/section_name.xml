@@ -19,12 +19,25 @@
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="id" t-value="labelList[1]" />
 			<t t-set="name" t-value="labelList[2]" />
-			<t t-if="len(labelList) == 4" t-set="date" t-value="labelList[3]" />
-			<span t-out="'id' + str(id)" />
-			<br />
-			<span t-out="'name' + str(name)" />
-			<br />
-			<span t-out="'name' + str(date)" />
+
+			<t t-set="day" t-value="" />
+			<t t-set="monthNum" t-value="0" />
+			<t t-set="year" t-value="" />
+			<t t-if="len(labelList) == 4">
+				<t t-set="date" t-value="labelList[3].split('-')" />
+				<t t-set="year" t-value="date[0]" />
+				<t t-set="monthNum" t-value="date[1]" />
+				<t t-set="day" t-value="date[2]" />
+
+			</t>
+			<t t-if="clang == 'en_CA' or clang == 'en_US">
+				<t t-set="monthList" t-value="['', 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
+				<t t-out="str(name) + '(' + id + ') - Expiration: ' + monthList[monthNum] + str(day) + ', ' + str(year)" />
+			</t>
+			<t t-elif="clang == 'fr_CA'">
+				<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
+				<t t-out="str(name) + '(' + id + ') - Expiration: ' + str(day) + monthList[monthNum] + ', ' + str(year)" />
+			</t>
 		</t>
 		<t t-else="">
 			<t t-out="sname[:10]" />
