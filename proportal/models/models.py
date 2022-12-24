@@ -50,8 +50,8 @@ class productInstance(models.Model):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
             if len(parsedLabel) > 0:
-                result = ""
-                for section in parsedLabel[1:]:
+                result = parsedLabel[1]
+                for section in parsedLabel[2:]:
                     result = result + " - " + str(section)
                 parsedLabel = result
             else:
