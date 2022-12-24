@@ -48,7 +48,8 @@ class productInstance(models.Model):
 
     def _label(self):
         for i in self:
-            r = '#cpp+' + str(i.name) + '+' + '+' + str(i.product_id.name)
+            r = '#cpplabel+' + str(i.name) + '+' + '+' + \
+                str(i.product_id.name.split(" - ")[-1])
             if (i.expire != False):
                 r = r + '+' + str(i.expire)
             i.formated_label = r
@@ -105,12 +106,12 @@ class PurchaseOrder(models.Model):
         if portal_project_task_rule_portal:
             portal_project_task_rule_portal.sudo().write({
                 'domain_force': """[
-        ('project_id.privacy_visibility', '=', 'portal'),
-        ('active', '=', True),
-        '|',
-            ('project_id.partner_id', 'child_of', [user.partner_id.id]),
-            ('partner_id', 'child_of', [user.partner_id.id]),
-        ]"""
+		('project_id.privacy_visibility', '=', 'portal'),
+		('active', '=', True),
+		'|',
+			('project_id.partner_id', 'child_of', [user.partner_id.id]),
+			('partner_id', 'child_of', [user.partner_id.id]),
+		]"""
             })
         portal_account_move_comp_rule = self.env.ref(
             'account.account_move_comp_rule')
