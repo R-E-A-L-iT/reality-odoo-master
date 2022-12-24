@@ -19,6 +19,9 @@
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="id" t-value="labelList[1]" />
 			<t t-set="name" t-value="labelList[2]" />
+			<span t-out="'id' + str(id)" />
+			<br />
+			<span t-out="'name' + str(name)" />
 		</t>
 		<t t-else="">
 			<t t-out="sname[:10]" />
