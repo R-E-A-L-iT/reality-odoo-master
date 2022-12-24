@@ -197,9 +197,9 @@
 						<input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true" />
 						<input t-else="" class="optionalSectionCheckbox" type="checkbox" />
 					</t>
-					<span t-if="line.name[0] != '#'" t-field="line.name" />
-					<span t-elif="line.name[0] == '#'">
-						<t t-set="sname" t-value="line.name[1:]" />
+					<span t-if="line.name.srtip()[0] != '#'" t-field="line.name" />
+					<span t-elif="line.name.strip()[0] == '#'">
+						<t t-set="sname" t-value="line.name[1:].strip()" />
 						<t t-call="proquotes.section_name_resolution" />
 					</span>
 					<span class="line_id" t-attf-id="{{line}}" />

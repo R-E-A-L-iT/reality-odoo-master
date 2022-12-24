@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Section Bilingual Names" id="section_name_resolution">
-		<t t-set="sname" t-value="sname.strip()" />
+		<t t-set="sname" t-value="sname" />
 		<t t-if="sname == 'rental_equipment'">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">EQUIPMENT rental: choose desired items along with quantities</t>
 			<t t-if="clang == 'fr_CA'">Location d'équipement: choisissez les items et quantités désirés</t>
