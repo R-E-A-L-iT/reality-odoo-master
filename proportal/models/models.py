@@ -48,9 +48,9 @@ class productInstance(models.Model):
 
     def _label(self):
         for i in self:
-            r = '#cpp\n' + i.name + "\t" + "\t" + i.product_id.name
+            r = '#cpp+' + i.name + "+" + "+" + i.product_id.name
             if (i.expire != False):
-                r = r + "\t" + str(i.expire)
+                r = r + "+" + str(i.expire)
             i.formated_label = r
             return
 
