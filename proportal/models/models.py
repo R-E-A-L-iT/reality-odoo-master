@@ -48,7 +48,7 @@ class productInstance(models.Model):
 
     def _label(self):
         for i in self:
-            r = '#cpplabel+' + str(i.name) + '+' + '+' + \
+            r = '#cpplabel+' + str(i.name) + '+' + \
                 str(i.product_id.name.split(" - ")[-1])
             if (i.expire != False):
                 r = r + '+' + str(i.expire)
