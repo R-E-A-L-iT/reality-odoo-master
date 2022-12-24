@@ -49,13 +49,14 @@ class productInstance(models.Model):
     def _label(self):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
-            if len(parsedLabel < 0):
+            if len(parsedLabel) < 0:
                 result = ""
                 for section in parsedLabel:
                     result = result + str(section)
                 parsedLabel = result
-            parsedLabel = parsedLabel[0] if len(
-                parsedLabel) == 0 else str(parsedLabel[1:])
+            else:
+                parsedLabel = parsedLabel[0]
+
             r = '#cpplabel+' + str(i.name) + '+' + \
                 str(parsedLabel)
             if (i.expire != False):
