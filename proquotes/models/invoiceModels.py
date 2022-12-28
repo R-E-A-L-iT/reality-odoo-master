@@ -62,11 +62,11 @@ class invoiceLine(models.Model):
 
     @api.onchange('product_id')
     def price_change_log(self):
-        self.get_pricelist_price
+        self.get_pricelist_price()
 
     @api.depends('product_id')
     def itemset(self):
-        self.get_pricelist_price
+        self.get_pricelist_price()
 
     def get_applied_name(self):
         n = name_translation(self)
