@@ -61,8 +61,6 @@ class invoiceLine(models.Model):
     def init_price(self):
         _logger.error("Product Change", self.product_id)
         self.price_unit = 0
-        if (self.product_id != False):
-            x = 0/0
 
     def get_applied_name(self):
         n = name_translation(self)
