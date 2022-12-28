@@ -57,13 +57,16 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
-    @api.onchange('product_id')
-    def price_change_log(self):
-        self.price_unit = 123456
+    def get_pricelist_price(self):
+        x = 0/0
+
+    # @api.onchange('product_id')
+    # def price_change_log(self):
+        # self.get_pricelist_price
 
     @api.depends('product_id')
     def itemset(self):
-        self.price_unit = 123456
+        self.get_pricelist_price
 
     def get_applied_name(self):
         n = name_translation(self)
