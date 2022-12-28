@@ -60,8 +60,10 @@ class invoiceLine(models.Model):
     @api.onchange('product_id')
     def price_change_log(self):
         self.price_unit = 123456
-        return
-        # x = 0 / 0
+
+    @api.onset('product_id')
+    def itemset(self):
+        self.price_unit = 123456
 
     def get_applied_name(self):
         n = name_translation(self)
