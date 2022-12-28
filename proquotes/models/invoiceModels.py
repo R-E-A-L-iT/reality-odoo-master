@@ -61,10 +61,6 @@ class invoiceLine(models.Model):
     def init_price(self):
         self.price_unit = 0
 
-    def price_change_log(self):
-        if (self.price_unit != 0):
-            self.price_unit = 123456
-
     def get_applied_name(self):
         n = name_translation(self)
         n.get_applied_name()
