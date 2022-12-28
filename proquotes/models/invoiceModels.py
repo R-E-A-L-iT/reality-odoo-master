@@ -43,6 +43,7 @@ class InvoiceMain(models.Model):
                 continue
 
             # Appy Price from Pricelist
+            _logger.info(record.tax_ids)
             record.price_unit = priceResult[-1].fixed_price
             record.price_subtotal = record.quantity * \
                 priceResult[-1].fixed_price
