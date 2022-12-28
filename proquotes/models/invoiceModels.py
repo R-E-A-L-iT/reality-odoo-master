@@ -61,7 +61,7 @@ class invoiceLine(models.Model):
     def price_change_log(self):
         self.price_unit = 123456
 
-    @api.onset('product_id')
+    @api.depends('product_id')
     def itemset(self):
         self.price_unit = 123456
 
