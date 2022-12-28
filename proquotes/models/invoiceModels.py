@@ -57,11 +57,13 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
+    def setPrice():
+        raise Exception("self.journal_id")
+
     @api.onchange('price_unit')
     def init_price(self):
         if (self.product_id != False and self.price_unit == 0):
-            _logger.error("Product Change", self.product_id)
-            self.price_unit = 123321
+            self.set_price()
 
     def get_applied_name(self):
         n = name_translation(self)
