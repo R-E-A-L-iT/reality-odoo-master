@@ -60,9 +60,9 @@ class invoiceLine(models.Model):
     def get_pricelist_price(self):
         x = 0/0
 
-    # @api.onchange('product_id')
-    # def price_change_log(self):
-        # self.get_pricelist_price
+    @api.onchange('product_id')
+    def price_change_log(self):
+        self.get_pricelist_price
 
     @api.depends('product_id')
     def itemset(self):
