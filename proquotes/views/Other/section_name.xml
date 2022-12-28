@@ -40,7 +40,7 @@
 			</t>
 		</t>
 		<t t-else="">
-			<t t-out="sname[:10]" />
+			<t t-out="sname[:9]" />
 		</t>
 	</template>
 </odoo>
