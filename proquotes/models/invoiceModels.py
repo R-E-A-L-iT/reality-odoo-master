@@ -57,7 +57,7 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
-    def setPrice(self):
+    def set_price(self):
         raise Exception(f'{self.journal_id}')
 
     @api.onchange('price_unit')
