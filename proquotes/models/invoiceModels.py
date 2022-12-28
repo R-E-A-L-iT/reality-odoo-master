@@ -59,9 +59,8 @@ class invoiceLine(models.Model):
 
     @api.onchange('price_unit')
     def price_change_log(self):
-        _logger.error("Price Change", self.product_id.name, self.price_unit)
-        while True:
-            pass
+        UserError(_logger.error("Price Change",
+                                self.product_id.name, self.price_unit))
 
     def get_applied_name(self):
         n = name_translation(self)
