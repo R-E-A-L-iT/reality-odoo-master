@@ -57,7 +57,7 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
-    @api.onchange('self')
+    @api.onchange('price_unit')
     def price_change_log(self):
         _logger.error("Price Change", self.product_id.name, self.price_unit)
 
