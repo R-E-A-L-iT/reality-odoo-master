@@ -26,7 +26,7 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
-    # @api.onchange('pricelist_id', 'invoice_line_ids')
+    @api.onchange('pricelist_id', 'invoice_line_ids')
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
@@ -43,9 +43,10 @@ class InvoiceMain(models.Model):
                 continue
 
             # Appy Price from Pricelist
-            record.price_unit = priceResult[-1].fixed_price
-            record.price_subtotal = record.quantity * \
-                priceResult[-1].fixed_price
+            if (record.price_unit == 0):
+                record.price_unit = priceResult[-1].fixed_price
+                record.price_subtotal = record.quantity * \
+                    priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
 
