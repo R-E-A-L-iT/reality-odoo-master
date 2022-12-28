@@ -57,6 +57,9 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
+    def price_change_log(self):
+        _logger.info("Price Change", self.product_id.name, self.price_unit)
+
     def get_applied_name(self):
         n = name_translation(self)
         n.get_applied_name()
