@@ -81,7 +81,7 @@ class invoiceLine(models.Model):
     @api.onchange('price_unit')
     def init_price(self):
         if (self.product_id != False and self.price_unit == 0):
-            self.set_price()
+            # self.set_price()
             self.price_unit = 555
 
     def get_applied_name(self):
