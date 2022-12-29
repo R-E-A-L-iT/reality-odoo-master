@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<!-- <field name="products" invisible="0" /> -->
 				<t t-foreach="products" t-as="p">
-					<field name="p" invisible="0" />
+					<label t-out="p" invisible="0" />
 				</t>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
