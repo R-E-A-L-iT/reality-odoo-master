@@ -26,7 +26,7 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
-    @api.onchange('pricelist_id', 'invoice_line_ids')
+    @api.onchange('pricelist_id')
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
@@ -43,6 +43,7 @@ class InvoiceMain(models.Model):
                 continue
 
             # Appy Price from Pricelist
+            _logger.info(record.tax_ids)
             record.price_unit = priceResult[-1].fixed_price
             record.price_subtotal = record.quantity * \
                 priceResult[-1].fixed_price
@@ -56,7 +57,25 @@ class invoiceLine(models.Model):
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
 
+    def set_price(self):
+        pricelist = self.move_id.pricelist_id
+        product = self.product_id
+        priceResult = self.env['product.pricelist.item'].search(
+            [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', product.sku)])
+        if (len(priceResult) < 1):
+            return product.price
+
+        # Appy Price from Pricelist
+        _logger.info(self.tax_ids)
+        return priceResult[-1].fixed_price
+
+    @api.onchange('price_unit')
+    def init_price(self):
+        if (self.product_id != False and self.price_unit == 0):
+            price = self.set_price()
+            if (not price == False):
+                self.price_unit = price
+
     def get_applied_name(self):
         n = name_translation(self)
         n.get_applied_name()
-   
