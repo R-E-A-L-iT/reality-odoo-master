@@ -73,8 +73,8 @@ class invoiceLine(models.Model):
         self.price_subtotal = self.quantity * \
             priceResult[-1].fixed_price
 
-        raise Exception(
-            f'Price Result is: {priceResult} SKU: {product.sku} Pricelist: {pricelist.id}')
+        # raise Exception(
+        # f'Price Result is: {priceResult} SKU: {product.sku} Pricelist: {pricelist.id}')
         # raise Exception(f'{priceResult[-1].fixed_price}')
 
     @api.onchange('price_unit')
