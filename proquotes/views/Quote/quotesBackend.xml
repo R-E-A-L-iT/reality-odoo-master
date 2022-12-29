@@ -18,7 +18,7 @@
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
-						<button string="Copy Label" onClick="console.log('Clicked')" />
+						<button string="Copy Label" t-attf-onClick="console.log('{{fotmated_label}}')" />
 						<!-- <label for="formated_label">Test</label> -->
 					</tree>
 				</field>
