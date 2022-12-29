@@ -18,7 +18,7 @@
 					<tree editable="bottom">
 						<field name="name" readonly="True" />
 						<field name="product_id" readonly="True" />
-						<!-- <field name="formated_label" readonly="True" widget="copyClipboardChar" /> -->
+						<field name="formated_label" readonly="True" widget="CopyClipboardChar" />
 						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
 					</tree>
 				</field>
