@@ -17,8 +17,7 @@
 					<tree>
 						<field name="name" />
 						<field name="product_id" />
-						<field name="formated_label" onclick="console.log('clicked')">
-							<button>Click Me</button>
+						<field string="Label" name="formated_label" onclick="console.log('clicked')">
 						</field>
 					</tree>
 				</field>
