@@ -15,11 +15,9 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" readonly="True" widget="one2many_list" nolabel="1">
 					<tree edit="0" readonly="True">
-						<group>
-							<field name="name" readonly="True" />
-							<field name="product_id" readonly="True" />
-							<field name="formated_label" readonly="True" widget="CopyClipboardChar" />
-						</group>
+						<field name="name" readonly="True" />
+						<field name="product_id" readonly="True" />
+						<field name="formated_label" readonly="True" widget="CopyClipboardChar" />
 						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
 					</tree>
 				</field>
