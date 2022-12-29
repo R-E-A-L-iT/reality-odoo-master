@@ -82,6 +82,7 @@ class invoiceLine(models.Model):
     def init_price(self):
         if (self.product_id != False and self.price_unit == 0):
             self.set_price()
+            self.price_unit = 555
 
     def get_applied_name(self):
         n = name_translation(self)
