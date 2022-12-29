@@ -65,7 +65,8 @@ class invoiceLine(models.Model):
         if (len(priceResult) < 1):
             self.price_unit = product.price
             self.price_subtotal = product.price
-            raise Exception(f'Price Result is: {priceResult}')
+            raise Exception(
+                f'Price Result is: {priceResult} SKU: {product.sku} Pricelist: {pricelist.id}')
             return
 
         # Appy Price from Pricelist
