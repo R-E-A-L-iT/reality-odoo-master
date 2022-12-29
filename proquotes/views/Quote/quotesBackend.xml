@@ -13,9 +13,7 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<t t-foreach="products" t-as="customer_product">
-					<field name="customer_product.label" invisible="0" />
-				</t>
+				<field name="products.id" invisible="0" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
