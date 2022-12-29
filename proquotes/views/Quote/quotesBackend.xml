@@ -15,6 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" context="{'name':name, 'id':id}" invisible="0" />
 				<t t-foreach="products">
+					<t t-out="raise Exception(f'{products}')" />
 					<button string="Button Name" name="Product" />
 				</t>
 				<group name="custom_quote_details">
