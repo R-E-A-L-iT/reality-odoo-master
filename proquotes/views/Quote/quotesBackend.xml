@@ -18,7 +18,7 @@
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
-						<button string="Copy Label" type="object" onClick="console.log('Test')">
+						<button string="Copy Label" name="copy_label" type="object" onClick="console.log('Test')">
 						</button>
 						<!-- <label for="formated_label">Test</label> -->
 					</tree>
