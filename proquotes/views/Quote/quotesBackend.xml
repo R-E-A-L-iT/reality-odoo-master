@@ -13,11 +13,11 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<field name="products" readonly="True" widget="one2many_list" nolabel="1">
-					<tree edit="0" readonly="True">
-						<field name="name" readonly="True" />
-						<field name="product_id" readonly="True" />
-						<field name="formated_label" readonly="True" widget="CopyClipboardChar" nopopup="True" />
+				<field name="products" invisible="0">
+					<tree>
+						<field name="name" />
+						<field name="product_id" />
+						<field name="formated_label" widget="CopyClipboardChar" />
 						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
 					</tree>
 				</field>
