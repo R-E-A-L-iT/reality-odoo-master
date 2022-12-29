@@ -75,7 +75,7 @@ class invoiceLine(models.Model):
 
         # raise Exception(
         # f'Price Result is: {priceResult} SKU: {product.sku} Pricelist: {pricelist.id}')
-        # raise Exception(f'{priceResult[-1].fixed_price}')
+        raise Exception(f'{self.price_unit}')
 
     @api.onchange('price_unit')
     def init_price(self):
