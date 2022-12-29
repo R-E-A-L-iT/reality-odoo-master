@@ -19,7 +19,8 @@
 						<field name="product_id" />
 						<field name="formated_label" />
 						<!-- <widget name="copy_label_widget" /> -->
-						<button string="Copy Label" name="copy_label" type="object" />
+						<t t-set="label" t-value="formated_label" />
+						<button string="Copy Label" name="copy_label" type="object" onClick="console.log('{label}')" />
 						<!-- <label for="formated_label">Test</label> -->
 					</tree>
 				</field>
