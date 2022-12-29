@@ -63,23 +63,17 @@ class invoiceLine(models.Model):
         priceResult = self.env['product.pricelist.item'].search(
             [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', product.sku)])
         if (len(priceResult) < 1):
-            self.price_unit = product.price
-            self.price_subtotal = product.price
-            return None
+            return product.price
 
         # Appy Price from Pricelist
         _logger.info(self.tax_ids)
-        return priceResult[-1].fixed_price
-
-        # raise Exception(
-        # f'Price Result is: {priceResult} SKU: {product.sku} Pricelist: {pricelist.id}')
-        raise Exception(f'{self.price_unit}')
+        return priceResult[-1].fixed_prices
 
     @api.onchange('price_unit')
     def init_price(self):
         if (self.product_id != False and self.price_unit == 0):
             price = self.set_price()
-            if (not price == None):
+            if (not price == False):
                 self.price_unit = price
 
     def get_applied_name(self):
