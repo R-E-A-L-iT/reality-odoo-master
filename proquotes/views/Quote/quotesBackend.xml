@@ -17,8 +17,8 @@
 					<tree>
 						<field name="name" />
 						<field name="product_id" />
-						<field string="Label" name="formated_label" />
-						<label for="formated_label">Test</label>
+						<button string="Label" name="formated_label" />
+						<!-- <label for="formated_label">Test</label> -->
 					</tree>
 				</field>
 				<group name="custom_quote_details">
