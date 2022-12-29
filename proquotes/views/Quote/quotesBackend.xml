@@ -17,7 +17,7 @@
 					<tree>
 						<field name="name" />
 						<field name="product_id" />
-						<button string="Label" name="formated_label" />
+						<button name="formated_label" />
 						<!-- <label for="formated_label">Test</label> -->
 					</tree>
 				</field>
