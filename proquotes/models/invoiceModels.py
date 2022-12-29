@@ -58,6 +58,7 @@ class invoiceLine(models.Model):
         compute='get_applied_name', string="Applied Name")
 
     def set_price(self):
+        raise Exception(f'{self.price_unit}')
         pricelist = self.move_id.pricelist_id
         product = self.product_id
         priceResult = self.env['product.pricelist.item'].search(
