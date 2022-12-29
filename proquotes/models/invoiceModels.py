@@ -72,7 +72,7 @@ class invoiceLine(models.Model):
         self.price_unit = priceResult[-1].fixed_price
         self.price_subtotal = self.quantity * \
             priceResult[-1].fixed_price
-        raise Exception(f'{priceResult[-1].fixed_price}')
+        # raise Exception(f'{priceResult[-1].fixed_price}')
 
     @api.onchange('price_unit')
     def init_price(self):
