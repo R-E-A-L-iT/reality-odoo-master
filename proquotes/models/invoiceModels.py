@@ -58,7 +58,7 @@ class invoiceLine(models.Model):
         compute='get_applied_name', string="Applied Name")
 
     def set_price(self):
-        raise Exception(f'{self.move_id}')
+        raise Exception(f'{self.move_id.pricelist_id.name}')
 
     @api.onchange('price_unit')
     def init_price(self):
