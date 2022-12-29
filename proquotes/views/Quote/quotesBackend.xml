@@ -15,7 +15,11 @@
 				<field name="partner_ids" invisible="0" />
 				<!-- <field name="products" invisible="0" /> -->
 				<t t-foreach="products" t-as="p">
-					<span class="o_form_label" t-out="p" invisible="0" />
+					<div>
+						<div>
+							<t t-out="p" invisible="0" />
+						</div>
+					</div>
 				</t>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
