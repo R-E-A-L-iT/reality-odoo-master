@@ -13,10 +13,12 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<field t-attf-string="{{products}}" name="products" context="{'name':name, 'id':id}" invisible="0" />
-				<t t-foreach="products">
-					<button string="Button Name" name="Product" />
-				</t>
+				<field name="products" invisible="0">
+					<tree>
+						<field name="name" />
+						<field name="product_id" />
+					</tree>
+				</field>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
