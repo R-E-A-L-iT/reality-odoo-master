@@ -18,6 +18,7 @@
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" onclick="console.log('clicked')" />
+						<button>Click Me</button>
 					</tree>
 				</field>
 				<group name="custom_quote_details">
