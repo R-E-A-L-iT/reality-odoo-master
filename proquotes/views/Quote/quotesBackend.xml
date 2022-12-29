@@ -18,7 +18,7 @@
 					<tree>
 						<field name="name" />
 						<field name="product_id" />
-						<field name="formated_label" widget="CopyclipboardChar" />
+						<field name="formated_label" widget="CopyClipboardChar" />
 						<!-- <widget name="copy_label_widget" /> -->
 						<!-- <label for="formated_label">Test</label> -->
 						<button string="Copy Label" name="%(copy_label)d" type="action" />
