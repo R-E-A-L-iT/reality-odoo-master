@@ -61,7 +61,7 @@ class invoiceLine(models.Model):
         pricelist = self.move_id.pricelist_id
         product = self.product_id
         priceResult = self.env['product.pricelist.item'].search(
-            [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
+            [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', product.sku)])
         if (len(priceResult) < 1):
             self.price_unit = product.price
             self.price_subtotal = product.price
