@@ -22,7 +22,7 @@
 						<!-- <widget name="copy_label_widget" /> -->
 						<!-- <label for="formated_label">Test</label> -->
 					</tree>
-					<button string="Copy Label" name="copy_label" type="object" t-attf-onClick="console.log('{{label}}')" />
+					<button string="Copy Label" t-attf-onClick="console.log('{{label}}')" />
 				</field>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
