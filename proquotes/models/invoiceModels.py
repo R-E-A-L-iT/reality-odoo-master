@@ -67,7 +67,7 @@ class invoiceLine(models.Model):
 
         # Appy Price from Pricelist
         _logger.info(self.tax_ids)
-        return priceResult[-1].fixed_prices
+        return priceResult[-1].fixed_price
 
     @api.onchange('price_unit')
     def init_price(self):
