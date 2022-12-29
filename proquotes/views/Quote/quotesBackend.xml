@@ -13,8 +13,8 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<field name="products" readonly="True" invisible="0" edit="0">
-					<tree edit="0" readonly="True" widget="one2many_list" editable="bottom">
+				<field name="products" readonly="True" widget="one2many_list">
+					<tree edit="0" readonly="True">
 						<field name="name" readonly="True" />
 						<field name="product_id" readonly="True" />
 						<field name="formated_label" readonly="True" widget="CopyClipboardChar" />
