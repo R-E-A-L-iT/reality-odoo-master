@@ -240,7 +240,8 @@ class owner(models.Model):
     owner = fields.Many2one('res.partner', string="Owner")
 
     def copy_label(self):
-        pass
+        # Form Button Needs a Python Target Function
+        return
 
 
 # pdf footer
