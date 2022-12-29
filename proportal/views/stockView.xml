@@ -9,9 +9,9 @@
             <xpath expr="//group/group" position="inside">
                 <field name="owner" string="Owner" />
                 <field name="formated_label" string="Formated Label" widget="CopyClipboardChar" />
-                <field name=" sku" string=" SKU" />
-                <field name=" equipment_number" string=" Equipment Number" />
-                <field name=" expire" string=" Expiration Date" />
+                <field name="sku" string="SKU" />
+                <field name="equipment_number" string="Equipment Number" />
+                <field name="expire" string="Expiration Date" />
             </xpath>
         </field>
     </record>
