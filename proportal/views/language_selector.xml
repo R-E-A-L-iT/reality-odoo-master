@@ -5,6 +5,7 @@
         <xpath expr="//div" position="after">
             <div>
                 <a style="cursor: pointer">EN</a>
+                <span>|</span>
                 <a style="cursor: pointer">FR</a>
             </div>
         </xpath>
