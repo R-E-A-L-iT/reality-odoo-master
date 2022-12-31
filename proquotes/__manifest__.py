@@ -39,7 +39,7 @@
 
     'version': '0.8',
 
-    # always loadedthi
+    # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/Quote/quotesBackend.xml',
