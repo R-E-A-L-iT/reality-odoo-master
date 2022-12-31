@@ -158,3 +158,7 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 .nav-link>span {
 	color: #db0d0d;
 }
+
+.js_language_selector {
+	display: none !important;
+}
