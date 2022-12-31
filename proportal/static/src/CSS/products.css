@@ -13,3 +13,7 @@
 #product_detail>div {
 	margin: auto;
 }
+
+.js_language_selector {
+	display: none;
+}
