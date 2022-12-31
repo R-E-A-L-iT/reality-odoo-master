@@ -3,7 +3,7 @@
 <odoo>
     <template id="lang-control" inherit_id="portal.language_selector">
         <xpath expr="//div" position="after">
-            <div>
+            <div class="lang_div">
                 <a style="cursor: pointer">EN</a>
                 <span>|</span>
                 <a style="cursor: pointer">FR</a>
