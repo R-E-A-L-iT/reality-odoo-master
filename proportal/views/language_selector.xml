@@ -4,8 +4,8 @@
     <template id="lang-control" inherit_id="portal.language_selector">
         <xpath expr="//div" position="after">
             <div>
-                <a>EN</a>
-                <a>FR</a>
+                <a style="cursor: pointer">EN</a>
+                <a style="cursor: pointer">FR</a>
             </div>
         </xpath>
     </template>
