@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template id="lang-control" inherit_id="portal.language_selector">
+    <template name="language selector" id="lang-control" inherit_id="portal.language_selector">
         <xpath expr="//div" position="after">
             <div class="lang_div">
                 <a href="/" data-url_code="en" class="js_change_lang" style="cursor: pointer">EN</a>
