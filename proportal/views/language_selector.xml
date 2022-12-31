@@ -2,8 +2,10 @@
 
 <odoo>
     <template id="lang-control" inherit_id="portal.language_selector">
-        <!-- <div> -->
-        <!-- <span>Test</span> -->
-        <!-- </div> -->
+        <xpath expr="//div" position="after">
+            <div>
+                <span>Test</span>
+            </div>
+        </xpath>
     </template>
 </odoo>
