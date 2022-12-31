@@ -15,5 +15,5 @@
 }
 
 .js_language_selector {
-	display: none;
+	display: none !important;
 }
