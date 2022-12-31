@@ -4,9 +4,9 @@
     <template id="lang-control" inherit_id="portal.language_selector">
         <xpath expr="//div" position="after">
             <div class="lang_div">
-                <a href="/en_US/" style="cursor: pointer">EN</a>
+                <a href="/en_US/" data-url_code="en" style="cursor: pointer">EN</a>
                 <span>|</span>
-                <a href="/fr_CA/" style="cursor: pointer">FR</a>
+                <a href="/fr_CA/" data-url_code="fr_CA" style="cursor: pointer">FR</a>
             </div>
         </xpath>
     </template>
