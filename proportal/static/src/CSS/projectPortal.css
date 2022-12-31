@@ -166,7 +166,7 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 }
 
 .lang_div a {
-	color: white;
+	color: white !important;
 }
 .js_language_selector {
 	display: none !important;
