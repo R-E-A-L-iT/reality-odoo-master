@@ -13,8 +13,14 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<field name="products" invisible="0" />
-
+				<field name="products" invisible="0">
+					<tree>
+						<field name="name" />
+						<field name="product_id" />
+						<field name="formated_label" />
+						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
+					</tree>
+				</field>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
@@ -44,16 +50,6 @@
 				<field name="applied_name" invisible="0" />
 			</xpath>
 
-			<!-- Find Correct XPATH for description -->
-			<!--
-			<xpath expr="//field" position="attributes">
-				<attribute name="invisible">1</attribute>
-			</xpath>
-
-			<xpath expr="//field" position="after">
-
-			</xpath>
-			-->
 			<xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
 				<field name="optional" invisible="0" />
 				<field name="selected" invisible="0" />
