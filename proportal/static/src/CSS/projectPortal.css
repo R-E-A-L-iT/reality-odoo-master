@@ -170,7 +170,7 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	color: rgba(255, 255, 255, 0.7) !important;
 }
 .js_language_selector {
-	/* display: none !important; */
+	display: none !important;
 }
 
 .o_footer_copyright_name {
