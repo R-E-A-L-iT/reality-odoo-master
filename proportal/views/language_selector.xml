@@ -8,7 +8,7 @@
                     <a
                         t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
                         t-attf-class="js_change_lang"
-                        t-att-data-url_code="'en_US'">
+                        t-att-data-url_code="'en'">
                         EN
                     </a>
                     <span>|</span>
