@@ -5,7 +5,7 @@
         <xpath expr="//div" position="after">
             <div class="lang_div">
                 <t>
-                    <a data-url_code="en_US" class="js_change_lang" style="cursor: pointer">
+                    <a href="/" data-url_code="en_US" class="js_change_lang" style="cursor: pointer">
                         EN</a>
                     <span>|</span>
                     <a href="/fr_CA/" data-url_code="fr_CA" class="js_change_lang"
