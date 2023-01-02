@@ -6,7 +6,7 @@
             <div class="lang_div">
                 <t>
                     <a
-                        t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en_US')"
+                        t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
                         data-url_code="en" class="js_change_lang"
                         style="cursor: pointer">
                         EN
