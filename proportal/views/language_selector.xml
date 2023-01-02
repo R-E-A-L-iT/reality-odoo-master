@@ -7,14 +7,14 @@
                 <t>
                     <a
                         t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en_US')"
-                        data-url_code="en" class="js_change_lang"
+                        data-url_code="en" class="js_change_lang active"
                         style="cursor: pointer">
                         EN
                     </a>
                     <span>|</span>
                     <a
                         t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='fr_CA')"
-                        data-url_code="fr_CA" class="js_change_lang"
+                        data-url_code="fr_CA" class="js_change_lang active"
                         style="cursor: pointer">
                         FR
                     </a>
