@@ -182,5 +182,5 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 }
 
 .custom_footer span {
-	color: #888888;
+	color: #888888 !important;
 }
