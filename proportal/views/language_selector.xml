@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template name="language selector" id="lang-control" inherit_id="portal.language_selector">
-        <xpath expr="//div" position="after">
-            <div class="lang_div">
-                <t>
-                    <a
-                        t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
-                        t-attf-class="js_change_lang"
-                        t-att-data-url_code="'en'">
-                        EN
-                    </a>
-                    <span>|</span>
-                    <a
-                        t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='fr_CA')"
-                        data-url_code="fr_CA" class="js_change_lang"
-                        style="cursor: pointer">
-                        FR
-                    </a>
-                </t>
-            </div>
-        </xpath>
+    <template name="language selector" id="lang-control">
+        <div class="lang_div">
+            <t>
+                <a
+                    t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
+                    t-attf-class="js_change_lang"
+                    t-att-data-url_code="'en'">
+                    EN
+                </a>
+                <span>|</span>
+                <a
+                    t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='fr_CA')"
+                    data-url_code="fr_CA" class="js_change_lang"
+                    style="cursor: pointer">
+                    FR
+                </a>
+            </t>
+        </div>
     </template>
 </odoo>
