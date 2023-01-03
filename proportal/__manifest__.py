@@ -50,7 +50,7 @@
         'views/cart.xml',
         'views/carousel.xml',
         'views/shopTile.xml',
-        # 'views/language_selector.xml'
+        'views/language_selector.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
