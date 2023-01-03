@@ -160,7 +160,9 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 }
 
 #custom_footer_bar {
-	display: block;
+	display: flex;
+	width: 100vw;
+	justify-content: space-between;
 }
 #custom-footer > div#custom_footer_bar > div > a, #custom-footer > div#custom_footer_bar > div > span {
 	color: #888;
