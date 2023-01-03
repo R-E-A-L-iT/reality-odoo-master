@@ -159,18 +159,15 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	color: #db0d0d;
 }
 
-.lang_div {
-	float: right;
-	right: 2.5vw;
-	position: fixed;
-	bottom: 1rem;
+#custom_footer_bar {
+	display: flex;
+	width: 100vw;
+	justify-content: space-between;
 }
-
-.lang_div a, .lang_div span {
-	color: rgba(255, 255, 255, 0.7) !important;
-}
-.js_language_selector {
-	display: none !important;
+#custom-footer > div#custom_footer_bar > div > a, #custom-footer > div#custom_footer_bar > div > span {
+	color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
 }
 
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
