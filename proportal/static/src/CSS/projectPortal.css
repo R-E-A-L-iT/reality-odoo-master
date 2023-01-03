@@ -159,9 +159,12 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	color: #db0d0d;
 }
 
-/* .lang_div a, .lang_div span {
-	color: rgba(255, 255, 255, 0.7) !important;
-} */
+.lang_div a, .lang_div span {
+	/* color: rgba(255, 255, 255, 0.7) !important; */
+	color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
+}
 
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
 	display: none;
