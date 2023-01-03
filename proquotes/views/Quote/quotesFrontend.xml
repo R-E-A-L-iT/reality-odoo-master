@@ -387,6 +387,9 @@
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
+			<div id="quote_disclaimer">
+				<span t-if="clang == 'en_CA' clang == 'en_US'">All prices in <t t-out="sales_order.currency_id.name" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
+			</div>
 			<t t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
