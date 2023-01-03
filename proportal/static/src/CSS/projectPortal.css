@@ -180,3 +180,21 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	height: 3rem;
 }
+
+#custom-footer span {
+	color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
+}
+
+#sidebar_content {
+	z-index: 1;
+}
+
+#wrapwrap > main > div.o_portal.container.mt-3 > div > div > ol > li.breadcrumb-item.ml-1 > a > i{
+	margin-left: 2.5vw;
+}
+
+#wrapwrap#wrapwrap.o_portal {
+	background-color: #000 !important;
+}
