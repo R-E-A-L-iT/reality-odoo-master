@@ -191,6 +191,6 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	z-index: 1;
 }
 
-a[href=".my/home"] {
+#wrapwrap > main > div.o_portal.container.mt-3 > div > div > ol > li.breadcrumb-item.ml-1 > a > i{
 	margin-left: 2.5vw;
 }
