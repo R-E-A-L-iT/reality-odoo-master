@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template name="language selector" id="lang-control">
+    <template name="language selector" id="lang_control">
         <div class="lang_div">
             <a
                 t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
