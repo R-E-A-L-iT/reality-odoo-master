@@ -195,6 +195,6 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	margin-left: 2.5vw;
 }
 
-main {
-	background-color: #000;
+#wrapwrap#wrapwrap.o_portal {
+	background-color: #000 !important;
 }
