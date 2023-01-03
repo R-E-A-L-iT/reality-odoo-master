@@ -198,3 +198,8 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 #wrapwrap#wrapwrap.o_portal {
 	background-color: #000 !important;
 }
+
+.text-center.o_colored_level.col-lg-4.o_cc.o_cc3.pb24.pt48 {
+	padding-block-start: 36px !important;
+	padding-block-end: 36px !important;
+}
