@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <template name="language selector" id="lang-control">
+    <template name="language selector" id="lang-control" inherit_id="portal.language_selector">
         <xpath expr="//div" position="after">
             <div class="lang_div">
                 <t>
