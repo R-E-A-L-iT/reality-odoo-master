@@ -1261,8 +1261,8 @@ class sync(models.Model):
 
 
     def customQuery(self):
-        product = self.env['product.product'].search(
-            [('id', '=', 19450)])
-        _logger.info("product.id 19450: " + str(product))
+        product = self.env['product.template'].search(
+            [('sku', '=', 'CFP-NEUFCHATEL-18')])
+        _logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
         
 
