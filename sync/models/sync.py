@@ -1264,5 +1264,14 @@ class sync(models.Model):
         product = self.env['product.template'].search(
             [('sku', '=', 'CFP-NEUFCHATEL-18')])
         _logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
+
+        sale = self.env['sale_order'].search(
+            [('name', '=', 'S00140')])
+        _logger.info("sale order S00140: " + str(sale))
+
+        #sale = self.env['sale_order_line'].search(
+        #    [('order_id', '=', 'S00140')])  
+
+
         
 
