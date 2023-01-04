@@ -1273,7 +1273,7 @@ class sync(models.Model):
             res += "\n"
         _logger.info(res)
 
-    def customQuery(self):
+    def listAllSaleOrder(self):
         _logger.info("customQuery test")
         self.env.cr.execute("""
             SELECT * 
@@ -1285,6 +1285,21 @@ class sync(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+
+    def customQuery(self):
+        _logger.info("customQuery test")
+        self.env.cr.execute("""
+            SHOW COLUMNS
+            FROM sale_order
+            """)
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)        
+
+
 
 
 
