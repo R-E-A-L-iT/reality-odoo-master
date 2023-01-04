@@ -437,7 +437,7 @@
 			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 
-		<xpath expr="//div[hasclass('container')][1]" position="1">
+		<xpath expr="//data" position="1">
 			<t t-call="custom.custom-footer" />
 		</xpath>
 
