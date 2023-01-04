@@ -645,7 +645,7 @@ class sync(models.Model):
         while (True):
             
 
-            _logger.info("sheet[i][:]: " + str(sheet[i][:]))
+            #_logger.info("sheet[i][:]: " + str(sheet[i][:]))
 
             if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
