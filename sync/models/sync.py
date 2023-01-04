@@ -1262,6 +1262,6 @@ class sync(models.Model):
 
     def customQuery(self):
         sql_test = sql_queries(self)
-        sql_test.listAllLineFromTable()
+        sql_test.listSpecificLineFromTable()
 
 

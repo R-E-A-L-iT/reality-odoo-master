@@ -26,7 +26,7 @@ class sql_queries:
 
     #Log all attributs
     def listTableAttributs(self):
-        _logger.info("listSaleOrderAttributs")
+        _logger.info("listTableAttributs")
         self.db.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
@@ -42,7 +42,7 @@ class sql_queries:
 
     #Log all lines in sale_order table
     def listAllLineFromTable(self):
-        _logger.info("listAllSaleOrder")
+        _logger.info("listAllLineFromTable")
         self.db.env.cr.execute("""
             SELECT * 
             FROM product_attribute
@@ -56,12 +56,12 @@ class sql_queries:
 
 
     #Log a specific sale order
-    def listSpecificSaleOrder(self):
-        _logger.info("listSpecificSaleOrder")
+    def listSpecificLineFromTable(self):
+        _logger.info("listSpecificLineFromTable")
         self.db.env.cr.execute("""
             SELECT * 
-            FROM sale_order
-            WHERE name = 'S00140'
+            FROM product_template
+            WHERE id = 14857
             """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
