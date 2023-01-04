@@ -1259,7 +1259,7 @@ class sync(models.Model):
         _logger.info("------------------------------------------- END start_sku_cleaning")    
 
     
-    def customQuery(self):
+    def listSQLTables(self):
         _logger.info("customQuery test")
         self.env.cr.execute("""
             SELECT table_name
@@ -1271,8 +1271,19 @@ class sync(models.Model):
         for table in tables:
             res += str(table)
             res += "\n"
+        _logger.info(res)
 
-        _logger.info(str(tables))
+    def customQuery(self):
+        _logger.info("customQuery test")
+        self.env.cr.execute("""
+            SELECT *
+            FROM sale_order'
+            """)
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
         _logger.info(res)
 
 
