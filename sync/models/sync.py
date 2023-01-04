@@ -1288,7 +1288,11 @@ class sync(models.Model):
 
     def customQuery(self):
         _logger.info("customQuery test")
-        self.env.cr.execute("SHOW COLUMNS FROM sale_order")
+        self.env.cr.execute("""
+        SELECT COLUMN_NAME 
+        FROM information_schema.columns 
+        WHERE table_name = 'sale_order'
+        """)
         tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
