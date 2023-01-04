@@ -437,12 +437,14 @@
 			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 
-		<xpath expr="//div[@id=&quot;sale_order_communication&quot;]" position="after">
-			<t t-call="custom.custom-footer" />
-		</xpath>
-
 	</template>
 
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
+
+	<template name="portal_footer" id="portal_footer" inherit_id="portal.portal_sidebar">
+		<xpath expr="//t[@t-call=&quot;portal.portal_layout&quot;]" position="after">
+			<t t-call="custom.custom-footer" />
+		</xpath>
+	</template>
 
 </odoo>
