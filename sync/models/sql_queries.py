@@ -59,9 +59,9 @@ class sql_queries:
     def listSpecificLineFromTable(self):
         _logger.info("listSpecificLineFromTable")
         self.db.env.cr.execute("""
-            SELECT product_tmpl_id 
+            SELECT product_template 
             FROM product_product
-            WHERE id = 14857
+            WHERE id = 16923
             """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
