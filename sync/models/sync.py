@@ -1261,9 +1261,13 @@ class sync(models.Model):
     
     def customQuery(self):
         _logger.info("customQuery test")
-        #self.env.cr.execute("SELECT name FROM sys.tables")
-        #res = self.env.cr.fetchall()
-        #_logger.info(str(res))
+        self.env.cr.execute("""
+            SELECT table_name
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE table_type = 'BASE TABLE'
+            """)
+        res = self.env.cr.fetchall()
+        _logger.info(str(res))
 
 
 
