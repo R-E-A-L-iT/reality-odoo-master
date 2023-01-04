@@ -26,6 +26,7 @@ from odoo import models, fields, api
 from .pricelist import sync_pricelist
 from .ccp import sync_ccp
 from .sql_queries import sql_queries
+from .website import syncWeb
 
 _logger = logging.getLogger(__name__)
 
@@ -208,7 +209,8 @@ class sync(models.Model):
             # quit, msg = self.syncPricelist(sheet)
 
         elif (syncType == "WebHTML"):
-            quit, msg = self.syncWebCode(sheet)
+            syncer = syncWeb(sheetName, sheet, self)
+            quit, msg = syncer.syncWebCode(sheet)
 
         _logger.info("Done with " + syncType)
 
@@ -806,89 +808,6 @@ class sync(models.Model):
         product_created = self.env['product.template'].search(
             [('sku', '=', external_id)])
         return product_created
-
-    def syncWebCode(self, sheet):
-        # check sheet width to filter out invalid sheets
-        # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 10
-        columns = dict()
-        missingColumn = False
-
-        # Calculate Indexes
-        if ("Page ID" in sheet[0]):
-            columns["id"] = sheet[0].index("Page ID")
-        else:
-            missingColumn = True
-
-        if ("HTML" in sheet[0]):
-            columns["html"] = sheet[0].index("HTML")
-        else:
-            missingColumn = True
-
-        if ("Valid" in sheet[0]):
-            columns["valid"] = sheet[0].index("Valid")
-        else:
-            missingColumn = True
-
-        if ("Continue" in sheet[0]):
-            columns["continue"] = sheet[0].index("Continue")
-        else:
-            missingColumn = True
-
-        if (len(sheet[0]) != sheetWidth or missingColumn):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + \
-                str(len(sheet[0])) + "</p>"
-            self.sendSyncReport(msg)
-            _logger.info("Sheet Width: " + str(len(sheet[0])))
-            return True, msg
-
-        i = 1
-        msg = ""
-        msg = self.startTable(msg, sheet, sheetWidth)
-        while (True):
-            _logger.info("Website: " + str(i))
-            if (i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE"):
-                break
-
-            if (not self.check_id(str(sheet[i][columns["id"]]))):
-                _logger.info("id")
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i += 1
-                continue
-
-            if (not sheet[i][columns["valid"]].upper() == "TRUE"):
-                _logger.info("Web Valid")
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i += 1
-                continue
-
-            try:
-                _logger.info(sheet[i][columns["id"]])
-                external_id = str(sheet[i][columns["id"]])
-                # _logger.info(external_id)
-                pageIds = self.env['ir.model.data'].search(
-                    [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
-                # _logger.info(pageIds)
-                if (len(pageIds) > 0):
-                    page = self.env['ir.ui.view'].browse(pageIds[-1].res_id)
-                    opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-                    closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
-                    page.arch_base = opener + \
-                        sheet[i][columns["html"]] + closer
-                else:
-                    # msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                    msg = "</p>" + str(external_id) + \
-                        " Page Not Created</p><br/>\n"
-                    _logger.info(str(pageIds))
-                    _logger.info(str(external_id) + " Page Not Created")
-                i += 1
-            except Exception as e:
-                _logger.info(sheet[i][columns['id']])
-                _logger.info(e)
-                # msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                msg = ""
-                return True, msg
-        return False, msg
 
     def check_id(self, id):
         if (" " in id):
