@@ -1260,7 +1260,9 @@ class sync(models.Model):
 
     
     def customQuery(self):
-        self.env.cr.execute("select * from sale.order")
+        self.env.cr.execute("SELECT name FROM sys.tables")
         res = self.env.cr.fetchall()
         _logger.info(str(res))
+
+
 
