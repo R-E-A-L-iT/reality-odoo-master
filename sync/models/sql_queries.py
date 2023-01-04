@@ -41,7 +41,7 @@ class sql_queries:
 
 
     #Log all lines in sale_order table
-    def listAlllineFromTable(self):
+    def listAllLineFromTable(self):
         _logger.info("listAllSaleOrder")
         self.db.env.cr.execute("""
             SELECT * 
