@@ -52,6 +52,10 @@
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
+			<span>Quotation</span>
+		</xpath>
+
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
