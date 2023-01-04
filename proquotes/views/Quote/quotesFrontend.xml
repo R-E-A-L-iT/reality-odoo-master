@@ -443,7 +443,7 @@
 
 	<template name="portal_footer" id="portal_footer" inherit_id="portal.portal_sidebar">
 		<xpath expr="//body" position="after">
-			<t t-call="custom.custom-footer" />
+			<!-- <t t-call="custom.custom-footer" /> -->
 		</xpath>
 	</template>
 
