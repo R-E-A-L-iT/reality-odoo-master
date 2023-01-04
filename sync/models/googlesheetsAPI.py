@@ -19,7 +19,7 @@ class sheetsAPI(models.Model):
     # 1j3nlH8QH-s8D_oGE0TwsHxoA4Uvb4QB05DriH4Zh5KM
 
     
-    _master_database_template_id = "1j3nlH8QH-s8D_oGE0TwsHxoA4Uvb4QB05DriH4Zh5KM"
+    _master_database_template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
     
     def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
