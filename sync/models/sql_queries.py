@@ -70,6 +70,27 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
+    #Log a specific sale order
+    def listSpecificProducft(self):
+        _logger.info("listSpecificLineFromTable")
+        self.db.env.cr.execute("""
+            SELECT 
+                PT.name,
+                PT.cadVAL,
+                PT.usdVAL
+            FROM product_template PT
+            INNER JOIN product_product PP ON
+                PP.product_tmpl_id = PT.id
+            WHERE PP.id = 19450
+            """)
+        tables = self.db.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)        
+
+
 
     def listProductFromSpecificSaleOrder(self):
         _logger.info("listProductFromSpecificSaleOrder")
