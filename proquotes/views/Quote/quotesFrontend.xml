@@ -442,7 +442,7 @@
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
 
 	<template name="portal_footer" id="portal_footer" inherit_id="portal.portal_sidebar">
-		<xpath expr="//t[@t-call=&quot;portal.portal_layout&quot;]" position="after">
+		<xpath expr="//body" position="inside">
 			<t t-call="custom.custom-footer" />
 		</xpath>
 	</template>
