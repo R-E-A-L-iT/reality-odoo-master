@@ -438,7 +438,7 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;sale_order_communication&quot;]">
-			<t t-call="custon.custom-footer" />
+			<t t-call="custom.custom-footer" />
 		</xpath>
 
 	</template>
