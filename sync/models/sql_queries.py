@@ -23,6 +23,23 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
+
+    #Log all attributs
+    def listTableAttributs(self):
+        _logger.info("listSaleOrderAttributs")
+        self.db.env.cr.execute("""
+        SELECT COLUMN_NAME 
+        FROM information_schema.columns 
+        WHERE table_name = 'product_template'
+        """)
+        tables = self.db.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)  
+
+
     #Log all lines in sale_order table
     def listAllSaleOrder(self):
         _logger.info("listAllSaleOrder")
@@ -37,20 +54,6 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
-    #Log all attributs
-    def listSaleOrderAttributs(self):
-        _logger.info("listSaleOrderAttributs")
-        self.db.env.cr.execute("""
-        SELECT COLUMN_NAME 
-        FROM information_schema.columns 
-        WHERE table_name = 'product_template'
-        """)
-        tables = self.db.env.cr.fetchall()
-        res = "\n"
-        for table in tables:
-            res += str(table)
-            res += "\n"
-        _logger.info(res)  
 
     #Log a specific sale order
     def listSpecificSaleOrder(self):
@@ -66,6 +69,7 @@ class sql_queries:
             res += str(table)
             res += "\n"
         _logger.info(res)
+
 
     def listProductFromSpecificSaleOrder(self):
         _logger.info("listProductFromSpecificSaleOrder")
