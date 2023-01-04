@@ -1276,8 +1276,8 @@ class sync(models.Model):
     def customQuery(self):
         _logger.info("customQuery test")
         self.env.cr.execute("""
-            SELECT *
-            FROM sale_order'
+            SELECT * 
+            FROM sale_order
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
