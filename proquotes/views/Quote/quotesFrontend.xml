@@ -18,10 +18,9 @@
 				<img t-if="sale_order.header[-4:] == '.jpg'" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
 				<video t-if="sale_order.header[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
 				<div class="quote-address-block">
-					<h1 class="title">QUOTATION</h1>
+					<h1 class="title" t-field="sale_order.partner_id.name" />
 					<div class="hr"></div>
 					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />
-					<h2 class="subtitle" t-field="sale_order.partner_id.name" />
 					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
 					<h2 class="subtitle">
 						<span t-if="sale_order.partner_id.city != False" t-raw="sale_order.partner_id.city + ','"></span>
@@ -51,6 +50,10 @@
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+		</xpath>
+
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
+			<span>Quotation</span>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
@@ -152,7 +155,8 @@
 						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
 					</td>
 					<td>
-						<span>Tax</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
+						<span t-elif="clang == 'fr_CA'">Taxes</span>
 					</td>
 					<td class="text-middle">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
@@ -387,6 +391,7 @@
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
+
 			<t t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
@@ -433,5 +438,11 @@
 	</template>
 
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
+
+	<template name="portal_footer" id="portal_footer" inherit_id="portal.portal_layout">
+		<xpath expr="//div[@id=&quot;wrap&quot;]" position="after">
+			<t t-call="custom.custom-footer" />
+		</xpath>
+	</template>
 
 </odoo>
