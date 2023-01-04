@@ -437,7 +437,7 @@
 			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 
-		<xpath expr="//t[@t-call=&quot;portal.portal_record_sidebar&quot;]" position="after">
+		<xpath expr="//div[@id=&quot;sale_order_communication&quot;]" position="after">
 			<t t-call="custom.custom-footer" />
 		</xpath>
 
