@@ -76,8 +76,8 @@ class sql_queries:
         self.db.env.cr.execute("""
             SELECT 
                 PT.name,
-                PT.cadVAL,
-                PT.usdVAL
+                PT.cadVal,
+                PT.usdVal
             FROM product_template PT
             INNER JOIN product_product PP ON
                 PP.product_tmpl_id = PT.id
