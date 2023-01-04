@@ -1266,8 +1266,14 @@ class sync(models.Model):
             FROM INFORMATION_SCHEMA.TABLES
             WHERE table_type = 'BASE TABLE'
             """)
-        res = self.env.cr.fetchall()
-        _logger.info(str(res))
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+
+        _logger.info(str(tables))
+        _logger.info(res)
 
 
 
