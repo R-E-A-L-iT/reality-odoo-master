@@ -53,7 +53,7 @@
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
-			<span>Quotation</span>
+			<h1>Quotation</h1>
 		</xpath>
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
