@@ -1261,7 +1261,8 @@ class sync(models.Model):
 
 
     def customQuery(self):
-        sql_test = sql_queries(self)
-        sql_test.listSpecificProducft()
-
+        product = self.env['product.product'].search(
+            [('id', '=', 19450)])
+        _logger.info("product.id 19450: " + str(product))
+        
 
