@@ -446,7 +446,7 @@
 					<span t-out="singleProductValueFormated" />
 				</t>
 			</td>
-			<td t-else="" colspan="0" style="border-left-style: none !important" />
+			<td t-else="" colspan="0" style="border-left-color: #fff; border-left-style: none !important;" />
 		</xpath>
 
 		<!-- Remove Right Border When Product Value Not Displayed -->
