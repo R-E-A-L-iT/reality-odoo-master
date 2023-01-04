@@ -32,21 +32,40 @@ class syncWeb():
         if ("Page ID" in sheet[0]):
             columns["id"] = sheet[0].index("Page ID")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Page ID Missing")
+            missingColumn = True
+
+        if ("Lang" in sheet[0]):
+            columns["lang"] = sheet[0].index("Lang")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Lang Missing")
             missingColumn = True
 
         if ("HTML" in sheet[0]):
             columns["html"] = sheet[0].index("HTML")
         else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "HTML Missing")
+            missingColumn = True
+
+        if ("Enabled" in sheet[0]):
+            columns["enable"] = sheet[0].index("Enabled")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Enable Missing")
             missingColumn = True
 
         if ("Valid" in sheet[0]):
             columns["valid"] = sheet[0].index("Valid")
         else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
             missingColumn = True
 
         if ("Continue" in sheet[0]):
             columns["continue"] = sheet[0].index("Continue")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Continu Missing")
             missingColumn = True
 
         if (len(sheet[0]) != sheetWidth or missingColumn):
@@ -67,14 +86,14 @@ class syncWeb():
             if (not utilities.check_id(str(sheet[i][columns["id"]]))):
                 _logger.info("id")
                 msg = utilities.buildMSG(
-                    msg, self.sheetName, "Header", "Id Missing")
+                    msg, self.name, str(sheet[i][columns["id"]]), "Invalid ID")
                 i += 1
                 continue
 
             if (not sheet[i][columns["valid"]].upper() == "TRUE"):
                 _logger.info("Web Valid")
                 msg = utilities.buildMSG(
-                    msg, self.sheetName, "Header", "Valid Column Missing")
+                    msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row")
                 i += 1
                 continue
 
@@ -93,14 +112,14 @@ class syncWeb():
                     page.arch_base = opener + \
                         sheet[i][columns["html"]] + closer
                 else:
-                    msg = utilities.buildMSG(msg, self.sheetName, str(
+                    msg = utilities.buildMSG(msg, self.name, str(
                         external_id), "Page Not Created")
                     _logger.info(str(external_id) + " Page Not Created")
                 i += 1
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.info(e)
-                msg = utilities.buildMSG(msg, self.sheetName, str(
+                msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
                 return True, msg
