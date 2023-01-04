@@ -1262,4 +1262,4 @@ class sync(models.Model):
 
     def customQuery(self):
         sql_test = sql_queries(self)
-        sql_test.listSpecificSaleOrder()
+        sql_test.listProductFromSpecificSaleOrder()

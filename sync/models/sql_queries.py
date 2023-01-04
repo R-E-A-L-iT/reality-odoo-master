@@ -10,7 +10,7 @@ class sql_queries:
     
     #Log the list of all SQL table in odoo database
     def listSQLTables(self):
-        _logger.info("customQuery test")
+        _logger.info("listSQLTables")
         self.db.env.cr.execute("""
             SELECT table_name
             FROM INFORMATION_SCHEMA.TABLES
@@ -25,7 +25,7 @@ class sql_queries:
 
     #Log all lines in sale_order table
     def listAllSaleOrder(self):
-        _logger.info("customQuery test")
+        _logger.info("listAllSaleOrder")
         self.db.env.cr.execute("""
             SELECT * 
             FROM sale_order
@@ -39,7 +39,7 @@ class sql_queries:
 
     #Log all sale_order attribut
     def listSaleOrderAttributs(self):
-        _logger.info("customQuery test")
+        _logger.info("listSaleOrderAttributs")
         self.db.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
@@ -54,7 +54,7 @@ class sql_queries:
 
     #Log a specific sale order
     def listSpecificSaleOrder(self):
-        _logger.info("customQuery test")
+        _logger.info("listSpecificSaleOrder")
         self.db.env.cr.execute("""
             SELECT * 
             FROM sale_order
@@ -68,7 +68,7 @@ class sql_queries:
         _logger.info(res)
 
     def listProductFromSpecificSaleOrder(self):
-        _logger.info("customQuery test")
+        _logger.info("listProductFromSpecificSaleOrder")
         self.db.env.cr.execute("""
             SELECT * 
             FROM sale_order_line SOL
