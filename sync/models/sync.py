@@ -157,7 +157,7 @@ class sync(models.Model):
         except ValueError:
             sheetIndex = -1
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
-                str(i) + "called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+                str(i) + " called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
             _logger.info(msg)
         
         return sheetIndex, msg
