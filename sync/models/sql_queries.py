@@ -51,3 +51,20 @@ class sql_queries:
             res += str(table)
             res += "\n"
         _logger.info(res)  
+
+    #Log a specific sale order
+    def listSpecificSaleOrder(self):
+        _logger.info("customQuery test")
+        self.db.env.cr.execute("""
+            SELECT * 
+            FROM sale_order
+            WHERE name = 'S00140'
+            """)
+        tables = self.db.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)
+
+        
