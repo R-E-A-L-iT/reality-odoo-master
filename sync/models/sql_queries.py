@@ -73,11 +73,14 @@ class sql_queries:
             SELECT 
                 SOL.id,
                 SOL.order_id,
-                SOL.product_id 
+                SOL.product_id,
+                P.sku            
             FROM sale_order_line SOL
             INNER JOIN sale_order SO ON 
                 SO.id = SOL.order_id AND 
                 SO.name = 'S00140'
+            INNER JOIN product_product P ON
+                P.id = SOL.product_id
             """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
