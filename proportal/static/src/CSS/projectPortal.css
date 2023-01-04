@@ -171,7 +171,7 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 }
 
 #bottom > div.o_footer_copyright.o_colored_level.o_cc {
-	display: none;
+	/* display: none; */
 }
 
 #bottom>div.o_footer_copyright.o_colored_level.o_cc {
