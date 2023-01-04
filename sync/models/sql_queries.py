@@ -43,7 +43,7 @@ class sql_queries:
         self.db.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
-        WHERE table_name = 'sale_order'
+        WHERE table_name = 'sale_order_line'
         """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
