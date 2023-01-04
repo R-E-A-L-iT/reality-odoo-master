@@ -25,102 +25,162 @@ from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
 from .ccp import sync_ccp
+from .sql_queries import sql_queries
 
 _logger = logging.getLogger(__name__)
 
-
 class sync(models.Model):
     _name = "sync.sync"
-
     _inherit = "sync.sheets"
-
     DatabaseURL = fields.Char(default="")
-
     _description = "Sync App"
+
+    _sync_cancel_reason = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>"
+    _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"
+
+    _odoo_sync_data_index = 0
 
     # STARTING POINT
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
-        # Checks authentication values
-        if (psw == None):
-            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
-            _logger.info(msg)
-            self.sendSyncReport(msg)
-            return
+        template_id = self._master_database_template_id       
 
-        # next funct
-        self.getSyncData(psw)
-        _logger.info("Ending Sync")
+        sheetName = ""
+        sheetIndex = -1
+        modelType = ""
+        valid = False
 
-    def getSyncData(self, psw):
-        template_id = self._master_database_template_id
-        # get the database data; reading in the sheet
-        try:
-            sync_data = self.getDoc(psw, template_id, 0)
-        except Exception as e:
-            _logger.info(e)
-            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
-            self.sendSyncReport(msg)
-            return
-
-        i = 1
-        sheetIndex = ""
-        syncType = ""
+        line_index = 1
         msg = ""
+
+        # Checks authentication values
+        if (not self.is_psw_format_good(psw)):
+            return
+
+        # Get the ODOO_SYNC_DATA tab
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)   
 
         # loop through entries in first sheet
         while (True):
-            validity = str(sync_data[i][3])
-            if (validity != "TRUE"):
-                if (i <= 9):
-                    _logger.info("Valid: " + sheetName + " is " +
-                                 validity + "  .ABORTING sync process!")
-                else:
-                    _logger.info(
-                        "Sync process has finish after updating 9 tabs.")
+            msg_temp = ""
+            sheetName = str(sync_data[line_index][0])
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
+            msg += msg_temp
+            modelType = str(sync_data[line_index][2])
+            valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+
+            if (not valid):
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " + str(sync_data[line_index][3]) + ".  Ending sync process!")
                 break
 
-            sheetName = str(sync_data[i][0])
-            try:
-                sheetIndex = int(sync_data[i][1])
-            except:
-                msg += "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + \
-                    str(i) + ": " + str(sync_data[i][1]) + "."
-                _logger.info(
-                    "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column B called 'Sheet Index', line " + str(i) + ": " + str(sync_data[i][1]) + ".")
+            if (sheetIndex < 0):
                 break
-            syncType = str(sync_data[i][2])
             
-
-            
-
-            _logger.info("Valid: " + sheetName + " is " + validity + ".")
+            _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
             quit, msgr = self.getSyncValues(sheetName,
                                             psw,
                                             template_id,
                                             sheetIndex,
-                                            syncType)
+                                            modelType)
             msg = msg + msgr
-            i += 1
+            line_index += 1
 
             if (quit):
-                self.syncCancel(msg)
+                self.syncFail(msg, self._sync_cancel_reason)
                 return
 
         # error
         if (msg != ""):
-            self.syncFail(msg)
+            self.syncFail(msg, self._sync_fail_reason)
 
-    def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
+        _logger.info("Ending Sync")
+
+    #Check the password format
+    #Input
+    #   psw:   The password to open the googlesheet
+    #Output
+    #   True : Password format is good
+    #   False: Password format if bad
+    def is_psw_format_good(self, psw):  
+
+        # Checks authentication values
+        if ((psw == None) or (str(type(psw)) != "<class 'dict'>")):
+            msg = "<h1>Sync Error</h1><p>Authentication values Missing</p>"
+            _logger.info(msg)
+            self.sendSyncReport(msg)
+            return False
+        
+        return True
+
+
+    #Get a tab in the GoogleSheet Master Database
+    #Input
+    #   template_id:    The GoogleSheet Template ID to acces the master database
+    #   psw:            The password to acces the DB
+    #   index:          The index of the tab to pull
+    #Output
+    #   data:           A tab in the GoogleSheet Master Database
+    def getMasterDatabaseSheet(self, template_id, psw, index):  
+        # get the database data; reading in the sheet
+        
         try:
-            sheet = self.getDoc(psw, template_id, sheetIndex)
+            return (self.getDoc(psw, template_id, index))
         except Exception as e:
             _logger.info(e)
-            msg = (
-                "<h1>Source Document Invalid<\h1><p>Page: %s</p><p>Sync Fail</p>" % sheetIndex)
-            self.sendSyncReport(msg)
-            return False, ""
+            msg = "<h1>Source Document Invalid</h1><p>Sync Fail</p>"
+            self.syncFail(msg, self._sync_fail_reason)            
+            quit
+
+
+    #Get the Sheet Index of the Odoo Sync Data tab, column B
+    # Input
+    #   sync_data:  The GS ODOO_SYNC_DATA tab
+    #   lineIndex:  The index of the line to get the SheetIndex
+    # Output
+    #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
+    #   msg:        Message to append to the repport
+    def getSheetIndex(self, sync_data, lineIndex):
+        sheetIndex = -1
+        i = -1        
+        msg = ""
+
+        if (lineIndex < 1):
+            return -1
+
+        i = self.getColumnIndex(sync_data, "Sheet Index")
+        if (i < 0):
+            return -1            
+
+        try:
+            sheetIndex = int(sync_data[lineIndex][i])
+        except ValueError:
+            sheetIndex = -1
+            msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
+                str(i) + " called 'Sheet Index', line " + str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            _logger.info(msg)
+        
+        return sheetIndex, msg
+
+
+    #Method to get the sync_pricelist calss.
+    #Input
+    #   sheetName: The name of the tab
+    #   sheet:     The sheet in format 
+    #      [['ColumnName1','ColumnName2',...,'ColumnNameX'],
+    #       ['Line1 Column1','Line1 Column2',...,'Line1 ColumnX'],
+    #       ['Line2 Column1','Line2 Column2',...,'Line2 ColumnX'],
+    #       ...,
+    #       ['LineZ Column1','LineZ Column2',...,'LineZ ColumnX']]
+    #Output
+    #   An instance of sync_pricelist
+    def getSync_pricelist(self, sheetName, sheet):
+        return sync_pricelist(sheetName, sheet, self)
+
+
+    def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
+
+        sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
 
         _logger.info("Sync Type is: " + syncType)
         # identify the type of sheet
@@ -139,7 +199,7 @@ class sync(models.Model):
 
         elif (syncType == "Pricelist"):
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
-            syncer = sync_pricelist(sheetName, sheet, self)
+            syncer = self.getSync_pricelist(sheetName, sheet)
             quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
@@ -155,6 +215,7 @@ class sync(models.Model):
             _logger.info("msg:  " + str(msg))
 
         return quit, msg
+
 
     # same pattern for all sync items
     def syncCompanies(self, sheet):
@@ -251,11 +312,11 @@ class sync(models.Model):
         while (True):
 
             # check if should continue
-            if (str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             # validation checks (vary depending on tab/function)
-            if (str(sheet[i][columns["valid"]]) != "TRUE"):
+            if (str(sheet[i][columns["valid"]]).upper() != "TRUE"):
                 _logger.info("Invalid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
@@ -289,6 +350,7 @@ class sync(models.Model):
             i += 1
         msg = self.endTable(msg)
         return False, msg
+
 
     def updateCompany(self, company, sheet, sheetWidth, i, columns):
 
@@ -324,6 +386,7 @@ class sync(models.Model):
         _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
 
+
     # creates object and updates it
     def createCompany(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create(
@@ -332,6 +395,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["companyName"]]})[0]
         ext.res_id = company.id
         self.updateCompany(company, sheet, sheetWidth, i, columns)
+
 
     # follows same pattern
     def syncContacts(self, sheet):
@@ -421,10 +485,10 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
 
-            if (i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
-            if (str(sheet[i][columns["valid"]]) != "TRUE"):
+            if (str(sheet[i][columns["valid"]]).upper() != "TRUE"):
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
                 continue
@@ -458,6 +522,7 @@ class sync(models.Model):
             i += 1
         msg = self.endTable(msg)
         return False, msg
+
 
     # follows same pattern
     def updateContacts(self, contact, sheet, sheetWidth, i, columns):
@@ -497,6 +562,7 @@ class sync(models.Model):
         _logger.info("Contact String Rep")
         contact.stringRep = str(sheet[i][:])
 
+
     # follows same pattern
     def createContacts(self, sheet, external_id, sheetWidth, i, columns):
         ext = self.env['ir.model.data'].create(
@@ -505,6 +571,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i, columns)
+
 
     # follows same pattern
     def syncProducts(self, sheet):
@@ -576,8 +643,11 @@ class sync(models.Model):
         msg = ""
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
+            
 
-            if (str(sheet[i][columns["continue"]]) != "TRUE"):
+            #_logger.info("sheet[i][:]: " + str(sheet[i][:]))
+
+            if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["sku"]]))):
@@ -601,12 +671,27 @@ class sync(models.Model):
                     [('name', '=', external_id), ('model', '=', 'product.template')])
 
                 if (len(product_ids) > 0):
-                    self.updateProducts(self.env['product.template'].browse(
-                        product_ids[len(product_ids) - 1].res_id), sheet, sheetWidth, i, columns)
-
+                    product=self.env['product.template'].browse(
+                        product_ids[len(product_ids) - 1].res_id)
+                    self.updateProducts(
+                        product, 
+                        str(sheet[i][:]),                   #product_stringRep
+                        sheet[i][columns["name"]],          #product_name
+                        sheet[i][columns["description"]],   #product_description_sale
+                        sheet[i][columns["priceCAD"]],      #product_price_cad
+                        sheet[i][columns["priceUSD"]],      #product_price_usd
+                        "serial",                           #product_tracking
+                        "product")                          #product_type
                 else:
-                    self.createProducts(sheet, external_id,
-                                        sheetWidth, i, columns)
+                    self.createAndUpdateProducts(
+                        external_id, 
+                        str(sheet[i][:]),                   #product_stringRep
+                        sheet[i][columns["name"]],          #product_name
+                        sheet[i][columns["description"]],   #product_description_sale
+                        sheet[i][columns["priceCAD"]],      #product_price_cad
+                        sheet[i][columns["priceUSD"]],      #product_price_usd
+                        "serial",                           #product_tracking
+                        "product")                          #product_type
 
             except Exception as e:
                 _logger.info("Products Exception")
@@ -620,34 +705,104 @@ class sync(models.Model):
         msg = self.endTable(msg)
         return False, msg
 
-    # follows same pattern
-    def updateProducts(self, product, sheet, sheetWidth, i, columns):
-        if (product.stringRep == str(sheet[i][:])):
-            return
 
-        product.name = sheet[i][columns["name"]]
-        product.description_sale = sheet[i][columns["description"]]
-        product.price = sheet[i][columns["priceCAD"]]
-
-        syncer = sync_pricelist("CCP CSV_ODOO", sheet, self)
-
-        syncer.pricelist(product, "priceCAD", "CAN Pricelist", i, columns)
-        syncer.pricelist(product, "priceUSD", "USD Pricelist", i, columns)
-
-        product.tracking = "serial"
-        product.type = "product"
-        product.stringRep = str(sheet[i][:])
-
-    # follows same pattern
-    def createProducts(self, sheet, external_id, sheetWidth, i, columns):
+    #Method to create a product
+    #Input
+    #   external_id:    The external id, wich is the SKU key in the GoogleSheet Database.  
+    #   product_name:   Name of the product
+    #Output             
+    #   product:        The product generated by Odoo
+    def createProducts(self, external_id, product_name):
+        product = None
         ext = self.env['ir.model.data'].create(
             {'name': external_id, 'model': "product.template"})[0]
         product = self.env['product.template'].create(
-            {'name': sheet[i][columns["name"]]})[0]
+            {'name': product_name})[0]
+        
+        product.tracking = "serial"
+        product.type = "product"
         ext.res_id = product.id
-        _logger.info("str(product.id)")
-        _logger.info(str(product.id))
-        self.updateProducts(product, sheet, sheetWidth, i, columns)
+
+        return product
+
+
+    #Methode to update product information.
+    #Input
+    #   product:                    The product generated with product.template model
+    #   product_stringRep:          The GoogleSheet line that represent all the informations of the product
+    #   product_name:               Product Name
+    #   product_description_sale:   English dercription
+    #   product_price_cad:          Price in CAD
+    #   product_price_usd:          Price in USD
+    #   product_tracking:           Tracking
+    #   product_type:               Type
+    def updateProducts(
+            self, 
+            product, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type):
+
+        if (product.stringRep == product_stringRep):
+            return
+
+        # pricelist need to be done before modifiyng the product.price
+        # since it will be erased be the addProductToPricelist.  Apparently,
+        # Odoo set to price to 0 if we set the product in a pricelist.
+        syncer = sync_pricelist("", [], self)
+        syncer.addProductToPricelist(product, "CAN Pricelist", product_price_cad)
+        syncer.addProductToPricelist(product, "USD Pricelist", product_price_usd) 
+
+        product.name                = product_name
+        product.description_sale    = product_description_sale        
+        product.price               = product_price_cad 
+        product.tracking            = product_tracking
+        product.type                = product_type
+        product.stringRep           = product_stringRep
+
+
+    #Method to create and update a product
+    #Input
+    #   external_id:                The SKU in GoogleSheet
+    #   product_stringRep:          The GoogleSheet line that represent all the informations of the product
+    #   product_name:               Product Name
+    #   product_description_sale:   English dercription
+    #   product_price_cad:          Price in CAD
+    #   product_price_usd:          Price in USD
+    #   product_tracking:           Tracking
+    #   product_type:               Type
+    #Output
+    #   product:                    The product created
+    def createAndUpdateProducts(
+            self, 
+            external_id, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type):
+
+        product = self.createProducts(external_id, product_name)
+        self.updateProducts(
+            product, 
+            product_stringRep, 
+            product_name, 
+            product_description_sale, 
+            product_price_cad, 
+            product_price_usd,
+            product_tracking,
+            product_type)    
+
+        product_created = self.env['product.template'].search(
+            [('sku', '=', external_id)]) 
+        return product_created    
+
 
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
@@ -689,7 +844,7 @@ class sync(models.Model):
         msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
             _logger.info("Website: " + str(i))
-            if (i == len(sheet) or str(sheet[i][columns["continue"]]) != "TRUE"):
+            if (i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
             if (not self.check_id(str(sheet[i][columns["id"]]))):
@@ -698,7 +853,7 @@ class sync(models.Model):
                 i += 1
                 continue
 
-            if (not sheet[i][columns["valid"]] == "TRUE"):
+            if (not sheet[i][columns["valid"]].upper() == "TRUE"):
                 _logger.info("Web Valid")
                 msg = self.buildMSG(msg, sheet, sheetWidth, i)
                 i += 1
@@ -732,12 +887,14 @@ class sync(models.Model):
                 return True, msg
         return False, msg
 
+
     def check_id(self, id):
         if (" " in id):
             _logger.info("ID: " + str(id))
             return False
         else:
             return True
+
 
     def check_price(self, price):
         if (price in ("", " ")):
@@ -749,6 +906,7 @@ class sync(models.Model):
             _logger.info(e)
             return False
 
+
     def buildMSG(self, msg, sheet, sheetWidth, i):
         if (msg == ""):
             msg = self.startTable(msg, sheet, sheetWidth, True)
@@ -759,6 +917,7 @@ class sync(models.Model):
             j += 1
         msg = msg + "</tr>"
         return msg
+
 
     def startTable(self, msg, sheet, sheetWidth, force=False):
         if (force):
@@ -778,24 +937,25 @@ class sync(models.Model):
 
         return msg
 
+
     def endTable(self, msg):
         if (msg != ""):
             msg = msg + "</table>"
         return msg
 
-    def syncCancel(self, msg):
+
+    #Build the message when a sync fail occurs.  Once builded, it will display the message
+    #in the logger, and send a repport by email.
+    #Input
+    #   msg:    The msg that contain information on the failling issue
+    #   reason: The reason that lead to the faillur.
+    def syncFail(self, msg, reason):
         link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = "<h1>The Sync Process Was forced to quit and no records were updated</h1><h1> The Following Rows of The Google Sheet Table are invalid<h1>" + \
+        msg = reason + \
             msg + "<a href=\"" + link + "\">Manual Retry</a>"
         _logger.info(msg)
         self.sendSyncReport(msg)
 
-    def syncFail(self, msg):
-        link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>" + \
-            msg + "<a href=\"" + link + "\">Manual Retry</a>"
-        _logger.info(msg)
-        self.sendSyncReport(msg)
 
     def sendSyncReport(self, msg):
         values = {'subject': 'Sync Report'}
@@ -808,3 +968,298 @@ class sync(models.Model):
         email.email_to = "sync@store.r-e-a-l.it"
         email_id = {email.id}
         email.process_email_queue(email_id)
+
+
+    def archive_product(self, product_id):
+        product = self.env['product.template'].search([('id', '=', product_id)])
+        product.active = False
+
+
+    #Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
+    #IMPORTANT:     Row must containt a Valid and Continue column.  
+    #               Row is skippd if valid is False
+    #               Method is exit if the Continue is False
+    #               
+    #Exception
+    #   MissingColumnError:  If thrown, the column name is missing.
+    #                        If thrown, the column "Valid" is missing.
+    #                        If thrown, the column "Continue" is missing.
+    #Input
+    #   sheet: The sheet to look for all the SKU
+    #Output
+    #   sku_dict: A dictionnary that contain all the SKU as key, and the value is set to 'SKU'
+    def getAllValueFromColumn(self, sheet, column_name):
+        sku_dict = dict()
+        columnIndex = self.getColumnIndex(sheet, column_name)
+        sheet_valid_column_index    = self.getColumnIndex(sheet, "Valid")
+        sheet_continue_column_index    = self.getColumnIndex(sheet, "Continue")
+
+        if (columnIndex < 0):
+            raise Exception('MissingColumnError', ("The following column name is missing: " + str(column_name)))    
+
+        if (sheet_valid_column_index < 0):
+            raise Exception('MissingColumnError', ("The following column name is missing: Valid")) 
+
+        if (sheet_continue_column_index < 0):
+            raise Exception('MissingColumnError', ("The following column name is missing: Continue"))                                 
+
+
+        sheet_sku_column_index   = self.getColumnIndex(sheet, column_name)
+
+        for i in range(1, len(sheet)):
+            if (not str(sheet[i][sheet_continue_column_index]).upper() == "TRUE"):
+                break
+
+            if (not str(sheet[i][sheet_valid_column_index]).upper() == "TRUE"):
+                continue
+
+            sku_dict[sheet[i][sheet_sku_column_index]] = column_name
+
+        return sku_dict
+
+
+    #Check if a all key unique in two dictionnary
+    #Input
+    #   dict_small: the smallest dictionnary
+    #   dict_big:   The largest dictionnary
+    #Output
+    #   1st:    True: There is at least one key that exists in both dictionary
+    #           False: All key are unique
+    #   2nd:    The name of the duplicated Sku
+    def checkIfKeyExistInTwoDict(self, dict_small, dict_big):        
+        for sku in dict_small.keys():
+            if sku in dict_big.keys():      
+                errorMsg = str(sku)
+                _logger.info("------------------------------------------- errorMsg = str(sku): " + str(sku))   
+                return True, errorMsg
+        return False, ""      
+
+
+    #Method to get the ODOO_SYNC_DATA column index
+    #Exception
+    #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
+    #Input
+    #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
+    #Output
+    #   result: A dictionnary:  Key: named of the column
+    #                           Value: the index number of that column.
+    def checkOdooSyncDataTab(self, odoo_sync_data_sheet):        
+        odoo_sync_data_sheet_name_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Name")
+        odoo_sync_data_sheet_index_column_index   = self.getColumnIndex(odoo_sync_data_sheet, "Sheet Index")
+        odoo_sync_data_model_type_column_index    = self.getColumnIndex(odoo_sync_data_sheet, "Model Type")
+        odoo_sync_data_valid_column_index         = self.getColumnIndex(odoo_sync_data_sheet, "Valid")
+        odoo_sync_data_continue_column_index      = self.getColumnIndex(odoo_sync_data_sheet, "Continue")
+
+        if (odoo_sync_data_sheet_name_column_index < 0):
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_sheet_index_column_index < 0):
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_model_type_column_index < 0):
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_valid_column_index < 0):
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_continue_column_index < 0):
+            error_msg = ("Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
+            raise Exception('MissingTabError', error_msg) 
+
+        result = dict()
+
+        result['odoo_sync_data_sheet_name_column_index' ] = odoo_sync_data_sheet_name_column_index  
+        result['odoo_sync_data_sheet_index_column_index'] = odoo_sync_data_sheet_index_column_index
+        result['odoo_sync_data_model_type_column_index' ] = odoo_sync_data_model_type_column_index 
+        result['odoo_sync_data_valid_column_index'      ] = odoo_sync_data_valid_column_index      
+        result['odoo_sync_data_continue_column_index'   ] = odoo_sync_data_continue_column_index   
+        
+        return result
+
+
+    #Get all SKU from the model type 'Products' and 'Pricelist'
+    #Exception
+    #   MissingSheetError:  A sheet is missing
+    #   MissingTabError:    A tab in a sheet is missing
+    #   SkuUnicityError:    A SKU is not unique
+    #Input
+    #   psw:            password to acces the Database
+    #   template_id:    GoogleSheet TemplateID
+    #Output
+    #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
+    def getListSkuGS(self, psw, template_id):              
+        sku_catalog_gs = dict()
+
+        i = 0
+        msg = ""        
+
+        # Get the ODOO_SYNC_DATA tab 
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index) 
+      
+        #check ODOO_SYNC_DATA tab        
+        result_dict = self.checkOdooSyncDataTab(sync_data)
+
+        odoo_sync_data_sheet_name_column_index  = result_dict['odoo_sync_data_sheet_name_column_index'] 
+        odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
+        odoo_sync_data_model_type_column_index  = result_dict['odoo_sync_data_model_type_column_index'] 
+        odoo_sync_data_valid_column_index       = result_dict['odoo_sync_data_valid_column_index']      
+        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']                                      
+
+        while (i < len(sync_data)):
+            i += 1
+            sheet_name = ""        
+            refered_sheet_index = -1
+            msg_temp = ""
+            modelType = ""        
+            valid_value = False
+            continue_value = False
+            sku_dict = dict()   
+            refered_sheet_valid_column_index = -1        
+            refered_sheet_sku_column_index = -1  
+
+            sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
+            refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
+            msg += msg_temp
+            modelType = str(sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")    
+            continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
+
+            #Validation for the current loop
+            if (not continue_value):
+                #_logger.info("------------------------------------------- BREAK not continue_value while i: " + str(i))
+                break
+
+            if ((modelType not in ["Pricelist", "Products"])):
+                #_logger.info("------------------------------------------- continue (modelType != 'Pricelist') or (modelType != 'Products') while i: " + str(i) + " model: " + str(modelType))
+                continue
+
+            if (not valid_value):
+                #_logger.info("------------------------------------------- continue (not valid_value) while i: " + str(i))
+                continue
+
+            if (refered_sheet_index < 0):
+                error_msg = ("Sheet Name: " + sheet_name + " is missing in the GoogleData Master DataBase.  The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                raise Exception('MissingSheetError', error_msg)       
+
+            #Get the reffered sheet
+            refered_sheet = self.getMasterDatabaseSheet(template_id, psw, refered_sheet_index)
+            refered_sheet_valid_column_index = self.getColumnIndex(refered_sheet, "Valid")
+            refered_sheet_sku_column_index   = self.getColumnIndex(refered_sheet, "SKU")
+
+            #Validation
+            if (refered_sheet_valid_column_index < 0):
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'Valid' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                raise Exception('MissingTabError', error_msg)                
+
+            if (refered_sheet_sku_column_index < 0):
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                raise Exception('MissingTabError', error_msg)  
+
+            #main purpose            
+            sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
+            result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
+            if (result):
+                error_msg = ("The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                raise Exception('SkuUnicityError', error_msg)  
+                
+            for sku in sku_dict:
+                sku_catalog_gs[sku] = "sku"  
+  
+        return sku_catalog_gs
+
+
+    #Return the column index of the columnName
+    #Input
+    #   sheet:      The sheet to find the Valid column index
+    #   columnName: The name of the column to find
+    #Output
+    #   columnIndex: -1 if could not find it
+    #                > 0 if a column name exist
+    def getColumnIndex (self, sheet, columnName):
+        header = sheet[0]
+        columnIndex = 0
+
+        for column in header:
+            if (column == columnName):
+                return columnIndex
+            
+            columnIndex += 1
+        
+        return -1
+
+    
+    #Sku cleaning
+    def start_sku_cleaning(self, psw=None):
+        _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
+
+        catalog_odoo = dict()
+        catalog_gs = dict()
+        to_archives = []
+
+        # Checks authentication values
+        if (not self.is_psw_format_good(psw)):
+            _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
+            return
+
+
+        #################################
+        # Odoo Section        
+        products = self.env['product.template'].search([])
+        _logger.info("products length befor clean up: " + str(len(products)))
+        
+        for product in products:            
+            if (product.active == False):               
+                continue
+
+            if ((str(product.sku) == "False") or (str(product.sku) == None)):
+                to_archives.append(str(product.id))
+                _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
+
+            if (str(product.sku) not in catalog_odoo):
+                catalog_odoo[str(product.sku)] = 1
+            else:
+                catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
+
+
+        #######################################
+        # GoogleSheet Section  
+        try:     
+            catalog_gs = self.getListSkuGS(psw, self._master_database_template_id)
+        except Exception as e:
+            _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e) )
+            return
+
+
+        #######################################
+        #listing product in Odoo and not in GS
+        for item in catalog_odoo:
+            if (not item in catalog_gs):
+                product = self.env['product.template'].search(
+                    [('sku', '=', item)])
+                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
+                to_archives.append(str(product.id))
+
+
+        #######################################
+        #Archiving all unwanted products
+        _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
+        for item in to_archives:
+            break
+            #self.archive_product(str(item))
+        
+        _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
+        _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
+        _logger.info("------------------------------------------- END start_sku_cleaning")    
+
+
+    def customQuery(self):
+        sql_test = sql_queries(self)
+        sql_test.listSpecificSaleOrder()
