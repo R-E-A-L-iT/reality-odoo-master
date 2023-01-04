@@ -75,9 +75,9 @@ class sql_queries:
         _logger.info("listSpecificLineFromTable")
         self.db.env.cr.execute("""
             SELECT 
+                PT.id,
                 PT.name,
-                PT.cadVal,
-                PT.usdVal
+                PP.id
             FROM product_template PT
             INNER JOIN product_product PP ON
                 PP.product_tmpl_id = PT.id
