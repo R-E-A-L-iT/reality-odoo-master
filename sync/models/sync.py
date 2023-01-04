@@ -1257,3 +1257,10 @@ class sync(models.Model):
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("------------------------------------------- END start_sku_cleaning")    
+
+    
+    def customQuery(self):
+        self.env.cr.execute("select * from sale.order")
+        res = self.env.cr.fetchall()
+        _logger.info(str(res))
+
