@@ -50,6 +50,12 @@ class TestModuleSync(TransactionCase):
 
     #def is_psw_format_good(self, psw):              
     def test_is_psw_format_good(self):    
+        print("test_is_psw_format_good")
+        print("test_is_psw_format_good")
+        print("test_is_psw_format_good")
+        print("test_is_psw_format_good")
+        print("test_is_psw_format_good")
+        print("test_is_psw_format_good")
         psw = {
             "key1": "value1",
             "key2": "value2"
