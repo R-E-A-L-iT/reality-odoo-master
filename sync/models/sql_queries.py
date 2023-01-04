@@ -74,7 +74,7 @@ class sql_queries:
                 SOL.id,
                 SOL.order_id,
                 SOL.product_id,
-                P.sku            
+                P.name            
             FROM sale_order_line SOL
             INNER JOIN sale_order SO ON 
                 SO.id = SOL.order_id AND 
