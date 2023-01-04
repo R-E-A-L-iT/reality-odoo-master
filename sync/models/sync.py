@@ -25,6 +25,7 @@ from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
 from .ccp import sync_ccp
+from .sql_queries import sql_queries
 
 _logger = logging.getLogger(__name__)
 
@@ -1258,49 +1259,7 @@ class sync(models.Model):
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("------------------------------------------- END start_sku_cleaning")    
 
-    
-    def listSQLTables(self):
-        _logger.info("customQuery test")
-        self.env.cr.execute("""
-            SELECT table_name
-            FROM INFORMATION_SCHEMA.TABLES
-            WHERE table_type = 'BASE TABLE'
-            """)
-        tables = self.env.cr.fetchall()
-        res = "\n"
-        for table in tables:
-            res += str(table)
-            res += "\n"
-        _logger.info(res)
-
-    def listAllSaleOrder(self):
-        _logger.info("customQuery test")
-        self.env.cr.execute("""
-            SELECT * 
-            FROM sale_order
-            """)
-        tables = self.env.cr.fetchall()
-        res = "\n"
-        for table in tables:
-            res += str(table)
-            res += "\n"
-        _logger.info(res)
 
     def customQuery(self):
-        _logger.info("customQuery test")
-        self.env.cr.execute("""
-        SELECT COLUMN_NAME 
-        FROM information_schema.columns 
-        WHERE table_name = 'sale_order'
-        """)
-        tables = self.env.cr.fetchall()
-        res = "\n"
-        for table in tables:
-            res += str(table)
-            res += "\n"
-        _logger.info(res)        
-
-
-
-
-
+        sql_test = sql_queries()
+        sql_test.listSaleOrderAttributs()
