@@ -437,6 +437,10 @@
 			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 
+		<xpath expr="//div[@id=&quot;sale_order_communication&quot;]">
+			<t t-call="custon.custom-footer" />
+		</xpath>
+
 	</template>
 
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
