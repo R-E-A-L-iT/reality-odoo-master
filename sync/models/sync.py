@@ -1263,3 +1263,5 @@ class sync(models.Model):
     def customQuery(self):
         sql_test = sql_queries(self)
         sql_test.listSaleOrderAttributs()
+
+

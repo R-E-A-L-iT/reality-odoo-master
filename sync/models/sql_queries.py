@@ -70,9 +70,14 @@ class sql_queries:
     def listProductFromSpecificSaleOrder(self):
         _logger.info("listProductFromSpecificSaleOrder")
         self.db.env.cr.execute("""
-            SELECT * 
+            SELECT 
+                SOL.id,
+                SOL.order_id,
+                SOL.product_id 
             FROM sale_order_line SOL
-            INNER JOIN sale_order SO ON SO.id = SOL.order_id AND SO.name = 'S00140'
+            INNER JOIN sale_order SO ON 
+                SO.id = SOL.order_id AND 
+                SO.name = 'S00140'
             """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
