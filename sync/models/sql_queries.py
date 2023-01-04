@@ -37,13 +37,13 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
-    #Log all sale_order attribut
+    #Log all attributs
     def listSaleOrderAttributs(self):
         _logger.info("listSaleOrderAttributs")
         self.db.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
-        WHERE table_name = 'sale_order_line'
+        WHERE table_name = 'product_product'
         """)
         tables = self.db.env.cr.fetchall()
         res = "\n"
