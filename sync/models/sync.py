@@ -1267,21 +1267,14 @@ class sync(models.Model):
 
 
     def customQuery(self, psw=None):
-        #product = self.env['product.template'].search(
-        #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
-        #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
-
         products = dict()
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
 
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
 
-        products["6009450"] = 'sku'
-        products["6009458"] = 'sku'        
-
-        #_logger.info("products: " + str(products.keys()))
-
+        #products["6009450"] = 'sku'
+        #products["6009458"] = 'sku'        
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
@@ -1292,17 +1285,16 @@ class sync(models.Model):
             if (skip):
                 skip = False
                 continue
-            #_logger.info("orders name: " + str(order.name))  
 
             sale_order_lines = self.env['sale.order.line'].search(
             [('order_id', '=', order.id)])
-
             
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
                 if (str(product.id) in products):
                     if ((str(product.id) != "False")):
+                        _logger.info("orders name: " + str(order.name))  
                         _logger.info("id in a sale order: " + str(product.id))        
                         sales_with_old_sku += 1
                         skip = True
