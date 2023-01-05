@@ -441,9 +441,9 @@
 			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
 		</xpath>
 		<!-- Hide Total On Rental Quotes -->
-		<xpath expr="//div[@id=&quot;total&quot;]" position="attribute">
+		<!-- <xpath expr="//div[@id=&quot;total&quot;]" position="attribute">
 			<attribute name="t-if">sale_order.is_rental != True</attribute>
-		</xpath>
+		</xpath> -->
 	</template>
 
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>

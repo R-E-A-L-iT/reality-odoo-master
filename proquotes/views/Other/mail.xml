@@ -21,10 +21,10 @@
         </xpath> -->
 		<xpath expr="table" position="replace">
 			<style>
-                body {
-                    background-color: #2D2F32;
-                }
-            </style>
+				body {
+				background-color: #2D2F32;
+				}
+			</style>
 			<div style="background-color:#2d2F32" />
 
 			<table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;font-family:Verdana, Arial,sans-serif; color: white; width: 100%; border-collapse:separate; background-color: #2D2F32">
@@ -78,8 +78,6 @@
 															<div>
 																<t t-if="record.partner_id.lang != 'fr_CA'">
 																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
-																		<span>
-																		QUOTATION																	</span>
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">PURCHASE ORDER
@@ -87,8 +85,6 @@
 																</t>
 																<t t-elif="record.partner_id.lang == 'fr_CA'">
 																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
-																		<span>
-																		SOUMISSION																	</span>
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">BON DE COMMANDE</h1>
@@ -106,22 +102,22 @@
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 																<t t-if="record.partner_id.lang != 'fr_CA'">
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
-                                                                    View Quotation
-                                                                </a>
+																		View Quotation
+																	</a>
 
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
-                                                                    View Purchase Order
-                                                                </a>
+																		View Purchase Order
+																	</a>
 																</t>
 																<t t-if="record.partner_id.lang == 'fr_CA'">
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
-																	Voir Soumission 
-                                                                </a>
+																		Voir Soumission
+																	</a>
 
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
-                                                                    Voir Bon de commande
+																		Voir Bon de commande
 
-                                                                </a>
+																	</a>
 																</t>
 															</div>
 														</td>
@@ -185,10 +181,6 @@
 										<td style="text-align:center;font-size: 13px; color: #FFFFF">
 											<strong>
 												R-E-A-L.iT
-												<span style="color:#db0d0d">/</span>
-												<a target="_blank" href="https://www.r-e-a-l.it/" style="color:#929292;">
-                                                    CAPTURE
-                                                </a>
 											</strong>
 										</td>
 									</tr>
