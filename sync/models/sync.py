@@ -1247,6 +1247,8 @@ class sync(models.Model):
                 _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
+        sales = elf.env['sale.order'].brows
+
 
         #######################################
         #Archiving all unwanted products
@@ -1261,40 +1263,31 @@ class sync(models.Model):
 
 
     def customQuery(self):
-        product = self.env['product.template'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-18')])
-        _logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
+        #product = self.env['product.template'].search(
+        #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
+        #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
+        sales = self.env['sale.order'].browse()
+        for sale in sales:
+            _logger.info("sale name: " + str(sale.name))    
+
+
+        
         sale = self.env['sale.order'].search(
             [('name', '=', 'S00140')])
         _logger.info("sale order S00140: " + str(sale))
 
         sale_order_lines = self.env['sale.order.line'].search(
-            [('order_id', '=', sale.id)]
-        )
-
-        product = self.env['product.product'].search(
-            [('id', '=', 14857)]
-        )
-
+            [('order_id', '=', sale.id)])
 
         for line in sale_order_lines:
-            #_logger.info("line product: " + str(line.product_id))
             product = self.env['product.product'].search(
-                [('id', '=', line.product_id.id)]
-            )
+                [('id', '=', line.product_id.id)])
             _logger.info("line product name: " + str(product.name))
-            
-            #for p in line.product_id:
-            #    #_logger.info("line product p: " + str(p))
-            #    product = self.env['product.product'].search(
-            #        [('id', '=', p.id)]
-            #    )
-            #    _logger.info("line product name: " + str(product.name))
-                
 
-        #sale = self.env['sale_order_line'].search(
-        #    [('order_id', '=', 'S00140')])  
+        
+
+
 
 
         
