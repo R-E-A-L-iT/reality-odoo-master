@@ -137,7 +137,7 @@ class syncWeb():
             page = self.database.env['ir.ui.view'].browse(
                 pageIds[-1].res_id)
             opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-            conditionOpen = "<t t-if=\"request.lang in " + langOps + "\">\n"
+            conditionOpen = "<t t-if=\"lang in " + langOps + "\">\n"
             conditionClose = "</t>\n"
             closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
             page.arch_base = opener + conditionOpen + \
