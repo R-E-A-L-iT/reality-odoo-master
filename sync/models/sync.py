@@ -1280,10 +1280,9 @@ class sync(models.Model):
             products[test_products[i]] = 'sku'
 
         products["6009450"] = 'sku'
-        products["6009458"] = 'sku'
-        
+        products["6009458"] = 'sku'        
 
-        _logger.info(str(products.keys()))
+        _logger.info("products: " + str(products.keys()))
 
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
@@ -1309,21 +1308,9 @@ class sync(models.Model):
                     sales_with_old_sku += 1
                     skip = True
 
-                #_logger.info("line product sku: " + str(product.sku))
+                _logger.info("line product sku: " + str(product.sku))
 
             i += 1
         _logger.info("number of sale order: " + str(i))    
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
-
-        #sale = self.env['sale.order'].search(
-        #    [('name', '=', 'S00140')])
-        #_logger.info("sale order S00140: " + str(sale))
-        #
-        #sale_order_lines = self.env['sale.order.line'].search(
-        #    [('order_id', '=', sale.id)])
-        #
-        #for line in sale_order_lines:
-        #    product = self.env['product.product'].search(
-        #        [('id', '=', line.product_id.id)])
-        #    _logger.info("line product name: " + str(product.name))
