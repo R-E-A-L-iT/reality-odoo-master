@@ -1285,6 +1285,8 @@ class sync(models.Model):
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
+        sales_with_old_sku = 0
+        
         skip = False
         for order in order_object_ids:
             if (skip):
@@ -1295,7 +1297,7 @@ class sync(models.Model):
             sale_order_lines = self.env['sale.order.line'].search(
             [('order_id', '=', order.id)])
 
-            sales_with_old_sku = 0
+            
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
