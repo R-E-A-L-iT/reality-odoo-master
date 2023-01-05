@@ -1280,11 +1280,10 @@ class sync(models.Model):
 
         for line in sale_order_lines:
             _logger.info("line product: " + str(line.product_id))
-            for line_product in line.product_id:
-                product = self.env['product.product'].search(
-                    [('id', '=', line_product.product_id)]
-                )
-                _logger.info("line product name: " + str(product.name))
+            #product = self.env['product.product'].search(
+            #    [('id', '=', line_product.product_id)]
+            #)
+                
 
         #sale = self.env['sale_order_line'].search(
         #    [('order_id', '=', 'S00140')])  
