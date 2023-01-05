@@ -1304,8 +1304,6 @@ class sync(models.Model):
                     sales_with_old_sku += 1
                     skip = True
 
-                _logger.info("line product sku: " + str(product.sku))
-
             i += 1
         _logger.info("number of sale order: " + str(i))    
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
