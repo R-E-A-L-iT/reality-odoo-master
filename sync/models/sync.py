@@ -1280,7 +1280,7 @@ class sync(models.Model):
         products["6009450"] = 'sku'
         products["6009458"] = 'sku'        
 
-        _logger.info("products: " + str(products.keys()))
+        #_logger.info("products: " + str(products.keys()))
 
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
@@ -1300,9 +1300,10 @@ class sync(models.Model):
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
                 if (str(product.id) in products):
-                    _logger.info("id in a sale order: " + str(product.id))        
-                    sales_with_old_sku += 1
-                    skip = True
+                    if ((str(product.id) != "False")):
+                        _logger.info("id in a sale order: " + str(product.id))        
+                        sales_with_old_sku += 1
+                        skip = True
 
             i += 1
         _logger.info("number of sale order: " + str(i))    
