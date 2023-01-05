@@ -104,9 +104,9 @@ class syncWeb():
                 external_id = str(sheet[i][columns["id"]])
                 # _logger.info(external_id)
                 self.updatePage(
-                    external_id, sheet[i][columns["HTML_en"]], "English")
+                    external_id, sheet[i][columns["html_en"]], "English")
                 self.updatePage(
-                    external_id, sheet[i][columns["HTML_fr"]], "French")
+                    external_id, sheet[i][columns["html_fr"]], "French")
 
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
