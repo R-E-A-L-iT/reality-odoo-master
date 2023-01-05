@@ -28,6 +28,7 @@ class syncWeb():
         columns = dict()
         missingColumn = False
 
+        msg = ""
         # Calculate Indexes
         if ("Page ID" in sheet[0]):
             columns["id"] = sheet[0].index("Page ID")
@@ -76,7 +77,6 @@ class syncWeb():
             return True, msg
 
         i = 1
-        msg = ""
 
         while (True):
             _logger.info("Website: " + str(i))
