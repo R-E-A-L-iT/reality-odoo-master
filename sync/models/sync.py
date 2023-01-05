@@ -1248,20 +1248,19 @@ class sync(models.Model):
                 #_logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
-        #sales = self.env['sale.order'].brows
-
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("to_archives length: " + str(len(to_archives)))
-        _logger.info("------------------------------------------- END") 
+        
 
         
         ########################################
         #Archiving all unwanted products
         _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
         for item in to_archives:
-            self.archive_product(str(item))
-
+            self.archive_product(str(item))       
+        
+        _logger.info("------------------------------------------- END") 
         return to_archives
         
    
