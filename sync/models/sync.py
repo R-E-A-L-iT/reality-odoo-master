@@ -1273,9 +1273,7 @@ class sync(models.Model):
 
         products = dict()
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
-        6009450
         
-
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
 
