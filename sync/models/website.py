@@ -38,14 +38,14 @@ class syncWeb():
             missingColumn = True
 
         if ("English HTML" in sheet[0]):
-            columns["html"] = sheet[0].index("English HTML")
+            columns["en_html"] = sheet[0].index("English HTML")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "English HTML Missing")
             missingColumn = True
 
         if ("French HTML" in sheet[0]):
-            columns["html"] = sheet[0].index("French HTML")
+            columns["fr_html"] = sheet[0].index("French HTML")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "French HTML Missing")
