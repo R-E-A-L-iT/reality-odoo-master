@@ -1302,7 +1302,7 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                if (str(product.sku == "False"):
+                if (str(product.sku == "False")):
                     continue
                 if (str(product.sku) in products):
                     _logger.info("sku in a sale order: " + str(product.sku))        
@@ -1327,11 +1327,3 @@ class sync(models.Model):
         #    product = self.env['product.product'].search(
         #        [('id', '=', line.product_id.id)])
         #    _logger.info("line product name: " + str(product.name))
-
-        
-
-
-
-
-        
-
