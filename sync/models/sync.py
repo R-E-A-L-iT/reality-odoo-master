@@ -1255,13 +1255,14 @@ class sync(models.Model):
         _logger.info("to_archives length: " + str(len(to_archives)))
         _logger.info("------------------------------------------- END") 
 
-        return to_archives
+        
         ########################################
-        ##Archiving all unwanted products
-        #_logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
-        #for item in to_archives:
-        #    break
-        #    #self.archive_product(str(item))
+        #Archiving all unwanted products
+        _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
+        for item in to_archives:
+            self.archive_product(str(item))
+
+        return to_archives
         
    
 
@@ -1271,10 +1272,7 @@ class sync(models.Model):
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
 
         for i in range(len(test_products)):
-            products[test_products[i]] = 'sku'
-
-        #products["6009450"] = 'sku'
-        #products["6009458"] = 'sku'        
+            products[test_products[i]] = 'sku'        
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
