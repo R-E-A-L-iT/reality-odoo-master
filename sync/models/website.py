@@ -36,13 +36,13 @@ class syncWeb():
                 msg, self.name, "Header", "Page ID Missing")
             missingColumn = True
 
-        if ("HTML" in sheet[0]):
+        if ("English HTML" in sheet[0]):
             columns["html"] = sheet[0].index("English HTML")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML Missing")
             missingColumn = True
 
-        if ("HTML" in sheet[0]):
+        if ("French HTML" in sheet[0]):
             columns["html"] = sheet[0].index("French HTML")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML Missing")
