@@ -103,21 +103,11 @@ class syncWeb():
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 # _logger.info(external_id)
-                pageIds = self.database.env['ir.model.data'].search(
-                    [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
-                # _logger.info(pageIds)
-                if (len(pageIds) > 0):
-                    page = self.database.env['ir.ui.view'].browse(
-                        pageIds[-1].res_id)
-                    opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-                    closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
-                    page.arch_base = opener + \
-                        sheet[i][columns["html"]] + closer
-                else:
-                    msg = utilities.buildMSG(msg, self.name, str(
-                        external_id), "Page Not Created")
-                    _logger.info(str(external_id) + " Page Not Created")
-                i += 1
+                self.updatePage(
+                    external_id, sheet[i][columns]["HTML_en"], "English")
+                self.updatePage(
+                    external_id, sheet[i][columns]["HTML_fr"], "French")
+
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.info(e)
@@ -126,3 +116,24 @@ class syncWeb():
                 msg = ""
                 return True, msg
         return False, msg
+
+    def updatePage(self, id: str, html: str, lang: str):
+        if lang == "English":
+            external_id = id + "_en"
+        elif lang == "French":
+            external_id = id + "_fr"
+        pageIds = self.database.env['ir.model.data'].search(
+            [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
+        # _logger.info(pageIds)
+        if (len(pageIds) > 0):
+            page = self.database.env['ir.ui.view'].browse(
+                pageIds[-1].res_id)
+            opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
+            closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
+            page.arch_base = opener + \
+                html + closer
+        else:
+            msg = utilities.buildMSG(msg, self.name, str(
+                external_id), "Page Not Created")
+            _logger.info(str(external_id) + " Page Not Created")
+        i += 1
