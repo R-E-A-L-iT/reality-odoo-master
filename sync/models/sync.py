@@ -1271,7 +1271,8 @@ class sync(models.Model):
         #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
         #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
-        products = self.get_sku_in_odoo_not_in_gs(psw)
+        #products = self.get_sku_in_odoo_not_in_gs(psw)
+        products = dict()
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
         skip = False
@@ -1293,7 +1294,7 @@ class sync(models.Model):
                     sales_with_old_sku += 1
                     skip = True
 
-            _logger.info("line product name: " + str(product.name))
+                _logger.info("line product sku: " + str(product.sku))
 
             i += 1
         _logger.info("number of sale order: " + str(i))    
