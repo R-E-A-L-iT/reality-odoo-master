@@ -211,6 +211,7 @@ class sync(models.Model):
         elif (syncType == "WebHTML"):
             syncer = syncWeb(sheetName, sheet, self)
             quit, msg = syncer.syncWebCode(sheet)
+            _logger.error(msg)
 
         _logger.info("Done with " + syncType)
 
