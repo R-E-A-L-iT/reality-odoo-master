@@ -123,10 +123,13 @@ class syncWeb():
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
         msg = ""
+        langOps = None
         if lang == "English":
             external_id = id + "_en"
+            langOps = "['en_CA', 'en_US']"
         elif lang == "French":
             external_id = id + "_fr"
+            langOps = "['fr_CA']"
         pageIds = self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
         # _logger.info(pageIds)
@@ -134,9 +137,11 @@ class syncWeb():
             page = self.database.env['ir.ui.view'].browse(
                 pageIds[-1].res_id)
             opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
+            conditionOpen = "<t t-if=\"request.lang in " + langOps + "\">\n"
+            conditionClose = "</t>\n"
             closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
-            page.arch_base = opener + \
-                html + closer
+            page.arch_base = opener + conditionOpen + \
+                html + conditionClose + closer
         else:
             msg = utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
