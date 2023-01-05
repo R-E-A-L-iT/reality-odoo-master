@@ -1273,7 +1273,7 @@ class sync(models.Model):
 
         products = dict()
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
-        
+
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
 
@@ -1299,10 +1299,8 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                if (str(product.sku == "False")):
-                    continue
-                if (str(product.sku) in products):
-                    _logger.info("sku in a sale order: " + str(product.sku))        
+                if (str(product.id) in products):
+                    _logger.info("id in a sale order: " + str(product.id))        
                     sales_with_old_sku += 1
                     skip = True
 
