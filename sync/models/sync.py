@@ -1223,16 +1223,17 @@ class sync(models.Model):
         
     def customQuery(self, psw=None):
         products = dict()
+        sales_with_old_sku = 0
+        skip = False
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
+        
 
         for i in range(len(test_products)):
-            products[test_products[i]] = 'sku'        
+            products[test_products[i]] = 'sku' 
+            _logger.info("add product id: " + str(test_products[i]))        
         
+
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
-        i = 0
-        sales_with_old_sku = 0
-        
-        skip = False
         for order in order_object_ids:
             if (skip):
                 skip = False
@@ -1254,9 +1255,6 @@ class sync(models.Model):
                         _logger.info("---------------")  
 
                         sales_with_old_sku += 1
-                        skip = True
-
-            i += 1
-        _logger.info("number of sale order: " + str(i))    
+                        skip = True   
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
