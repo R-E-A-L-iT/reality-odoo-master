@@ -1197,23 +1197,24 @@ class sync(models.Model):
 
     
     #Sku cleaning
-    def start_sku_cleaning(self, psw=None):
-        _logger.info("------------------------------------------- BEGIN start_sku_cleaning")
+    def get_sku_in_odoo_not_in_gs(self, psw=None):
+        
+        _logger.info("------------------------------------------- BEGIN  to get the sku in odoo and not in GoogleSheet")
 
         catalog_odoo = dict()
         catalog_gs = dict()
         to_archives = []
 
         # Checks authentication values
-        if (not self.is_psw_format_good(psw)):
-            _logger.info("------------------------------------------- END start_sku_cleaning: psw is empty")
+        if (not self.is_psw_format_good(psw)):           
+            _logger.info("Password not valid")
             return
 
 
         #################################
         # Odoo Section        
         products = self.env['product.template'].search([])
-        _logger.info("products length befor clean up: " + str(len(products)))
+        _logger.info("products length before clean up: " + str(len(products)))
         
         for product in products:            
             if (product.active == False):               
@@ -1221,7 +1222,7 @@ class sync(models.Model):
 
             if ((str(product.sku) == "False") or (str(product.sku) == None)):
                 to_archives.append(str(product.id))
-                _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
+                #_logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
 
             if (str(product.sku) not in catalog_odoo):
                 catalog_odoo[str(product.sku)] = 1
@@ -1244,31 +1245,33 @@ class sync(models.Model):
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
-                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
+                #_logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 to_archives.append(str(product.id))
 
-        sales = elf.env['sale.order'].brows
+        #sales = self.env['sale.order'].brows
 
-
-        #######################################
-        #Archiving all unwanted products
-        _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
-        for item in to_archives:
-            break
-            #self.archive_product(str(item))
-        
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
-        _logger.info("------------------------------------------- END start_sku_cleaning")    
+        _logger.info("to_archives length: " + str(len(to_archives)))
+        _logger.info("------------------------------------------- END") 
+
+        return to_archives
+        ########################################
+        ##Archiving all unwanted products
+        #_logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
+        #for item in to_archives:
+        #    break
+        #    #self.archive_product(str(item))
+        
+   
 
 
-    def customQuery(self):
+    def customQuery(self, psw=None):
         #product = self.env['product.template'].search(
         #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
         #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
-        products = dict()
-
+        products = self.get_sku_in_odoo_not_in_gs(psw)
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
         skip = False
@@ -1276,7 +1279,7 @@ class sync(models.Model):
             if (skip):
                 skip = False
                 continue
-            _logger.info("orders name: " + str(order.name))  
+            #_logger.info("orders name: " + str(order.name))  
 
             sale_order_lines = self.env['sale.order.line'].search(
             [('order_id', '=', order.id)])
@@ -1289,26 +1292,25 @@ class sync(models.Model):
                     _logger.info("sku in a sale order: " + str(product.sku))        
                     sales_with_old_sku += 1
                     skip = True
-                    
+
             _logger.info("line product name: " + str(product.name))
 
             i += 1
         _logger.info("number of sale order: " + str(i))    
+        _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
 
-
-
-        sale = self.env['sale.order'].search(
-            [('name', '=', 'S00140')])
-        _logger.info("sale order S00140: " + str(sale))
-
-        sale_order_lines = self.env['sale.order.line'].search(
-            [('order_id', '=', sale.id)])
-
-        for line in sale_order_lines:
-            product = self.env['product.product'].search(
-                [('id', '=', line.product_id.id)])
-            _logger.info("line product name: " + str(product.name))
+        #sale = self.env['sale.order'].search(
+        #    [('name', '=', 'S00140')])
+        #_logger.info("sale order S00140: " + str(sale))
+        #
+        #sale_order_lines = self.env['sale.order.line'].search(
+        #    [('order_id', '=', sale.id)])
+        #
+        #for line in sale_order_lines:
+        #    product = self.env['product.product'].search(
+        #        [('id', '=', line.product_id.id)])
+        #    _logger.info("line product name: " + str(product.name))
 
         
 
