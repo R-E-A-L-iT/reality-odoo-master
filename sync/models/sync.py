@@ -1269,7 +1269,8 @@ class sync(models.Model):
 
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
-        for orders in order_object_ids:
+        for order in order_object_ids:
+            _logger.info("orders name: " + str(order.name))   
             i += 1
         _logger.info("number of sale order: " + str(i))    
    
