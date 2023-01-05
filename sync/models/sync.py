@@ -1287,6 +1287,7 @@ class sync(models.Model):
                 _logger.info("orders name: " + str(order.name))  
                 _logger.info("id in a sale order: " + str(product.id))        
                 _logger.info("sku in a sale order: " + str(product.sku))
+                _logger.info("skuhidden in a sale order: " + str(product.skuhidden))
                 _logger.info("name in a sale order: " + str(product.name))  
                 _logger.info("---------------") 
 
