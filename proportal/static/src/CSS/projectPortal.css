@@ -158,3 +158,45 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 .nav-link>span {
 	color: #db0d0d;
 }
+
+#custom_footer_bar {
+	display: flex;
+	width: 100vw;
+	justify-content: space-between;
+}
+#custom-footer > div#custom_footer_bar > div > a, #custom-footer > div#custom_footer_bar > div > span {
+	color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
+}
+
+#bottom > div.o_footer_copyright.o_colored_level.o_cc {
+	display: none;
+}
+
+#bottom>div.o_footer_copyright.o_colored_level.o_cc {
+	height: 3rem;
+}
+
+#custom-footer span {
+	color: #888;
+    font-family: Source Sans Pro,sans-serif;
+    font-weight: 100;
+}
+
+#sidebar_content {
+	z-index: 1;
+}
+
+#wrapwrap > main > div.o_portal.container.mt-3 > div > div > ol > li.breadcrumb-item.ml-1 > a > i{
+	margin-left: 2.5vw;
+}
+
+#wrapwrap#wrapwrap.o_portal {
+	background-color: #000 !important;
+}
+
+.text-center.o_colored_level.col-lg-4.o_cc.o_cc3.pb24.pt48 {
+	padding-block-start: 36px !important;
+	padding-block-end: 36px !important;
+}

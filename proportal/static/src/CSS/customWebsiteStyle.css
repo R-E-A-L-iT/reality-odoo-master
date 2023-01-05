@@ -1,3 +1,7 @@
+p {
+	color: #fff;
+}
+
 #custom-webpage-root {
 	height: -moz-fit-content;
 	height: fit-content;
@@ -913,4 +917,20 @@ h2.subtitle>span {
 
 .custom-product-table td {
 	color: #fff;
+}
+
+#wrap {
+	height: fit-content;
+}
+
+#book-a-demo-form-focus {
+	margin-top: 3vh;
+}
+
+#form-div {
+	justify-content: center;
+}
+
+#question-icon {
+	margin-top: 2rem !important;
 }

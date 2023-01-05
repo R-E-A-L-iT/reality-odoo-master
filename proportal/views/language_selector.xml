@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template name="language selector" id="lang_control">
+        <div class="lang_div">
+            <a
+                t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='en')"
+                t-attf-class="js_change_lang"
+                t-att-data-url_code="'en'">
+                EN
+            </a>
+            <span>|</span>
+            <a
+                t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code='fr_CA')"
+                data-url_code="fr_CA" class="js_change_lang"
+                style="cursor: pointer">
+                FR
+            </a>
+        </div>
+    </template>
+</odoo>

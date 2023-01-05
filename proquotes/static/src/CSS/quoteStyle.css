@@ -256,3 +256,28 @@ td.tax-column {
 #portal_sale_content div.oe_no_empty {
 	display: none !important;
 }
+
+.rental_price_explain, .rental_price_estimate {
+	color: #fff;
+}
+
+.rental_product_value, .rental_product_value * {
+	color: #fff;
+}
+
+.text-middle, .text-middle *, .text-middle>label>div.text-right {
+	text-align: center !important;
+}
+
+.text-middle>label>span {
+	padding: 0px !important;
+}
+
+.text-middle span {
+	white-space: nowrap;
+	min-width: fit-content;
+}
+
+#quote_disclaimer {
+	color:#fff;
+}
