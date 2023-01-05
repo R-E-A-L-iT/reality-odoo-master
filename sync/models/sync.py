@@ -1273,8 +1273,13 @@ class sync(models.Model):
 
         products = dict()
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
+        6009450
+        
+
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
+
+        products[6009450] = 'sku'
 
         _logger.info(str(products.keys()))
 
@@ -1300,7 +1305,7 @@ class sync(models.Model):
                     sales_with_old_sku += 1
                     skip = True
 
-                _logger.info("line product sku: " + str(product.sku))
+                #_logger.info("line product sku: " + str(product.sku))
 
             i += 1
         _logger.info("number of sale order: " + str(i))    
