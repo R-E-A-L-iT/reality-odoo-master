@@ -1264,7 +1264,10 @@ class sync(models.Model):
         ########################################
         #Archiving all unwanted products
         _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
+        i = 0
         for item in to_archives:
+            print (i + " archving :" + str(item))
+            i += 1
             self.archive_product(str(item))       
         
         _logger.info("------------------------------------------- END") 
