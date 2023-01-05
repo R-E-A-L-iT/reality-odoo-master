@@ -1271,10 +1271,14 @@ class sync(models.Model):
         #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
         #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
+        products = dict()
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
+        for i in range(len(test_products)):
+            products[test_products[i]] = 'sku'
+
         _logger.info(str(test_products.keys()))
 
-        products = dict()
+        
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
         skip = False
