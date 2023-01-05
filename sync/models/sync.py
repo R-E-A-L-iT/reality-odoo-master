@@ -1267,10 +1267,31 @@ class sync(models.Model):
         #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
         #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
+        products = dict()
+
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
+        skip = False
         for order in order_object_ids:
-            _logger.info("orders name: " + str(order.name))   
+            if (skip):
+                skip = False
+                continue
+            _logger.info("orders name: " + str(order.name))  
+
+            sale_order_lines = self.env['sale.order.line'].search(
+            [('order_id', '=', order.id)])
+
+            sales_with_old_sku = 0
+            for line in sale_order_lines:
+                product = self.env['product.product'].search(
+                    [('id', '=', line.product_id.id)])
+                if (product.sku in products):
+                    _logger.info("sku in a sale order: " + str(product.sku))        
+                    sales_with_old_sku += 1
+                    skip = True
+                    
+            _logger.info("line product name: " + str(product.name))
+
             i += 1
         _logger.info("number of sale order: " + str(i))    
    
