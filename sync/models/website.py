@@ -38,21 +38,21 @@ class syncWeb():
             missingColumn = True
 
         if ("English HTML" in sheet[0]):
-            columns["html"] = sheet[0].index("English HTML")
+            columns["html_en"] = sheet[0].index("English HTML")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "English HTML Missing")
             missingColumn = True
 
         if ("French HTML" in sheet[0]):
-            columns["html"] = sheet[0].index("French HTML")
+            columns["html_fr"] = sheet[0].index("French HTML")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "French HTML Missing")
             missingColumn = True
 
         if ("Enabled" in sheet[0]):
-            columns["enable"] = sheet[0].index("Enabled")
+            columns["enabled"] = sheet[0].index("Enabled")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Enable Missing")
@@ -92,6 +92,10 @@ class syncWeb():
                 i += 1
                 continue
 
+            if (not sheet[i][columns["enabled"]].upper() == "TRUE"):
+                i += 1
+                continue
+
             if (not sheet[i][columns["valid"]].upper() == "TRUE"):
                 _logger.info("Web Valid")
                 msg = utilities.buildMSG(
@@ -103,26 +107,44 @@ class syncWeb():
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 # _logger.info(external_id)
-                pageIds = self.database.env['ir.model.data'].search(
-                    [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
-                # _logger.info(pageIds)
-                if (len(pageIds) > 0):
-                    page = self.database.env['ir.ui.view'].browse(
-                        pageIds[-1].res_id)
-                    opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-                    closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
-                    page.arch_base = opener + \
-                        sheet[i][columns["html"]] + closer
-                else:
-                    msg = utilities.buildMSG(msg, self.name, str(
-                        external_id), "Page Not Created")
-                    _logger.info(str(external_id) + " Page Not Created")
+                msg += self.updatePage(
+                    external_id, sheet[i][columns["html_en"]], "English")
+                msg += self.updatePage(
+                    external_id, sheet[i][columns["html_fr"]], "French")
                 i += 1
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
-                _logger.info(e)
+                _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
                 return True, msg
         return False, msg
+
+    def updatePage(self, id: str, html: str, lang: str) -> str:
+        msg = ""
+        langOps = None
+        if lang == "English":
+            external_id = id + "_en"
+            langOps = "['en_CA', 'en_US']"
+        elif lang == "French":
+            external_id = id + "_fr"
+            langOps = "['fr_CA']"
+        pageIds = self.database.env['ir.model.data'].search(
+            [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
+        # _logger.info(pageIds)
+        if (len(pageIds) > 0):
+            page = self.database.env['ir.ui.view'].browse(
+                pageIds[-1].res_id)
+            opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
+            conditionOpen = "<t t-if=\"lang in " + langOps + "\">\n"
+            footer = "<t t-call=\"custom.custom-footer\"/>\n"
+            conditionClose = "</t>\n"
+            closer = "</xpath>\n</data>"
+            page.arch_base = opener + conditionOpen + \
+                html + footer + conditionClose + closer
+        else:
+            msg = utilities.buildMSG(msg, self.name, str(
+                external_id), "Page Not Created")
+            _logger.info(str(external_id) + " Page Not Created")
+        return (msg)
