@@ -1267,7 +1267,7 @@ class sync(models.Model):
         #    [('sku', '=', 'CFP-NEUFCHATEL-18')])
         #_logger.info("sku CFP-NEUFCHATEL-18: " + str(product))
 
-        order_object_ids = self.env['sales.order'].search([('id','>',0)])
+        order_object_ids = self.env['sale.order'].search([('id','>',0)])
         i = 0
         for orders in order_object_ids:
             i += 1
