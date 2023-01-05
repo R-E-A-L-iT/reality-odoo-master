@@ -1279,7 +1279,9 @@ class sync(models.Model):
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
 
-        products[6009450] = 'sku'
+        products["6009450"] = 'sku'
+        products["6009458"] = 'sku'
+        
 
         _logger.info(str(products.keys()))
 
@@ -1300,7 +1302,7 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                if (product.sku in products):
+                if (str(product.sku) in products):
                     _logger.info("sku in a sale order: " + str(product.sku))        
                     sales_with_old_sku += 1
                     skip = True
