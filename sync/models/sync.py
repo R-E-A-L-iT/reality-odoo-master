@@ -1222,11 +1222,16 @@ class sync(models.Model):
         return to_archives
         
     def customQuery(self, psw=None):
+
+        self.get_product_from_sale("QUOTATION-2022-12-06-229")
+        self.get_product_from_sale("QUOTATION-2022-11-05-070")
+        return
+        ##################
         products = dict()
         sales_with_old_sku = 0
         skip = False
         test_products = self.get_sku_in_odoo_not_in_gs(psw)
-        
+
 
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku' 
@@ -1258,3 +1263,14 @@ class sync(models.Model):
                         skip = True   
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
+
+    def get_product_from_sale(self, sale_name):
+        _logger.info("Listing all product from: " + str(sale_name))
+        order_object_ids = self.env['sale.order'].search([('name','=',sale_name)])
+        for order in order_object_ids:
+            sale_order_lines = self.env['sale.order.line'].search(
+                [('order_id', '=', order.id)]) 
+            
+            for line in sale_order_lines:
+                 _logger.info(str(line.product_id))
+        _logger.info("Listing all product from: END")
