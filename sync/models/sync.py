@@ -1221,7 +1221,11 @@ class sync(models.Model):
                 continue
 
             if ((str(product.sku) == "False") or (str(product.sku) == None)):
-                to_archives.append(str(product.id))
+                if (str(product.id) != "False"):
+                    to_archives.append(str(product.id))
+                else:
+                    _logger.info("Odoo section, str(product.id) was False.")
+
                 #_logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
 
             if (str(product.sku) not in catalog_odoo):
@@ -1246,7 +1250,10 @@ class sync(models.Model):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
                 #_logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
-                to_archives.append(str(product.id))
+                if (str(product.id) != "False"):
+                    to_archives.append(str(product.id))
+                else:
+                    _logger.info("listing product in Odoo and not in GS, str(product.id) was False.")
 
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
