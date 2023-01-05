@@ -108,6 +108,7 @@ class syncWeb():
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French")
 
+                i += 0
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.error(e)
@@ -137,5 +138,4 @@ class syncWeb():
             msg = utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
             _logger.info(str(external_id) + " Page Not Created")
-        i += 1
         return (msg)
