@@ -1276,7 +1276,7 @@ class sync(models.Model):
         for i in range(len(test_products)):
             products[test_products[i]] = 'sku'
 
-        _logger.info(str(test_products.keys()))
+        _logger.info(str(products.keys()))
 
         
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
