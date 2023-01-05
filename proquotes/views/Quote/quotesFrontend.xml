@@ -33,7 +33,7 @@
 		</xpath>
 
 		<!-- Hide Total On Rental Quotes -->
-		<xpath expr="//div[@id=&quot;total&quot;]" position="attribute">
+		<xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
 			<attribute name="t-if">sale_order.is_rental != True</attribute>
 		</xpath>
 
