@@ -1272,7 +1272,7 @@ class sync(models.Model):
                 [('order_id', '=', order.id)]) 
             
             for line in sale_order_lines:
-                _logger.info(str(line.product_id))
+                _logger.info(str(line.product_id.id))
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id)])
                 _logger.info("---------------")  
