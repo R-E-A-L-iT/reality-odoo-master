@@ -142,6 +142,7 @@ class sync(models.Model):
     #   msg:        Message to append to the repport
     def getSheetIndex(self, sync_data, lineIndex):
         _logger.info("getSheetIndex: " + str(lineIndex))
+        _logger.info("getSheetIndex: " + str(sync_data[lineIndex]))
         sheetIndex = -1
         i = -1        
         msg = ""
