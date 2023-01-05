@@ -52,7 +52,7 @@ class syncWeb():
             missingColumn = True
 
         if ("Enabled" in sheet[0]):
-            columns["enable"] = sheet[0].index("Enabled")
+            columns["enabled"] = sheet[0].index("Enabled")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Enable Missing")
@@ -92,6 +92,10 @@ class syncWeb():
                 i += 1
                 continue
 
+            if (not sheet[i][columns["enabled"]].upper() == "TRUE"):
+                i += 1
+                continue
+
             if (not sheet[i][columns["valid"]].upper() == "TRUE"):
                 _logger.info("Web Valid")
                 msg = utilities.buildMSG(
@@ -107,7 +111,7 @@ class syncWeb():
                     external_id, sheet[i][columns["html_en"]], "English")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French")
-                i += 1
+                i += 0
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
                 _logger.error(e)
