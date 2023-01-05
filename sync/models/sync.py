@@ -1294,9 +1294,12 @@ class sync(models.Model):
                     [('id', '=', line.product_id.id)])
                 if (str(product.id) in products):
                     if ((str(product.id) != "False")):
+                        _logger.info("---------------")  
                         _logger.info("orders name: " + str(order.name))  
                         _logger.info("id in a sale order: " + str(product.id))        
                         _logger.info("name in a sale order: " + str(product.name))  
+                        _logger.info("---------------")  
+
                         sales_with_old_sku += 1
                         skip = True
 
