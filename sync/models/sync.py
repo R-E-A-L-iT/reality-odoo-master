@@ -1272,5 +1272,14 @@ class sync(models.Model):
                 [('order_id', '=', order.id)]) 
             
             for line in sale_order_lines:
-                 _logger.info(str(line.product_id))
+                _logger.info(str(line.product_id))
+                product = self.env['product.product'].search(
+                    [('id', '=', line.product_id.id)])
+                _logger.info("---------------")  
+                _logger.info("orders name: " + str(order.name))  
+                _logger.info("id in a sale order: " + str(product.id))        
+                _logger.info("sku in a sale order: " + str(product.sku))
+                _logger.info("name in a sale order: " + str(product.name))  
+                _logger.info("---------------") 
+
         _logger.info("Listing all product from: END")
