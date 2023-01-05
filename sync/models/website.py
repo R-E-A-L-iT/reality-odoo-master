@@ -70,8 +70,8 @@ class syncWeb():
             missingColumn = True
 
         if (len(sheet[0]) != sheetWidth or missingColumn):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>Sheet width is: " + \
-                str(len(sheet[0])) + "</p>"
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", f'Sheet Width is {len(sheet[0])}. Expected {sheetWidth}')
             self.database.sendSyncReport(msg)
             _logger.info("Sheet Width: " + str(len(sheet[0])))
             return True, msg
