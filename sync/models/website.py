@@ -138,10 +138,11 @@ class syncWeb():
                 pageIds[-1].res_id)
             opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
             conditionOpen = "<t t-if=\"lang in " + langOps + "\">\n"
+            footer = "<t t-call=\"custom.custom-footer\"\n"
             conditionClose = "</t>\n"
-            closer = "<t t-call=\"custom.custom-footer\"/>\n</xpath>\n</data>"
+            closer = "</xpath>\n</data>"
             page.arch_base = opener + conditionOpen + \
-                html + conditionClose + closer
+                html + footer + conditionClose + closer
         else:
             msg = utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
