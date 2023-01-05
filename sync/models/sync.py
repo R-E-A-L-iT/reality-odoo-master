@@ -141,6 +141,7 @@ class sync(models.Model):
     #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
     #   msg:        Message to append to the repport
     def getSheetIndex(self, sync_data, lineIndex):
+        _logger.info("getSheetIndex: " + str(lineIndex))
         sheetIndex = -1
         i = -1        
         msg = ""
