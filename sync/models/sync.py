@@ -1238,8 +1238,8 @@ class sync(models.Model):
         #_logger.info("name in a sale order: " + str(product.name))  
         #_logger.info("---------------") 
         #
-        #self.get_product_from_sale("QUOTATION-2022-12-06-229")
-        #self.get_product_from_sale("QUOTATION-2022-11-05-070")
+        #self.log_product_from_sale("QUOTATION-2022-12-06-229")
+        #self.log_product_from_sale("QUOTATION-2022-11-05-070")
         #return
         ##################
         to_archives_dict = dict()
@@ -1278,7 +1278,7 @@ class sync(models.Model):
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
 
-    def get_product_from_sale(self, sale_name):
+    def log_product_from_sale(self, sale_name):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search([('name','=',sale_name)])
         for order in order_object_ids:
