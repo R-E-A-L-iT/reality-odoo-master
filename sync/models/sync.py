@@ -1231,6 +1231,13 @@ class sync(models.Model):
         _logger.info("name in a sale order: " + str(product.name))  
         _logger.info("---------------") 
 
+        product = self.env['product.product'].search(
+            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
+        _logger.info("--------------- 558038")   
+        _logger.info("id in a sale order: " + str(product.id))        
+        _logger.info("sku in a sale order: " + str(product.sku))
+        _logger.info("name in a sale order: " + str(product.name))  
+        _logger.info("---------------") 
 
         self.get_product_from_sale("QUOTATION-2022-12-06-229")
         self.get_product_from_sale("QUOTATION-2022-11-05-070")
