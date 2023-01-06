@@ -1226,14 +1226,14 @@ class sync(models.Model):
         to_archive_dict = dict()
         sales_with_archived_product = 0      
         
-        ##Archiving all unwanted products        
-        #_logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
-        #archiving_index = 0
-        #for item in to_archive_list:
-        #    _logger.info(str(archiving_index) + " archving :" + str(item))
-        #    archiving_index += 1
-        #    self.archive_product(str(item))               
-        #_logger.info("------------------------------------------- ALL products are archived.") 
+        #Archiving all unwanted products        
+        _logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
+        archiving_index = 0
+        for item in to_archive_list:
+            _logger.info(str(archiving_index) + " archving :" + str(item))
+            archiving_index += 1
+            self.archive_product(str(item))               
+        _logger.info("------------------------------------------- ALL products with no SKU or Sku in Odoo and not in GoogleSheet DB are archived.") 
 
         #Switch to dictionnary to optimise the rest of the querry
         for i in range(len(to_archive_list)):
