@@ -96,7 +96,7 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
     # rental_insurance = fields.Binary(string="Insurance")
 
-    @api.onChange('template_id')
+    @api.onchange('template_id')
     def set_is_rental(self):
         if (self.template_id.name == "Rental"):
             self.is_rental = True
