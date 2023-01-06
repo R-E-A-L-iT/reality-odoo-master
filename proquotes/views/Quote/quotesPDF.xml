@@ -396,7 +396,7 @@
 		</xpath>
 
 		<xpath expr="//h2/span" position="attributes">
-			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
+			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
 		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
