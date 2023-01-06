@@ -1161,14 +1161,12 @@ class sync(models.Model):
     #Input
     #   psw: the password to acces the GoogleSheet Master Database.
     #Output
-    #   to_archives: a list of product.id
-    def getSkuToArchive(self, psw=None):
-        
+    #   to_archive: a list of product.id
+    def getSkuToArchive(self, psw=None):        
         _logger.info("------------------------------------------- BEGIN  to get the sku in odoo and not in GoogleSheet")
-
         catalog_odoo = dict()
         catalog_gs = dict()
-        to_archives = []
+        to_archive = []
 
         # Checks authentication values
         if (not self.is_psw_format_good(psw)):           
@@ -1187,7 +1185,7 @@ class sync(models.Model):
 
             if ((str(product.sku) == "False") or (str(product.sku) == None)):
                 if (str(product.id) != "False"):
-                    to_archives.append(str(product.id))
+                    to_archive.append(str(product.id))
                 else:
                     _logger.info("Odoo section, str(product.id) was False.")
 
@@ -1220,32 +1218,32 @@ class sync(models.Model):
                 elif(str(product.sku) == "time_product_product_template"):
                     _logger.info("Can not archive Service on Timesheet.")
                 else:
-                    to_archives.append(str(product.id))
+                    to_archive.append(str(product.id))
 
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))    
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
-        _logger.info("to_archives length: " + str(len(to_archives)))
-        return to_archives
+        _logger.info("to_archive length: " + str(len(to_archive)))
+        return to_archive
 
        
     #Method to clean all sku that are pulled by self.getSkuToArchive
     def cleanSku(self, psw=None):
-        to_archives_dict = dict()
+        to_archive_list = self.getSkuToArchive(psw)
+        to_archive_dict = dict()
         sales_with_archived_product = 0      
-
-        ##Archiving all unwanted products
-        #to_archives_list = self.getSkuToArchive(psw)
-        #_logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archives_list)))
+        
+        ##Archiving all unwanted products        
+        #_logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
         #archiving_index = 0
-        #for item in to_archives_list:
+        #for item in to_archive_list:
         #    _logger.info(str(archiving_index) + " archving :" + str(item))
         #    archiving_index += 1
         #    self.archive_product(str(item))               
         #_logger.info("------------------------------------------- ALL products are archived.") 
 
         #Switch to dictionnary to optimise the rest of the querry
-        for i in range(len(to_archives_list)):
-            to_archives_dict[to_archives_list[i]] = 'sku' 
+        for i in range(len(to_archive_list)):
+            to_archive_dict[to_archive_list[i]] = 'sku' 
 
         #Listing all sale.order that contain archhived product.id
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
@@ -1256,7 +1254,7 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                if (str(product.id) in to_archives_dict):
+                if (str(product.id) in to_archive_dict):
                     if ((str(product.id) != "False")):
                         _logger.info("---------------")  
                         _logger.info("orders name: " + str(order.name))  
