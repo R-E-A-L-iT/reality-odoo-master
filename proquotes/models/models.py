@@ -96,6 +96,13 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
     # rental_insurance = fields.Binary(string="Insurance")
 
+    @api.onChange('template_id')
+    def set_is_rental(self):
+        if (self.template_id.name == "Rental"):
+            self.is_rental = True
+        else:
+            self.is_rental = False
+
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0
