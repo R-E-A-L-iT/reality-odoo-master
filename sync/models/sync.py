@@ -1171,8 +1171,7 @@ class sync(models.Model):
                 else:
                     _logger.info("Odoo section, str(product.id) was False.")
 
-                #_logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
-
+                _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
             if (str(product.sku) not in catalog_odoo):
                 catalog_odoo[str(product.sku)] = 1
             else:
@@ -1195,7 +1194,7 @@ class sync(models.Model):
             if (not item in catalog_gs):
                 product = self.env['product.template'].search(
                     [('sku', '=', item)])
-                #_logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
+                _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))                     
                 if (str(product.id) == "False"):                    
                     _logger.info("listing product in Odoo and not in GS, str(product.id) was False.")
                 elif(str(product.sku) == "time_product_product_template"):
@@ -1208,7 +1207,7 @@ class sync(models.Model):
         _logger.info("to_archives length: " + str(len(to_archives)))
         
 
-        
+        return to_archives
         ########################################
         #Archiving all unwanted products
         _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
@@ -1223,35 +1222,34 @@ class sync(models.Model):
         
     def customQuery(self, psw=None):
 
-        product = self.env['product.product'].search(
-            [('id', '=', 558038)])
-        _logger.info("--------------- 558038")   
-        _logger.info("id in a sale order: " + str(product.id))        
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))  
-        _logger.info("---------------") 
-
-        product = self.env['product.product'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
-        _logger.info("--------------- 558038")   
-        _logger.info("id in a sale order: " + str(product.id))        
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))  
-        _logger.info("---------------") 
-
-        self.get_product_from_sale("QUOTATION-2022-12-06-229")
-        self.get_product_from_sale("QUOTATION-2022-11-05-070")
-        return
+        #product = self.env['product.product'].search(
+        #    [('id', '=', 558038)])
+        #_logger.info("--------------- 558038")   
+        #_logger.info("id in a sale order: " + str(product.id))        
+        #_logger.info("sku in a sale order: " + str(product.sku))
+        #_logger.info("name in a sale order: " + str(product.name))  
+        #_logger.info("---------------") 
+        #
+        #product = self.env['product.product'].search(
+        #    [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
+        #_logger.info("--------------- 558038")   
+        #_logger.info("id in a sale order: " + str(product.id))        
+        #_logger.info("sku in a sale order: " + str(product.sku))
+        #_logger.info("name in a sale order: " + str(product.name))  
+        #_logger.info("---------------") 
+        #
+        #self.get_product_from_sale("QUOTATION-2022-12-06-229")
+        #self.get_product_from_sale("QUOTATION-2022-11-05-070")
+        #return
         ##################
-        products = dict()
+        to_archives_dict = dict()
         sales_with_old_sku = 0
         skip = False
-        test_products = self.get_sku_in_odoo_not_in_gs(psw)
+        to_archives_list = self.get_sku_in_odoo_not_in_gs(psw)
 
-
-        for i in range(len(test_products)):
-            products[test_products[i]] = 'sku' 
-            _logger.info("add product id: " + str(test_products[i]))        
+        for i in range(len(to_archives_list)):
+            to_archives_dict[to_archives_list[i]] = 'sku' 
+            _logger.info("add product id: " + str(to_archives_list[i]))        
         
 
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
@@ -1266,7 +1264,7 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                if (str(product.id) in products):
+                if (str(product.id) in to_archives_dict):
                     if ((str(product.id) != "False")):
                         _logger.info("---------------")  
                         _logger.info("orders name: " + str(order.name))  
