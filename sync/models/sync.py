@@ -1206,8 +1206,7 @@ class sync(models.Model):
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("to_archives length: " + str(len(to_archives)))
         
-
-        return to_archives
+       
         ########################################
         #Archiving all unwanted products
         _logger.info("------------------------------------------- Number of product to archied: " + str(len(to_archives)))
@@ -1219,9 +1218,10 @@ class sync(models.Model):
         
         _logger.info("------------------------------------------- END") 
         return to_archives
+
+
         
     def customQuery(self, psw=None):
-
         #product = self.env['product.product'].search(
         #    [('id', '=', 558038)])
         #_logger.info("--------------- 558038")   
@@ -1249,8 +1249,7 @@ class sync(models.Model):
 
         for i in range(len(to_archives_list)):
             to_archives_dict[to_archives_list[i]] = 'sku' 
-            _logger.info("add product id: " + str(to_archives_list[i]))        
-        
+            _logger.info("add product id: " + str(to_archives_list[i]))      
 
         order_object_ids = self.env['sale.order'].search([('id','>',0)])
         for order in order_object_ids:
@@ -1272,12 +1271,15 @@ class sync(models.Model):
                         _logger.info("sku in a sale order: " + str(product.sku))
                         _logger.info("name in a sale order: " + str(product.name))  
                         _logger.info("---------------")  
-
                         sales_with_old_sku += 1
                         skip = True   
+
         _logger.info("number of sales_with_old_sku: " + str(sales_with_old_sku)) 
    
 
+    #Method to log all product id, sku, skuhidden and name
+    #Input
+    #   sale_name: the name of the sale order
     def log_product_from_sale(self, sale_name):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search([('name','=',sale_name)])
@@ -1289,8 +1291,7 @@ class sync(models.Model):
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
                 _logger.info("---------------")  
-                _logger.info("orders name: " + str(order.name))  
-                _logger.info("str product: " + str(product))        
+                _logger.info("orders name: " + str(order.name))       
                 _logger.info("id in a sale order: " + str(product.id))        
                 _logger.info("sku in a sale order: " + str(product.sku))
                 _logger.info("skuhidden name in a sale order: " + str(product.skuhidden.name))
