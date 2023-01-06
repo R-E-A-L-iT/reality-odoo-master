@@ -1046,8 +1046,7 @@ class sync(models.Model):
         result_dict = self.checkOdooSyncDataTab(sync_data)
 
         odoo_sync_data_sheet_name_column_index = result_dict['odoo_sync_data_sheet_name_column_index']
-        odoo_sync_data_sheet_index_column_index = result_dict[
-            'odoo_sync_data_sheet_index_column_index']
+        odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
         odoo_sync_data_model_type_column_index = result_dict['odoo_sync_data_model_type_column_index']
         odoo_sync_data_valid_column_index = result_dict['odoo_sync_data_valid_column_index']
         odoo_sync_data_continue_column_index = result_dict['odoo_sync_data_continue_column_index']
@@ -1064,16 +1063,12 @@ class sync(models.Model):
             refered_sheet_valid_column_index = -1
             refered_sheet_sku_column_index = -1
 
-            sheet_name = str(
-                sync_data[i][odoo_sync_data_sheet_name_column_index])
+            sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
-            modelType = str(
-                sync_data[i][odoo_sync_data_model_type_column_index])
-            valid_value = (
-                str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
-            continue_value = (
-                str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
+            modelType = str(sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
+            continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
             # Validation for the current loop
             if (not continue_value):
@@ -1171,7 +1166,6 @@ class sync(models.Model):
         # Checks authentication values
         if (not self.is_psw_format_good(psw)):           
             _logger.info("Password not valid")
-
             return
 
         #################################
@@ -1188,19 +1182,18 @@ class sync(models.Model):
                     to_archive.append(str(product.id))
                 else:
                     _logger.info("Odoo section, str(product.id) was False.")
-
+                
                 _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
+
             if (str(product.sku) not in catalog_odoo):
                 catalog_odoo[str(product.sku)] = 1
             else:
-                catalog_odoo[str(product.sku)
-                             ] = catalog_odoo[str(product.sku)] + 1
+                catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
 
         #######################################
         # GoogleSheet Section
         try:
-            catalog_gs = self.getListSkuGS(
-                psw, self._master_database_template_id)
+            catalog_gs = self.getListSkuGS(psw, self._master_database_template_id)
         except Exception as e:
             _logger.info(
                 "Cleaning Sku job is interrupted with the following error : \n" + str(e))
