@@ -48,11 +48,11 @@
 
 	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" primary="True">
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
-			<!-- <attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute> -->
+			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">
 			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">
-				<strong>Subtotal</strong>
+				<!-- <strong>Subtotal</strong> -->
 			</td>
 		</xpath>
 
