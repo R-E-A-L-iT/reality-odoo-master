@@ -99,7 +99,8 @@ class order(models.Model):
     @api.onchange('pricelist_id')
     def set_currency(self):
         if ("CAN" in str(self.pricelist_id.name)):
-            _logger.error("Can Pricelist")
+            _logger.error(self.currency_id.name)
+            _logger.error(self.currency_id.id)
         elif ("USD" in str(self.pricelist_id.name)):
             _logger.error("US Pricelist")
 
