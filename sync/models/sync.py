@@ -65,6 +65,8 @@ class sync(models.Model):
         sync_data = self.getMasterDatabaseSheet(
             template_id, psw, self._odoo_sync_data_index)
         _logger.info(sync_data)
+        db_name = self.pool.db.dbname 
+        _logger.info("===============  " + str(db_name))
 
         # loop through entries in first sheet
         while (True):
