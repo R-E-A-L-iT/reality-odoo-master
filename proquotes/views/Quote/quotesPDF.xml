@@ -141,8 +141,8 @@
 					<br />
 
 					<!-- Format Remtal Value Number -->
-					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" /> -->
-					<!-- <t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" /> -->
+					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
