@@ -446,8 +446,8 @@
 		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
 			<td t-if="doc.is_rental == True and line.product_id.is_software == False">
 				<t t-if="line.product_id.is_software == False">
-					<t t-if="doc.partner_id.country_id.name == 'Canada'" t-set="singleProductValue" t-value="line.product_id.cadVal" />
-					<t t-elif="doc.partner_id.country_id.name == 'United States' or doc.partner_id.country_id.name == 'États Unis'" t-set="singleProductValue" t-value="line.product_id.usdVal" />
+					<t t-if="'CAD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.cadVal" />
+					<t t-elif="'USD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.usdVal" />
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="singleProductValueFormated" t-value="'$ {value:,.2f}'.format(value= singleProductValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="singleProductValueFormated" t-value="'{value:,.2f} $'.format(value= singleProductValue)" />
 					<span t-out="singleProductValueFormated" />
