@@ -98,6 +98,7 @@ class order(models.Model):
 
     @api.onchange('pricelist_id')
     def set_currency(self):
+        x = 0/0
         if (self.pricelist_id.name == "Can Pricelist"):
             _logger.info("Pricelist Change")
 
