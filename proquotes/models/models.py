@@ -102,7 +102,8 @@ class order(models.Model):
             _logger.error(self.currency_id.name)
             _logger.error(self.currency_id.id)
         elif ("USD" in str(self.pricelist_id.name)):
-            _logger.error("US Pricelist")
+            _logger.error(self.currency_id.name)
+            _logger.error(self.currency_id.id)
 
     @ api.onchange('sale_order_template_id')
     def set_is_rental(self):
