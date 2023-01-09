@@ -168,6 +168,7 @@ class sync(models.Model):
             _logger.info(sync_data)
 
             _logger.info(msg)
+            #test to push
 
         return sheetIndex, msg
 
