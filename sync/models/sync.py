@@ -1307,3 +1307,5 @@ class sync(models.Model):
         self.log_product_from_sale("QUOTATION-2022-12-06-229")
         self.log_product_from_sale("QUOTATION-2022-11-05-070")
         return
+    
+    #Olivier: testing to modify by the github.com web interface
