@@ -64,6 +64,7 @@ class sync(models.Model):
         # Get the ODOO_SYNC_DATA tab
         sync_data = self.getMasterDatabaseSheet(
             template_id, psw, self._odoo_sync_data_index)
+        _logger.info(sync_data)
 
         # loop through entries in first sheet
         while (True):
