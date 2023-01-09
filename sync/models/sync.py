@@ -64,6 +64,7 @@ class sync(models.Model):
         # Get the ODOO_SYNC_DATA tab
         sync_data = self.getMasterDatabaseSheet(
             template_id, psw, self._odoo_sync_data_index)
+        _logger.info(sync_data)
 
         # loop through entries in first sheet
         while (True):
@@ -165,8 +166,10 @@ class sync(models.Model):
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
                 str(i) + " called 'Sheet Index', line " + \
                 str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            _logger.info(sync_data)
 
             _logger.info(msg)
+            #test to push
 
         return sheetIndex, msg
 
@@ -1307,3 +1310,5 @@ class sync(models.Model):
         self.log_product_from_sale("QUOTATION-2022-12-06-229")
         self.log_product_from_sale("QUOTATION-2022-11-05-070")
         return
+    
+    #Olivier: testing to modify by the github.com web interface
