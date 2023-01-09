@@ -165,6 +165,7 @@ class sync(models.Model):
             msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
                 str(i) + " called 'Sheet Index', line " + \
                 str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            _logger.info(sync_data)
 
             _logger.info(msg)
 
