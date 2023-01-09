@@ -98,9 +98,9 @@ class order(models.Model):
 
     @api.onchange('pricelist_id')
     def set_currency(self):
-        if ("(USD)" in str(self.pricelist_id.name)):
+        if ("USD" in str(self.pricelist_id.name)):
             _logger.error("US Pricelist")
-        x = 0/0
+            x = 0/0
 
     @ api.onchange('sale_order_template_id')
     def set_is_rental(self):
