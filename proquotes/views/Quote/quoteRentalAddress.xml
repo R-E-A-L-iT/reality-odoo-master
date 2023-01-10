@@ -23,6 +23,7 @@
 					<!-- removed the t-if to investigate 
 						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
 					<input                                      id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
+					<script> console.log(String(source.rental_end)); </script>
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
@@ -44,8 +45,7 @@
 					</span>
 					<br />
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
-					<script> console.log(5 + 60); </script>
+					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>					
 					<input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
 					<input t-else="" id="new-address" type="checkbox" />
 					<br />
