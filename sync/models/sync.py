@@ -1325,3 +1325,12 @@ class sync(models.Model):
         #self.log_product_from_sale("QUOTATION-2022-12-06-229")
         #self.log_product_from_sale("QUOTATION-2022-11-05-070")
         return
+
+    #query to find the QUOTATION-2023-01-05-007, id 552
+    def searchQuotation(self):
+        sale = self.env['sale.order'].search(
+            [('id', '=', 552)])
+        _logger.info("--------------- sale.order.")   
+        _logger.info("sale.id: " + str(sale.id))        
+        _logger.info("sale.name: " + str(sale.name))  
+        _logger.info("---------------") 
