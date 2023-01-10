@@ -8,16 +8,16 @@
 			<form autocomplete="on">
 				<div>
 					<label for="rental-start">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental</span>
-						<span t-if="clang == 'fr_CA'">Début de la Location</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
+						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
 					</label>
-					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
+					<input t-if="source.rental_start != False" id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
 					<label for="rental-end">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental</span>
-						<span t-if="clang == 'fr_CA'">Fin estimée de la Location</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
+						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
-					<input id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
+					<input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
