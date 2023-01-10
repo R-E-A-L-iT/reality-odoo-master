@@ -146,6 +146,7 @@
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
+						<br />
 						<span>
 							Please upload your proof of insurance in the connents section below or send a copy by email.
 						</span>
