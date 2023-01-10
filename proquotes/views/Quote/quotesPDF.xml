@@ -147,12 +147,12 @@
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<span>
-							please provide your proof of insurance:
+							Please provide your proof of insurance:
 						</span>
 						<br />
 					</div>
 					<div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
-						<span>valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+						<span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
 						<span>
