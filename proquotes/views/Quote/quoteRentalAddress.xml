@@ -34,14 +34,14 @@
 					</span>			
 					<br />--> 
 
-					<!-- Test to see the value or rental-end 
+					<!-- Test to see the value or rental-end -->
 					<span t-if="rental-end != False">
 						rental-end != False
 					</span>		
 					<span t-else="">
 						rental-end == False
 					</span>			
-					<br />-->
+					<br />
 
 				</div>
 				<!-- <div id="POinputLabel">
