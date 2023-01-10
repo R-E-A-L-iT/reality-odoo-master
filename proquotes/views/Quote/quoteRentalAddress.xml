@@ -22,8 +22,27 @@
 					</label>
 					<!-- removed the t-if to investigate 
 						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
-					<input                                      id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
-					<script> console.log(String(rental_end)); </script>
+					<input                                      id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />		
+
+					<!-- Test to see the value or source.rental-end--> 
+					<br />
+					<span t-if="source.rental-end != False">
+						source.rental-end != False
+					</span>		
+					<span t-else="">
+						source.rental-end == False
+					</span>			
+					<br />
+
+					<!-- Test to see the value or rental-end--> 
+					<span t-if="rental-end != False">
+						rental-end != False
+					</span>		
+					<span t-else="">
+						rental-end == False
+					</span>			
+					<br />
+
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
