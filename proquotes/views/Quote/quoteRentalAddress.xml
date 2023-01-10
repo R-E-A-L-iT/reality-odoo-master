@@ -24,9 +24,9 @@
 						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
 					<input                                      id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />		
 
-					<!-- Test to see the value or source.rental-end--> 
+					<!-- Test to see the value or source.rental_end--> 
 					<br />
-					<span t-if="source.rental-end != False">
+					<span t-if="source.rental_end != False">
 						source.rental-end != False
 					</span>		
 					<span t-else="">
