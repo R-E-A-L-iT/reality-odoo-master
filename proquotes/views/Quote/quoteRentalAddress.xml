@@ -37,17 +37,22 @@
 				<br />
 				<div>
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
-						Should equipment be shipped to a different address?
+						Should equipment be shipped to a different addressQQQQ?
 					</span>
 					<span t-elif="clang == 'fr_CA'">
 						L'équipement doit-il être expédié à une adresse différente ?
 					</span>
 					<br />
+
+					<!-- Test to display rental_diff_add value-->
+					<span t-if="source.rental_diff_add == True">source.rental_diff_add == True</span>
+					<span t-else="">source.rental_diff_add == False</span>
+					<br />
+
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
 					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
-					<!--input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
-					<input t-else="" id="new-address" type="checkbox" /-->
-					<input           id="new-address" type="checkbox" />	
+					<input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
+					<input t-else="" id="new-address" type="checkbox" />
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">
