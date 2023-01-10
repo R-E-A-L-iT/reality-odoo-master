@@ -147,7 +147,7 @@
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<span>
-							Please provide your proof of insurance:
+							Please upload your proof of insurance in the connents section below or send a copy by email.
 						</span>
 						<br />
 					</div>
