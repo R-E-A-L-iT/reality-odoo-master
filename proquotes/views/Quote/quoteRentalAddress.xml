@@ -24,7 +24,7 @@
 						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
 					<input                                      id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />		
 
-					<!-- Test to see the value or source.rental-end--> 
+					<!-- Test to see the value or source.rental-end
 					<br />
 					<span t-if="source.rental-end != False">
 						source.rental-end != False
@@ -32,16 +32,16 @@
 					<span t-else="">
 						source.rental-end == False
 					</span>			
-					<br />
+					<br />--> 
 
-					<!-- Test to see the value or rental-end--> 
+					<!-- Test to see the value or rental-end 
 					<span t-if="rental-end != False">
 						rental-end != False
 					</span>		
 					<span t-else="">
 						rental-end == False
 					</span>			
-					<br />
+					<br />-->
 
 				</div>
 				<!-- <div id="POinputLabel">
