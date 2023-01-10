@@ -100,12 +100,12 @@
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<p t-out="'Start of the Rental ' + str(doc.rental_start)" />
-						<p t-out="'End of the Rental ' + str(doc.rental_end)" />
+						<p t-out="'Start of the Rental: ' + str(doc.rental_start)" />
+						<p t-out="'End of the Rental: ' + str(doc.rental_end) if doc.rental_start != False else ''" />
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<p t-out="'Début de la Location ' + str(doc.rental_start)" />
-						<p t-out="'Fin estimée de la Location ' + str(doc.rental_end)" />
+						<p t-out="'Début de la Location: ' + str(doc.rental_start)" />
+						<p t-out="'Fin estimée de la Location: ' + str(doc.rental_end) if doc.rental_end != False else ''" />
 					</t>
 					<t t-if="doc.rental_diff_add == True">
 						<span t-field="doc.rental_street" />
