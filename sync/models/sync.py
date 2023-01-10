@@ -64,9 +64,6 @@ class sync(models.Model):
         # Get the ODOO_SYNC_DATA tab
         sync_data = self.getMasterDatabaseSheet(
             template_id, psw, self._odoo_sync_data_index)
-        _logger.info(sync_data)
-        db_name = self.env.db.dbname 
-        _logger.info("===============  " + str(db_name))
 
         # loop through entries in first sheet
         while (True):
@@ -1300,6 +1297,14 @@ class sync(models.Model):
         _logger.info("sku in a sale order: " + str(product.sku))
         _logger.info("name in a sale order: " + str(product.name))  
         _logger.info("---------------") 
+
+        product = self.env['product.template'].search(
+            [('id', '=', 558038)])
+        _logger.info("--------------- 558038")   
+        _logger.info("id in a sale order: " + str(product.id))        
+        _logger.info("sku in a sale order: " + str(product.sku))
+        _logger.info("name in a sale order: " + str(product.name))  
+        _logger.info("---------------") 
         
         product = self.env['product.product'].search(
             [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
@@ -1308,7 +1313,15 @@ class sync(models.Model):
         _logger.info("sku in a sale order: " + str(product.sku))
         _logger.info("name in a sale order: " + str(product.name))  
         _logger.info("---------------") 
+
+        product = self.env['product.template'].search(
+            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
+        _logger.info("--------------- 558038")   
+        _logger.info("id in a sale order: " + str(product.id))        
+        _logger.info("sku in a sale order: " + str(product.sku))
+        _logger.info("name in a sale order: " + str(product.name))  
+        _logger.info("---------------") 
         
-        self.log_product_from_sale("QUOTATION-2022-12-06-229")
-        self.log_product_from_sale("QUOTATION-2022-11-05-070")
+        #self.log_product_from_sale("QUOTATION-2022-12-06-229")
+        #self.log_product_from_sale("QUOTATION-2022-11-05-070")
         return
