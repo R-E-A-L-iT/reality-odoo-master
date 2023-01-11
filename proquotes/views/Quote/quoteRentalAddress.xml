@@ -39,15 +39,24 @@
 						Adresse de livraison identique à l'adresse de facturation
 					</span>
 					<br />
+
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
 					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>		
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>			
 					<!-- test the impact to take out the if
 					 input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
 					<input t-else="" id="new-address" type="checkbox" /-->
-					<input id="new-address" type="checkbox" checked="true"/>
-					
+					<input id="new-address" type="checkbox" checked="true"/>					
 					<br />
+
+					<!-- test -->
+					<span t-if="source.rental_diff_add == True'" class="rental" display="none">
+						source.rental_diff_add == True display="none"
+					</span>
+					<span t-else="" class="rental" display="block">
+						source.rental_diff_add == False display="block"
+					</span>
+
 					<div id="rental-address" class="rental-address">
 						<label for="street">
 							<span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
