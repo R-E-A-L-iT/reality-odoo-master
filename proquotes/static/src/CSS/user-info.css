@@ -31,7 +31,9 @@
 	height: calc(1rem + 3px);
 }
 
-#user-info #new-address:before {
+/* wondering if befor take :: and not :
+#user-info #new-address:before {*/
+	#user-info #new-address::before {	
 	display: flex;
 	visibility: visible;
 	content: "No ";
