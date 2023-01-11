@@ -37,12 +37,12 @@
 					</div> -->
 				<br />
 				<div>
-					<span>test-cb-true</span>
+					<!--span>test-cb-true</span>
 					<input id="test-cb-true" type="checkbox" checked="True" />
 					<br />
 					<span>test-cb-false</span>
 					<input id="test-cb-false" type="checkbox" checked="False" />
-					<br />
+					<br /-->
 
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
 						Should equipment be shipped to a different address?
@@ -53,8 +53,10 @@
 					<br />
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
 					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>					
-					<input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
-					<input t-else="" id="new-address" type="checkbox" />
+					<!-- test the impact to take out the if
+					 input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
+					<input t-else="" id="new-address" type="checkbox" /-->
+					<input id="new-address" type="checkbox" checked="true" />
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">
