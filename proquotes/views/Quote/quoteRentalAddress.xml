@@ -38,10 +38,10 @@
 				<br />
 				<div>
 					<span>test-cb-true</span>
-					<input id="test-cb-true" type="checkbox" checked="true" />
+					<input id="test-cb-true" type="checkbox" checked="True" />
 					<br />
 					<span>test-cb-false</span>
-					<input id="test-cb-false" type="checkbox" checked="false" />
+					<input id="test-cb-false" type="checkbox" checked="False" />
 					<br />
 
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
