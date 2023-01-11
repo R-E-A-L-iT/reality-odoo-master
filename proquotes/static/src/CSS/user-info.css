@@ -24,7 +24,7 @@
 
 
 #user-info #new-address {
-	visibility: hidden;
+	/*visibility: hidden;*/
 	display: block;
 	height: calc(1rem + 3px);
 }
