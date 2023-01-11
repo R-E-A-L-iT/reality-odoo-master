@@ -125,10 +125,10 @@ odoo.define("proquotes.price", function (require) {
 
 			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
 			var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
-			var startDate = document.getElementById("rental-start");
-			//var startDate = new Date("2023-01-01");
-			var endDate = document.getElementById("rental-end");
-			//var endDate = new Date("2023-01-10");
+			//var startDate = document.getElementById("rental-start");
+			var startDate = new Date("2023-01-01");
+			//var endDate = document.getElementById("rental-end");
+			var endDate = new Date("2023-01-10");
 
 			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
 				return;
