@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template name="Rental Address Form" id="rental_address_form">
+	<template name="Rental Address Form" id="rental_address_form">		
 		<t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
 				<div>
-					<label for="rental-start">
-						
+					<label for="rental-start">						
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
 					</label>
 					
-					<!-- input t-if="source.rental_start != False" id="rental-start" type="date" t-attf-value="{{source.rental_start}}" /-->
-
-					<!--input                                        id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
+					<!-- Changed the input because calender was not displaying
+						input t-if="source.rental_start != False" id="rental-start" type="date" t-attf-value="{{source.rental_start}}" /-->
+					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
+
 					<label for="rental-end">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-					</label-->
-
-					<!-- input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
-					<!--input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->		
-
-					<!-- Test to see the value or source.rental_end 
-					<br />
-					<span t-if="source.rental_end == False">
-						source.rental_end == False
-					</span>		
-					<span t-elif="source.rental_end == True">
-						source.rental_end == True
-					</span> -->
+					</label>
+					<!-- Changed the input because calender was not displaying
+						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
+					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />		
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
@@ -46,6 +37,13 @@
 					</div> -->
 				<br />
 				<div>
+					<span>test-cb-true</span>
+					<input id="test-cb-true" type="checkbox" checked="true" />
+					<br />
+					<span>test-cb-false</span>
+					<input id="test-cb-false" type="checkbox" checked="false" />
+					<br />
+
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
 						Should equipment be shipped to a different address?
 					</span>
