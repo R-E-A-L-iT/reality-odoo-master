@@ -50,12 +50,12 @@
 					<br />
 
 					<!-- test -->
-					<span t-if="source.rental_diff_add == True'" class="rental" display="none">
+					<!-- span t-if="source.rental_diff_add == True'" class="rental" display="none">
 						source.rental_diff_add == True display="none"
 					</span>
 					<span t-else="" class="rental" display="block">
 						source.rental_diff_add == False display="block"
-					</span>
+					</span-->
 
 					<div id="rental-address" class="rental-address">
 						<label for="street">
