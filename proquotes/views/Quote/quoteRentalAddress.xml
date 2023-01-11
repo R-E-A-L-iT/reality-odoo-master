@@ -45,8 +45,7 @@
 					<!-- test the impact to take out the if
 					 input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
 					<input t-else="" id="new-address" type="checkbox" /-->
-					<input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true"/>
-					<input t-else=""                             id="new-address" type="checkbox" checked="false"/>
+					<input id="new-address" type="checkbox" checked="true"/>
 					
 					<br />
 					<div id="rental-address" class="rental-address">
