@@ -10,10 +10,7 @@
 					<label for="rental-start">						
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-					</label>
-					
-					<!-- Changed the input because calender was not displaying
-						input t-if="source.rental_start != False" id="rental-start" type="date" t-attf-value="{{source.rental_start}}" /-->
+					</label>					
 					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
 
@@ -21,8 +18,6 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
-					<!-- Changed the input because calender was not displaying
-						input t-if="source.rental_end != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" /-->
 					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />		
 				</div>
 				<!-- <div id="POinputLabel">
@@ -37,13 +32,6 @@
 					</div> -->
 				<br />
 				<div>
-					<!--span>test-cb-true</span>
-					<input id="test-cb-true" type="checkbox" checked="True" />
-					<br />
-					<span>test-cb-false</span>
-					<input id="test-cb-false" type="checkbox" checked="False" />
-					<br /-->
-
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
 						Should equipment be shipped to a different address?
 					</span>
@@ -56,7 +44,7 @@
 					<!-- test the impact to take out the if
 					 input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
 					<input t-else="" id="new-address" type="checkbox" /-->
-					<input id="new-address" type="checkbox" checked="true" />
+					<input id="new-address" type="checkbox" checked="false" />
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">

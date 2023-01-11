@@ -24,16 +24,13 @@
 
 
 #user-info #new-address {
-	/* trying to display the checkbox
-	visibility: hidden;*/
+	/* trying to display the checkbox, changed the visibility from hidden to visible */
 	visibility: visible;
 	display: block;
 	height: calc(1rem + 3px);
 }
 
-/* wondering if befor take :: and not :
-#user-info #new-address:before {*/
-	#user-info #new-address::before {	
+#user-info #new-address:before {	
 	display: flex;
 	visibility: visible;
 	content: "No ";
