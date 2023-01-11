@@ -24,7 +24,9 @@
 
 
 #user-info #new-address {
-	/*visibility: hidden;*/
+	/* trying to display the checkbox
+	visibility: hidden;*/
+	visibility: visible;
 	display: block;
 	height: calc(1rem + 3px);
 }
