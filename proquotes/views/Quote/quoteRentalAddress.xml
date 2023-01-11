@@ -26,11 +26,17 @@
 
 					<!-- Test to see the value or source.rental_end--> 
 					<br />
-					<span t-if="source.rental_end != False">
-						source.rental-end != False
+					<span t-if="source.rental_end == False">
+						source.rental_end == False
 					</span>		
+					<span t-elif="source.rental_end == True">
+						source.rental_end == True
+					</span>
+					<span t-elif="source.rental_end == undefined">
+						source.rental_end == undefined
+					</span>	
 					<span t-else="">
-						source.rental-end == False
+						source.rental_end == else
 					</span>			
 					<br />
 
