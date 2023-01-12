@@ -1338,7 +1338,7 @@ class sync(models.Model):
 
     #methode to test the email submiting information
     def tbookademo(self):
-        test_instance = bookademo()
+        test_instance = bookademo(self)
         test_instance.submitEmail(
             "customer_name", 
             "custome_phone_number", 
