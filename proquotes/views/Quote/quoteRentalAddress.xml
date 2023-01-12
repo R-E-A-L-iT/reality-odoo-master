@@ -18,8 +18,9 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
-					<input t-if="source.rental_start == False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="none"/>
+					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="none" />	
 					<input t-else=""  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="auto"/>
+
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
@@ -51,12 +52,12 @@
 					<br />
 
 					<!-- test -->
-					<!-- span t-if="source.rental_diff_add == True'" class="rental" display="none">
-						source.rental_diff_add == True display="none"
+					<span t-if="source.rental_diff_add == True'" class="rental" display="none">
+						source.rental_diff_add == True'
 					</span>
-					<span t-else="" class="rental" display="block">
-						source.rental_diff_add == False display="block"
-					</span-->
+					<span t-elif="clang == 'fr_CA'">
+						source.rental_diff_add == True'
+					</span>
 
 					<div id="rental-address" class="rental-address">
 						<label for="street">
