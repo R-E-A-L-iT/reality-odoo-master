@@ -6,3 +6,4 @@ from . import models
 from . import ccp
 from . import pricelist
 from . import utilities
+from . import bookademo

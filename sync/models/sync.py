@@ -24,6 +24,7 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
+from .bookademo import bookademo
 from .ccp import sync_ccp
 from .sql_queries import sql_queries
 from .website import syncWeb
@@ -1334,3 +1335,15 @@ class sync(models.Model):
         _logger.info("sale.id: " + str(sale.id))        
         _logger.info("sale.name: " + str(sale.name))  
         _logger.info("---------------") 
+
+    #methode to test the email submiting information
+    def tbookademo(self):
+        test_instance = bookademo()
+        test_instance.submitEmail(
+            "customer_name", 
+            "custome_phone_number", 
+            "customer_email", 
+            "company_name", 
+            "company_website", 
+            "industry_type", 
+            1)
