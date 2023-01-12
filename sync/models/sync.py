@@ -1340,10 +1340,10 @@ class sync(models.Model):
     def tbookademo(self):
         test_instance = bookademo(self)
         test_instance.submitEmail(
-            "customer_name", 
-            "custome_phone_number", 
-            "customer_email", 
-            "company_name", 
-            "company_website", 
-            "industry_type", 
+            "John Doe", 
+            "1-111-111-1111", 
+            "email@email.com", 
+            "TheBestCompany", 
+            "TheBestCompany.com", 
+            "Helping thing", 
             1)
