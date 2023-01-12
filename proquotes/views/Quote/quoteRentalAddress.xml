@@ -18,8 +18,9 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
-					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="none" />	
-					<input t-else=""  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="auto"/>
+					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />	
+					<!--input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="none" />	
+					<input t-else=""  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" pointer-events="auto"/-->
 
 				</div>
 				<!-- <div id="POinputLabel">
