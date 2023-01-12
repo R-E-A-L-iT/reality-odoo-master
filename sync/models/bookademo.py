@@ -1,30 +1,9 @@
-import ast
 import logging
-import json
-import re
-
-import requests
-import werkzeug.urls
-import base64
-
-from odoo.addons.google_account.models.google_service import GOOGLE_TOKEN_ENDPOINT, TIMEOUT
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
-import logging
-
-from odoo import api, fields, models, SUPERUSER_ID, _
-from odoo.exceptions import RedirectWarning, AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression
-from odoo.tools import float_is_zero, float_compare
-from odoo.tools.translate import _
-from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
 #class to handle the book a demo logic
-class bookademo(models.Model):
+class bookademo():
     _name = "bookademo"
     _description = "Class to control the book a demo logic"
 
@@ -32,7 +11,8 @@ class bookademo(models.Model):
     _list_of_contact.append("OLIVIER@r-e-a-l.it")
     _list_of_contact.append("OLIVIER@R.Solutions")
 
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
         pass
 
     #Methode to send an email to the list of person concerned.
@@ -72,12 +52,12 @@ class bookademo(models.Model):
         msg += "End of the email."
 
         values = {'subject': 'Book A Demo'}
-        message = self.env['mail.message'].create(values)[0]
+        message = self.db.env['mail.message'].create(values)[0]
 
         values = {'mail_message_id': message.id}
 
         for contact_to_send_to in self._list_of_contact:
-            email = self.env['mail.mail'].create(values)[0]
+            email = self.db.env['mail.mail'].create(values)[0]
             email.body_html = msg
             email.email_to = contact_to_send_to
             email_id = {email.id}
