@@ -24,7 +24,7 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 
 #class to handle the book a demo logic
-class bookademo():
+class bookademo(models.Model):
     _name = "bookademo"
     _description = "Class to control the book a demo logic"
 
