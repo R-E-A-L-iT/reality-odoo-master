@@ -1,24 +1,37 @@
 # -*- coding: utf-8 -*-
-
-import json
 import gspread
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
+
 class sheetsAPI(models.Model):
-    _name = "sync.sheets"
+    _name =  "sync.sheets"
     _inherit = "google.drive.config"
     _description = "Google Sheets API Handler"
-    
-    # R-E-A-L.iT Master Database
-    # 1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8
-    # 
-    # DEV R-E-A-L.iT Master Database
-    # 1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc
 
-    _master_database_template_id = "1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc"
+    #Method that return the GoogleSheet Master DataBase TemplateID based on the DEV/PROD environnement
+    #Input
+    #   _db_name : The DB name of the environement that require the template ID
+    #              to get it: self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    @staticmethod
+    def get_master_database_template_id(_db_name):
+        #Production DB name
+        _db_name_prod = "https://www.r-e-a-l.it" 
+
+        # R-E-A-L.iT Master Database
+        _master_database_template_id_prod = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+
+        # DEV R-E-A-L.iT Master Database
+        _master_database_template_id_dev = "1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc"
+
+        #Return the proper GoogleSheet Template ID base on the environement
+        if (_db_name == _db_name_prod):
+            return _master_database_template_id_prod
+        else:
+            return _master_database_template_id_dev  
+
 
     def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
@@ -28,3 +41,4 @@ class sheetsAPI(models.Model):
         
         doc = client.open_by_key(spreadsheetID)
         return doc.get_worksheet(sheet_num).get_all_values()
+    

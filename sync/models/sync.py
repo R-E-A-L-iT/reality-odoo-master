@@ -26,7 +26,7 @@ from odoo import models, fields, api
 from .pricelist import sync_pricelist
 from .bookademo import bookademo
 from .ccp import sync_ccp
-from .sql_queries import sql_queries
+from .googlesheetsAPI import sheetsAPI
 from .website import syncWeb
 
 _logger = logging.getLogger(__name__)
@@ -48,8 +48,8 @@ class sync(models.Model):
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
-        template_id = self._master_database_template_id
-
+        template_id = sheetsAPI.get_master_database_template_id(
+            self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
         sheetName = ""
         sheetIndex = -1
         modelType = ""
@@ -1347,9 +1347,3 @@ class sync(models.Model):
             "company_website", 
             "industry_type", 
             1)
-    
-    def testenv(self):
-        dbname = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        _logger.info("---------------")
-        _logger.info(str(dbname))
-        _logger.info("---------------")
