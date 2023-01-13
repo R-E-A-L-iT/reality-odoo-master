@@ -1,2 +1,2 @@
 .hintrc
-sync/models/variablesettings.py
+sync/models/envsettings.py
