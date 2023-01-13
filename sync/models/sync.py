@@ -50,6 +50,8 @@ class sync(models.Model):
 
         template_id = sheetsAPI.get_master_database_template_id(
             self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
+        _logger.info("template_id: " + str(template_id))
+
         sheetName = ""
         sheetIndex = -1
         modelType = ""
