@@ -1,3 +1,4 @@
+#variablesettings.py
 
 class googlesheetsetting():
     # R-E-A-L.iT Master Database
