@@ -1,3 +1,6 @@
+#variablesettings.py
+#add to .gitignore
+
 
 class googlesheetsetting():
     # R-E-A-L.iT Master Database
