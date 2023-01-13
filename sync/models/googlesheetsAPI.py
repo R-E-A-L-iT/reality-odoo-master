@@ -7,12 +7,6 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
-_master_database_template_id = None
-try:
-    from .envsettings import devenv
-except ImportError:
-    _master_database_template_id_prod = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-
 class sheetsAPI(models.Model):
     _name = "sync.sheets"
     _inherit = "google.drive.config"
@@ -24,11 +18,7 @@ class sheetsAPI(models.Model):
     # DEV R-E-A-L.iT Master Database
     # 1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc
 
-
-    if (_master_database_template_id == None):
-        _master_database_template_id = devenv._master_database_template_id_dev
-    else:
-        _master_database_template_id = _master_database_template_id_prod
+    _master_database_template_id = "1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc"
 
     def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
@@ -38,7 +28,3 @@ class sheetsAPI(models.Model):
         
         doc = client.open_by_key(spreadsheetID)
         return doc.get_worksheet(sheet_num).get_all_values()
-
-
-
-
