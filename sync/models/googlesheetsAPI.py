@@ -6,7 +6,6 @@ import gspread
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
-from .variablesettings import googlesheetsetting
 
 class sheetsAPI(models.Model):
     _name = "sync.sheets"
@@ -18,10 +17,8 @@ class sheetsAPI(models.Model):
     # 
     # DEV R-E-A-L.iT Master Database
     # 1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc
-    #
-    #_master_database_template_id = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
 
-    _master_database_template_id = googlesheetsetting._master_database_template_id
+    _master_database_template_id = "1E454v0jC2NpkfTENpc-OT0Uh2EW4U3fFVZecwmFGDTc"
 
     def getDoc(self, psw, spreadsheetID, sheet_num):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
@@ -35,3 +32,5 @@ class sheetsAPI(models.Model):
 
 
 
+
+self.env['ir.config_parameter'].sudo().get_param('web.base.url')
