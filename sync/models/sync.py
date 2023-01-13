@@ -1347,3 +1347,9 @@ class sync(models.Model):
             "TheBestCompany.com", 
             "Helping thing", 
             1)
+    
+    def testenv(self):
+        dbname = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        _logger.info("---------------")
+        _logger.info(str(dbname))
+        _logger.info("---------------")
