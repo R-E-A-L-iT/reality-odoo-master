@@ -48,7 +48,7 @@ class sync(models.Model):
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
 
-        template_id = self._master_database_template_id
+        template_id = self.get_master_database_template_id()
 
         sheetName = ""
         sheetIndex = -1
@@ -1347,9 +1347,3 @@ class sync(models.Model):
             "company_website", 
             "industry_type", 
             1)
-    
-    def testenv(self):
-        dbname = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        _logger.info("---------------")
-        _logger.info(str(dbname))
-        _logger.info("---------------")
