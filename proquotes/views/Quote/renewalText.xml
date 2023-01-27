@@ -4,21 +4,20 @@
 	<template name="Renewal Hardware" id="renewal-hardware">
 		<div id="renewal-text">
 			<h2>
-				<strong>
-					Hardware CCP
+				<strong> Hardware CCP <t t-out="clang" />
 				</strong>
 			</h2>
-			<br/>
+			<br />
 			<h4>WHY RENEW YOUR HARDWARE CCP?</h4>
-			<div class="red-div"/>
+			<div class="red-div" />
 			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
-		 	are typically available every few months. It's also important to keep your instrument running 
-		 	smoothly with servicing and calibration. Some of your customers may even require that you have 
-		 	a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
-			also gives you access to technical support for the product. Further options allow you to extend
-		   	your warranty (BRONZE, SILVER, and GOLD) and the GOLD CCPs include a free loaner instrument while
-		    your instrument is down or away on repair/calibration.</p>
-			<img src="" alt="" id="chart"/>
+				are typically available every few months. It's also important to keep your instrument running
+				smoothly with servicing and calibration. Some of your customers may even require that you have
+				a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
+				also gives you access to technical support for the product. Further options allow you to extend
+				your warranty (BRONZE, SILVER, and GOLD) and the GOLD CCPs include a free loaner instrument while
+				your instrument is down or away on repair/calibration.</p>
+			<img src="" alt="" id="chart" />
 		</div>
 	</template>
 
@@ -30,11 +29,11 @@
 				</strong>
 			</h2>
 			<h4>WHY RENEW YOUR SOFTWARE CCP?</h4>
-			<div class="red-div"/>
+			<div class="red-div" />
 			<p>New features and bug fixes are constantly being worked on and updates to our software are available
-			every few months. It's also important to keep all your products up to date together as they may stop 
-			working properly if some are renewed and others aren't. Having a CCP also gives you access to technical
-			support for the product.</p>
+				every few months. It's also important to keep all your products up to date together as they may stop
+				working properly if some are renewed and others aren't. Having a CCP also gives you access to technical
+				support for the product.</p>
 		</div>
 	</template>
 
@@ -46,15 +45,8 @@
 				</strong>
 			</h2>
 			<h4>WHY RENEW YOUR SOFTWARE SUBSCRIPTIONS?</h4>
-			<div class="red-div"/>
-			<p>New features and bug fixes are constantly being released and updates to our software are released several
-				times a year. It is also important to keep all your products up to date together as they may stop working properly
-				if some are renewed and others are not. A subscription gives you the possibility to be up to date and have access
-				to the software at all times until the expiry of the subscription. If the product is not renewed, you lose access
-				to this software on the expiration date.
-				<br/>
-				In the "Additional subscriptions" section, you can choose to add products and their quantities. In the
-				“Existing subscriptions” section, you can choose whether or not to renew the products you already have.</p>
+			<div class="red-div" />
+			<p>New features and bug fixes are constantly being released and updates to our software are released several times a year. It is also important to keep all your products up to date together as they may stop working properly if some are renewed and others are not. A subscription gives you the possibility to be up to date and have access to the software at all times until the expiry of the subscription. If the product is not renewed, you lose access to this software on the expiration date. <br /> In the "Additional subscriptions" section, you can choose to add products and their quantities. In the “Existing subscriptions” section, you can choose whether or not to renew the products you already have.</p>
 		</div>
 	</template>
 
