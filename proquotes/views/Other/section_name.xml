@@ -24,7 +24,7 @@
 			<t t-set="name" t-value="lableList[1]" />
 
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="'Additional' + name + 'Subscriptions'" />
-			<t t-if="clang == 'fr_CA'" t-out="'Abonnement(s)-' + name + 'additionnel(s)'" />
+			<t t-if="clang == 'fr_CA'" t-out="'Abonnement(s) - ' + name + ' - additionnel(s)'" />
 		</t>
 		<t t-elif="sname[:9] == 'ccplabel+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
