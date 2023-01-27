@@ -52,9 +52,8 @@
 			<t t-if="line.name == '$hardware'">
 				<tr>
 					<td style="border-style: none;" colspan="100">
-						<span id="lang-id" class="english-mode no-display">english-mode</span>
-						<t t-call="proquotes.renewal-hardware-english" />
-						<t t-call="proquotes.renewal-hardware-french" />
+						<t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english" />
+						<t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french" />
 					</td>
 				</tr>
 			</t>
