@@ -51,7 +51,7 @@
 			</t>
 		</t>
 		<t t-else="">
-			<t t-out="sname + 'existing_sub'" />
+			<t t-out="sname" />
 		</t>
 	</template>
 </odoo>
