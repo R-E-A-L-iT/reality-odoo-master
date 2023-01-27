@@ -118,7 +118,7 @@ class sync_ccp:
             if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
                 msg = utilities.buildMSG(
                     msg, self.name, str(
-                        self.sheet[i][columns["externalId"]]), "Invalid Expiration Date"
+                        self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
                 )
 
             try:

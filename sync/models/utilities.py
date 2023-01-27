@@ -24,9 +24,11 @@ class utilities:
             return False
 
     @staticmethod
-    def check_date(date):
+    def check_date(date) -> bool:
         _logger.error(date)
-        return True
+        if (date == False):
+            return True
+        return not (re.match(r'^\d{4}-\d{1,2}-\d{1,2}$') is None)
 
     @staticmethod
     def buildMSG(msg: str, sheetName: str, key: str, problem: str):
