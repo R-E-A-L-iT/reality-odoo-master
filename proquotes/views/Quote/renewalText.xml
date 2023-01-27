@@ -5,11 +5,12 @@
 		<div id="renewal-text">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_FR'">Hardware CCP</strong>
-				<strong t-elif="clang == 'fr_CA'">CCP pour instrumunts</strong>
+				<strong t-elif="clang == 'fr_CA'">CCP pour instrumunts test</strong>
 			</h2>
 			<br />
 			<h4 t-if="clang ==  'en_CA' or clang == 'en_FR'">WHY RENEW YOUR HARDWARE CCP?</h4>
-			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos CCP pour vos instruments?</h4>
+			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos CCP pour vos instruments? test</h4>
+
 			<div class="red-div" />
 			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
 				are typically available every few months. It's also important to keep your instrument running
