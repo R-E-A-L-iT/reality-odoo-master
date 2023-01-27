@@ -12,13 +12,19 @@
 			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos CCP pour vos instruments? test</h4>
 
 			<div class="red-div" />
-			<p id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
+			<p t-if="clang ==  'en_CA' or clang == 'en_FR'" id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
 				are typically available every few months. It's also important to keep your instrument running
 				smoothly with servicing and calibration. Some of your customers may even require that you have
 				a recent calibration certificate to prove your instrument is functioning properly. Having a CCP
 				also gives you access to technical support for the product. Further options allow you to extend
 				your warranty (BRONZE, SILVER, and GOLD) and the GOLD CCPs include a free loaner instrument while
 				your instrument is down or away on repair/calibration.</p>
+			<p t-elif="clang == 'fr_CA'" id="hardware">De nouvelles fonctionnalités et corrections de bogues sont constamment mises au point et les mises à
+				jour sont généralement disponibles 3-4 fois par année. Il est également important de garder votre instrument en bon état avec l'entretien et
+				l'étalonnage. Certains de vos clients exigent même que vous ayez un certificat d'étalonnage récent pour prouver que votre instrument
+				fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent
+				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
+				instrument est en panne ou en réparation/étallonage.Test</p>
 			<img src="" alt="" id="chart" />
 		</div>
 	</template>
