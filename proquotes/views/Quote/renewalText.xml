@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Renewal Hardware" id="renewal-hardware">
-		<div id="renewal-text">
+		<div id="renewal-text" style="width: 100% !important">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Hardware CCP</strong>
 				<strong t-elif="clang == 'fr_CA'">CCP pour instrumunts</strong>
@@ -25,14 +25,15 @@
 				fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent
 				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
 				instrument est en panne ou en réparation/étallonage.</p>
-			<img src="" alt="" id="chart" style="max-width: 90% !important; width: 1000px !important;" />
+			<img src="" alt="" id="chart" style="max-width: 90% !important;" />
 		</div>
 	</template>
 
-	<template name="Renewal" id="renewal-software">
-		<div id="renewal-text">
+	<template name=" Renewal" id=" renewal-software">
+		<div id=" renewal-text">
 			<h2>
-				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Software CCP</strong>
+				<strong t-if=" clang==  'en_CA' or clang == 'en_US'">Software CCP
+				</strong>
 				<strong t-elif="clang == 'fr_CA'">CCP pour logiciels</strong>
 			</h2>
 			<h4 t-if="clang ==  'en_CA' or clang == 'en_US'">WHY RENEW YOUR SOFTWARE CCP?</h4>
