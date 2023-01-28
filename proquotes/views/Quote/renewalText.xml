@@ -25,8 +25,7 @@
 				fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent
 				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
 				instrument est en panne ou en réparation/étallonage.</p>
-			<img src="" alt="" id="chart" style="max-height: 100% !important; width:auto !important;" />
-			<!-- <img src="" alt="" id="chart" /> -->
+			<img src="" alt="" id="chart" />
 		</div>
 	</template>
 
@@ -72,6 +71,7 @@
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
+			<attribute t-if="undefined != undefined" name="style">max-height: 100% !important; width:auto !important;</attribute>
 		</xpath>
 	</template>
 
@@ -79,6 +79,7 @@
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
+			<attribute t-if="undefined != undefined" name="style">max-height: 100% !important; width:auto !important;</attribute>
 		</xpath>
 	</template>
 </odoo>
