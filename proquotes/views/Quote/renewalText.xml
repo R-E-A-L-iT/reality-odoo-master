@@ -2,7 +2,7 @@
 
 <odoo>
 	<template name="Renewal Hardware" id="renewal-hardware">
-		<div id="renewal-text" style="width: 100% !important">
+		<div id="renewal-text" style="width: 100% !important;">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Hardware CCP</strong>
 				<strong t-elif="clang == 'fr_CA'">CCP pour instrumunts</strong>
