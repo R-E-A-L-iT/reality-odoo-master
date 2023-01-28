@@ -26,7 +26,7 @@
 				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
 				instrument est en panne ou en réparation/étallonage.</p>
 			<img src="" alt="" id="chart" />
-			<span t-out="str(doc)" />
+			<span t-out="str(doc == None)" />
 		</div>
 	</template>
 
