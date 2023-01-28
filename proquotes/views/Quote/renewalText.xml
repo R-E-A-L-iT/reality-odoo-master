@@ -72,7 +72,7 @@
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute>
 			<attribute name="alt">CCP Options Chart</attribute>
-			<attribute t-if="doc == None" name="style">max-height: 100% !important; width:auto !important;</attribute>
+			<attribute t-if="False" name="style">max-height: 100% !important; width:auto !important;</attribute>
 		</xpath>
 	</template>
 
@@ -80,7 +80,7 @@
 		<xpath expr="//img[@id=&quot;chart&quot;]" position="attributes">
 			<attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute>
 			<attribute name="alt">Tableau des options CCP</attribute>
-			<attribute t-if="doc == None" name="style">max-height: 100% !important; width:auto !important;</attribute>
+			<attribute t-if="False" name="style">max-height: 100% !important; width:auto !important;</attribute>
 		</xpath>
 	</template>
 </odoo>
