@@ -121,7 +121,7 @@ class sync_products():
                     [('name', '=', external_id), ('model', '=', 'product.template')])
 
                 if (len(product_ids) > 0):
-                    _logger.info("Update Existing CCP Product")
+                    _logger.info("Update Existing CCP Product" + external_id)
                     product = self.database.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id)
                     self.updateProducts(
