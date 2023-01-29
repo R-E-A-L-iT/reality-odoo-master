@@ -73,7 +73,7 @@
 			<!-- <attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-EN.png</attribute> -->
 			<attribute name="alt">CCP Options Chart</attribute>
 			<!-- <attribute t-if="isPDF" name="style">max-height: 100% !important; width:auto !important;</attribute> -->
-			<attribute t-if="not isPDF" name="style">display: none !important</attribute>
+			<attribute t-if="isPDF" name="style">display: none !important</attribute>
 		</xpath>
 	</template>
 
@@ -82,7 +82,7 @@
 			<!-- <attribute name="src">https://cdn.r-e-a-l.it/images/quote-images/CCP-Graphic-FR.png</attribute> -->
 			<attribute name="alt">Tableau des options CCP</attribute>
 			<!-- <attribute t-if="isPDF" name="style">max-height: 100% !important; width:auto !important;</attribute> -->
-			<attribute t-if="not isPDF" name="style">display: none !important</attribute>
+			<attribute t-if="isPDF" name="style">display: none !important</attribute>
 		</xpath>
 	</template>
 </odoo>
