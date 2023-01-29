@@ -310,10 +310,11 @@ class sync_pricelist():
         if (len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
         else:
+            _logger.info("Create Rule for" + product.name)
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
 
-        pricelist_item.product_tmpl_id = product
+        pricelist_item.product_tmpl_id = product.id
         pricelist_item.applied_on = "1_product"
         if ((str(price) != " ") and (str(price) != "")):
             pricelist_item.fixed_price = float(price)
