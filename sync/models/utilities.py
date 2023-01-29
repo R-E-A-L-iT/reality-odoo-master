@@ -25,7 +25,6 @@ class utilities:
 
     @staticmethod
     def check_date(date) -> bool:
-        _logger.error(date)
         if (date == False):
             return True
         return not (re.match(r'^\d{4}-\d{1,2}-\d{1,2}$', str(date)) is None)
