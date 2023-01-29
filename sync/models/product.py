@@ -121,6 +121,7 @@ class sync_products():
                     [('name', '=', external_id), ('model', '=', 'product.template')])
 
                 if (len(product_ids) > 0):
+                    _logger.info("Update Existing CCP Product")
                     product = self.database.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id)
                     self.updateProducts(
@@ -134,6 +135,7 @@ class sync_products():
                         "serial",  # product_tracking
                         "product")  # product_type
                 else:
+                    _logger.info("Create new CCP product")
                     self.createAndUpdateProducts(
                         external_id,
                         str(sheet[i][:]),  # product_stringRep
