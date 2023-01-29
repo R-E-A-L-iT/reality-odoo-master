@@ -174,6 +174,8 @@ class sync_products():
         product.type = "product"
         ext.res_id = product.id
 
+        _logger.info("Created Product" + str(product.name))
+
         return product
 
     # Methode to update product information.
