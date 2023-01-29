@@ -25,6 +25,7 @@
 				fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent
 				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
 				instrument est en panne ou en réparation/étallonage.</p>
+			<p t-out="isPDF" />
 			<img t-if="isPDF == False" src="" alt="" id="chart" />
 			<img src="isPDF == True" alt="" id="chartPDF" />
 		</div>
