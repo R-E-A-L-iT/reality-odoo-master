@@ -88,7 +88,6 @@ class sync_products():
 
         r = ""
         msg = ""
-        msg = self.startTable(msg, sheet, sheetWidth)
         while (True):
 
             #_logger.info("sheet[i][:]: " + str(sheet[i][:]))
