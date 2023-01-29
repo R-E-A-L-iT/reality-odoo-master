@@ -97,19 +97,19 @@ class sync_products():
 
             # Primary Key used in Google Sheet Database
             key = str(sheet[i][columns["sku"]])
-            if (not self.check_id(key)):
+            if (not utilities.check_id(key)):
                 msg = utilities.buildMSG(
                     msg, self.name, key, "Key Error")
                 i += 1
                 continue
 
-            if (not self.check_price(sheet[i][columns["priceCAD"]])):
+            if (not utilities.check_price(sheet[i][columns["priceCAD"]])):
                 msg = utilities.buildMSG(
                     msg, self.name, key, "CAD Price Invalid")
                 i += 1
                 continue
 
-            if (not self.check_price(sheet[i][columns["priceUSD"]])):
+            if (not utilities.check_price(sheet[i][columns["priceUSD"]])):
                 msg = utilities.buildMSG(
                     msg, self.name, key, "USD Price Invalid")
                 i += 1
