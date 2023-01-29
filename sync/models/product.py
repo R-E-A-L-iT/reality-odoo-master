@@ -115,13 +115,13 @@ class sync_products():
                 i += 1
                 continue
 
-            if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
-                msg = utilities.buildMSG(
-                    msg, self.name, str(
-                        self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
-                )
-                i = i + 1
-                continue
+            # if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
+            #     msg = utilities.buildMSG(
+            #         msg, self.name, str(
+            #             self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
+            #     )
+            #     i = i + 1
+            #     continue
 
             try:
                 external_id = str(sheet[i][columns["sku"]])
