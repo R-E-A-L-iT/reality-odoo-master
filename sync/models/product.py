@@ -96,19 +96,32 @@ class sync_products():
             if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
 
-            if (not self.check_id(str(sheet[i][columns["sku"]]))):
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+            # Primary Key used in Google Sheet Database
+            key = str(sheet[i][columns["sku"]])
+            if (not self.check_id(key)):
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "Key Error")
                 i += 1
                 continue
 
             if (not self.check_price(sheet[i][columns["priceCAD"]])):
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "CAD Price Invalid")
                 i += 1
                 continue
 
             if (not self.check_price(sheet[i][columns["priceUSD"]])):
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
+                msg = utilities.buildMSG(
+                    msg, self.name, key, "USD Price Invalid")
                 i += 1
+                continue
+
+            if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
+                msg = utilities.buildMSG(
+                    msg, self.name, str(
+                        self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
+                )
+                i = i + 1
                 continue
 
             try:
@@ -144,8 +157,7 @@ class sync_products():
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.info(e)
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                msg = self.endTable(msg)
+                msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
             i += 1
