@@ -155,7 +155,6 @@ class sync_products():
 
             i += 1
 
-        msg = self.endTable(msg)
         return False, msg
 
     # Method to create a product
