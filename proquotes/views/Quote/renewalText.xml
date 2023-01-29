@@ -27,7 +27,7 @@
 				instrument est en panne ou en réparation/étallonage.</p>
 			<p t-out="isPDF" />
 			<img t-if="isPDF == False" src="" alt="" id="chart" />
-			<!-- <img src="isPDF == True" alt="" id="chartPDF" /> -->
+			<img t-elif="isPDF == True" src="" alt="" id="chartPDF" />
 		</div>
 	</template>
 
