@@ -302,6 +302,7 @@ class sync_pricelist():
     #   pricelistName:  The name of the list to add the product
     #   price           The price
     def addProductToPricelist(self, product, pricelistName, price):
+        _logger.info("Create Rule for" + product.name)
         pricelist_id = self.database.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
@@ -310,7 +311,6 @@ class sync_pricelist():
         if (len(pricelist_item_ids) > 0):
             pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
         else:
-            _logger.info("Create Rule for" + product.name)
             pricelist_item = self.database.env['product.pricelist.item'].create(
                 {'pricelist_id': pricelist_id, 'product_tmpl_id': product.id})[0]
 
