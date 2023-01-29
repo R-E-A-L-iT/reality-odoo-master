@@ -115,14 +115,6 @@ class sync_products():
                 i += 1
                 continue
 
-            # if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
-            #     msg = utilities.buildMSG(
-            #         msg, self.name, str(
-            #             self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
-            #     )
-            #     i = i + 1
-            #     continue
-
             try:
                 external_id = str(sheet[i][columns["sku"]])
                 product_ids = self.database.env['ir.model.data'].search(
@@ -209,6 +201,11 @@ class sync_products():
         if (product.stringRep == product_stringRep):
             return
 
+        product.name = product_name
+        product.description_sale = product_description_sale
+        product.tracking = product_tracking
+        product.type = product_type
+        product.stringRep = product_stringRep
         # pricelist need to be done before modifiyng the product.price
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
@@ -217,13 +214,7 @@ class sync_products():
             product, "CAN Pricelist", product_price_cad)
         syncer.addProductToPricelist(
             product, "USD Pricelist", product_price_usd)
-
-        product.name = product_name
-        product.description_sale = product_description_sale
         product.price = product_price_cad
-        product.tracking = product_tracking
-        product.type = product_type
-        product.stringRep = product_stringRep
 
     # Method to create and update a product
     # Input
