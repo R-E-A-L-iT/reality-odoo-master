@@ -86,7 +86,7 @@ class sync_products():
             columnsMissing = "Valid"
 
         if ("Continue" in sheet[0]):
-            columns["continue"] = sheet[0].index("Continue Continue Missing")
+            columns["continue"] = sheet[0].index("Continue")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Header Missing")
