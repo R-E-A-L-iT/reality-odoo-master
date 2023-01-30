@@ -216,7 +216,6 @@ class sync_pricelist():
             self.database.sendSyncReport(msg)
             _logger.info(msg)
             return True, msg
-        r = ""
         # msg = self.startTable(msg, sheetWidth)
         while (True):
             if (i == len(self.sheet) or str(self.sheet[i][columns["continue"]]) != "TRUE"):

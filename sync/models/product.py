@@ -32,61 +32,73 @@ class sync_products():
         if ("SKU" in sheet[0]):
             columns["sku"] = sheet[0].index("SKU")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "SKU Missing")
             columnsMissing = "SKU"
 
         if ("Name" in sheet[0]):
             columns["name"] = sheet[0].index("Name")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Name Missing")
             columnsMissing = "Name"
 
         if ("Description" in sheet[0]):
             columns["description"] = sheet[0].index("Description")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Description Missing")
             columnsMissing = "Description"
 
         if ("Price CAD" in sheet[0]):
             columns["priceCAD"] = sheet[0].index("Price CAD")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Price CAD Missing")
             columnsMissing = "Price CAD"
 
         if ("Price USD" in sheet[0]):
             columns["priceUSD"] = sheet[0].index("Price USD")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Price USD")
             columnsMissing = "Price USD"
 
         if ("Product Type" in sheet[0]):
             columns["type"] = sheet[0].index("Product Type")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Product Type")
             columnsMissing = "Product Type"
 
         if ("Tracking" in sheet[0]):
             columns["tracking"] = sheet[0].index("Tracking")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Tracking Missing")
             columnsMissing = "Tracking"
 
         if ("Valid" in sheet[0]):
             columns["valid"] = sheet[0].index("Valid")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Valid Missing")
             columnsMissing = "Valid"
 
         if ("Continue" in sheet[0]):
-            columns["continue"] = sheet[0].index("Continue")
+            columns["continue"] = sheet[0].index("Continue Continue Missing")
         else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Header Missing")
             columnsMissing = "Continue"
 
         if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
-            msg = "<h1>Sync Page Invalid<h1>"
-            self.sendSyncReport(msg)
-
-            if (sheetWidth != len(sheet[i])):
-                _logger.info("Sheet Width: " + str(len(sheet[i])))
-
-            if (columnsMissing != ""):
-                _logger.info("columnsMissing: " + columnsMissing)
-
+            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
+                str(sheetWidth) + "</p>\n" + msg
+            self.database.sendSyncReport(msg)
+            _logger.info(msg)
             return True, msg
 
-        r = ""
         msg = ""
         while (True):
 
