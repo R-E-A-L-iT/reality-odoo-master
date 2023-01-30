@@ -9,7 +9,7 @@ class bookademo():
 
     _list_of_contact = []
     _list_of_contact.append("OLIVIER@r-e-a-l.it")
-    _list_of_contact.append("OLIVIER@R.Solutions")
+    _list_of_contact.append("joe@r-e-a-l.it")
 
     def __init__(self, db):
         self.db = db
@@ -37,7 +37,7 @@ class bookademo():
         else:
             employee_size_str = "undeifned"
 
-        msg =  "A customer requested a demo.\n"
+        msg =  "THIS IS IN TEST, NOT A REAL SUBMIT.   A customer requested a demo.\n"
         msg += "\n"
         msg += "\n"
         msg += "Customer Name: " + str(customer_name) + "\n"
