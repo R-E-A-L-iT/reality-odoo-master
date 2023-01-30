@@ -135,7 +135,7 @@ class sync_products():
                 if (len(product_ids) > 0):
                     product = self.database.env['product.template'].browse(
                         product_ids[len(product_ids) - 1].res_id)
-                    if (product == False):
+                    if (len(product) != 1):
                         msg = utilities.buildMSG(
                             msg, self.name, key, "Product ID Recognized But Product Does Exist")
                         i = i + 1
