@@ -140,6 +140,8 @@ class sync_products():
                             msg, self.name, key, "Product ID Recognized But Product Does Exist")
                         i = i + 1
                         continue
+                    else:
+                        _logger.info("Updating" + str(product))
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
