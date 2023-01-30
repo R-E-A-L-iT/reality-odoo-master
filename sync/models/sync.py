@@ -587,7 +587,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i, columns)
-
+        
     def check_id(self, id):
         if (" " in id):
             _logger.info("ID: " + str(id))
