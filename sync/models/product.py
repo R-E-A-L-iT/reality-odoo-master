@@ -137,11 +137,9 @@ class sync_products():
                         product_ids[len(product_ids) - 1].res_id)
                     if (len(product) != 1):
                         msg = utilities.buildMSG(
-                            msg, self.name, key, "Product ID Recognized But Product Does Exist")
+                            msg, self.name, key, "Product ID Recognized But Procuct Count is Invalid")
                         i = i + 1
                         continue
-                    else:
-                        _logger.info("Updating" + str(product))
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
