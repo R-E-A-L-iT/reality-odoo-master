@@ -115,6 +115,14 @@ class sync_ccp:
                 i = i + 1
                 continue
 
+            if (not utilities.check_date(str(self.sheet[i][columns["date"]]))):
+                msg = utilities.buildMSG(
+                    msg, self.name, str(
+                        self.sheet[i][columns["externalId"]]), "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]])
+                )
+                i = i + 1
+                continue
+
             try:
                 external_id = str(self.sheet[i][columns["externalId"]])
 
@@ -142,33 +150,18 @@ class sync_ccp:
         if (ccp_item.stringRep == str(self.sheet[i][:])):
             return
 
-#         if(i == 8):
-        # _logger.info("name")
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
-#         if(i == 8):
-        # _logger.info("id")
         product_ids = self.database.env['product.product'].search(
             [('name', '=', self.sheet[i][columns["name"]])])
-        # _logger.info(str(len(product_ids)))
-        # _logger.info(str(self.sheet[i][columns["name"]]))
-
-#         if(i == 8):
-        # _logger.info("Id Tupple")
 
         ccp_item.product_id = product_ids[-1].id
 
-
-#         if(i == 8):
-        # _logger.info("owner")
         owner_ids = self.database.env['ir.model.data'].search(
             [('name', '=', self.sheet[i][columns["ownerId"]]), ('model', '=', 'res.partner')])
         if (len(owner_ids) == 0):
             _logger.info("No owner")
 
-
-#         if(i == 8):
-        # _logger.info("Owner Tupple")
         ccp_item.owner = owner_ids[-1].res_id
         if (self.sheet[i][columns["date"]] != "FALSE"):
             ccp_item.expire = self.sheet[i][columns["date"]]
@@ -177,7 +170,6 @@ class sync_ccp:
 
         ccp_item.publish = self.sheet[i][columns["publish"]]
 
-        # _logger.info("CCP String Rep")
         ccp_item.stringRep = str(self.sheet[i][:])
 
     # follows same pattern
