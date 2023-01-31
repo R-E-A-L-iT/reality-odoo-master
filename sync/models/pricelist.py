@@ -390,7 +390,7 @@ class sync_pricelist():
                                                                        ('lang', '=', lang)])
             if (len(product_name) > 0):
                 for name in product_name:
-                    name.value = self.sheet[i][nameI]
+                    name.value = self.sheet[i][nameI] + str(product.id)
                 # product_name[-1].value = self.sheet[i][nameI]
 
             else:
