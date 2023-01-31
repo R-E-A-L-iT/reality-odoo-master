@@ -11,7 +11,7 @@ from odoo import models
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = True
+SKIP_NO_CHANGE = False
 
 
 class sync_pricelist():
@@ -301,7 +301,6 @@ class sync_pricelist():
     #   pricelistName:  The name of the list to add the product
     #   price           The price
     def addProductToPricelist(self, product, pricelistName, price):
-        _logger.info("Create Rule for" + str(product.name))
         pricelist_id = self.database.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = self.database.env['product.pricelist.item'].search(
@@ -389,6 +388,8 @@ class sync_pricelist():
                                                                         'product.template,name'),
                                                                        ('lang', '=', lang)])
             if (len(product_name) > 0):
+                # for name in product_name:
+                #     name.value = self.sheet[i][nameI] + str(product.id)
                 product_name[-1].value = self.sheet[i][nameI]
 
             else:
@@ -402,6 +403,8 @@ class sync_pricelist():
                                                                               ('lang', '=', lang)])
 
             if (len(product_description) > 0):
+                # for description in product_description:
+                #     description.value = self.sheet[i][descriptionI]
                 product_description[-1].value = self.sheet[i][descriptionI]
             else:
                 product_description_new = self.database.env['ir.translation'].create({'name': 'product.template,description_sale',
