@@ -405,7 +405,7 @@ class sync_pricelist():
 
             if (len(product_description) > 0):
                 for description in product_description:
-                    product_description.value = self.sheet[i][descriptionI]
+                    description.value = self.sheet[i][descriptionI]
                 # product_description[-1].value = self.sheet[i][descriptionI]
             else:
                 product_description_new = self.database.env['ir.translation'].create({'name': 'product.template,description_sale',
