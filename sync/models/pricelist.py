@@ -256,6 +256,7 @@ class sync_pricelist():
                 continue
 
             try:
+                _logger.info("Pricelist: " + str(i))
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
                 if (product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
