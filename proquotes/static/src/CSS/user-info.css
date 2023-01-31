@@ -33,7 +33,6 @@
 #user-info #new-address:before {	
 	display: flex;
 	visibility: visible;
-	content: "No ";
 	white-space: pre;
 	color: white;
 	width: -moz-fit-content;
@@ -56,7 +55,7 @@
 }
 
 #user-info #new-address:checked:before {
-	content: "No";
+	content: "No ";
 }
 
 #user-info #new-address+br {
