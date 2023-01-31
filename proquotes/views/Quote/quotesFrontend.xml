@@ -300,7 +300,7 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<!-- <span style="color: #777;" t-field="line.product_id.description_sale" /> -->
+						<span style="color: #777;" t-html="line.product_id.description_sale" />
 						<t t-set="d" t-html="line.product_id.description_sale" />
 						<span style="color: #777;" t-out="d" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
