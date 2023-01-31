@@ -300,7 +300,7 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<t t-value="from markupsafe import Markup" />
+						<t t-value="import markupsafe" />
 						<t t-out="markupsafe.Markup('Hello')" />
 						<!-- <span style="color: #777;" t-field="Markup(line.product_id.description_sale)" /> -->
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
