@@ -398,7 +398,7 @@ class sync_pricelist():
 
             # Delete If Statement Following
             if (len(product_name) != 1):
-                raise "Invalid Translation Count"
+                raise Exception("Invalid Translation Count")
             product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
                                                                               ('name', '=', 'product.template,description_sale'),
                                                                               ('lang', '=', lang)])
