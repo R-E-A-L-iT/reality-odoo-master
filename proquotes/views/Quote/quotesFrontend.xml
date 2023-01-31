@@ -420,7 +420,7 @@
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<div class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton" t-att-href="sale_order.get_portal_url(report_type='pdf', download=True)" title="Download">
-					<i class="fa fa-download"></i> Download </a>
+					<i class="fa fa-download"></i> Download Test</a>
 			</div>
 			<!-- <div style="padding-left: 0px;" class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="approve-button">
