@@ -285,8 +285,7 @@
 
 					<!-- <t t-set="name" t-value="line.product_id.name"></t> -->
 					<!-- <t t-set="name" t-value="line.applied_name"></t> -->
-					<!-- <span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span> -->
-					<span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"></span>
+					<span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span>
 					<!-- <t t-set="description" t-value="line.name"/> -->
 
 					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
@@ -300,10 +299,8 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<!-- <span style="color: #777;" t-out="line.product_id.description_sale" /> -->
-						<!-- <t t-set="d" t-raw="line.product_id.description_sale" /> -->
-						<!-- <span style="color: #777;" t-out="d" /> -->
-						<span style="color: #777;" t-raw="description"></span>
+						<span style="color: #777;" t-raw="line.product_id.description_sale" />
+						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
 				</div>
