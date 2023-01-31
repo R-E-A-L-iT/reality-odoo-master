@@ -421,8 +421,8 @@
 			<div class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton" t-att-href="sale_order.get_portal_url(report_type='pdf', download=True)" title="Download">
 					<i class="fa fa-download"></i>
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">Download</t>
-					<t t-if="clang == 'fr_CA'">Download French</t>
+					<t t-if="clang == 'en_CA' or clang == 'en_US' or True">Download</t>
+					<t t-elif="clang == 'fr_CA'">Download French</t>
 				</a>
 			</div>
 			<!-- <div style="padding-left: 0px;" class="col-sm-auto mt8">
