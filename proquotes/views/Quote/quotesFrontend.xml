@@ -300,9 +300,7 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<t t-value="import markupsafe" />
-						<t t-out="markupsafe.Markup('Hello')" />
-						<!-- <span style="color: #777;" t-field="Markup(line.product_id.description_sale)" /> -->
+						<span style="color: #777;" t-field="line.product_id.description_sale" sanitize="False" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
