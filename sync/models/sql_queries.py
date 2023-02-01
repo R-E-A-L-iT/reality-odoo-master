@@ -150,7 +150,7 @@ class sql_queries(models.Model):
         tables = self.env.cr.fetchall()
         id = tables[0][0]
         self.env.cr.execute("\
-            SELECT id, res_id, value, lang\
+            SELECT id, name, res_id, value, lang\
             FROM ir_translation\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
