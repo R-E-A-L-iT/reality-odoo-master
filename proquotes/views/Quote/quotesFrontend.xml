@@ -300,7 +300,7 @@
 							<span t-raw="line.name" />
 						</t> -->
 						<span style="color: #777;" t-out="Markup(line.product_id.description_sale)" />
-						<span style="color: #777;" t-raw="line.product_id.description_sale" />
+						<!-- <span style="color: #777;" t-raw="line.product_id.description_sale" /> -->
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
