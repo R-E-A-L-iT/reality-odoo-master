@@ -166,7 +166,6 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
             SELECT type 
             FROM ir_translation
-            WHERE type = Null 
             """)
         tables = self.env.cr.fetchall()
         out = ""
