@@ -27,7 +27,6 @@ class sql_queries(models.Model):
             SELECT table_name
             FROM INFORMATION_SCHEMA.TABLES
             WHERE table_type = 'BASE TABLE'
-            AND table_name LIKE 'translation'
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
