@@ -158,3 +158,17 @@ class sql_queries(models.Model):
         for line in result:
             printOut = printOut + str(line) + "\n\n"
         raise UserError(printOut)
+
+    def bad_entries(self):
+        self.sql_queries_lockout()
+
+        _logger.info("listSpecificLineFromTable")
+        self.env.cr.execute("""
+            SELECT * 
+            FROM ir_translation
+            WHERE type = None
+            """)
+        tables = self.env.cr.fetchall()
+        out = ""
+        for row in tables:
+            out = out + str(row) + "\n"
