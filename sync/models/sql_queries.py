@@ -150,7 +150,7 @@ class sql_queries(models.Model):
         id = tables[0][0]
         self.env.cr.execute("\
             SELECT id, name\
-            FROM ir.translation\
+            FROM base_update_translations\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
         raise UserError(result)
