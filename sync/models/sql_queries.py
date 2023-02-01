@@ -149,8 +149,8 @@ class sql_queries(models.Model):
         tables = self.env.cr.fetchall()
         id = tables[0][0]
         self.env.cr.execute("\
-            SELECT id\
-            FROM base_update_translations\
+            SELECT seid\
+            FROM ir_translations\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
         raise UserError(result)
