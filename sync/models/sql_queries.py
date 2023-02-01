@@ -143,14 +143,14 @@ class sql_queries(models.Model):
 
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
-            SELECT id, name, lang
+            SELECT id
             FROM product_template
             WHERE name = '5308158 - Cyclone WORKFLOW - 1 yr Subscription'
             """)
         tables = self.env.cr.fetchall()
         id = tables[0][0]
         self.env.cr.execute("\
-            SELECT id, res_id\
+            SELECT id, res_id, value, lang\
             FROM ir_translation\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
