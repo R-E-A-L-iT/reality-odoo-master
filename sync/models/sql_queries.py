@@ -146,10 +146,4 @@ class sql_queries(models.Model):
             WHERE name = '5308158 - Cyclone WORKFLOW - 1 yr Subscription'
             """)
         tables = self.env.cr.fetchall()
-        res = "\n"
-        for table in tables:
-            res += str(table)
-            raise UserError(table[0])
-            # _logger.error("ID:", str(table[0]))
-            res += "\n"
-        # _logger.warning(res)
+        id = tables[0][0]
