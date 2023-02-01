@@ -389,7 +389,9 @@ class sync_pricelist():
                                                                        ('lang', '=', lang)])
             if (len(product_name) > 0):
                 for name in product_name:
-                    name.value = self.sheet[i][nameI]
+                    name.src = self.sheet[i][nameI]
+                    name.type = 'model'
+                    name.value = ''
 
             else:
                 product_name_new = self.database.env['ir.translation'].create({'name': 'product.template,name',
