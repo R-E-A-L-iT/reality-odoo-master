@@ -135,3 +135,19 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+
+    def find_translations(self):
+        self.sql_queries_lockout()
+
+        _logger.info("listSpecificLineFromTable")
+        self.env.cr.execute("""
+            SELECT * 
+            FROM product_template
+            WHERE id = 16923
+            """)
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)
