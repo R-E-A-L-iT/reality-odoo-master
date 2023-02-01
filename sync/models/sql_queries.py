@@ -145,7 +145,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
             SELECT id
             FROM product_template
-            WHERE name = '5308158 - Cyclone WORKFLOW - 1 yr Subscription'
+            WHERE name = '5311682 - CloudWorx ULTIMATE - 1 yr Subscription'
             """)
         tables = self.env.cr.fetchall()
         id = tables[0][0]
