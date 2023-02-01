@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 class sql_queries:
 
     _name = "sync.sql_runner"
+    _description = "SQL Runner"
 
     def __init__(self, db):
         self.db = db
