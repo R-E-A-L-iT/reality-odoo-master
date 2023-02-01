@@ -167,7 +167,7 @@ class sql_queries(models.Model):
             DELETE FROM ir_translation
             WHERE type is NULL
             """)
-        tables = self.env.cr.fetchall()
+        # tables = self.env.cr.fetchall()
         out = ""
         for row in tables:
             out = out + str(row) + "\n"
