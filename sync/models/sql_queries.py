@@ -153,4 +153,7 @@ class sql_queries(models.Model):
             FROM ir_translation\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
-        raise UserError(result)
+        printOut = ""
+        for line in result:
+            printOut = printOut + line + "\n\n"
+        raise UserError(printOut)
