@@ -53,7 +53,7 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
-        raise UserError
+        raise UserError(res)
 
     # Log all lines in sale_order table
 
