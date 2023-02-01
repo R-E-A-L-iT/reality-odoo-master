@@ -164,8 +164,7 @@ class sql_queries(models.Model):
 
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
-            SELECT value, type, lang
-            FROM ir_translation
+            DELETE FROM ir_translation
             WHERE type is NULL
             """)
         tables = self.env.cr.fetchall()
