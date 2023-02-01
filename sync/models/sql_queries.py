@@ -150,7 +150,7 @@ class sql_queries(models.Model):
         tables = self.env.cr.fetchall()
         id = tables[0][0]
         self.env.cr.execute("\
-            SELECT id, name, res_id, value, lang\
+            SELECT *\
             FROM ir_translation\
             WHERE res_id = " + str(id) + " AND name = 'product.template,name'")
         result = self.env.cr.fetchall()
