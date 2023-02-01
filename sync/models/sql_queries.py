@@ -151,4 +151,4 @@ class sql_queries(models.Model):
             res += str(table)
             _logger.error("ID:", str(table[0]))
             res += "\n"
-        _logger.warning(res)
+        # _logger.warning(res)
