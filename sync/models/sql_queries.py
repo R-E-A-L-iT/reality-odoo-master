@@ -143,11 +143,11 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
             SELECT * 
             FROM product_template
-            WHERE id = 16923
+            WHERE name = '5308158 - Cyclone WORKFLOW - 1 yr Subscription'
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
             res += "\n"
-        _logger.info(res)
+        _logger.warning(res)
