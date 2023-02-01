@@ -166,7 +166,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
             SELECT * 
             FROM ir_translation
-            WHERE type = 'None'
+            WHERE type != 'model'
             """)
         tables = self.env.cr.fetchall()
         out = ""
