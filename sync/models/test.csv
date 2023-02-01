@@ -1,0 +1,5 @@
+'id','name','res_id','lang','type','src','value','module','state','comments'
+(388335, 'product.template,name', 561082, 'fr_CA', None, None, '5311682 - CloudWorx ULTIMATE - Abonnement 1 an', None, 'translated', None)
+(388337, 'product.template,name', 561082, 'en_US', None, None, '5311682 - CloudWorx ULTIMATE - 1 yr Subscription', None, 'translated', None)
+(394361, 'product.template,name', 561082, 'en_US', 'model', '5311682 - CloudWorx ULTIMATE - 1 yr Subscription', '', '', 'to_translate', None)
+(394362, 'product.template,name', 561082, 'fr_CA', 'model', '5311682 - CloudWorx ULTIMATE - 1 yr Subscription', '', '', 'to_translate', None)
