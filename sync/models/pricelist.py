@@ -390,14 +390,14 @@ class sync_pricelist():
             if (len(product_name) > 0):
                 for name in product_name:
                     name.src = self.sheet[i][nameI]
-                    name.type = 'model'
-                    name.value = ''
 
             else:
                 product_name_new = self.database.env['ir.translation'].create({'name': 'product.template,name',
                                                                                'lang': lang,
                                                                                'res_id': product.id})[0]
                 product_name_new.src = self.sheet[i][nameI]
+                name.type = 'model'
+                name.value = ''
 
             product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
                                                                               ('name', '=', 'product.template,description_sale'),
