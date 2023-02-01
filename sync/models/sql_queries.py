@@ -141,7 +141,7 @@ class sql_queries(models.Model):
 
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
-            SELECT * 
+            SELECT id, name 
             FROM product_template
             WHERE name = '5308158 - Cyclone WORKFLOW - 1 yr Subscription'
             """)
