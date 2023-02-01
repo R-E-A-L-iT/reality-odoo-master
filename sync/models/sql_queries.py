@@ -166,9 +166,10 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
             SELECT * 
             FROM ir_translation
-            WHERE type != 'model'
+            WHERE type = 'None'
             """)
         tables = self.env.cr.fetchall()
         out = ""
         for row in tables:
             out = out + str(row) + "\n"
+        raise UserError(out)
