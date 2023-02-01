@@ -1,15 +1,27 @@
 import logging
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
 
 class sql_queries:
 
     def __init__(self, db):
         self.db = db
         pass
-    
-    #Log the list of all SQL table in odoo database
+
+    def sql_queries_lockout(self):
+        _db_name_prod = "https://www.r-e-a-l.it"
+        _current_db_name = self.env['ir.config_parameter'].sudo(
+        ).get_param('web.base.url')
+
+        if (_db_name_prod == _current_db_name):
+            raise UserError("Cannot Execute Raw SQL in Procuction Branch")
+
+    # Log the list of all SQL table in odoo database
     def listSQLTables(self):
+        self.sql_queries_lockout()
+
         _logger.info("listSQLTables")
         self.db.env.cr.execute("""
             SELECT table_name
@@ -23,9 +35,11 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
+    # Log all attributs
 
-    #Log all attributs
     def listTableAttributs(self):
+        self.sql_queries_lockout()
+
         _logger.info("listTableAttributs")
         self.db.env.cr.execute("""
         SELECT COLUMN_NAME 
@@ -37,11 +51,13 @@ class sql_queries:
         for table in tables:
             res += str(table)
             res += "\n"
-        _logger.info(res)  
+        _logger.info(res)
 
+    # Log all lines in sale_order table
 
-    #Log all lines in sale_order table
     def listAllLineFromTable(self):
+        self.sql_queries_lockout()
+
         _logger.info("listAllLineFromTable")
         self.db.env.cr.execute("""
             SELECT * 
@@ -54,9 +70,11 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
+    # Log a specific sale order
 
-    #Log a specific sale order
     def listSpecificLineFromTable(self):
+        self.sql_queries_lockout()
+
         _logger.info("listSpecificLineFromTable")
         self.db.env.cr.execute("""
             SELECT * 
@@ -70,8 +88,10 @@ class sql_queries:
             res += "\n"
         _logger.info(res)
 
-    #Log a specific sale order
+    # Log a specific sale order
     def listSpecificProducft(self):
+        self.sql_queries_lockout()
+
         _logger.info("listSpecificLineFromTable")
         self.db.env.cr.execute("""
             SELECT 
@@ -88,11 +108,11 @@ class sql_queries:
         for table in tables:
             res += str(table)
             res += "\n"
-        _logger.info(res)        
-
-
+        _logger.info(res)
 
     def listProductFromSpecificSaleOrder(self):
+        self.sql_queries_lockout()
+
         _logger.info("listProductFromSpecificSaleOrder")
         self.db.env.cr.execute("""
             SELECT 
