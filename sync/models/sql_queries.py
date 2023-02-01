@@ -45,7 +45,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
-        WHERE table_name = 'product_template'
+        WHERE table_name = 'ir_translation'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
@@ -53,6 +53,7 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+        raise UserError
 
     # Log all lines in sale_order table
 
@@ -149,7 +150,7 @@ class sql_queries(models.Model):
         tables = self.env.cr.fetchall()
         id = tables[0][0]
         self.env.cr.execute("\
-            SELECT *\
+            SELECT id, res_id\
             FROM ir_translation\
             WHERE res_id= " + str(id))
         result = self.env.cr.fetchall()
