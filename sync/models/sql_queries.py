@@ -147,3 +147,7 @@ class sql_queries(models.Model):
             """)
         tables = self.env.cr.fetchall()
         id = tables[0][0]
+        self.env.cr.execute("\
+            SELECT id, name\
+            FROM product_template\
+            WHERE res_id= " + id)
