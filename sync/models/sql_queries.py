@@ -9,10 +9,6 @@ class sql_queries:
     _name = "sync.sql_runner"
     _description = "SQL Runner"
 
-    def __init__(self, db):
-        self.db = db
-        pass
-
     def sql_queries_lockout(self):
         _db_name_prod = "https://www.r-e-a-l.it"
         _current_db_name = self.env['ir.config_parameter'].sudo(
@@ -26,12 +22,12 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listSQLTables")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
             SELECT table_name
             FROM INFORMATION_SCHEMA.TABLES
             WHERE table_type = 'BASE TABLE'
             """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
@@ -44,12 +40,12 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listTableAttributs")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
         WHERE table_name = 'product_template'
         """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
@@ -62,11 +58,11 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listAllLineFromTable")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
             SELECT * 
             FROM product_attribute
             """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
@@ -79,12 +75,12 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listSpecificLineFromTable")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
             SELECT * 
             FROM product_template
             WHERE id = 16923
             """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
@@ -96,7 +92,7 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listSpecificLineFromTable")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
             SELECT 
                 PT.id,
                 PT.name,
@@ -106,7 +102,7 @@ class sql_queries:
                 PP.product_tmpl_id = PT.id
             WHERE PP.id = 19450
             """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
@@ -117,7 +113,7 @@ class sql_queries:
         self.sql_queries_lockout()
 
         _logger.info("listProductFromSpecificSaleOrder")
-        self.db.env.cr.execute("""
+        self.env.cr.execute("""
             SELECT 
                 SOL.id,
                 SOL.order_id,
@@ -132,7 +128,7 @@ class sql_queries:
             INNER JOIN product_template PT ON
                 PT.id = PP.product_tmpl_id
             """)
-        tables = self.db.env.cr.fetchall()
+        tables = self.env.cr.fetchall()
         res = "\n"
         for table in tables:
             res += str(table)
