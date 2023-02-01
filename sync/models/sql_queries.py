@@ -1,10 +1,11 @@
 import logging
+from odoo import models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
 
-class sql_queries:
+class sql_queries(models.Model):
 
     _name = "sync.sql_runner"
     _description = "SQL Runner"
