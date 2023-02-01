@@ -299,7 +299,7 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<span style="color: #777;" t-out="markupsafe.Markup(line.product_id.description_sale)" />
+						<span style="color: #777;" t-out="utils.Markup(line.product_id.description_sale)" />
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
 						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
