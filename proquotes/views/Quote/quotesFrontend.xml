@@ -299,7 +299,7 @@
 						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
 							<span t-raw="line.name" />
 						</t> -->
-						<t t-out="from utils import Markup" />
+						<t t-out="import utils" />
 						<span style="color: #777;" t-out="utils.Markup(line.product_id.description_sale)" />
 						<!-- <span style="color: #777;" t-raw="line.product_id.description_sale" /> -->
 						<!-- <span style="color: #777;" t-raw="description"></span> -->
