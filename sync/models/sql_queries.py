@@ -149,5 +149,7 @@ class sql_queries(models.Model):
         id = tables[0][0]
         self.env.cr.execute("\
             SELECT id, name\
-            FROM product_template\
+            FROM ir.translation\
             WHERE res_id= " + id)
+        result = self.env.cr.fetchall()
+        raise UserError(result)
