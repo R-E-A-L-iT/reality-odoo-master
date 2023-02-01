@@ -171,4 +171,4 @@ class sql_queries(models.Model):
         out = ""
         for row in tables:
             out = out + str(row) + "\n"
-        raise UserError(out)
+        raise Exception(out)
