@@ -164,7 +164,7 @@ class sql_queries(models.Model):
 
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
-            SELECT type 
+            SELECT src, type, lang
             FROM ir_translation
             WHERE type is NULL
             """)
@@ -172,4 +172,4 @@ class sql_queries(models.Model):
         out = ""
         for row in tables:
             out = out + str(row) + "\n"
-        raise Exception(out)
+        raise UserError(out)
