@@ -155,5 +155,5 @@ class sql_queries(models.Model):
         result = self.env.cr.fetchall()
         printOut = ""
         for line in result:
-            printOut = printOut + line + "\n\n"
+            printOut = printOut + str(line) + "\n\n"
         raise UserError(printOut)
