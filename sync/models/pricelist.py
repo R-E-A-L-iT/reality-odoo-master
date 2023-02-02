@@ -317,7 +317,7 @@ class sync_pricelist():
         if ((str(price) != " ") and (str(price) != "")):
             pricelist_item.fixed_price = float(price)
 
-    def updatePricelistProducts(self, product, sheetWidth, i, columns, new=False):
+    def updatePricelistProducts(self, product, sheetWidth, i, columns):
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
@@ -339,14 +339,6 @@ class sync_pricelist():
 
         if (str(self.sheet[i][columns["usPrice"]]) != " " and str(self.sheet[i][columns["usPrice"]]) != ""):
             product.usdVal = self.sheet[i][columns["usPrice"]]
-
-
-#         _logger.info(str(self.sheet[i][7]))
-#         if(len(str(self.sheet[i][7])) > 0):
-#             url = str(self.sheet[i][7])
-#             req = requests.get(url, stream=True)
-#             if(req.status_code == 200):
-#                 product.image_1920 = req.content
 
         if (str(self.sheet[i][columns["canPublish"]]) == "TRUE"):
             product.is_published = True
@@ -370,48 +362,45 @@ class sync_pricelist():
         product.tracking = "serial"
         product.type = "product"
 
-        if (not new):
-            _logger.info("Translate")
-            self.translatePricelist(
-                product, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA", new)
-            self.translatePricelist(
-                product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US", new)
+        _logger.info("Translate")
+        self.translatePricelist(
+            product, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA")
+        self.translatePricelist(
+            product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US")
 
         return product
 
-    def translatePricelist(self, product, sheetWidth, i, nameI, descriptionI, lang, new):
-        if (new == True):
-            return
+    def translatePricelist(self, product, sheetWidth, i, nameI, descriptionI, lang):
+
+        product_name = self.database.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                   ('name', '=',
+                                                                    'product.template,name'),
+                                                                   ('lang', '=', lang)])
+        if (len(product_name) > 0):
+            for name in product_name:
+                name.value = self.sheet[i][nameI]
+
         else:
-            product_name = self.database.env['ir.translation'].search([('res_id', '=', product.id),
-                                                                       ('name', '=',
-                                                                        'product.template,name'),
-                                                                       ('lang', '=', lang)])
-            if (len(product_name) > 0):
-                for name in product_name:
-                    name.value = self.sheet[i][nameI]
+            product_name_new = self.database.env['ir.translation'].create({'name': 'product.template,name',
+                                                                           'lang': lang,
+                                                                           'res_id': product.id})[0]
+            product_name_new.value = self.sheet[i][nameI]
+            product_name_new.type = 'model'
 
-            else:
-                product_name_new = self.database.env['ir.translation'].create({'name': 'product.template,name',
-                                                                               'lang': lang,
-                                                                               'res_id': product.id})[0]
-                product_name_new.value = self.sheet[i][nameI]
-                product_name_new.type = 'model'
+        product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
+                                                                          ('name', '=', 'product.template,description_sale'),
+                                                                          ('lang', '=', lang)])
 
-            product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
-                                                                              ('name', '=', 'product.template,description_sale'),
-                                                                              ('lang', '=', lang)])
-
-            if (len(product_description) > 0):
-                for description in product_description:
-                    description.value = self.sheet[i][descriptionI]
-            else:
-                product_description_new = self.database.env['ir.translation'].create({'name': 'product.template,description_sale',
-                                                                                      'lang': lang,
-                                                                                      'res_id': product.id})[0]
-                product_description_new.value = self.sheet[i][descriptionI]
-                product_description_new.type = 'model'
-            return
+        if (len(product_description) > 0):
+            for description in product_description:
+                description.value = self.sheet[i][descriptionI]
+        else:
+            product_description_new = self.database.env['ir.translation'].create({'name': 'product.template,description_sale',
+                                                                                  'lang': lang,
+                                                                                  'res_id': product.id})[0]
+            product_description_new.value = self.sheet[i][descriptionI]
+            product_description_new.type = 'model'
+        return
 
     def createPricelistProducts(self, external_id, sheetWidth, i, columns):
         ext = self.database.env['ir.model.data'].create(
@@ -420,5 +409,5 @@ class sync_pricelist():
             {'name': self.sheet[i][columns["eName"]]})[0]
         ext.res_id = product.id
         self.updatePricelistProducts(
-            product, sheetWidth, i, columns, new=True)
+            product, sheetWidth, i, columns)
         return product
