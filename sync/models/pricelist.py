@@ -271,10 +271,8 @@ class sync_pricelist():
                 self.pricelist(product, "usRental", "USD RENTAL", i, columns)
 
                 if (new):
-                    _logger.info("Blank StringRep")
                     product.stringRep = ""
                 else:
-                    _logger.info("Pricelist Price StringRep")
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.info(e)
@@ -342,7 +340,6 @@ class sync_pricelist():
         product.tracking = "serial"
         product.type = "product"
 
-        _logger.info("Translate")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
         product_sync_common.translatePricelist(
