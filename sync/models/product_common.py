@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 class product_sync_common():
 
     @classmethod
-    def translatePricelist(database, product, name, description, lang):
+    def translatePricelist(cls, database, product, name, description, lang):
         _logger.error(str(lang))
         product_name = database.env['ir.translation'].search([('res_id', '=', product.id),
                                                               ('name', '=',
