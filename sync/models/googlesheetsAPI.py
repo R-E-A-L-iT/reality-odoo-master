@@ -5,6 +5,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
+import logging
+_logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
 dev1_prefix = "Dev_Ty_"
 dev2_prefix = "Dev_Oli_"
@@ -38,8 +40,10 @@ class sheetsAPI(models.Model):
         if (_db_name == _db_name_prod):
             return _master_database_template_id_prod
         elif (dev1_prefix in _db_name):
+            _logger.info("Dev 1")
             return _master_database_template_id_dev1
         elif (dev2_prefix in _db_name):
+            _logger.info("Dev 2")
             return _master_database_template_id_dev2
         else:
             return _master_database_template_id_prod
