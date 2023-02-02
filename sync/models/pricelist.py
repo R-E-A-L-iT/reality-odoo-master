@@ -9,7 +9,7 @@ import logging
 from odoo.tools.translate import _
 from odoo import models
 
-from product_common import product_sync_common
+from .product_common import product_sync_common
 _logger = logging.getLogger(__name__)
 
 SKIP_NO_CHANGE = False
