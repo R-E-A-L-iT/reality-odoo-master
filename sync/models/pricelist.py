@@ -365,9 +365,9 @@ class sync_pricelist():
 
         _logger.info("Translate")
         product_sync_common.translatePricelist(
-            product, sheetWidth, i, columns["fName"], columns["fDisc"], "fr_CA")
+            product, sheetWidth, i, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
         product_sync_common.translatePricelist(
-            product, sheetWidth, i, columns["eName"], columns["eDisc"], "en_US")
+            product, sheetWidth, i, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
 
         return product
 
