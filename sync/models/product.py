@@ -9,7 +9,7 @@ import logging
 from odoo.tools.translate import _
 from odoo import models
 
-from .pricelist import sync_pricelist
+from .product_common import product_sync_common
 _logger = logging.getLogger(__name__)
 
 SKIP_NO_CHANGE = True
@@ -227,11 +227,10 @@ class sync_products():
         # pricelist need to be done before modifiyng the product.price
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
-        syncer = sync_pricelist(self.name, self.sheet, self.database)
-        syncer.addProductToPricelist(
-            product, "CAN Pricelist", product_price_cad)
-        syncer.addProductToPricelist(
-            product, "USD Pricelist", product_price_usd)
+        product_sync_common.addProductToPricelist(
+            self.database, product, "CAN Pricelist", product_price_cad)
+        product_sync_common.addProductToPricelist(
+            self.database, product, "USD Pricelist", product_price_usd)
         product.price = product_price_cad
 
     # Method to create and update a product
