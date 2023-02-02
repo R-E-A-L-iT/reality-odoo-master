@@ -396,7 +396,7 @@ class sync_pricelist():
                                                                                'lang': lang,
                                                                                'res_id': product.id})[0]
                 product_name_new.value = self.sheet[i][nameI]
-                name.type = 'model'
+                product_name_new.type = 'model'
 
             product_description = self.database.env['ir.translation'].search([('res_id', '=', product.id),
                                                                               ('name', '=', 'product.template,description_sale'),
