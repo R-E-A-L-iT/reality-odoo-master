@@ -16,6 +16,7 @@ class product_sync_common():
 
     @classmethod
     def translatePricelist(database, product, name, description, lang):
+        _logger.error(str(lang))
         product_name = database.env['ir.translation'].search([('res_id', '=', product.id),
                                                               ('name', '=',
                                                                'product.template,name'),
