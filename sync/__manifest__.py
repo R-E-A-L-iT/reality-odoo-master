@@ -18,7 +18,7 @@
     # for the full list
     'category': 'Technical',
 
-    'veision': '0.2',
+    'veision': '0.3',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'proportal', 'proquotes', 'product', 'google_account', 'google_drive'],

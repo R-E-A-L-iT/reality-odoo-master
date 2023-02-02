@@ -21,8 +21,8 @@ class product_sync_common():
                                                                'product.template,name'),
                                                               ('lang', '=', lang)])
         if (len(product_name) > 0):
-            for name in product_name:
-                name.value = name
+            for name_record in product_name:
+                name_record.value = name
 
         else:
             product_name_new = database.env['ir.translation'].create({'name': 'product.template,name',
@@ -36,8 +36,8 @@ class product_sync_common():
                                                                      ('lang', '=', lang)])
 
         if (len(product_description) > 0):
-            for description in product_description:
-                description.value = description
+            for description_record in product_description:
+                description_record.value = description
         else:
             product_description_new = database.env['ir.translation'].create({'name': 'product.template,description_sale',
                                                                              'lang': lang,
