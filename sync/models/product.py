@@ -42,24 +42,24 @@ class sync_products():
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "EN-Name Missing")
-            columnsMissing = "Name"
+            columnsMissing = "EN-Name"
 
         if ("FR-Name" in sheet[0]):
             columns["french_name"] = sheet[0].index("FR-Name")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "FR-Name Missing")
-            columnsMissing = "Name"
+            columnsMissing = "FR-Name"
 
         if ("EN-Description" in sheet[0]):
-            columns["description"] = sheet[0].index("EN-Description")
+            columns["english_description"] = sheet[0].index("EN-Description")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Description Missing")
             columnsMissing = "Description"
 
         if ("FR-Description" in sheet[0]):
-            columns["description"] = sheet[0].index("FR-Description")
+            columns["french_description"] = sheet[0].index("FR-Description")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Description Missing")
