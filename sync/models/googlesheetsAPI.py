@@ -8,8 +8,8 @@ from oauth2client.service_account import ServiceAccountCredentials as sac
 import logging
 _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
-dev1_prefix = "Dev_Ty_"
-dev2_prefix = "Dev_Oli_"
+dev1_prefix = "dev-ty-"
+dev2_prefix = "dev-oli-"
 
 
 class sheetsAPI(models.Model):
