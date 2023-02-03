@@ -37,14 +37,21 @@ class sync_products():
                 msg, self.name, "Header", "SKU Missing")
             columnsMissing = "SKU"
 
-        if ("Name" in sheet[0]):
-            columns["name"] = sheet[0].index("Name")
+        if ("EN-Name" in sheet[0]):
+            columns["english_name"] = sheet[0].index("EN-Name")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "Name Missing")
+                msg, self.name, "Header", "EN-Name Missing")
             columnsMissing = "Name"
 
-        if ("Description" in sheet[0]):
+        if ("FR-Name" in sheet[0]):
+            columns["french_name"] = sheet[0].index("FR-Name")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "FR-Name Missing")
+            columnsMissing = "Name"
+
+        if ("EN-Description" in sheet[0]):
             columns["description"] = sheet[0].index("Description")
         else:
             msg = utilities.buildMSG(
@@ -94,7 +101,7 @@ class sync_products():
             columnsMissing = "Continue"
 
         if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
+            msg = "<h1>Product page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
                 str(sheetWidth) + "</p>\n" + msg
             self.database.sendSyncReport(msg)
             _logger.info(msg)
