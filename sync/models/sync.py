@@ -48,11 +48,11 @@ class sync(models.Model):
 
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
-
-        template_id = sheetsAPI.get_master_database_template_id(
-            self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
+        db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        template_id = sheetsAPI.get_master_database_template_id(db_name)
+        _logger.info("db_name: " + str(db_name))
         _logger.info("template_id: " + str(template_id))
-
+        
         sheetName = ""
         sheetIndex = -1
         modelType = ""
