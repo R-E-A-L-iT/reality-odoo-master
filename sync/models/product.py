@@ -23,7 +23,7 @@ class sync_products():
 
     def syncProducts(self, sheet):
 
-        sheetWidth = 9
+        sheetWidth = 11
         i = 1
 
         columns = dict()
