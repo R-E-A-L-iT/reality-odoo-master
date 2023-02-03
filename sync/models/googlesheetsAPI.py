@@ -6,8 +6,8 @@ from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 # Prefixes Used in Branches To Differentiate Branches
-dev1_prefix = "Dev_Ty_"
-dev2_prefix = "Dev_Oli_"
+dev_ty_prefix = "dev_ty_"
+dev_oli_prefix = "dev_oli_"
 
 
 class sheetsAPI(models.Model):
@@ -37,9 +37,9 @@ class sheetsAPI(models.Model):
         # Return the proper GoogleSheet Template ID base on the environement
         if (_db_name == _db_name_prod):
             return _master_database_template_id_prod
-        elif (dev1_prefix in _db_name):
+        elif (dev_ty_prefix in _db_name):
             return _master_database_template_id_dev1
-        elif (dev2_prefix in _db_name):
+        elif (dev_oli_prefix in _db_name):
             return _master_database_template_id_dev2
         else:
             return _master_database_template_id_prod
