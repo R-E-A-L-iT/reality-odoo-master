@@ -32,7 +32,7 @@ class sheetsAPI(models.Model):
         _master_database_template_id_dev1 = "1UT2h8r8ut3tB4icPKLJwO6d6qfEr2Oca8Vv6po3yYEc"
         # DEV R-E-A-L.iT Master Database
 
-        _master_database_template_id_dev2 = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        _master_database_template_id_dev2 = "1PeClDoVPC7yx8C1d8ShQkz0AlUZrBYVwBJfYZKYzcIU"
 
         # Return the proper GoogleSheet Template ID base on the environement
         if (_db_name == _db_name_prod):
