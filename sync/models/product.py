@@ -158,9 +158,10 @@ class sync_products():
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
-                        sheet[i][columns["name"]],  # product_name
-                        # product_description_sale
-                        sheet[i][columns["description"]],
+                        sheet[i][columns["english_name"]],
+                        sheet[i][columns["french_name"]],
+                        sheet[i][columns["english_description"]],
+                        sheet[i][columns["french_description"]],
                         sheet[i][columns["priceCAD"]],  # product_price_cad
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
@@ -169,9 +170,10 @@ class sync_products():
                     self.createAndUpdateProducts(
                         external_id,
                         str(sheet[i][:]),  # product_stringRep
-                        sheet[i][columns["name"]],  # product_name
-                        # product_description_sale
-                        sheet[i][columns["description"]],
+                        sheet[i][columns["english_name"]],
+                        sheet[i][columns["french_name"]],
+                        sheet[i][columns["english_description"]],
+                        sheet[i][columns["french_description"]],
                         sheet[i][columns["priceCAD"]],  # product_price_cad
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
@@ -224,8 +226,10 @@ class sync_products():
             self,
             product,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
@@ -234,8 +238,8 @@ class sync_products():
         if (product.stringRep == product_stringRep):
             return
 
-        product.name = product_name
-        product.description_sale = product_description_sale
+        product.name = product_name_english
+        product.description_sale = product_description_sale_english
         product.tracking = product_tracking
         product.type = product_type
         product.stringRep = product_stringRep
@@ -265,19 +269,23 @@ class sync_products():
             self,
             external_id,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
             product_type):
 
-        product = self.createProducts(external_id, product_name)
+        product = self.createProducts(external_id, product_name_english)
         self.updateProducts(
             product,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
