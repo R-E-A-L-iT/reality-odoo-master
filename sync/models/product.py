@@ -25,6 +25,7 @@ class sync_products():
 
         sheetWidth = 11
         i = 1
+        msg = ""
 
         columns = dict()
         columnsMissing = ""

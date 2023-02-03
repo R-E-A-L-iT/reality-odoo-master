@@ -55,8 +55,6 @@ class product_sync_common():
 
     @classmethod
     def addProductToPricelist(cls, database, product, pricelistName, price):
-        if ("6009445" in product.name):
-            _logger.warning("Update Price" + str(price))
         pricelist_id = database.env['product.pricelist'].search(
             [('name', '=', pricelistName)])[0].id
         pricelist_item_ids = database.env['product.pricelist.item'].search(
