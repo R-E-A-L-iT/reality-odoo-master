@@ -239,6 +239,10 @@ class sync_products():
             return
 
         product.name = product_name_english
+
+        product_sync_common.translatePricelist(self.database, product, product_name_english, product_description_sale_english, 'en_US')
+        product_sync_common.translatePricelist(self.database, product, product_name_french, product_description_sale_french, 'fr_CA')
+
         product.description_sale = product_description_sale_english
         product.tracking = product_tracking
         product.type = product_type
