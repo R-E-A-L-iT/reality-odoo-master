@@ -4,7 +4,7 @@ from odoo.tests import TransactionCase
 # odoo-bin --test-enable -i sync
 
 
-class TestModuleProduct(transactioncase):
+class TestModuleProduct(TransactionCase):
 
     def setUp(self):
         return

@@ -1,5 +1,5 @@
 from odoo.tests import TransactionCase
-from proquotes.models import product_sync_common
+from models import product_sync_common
 # To run the test, open the console and type :
 # odoo-bin --test-enable -i sync
 
