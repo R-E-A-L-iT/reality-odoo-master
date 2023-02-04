@@ -16,6 +16,7 @@ class TestModulePricelist(TransactionCase):
         ]     
         self.sync_model = self.env['sync.sync']
         self.sync_pricelist = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
+        self.sync_product = self.sync_model.getSync_pricelist("TEST_DATA_ODOO", self.pricelist_data)
        
 
     #def addProductToPricelist(self, product, pricelistName, price): 
@@ -23,7 +24,7 @@ class TestModulePricelist(TransactionCase):
         external_id = "SKU-1234123"
         product_name = "New product" 
         price = 5595.00         
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.product_model.createProducts(external_id, product_name)
 
         #Assert that "USD Pricelist" is unique as a pricelist name
         pricelist_usd = self.sync_model.env['product.pricelist'].search(
