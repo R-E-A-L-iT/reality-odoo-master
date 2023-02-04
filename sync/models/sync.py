@@ -192,6 +192,9 @@ class sync(models.Model):
     def getSync_pricelist(self, sheetName, sheet):
         return sync_pricelist(sheetName, sheet, self)
 
+    def getSync_product(self, sheetName, sheet):
+        return sync_products(sheetName, sheet, self)
+
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
         sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
