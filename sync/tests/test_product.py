@@ -109,7 +109,7 @@ class TestModuleProduct(transactioncase):
         product_tracking = "serial"
         product_type = "product"
 
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.product_model.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
