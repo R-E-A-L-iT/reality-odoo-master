@@ -9,7 +9,6 @@ class TestModuleSync(TransactionCase):
     def setUp(self):
         super(TestModuleSync, self).setUp()
         self.sync_model = self.env['sync.sync']
-        self.product_model = self.env['sync.product']
         self.sync_data = [
             ['Sheet Name',      'Sheet Index',
                 'Model Type',   'Valid', 'Continue'],
