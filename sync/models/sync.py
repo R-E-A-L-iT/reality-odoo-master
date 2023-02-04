@@ -193,6 +193,7 @@ class sync(models.Model):
         return sync_pricelist(sheetName, sheet, self)
 
     def getSync_product(self, sheetName, sheet):
+        _logger.error("Product Create")
         return sync_products(sheetName, sheet, self)
 
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
