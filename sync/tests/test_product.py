@@ -213,7 +213,7 @@ class TestModuleProduct(transactioncase):
     def test_archive_product(self):
         external_id = "SKU-1234123"
         product_name = "New product"
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.product_model.createProducts(external_id, product_name)
 
         # Validate that the product to archived is active before calling the method
         self.assertEqual(product.active, True)
