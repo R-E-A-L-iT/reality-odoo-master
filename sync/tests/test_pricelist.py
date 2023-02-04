@@ -1,5 +1,5 @@
 from odoo.tests import TransactionCase
-
+from proquotes.models import product_sync_common
 # To run the test, open the console and type :
 # odoo-bin --test-enable -i sync
 
@@ -26,7 +26,7 @@ class TestModulePricelist(TransactionCase):
         self.product_model = self.sync_model.getSync_product(
             "TEST_DATA_ODOO", self.pricelist_data)
 
-    # def addProductToPricelist(self, product, pricelistName, price):
+    # def ProductToPricelist(self, product, pricelistName, price):
 
     def test_addProductToPricelist(self):
         external_id = "SKU-1234123"
@@ -50,7 +50,7 @@ class TestModulePricelist(TransactionCase):
         self.assertEqual((len(pricelist_can_item_ids) == 0), True)
 
         # Calling the method to test
-        self.sync_pricelist.addProductToPricelist(
+        product_sync_common.addProductToPricelist(
             product, "CAN Pricelist", price)
 
         # Assert that their is only one price.
