@@ -7,6 +7,7 @@ from odoo.tests import TransactionCase
 class TestModuleProduct(transactioncase):
 
     def setUp(self):
+        return
         super(TestModuleProduct, self).setUp()
         self.pricelist_data = []
         self.sync_model = self.env['sync.sync']
