@@ -1,0 +1,212 @@
+class test():
+    # Test to be executer befor creating a product
+    # Input
+    #   external_id: Sku to check if not existing
+    def pretest_createProducts(self, external_id):
+        # Assert that the product to be created does not exist to validate the test.
+        product_unexsiting = self.env['product.template'].search(
+            [('sku', '=', external_id)])
+        self.assertEqual((len(product_unexsiting) == 0), True)
+
+    # def createProducts(self, external_id, product_name):
+
+    def test_createProducts(self):
+        external_id = "SKU-1234123"
+        product_name = "New product"
+
+        self.pretest_createProducts(external_id)
+
+        # Calling the methode to test
+        product = self.sync_model.createProducts(external_id, product_name)
+
+        # Assert that if a product is created, it their is only on SKU with this value
+        product_exsiting = self.env['product.template'].search(
+            [('sku', '=', product.sku)])
+        self.assertEqual((len(product_exsiting) == 1), True)
+
+    # Test to be done after a product update
+
+    def aftertest_updateProducts(
+            self,
+            product_id,
+            external_id,
+            product_name,
+            product_stringRep,
+            product_description_sale,
+            product_price_cad,
+            product_tracking,
+            product_type):
+
+        # Assert that if a product is created, the SKU is unique
+        product_updated = self.env['product.template'].search(
+            [('sku', '=', external_id)])
+        self.assertEqual((len(product_updated) == 1), True)
+
+        # Assert that if a product is created, the ID is unique
+        product_updated = self.env['product.template'].search(
+            [('id', '=', product_id)])
+        self.assertEqual((len(product_updated) == 1), True)
+
+        # Assert that all the test data is properly set in the updated product
+        self.assertEqual((product_updated.sku == external_id), True)
+        self.assertEqual((product_updated.name == product_name), True)
+        self.assertEqual(
+            (product_updated.stringRep == product_stringRep), True)
+        self.assertEqual((product_updated.description_sale ==
+                         product_description_sale), True)
+        self.assertEqual((str(float(product_updated.price)) ==
+                         str(float(product_price_cad))), True)
+        self.assertEqual((product_updated.tracking == product_tracking), True)
+        self.assertEqual((product_updated.type == product_type), True)
+
+        # Assert that there is only one price per product in 'CAN pricelist' and 'USD pricelist'
+        pricelist_can = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "CAN Pricelist")])
+        self.assertEqual(len(pricelist_can) == 1, True)
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product_id), ('pricelist_id', '=', pricelist_can.id)])
+        self.assertEqual((len(pricelist_item_ids) == 1), True)
+
+        pricelist_usd = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "USD Pricelist")])
+        self.assertEqual(len(pricelist_usd) == 1, True)
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product_id), ('pricelist_id', '=', pricelist_usd.id)])
+        self.assertEqual((len(pricelist_item_ids) == 1), True)
+
+    # def updateProducts(
+    #       self,
+    #       product,
+    #       product_stringRep,
+    #       product_name,
+    #       product_description_sale,
+    #       product_price_cad,
+    #       product_price_usd,
+    #       product_tracking,
+    #       product_type):
+    def test_updateProducts(self):
+        external_id = "SKU-123456"
+        product_stringRep = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
+        product_name = "Name of the product"
+        product_description_sale = "Description of the product"
+        product_price_cad = "3850"
+        product_price_usd = "2980"
+        product_tracking = "serial"
+        product_type = "product"
+
+        product = self.sync_model.createProducts(external_id, product_name)
+        product_not_updated = self.env['product.template'].search(
+            [('id', '=', product.id)])
+
+        # Assert that the product created match the tests values.
+        self.assertEqual((product_not_updated.sku == external_id), True)
+        self.assertEqual((product_not_updated.name == product_name), True)
+        self.assertEqual(
+            (product_not_updated.tracking == product_tracking), True)
+        self.assertEqual((product_not_updated.type == product_type), True)
+
+        # Validate that the test value are not set before the method is executed.
+        self.assertEqual(
+            (product_not_updated.stringRep == product_stringRep), False)
+        self.assertEqual((product_not_updated.description_sale ==
+                         product_description_sale), False)
+        self.assertEqual(
+            (product_not_updated.price == product_price_cad), False)
+
+        # Assert that the 'CAN pricelist' and 'USD priclist' doest not contain information on the product.
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "CAN Pricelist")])
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 0), True)
+
+        pricelist = self.sync_model.env['product.pricelist'].search(
+            [('name', '=', "USD Pricelist")])
+        pricelist_id = pricelist[0].id
+        pricelist_item_ids = self.sync_model.env['product.pricelist.item'].search(
+            [('product_tmpl_id', '=', product.id), ('pricelist_id', '=', pricelist_id)])
+        self.assertEqual((len(pricelist_item_ids) == 0), True)
+
+        # calling the method to test
+        self.sync_model.updateProducts(
+            product,
+            product_stringRep,
+            product_name,
+            product_description_sale,
+            product_price_cad,
+            product_price_usd,
+            product_tracking,
+            product_type)
+
+        self.aftertest_updateProducts(
+            product.id,
+            external_id,
+            product_name,
+            product_stringRep,
+            product_description_sale,
+            product_price_cad,
+            product_tracking,
+            product_type)
+
+    # def createAndUpdateProducts(
+    #        self,
+    #        external_id,
+    #        product_stringRep,
+    #        product_name,
+    #        product_description_sale,
+    #        product_price_cad,
+    #        product_price_usd,
+    #        product_tracking,
+    #        product_type):
+
+    def test_createAndUpdateProducts(self):
+        external_id = "SKU-123456"
+        product_stringRep = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
+        product_name = "Name of the product"
+        product_description_sale = "Description of the product"
+        product_price_cad = "3850"
+        product_price_usd = "2980"
+        product_tracking = "serial"
+        product_type = "product"
+
+        self.pretest_createProducts(external_id)
+
+        # Callind the method
+        product = self.sync_model.createAndUpdateProducts(
+            external_id,
+            product_stringRep,
+            product_name,
+            product_description_sale,
+            product_price_cad,
+            product_price_usd,
+            product_tracking,
+            product_type)
+
+        self.aftertest_updateProducts(
+            product.id,
+            external_id,
+            product_name,
+            product_stringRep,
+            product_description_sale,
+            product_price_cad,
+            product_tracking,
+            product_type)
+
+    # def archive_product(self, product_id):
+
+    def test_archive_product(self):
+        external_id = "SKU-1234123"
+        product_name = "New product"
+        product = self.sync_model.createProducts(external_id, product_name)
+
+        # Validate that the product to archived is active before calling the method
+        self.assertEqual(product.active, True)
+
+        # calling the method
+        self.sync_model.archive_product(str(product.id))
+
+        product_modified = self.env['product.template'].search(
+            [('id', '=', product.id)])
+        # Assert that once archived, it is not active.
+        self.assertEqual(product_modified.active, False)
