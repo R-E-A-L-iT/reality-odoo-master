@@ -38,7 +38,7 @@ class purchase_order(models.Model):
         ('GeoplusFooter_US', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek"),
+        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek")
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
@@ -59,7 +59,7 @@ class invoice(models.Model):
         ('GeoplusFooter_US', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek"),
+        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
@@ -93,7 +93,7 @@ class order(models.Model):
         ('GeoplusFooter_US', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek"),
+        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
