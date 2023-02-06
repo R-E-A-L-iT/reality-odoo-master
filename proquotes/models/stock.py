@@ -35,8 +35,8 @@ class stock(models.Model):
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
         ('GeoplusFooterCanada', "Geoplus_Canada"),
         ('GeoplusFooter_US', "Geoplus_America"),
-        ('Leica_Footer_Ali', "Leica Ali")
+        ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek")
-        ('REALiTFooter_Derek', "REALiTFooter_Derek")
+        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek"),
+        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
