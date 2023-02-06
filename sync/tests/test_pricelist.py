@@ -28,11 +28,11 @@ class TestModulePricelist(TransactionCase):
     # def addProductToPricelist(self, product, pricelistName, price):
 
     def test_addProductToPricelist(self):
-        return
         external_id = "SKU-1234123"
         product_name = "New product"
         price = 5595.00
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.sync_model.createPricelistProducts(
+            external_id, product_name)
 
         # Assert that "USD Pricelist" is unique as a pricelist name
         pricelist_usd = self.sync_model.env['product.pricelist'].search(

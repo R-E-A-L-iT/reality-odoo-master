@@ -286,16 +286,19 @@ class sync_pricelist():
         product_ids = self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'product.template')])
         if (len(product_ids) > 0):
-            return self.updatePricelistProducts(self.database.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), sheetWidth, i, columns), False
+            return self.updatePricelistProducts(self.database.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), i, columns), False
         else:
-            return self.createPricelistProducts(external_id, sheetWidth, i, columns), True
+            product = self.createPricelistProducts(
+                external_id, self.sheet[i][columns["eName"]])
+            product = self.updatePricelistProducts(product, i, columns)
+            return product, True
 
     def pricelist(self, product, priceName, pricelistName, i, columns):
         price = self.sheet[i][columns[priceName]]
         product_sync_common.addProductToPricelist(
             self.database, product, pricelistName, price)
 
-    def updatePricelistProducts(self, product, sheetWidth, i, columns):
+    def updatePricelistProducts(self, product, i, columns):
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
@@ -347,12 +350,10 @@ class sync_pricelist():
 
         return product
 
-    def createPricelistProducts(self, external_id, sheetWidth, i, columns):
+    def createPricelistProducts(self, external_id, product_name):
         ext = self.database.env['ir.model.data'].create(
             {'name': external_id, 'model': "product.template"})[0]
         product = self.database.env['product.template'].create(
-            {'name': self.sheet[i][columns["eName"]]})[0]
+            {'name': product_name})[0]
         ext.res_id = product.id
-        self.updatePricelistProducts(
-            product, sheetWidth, i, columns)
         return product
