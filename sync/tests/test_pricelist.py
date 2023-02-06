@@ -1,5 +1,5 @@
 from odoo.tests import TransactionCase
-from odoo.addons.sync.pricelist import sync_pricelist
+from odoo.addons.sync.models.pricelist import sync_pricelist
 
 # To run the test, open the console and type :
 # odoo-bin --test-enable -i sync
