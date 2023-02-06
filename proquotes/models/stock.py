@@ -3,7 +3,7 @@
 import ast
 import base64
 from email.policy import default
-import re 
+import re
 
 from datetime import datetime, timedelta
 from functools import partial
@@ -19,16 +19,24 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
-class stock(models.Model):
-	_inherit = "stock.picking"
 
-	footer = fields.Selection([
-		('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-		('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
-		('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-		('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
-		('Geoplus_Canada', "Geoplus_Canada"),
-		('Geoplus_America', "Geoplus_America"),
-		('Leica_Various_Ali', "Leica_Various_Ali"),
-		('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-		('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+class stock(models.Model):
+    _inherit = "stock.picking"
+
+    footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
+        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
+        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('GeoplusFooterCanada', "Geoplus_Canada"),
+        ('GeoplusFooter_US', "Geoplus_America"),
+        ('Leica_Footer_Ali', "Leica Ali")
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek")
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")

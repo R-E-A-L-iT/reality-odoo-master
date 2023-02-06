@@ -25,29 +25,43 @@ _logger = logging.getLogger(__name__)
 class purchase_order(models.Model):
     _inherit = 'purchase.order'
     footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
         ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
         ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('Geoplus_Canada', "Geoplus_Canada"),
-        ('Geoplus_America', "Geoplus_America"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('GeoplusFooterCanada', "Geoplus_Canada"),
+        ('GeoplusFooter_US', "Geoplus_America"),
+        ('Leica_Footer_Ali', "Leica Ali")
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek")
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
 
 class invoice(models.Model):
     _inherit = 'account.move'
     footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
         ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
         ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('Geoplus_Canada', "Geoplus_Canada"),
-        ('Geoplus_America', "Geoplus_America"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('GeoplusFooterCanada', "Geoplus_Canada"),
+        ('GeoplusFooter_US', "Geoplus_America"),
+        ('Leica_Footer_Ali', "Leica Ali")
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek")
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
 
 class order(models.Model):
@@ -66,15 +80,22 @@ class order(models.Model):
         related="company_id.name", string="company_name", required=True)
 
     footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
         ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
         ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
-        ('Geoplus_Canada', "Geoplus_Canada"),
-        ('Geoplus_America', "Geoplus_America"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('GeoplusFooterCanada', "Geoplus_Canada"),
+        ('GeoplusFooter_US', "Geoplus_America"),
+        ('Leica_Footer_Ali', "Leica Ali")
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek")], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+        ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek")
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
