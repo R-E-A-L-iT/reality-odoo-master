@@ -34,7 +34,7 @@ class stock(models.Model):
         ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
         ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
         ('GeoplusFooterCanada', "Geoplus_Canada"),
-        ('GeoplusFooter_US', "Geoplus_America"),
+        ('GeoplusFooterUS', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
