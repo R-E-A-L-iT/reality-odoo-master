@@ -39,7 +39,7 @@ class purchase_order(models.Model):
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
         ('REALiTSOLUTIONSLLCFotter_Derek_US', "R-E-A-L.iT Solutions Derek"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
+        ('REALiTFooter_Derek', "REALiTFooter_Derek")
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
 

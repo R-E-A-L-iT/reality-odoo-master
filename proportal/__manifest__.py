@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.8',
+    'version': '0.9',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
