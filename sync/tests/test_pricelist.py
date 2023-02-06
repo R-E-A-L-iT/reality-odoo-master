@@ -51,8 +51,8 @@ class TestModulePricelist(TransactionCase):
         self.assertEqual((len(pricelist_can_item_ids) == 0), True)
 
         # Calling the method to test
-        product_sync_common.addProductToPricelist(
-            product, "CAN Pricelist", price)
+        product_sync_common.addProductToPricelist(sync_pricelist.database,
+                                                  product, "CAN Pricelist", price)
 
         # Assert that their is only one price.
         pricelist_can_item_ids = self.sync_model.env['product.pricelist.item'].search(
