@@ -31,7 +31,7 @@ class TestModulePricelist(TransactionCase):
         external_id = "SKU-1234123"
         product_name = "New product"
         price = 5595.00
-        product = self.sync_model.createPricelistProducts(
+        product = self.sync_pricelist.createPricelistProducts(
             external_id, product_name)
 
         # Assert that "USD Pricelist" is unique as a pricelist name
