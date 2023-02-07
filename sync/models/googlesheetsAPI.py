@@ -29,8 +29,8 @@ class sheetsAPI(models.Model):
         # R-E-A-L.iT Master Database
         _master_database_template_id_prod = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
 
-        # Dev Numbers Set Based on When Developer Joined        
-        _master_database_template_id_dev1 = "1UT2h8r8ut3tB4icPKLJwO6d6qfEr2Oca8Vv6po3yYEc"        
+        # Dev Numbers Set Based on When Developer Joined
+        _master_database_template_id_dev1 = "1UT2h8r8ut3tB4icPKLJwO6d6qfEr2Oca8Vv6po3yYEc"
         _master_database_template_id_dev2 = "1PeClDoVPC7yx8C1d8ShQkz0AlUZrBYVwBJfYZKYzcIU"
 
         # Return the proper GoogleSheet Template ID base on the environement
@@ -43,7 +43,7 @@ class sheetsAPI(models.Model):
         elif (dev2_prefix in _db_name):
             _logger.info("Dev 2")
             return _master_database_template_id_dev2
-        else
+        else:
             _logger.info("Default Dev GS")
             return _master_database_template_id_prod
 
