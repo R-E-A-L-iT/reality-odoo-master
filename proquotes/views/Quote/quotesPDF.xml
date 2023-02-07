@@ -261,12 +261,6 @@
 				margin-bottom: 0px !important;
 				}
 			</style>
-			<!-- Redundent Description -->
-			<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
-				<span class="description-root">
-					<span t-raw="line.name" />
-				</span>
-			</t> -->
 			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
 		</xpath>
 
