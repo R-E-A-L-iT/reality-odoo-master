@@ -231,10 +231,8 @@ class product_test(TransactionCase):
             product.id,
             external_id,
             product_name_english,
-            product_name_french,
             product_stringRep,
             product_description_sale_english,
-            product_description_sale_french,
             product_price_cad,
             product_tracking,
             product_type)
