@@ -92,8 +92,8 @@ class product_test(TransactionCase):
         self.assertEqual((product_updated.name == product_name), True)
         self.assertEqual(
             (product_updated.stringRep == product_stringRep), True)
-        self.assertEqual((product_updated.description_sale ==
-                         product_description_sale_english), True)
+        self.assertEqual(product_updated.description_sale,
+                         product_description_sale_english)
         self.assertEqual((str(float(product_updated.price)) ==
                          str(float(product_price_cad))), True)
         self.assertEqual((product_updated.tracking == product_tracking), True)
