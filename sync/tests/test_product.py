@@ -116,6 +116,14 @@ class product_test(TransactionCase):
             [('product_tmpl_id', '=', product_id), ('pricelist_id', '=', pricelist_usd.id)])
         self.assertEqual((len(pricelist_item_ids) == 1), True)
 
+        self.aftertest_product_translations(
+            product_id, product_name_english, product_description_sale_english, 'en_US')
+        self.aftertest_product_translations(
+            product_id, product_name_french, product_description_sale_french, 'fr_CA')
+
+    def aftertest_product_translations(self, product_id, name, description, lang):
+        pass
+
     # def updateProducts(
     #       self,
     #       product,
