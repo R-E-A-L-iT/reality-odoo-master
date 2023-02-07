@@ -255,11 +255,12 @@
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
-				<td t-if="sale_order.partner_id.country_id.name == 'Canada'" class="text-middle">
+				<!-- Todo Change Condition -->
+				<td t-if="'CAD' in doc.currency_id.name" class="text-middle">
 					<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
 					<span t-if="line.product_id.is_software == False  and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
 				</td>
-				<td t-else="" class="text-middle">
+				<td t-elif="'USD' in doc.currency_id.name" class="text-middle">
 					<span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
 					<span t-if="line.product_id.is_software == False and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
 				</td>
