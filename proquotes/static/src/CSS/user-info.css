@@ -54,8 +54,12 @@
 	content: "Oui";
 }
 
-#user-info #new-address:checked:before {
+#user-info .english-mode+#new-address:checked:before {
 	content: "No ";
+}
+
+#user-info .french-mode+#new-address:checked:before {
+	content: "Non";
 }
 
 #user-info #new-address+br {
