@@ -213,7 +213,7 @@ class product_test(TransactionCase):
         self.pretest_createProducts(external_id)
 
         # Callind the method
-        product = self.sync_model.createAndUpdateProducts(
+        product = self.sync_product.createAndUpdateProducts(
             external_id,
             product_stringRep,
             product_name,
