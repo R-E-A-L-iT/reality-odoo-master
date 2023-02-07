@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 class product_test(TransactionCase):
     def setUp(self):
         super(product_test, self).setUp()
-        _logger.error("Test Product Sync")
+        _logger.info("Test Product Sync")
         self.sheet_index_30 = [
             ['SKU', 	 'EN-Name', 	 'EN-Description', 		'FR-Name', 		'FR-Description', 	   'Price CAD', 'Price USD', 'Can Rental', 'US Rental', 'Store Image', 								   'Store Title', 	   'Store Description', 	 'Publish_CA', 'Publish_USA', 'Can_Be_Sold',
                 'E-Commerce_Website_Code', 'isSoftware', 'Product Type', 'Tracking', 'CAN PL SEL',    'CAN PL ID', 'USD PL SEL',    'US PL ID', 'CAN R SEL',  'CAN R ID', 	 'US R SEL',   'ECOM-FOLDER', 'ECOM-MEDIA', 'US R ID',   'Valid', 'Continue'],
