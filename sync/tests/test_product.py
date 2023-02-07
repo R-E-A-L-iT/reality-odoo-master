@@ -127,20 +127,24 @@ class product_test(TransactionCase):
     def test_updateProducts(self):
         external_id = "SKU-123456"
         product_stringRep = "['SKU-123456', 'Name of the product', 'Description of the product', '3850', '2980', 'Product Type of the product', 'Tracking of the product', 'TRUE', 'TRUE']"
-        product_name = "Name of the product"
-        product_description_sale = "Description of the product"
+        product_name_english = "Name of the product(English)"
+        product_name_french = "Name of the product(French)"
+        product_description_sale_english = "Description of the product(English)"
+        product_description_sale_french = "Description of the product(French)"
         product_price_cad = "3850"
         product_price_usd = "2980"
         product_tracking = "serial"
         product_type = "product"
 
-        product = self.sync_product.createProducts(external_id, product_name)
+        product = self.sync_product.createProducts(
+            external_id, product_name_english)
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
         # Assert that the product created match the tests values.
         self.assertEqual((product_not_updated.sku == external_id), True)
-        self.assertEqual((product_not_updated.name == product_name), True)
+        self.assertEqual((product_not_updated.name ==
+                         product_name_english), True)
         self.assertEqual(
             (product_not_updated.tracking == product_tracking), True)
         self.assertEqual((product_not_updated.type == product_type), True)
@@ -172,8 +176,10 @@ class product_test(TransactionCase):
         self.sync_product.updateProducts(
             product,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
@@ -182,9 +188,9 @@ class product_test(TransactionCase):
         self.aftertest_updateProducts(
             product.id,
             external_id,
-            product_name,
+            product_name_english,
             product_stringRep,
-            product_description_sale,
+            product_description_sale_english,
             product_price_cad,
             product_tracking,
             product_type)
