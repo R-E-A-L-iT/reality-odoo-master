@@ -36,7 +36,7 @@ class product_test(TransactionCase):
         ]
 
         self.sync_model = self.env['sync.sync']
-        self.sync_pricelist = sync_products(
+        self.sync_product = sync_products(
             "Test Sheet", self.sheet_index_30, self.sync_model)
     # Test to be executer befor creating a product
     # Input
@@ -57,7 +57,7 @@ class product_test(TransactionCase):
         self.pretest_createProducts(external_id)
 
         # Calling the methode to test
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.sync_product.createProducts(external_id, product_name)
 
         # Assert that if a product is created, it their is only on SKU with this value
         product_exsiting = self.env['product.template'].search(
@@ -134,7 +134,7 @@ class product_test(TransactionCase):
         product_tracking = "serial"
         product_type = "product"
 
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.sync_product.createProducts(external_id, product_name)
         product_not_updated = self.env['product.template'].search(
             [('id', '=', product.id)])
 
@@ -238,7 +238,7 @@ class product_test(TransactionCase):
     def test_archive_product(self):
         external_id = "SKU-1234123"
         product_name = "New product"
-        product = self.sync_model.createProducts(external_id, product_name)
+        product = self.sync_product.createProducts(external_id, product_name)
 
         # Validate that the product to archived is active before calling the method
         self.assertEqual(product.active, True)
