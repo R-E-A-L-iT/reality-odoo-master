@@ -37,7 +37,7 @@ class product_test(TransactionCase):
 
         self.sync_model = self.env['sync.sync']
         self.sync_pricelist = sync_products(
-            "Test Sheet", self.pricelist_data, self.sync_model)
+            "Test Sheet", self.sheet_index_30, self.sync_model)
     # Test to be executer befor creating a product
     # Input
     #   external_id: Sku to check if not existing
