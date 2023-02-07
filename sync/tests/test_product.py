@@ -3,6 +3,9 @@ from odoo.tests import TransactionCase
 import logging
 _logger = logging.getLogger(__name__)
 
+# To run the test, open the console and type :
+# odoo-bin --test-enable -i sync
+
 
 class product_test(TransactionCase):
     def setUp(self):
