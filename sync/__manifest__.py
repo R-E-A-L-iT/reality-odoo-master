@@ -18,7 +18,7 @@
     # for the full list
     'category': 'Technical',
 
-    'version': '0.8',
+    'veision': '0.0.39',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'proportal', 'proquotes', 'product', 'google_account', 'google_drive'],
@@ -27,5 +27,5 @@
     'data': [
         'security/ir.model.access.csv',
         'data/schedule.xml',
-    ],
+    ]
 }

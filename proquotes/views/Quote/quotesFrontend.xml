@@ -283,25 +283,14 @@
 				<div class="flex">
 					<span class="line_id" t-attf-id="{{line}}"></span>
 
-					<!-- <t t-set="name" t-value="line.product_id.name"></t> -->
-					<!-- <t t-set="name" t-value="line.applied_name"></t> -->
-					<span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span>
-					<!-- <t t-set="description" t-value="line.name"/> -->
+					<span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"></span>
 
 					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-						<!-- <span class="detailLabel">Details</span> -->
 					</label>
 					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
-					<!-- <span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' /> -->
 					<div class="product_fold" style="width: 100%;">
-						<!-- todo double check this removed line-->
-						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
-							<span t-raw="line.name" />
-						</t> -->
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
-						<!-- <span style="color: #777;" t-raw="description"></span> -->
-						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
 				</div>
 			</td>

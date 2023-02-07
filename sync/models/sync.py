@@ -177,21 +177,6 @@ class sync(models.Model):
 
         return sheetIndex, msg
 
-    # Method to get the sync_pricelist calss.
-    # Input
-    #   sheetName: The name of the tab
-    #   sheet:     The sheet in format
-    #      [['ColumnName1','ColumnName2',...,'ColumnNameX'],
-    #       ['Line1 Column1','Line1 Column2',...,'Line1 ColumnX'],
-    #       ['Line2 Column1','Line2 Column2',...,'Line2 ColumnX'],
-    #       ...,
-    #       ['LineZ Column1','LineZ Column2',...,'LineZ ColumnX']]
-    # Output
-    #   An instance of sync_pricelist
-
-    def getSync_pricelist(self, sheetName, sheet):
-        return sync_pricelist(sheetName, sheet, self)
-
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
         sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
@@ -214,7 +199,7 @@ class sync(models.Model):
 
         elif (syncType == "Pricelist"):
             # syncer = sync_pricelist.connect(sheetName, sheet, self)
-            syncer = self.getSync_pricelist(sheetName, sheet)
+            syncer = sync_pricelist(sheetName, sheet, self)
             quit, msg = syncer.syncPricelist()
             quit = False
             msg = ""
@@ -223,7 +208,8 @@ class sync(models.Model):
         elif (syncType == "WebHTML"):
             syncer = syncWeb(sheetName, sheet, self)
             quit, msg = syncer.syncWebCode(sheet)
-            _logger.error(msg)
+            if msg != "":
+                _logger.error(msg)
 
         _logger.info("Done with " + syncType)
 
@@ -587,7 +573,7 @@ class sync(models.Model):
             {'name': sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, sheet, sheetWidth, i, columns)
-        
+
     def check_id(self, id):
         if (" " in id):
             _logger.info("ID: " + str(id))

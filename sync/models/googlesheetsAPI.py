@@ -5,9 +5,11 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
+import logging
+_logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
-dev1_prefix = "dev-ty"
-dev2_prefix = "dev-oli"
+dev1_prefix = "dev-ty-"
+dev2_prefix = "dev-oli-"
 
 
 class sheetsAPI(models.Model):
@@ -33,25 +35,17 @@ class sheetsAPI(models.Model):
 
         # Return the proper GoogleSheet Template ID base on the environement
         if (_db_name == _db_name_prod):
+            _logger.info("Production")
             return _master_database_template_id_prod
-
-        elif (_db_name.find(dev1_prefix) != -1):
+        elif (dev1_prefix in _db_name):
+            _logger.info("Dev 1")
             return _master_database_template_id_dev1
-
-        elif (_db_name.find(dev2_prefix) != -1):
+        elif (dev2_prefix in _db_name):
+            _logger.info("Dev 2")
             return _master_database_template_id_dev2
-
-        else:
-            return _master_database_template_id_dev2
-
-        # if (_db_name == _db_name_prod):
-        #     return _master_database_template_id_prod
-        # elif (dev_ty_prefix in _db_name):
-        #     return _master_database_template_id_dev1
-        # elif (dev_oli_prefix in _db_name):
-        #     return _master_database_template_id_dev2
-        # else:
-        #     return _master_database_template_id_prod
+        else
+            _logger.info("Default Dev GS")
+            return _master_database_template_id_prod
 
     # Methode to read a googlesheet document.
     # Input
