@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template name="Rental Address Form" id="rental_address_form">		
+	<template name="Rental Address Form" id="rental_address_form">
 		<t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
 				<div>
-					<label for="rental-start">						
+					<label for="rental-start">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-					</label>					
+					</label>
 					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
 
@@ -18,7 +18,7 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
-					<input t-if="source.rental_start != False"  id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />	
+					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
 				<!-- <div id="POinputLabel">
 						<span>Please insert your PO number here:</span>
@@ -41,22 +41,10 @@
 					<br />
 
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>		
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>			
-					<!-- test the impact to take out the if
-					 input t-if="source.rental_diff_add == True" id="new-address" type="checkbox" checked="true" />
-					<input t-else="" id="new-address" type="checkbox" /-->
-					<input id="new-address" type="checkbox" checked="true"/>					
+					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
+					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
+					<input id="new-address" type="checkbox" checked="true" />
 					<br />
-
-					<!-- test -->
-					<span t-if="source.rental_diff_add == True">
-						source.rental_diff_add == True'
-					</span>
-					<span t-else="">
-						source.rental_diff_add != True'
-					</span>
-
 					<div id="rental-address" class="rental-address">
 						<label for="street">
 							<span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>

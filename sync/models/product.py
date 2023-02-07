@@ -9,7 +9,7 @@ import logging
 from odoo.tools.translate import _
 from odoo import models
 
-from .pricelist import sync_pricelist
+from .product_common import product_sync_common
 _logger = logging.getLogger(__name__)
 
 SKIP_NO_CHANGE = True
@@ -23,8 +23,9 @@ class sync_products():
 
     def syncProducts(self, sheet):
 
-        sheetWidth = 9
+        sheetWidth = 11
         i = 1
+        msg = ""
 
         columns = dict()
         columnsMissing = ""
@@ -36,15 +37,29 @@ class sync_products():
                 msg, self.name, "Header", "SKU Missing")
             columnsMissing = "SKU"
 
-        if ("Name" in sheet[0]):
-            columns["name"] = sheet[0].index("Name")
+        if ("EN-Name" in sheet[0]):
+            columns["english_name"] = sheet[0].index("EN-Name")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "Name Missing")
-            columnsMissing = "Name"
+                msg, self.name, "Header", "EN-Name Missing")
+            columnsMissing = "EN-Name"
 
-        if ("Description" in sheet[0]):
-            columns["description"] = sheet[0].index("Description")
+        if ("FR-Name" in sheet[0]):
+            columns["french_name"] = sheet[0].index("FR-Name")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "FR-Name Missing")
+            columnsMissing = "FR-Name"
+
+        if ("EN-Description" in sheet[0]):
+            columns["english_description"] = sheet[0].index("EN-Description")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Description Missing")
+            columnsMissing = "Description"
+
+        if ("FR-Description" in sheet[0]):
+            columns["french_description"] = sheet[0].index("FR-Description")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Description Missing")
@@ -93,7 +108,7 @@ class sync_products():
             columnsMissing = "Continue"
 
         if (sheetWidth != len(sheet[i]) or columnsMissing != ""):
-            msg = "<h1>Pricelist page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
+            msg = "<h1>Product page Invalid</h1>\n<p>" + str(self.name) + " width is: " + str(len(self.sheet[i])) + " Expected " + \
                 str(sheetWidth) + "</p>\n" + msg
             self.database.sendSyncReport(msg)
             _logger.info(msg)
@@ -143,9 +158,10 @@ class sync_products():
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
-                        sheet[i][columns["name"]],  # product_name
-                        # product_description_sale
-                        sheet[i][columns["description"]],
+                        sheet[i][columns["english_name"]],
+                        sheet[i][columns["french_name"]],
+                        sheet[i][columns["english_description"]],
+                        sheet[i][columns["french_description"]],
                         sheet[i][columns["priceCAD"]],  # product_price_cad
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
@@ -154,9 +170,10 @@ class sync_products():
                     self.createAndUpdateProducts(
                         external_id,
                         str(sheet[i][:]),  # product_stringRep
-                        sheet[i][columns["name"]],  # product_name
-                        # product_description_sale
-                        sheet[i][columns["description"]],
+                        sheet[i][columns["english_name"]],
+                        sheet[i][columns["french_name"]],
+                        sheet[i][columns["english_description"]],
+                        sheet[i][columns["french_description"]],
                         sheet[i][columns["priceCAD"]],  # product_price_cad
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
@@ -209,8 +226,10 @@ class sync_products():
             self,
             product,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
@@ -219,19 +238,22 @@ class sync_products():
         if (product.stringRep == product_stringRep):
             return
 
-        product.name = product_name
-        product.description_sale = product_description_sale
+        product.name = product_name_english
+
+        product_sync_common.translatePricelist(self.database, product, product_name_english, product_description_sale_english, 'en_US')
+        product_sync_common.translatePricelist(self.database, product, product_name_french, product_description_sale_french, 'fr_CA')
+
+        product.description_sale = product_description_sale_english
         product.tracking = product_tracking
         product.type = product_type
         product.stringRep = product_stringRep
         # pricelist need to be done before modifiyng the product.price
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
-        syncer = sync_pricelist(self.name, self.sheet, self.database)
-        syncer.addProductToPricelist(
-            product, "CAN Pricelist", product_price_cad)
-        syncer.addProductToPricelist(
-            product, "USD Pricelist", product_price_usd)
+        product_sync_common.addProductToPricelist(
+            self.database, product, "CAN Pricelist", product_price_cad)
+        product_sync_common.addProductToPricelist(
+            self.database, product, "USD Pricelist", product_price_usd)
         product.price = product_price_cad
 
     # Method to create and update a product
@@ -251,19 +273,23 @@ class sync_products():
             self,
             external_id,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,
             product_type):
 
-        product = self.createProducts(external_id, product_name)
+        product = self.createProducts(external_id, product_name_english)
         self.updateProducts(
             product,
             product_stringRep,
-            product_name,
-            product_description_sale,
+            product_name_english,
+            product_name_french,
+            product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_price_usd,
             product_tracking,

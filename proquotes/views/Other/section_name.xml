@@ -20,11 +20,26 @@
 			<t t-if="clang == 'fr_CA'">Abonnement(s) existant(s)</t>
 		</t>
 		<t t-elif="sname[:13] == 'product_subs+'">
-			<t t-set="lableList" t-value="sname.split('+')" />
-			<t t-set="name" t-value="lableList[1]" />
+			<t t-set="labelList" t-value="sname.split('+')" />
+			<t t-set="name" t-value="labelList[1]" />
 
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="'Additional' + name + 'Subscriptions'" />
 			<t t-if="clang == 'fr_CA'" t-out="'Abonnement(s) - ' + name + ' - additionnel(s)'" />
+		</t>
+		<t t-elif="sname[:16] == 'reality_capture+'">
+			<t t-set="labelList" t-value="sname.split('+')" />
+			<t t-set="name" t-value="labelList[1]" />
+
+			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="'REALITY CAPTURE' + name" />
+			<t t-if="clang == 'fr_CA'" t-out="name + ' CAPTURE DE RÉALITÉ'" />
+		</t>
+		<t t-elif="sname[:10] == 'translate+'">
+			<t t-set="labelList" t-value="sname.split('+')" />
+			<t t-set="english_content" t-value="labelList[1]" />
+			<t t-set="french_content" t-value="labelList[2]" />
+
+			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="english_content" />
+			<t t-if="clang == 'fr_CA'" t-out="french_content" />
 		</t>
 		<t t-elif="sname[:9] == 'ccplabel+'">
 			<t t-set="labelList" t-value="sname.split('+')" />

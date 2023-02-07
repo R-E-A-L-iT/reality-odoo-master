@@ -283,25 +283,14 @@
 				<div class="flex">
 					<span class="line_id" t-attf-id="{{line}}"></span>
 
-					<!-- <t t-set="name" t-value="line.product_id.name"></t> -->
-					<!-- <t t-set="name" t-value="line.applied_name"></t> -->
-					<span t-attf-class="optional{{line.optional}}" t-raw="line.product_id.name"></span>
-					<!-- <t t-set="description" t-value="line.name"/> -->
+					<span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"></span>
 
 					<label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-						<!-- <span class="detailLabel">Details</span> -->
 					</label>
 					<input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
 					<input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;" />
-					<!-- <span class="approveHandle" style="display: none !important;" t-esc='"{\"model\":\"" + line.product_id.name + "\",\"price\":" + "{price:.2f}".format(price=line.price_unit) + ",\"subtotal\":" + "{price:.2f}".format(price=line.price_unit * line.product_uom_qty) + ",\"quantity\":" + str(round(line.product_uom_qty)) + ",\"type\":\"new_product\"}"' /> -->
 					<div class="product_fold" style="width: 100%;">
-						<!-- todo double check this removed line-->
-						<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)">
-							<span t-raw="line.name" />
-						</t> -->
 						<span style="color: #777;" t-raw="line.product_id.description_sale" />
-						<!-- <span style="color: #777;" t-raw="description"></span> -->
-						<!-- <img t-if="not line.product_id.image_1920 == False" t-attf-src="data:image/*;base64,{{line.product_id.image_1920}}" style="width: 25%; float: right; margin: 10px;"/> -->
 					</div>
 				</div>
 			</td>
@@ -418,9 +407,13 @@
 		<xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace"></xpath>
 
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
+			<t t-set="clang" t-value="lang" />
 			<div class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton" t-att-href="sale_order.get_portal_url(report_type='pdf', download=True)" title="Download">
-					<i class="fa fa-download"></i> Download </a>
+					<i class="fa fa-download"></i>
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">Download</t>
+					<t t-elif="clang == 'fr_CA'">Télécharger</t>
+				</a>
 			</div>
 			<!-- <div style="padding-left: 0px;" class="col-sm-auto mt8">
 				<a role="button" class="btn btn-secondary btn-block o_download_btn" id="approve-button">
