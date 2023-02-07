@@ -2,7 +2,7 @@
 from odoo.tests import TransactionCase
 import logging
 
-from odoo.addons.sync.models.product import sync_product
+from odoo.addons.sync.models.product import sync_products
 _logger = logging.getLogger(__name__)
 
 # To run the test, open the console and type :
@@ -36,7 +36,7 @@ class product_test(TransactionCase):
         ]
 
         self.sync_model = self.env['sync.sync']
-        self.sync_pricelist = sync_product(
+        self.sync_pricelist = sync_products(
             "Test Sheet", self.pricelist_data, self.sync_model)
     # Test to be executer befor creating a product
     # Input
