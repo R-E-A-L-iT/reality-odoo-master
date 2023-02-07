@@ -133,9 +133,11 @@ class product_test(TransactionCase):
         self.assertEqual(len(product_description_list), 1)
 
         if (len(product_name_list) == 1):
-            self.assertEqual(product_name_list[0], name)
+            product_name = product_name_list[0].value
+            self.assertEqual(product_name, name)
         if (len(product_description_list) == 1):
-            self.assertEqual(product_description_list[0], description)
+            product_description = product_description_list[0].value
+            self.assertEqual(product_description, description)
 
     # def updateProducts(
     #       self,
