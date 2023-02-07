@@ -70,9 +70,11 @@ class product_test(TransactionCase):
             self,
             product_id,
             external_id,
-            product_name,
+            product_name_english,
+            product_name_french,
             product_stringRep,
             product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_tracking,
             product_type):
@@ -89,7 +91,7 @@ class product_test(TransactionCase):
 
         # Assert that all the test data is properly set in the updated product
         self.assertEqual((product_updated.sku == external_id), True)
-        self.assertEqual((product_updated.name == product_name), True)
+        self.assertEqual((product_updated.name == product_name_english), True)
         self.assertEqual(
             (product_updated.stringRep == product_stringRep), True)
         self.assertEqual(product_updated.description_sale,
@@ -189,8 +191,10 @@ class product_test(TransactionCase):
             product.id,
             external_id,
             product_name_english,
+            product_name_french,
             product_stringRep,
             product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_tracking,
             product_type)
@@ -225,8 +229,8 @@ class product_test(TransactionCase):
             external_id,
             product_stringRep,
             product_name_english,
-            product_description_sale_english,
             product_name_french,
+            product_description_sale_english,
             product_description_sale_french,
             product_price_cad,
             product_price_usd,
@@ -237,8 +241,10 @@ class product_test(TransactionCase):
             product.id,
             external_id,
             product_name_english,
+            product_name_french,
             product_stringRep,
             product_description_sale_english,
+            product_description_sale_french,
             product_price_cad,
             product_tracking,
             product_type)
