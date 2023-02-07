@@ -153,7 +153,7 @@ class product_test(TransactionCase):
         self.assertEqual(
             (product_not_updated.stringRep == product_stringRep), False)
         self.assertEqual((product_not_updated.description_sale ==
-                         product_description_sale), False)
+                         product_description_sale_english), False)
         self.assertEqual(
             (product_not_updated.price == product_price_cad), False)
 
