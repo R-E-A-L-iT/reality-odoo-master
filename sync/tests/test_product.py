@@ -1,6 +1,8 @@
 
 from odoo.tests import TransactionCase
 import logging
+
+from odoo.addons.sync.modes.product import sync_product
 _logger = logging.getLogger(__name__)
 
 # To run the test, open the console and type :
@@ -33,9 +35,13 @@ class product_test(TransactionCase):
                 'FALSE', 	  'TRUE', 	     '',   					    'FALSE',	  'product',      'serial',   'CAN Pricelist', 'CAN39782',  'USD Pricelist', 'US389452',   'CAN RENTAL', 'CANR194792', 'USD RENTAL', 'Leica', 	    '', 		  'USR378957', 'TRUE',  'TRUE']
         ]
 
+        self.sync_model = self.env['sync.sync']
+        self.sync_pricelist = sync_product(
+            "Test Sheet", self.pricelist_data, self.sync_model)
     # Test to be executer befor creating a product
     # Input
     #   external_id: Sku to check if not existing
+
     def pretest_createProducts(self, external_id):
         # Assert that the product to be created does not exist to validate the test.
         product_unexsiting = self.env['product.template'].search(
