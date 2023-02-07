@@ -122,7 +122,20 @@ class product_test(TransactionCase):
             product_id, product_name_french, product_description_sale_french, 'fr_CA')
 
     def aftertest_product_translations(self, product_id, name, description, lang):
-        pass
+        product_name_list = self.sync_product.database.env['ir.translation'].search([('res_id', '=', product_id),
+                                                                                     ('name', '=',
+                                                                                      'product.template,name'),
+                                                                                     ('lang', '=', lang)])
+        product_description_list = self.sync_product.database.env['ir.translation'].search([('res_id', '=', product_id),
+                                                                                            ('name', '=', 'product.template,description_sale'),
+                                                                                            ('lang', '=', lang)])
+        self.assertEqual(len(product_name_list), 1)
+        self.assertEqual(len(product_description_list), 1)
+
+        if (len(product_name_list) == 1):
+            self.assertEqual(product_name_list[0], name)
+        if (len(product_description_list) == 1):
+            self.assertEqual(product_description_list[0], description)
 
     # def updateProducts(
     #       self,
