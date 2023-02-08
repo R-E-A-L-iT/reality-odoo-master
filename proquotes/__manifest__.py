@@ -37,7 +37,6 @@
             ]
     },
 
-
     'version': '1.0.230',
 
     # always loaded
