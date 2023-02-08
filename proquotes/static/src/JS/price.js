@@ -178,7 +178,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 				var inputs = node.getElementsByTagName("input");
 				if (inputs.length > 0) {
-					console.log(inputs[0])
+					// console.log(inputs[0])
 					if (inputs[0].type == "checkbox") {
 						if (inputs[0].checked != true) {
 							continue;
@@ -186,9 +186,22 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				rentalEstimateTotal += 12 * months * price;
-				rentalEstimateTotal += 4 * weeks * price;
-				rentalEstimateTotal += 1 * days * price;
+				console.log("Rental Estimate Total" + rentalEstimateTotal)
+				var rentalEstimateSubTotal = 0;
+				rentalEstimateSubTotal += 1 * days * price;
+				if(rentalEstimateSubTotal > 4 * price) {
+					console.log(rentalEstimateSubTotal)
+					console.log(price * 4)
+					rentalEstimateSubTotal = 4 * price
+				}
+				rentalEstimateSubTotal += 4 * weeks * price;
+				if(rentalEstimateSubTotal > 12 * price) {
+					console.log(rentalEstimateSubTotal)
+					console.log(price * 12)
+					rentalEstimateSubTotal = 12 * price
+				}
+				rentalEstimateSubTotal += 12 * months * price;
+				rentalEstimateTotal += rentalEstimateSubTotal
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
