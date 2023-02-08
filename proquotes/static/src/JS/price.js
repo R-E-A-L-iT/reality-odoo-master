@@ -187,19 +187,21 @@ odoo.define("proquotes.price", function (require) {
 				}
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				console.log("Rental Estimate Total" + rentalEstimateTotal)
-				rentalEstimateTotal += 1 * days * price;
-				if(rentalEstimateTotal > 4 * price) {
-					console.log(rentalEstimateTotal)
+				var rentalEstimateSubTotal = 0;
+				rentalEstimateSubTotal += 1 * days * price;
+				if(rentalEstimateSubTotal > 4 * price) {
+					console.log(rentalEstimateSubTotal)
 					console.log(price * 4)
-					rentalEstimateTotal = 4 * price
+					rentalEstimateSubTotal = 4 * price
 				}
-				rentalEstimateTotal += 4 * weeks * price;
-				if(rentalEstimateTotal > 12 * price) {
-					console.log(rentalEstimateTotal)
+				rentalEstimateSubTotal += 4 * weeks * price;
+				if(rentalEstimateSubTotal > 12 * price) {
+					console.log(rentalEstimateSubTotal)
 					console.log(price * 12)
-					rentalEstimateTotal = 12 * price
+					rentalEstimateSubTotal = 12 * price
 				}
-				rentalEstimateTotal += 12 * months * price;
+				rentalEstimateSubTotal += 12 * months * price;
+				rentalEstimateTotal += rentalEstimateSubTotal
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
