@@ -186,9 +186,15 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				rentalEstimateTotal += 12 * months * price;
-				rentalEstimateTotal += 4 * weeks * price;
 				rentalEstimateTotal += 1 * days * price;
+				if(rentalEstimateTotal > 4 * price) {
+					rentalEstimateTotal = 4 * price
+				}
+				rentalEstimateTotal += 4 * weeks * price;
+				if(rentalEstimateTotal > 12 * price) {
+					rentalEstimateTotal = 12 * price
+				}
+				rentalEstimateTotal += 12 * months * price;
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
