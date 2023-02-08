@@ -178,7 +178,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 				var inputs = node.getElementsByTagName("input");
 				if (inputs.length > 0) {
-					console.log(inputs[0])
+					// console.log(inputs[0])
 					if (inputs[0].type == "checkbox") {
 						if (inputs[0].checked != true) {
 							continue;
@@ -186,7 +186,7 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				console.log(rentalEstimateTotal)
+				console.log("Rental Estimate Total" + rentalEstimateTotal)
 				rentalEstimateTotal += 1 * days * price;
 				if(rentalEstimateTotal > 4 * price) {
 					console.log(rentalEstimateTotal)
