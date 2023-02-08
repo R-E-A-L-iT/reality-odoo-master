@@ -188,10 +188,14 @@ odoo.define("proquotes.price", function (require) {
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				rentalEstimateTotal += 1 * days * price;
 				if(rentalEstimateTotal > 4 * price) {
+					console.log(rentalEstimateTotal)
+					console.log(price * 4)
 					rentalEstimateTotal = 4 * price
 				}
 				rentalEstimateTotal += 4 * weeks * price;
 				if(rentalEstimateTotal > 12 * price) {
+					console.log(rentalEstimateTotal)
+					console.log(price * 12)
 					rentalEstimateTotal = 12 * price
 				}
 				rentalEstimateTotal += 12 * months * price;
