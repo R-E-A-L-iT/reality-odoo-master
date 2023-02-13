@@ -39,4 +39,5 @@ class stock(models.Model):
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
+        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
