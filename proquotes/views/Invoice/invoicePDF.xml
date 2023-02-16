@@ -71,6 +71,8 @@
 						<span t-field="o.partner_shipping_id.country_id.name" />
 						<br />
 						<span t-field="o.partner_shipping_id.phone" />
+						<br />
+						<span t-out="o.with_context(lang=o.env.context.get('lang'))" />
 					</td>
 				</table>
 			</div>
