@@ -379,10 +379,10 @@
 			</div>
 			<div t-if="'abtech' in sale_order.company_id.name.lower()">
 				<t t-if="clang == 'en_CA' or clang == 'en_US'">
-					<span>R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
+					<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
 				</t>
 				<t t-elif="clang == 'fr_CA'">
-					<span>R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
+					<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
 				</t>
 			</div>
 			<t t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
