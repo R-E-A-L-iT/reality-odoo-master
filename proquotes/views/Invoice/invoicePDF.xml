@@ -31,7 +31,7 @@
 
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
 				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+					<span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Credit Note</span>
