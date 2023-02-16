@@ -56,6 +56,7 @@
         'views/Other/deliverPDF.xml',
         'views/Other/pdf_boxed.xml',
         'views/Other/section_name.xml',
+        'views/Other/extenal_layout.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/PO/PO_Frontend.xml',
