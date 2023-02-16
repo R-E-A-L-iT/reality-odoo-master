@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<odoo>
-    <template id="web_layout" name="Web Layout" inherit_id="web.external_layout" priority="17">
-        <xpath expr="//t" position="after">
-            <!-- <t t-set="lang" t-value="o.env.context.get('lang')" /> -->
-        </xpath>
-    </template>
-</odoo>
