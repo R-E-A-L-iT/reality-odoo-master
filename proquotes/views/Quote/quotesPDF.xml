@@ -295,6 +295,17 @@
 				<t t-set="currency_label" t-else="" t-value="doc.currency_id.name" />
 				<span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
 				<span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label" />. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.</span>
+
+				<t t-if="'abtech' in doc.company_id.name.lower()">
+					<br />
+					<br />
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
+					</t>
+					<t t-elif="clang == 'fr_CA'">
+						<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
+					</t>
+				</t>
 			</div>
 			<div>
 				<h1>Customer Acceptance</h1>
