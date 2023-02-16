@@ -3,7 +3,7 @@
 <odoo>
     <template id="layout" name="Web Layout" inherit_id="web.external_layout">
         <xpath expr="//t[1]" position="after">
-            <t t-set="lang" t-value="o.env.context.get('lang')" />
+            <!-- <t t-set="lang" t-value="o.env.context.get('lang')" /> -->
         </xpath>
     </template>
 </odoo>
