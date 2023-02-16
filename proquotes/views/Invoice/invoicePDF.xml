@@ -14,7 +14,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
 			<!-- <t t-set="lang" t-value="o.env.context.get('lang')" /> -->
-			<t t-set="lang" t-value="'en_CA'" />
+			<t t-set="lang" t-value="o.env.context.get('lang')" />
 		</xpath>
 		<xpath expr="//h2" position="replace">
 			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
