@@ -13,7 +13,7 @@
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<xpath expr="//t[@t-value=&quot;o.with_context(lang=lang)&quot;]" position="replace">
-			<t t-set="o" t-value="o.with_context(o.env.context.get(lang='lang')" />
+			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
 		</xpath>
 		<xpath expr="//h2" position="replace">
 			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
