@@ -6,11 +6,11 @@
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
 		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
-			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.lang)" />
+			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
 		</xpath>
 
 		<xpath expr="//table/thead" position="replace">
-			<t t-set="clang" t-value="doc.env.context.lang" />
+			<t t-set="clang" t-value="doc.env.context.get('lang')" />
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
