@@ -14,7 +14,6 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<xpath expr="//t[@t-value=&quot;o.with_context(lang=lang)&quot;]" position="replace">
 			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
-			<t t-set="o" t-value="none" />
 		</xpath>
 		<xpath expr="//h2" position="replace">
 			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
@@ -61,6 +60,7 @@
 						<br />
 						<span t-field="o.partner_id.phone" />
 						<br />
+						<span t-out="o" />
 					</td>
 					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
 						<h5 style="color: #db0d0d;">Ship To</h5>
