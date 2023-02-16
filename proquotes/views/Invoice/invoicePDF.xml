@@ -14,6 +14,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<xpath expr="//t[@t-value=&quot;o.with_context(lang=lang)&quot;]" position="replace">
 			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
+			<t t-set="o" t-value="none" />
 		</xpath>
 		<xpath expr="//h2" position="replace">
 			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
@@ -71,8 +72,6 @@
 						<span t-field="o.partner_shipping_id.country_id.name" />
 						<br />
 						<span t-field="o.partner_shipping_id.phone" />
-						<br />
-						<span t-out="o.env.context.get('lang')" />
 					</td>
 				</table>
 			</div>
