@@ -14,6 +14,7 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
+			<t t-set="clang" t-value="lang" />
 			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
 		</xpath>
 		<xpath expr="//h2" position="replace">
@@ -29,7 +30,7 @@
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
-				<h2 style="color: #db0d0d;">
+				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
