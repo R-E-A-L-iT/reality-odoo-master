@@ -298,6 +298,7 @@
 
 				<t t-if="'abtech' in doc.company_id.name.lower()">
 					<br />
+					<br />
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
 					</t>
