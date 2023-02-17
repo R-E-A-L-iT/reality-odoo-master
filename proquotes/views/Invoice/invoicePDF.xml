@@ -89,6 +89,14 @@
 			</div>
 		</xpath>
 
+		<xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
+
+		</xpath>
+
+		<xpath expr="//div[@name=&quot;due_date&quot;]/strong" position="replace">
+
+		</xpath>
+
 		<xpath expr="//p[@name=&quot;payment_communication&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication"> Please use the following communication for your payment: <b>
