@@ -151,7 +151,6 @@
 						<br />
 						<span>Transit: 33201, Institution: 001, N ° de Compte.: 1986 858</span>
 					</p>
-					<p t-out="clang" />
 				</div>
 				<div></div>
 			</t>
@@ -172,7 +171,6 @@
 						<br />
 						<span>Numéro de routage.: 071025661, N ° de Compte.: 3875473</span>
 					</p>
-					<p t-out="clang" />
 				</div>
 			</t>
 			<t t-set="footer" t-value="o.footer" />
