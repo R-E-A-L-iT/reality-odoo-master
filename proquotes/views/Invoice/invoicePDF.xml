@@ -137,12 +137,19 @@
 			<t t-if="o.company_id.id == 15">
 				<br />
 				<div id="bank-info">
-					<p>
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 						<br />
 						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
 						<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
+					</p>
+					<p t-elif="clang == 'fr_CA'">
+						<span>Infos bancaires pour Solutions R-E-A-L.iT</span>
+						<br />
+						<span>BMO Vaudreuil: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
+						<br />
+						<span>Transit: 33201, Institution: 001, N ° de Compte.: 1986 858</span>
 					</p>
 				</div>
 				<div></div>
@@ -150,12 +157,19 @@
 			<t t-if="o.company_id.id == 3">
 				<br />
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-					<p>
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
 						<br />
 						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
 						<span>Routing No.: 071025661, Account No.: 3875473</span>
+					</p>
+					<p t-elif="clang == 'fr_CA">
+						<span>Infos bancaires pour R-E-A-L.iT U.S. Inc.</span>
+						<br />
+						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
+						<br />
+						<span>Numéro de routage.: 071025661, N ° de Compte.: 3875473</span>
 					</p>
 				</div>
 			</t>
