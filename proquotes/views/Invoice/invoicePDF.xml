@@ -89,13 +89,15 @@
 			</div>
 		</xpath>
 
-		<xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
-
+		<!-- <xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'"></strong>
+			<strong t-if="clang == 'fr_CA'"></strong>
 		</xpath>
 
 		<xpath expr="//div[@name=&quot;due_date&quot;]/strong" position="replace">
-
-		</xpath>
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'"></strong>
+			<strong t-if="clang == 'fr_CA'"></strong>
+		</xpath> -->
 
 		<xpath expr="//p[@name=&quot;payment_communication&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
