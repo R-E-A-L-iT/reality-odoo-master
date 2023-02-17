@@ -151,6 +151,7 @@
 						<br />
 						<span>Transit: 33201, Institution: 001, N ° de Compte.: 1986 858</span>
 					</p>
+					<p t-out="clang" />
 				</div>
 				<div></div>
 			</t>
