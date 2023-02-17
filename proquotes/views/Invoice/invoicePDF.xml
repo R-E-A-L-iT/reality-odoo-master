@@ -171,6 +171,7 @@
 						<br />
 						<span>Numéro de routage.: 071025661, N ° de Compte.: 3875473</span>
 					</p>
+					<p t-out="clang" />
 				</div>
 			</t>
 			<t t-set="footer" t-value="o.footer" />
