@@ -61,7 +61,7 @@
 				</style>
 				<table id="addressTable" style="border-style: collapse !important;" border="0">
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 t-if="(clang == 'en_CA' or clang == 'en_US') or o.partner_id.id != o.partner_shipping_id.id" style="color: #db0d0d">Bill To</h5>
+						<h5 t-if="(clang == 'en_CA' or clang == 'en_US') and o.partner_id.id != o.partner_shipping_id.id" style="color: #db0d0d">Bill To</h5>
 						<h5 t-elif="clang == 'fr_CA' and o.partner_id.id != o.partner_shipping_id.id" style="color: #db0d0d">Facturé à</h5>
 						<span t-field="o.partner_id.street" />
 						<br />
@@ -74,7 +74,8 @@
 						<br />
 					</td>
 					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
+						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
+						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Envoyez à</h5>
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
 						<span t-if="o.partner_shipping_id.city != False" t-out="o.partner_shipping_id.city + ','" />
