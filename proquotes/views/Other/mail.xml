@@ -138,9 +138,9 @@
 					</tr>
 					<!-- POWERED BY -->
 					<tr style="background-color: #fff">
-						<td align="center" style="min-width:590px;">
+						<td align="center">
 							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;color: #9B9B9D; padding: 8px; border-collapse:separate;">
-								<tbody>
+								<tbody style="min-width:590px;">
 									<tr t-if="record.footer != None">
 										<td>
 											<t t-set="footer" t-value="record.footer" />
