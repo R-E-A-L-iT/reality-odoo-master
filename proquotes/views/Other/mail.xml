@@ -131,7 +131,7 @@
 
 	<template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
 		<xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
-			<t t-if="record.state == 'draft' or record.state == 'sent'" t-set="access_name">View Quotation</t>
+			<t t-if="record.state == 'draft' or record.state == 'sent'" t-set="access_name">View Quotation TEST</t>
 			<t t-else="" t-set="access_name">View Purchase Order</t>
 		</xpath>
 	</template>
