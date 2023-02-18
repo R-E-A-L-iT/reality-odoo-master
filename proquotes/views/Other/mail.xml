@@ -84,7 +84,7 @@
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 																<t t-if="record.partner_id.lang != 'fr_CA'">
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
-																		View Quotation Test
+																		View Quotation
 																	</a>
 
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
