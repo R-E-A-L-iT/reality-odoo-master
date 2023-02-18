@@ -98,6 +98,44 @@
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Due Date:</strong>
 			<strong t-if="clang == 'fr_CA'">Date d'échéance</strong>
 		</xpath>
+
+		<xpath expr="//th[@name=&quot;th_description&quot;]//span" position="replace">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
+				Description
+			</span>
+			<span t-if="clang == 'fr_CA'">
+				Description
+			</span>
+		</xpath>
+
+
+		<xpath expr="//th[@name=&quot;th_quantity&quot;]//span" position="replace">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
+				Quantity
+			</span>
+			<span t-if="clang == 'fr_CA'">
+				QUANTITÉ
+			</span>
+		</xpath>
+
+		<xpath expr="//th[@name=&quot;th_priceunit&quot;]//span" position="replace">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
+				UNIT PRICE
+			</span>
+			<span t-if="clang == 'fr_CA'">
+				PRIX UNITAIRE
+			</span>
+		</xpath>
+
+		<xpath expr="//th[@name=&quot;th_subtotal&quot;]//span" position="replace">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'" groups="account.group_show_line_subtotals_tax_excluded">
+				AMOUNT
+			</span>
+			<span t-if="clang == 'fr_CA'" groups="account.group_show_line_subtotals_tax_excluded">
+				MOMONT
+			</span>
+		</xpath>
+
 		<xpath expr="//p[@name=&quot;payment_communication&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication"> Please use the following communication for your payment: <b>
