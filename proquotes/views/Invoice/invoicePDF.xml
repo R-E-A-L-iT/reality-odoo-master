@@ -205,19 +205,19 @@
 			<t t-if="o.company_id.id == 15">
 				<br />
 				<div id="bank-info">
-					<p t-if="clang == 'en_ca' or clang == 'en_us'">
-						<span>bank info for wire transfers to r-e-a-l.it solutions</span>
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 						<br />
-						<span>bmo vaudreuil branch: 580 av. saint-charles, vaudreuil-dorion, qc j7v 8h2</span>
+						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
-						<span>transit: 33201, institution: 001, account no.: 1986 858</span>
+						<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
 					</p>
-					<p t-elif="clang == 'fr_ca'">
-						<span>infos bancaires pour solutions r-e-a-l.it</span>
+					<p t-elif="clang == 'fr_CA'">
+						<span>Infos bancaires pour Solutions R-E-A-L.iT</span>
 						<br />
-						<span>bmo vaudreuil: 580 av. saint-charles, vaudreuil-dorion, qc j7v 8h2</span>
+						<span>BMO Vaudreuil: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
-						<span>transit: 33201, institution: 001, n ° de compte.: 1986 858</span>
+						<span>Transit: 33201, Institution: 001, N ° de Compte.: 1986 858</span>
 					</p>
 				</div>
 				<div></div>
@@ -225,19 +225,19 @@
 			<t t-if="o.company_id.id == 3">
 				<br />
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-					<p t-if="clang == 'en_ca' or clang == 'en_us'">
-						<span>bank info for wire transfers to r-e-a-l.it u.s. inc.</span>
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
 						<br />
-						<span>bmo harris bank n.a.: p.o. box 755, chicago, il 60690</span>
+						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
-						<span>routing no.: 071025661, account no.: 3875473</span>
+						<span>Routing No.: 071025661, Account No.: 3875473</span>
 					</p>
-					<p t-elif="clang == 'fr_ca'">
-						<span>infos bancaires pour r-e-a-l.it u.s. inc.</span>
+					<p t-elif="clang == 'fr_CA'">
+						<span>Infos bancaires pour R-E-A-L.iT U.S. Inc.</span>
 						<br />
-						<span>bmo harris bank n.a.: p.o. box 755, chicago, il 60690</span>
+						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
-						<span>numéro de routage.: 071025661, n ° de compte.: 3875473</span>
+						<span>Numéro de routage.: 071025661, N ° de Compte.: 3875473</span>
 					</p>
 				</div>
 			</t>
