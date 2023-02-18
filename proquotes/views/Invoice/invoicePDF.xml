@@ -202,11 +202,14 @@
 			<br />
 		</xpath>
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
+			<div>
+				<p t-out="clang" />
+			</div>
 			<t t-if="o.company_id.id == 15">
 				<br />
 				<div id="bank-info">
 					<p t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions TEST</span>
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 						<br />
 						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
