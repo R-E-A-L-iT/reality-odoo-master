@@ -99,6 +99,11 @@
 			<strong t-if="clang == 'fr_CA'">Date d'échéance</strong>
 		</xpath>
 
+		<xpath expr="//div[@name=&quot;origin&quot;]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Source:</strong>
+			<strong t-if="clang == 'fr_CA'">Origine:</strong>
+		</xpath>
+
 		<xpath expr="//th[@name=&quot;th_description&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Description
@@ -189,13 +194,12 @@
 				margin-bottom: 0px !important;
 				}
 			</style>
-			<t t-if="str(line.name) != str(line.product_id.description_sale)">
-				<span class="description-root">
-					<span t-raw="line.name" />
-				</span>
-			</t>
+			<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)"> -->
+			<span class="description-root">
+				<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
+			</span>
+			<!-- </t> -->
 			<br />
-			<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
 		</xpath>
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
 			<t t-if="o.company_id.id == 15">
