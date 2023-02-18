@@ -27,7 +27,7 @@
 			</style>
 			<div style="background-color:#2d2F32" />
 
-			<table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;font-family:Verdana, Arial,sans-serif; color: white; width: 100%; border-collapse:separate; background-color: #2D2F32">
+			<table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;font-family:Verdana, Arial,sans-serif; color: white; width: 100%; border-collapse:separate; ">
 
 				<tbody>
 					<tr>
@@ -139,7 +139,7 @@
 					<!-- POWERED BY -->
 					<tr>
 						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px; color: #9B9B9D; border-collapse:separate; background-color: #fff;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px; color: #9B9B9D; padding: 8px; border-collapse:separate; background-color: #fff;">
 								<tbody style="min-width:590px; background-color: #fff;">
 									<tr t-if="record.footer != None">
 										<td>
