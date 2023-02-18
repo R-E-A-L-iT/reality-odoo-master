@@ -114,23 +114,7 @@
 										</td>
 									</tr>
 									<!-- FOOTER -->
-									<tr t-if="record.footer != None">
-										<td>
-											<t t-set="footer" t-value="record.footer" />
-											<img id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</td>
-					</tr>
-					<!-- POWERED BY -->
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding:16px;background-color: #FFFFFF; color: #9B9B9D; border-collapse:separate;">
-								<!-- <table border="0" cellpadding="0" cellspacing="0" width="590" style="background-color: #fff; min-width:590px; color: #9B9B9D; padding: 8px; border-collapse:separate;"> -->
-								<tbody width="590px">
-									<tr t-if="record.footer != None">
+									<tr t-if="record.footer != None" style="background-color: #fff;">
 										<td>
 											<t t-set="footer" t-value="record.footer" />
 											<img id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
