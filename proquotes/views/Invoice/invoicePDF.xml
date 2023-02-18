@@ -206,7 +206,7 @@
 				<br />
 				<div id="bank-info">
 					<p t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
+						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions TEST</span>
 						<br />
 						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
