@@ -140,7 +140,7 @@
 					<tr>
 						<td align="center" style="background-color: #fff">
 							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;color: #9B9B9D; padding: 8px; border-collapse:separate;">
-								<tbody style="min-width:590px;">
+								<tbody style="min-width:590px; background-color: #fff">
 									<tr t-if="record.footer != None">
 										<td>
 											<t t-set="footer" t-value="record.footer" />
