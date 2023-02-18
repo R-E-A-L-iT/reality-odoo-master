@@ -177,12 +177,12 @@
 						<td align="center" style="min-width:590px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;color: #9B9B9D; padding: 8px; border-collapse:separate;">
 								<tbody>
-									<tr>
+									<!-- <tr>
 										<td style="text-align:center;font-size: 13px; color: #FFFFF">
 											<strong> R-E-A-L.iT<span style="color:#db0d0d">/</span>
 											</strong>
 										</td>
-									</tr>
+									</tr> -->
 									<tr t-if="record.footer != None">
 										<td>
 											<t t-set="footer" t-value="record.footer" />
