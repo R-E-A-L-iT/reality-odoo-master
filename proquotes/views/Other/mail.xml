@@ -139,7 +139,7 @@
 					<!-- POWERED BY -->
 					<tr>
 						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px; color: #9B9B9D; padding: 8px; border-collapse:separate;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="background-color: #fff; min-width:590px; color: #9B9B9D; padding: 8px; border-collapse:separate;">
 								<tbody with="590px" style="min-width:590px; background-color: #fff;">
 									<tr t-if="record.footer != None">
 										<td>
