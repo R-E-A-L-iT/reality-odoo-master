@@ -202,7 +202,7 @@
 			<br />
 		</xpath>
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
-			<!-- <t t-if="o.company_id.id == 15">
+			<t t-if="o.company_id.id == 15">
 				<br />
 				<div id="bank-info">
 					<p t-if="clang == 'en_ca' or clang == 'en_us'">
@@ -240,7 +240,7 @@
 						<span>numéro de routage.: 071025661, n ° de compte.: 3875473</span>
 					</p>
 				</div>
-			</t> -->
+			</t>
 			<t t-set="footer" t-value="o.footer" />
 		</xpath>
 	</template>
