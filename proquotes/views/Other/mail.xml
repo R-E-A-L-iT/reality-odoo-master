@@ -185,7 +185,7 @@
 									</tr>
 									<tr t-if="record.footer != None">
 										<td>
-											<strong t-out="record.footer" />
+											<img id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 										</td>
 									</tr>
 								</tbody>
