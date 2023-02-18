@@ -84,7 +84,7 @@
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 																<t t-if="record.partner_id.lang != 'fr_CA'">
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
-																		View Quotation
+																		View Quotation Test
 																	</a>
 
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
@@ -131,7 +131,7 @@
 
 	<template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
 		<xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
-			<t t-if="record.state == 'draft' or record.state == 'sent'" t-set="access_name">View Quotation TEST</t>
+			<t t-if="record.state == 'draft' or record.state == 'sent'" t-set="access_name">View Quotation</t>
 			<t t-else="" t-set="access_name">View Purchase Order</t>
 		</xpath>
 	</template>
