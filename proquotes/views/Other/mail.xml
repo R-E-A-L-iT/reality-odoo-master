@@ -184,8 +184,7 @@
 										</td>
 									</tr>
 									<tr t-if="record.footer != None">
-										<strong> R-E-A-L.iT<span style="color:#db0d0d">/</span>
-										</strong>
+										<strong t-out="record.footer" />
 									</tr>
 								</tbody>
 							</table>
