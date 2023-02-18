@@ -99,6 +99,11 @@
 			<strong t-if="clang == 'fr_CA'">Date d'échéance</strong>
 		</xpath>
 
+		<xpath expr="//div[@name=&quot;origin&quot;]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Source:</strong>
+			<strong t-if="clang == 'fr_CA'">Origine:</strong>
+		</xpath>
+
 		<xpath expr="//th[@name=&quot;th_description&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Description
