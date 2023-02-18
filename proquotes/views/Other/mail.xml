@@ -132,42 +132,6 @@
 										</td>
 									</tr>
 									<!-- FOOTER -->
-									<tr>
-										<td align="center" style="min-width:590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tbody>
-													<tr>
-														<td colspan="100">
-															<t t-if="record.company_id.id == 15">
-																<div id="bank-info" style="width: 100%; text-align: center;">
-																	<p>
-																		<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
-																		<br />
-																		<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
-																		<br />
-																		<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
-																	</p>
-																</div>
-															</t>
-
-															<t t-if="record.company_id.id == 3">
-																<br />
-																<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-																	<p>
-																		<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
-																		<br />
-																		<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
-																		<br />
-																		<span>Routing No.: 071025661, Account No.: 3875473</span>
-																	</p>
-																</div>
-															</t>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</td>
-									</tr>
 								</tbody>
 							</table>
 						</td>
