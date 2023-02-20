@@ -5,11 +5,11 @@
 		<div id="renewal-text">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Hardware CCP</strong>
-				<strong t-elif="clang == 'fr_CA'">CCP pour instrumunts</strong>
+				<strong t-elif="clang == 'fr_CA'">CCP pour Instruments</strong>
 			</h2>
 			<br />
 			<h4 t-if="clang ==  'en_CA' or clang == 'en_US'">WHY RENEW YOUR HARDWARE CCP?</h4>
-			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos CCP pour vos instruments?</h4>
+			<h4 t-elif="clang == 'fr_CA'">Pourquoi Renouveler vos CCP pour vos Instruments?</h4>
 
 			<div class="red-div" />
 			<p t-if="clang ==  'en_CA' or clang == 'en_US'" id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
@@ -35,10 +35,10 @@
 		<div id="renewal-text">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Software CCP</strong>
-				<strong t-elif="clang == 'fr_CA'">CCP pour logiciels</strong>
+				<strong t-elif="clang == 'fr_CA'">CCP pour Logiciels</strong>
 			</h2>
 			<h4 t-if="clang ==  'en_CA' or clang == 'en_US'">WHY RENEW YOUR SOFTWARE CCP?</h4>
-			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos CCP logiciel?</h4>
+			<h4 t-elif="clang == 'fr_CA'">Pourquoi Renouveler vos CCP Logiciel?</h4>
 			<div class="red-div" />
 			<p t-if="clang ==  'en_CA' or clang == 'en_US'">New features and bug fixes are constantly being worked on and updates to our software are available
 				every few months. It's also important to keep all your products up to date together as they may stop
@@ -58,10 +58,10 @@
 		<div id="renewal-text">
 			<h2>
 				<strong t-if="clang ==  'en_CA' or clang == 'en_US'">Software Subscriptions</strong>
-				<strong t-elif="clang == 'fr_CA'">Abonnements logiciels</strong>
+				<strong t-elif="clang == 'fr_CA'">Abonnements Logiciels</strong>
 			</h2>
 			<h4 t-if="clang ==  'en_CA' or clang == 'en_US'">WHY RENEW YOUR SOFTWARE SUBSCRIPTIONS?</h4>
-			<h4 t-elif="clang == 'fr_CA'">Pourquoi renouveler vos abonnements logiciel?</h4>
+			<h4 t-elif="clang == 'fr_CA'">Pourquoi Renouveler vos Abonnements Logiciel?</h4>
 			<div class="red-div" />
 			<p t-if="clang ==  'en_CA' or clang == 'en_US'"> New features and bug fixes are constantly being released and updates to our software are released several times a year. It is also important to keep all your products up to date together as they may stop working properly if some are renewed and others are not. A subscription gives you the possibility to be up to date and have access to the software at all times until the expiry of the subscription. If the product is not renewed, you lose access to this software on the expiration date. <br /> In the "Additional subscriptions" section, you can choose to add products and their quantities. In the “Existing subscriptions” section, you can choose whether or not to renew the products you already have. </p>
 			<p t-elif="clang == 'fr_CA'">De nouvelles fonctionnalités et corrections de bogues sont constamment mises au point et les mises à jour sont généralement disponibles 3-4 fois par année. Il est également important de garder votre instrument en bon état avec l'entretien et l'étalonnage. Certains de vos clients exigent même que vous ayez un certificat d'étalonnage récent pour prouver que votre instrument fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre instrument est en panne ou en réparation/étallonage.</p>
