@@ -73,7 +73,8 @@
 																<t t-set="share_url" t-value="is_online and record._get_share_url(redirect=True, signup_partner=True, share_token=True)" />
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 																<t t-if="record.partner_id.lang != 'fr_CA'">
-																	<a t-if="'sale.order' in str(record)" t-att-href="access_url" style="color:#db0d0d;"> View Quotation <t t-out="str(record)" />
+																	<a t-if="'sale.order' in str(record)" t-att-href="access_url" style="color:#db0d0d;">
+																		View Quotation
 																	</a>
 																	<a t-elif="'account.move' in str(record)" t-att-href=" access_url" style=" color:#db0d0d;">
 																		View Invoice
