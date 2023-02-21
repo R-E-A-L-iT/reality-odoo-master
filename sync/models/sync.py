@@ -951,8 +951,10 @@ class sync(models.Model):
         #######################################
         # GoogleSheet Section
         try:
-            catalog_gs = self.getListSkuGS(
-                psw, self._master_database_template_id)
+            db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            template_id = sheetsAPI.get_master_database_template_id(db_name)
+            catalog_gs = self.getListSkuGS(psw, template_id)
+            
         except Exception as e:
             _logger.info(
                 "Cleaning Sku job is interrupted with the following error : \n" + str(e))
