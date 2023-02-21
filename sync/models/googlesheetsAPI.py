@@ -31,7 +31,7 @@ class sheetsAPI(models.Model):
 
         # Dev Numbers Set Based on When Developer Joined
         _master_database_template_id_dev1 = "1UT2h8r8ut3tB4icPKLJwO6d6qfEr2Oca8Vv6po3yYEc"
-        _master_database_template_id_dev2 = "1PeClDoVPC7yx8C1d8ShQkz0AlUZrBYVwBJfYZKYzcIU"
+        _master_database_template_id_dev2 = "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
 
         # Return the proper GoogleSheet Template ID base on the environement
         if (_db_name == _db_name_prod):

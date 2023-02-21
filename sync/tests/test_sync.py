@@ -6,36 +6,37 @@ from odoo.tests import TransactionCase
 
 class TestModuleSync(TransactionCase):
 
+    ###################################
     def setUp(self):
         super(TestModuleSync, self).setUp()
         self.sync_model = self.env['sync.sync']
         self.sync_data = [
-            ['Sheet Name',      'Sheet Index',
-                'Model Type',   'Valid', 'Continue'],
-            ['Companies_',	    '10',           'Companies',    'TRUE', 'TRUE'],
-            ['Contacts_',       '20',           'Contacts',     'TRUE', 'TRUE'],
-            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE', 'TRUE'],
-            ['CCP_-1_',         '40',           'CCP',          'TRUE', 'TRUE'],
-            ['Products_',       '50.1',         'Products',     'TRUE', 'TRUE'],
-            ['CCP_-2_',         'sdf',          'CCP',          'TRUE', 'TRUE'],
+            ['Sheet Name',      'Sheet Index',  'Model Type',   'Valid', 'Continue'],
+            ['Companies_',	    '10',           'Companies',    'TRUE',  'TRUE'],
+            ['Contacts_',       '20',           'Contacts',     'TRUE',  'TRUE'],
+            ['Pricelist-1_',    '30',           'Pricelist',    'TRUE',  'TRUE'],
+            ['CCP_-1_',         '40',           'CCP',          'TRUE',  'TRUE'],
+            ['Products_',       '50.1',         'Products',     'TRUE',  'TRUE'],
+            ['CCP_-2_',         'sdf',          'CCP',          'TRUE',  'TRUE'],
             ['',                '',             '',             'FALSE', 'FALSE'],
             ['',                'Loading...',   '',             'FALSE', 'FALSE']
         ]
 
         self.sync_data_order_changed = [
             ['Sheet Name',      'Model Type',   'Valid', 'Sheet Index', 'Continue'],
-            ['Companies_',	    '11',           'TRUE', '10', 'TRUE'],
-            ['Contacts_',       '21',           'TRUE', '20', 'TRUE'],
-            ['Pricelist-1_',    '31',           'TRUE', '30', 'TRUE'],
-            ['CCP_-1_',         '41',           'TRUE', '40', 'TRUE'],
-            ['Products_',       '51.1',         'TRUE', '50.1', 'TRUE'],
-            ['CCP_-2_',         '60',           'TRUE', 'sdf', 'TRUE'],
-            ['',                '',             'FALSE', '', 'FALSE'],
-            ['',                '',             'FALSE', 'Loading...', 'FALSE']
+            ['Companies_',	    '11',           'TRUE',  '10',          'TRUE'],
+            ['Contacts_',       '21',           'TRUE',  '20',          'TRUE'],
+            ['Pricelist-1_',    '31',           'TRUE',  '30',          'TRUE'],
+            ['CCP_-1_',         '41',           'TRUE',  '40',          'TRUE'],
+            ['Products_',       '51.1',         'TRUE',  '50.1',        'TRUE'],
+            ['CCP_-2_',         '60',           'TRUE',  'sdf',         'TRUE'],
+            ['',                '',             'FALSE', '',            'FALSE'],
+            ['',                '',             'FALSE', 'Loading...',  'FALSE']
         ]
 
-    # def is_psw_format_good(self, psw):
 
+    ###################################
+    # def is_psw_format_good(self, psw):
     def test_is_psw_format_good(self):
         psw = {
             "key1": "value1",
@@ -55,6 +56,8 @@ class TestModuleSync(TransactionCase):
         result = self.sync_model.is_psw_format_good(psw)
         self.assertEqual(result, True)
 
+
+    ###################################
     # def getSheetIndex(self, sync_data, lineIndex):
     def test_getSheetIndex(self):
         # Assert that it return the right is value
@@ -87,6 +90,8 @@ class TestModuleSync(TransactionCase):
             self.sync_data_order_changed, 7)
         self.assertEqual(-1, result)
 
+
+    ###################################
     # def getColumnIndex (self, sheet, columnName):
     def test_getColumnIndex(self):
         # Assert that the method return the good data
@@ -98,8 +103,9 @@ class TestModuleSync(TransactionCase):
             self.sync_data, "Does not exists")
         self.assertEqual((result == -1), True)
 
-    # def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
 
+    ###################################
+    # def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
     def test_checkIfKeyExistInTwoDict(self):
         a = dict()
         b = dict()
@@ -129,8 +135,9 @@ class TestModuleSync(TransactionCase):
         self.assertEqual(result_bool, True)
         self.assertEqual(result_str == "3", True)
 
-    # def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
 
+    ###################################
+    # def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
     def test_checkOdooSyncDataTab(self):
 
         self.sync_bad_data = [
@@ -239,8 +246,9 @@ class TestModuleSync(TransactionCase):
             result = self.sync_model.checkOdooSyncDataTab(
                 self.sync_data_missing_continue)
 
-    # def getAllValueFromColumn(self, sheet, column_name):
 
+    ###################################
+    # def getAllValueFromColumn(self, sheet, column_name):
     def test_getAllValueFromColumn(self):
         sheet = [
             ['SKU', 	 'EN-Name', 'Valid', 'Continue'],
