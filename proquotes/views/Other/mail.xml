@@ -49,15 +49,14 @@
 														<td valign="top" style="font-size:13px;">
 															<div>
 																<t t-if="record.partner_id.lang != 'fr_CA'">
-																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																	<h1 t-if="record.state == 'draft' or record.state == 'sent' or 'account.move' in str(record)" style="color: black;">
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">PURCHASE ORDER
-																		Test
 																	</h1>
 																</t>
 																<t t-elif="record.partner_id.lang == 'fr_CA'">
-																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																	<h1 t-if="record.state == 'draft' or record.state == 'sent' or 'account.move' in str(record)" style="color: black;">
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">BON DE COMMANDE</h1>
