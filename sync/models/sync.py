@@ -865,20 +865,8 @@ class sync(models.Model):
 
             # main purpose
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
-            _logger.info("-------------------------------------------")
-            _logger.info("-------------------------------------------")
-            _logger.info("-------------------------------------------")
-            _logger.info("sku_dict")
-            _logger.info(str(sku_dict))
-
-            _logger.info("-------------------------------------------")
-            _logger.info("-------------------------------------------")
-            _logger.info("sku_catalog_gs")
-            _logger.info(str(sku_catalog_gs))
             result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
-            _logger.info("-------------------------------------------")
-            _logger.info("-------------------------------------------")
-            _logger.info("-------------------------------------------")
+
             if (result):
                 error_msg = (
                     "The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
@@ -898,7 +886,6 @@ class sync(models.Model):
     # Output
     #   columnIndex: -1 if could not find it
     #                > 0 if a column name exist
-
     def getColumnIndex(self, sheet, columnName):
         header = sheet[0]
         columnIndex = 0
@@ -910,6 +897,7 @@ class sync(models.Model):
             columnIndex += 1
 
         return -1
+
 
     # Method the return a list of product.id need to be archived.
     # The list include all product.id that does not have a prodcut.sku, or that the string or product.sku is False.
@@ -1066,3 +1054,35 @@ class sync(models.Model):
         _logger.info("sale.id: " + str(sale.id))
         _logger.info("sale.name: " + str(sale.name))
         _logger.info("---------------")
+
+    
+    # Method to identify all product with the same name
+    def getProductsWithSameName(self):
+        productNamesInDouble = []
+        products = self.env['product.template'].search([])
+
+        _logger.info("------------------------------------------------------------------")
+        _logger.info("---------------  getProductsWithSameName")        
+        _logger.info("---------------  getProductsWithSameName: Number of product to check: " + str(len(products)))        
+       
+        #For each product, 
+        for product in products:
+            if (product.active == False):
+                continue
+            
+            #checking if their is other products with the same name.
+            doubled_names = self.env['product.template'].search(
+                [('name', '=', product.name)])
+            if (len(doubled_names) > 0):
+                id_list = []
+                _logger.info("--------------- product.name: " + str(product.name) + " is in double " + str(len(doubled_names)) + " times.") 
+                #if yes, adding all the product id founded and the name in a list
+                for doubled_name in doubled_names:
+                    _logger.info("--------------- id: " + str(doubled_name.id)) 
+                    id_list.append(doubled_name.id)
+
+                productNamesInDouble.append((str(product.name), id_list))
+        
+        
+            
+            
