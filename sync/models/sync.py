@@ -1073,7 +1073,7 @@ class sync(models.Model):
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
                 [('name', '=', product.name)])
-            if (len(doubled_names) > 0):
+            if (len(doubled_names) > 1):
                 id_list = []
                 _logger.info("--------------- product.name: " + str(product.name) + " is in double " + str(len(doubled_names)) + " times.") 
                 #if yes, adding all the product id founded and the name in a list
