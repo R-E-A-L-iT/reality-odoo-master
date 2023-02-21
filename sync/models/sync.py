@@ -1074,11 +1074,10 @@ class sync(models.Model):
             doubled_names = self.env['product.template'].search(
                 [('name', '=', product.name)])
             if (len(doubled_names) > 1):
-                id_list = []
-                _logger.info("--------------- product.name: " + str(product.name) + " is in double " + str(len(doubled_names)) + " times.") 
+                id_list = []                
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
-                    _logger.info("--------------- id: " + str(doubled_name.id)) 
+                    _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
                     id_list.append(doubled_name.id)
 
                 productNamesInDouble.append((str(product.name), id_list))
