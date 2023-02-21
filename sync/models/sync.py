@@ -1059,6 +1059,7 @@ class sync(models.Model):
     # Method to identify all product with the same name
     def getProductsWithSameName(self):
         productNamesInDouble = []
+        names_identified = dict()
         products = self.env['product.template'].search([])
 
         _logger.info("------------------------------------------------------------------")
@@ -1069,10 +1070,16 @@ class sync(models.Model):
         for product in products:
             if (product.active == False):
                 continue
-            
+
+            # Check if the product is already identfied
+            if (product.name in names_identified):
+                continue            
+            names_identified[product.name] = True
+
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
-                [('name', '=', product.name)])
+                [('name', '=', product.name)])           
+
             if (len(doubled_names) > 1):
                 id_list = []                
                 #if yes, adding all the product id founded and the name in a list
