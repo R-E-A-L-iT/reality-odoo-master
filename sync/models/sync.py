@@ -24,7 +24,6 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
-from .bookademo import bookademo
 from .ccp import sync_ccp
 from .googlesheetsAPI import sheetsAPI
 from .website import syncWeb
@@ -980,8 +979,8 @@ class sync(models.Model):
         _logger.info("to_archive length: " + str(len(to_archive)))
         return to_archive
 
-    # Method to clean all sku that are pulled by self.getSkuToArchive
 
+    # Method to clean all sku that are pulled by self.getSkuToArchive
     def cleanSku(self, psw=None):
         to_archive_list = self.getSkuToArchive(psw)
         to_archive_dict = dict()
@@ -1024,10 +1023,10 @@ class sync(models.Model):
         _logger.info("number of sales with archived product: " +
                      str(sales_with_archived_product))
 
+
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
-
     def log_product_from_sale(self, sale_name):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search(
@@ -1050,45 +1049,6 @@ class sync(models.Model):
 
         _logger.info("Listing all product from: END")
 
-    # Method that show a unknonw result.
-    # the product.id 558038 is not the same in the querry that in the Product interface in Odoo when filter by ID
-
-    def unknownProduct(self):
-        product = self.env['product.product'].search(
-            [('id', '=', 558038)])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.template'].search(
-            [('id', '=', 558038)])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.product'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.template'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        # self.log_product_from_sale("QUOTATION-2022-12-06-229")
-        # self.log_product_from_sale("QUOTATION-2022-11-05-070")
-        return
 
     # query to find the QUOTATION-2023-01-05-007, id 552
     def searchQuotation(self):
@@ -1098,15 +1058,3 @@ class sync(models.Model):
         _logger.info("sale.id: " + str(sale.id))
         _logger.info("sale.name: " + str(sale.name))
         _logger.info("---------------")
-
-    # methode to test the email submiting information
-    def tbookademo(self):
-        test_instance = bookademo(self)
-        test_instance.submitEmail(
-            "John Doe",
-            "1-111-111-1111",
-            "email@email.com",
-            "TheBestCompany",
-            "TheBestCompany.com",
-            "Helping thing",
-            1)
