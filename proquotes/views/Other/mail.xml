@@ -77,7 +77,7 @@
 																		View Quotation
 																	</a>
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
-																		View Purchase Order
+																		View Purchase Order Test
 																	</a>
 																</t>
 																<t t-if="record.partner_id.lang == 'fr_CA'">
