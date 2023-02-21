@@ -24,7 +24,6 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 
 from .pricelist import sync_pricelist
-from .bookademo import bookademo
 from .ccp import sync_ccp
 from .googlesheetsAPI import sheetsAPI
 from .website import syncWeb
@@ -699,6 +698,7 @@ class sync(models.Model):
 
         return sku_dict
 
+
     # Check if a all key unique in two dictionnary
     # Input
     #   dict_small: the smallest dictionnary
@@ -707,7 +707,6 @@ class sync(models.Model):
     #   1st:    True: There is at least one key that exists in both dictionary
     #           False: All key are unique
     #   2nd:    The name of the duplicated Sku
-
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
         for sku in dict_small.keys():
             if sku in dict_big.keys():
@@ -717,6 +716,7 @@ class sync(models.Model):
                 return True, errorMsg
         return False, ""
 
+
     # Method to get the ODOO_SYNC_DATA column index
     # Exception
     #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
@@ -725,7 +725,6 @@ class sync(models.Model):
     # Output
     #   result: A dictionnary:  Key: named of the column
     #                           Value: the index number of that column.
-
     def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
         odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
             odoo_sync_data_sheet, "Sheet Name")
@@ -773,6 +772,7 @@ class sync(models.Model):
 
         return result
 
+
     # Get all SKU from the model type 'Products' and 'Pricelist'
     # Exception
     #   MissingSheetError:  A sheet is missing
@@ -783,7 +783,6 @@ class sync(models.Model):
     #   template_id:    GoogleSheet TemplateID
     # Output
     #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
-
     def getListSkuGS(self, psw, template_id):
         sku_catalog_gs = dict()
 
@@ -796,13 +795,11 @@ class sync(models.Model):
 
         # check ODOO_SYNC_DATA tab
         result_dict = self.checkOdooSyncDataTab(sync_data)
-
-        odoo_sync_data_sheet_name_column_index = result_dict['odoo_sync_data_sheet_name_column_index']
-        odoo_sync_data_sheet_index_column_index = result_dict[
-            'odoo_sync_data_sheet_index_column_index']
-        odoo_sync_data_model_type_column_index = result_dict['odoo_sync_data_model_type_column_index']
-        odoo_sync_data_valid_column_index = result_dict['odoo_sync_data_valid_column_index']
-        odoo_sync_data_continue_column_index = result_dict['odoo_sync_data_continue_column_index']
+        odoo_sync_data_sheet_name_column_index  = result_dict['odoo_sync_data_sheet_name_column_index']
+        odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
+        odoo_sync_data_model_type_column_index  = result_dict['odoo_sync_data_model_type_column_index']
+        odoo_sync_data_valid_column_index       = result_dict['odoo_sync_data_valid_column_index']
+        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']
 
         while (i < len(sync_data)):
             i += 1
@@ -816,16 +813,12 @@ class sync(models.Model):
             refered_sheet_valid_column_index = -1
             refered_sheet_sku_column_index = -1
 
-            sheet_name = str(
-                sync_data[i][odoo_sync_data_sheet_name_column_index])
+            sheet_name = str    (sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
-            modelType = str(
-                sync_data[i][odoo_sync_data_model_type_column_index])
-            valid_value = (
-                str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
-            continue_value = (
-                str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
+            modelType = str     (sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value =       (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
+            continue_value =    (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
             # Validation for the current loop
             if (not continue_value):
@@ -872,8 +865,8 @@ class sync(models.Model):
 
             # main purpose
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
-            result, sku_in_double = self.checkIfKeyExistInTwoDict(
-                sku_dict, sku_catalog_gs)
+            result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
+
             if (result):
                 error_msg = (
                     "The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
@@ -893,7 +886,6 @@ class sync(models.Model):
     # Output
     #   columnIndex: -1 if could not find it
     #                > 0 if a column name exist
-
     def getColumnIndex(self, sheet, columnName):
         header = sheet[0]
         columnIndex = 0
@@ -905,6 +897,7 @@ class sync(models.Model):
             columnIndex += 1
 
         return -1
+
 
     # Method the return a list of product.id need to be archived.
     # The list include all product.id that does not have a prodcut.sku, or that the string or product.sku is False.
@@ -952,8 +945,10 @@ class sync(models.Model):
         #######################################
         # GoogleSheet Section
         try:
-            catalog_gs = self.getListSkuGS(
-                psw, self._master_database_template_id)
+            db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            template_id = sheetsAPI.get_master_database_template_id(db_name)
+            catalog_gs = self.getListSkuGS(psw, template_id)
+
         except Exception as e:
             _logger.info(
                 "Cleaning Sku job is interrupted with the following error : \n" + str(e))
@@ -980,8 +975,8 @@ class sync(models.Model):
         _logger.info("to_archive length: " + str(len(to_archive)))
         return to_archive
 
-    # Method to clean all sku that are pulled by self.getSkuToArchive
 
+    # Method to clean all sku that are pulled by self.getSkuToArchive
     def cleanSku(self, psw=None):
         to_archive_list = self.getSkuToArchive(psw)
         to_archive_dict = dict()
@@ -1024,10 +1019,10 @@ class sync(models.Model):
         _logger.info("number of sales with archived product: " +
                      str(sales_with_archived_product))
 
+
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
-
     def log_product_from_sale(self, sale_name):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search(
@@ -1050,45 +1045,6 @@ class sync(models.Model):
 
         _logger.info("Listing all product from: END")
 
-    # Method that show a unknonw result.
-    # the product.id 558038 is not the same in the querry that in the Product interface in Odoo when filter by ID
-
-    def unknownProduct(self):
-        product = self.env['product.product'].search(
-            [('id', '=', 558038)])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.template'].search(
-            [('id', '=', 558038)])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.product'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        product = self.env['product.template'].search(
-            [('sku', '=', 'CFP-NEUFCHATEL-OLD-00106-18227-00029-67467-B541A')])
-        _logger.info("--------------- 558038")
-        _logger.info("id in a sale order: " + str(product.id))
-        _logger.info("sku in a sale order: " + str(product.sku))
-        _logger.info("name in a sale order: " + str(product.name))
-        _logger.info("---------------")
-
-        # self.log_product_from_sale("QUOTATION-2022-12-06-229")
-        # self.log_product_from_sale("QUOTATION-2022-11-05-070")
-        return
 
     # query to find the QUOTATION-2023-01-05-007, id 552
     def searchQuotation(self):
@@ -1099,14 +1055,33 @@ class sync(models.Model):
         _logger.info("sale.name: " + str(sale.name))
         _logger.info("---------------")
 
-    # methode to test the email submiting information
-    def tbookademo(self):
-        test_instance = bookademo(self)
-        test_instance.submitEmail(
-            "John Doe",
-            "1-111-111-1111",
-            "email@email.com",
-            "TheBestCompany",
-            "TheBestCompany.com",
-            "Helping thing",
-            1)
+    
+    # Method to identify all product with the same name
+    def getProductsWithSameName(self):
+        productNamesInDouble = []
+        products = self.env['product.template'].search([])
+
+        _logger.info("------------------------------------------------------------------")
+        _logger.info("---------------  getProductsWithSameName")        
+        _logger.info("---------------  getProductsWithSameName: Number of product to check: " + str(len(products)))        
+       
+        #For each product, 
+        for product in products:
+            if (product.active == False):
+                continue
+            
+            #checking if their is other products with the same name.
+            doubled_names = self.env['product.template'].search(
+                [('name', '=', product.name)])
+            if (len(doubled_names) > 1):
+                id_list = []                
+                #if yes, adding all the product id founded and the name in a list
+                for doubled_name in doubled_names:
+                    _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                    id_list.append(doubled_name.id)
+
+                productNamesInDouble.append((str(product.name), id_list))
+        
+        
+            
+            
