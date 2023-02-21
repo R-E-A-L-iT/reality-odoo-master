@@ -698,6 +698,7 @@ class sync(models.Model):
 
         return sku_dict
 
+
     # Check if a all key unique in two dictionnary
     # Input
     #   dict_small: the smallest dictionnary
@@ -706,7 +707,6 @@ class sync(models.Model):
     #   1st:    True: There is at least one key that exists in both dictionary
     #           False: All key are unique
     #   2nd:    The name of the duplicated Sku
-
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
         for sku in dict_small.keys():
             if sku in dict_big.keys():
@@ -716,6 +716,7 @@ class sync(models.Model):
                 return True, errorMsg
         return False, ""
 
+
     # Method to get the ODOO_SYNC_DATA column index
     # Exception
     #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
@@ -724,7 +725,6 @@ class sync(models.Model):
     # Output
     #   result: A dictionnary:  Key: named of the column
     #                           Value: the index number of that column.
-
     def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
         odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
             odoo_sync_data_sheet, "Sheet Name")
@@ -772,6 +772,7 @@ class sync(models.Model):
 
         return result
 
+
     # Get all SKU from the model type 'Products' and 'Pricelist'
     # Exception
     #   MissingSheetError:  A sheet is missing
@@ -782,7 +783,6 @@ class sync(models.Model):
     #   template_id:    GoogleSheet TemplateID
     # Output
     #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
-
     def getListSkuGS(self, psw, template_id):
         sku_catalog_gs = dict()
 
@@ -795,13 +795,11 @@ class sync(models.Model):
 
         # check ODOO_SYNC_DATA tab
         result_dict = self.checkOdooSyncDataTab(sync_data)
-
-        odoo_sync_data_sheet_name_column_index = result_dict['odoo_sync_data_sheet_name_column_index']
-        odoo_sync_data_sheet_index_column_index = result_dict[
-            'odoo_sync_data_sheet_index_column_index']
-        odoo_sync_data_model_type_column_index = result_dict['odoo_sync_data_model_type_column_index']
-        odoo_sync_data_valid_column_index = result_dict['odoo_sync_data_valid_column_index']
-        odoo_sync_data_continue_column_index = result_dict['odoo_sync_data_continue_column_index']
+        odoo_sync_data_sheet_name_column_index  = result_dict['odoo_sync_data_sheet_name_column_index']
+        odoo_sync_data_sheet_index_column_index = result_dict['odoo_sync_data_sheet_index_column_index']
+        odoo_sync_data_model_type_column_index  = result_dict['odoo_sync_data_model_type_column_index']
+        odoo_sync_data_valid_column_index       = result_dict['odoo_sync_data_valid_column_index']
+        odoo_sync_data_continue_column_index    = result_dict['odoo_sync_data_continue_column_index']
 
         while (i < len(sync_data)):
             i += 1
@@ -815,16 +813,12 @@ class sync(models.Model):
             refered_sheet_valid_column_index = -1
             refered_sheet_sku_column_index = -1
 
-            sheet_name = str(
-                sync_data[i][odoo_sync_data_sheet_name_column_index])
+            sheet_name = str    (sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
-            modelType = str(
-                sync_data[i][odoo_sync_data_model_type_column_index])
-            valid_value = (
-                str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
-            continue_value = (
-                str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
+            modelType = str     (sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value =       (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
+            continue_value =    (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
             # Validation for the current loop
             if (not continue_value):
@@ -871,8 +865,20 @@ class sync(models.Model):
 
             # main purpose
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
-            result, sku_in_double = self.checkIfKeyExistInTwoDict(
-                sku_dict, sku_catalog_gs)
+            _logger.info("-------------------------------------------")
+            _logger.info("-------------------------------------------")
+            _logger.info("-------------------------------------------")
+            _logger.info("sku_dict")
+            _logger.info(str(sku_dict))
+
+            _logger.info("-------------------------------------------")
+            _logger.info("-------------------------------------------")
+            _logger.info("sku_catalog_gs")
+            _logger.info(str(sku_catalog_gs))
+            result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
+            _logger.info("-------------------------------------------")
+            _logger.info("-------------------------------------------")
+            _logger.info("-------------------------------------------")
             if (result):
                 error_msg = (
                     "The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
@@ -954,7 +960,7 @@ class sync(models.Model):
             db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             template_id = sheetsAPI.get_master_database_template_id(db_name)
             catalog_gs = self.getListSkuGS(psw, template_id)
-            
+
         except Exception as e:
             _logger.info(
                 "Cleaning Sku job is interrupted with the following error : \n" + str(e))
