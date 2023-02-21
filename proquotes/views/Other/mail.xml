@@ -76,7 +76,7 @@
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
 																		View Quotation
 																	</a>
-																	<a t-elif="'acount.move' in str(record)">
+																	<a t-elif="'account.move' in str(record)">
 																		View Invoice
 																	</a>
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
@@ -87,7 +87,7 @@
 																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
 																		Voir Soumission
 																	</a>
-																	<a t-elif="'acount.move' in str(record)">
+																	<a t-elif="'account.move' in str(record)">
 																		Voir la Facture
 																	</a>
 
