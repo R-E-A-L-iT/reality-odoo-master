@@ -53,6 +53,7 @@
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">PURCHASE ORDER
+																		Test
 																	</h1>
 																</t>
 																<t t-elif="record.partner_id.lang == 'fr_CA'">
