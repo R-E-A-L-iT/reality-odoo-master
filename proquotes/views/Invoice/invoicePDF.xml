@@ -73,7 +73,7 @@
 						<span t-field="o.partner_id.phone" />
 						<br />
 					</td>
-					<td t-if="o.partner_id.id != o.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
+					<td style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
 						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
 						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Envoyez à</h5>
 						<span t-field="o.partner_shipping_id.street" />
