@@ -41,7 +41,6 @@
 					<br />
 
 
-					<span t-out="str(source.rental_diff_add)" />
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
 					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
 					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
