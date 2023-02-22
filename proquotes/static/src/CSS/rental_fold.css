@@ -1,0 +1,7 @@
+rental-terms-checkbox:checked() {
+    display: none;
+}
+
+rental-terms-checkbox:not(:checked()) {
+    display: none;
+}
