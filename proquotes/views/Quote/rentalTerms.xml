@@ -202,7 +202,7 @@
 
 		<div id="rental-terms" t-if="clang == 'fr_CA'">
 			<h1>
-				<strong>Termes et Conditions‌</strong>
+				<strong>Termes et Conditions</strong>
 			</h1>
 			<ol>
 				<li>
