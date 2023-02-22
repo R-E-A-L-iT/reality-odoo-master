@@ -1089,7 +1089,7 @@ class sync(models.Model):
 
                 productNamesInDouble.append((str(product.name), id_list))
         
-        
+     #14372   
     def getSaleOrderByProductId(self, product_id):
         sales = self.env['sale.order'].search([])
         _logger.info("--------------- Checking for sales with product id: " + str(product_id))
@@ -1098,8 +1098,11 @@ class sync(models.Model):
                 ('order_id', '=', sale.id)])
             
             for line in lines:
-                if (line.product_id == product_id):
-                    _logger.info("--------------- id: " + str(line.product_id ))
+                    _logger.info("--------------- line.product_id: " + str(line.product_id ))
+                # if (line.product_id == product_id):
+                #     _logger.info("--------------- id: " + str(line.product_id ))
+
+
 
     def getProductIdBySku(self, p_sku):
         product = self.env['product.product'].search([
