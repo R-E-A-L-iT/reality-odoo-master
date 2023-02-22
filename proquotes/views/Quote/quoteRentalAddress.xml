@@ -33,10 +33,10 @@
 				<br />
 				<div>
 					<span t-if="clang == 'en_CA' or clang == 'en_US'">
-						Shipping address same as billing address
+						Is the shipping address the same as the billing address?
 					</span>
 					<span t-elif="clang == 'fr_CA'">
-						Adresse de livraison identique à l'adresse de facturation
+						Est-ce que l'adresse de livraison est identique à l'adresse de facturation?
 					</span>
 					<br />
 
