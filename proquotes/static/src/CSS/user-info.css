@@ -35,20 +35,20 @@
 	display: none;
 }
 
-#new-address:checked ~ #address_yes_label {
+#new-address:checked ~ #address_no_label {
 	display: none;
 }
 
-#new-address:checked ~ #address_no {
+#new-address:checked ~ #address_yes {
 	display: none;
 }
 
-#new-address:not(:checked) ~ #address_no_label {
+#new-address:not(:checked) ~ #address_yes_label {
 	display: none;
 }
 
 
-#new-address:not(:checked) ~ #address_yes {
+#new-address:not(:checked) ~ #address_no {
 	display: none;
 }
 
