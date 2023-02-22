@@ -1116,9 +1116,10 @@ class sync(models.Model):
         # gatter all lines of all sales
         lines = self.env['sale.order.line'].search([])           
 
-        # Check if the product.template.id appear in any sale.order.id    
-        for line in lines:  
-                product_solded_counter = 0  
+        product_solded_counter = 0 
+        
+        # Check if the product.template.id appear in any sale.order.id            
+        for line in lines:                   
                 for line_product_template in line.product_template_id:                                                 
                     if (line_product_template.id == product_template.id):
                         for line_order in line.order_id:
