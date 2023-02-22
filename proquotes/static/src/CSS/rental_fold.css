@@ -5,3 +5,12 @@
 #rental-terms-checkbox:not(:checked) + #rentalTerms{
     display: block;
 }
+
+
+#terms_hidden {
+    display: none;
+}
+
+#terms_open{
+    display: none;
+}
