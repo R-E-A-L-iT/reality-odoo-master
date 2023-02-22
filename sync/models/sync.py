@@ -1105,12 +1105,12 @@ class sync(models.Model):
             
             for line in lines:
                     lines_count += 1
-                    for p in line.product.id:
+                    for p in line.product_id:
                         #_logger.info("--------------- line.product_id: " + str(product.id))
                         if (p.id == product.id):
-                            _logger.info("--------------- product id: " + str(line.product.id ) + " is in sale.id: " + str(sale.id))
+                            _logger.info("--------------- product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
                         else:
-                            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! product id: " + str(line.product.id ) + " is in sale.id: " + str(sale.id))
+                            _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
 
         _logger.info("--------------- Sales count: " + str(len(sales)))
         _logger.info("--------------- Lines count: " + str(lines_count))
