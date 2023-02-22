@@ -1108,13 +1108,13 @@ class sync(models.Model):
         _logger.info("--------------- product_template.id: " + str(product_template.id))
         _logger.info("--------------- product_template.name: " + str(product_template.name))
                     
-        for line in lines:
-                for product in line.product_id:
-                    if (product.product_template_id == product_template.id):
-                        sale = self.env['sale.order'].search([
-                            ('id', '=', line.order_id)])                           
-                        _logger.info("--------------- product_per_line.product_template_id: " + str(product.id).ljust(10) + 
-                                        " is in sale.id: " + str(line.order_id).ljust(10))       
+        for line in lines:                                    
+                if (line.product_template_id == product_template.id):
+                    sale = self.env['sale.order'].search([
+                        ('id', '=', line.order_id)])                           
+                    _logger.info("--------------- line.product_template_id: " + str(line.product_template_id).ljust(10) + 
+                                    ", sale.id: " + str(line.order_id).ljust(10) +
+                                    ", sale.name" + str(sale.name))      
 
         _logger.info("--------------- END ---------------------------------------------")
 
