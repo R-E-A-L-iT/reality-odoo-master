@@ -1056,6 +1056,7 @@ class sync(models.Model):
         _logger.info("---------------")
 
     
+    ################################################################### 
     # Method to identify all product with the same name
     def getProductsWithSameName(self):
         productNamesInDouble = []
@@ -1074,7 +1075,7 @@ class sync(models.Model):
             # Check if the product is already identfied
             if (product.name in names_identified):
                 continue            
-            names_identified[product.name] = True
+            names_identified[product.name] = []
 
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
@@ -1085,13 +1086,15 @@ class sync(models.Model):
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
                     _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
-                    id_list.append(doubled_name.id)
+                    names_identified[product.name].append(doubled_name.id)
 
-                productNamesInDouble.append((str(product.name), id_list))
+                #productNamesInDouble.append((str(product.name), id_list))
+        
+        return names_identified
         
 
 
-     ################################################################### 
+    ################################################################### 
     def getSaleOrderByProductId(self, p_product_template_id):
         #validate that product_id is an integer
         try:
@@ -1131,4 +1134,8 @@ class sync(models.Model):
             ('sku', '=', p_sku)])        
         _logger.info("--------------- p_sku: " + str(p_sku) + ", id: " + str(product.id))
 
+
+    ################################################################### 
+    def cleanProductByName(seld, p_name):
+        
             
