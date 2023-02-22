@@ -31,10 +31,23 @@
 }
 
 /* Addresse */
+#new-address {
+	display: none;
+}
+
 #new-address:checked ~ #address_yes_label {
 	display: none;
 }
 
+#new-address:checked ~ #address_no {
+	display: none;
+}
+
 #new-address:not(:checked) ~ #address_no_label {
+	display: none;
+}
+
+
+#new-address:not(:checked) ~ #address_yes {
 	display: none;
 }
