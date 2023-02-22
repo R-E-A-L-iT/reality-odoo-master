@@ -1058,9 +1058,11 @@ class sync(models.Model):
     
     ################################################################### 
     # Method to identify all product with the same name
+    # Output a dictionary
+    #   key : a product template name
+    #   values: list of product_template.id that have the same name
     def getProductsWithSameName(self):
-        productNamesInDouble = []
-        names_identified = dict()
+        dup_product_template_name = dict()
         products = self.env['product.template'].search([])
 
         _logger.info("------------------------------------------------------------------")
@@ -1073,24 +1075,21 @@ class sync(models.Model):
                 continue
 
             # Check if the product is already identfied
-            if (product.name in names_identified):
+            if (product.name in dup_product_template_name):
                 continue            
-            names_identified[product.name] = []
+            dup_product_template_name[product.name] = []
 
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
                 [('name', '=', product.name)])           
 
-            if (len(doubled_names) > 1):
-                id_list = []                
+            if (len(doubled_names) > 1):              
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
                     _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
-                    names_identified[product.name].append(doubled_name.id)
-
-                #productNamesInDouble.append((str(product.name), id_list))
+                    dup_product_template_name[product.name].append(doubled_name.id)
         
-        return names_identified
+        return dup_product_template_name
         
 
 
@@ -1112,7 +1111,8 @@ class sync(models.Model):
         lines = self.env['sale.order.line'].search([])           
 
         # Check if the product.template.id appear in any sale.order.id    
-        for line in lines:    
+        for line in lines:  
+                product_solded_counter = 0  
                 for line_product_template in line.product_template_id:                                                 
                     if (line_product_template.id == product_template.id):
                         for line_order in line.order_id:
@@ -1123,9 +1123,11 @@ class sync(models.Model):
                                             ", product_template.name: " + str(product_template.name).ljust(100) +
                                             ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
                                             ", sale.id: " + str(sale.id).ljust(10) +
-                                            ", sale.name: " + str(sale.name))      
+                                            ", sale.name: " + str(sale.name)) 
+                            product_solded_counter += 1     
 
         _logger.info("--------------- END ---------------------------------------------")
+        return product_solded_counter
 
 
     ################################################################### 
@@ -1136,6 +1138,10 @@ class sync(models.Model):
 
 
     ################################################################### 
-    def cleanProductByName(seld, p_name):
-        
+    def cleanProductByName(self, p_name):
+        name_in_double = self.getProductsWithSameName()
+
+
+
+
             
