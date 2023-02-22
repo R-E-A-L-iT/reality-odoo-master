@@ -31,7 +31,8 @@ class RentalCustomerPortal(cPortal):
 
         _logger.warning(str(newAdd))
 
-        order_sudo.rental_diff_add = newAdd
+        if (str(newAdd) == True or str(newAdd) == False)
+        order_sudo.rental_diff_add = True if str(newAdd == "True") else False
 
         return
 
