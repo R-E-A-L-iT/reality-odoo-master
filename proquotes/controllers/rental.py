@@ -29,7 +29,7 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        _logger.warning(type(newAdd))
+        _logger.warning(str(newAdd))
 
         order_sudo.rental_diff_add = newAdd
 
