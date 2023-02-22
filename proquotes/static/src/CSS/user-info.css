@@ -31,6 +31,6 @@
 }
 
 /* Addresse */
-#new-address:checked {
+#new-address:checked ~ #address_yes_label {
 	display: none;
 }
