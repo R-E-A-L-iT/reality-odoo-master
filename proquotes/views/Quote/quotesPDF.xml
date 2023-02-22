@@ -288,8 +288,6 @@
 			<t t-if="doc.sale_order_template_id.name == 'Rental'">
 				<t t-set="company_name" t-value="doc.company_id.name" />
 				<h1>
-					<strong>+</strong>
-					<strong>x</strong>
 					<strong t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
 					<strong t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 				</h1>
