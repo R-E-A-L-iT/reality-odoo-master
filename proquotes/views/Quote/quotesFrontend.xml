@@ -386,6 +386,8 @@
 					<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
 				</t>
 			</div>
+			<!-- <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" /> -->
+			<input id="rental-terms-checkbox" type="checkbox" checked="true" />
 			<label for="rental-terms-checkbox">
 				<h1>
 					<strong class="white-text" id="terms_hidden">+</strong>
@@ -394,8 +396,6 @@
 					<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 				</h1>
 			</label>
-			<input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" />
-			<!-- <input id="rental-terms-checkbox" type="checkbox" checked="true" /> -->
 			<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
