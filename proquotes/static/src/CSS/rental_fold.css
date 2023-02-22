@@ -1,8 +1,8 @@
-#rental-terms-checkbox:checked + #rentalTerms {
+#rental-terms-checkbox:checked + label + #rentalTerms {
     display: none;
 }
 
-#rental-terms-checkbox:not(:checked) + #rentalTerms{
+#rental-terms-checkbox:not(:checked) + label + #rentalTerms{
     display: block;
 }
 
