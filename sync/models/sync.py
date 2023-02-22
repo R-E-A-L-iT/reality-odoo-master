@@ -1089,42 +1089,37 @@ class sync(models.Model):
 
                 productNamesInDouble.append((str(product.name), id_list))
         
-     #14372   
-    def getSaleOrderByProductId(self, p_product_id):
+
+
+     ################################################################### 
+    def getSaleOrderByProductId(self, p_product_template_id):
         #validate that product_id is an integer
         try:
-            product_id = int(p_product_id)
+            product_template_id = int(p_product_template_id)
         except Exception as e:
-             _logger.info("--------------- Could not convert to int product_id: " + str(product_id))
+             _logger.info("--------------- Could not convert to int product_template_id: " + str(product_template_id))
              _logger.info("--------------- " + str(e))
              return
-        product_id = 561588
 
-        product = self.env['product.product'].search([
-            ('id', '=', product_id)])            
-        sales = self.env['sale.order'].search([])
-        lines_count = 0
+        lines = self.env['sale.order.line'].search([])
+        product_template = self.env['product.template'].search([
+            ('id', '=', product_template_id)])              
+                     
+        _logger.info("--------------- product_template.id: " + str(product_template.id))
+        _logger.info("--------------- product_template.name: " + str(product_template.name))
+                    
+        for line in lines:
+                for product in line.product_id:
+                    if (product.product_template_id == product_template.id):
+                        sale = self.env['sale.order'].search([
+                            ('id', '=', line.order_id)])                           
+                        _logger.info("--------------- product_per_line.product_template_id: " + str(product.id).ljust(10) + 
+                                        " is in sale.id: " + str(line.order_id).ljust(10))       
 
-        _logger.info("--------------- product_id: " + str(product_id))
-        _logger.info("--------------- len product: " + str(len(product)))
-        _logger.info("--------------- Checking for sales with product id: " + str(product.id) + " ---------------------------------------------")
-        _logger.info("--------------- product name: " + str(product.name))
-
-        for sale in sales:
-            lines = self.env['sale.order.line'].search([
-                ('order_id', '=', sale.id)])
-            
-            for line in lines:
-                    lines_count += 1
-                    for p in line.product_id:
-                        if (p.id == product.id):
-                            _logger.info("--------------- product id: " + str(p.id).ljust(10) + " is in sale.id: " + str(sale.id).ljust(10) + ", sale name: " + str(sale.name))                        
-
-        _logger.info("--------------- Sales count: " + str(len(sales)))
-        _logger.info("--------------- Lines count: " + str(lines_count))
         _logger.info("--------------- END ---------------------------------------------")
 
 
+    ################################################################### 
     def getProductIdBySku(self, p_sku):
         product = self.env['product.product'].search([
             ('sku', '=', p_sku)])        
