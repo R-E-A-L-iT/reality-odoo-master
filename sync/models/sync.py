@@ -1117,7 +1117,7 @@ class sync(models.Model):
         lines = self.env['sale.order.line'].search([])           
 
         product_solded_counter = 0 
-        
+
         # Check if the product.template.id appear in any sale.order.id            
         for line in lines:                   
                 for line_product_template in line.product_template_id:                                                 
@@ -1149,7 +1149,24 @@ class sync(models.Model):
     def cleanProductByName(self, p_name):
         duplicate_names = self.getProductsWithSameName()
 
-        #for name in duplicate_names:
+        for ids in duplicate_names:
+            _logger.info("--------------- product_template.name " + str(ids))
+
+            i = 0
+            d = dict()
+            for id in ids:
+                d[i] = self.getSaleOrderByProductId(id)
+
+            for item in d:
+                if (item <= 0):
+                    _logger.info("--------------- ARCHIVED product_template.id " + str(id))
+                else:
+                    _logger.info("--------------- KEEP product_template.id " + str(id))
+
+
+#     for lists in d:
+#         for item in d[lists]:
+#             print(item)
 
 
 
