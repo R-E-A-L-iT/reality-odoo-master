@@ -30,7 +30,7 @@
                 'proquotes/static/src/CSS/login.css',
                 'proquotes/static/src/CSS/quoteStyle.css',
                 'proquotes/static/src/CSS/quoteHeaderText.css',
-                'proquotes/static/src/CSS/rental_fold.css'
+                'proquotes/static/src/CSS/rental_fold.css',
                 'proquotes/static/src/JS/fold.js',
                 'proquotes/static/src/JS/poNumber.js',
                 'proquotes/static/src/JS/price.js',
