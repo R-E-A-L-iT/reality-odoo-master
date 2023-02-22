@@ -1091,8 +1091,16 @@ class sync(models.Model):
         
      #14372   
     def getSaleOrderByProductId(self, product_id):
+        #validate that product_id is an integer
+        try:
+            product_id = int(product_id)
+        except Exception as e:
+             _logger.info("--------------- Could not convert to int product_id: " + str(product_id))
+             _logger.info("--------------- " + str(e))
+             return
+        
         product = self.env['product.product'].search([
-            ('id', '=', product_id)])            
+            ('id', '=', int(product_id))])            
         sales = self.env['sale.order'].search([])
         lines_count = 0
 
