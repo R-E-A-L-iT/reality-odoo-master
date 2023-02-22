@@ -1108,14 +1108,16 @@ class sync(models.Model):
         _logger.info("--------------- product_template.id: " + str(product_template.id))
         _logger.info("--------------- product_template.name: " + str(product_template.name))
                     
-        for line in lines:                                    
-                _logger.info("--------------- line.product_template_id: " + str(line.product_template_id).ljust(10) + ", product_template.id: " + str(product_template.id))
-                #if (line.product_template_id == product_template.id):
-                #    sale = self.env['sale.order'].search([
-                #        ('id', '=', line.order_id)])                           
-                #    _logger.info("--------------- line.product_template_id: " + str(line.product_template_id).ljust(10) + 
-                #                    ", sale.id: " + str(line.order_id).ljust(10) +
-                #                    ", sale.name" + str(sale.name))      
+        for line in lines:    
+                for line_product_template in line.product_template_id:          
+                    #line.product_template_id: product.template(17172,), product_template.id: 561634                      
+                    _logger.info("--------------- line.product_template_id: " + str(line_product_template.id).ljust(20) + ", product_template.id: " + str(product_template.id))
+                    #if (line.product_template_id == product_template.id):
+                    #    sale = self.env['sale.order'].search([
+                    #        ('id', '=', line.order_id)])                           
+                    #    _logger.info("--------------- line.product_template_id: " + str(line.product_template_id).ljust(10) + 
+                    #                    ", sale.id: " + str(line.order_id).ljust(10) +
+                    #                    ", sale.name" + str(sale.name))      
 
         _logger.info("--------------- END ---------------------------------------------")
 
