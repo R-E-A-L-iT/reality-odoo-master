@@ -51,3 +51,7 @@
 #new-address:not(:checked) ~ #address_yes {
 	display: none;
 }
+
+#new-address:checked ~ #rental-address {
+	display: none;
+}
