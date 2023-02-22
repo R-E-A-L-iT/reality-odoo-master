@@ -1091,16 +1091,20 @@ class sync(models.Model):
         
      #14372   
     def getSaleOrderByProductId(self, product_id):
+        product = self.env['product.product'].search([
+            ('id', '=', product_id)])   
+         
         sales = self.env['sale.order'].search([])
         _logger.info("--------------- Checking for sales with product id: " + str(product_id))
+        _logger.info("--------------- product name: " + str(product.name))
         for sale in sales:
             lines = self.env['sale.order.line'].search([
                 ('order_id', '=', sale.id)])
             
             for line in lines:
-                    for product in line.product_id:
+                    for p in line.product_id:
                         #_logger.info("--------------- line.product_id: " + str(product.id))
-                        if (product.id == product_id):
+                        if (p.id == product_id):
                             _logger.info("--------------- product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
 
 
