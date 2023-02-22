@@ -1,384 +1,378 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Rental Terms" id="rental_terms">
-		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="city" t-value="'Montreal'" />
-		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Quebec'" />
-		<t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="country" t-value="'Canada'" />
+    <template name="Rental Terms" id="rental_terms">
+        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="city" t-value="'Montreal'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="city" t-value="'Dover'" />
-		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="state" t-value="'Delaware'" />
-		<t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="country" t-value="'United States'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="city" t-value="'Dover'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="state" t-value="'Delaware'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="country" t-value="'United States'" />
 
-		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="city" t-value="'Toronto'" />
-		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="state" t-value="'Ontario'" />
-		<t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="country" t-value="'Canada'" />
+        <t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="city" t-value="'Toronto'" />
+        <t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="state" t-value="'Ontario'" />
+        <t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="city" t-value="'Sherbrooke'" />
-		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="state" t-value="'Quebec'" />
-		<t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="country" t-value="'Canada'" />
+        <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="city" t-value="'Sherbrooke'" />
+        <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="country" t-value="'Canada'" />
 
-		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="city" t-value="'Moncton'" />
-		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="state" t-value="'New Brunswick'" />
-		<t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="country" t-value="'Canada'" />
+        <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="city" t-value="'Moncton'" />
+        <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="state" t-value="'New Brunswick'" />
+        <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="country" t-value="'Canada'" />
 
-		<div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
-			<h1>
-				<strong>Terms and Conditions</strong>
-			</h1>
-			<ol>
-				<li>
-					<h3>
-						<strong>Rental, Effective Date and Term</strong>
-					</h3>
-					<p> The Customer hereby rents Equipment from <t t-esc="company_name + ','" /> for the period indicated in the preamble of this Agreement, following the terms and conditions established hereinafter. The Agreement comes into effect on the date it is signed by the Customer and expires at the end of the Equipment rental period indicated in the preamble of this Agreement. </p>
-				</li>
-				<li>
-					<h3>
-						<strong>Considerations</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Rent and Fees
-							</h4>
-							<p> In consideration of renting the Equipment, the Customer agrees to pay <t t-esc="company_name" /> the rent and fees indicated on the first page of this Agreement, in addition to applicable taxes. If the Customer remains in possession of the Equipment after the Term, with the consent of <t t-esc="company_name + ','" /> this Agreement shall remain in force and the Customer shall be the deemed the renter of the Equipment, following the same terms, conditions and commitments as those stipulated in this Agreement (including payment of any rent). </p>
-						</li>
-						<li>
-							<h4>
-								Additional Services or Additional Fees
-							</h4>
-							<p> In the event that the Customer requires any other service from <t t-esc="company_name" /> that is not included in this Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees to pay <t t-esc="company_name" /> any such amount or fee following receipt of an invoice to that effect. </p>
-						</li>
-						<li>
-							<h4>
-								Interest
-							</h4>
-							<p> Any amounts owing to <t t-esc="company_name" /> by the Customer shall bear interest at the rate of twenty-four percent (24%) per year, as of the date on which such amounts are due. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>
-							<t t-esc="company_name + '\'s'" /> COMMITMENTS </strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Equipment Condition
-							</h4>
-							<p>
-								<t t-esc="company_name" /> agrees to provide functional Equipment in proper maintenance to the Customer </p>
-						</li>
-						<li>
-							<h4>
-								Equipment Delivery
-							</h4>
-							<p>
-								<t t-esc="company_name" /> agrees to deliver the Equipment to the Customer at the agreed upon location. The Customer acknowledges having given <t t-esc="company_name" /> all relevant information on the Equipment delivery location and that such information complies with whatever is indicated in this Agreement, as applicable. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>CUSTOMERS COMMITMENTS</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Equipment Use
-							</h4>
-							<p> The Customer agrees to use the Equipment and its accessories solely for the purposes for which such Equipment and accessories are intended. The Customer agrees to comply with any requirements and regulations on the use of the Equipment that may be required by <t t-esc="company_name" /> from time to time. The Customer must not remove any accessory from the Equipment. The Customer must not, at any time, authorize any person other than its employees, representatives or agents to use the Equipment. </p>
-						</li>
-						<li>
-							<h4> Returning the Equipment to <t t-esc="company_name" />
-							</h4>
-							<p> The Customer agrees to return the Equipment to in the same operating and clean condition as at the time of delivery, and to the same location as the original point of delivery, or failing that to any <t t-esc="company_name" /> branch. In such case, the Customer agrees to wash the Equipment prior to its pickup by <t t-esc="company_name + '.'" /> The Customer agrees to immediately notify <t t-esc="company_name" /> of any damages caused to the Equipment. In such case, the Customer must reimburse <t t-esc="company_name" /> for any repairs required as a result of the damages, alterations or stemming from the abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage, alteration or abusive use was intentional by the Customer. Such repairs must be carried out exclusively by <t t-esc="company_name" /> or its authorized supplier. Under no circumstances is the Customer authorized or would be authorized to carry out any repair or have any repair carried out on the Equipment. </p>
-						</li>
-						<li>
-							<h3>Insurance</h3>
-							<p> The Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it. </p>
-						</li>
-						<li>
-							<h3>Standards, Policies and Others</h3>
-							<p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>INDEMNIFICATION</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>Non-Liability</h4>
-							<p>
-								<t t-esc="company_name" /> shall, at no time, be held liable for any damages, breakage, or partial or full interruption that could result, at any time, during the use of the Equipment. The Customer is solely responsible for the individuals who may be required to use the Equipment, throughout the Term of the Agreement. </p>
-						</li>
-						<li>
-							<h4>Indemnification</h4>
-							<p> The Customer acknowledges that <t t-esc="company_name + ','" /> its directors, officers, employees, agents, volunteers and subcontractors, cannot be held liable for any breakage, loss, destruction of property and/or damage, of any kind, resulting from the use of the Equipment. The Customer waives any right, recourse, claim and action against <t t-esc="company_name + ','" /> its directors, officers, employees, agents, volunteers and subcontractors resulting from the use of the Equipment. The Customer agrees to indemnify and hold <t t-esc="company_name" /> harmless against any claim, of any type, resulting from or could result from any failure by the Customer in respecting its obligations under the terms of this Agreement or for any breakage, loss, destruction of property and/or damage, of any type, resulting from the use of the Equipment. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>END OF AGREEMENT</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>Termination as of Right</h4>
-							<p> This Agreement shall be terminated as of right without any notice or formal demand being required from <t t-esc="company_name + ','" /> if the Customer makes a general assignment of its property for the benefit of its creditors, or if it is declared bankrupt or insolvent or if it allows its assets to be seized further to a writ of execution or other legal proceedings. </p>
-						</li>
-						<li>
-							<h4>
-								Termination on Notice
-							</h4>
-							<p> The Agreement is terminated upon the expiry of a 10 day limit, as of the delivery of a written notice indicating, as applicable, the failure to perform by either party, should the defaulting party not correct such failure within that time limit, in either of the following cases (i) the Customer breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement, and the Customer will be required to pay any amounts owing to <t t-esc="company_name" /> or (ii) if <t t-esc="company_name" /> breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement. </p>
-						</li>
-						<li>
-							<h4>
-								Effect of Termination
-							</h4>
-							<p> When this Agreement is terminated, the Customer agrees to pay <t t-esc="company_name" /> any amounts owing under the terms of the Agreement. <t t-esc="company_name" /> may, at any time and without prior notice as of termination, retake possession of the Equipment and the Customer hereby authorizes , its agents, employees or representatives to enter onto its property or on any location where the Equipment is found for the purpose of immediately retaking possession of said Equipment, all at the Customer's expense. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>GENERAL PROVISIONS</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Assignment
-							</h4>
-							<p>
-								<t t-esc="company_name" /> reserves the right to assign or transfer a portion of or all its rights and obligations resulting from this Agreement to anyone, without the need to request the Customer's consent or approval. However, the Customer may not assign its rights nor request or allow a third party to assume its obligations under this Agreement. </p>
-						</li>
-						<li>
-							<h4>
-								Notice
-							</h4>
-							<p>
-								Any notice required under this Agreement is adequate if it is recorded in writing and sent by a
-								method of communication that allows the sending party to prove that said notice was effectively
-								delivered to the receiving party at the addresses indicated on the first page of the Agreement or
-								any other address the receiving party may have made known in accordance with this Agreement.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Non-Waiver
-							</h4>
-							<p>
-								If either party should waive, neglect or delay the exercise of a right or recourse provided by
-								this Agreement, this shall never be held against said party as a renunciation of its rights and
-								recourses, as long as the conventionally or legally prescribed time for exercising said right or
-								recourse has not expired.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Legal Representatives
-							</h4>
-							<p>
-								The Agreement binds the parties, their successors, legal representatives, liquidators, trustees and assigns.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Applicable Laws and Jurisdiction
-							</h4>
-							<p> This Agreement and its interpretation, execution, application, validity and effects are subject to the applicable laws in force in the province of <t t-esc="state" /> and in force in <t t-esc="country" /> that apply in the province of <t t-esc="state + ','" /> which govern all of the provisions it contains. The parties agree that any claim or any legal action taken for any reason with respect to this Agreement shall be brought to a court located in the judicial district of <t t-esc="city + ','" />
+        <div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
+            <ol>
+                <li>
+                    <h3>
+                        <strong>Rental, Effective Date and Term</strong>
+                    </h3>
+                    <p> The Customer hereby rents Equipment from <t t-esc="company_name + ','" /> for the period indicated in the preamble of this Agreement, following the terms and conditions established hereinafter. The Agreement comes into effect on the date it is signed by the Customer and expires at the end of the Equipment rental period indicated in the preamble of this Agreement. </p>
+                </li>
+                <li>
+                    <h3>
+                        <strong>Considerations</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Rent and Fees
+                            </h4>
+                            <p> In consideration of renting the Equipment, the Customer agrees to pay <t t-esc="company_name" /> the rent and fees indicated on the first page of this Agreement, in addition to applicable taxes. If the Customer remains in possession of the Equipment after the Term, with the consent of <t t-esc="company_name + ','" /> this Agreement shall remain in force and the Customer shall be the deemed the renter of the Equipment, following the same terms, conditions and commitments as those stipulated in this Agreement (including payment of any rent). </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Additional Services or Additional Fees
+                            </h4>
+                            <p> In the event that the Customer requires any other service from <t t-esc="company_name" /> that is not included in this Agreement or additional fees apply to the amounts indicated in this Agreement, the Customer agrees to pay <t t-esc="company_name" /> any such amount or fee following receipt of an invoice to that effect. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Interest
+                            </h4>
+                            <p> Any amounts owing to <t t-esc="company_name" /> by the Customer shall bear interest at the rate of twenty-four percent (24%) per year, as of the date on which such amounts are due. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>
+                            <t t-esc="company_name + '\'s'" /> COMMITMENTS </strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Equipment Condition
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> agrees to provide functional Equipment in proper maintenance to the Customer </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Equipment Delivery
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> agrees to deliver the Equipment to the Customer at the agreed upon location. The Customer acknowledges having given <t t-esc="company_name" /> all relevant information on the Equipment delivery location and that such information complies with whatever is indicated in this Agreement, as applicable. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>CUSTOMERS COMMITMENTS</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Equipment Use
+                            </h4>
+                            <p> The Customer agrees to use the Equipment and its accessories solely for the purposes for which such Equipment and accessories are intended. The Customer agrees to comply with any requirements and regulations on the use of the Equipment that may be required by <t t-esc="company_name" /> from time to time. The Customer must not remove any accessory from the Equipment. The Customer must not, at any time, authorize any person other than its employees, representatives or agents to use the Equipment. </p>
+                        </li>
+                        <li>
+                            <h4> Returning the Equipment to <t t-esc="company_name" />
+                            </h4>
+                            <p> The Customer agrees to return the Equipment to in the same operating and clean condition as at the time of delivery, and to the same location as the original point of delivery, or failing that to any <t t-esc="company_name" /> branch. In such case, the Customer agrees to wash the Equipment prior to its pickup by <t t-esc="company_name + '.'" /> The Customer agrees to immediately notify <t t-esc="company_name" /> of any damages caused to the Equipment. In such case, the Customer must reimburse <t t-esc="company_name" /> for any repairs required as a result of the damages, alterations or stemming from the abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage, alteration or abusive use was intentional by the Customer. Such repairs must be carried out exclusively by <t t-esc="company_name" /> or its authorized supplier. Under no circumstances is the Customer authorized or would be authorized to carry out any repair or have any repair carried out on the Equipment. </p>
+                        </li>
+                        <li>
+                            <h3>Insurance</h3>
+                            <p> The Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it. </p>
+                        </li>
+                        <li>
+                            <h3>Standards, Policies and Others</h3>
+                            <p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>INDEMNIFICATION</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>Non-Liability</h4>
+                            <p>
+                                <t t-esc="company_name" /> shall, at no time, be held liable for any damages, breakage, or partial or full interruption that could result, at any time, during the use of the Equipment. The Customer is solely responsible for the individuals who may be required to use the Equipment, throughout the Term of the Agreement. </p>
+                        </li>
+                        <li>
+                            <h4>Indemnification</h4>
+                            <p> The Customer acknowledges that <t t-esc="company_name + ','" /> its directors, officers, employees, agents, volunteers and subcontractors, cannot be held liable for any breakage, loss, destruction of property and/or damage, of any kind, resulting from the use of the Equipment. The Customer waives any right, recourse, claim and action against <t t-esc="company_name + ','" /> its directors, officers, employees, agents, volunteers and subcontractors resulting from the use of the Equipment. The Customer agrees to indemnify and hold <t t-esc="company_name" /> harmless against any claim, of any type, resulting from or could result from any failure by the Customer in respecting its obligations under the terms of this Agreement or for any breakage, loss, destruction of property and/or damage, of any type, resulting from the use of the Equipment. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>END OF AGREEMENT</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>Termination as of Right</h4>
+                            <p> This Agreement shall be terminated as of right without any notice or formal demand being required from <t t-esc="company_name + ','" /> if the Customer makes a general assignment of its property for the benefit of its creditors, or if it is declared bankrupt or insolvent or if it allows its assets to be seized further to a writ of execution or other legal proceedings. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Termination on Notice
+                            </h4>
+                            <p> The Agreement is terminated upon the expiry of a 10 day limit, as of the delivery of a written notice indicating, as applicable, the failure to perform by either party, should the defaulting party not correct such failure within that time limit, in either of the following cases (i) the Customer breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement, and the Customer will be required to pay any amounts owing to <t t-esc="company_name" /> or (ii) if <t t-esc="company_name" /> breaches or does not comply with any of the terms, clauses, conditions and stipulations of the Agreement. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Effect of Termination
+                            </h4>
+                            <p> When this Agreement is terminated, the Customer agrees to pay <t t-esc="company_name" /> any amounts owing under the terms of the Agreement. <t t-esc="company_name" /> may, at any time and without prior notice as of termination, retake possession of the Equipment and the Customer hereby authorizes , its agents, employees or representatives to enter onto its property or on any location where the Equipment is found for the purpose of immediately retaking possession of said Equipment, all at the Customer's expense. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>GENERAL PROVISIONS</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Assignment
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> reserves the right to assign or transfer a portion of or all its rights and obligations resulting from this Agreement to anyone, without the need to request the Customer's consent or approval. However, the Customer may not assign its rights nor request or allow a third party to assume its obligations under this Agreement. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Notice
+                            </h4>
+                            <p>
+                                Any notice required under this Agreement is adequate if it is recorded in writing and sent by a
+                                method of communication that allows the sending party to prove that said notice was effectively
+                                delivered to the receiving party at the addresses indicated on the first page of the Agreement or
+                                any other address the receiving party may have made known in accordance with this Agreement.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Non-Waiver
+                            </h4>
+                            <p>
+                                If either party should waive, neglect or delay the exercise of a right or recourse provided by
+                                this Agreement, this shall never be held against said party as a renunciation of its rights and
+                                recourses, as long as the conventionally or legally prescribed time for exercising said right or
+                                recourse has not expired.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Legal Representatives
+                            </h4>
+                            <p>
+                                The Agreement binds the parties, their successors, legal representatives, liquidators, trustees and assigns.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Applicable Laws and Jurisdiction
+                            </h4>
+                            <p> This Agreement and its interpretation, execution, application, validity and effects are subject to the applicable laws in force in the province of <t t-esc="state" /> and in force in <t t-esc="country" /> that apply in the province of <t t-esc="state + ','" /> which govern all of the provisions it contains. The parties agree that any claim or any legal action taken for any reason with respect to this Agreement shall be brought to a court located in the judicial district of <t t-esc="city + ','" />
 								<t t-esc="state + ','" />
 								<t t-esc="country + ','" /> to the exclusion of any other judicial district that may have jurisdiction over such disputes under the law. </p>
-						</li>
-					</ol>
-				</li>
-			</ol>
-		</div>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
 
-		<div id="rental-terms" t-if="clang == 'fr_CA'">
-			<h1>
-				<strong>Termes et Conditions‌</strong>
-			</h1>
-			<ol>
-				<li>
-					<h3>
-						<strong>LOCATION, ENTRÉE EN VIGUEUR ET DURÉE</strong>
-					</h3>
-					<p> Le Client loue, par les présentes, les Équipements de <t t-esc="company_name + ','" /> pour la période de temps indiquée au préambule de la présente entente, suivant les termes et conditions ci-après établis. <br /> L'entente entre en vigueur à la date de sa signature par le Client et se termine à la fin de la période de location des Équipements indiquée au préambule de la présente entente. </p>
-				</li>
-				<li>
-					<h3>
-						<strong>CONTREPARTIES</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Loyer et frais
-							</h4>
-							<p> En contrepartie de la location des Équipements, le Client s'engage à payer à <t t-esc="company_name" /> les loyers et frais prévus à la première (1re) page de la présente entente, en sus des taxes applicables. <br /> Si le Client demeure en possession des Équipements après la Durée, avec le consentement de <t t-esc="company_name + ','" /> la présente entente demeurera en vigueur et le Client sera réputé locataire des Équipements, suivant les mêmes modalités, engagements et conditions que ceux énoncés dans la présente entente (y compris le paiement de tout loyer). </p>
-						</li>
-						<li>
-							<h4>
-								Services additionnels ou frais additionnels
-							</h4>
-							<p> Dans l'éventualité où le Client requiert de la part de <t t-esc="company_name" /> tout autre service non prévu aux présentes ou que des frais s'ajoutent aux sommes décrites à la présente entente, le Client s'engage à payer à <t t-esc="company_name" /> toute telle somme ou frais suivant la réception d'une facture à cet effet. </p>
-						</li>
-						<li>
-							<h4>
-								Intérêts
-							</h4>
-							<p> Toutes les sommes dues par le Client à <t t-esc="company_name" /> porteront intérêt au taux de vingt-quatre pour cent (24 %) par année, à compter de la date à laquelle de telles sommes sont dues. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong> ENGAGEMENTS DE <t t-esc="company_name" />
-						</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								État des Équipements
-							</h4>
-							<p>
-								<t t-esc="company_name" /> s'engage à fournir des Équipements fonctionnels et en bon état d'entretien au Client. </p>
-						</li>
-						<li>
-							<h4>
-								Livraison des Équipements
-							</h4>
-							<p>
-								<t t-esc="company_name" /> s'engage à livrer au Client, à l'endroit convenu, les Équipements. Le Client reconnaît avoir donné à <t t-esc="company_name" /> toutes les informations pertinentes sur l'endroit de livraison des Équipements et que celles-ci sont conformes à ce qu'indique, le cas échéant, la présente entente. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>ENGAGEMENT DU CLIENT</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Utilisation des Équipements
-							</h4>
-							<p> Le Client s'engage à utiliser les Équipements et leurs accessoires uniquement pour les fins auxquelles ces Équipements et ces accessoires sont destinés. Le Client convient de se conformer à toutes les exigences et règlements se rapportant à l'utilisation des Équipements pouvant être imposés de temps à autre par <t t-esc="company_name" /> Le Client ne doit retirer aucun accessoire des Équipements. Celui-ci ne doit en aucun temps autoriser quelconque personne autre que ses employés, représentants ou mandataires à utiliser les Équipements. </p>
-						</li>
-						<li>
-							<h4> Retour des Équipements à <t t-esc="company_name" />
-							</h4>
-							<p> Le Client s'engage à retourner les Équipements à <t t-esc="company_name" /> dans le même état de fonctionnement et de propreté qu'au moment de leur livraison, et ce, au même emplacement que leur point de livraison original, ou à défaut dans toute succursale d' <t t-esc="company_name + '.'" /> À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par <t t-esc="company_name + '.'" /> Le Client s'engage à aviser immédiatement <t t-esc="company_name" /> de tout dommage causé aux Équipements. À cet effet, le Client devra rembourser <t t-esc="company_name" /> pour toute réparation rendue nécessaire suite à des dommages, altérations ou découlant d'un usage abusif des Équipements, tant sur le plan esthétique que technique, que cela soit intentionnel ou non de la part du Client. Ces réparations devront être effectuées exclusivement par <t t-esc="company_name" /> ou son fournisseur autorisé. En aucun cas, le Client n'est ou ne sera autorisé à effectuer ou faire effectuer quelque réparation que ce soit sur les Équipements. </p>
-						</li>
-						<li>
-							<h3>Assurances</h3>
-							<p> Le Client s'engage, par les présentes, à détenir une assurance de responsabilité civile générale le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de deux millions de dollars (2 000 000 $) et à remettre, à <t t-esc="company_name + ','" /> une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements. </p>
-						</li>
-						<li>
-							<h3>Normes, politiques et autres</h3>
-							<p> Le Client s'engage, par les présentes, à respecter et à se conformer à toute norme, politique ou règlement édicté par <t t-esc="company_name" /> eu égard notamment à l'utilisation et la sécurité des Équipements. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>INDEMNISATION</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>Non-responsabilité</h4>
-							<p>
+        <div id="rental-terms" t-if="clang == 'fr_CA'">
+            <ol>
+                <li>
+                    <h3>
+                        <strong>LOCATION, ENTRÉE EN VIGUEUR ET DURÉE</strong>
+                    </h3>
+                    <p> Le Client loue, par les présentes, les Équipements de <t t-esc="company_name + ','" /> pour la période de temps indiquée au préambule de la présente entente, suivant les termes et conditions ci-après établis. <br /> L'entente entre en vigueur à la date de sa signature par le Client et se termine à la fin de la période de location des Équipements indiquée au préambule de la présente entente. </p>
+                </li>
+                <li>
+                    <h3>
+                        <strong>CONTREPARTIES</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Loyer et frais
+                            </h4>
+                            <p> En contrepartie de la location des Équipements, le Client s'engage à payer à <t t-esc="company_name" /> les loyers et frais prévus à la première (1re) page de la présente entente, en sus des taxes applicables. <br /> Si le Client demeure en possession des Équipements après la Durée, avec le consentement de <t t-esc="company_name + ','" /> la présente entente demeurera en vigueur et le Client sera réputé locataire des Équipements, suivant les mêmes modalités, engagements et conditions que ceux énoncés dans la présente entente (y compris le paiement de tout loyer). </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Services additionnels ou frais additionnels
+                            </h4>
+                            <p> Dans l'éventualité où le Client requiert de la part de <t t-esc="company_name" /> tout autre service non prévu aux présentes ou que des frais s'ajoutent aux sommes décrites à la présente entente, le Client s'engage à payer à <t t-esc="company_name" /> toute telle somme ou frais suivant la réception d'une facture à cet effet. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Intérêts
+                            </h4>
+                            <p> Toutes les sommes dues par le Client à <t t-esc="company_name" /> porteront intérêt au taux de vingt-quatre pour cent (24 %) par année, à compter de la date à laquelle de telles sommes sont dues. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong> ENGAGEMENTS DE <t t-esc="company_name" />
+                        </strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                État des Équipements
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> s'engage à fournir des Équipements fonctionnels et en bon état d'entretien au Client. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Livraison des Équipements
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> s'engage à livrer au Client, à l'endroit convenu, les Équipements. Le Client reconnaît avoir donné à <t t-esc="company_name" /> toutes les informations pertinentes sur l'endroit de livraison des Équipements et que celles-ci sont conformes à ce qu'indique, le cas échéant, la présente entente. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>ENGAGEMENT DU CLIENT</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Utilisation des Équipements
+                            </h4>
+                            <p> Le Client s'engage à utiliser les Équipements et leurs accessoires uniquement pour les fins auxquelles ces Équipements et ces accessoires sont destinés. Le Client convient de se conformer à toutes les exigences et règlements se rapportant à l'utilisation des Équipements pouvant être imposés de temps à autre par <t t-esc="company_name" /> Le Client ne doit retirer aucun accessoire des Équipements. Celui-ci ne doit en aucun temps autoriser quelconque personne autre que ses employés, représentants ou mandataires à utiliser les Équipements. </p>
+                        </li>
+                        <li>
+                            <h4> Retour des Équipements à <t t-esc="company_name" />
+                            </h4>
+                            <p> Le Client s'engage à retourner les Équipements à <t t-esc="company_name" /> dans le même état de fonctionnement et de propreté qu'au moment de leur livraison, et ce, au même emplacement que leur point de livraison original, ou à défaut dans toute succursale d' <t t-esc="company_name + '.'" /> À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par <t t-esc="company_name + '.'" /> Le Client s'engage à aviser immédiatement <t t-esc="company_name" /> de tout dommage causé aux Équipements. À cet effet, le Client devra rembourser <t t-esc="company_name" /> pour toute réparation rendue nécessaire suite à des dommages, altérations ou découlant d'un usage abusif des Équipements, tant sur le plan esthétique que technique, que cela soit intentionnel ou non de la part du Client. Ces réparations devront être effectuées exclusivement par <t t-esc="company_name" /> ou son fournisseur autorisé. En aucun cas, le Client n'est ou ne sera autorisé à effectuer ou faire effectuer quelque réparation que ce soit sur les Équipements. </p>
+                        </li>
+                        <li>
+                            <h3>Assurances</h3>
+                            <p> Le Client s'engage, par les présentes, à détenir une assurance de responsabilité civile générale le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de deux millions de dollars (2 000 000 $) et à remettre, à <t t-esc="company_name + ','" /> une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements. </p>
+                        </li>
+                        <li>
+                            <h3>Normes, politiques et autres</h3>
+                            <p> Le Client s'engage, par les présentes, à respecter et à se conformer à toute norme, politique ou règlement édicté par <t t-esc="company_name" /> eu égard notamment à l'utilisation et la sécurité des Équipements. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>INDEMNISATION</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>Non-responsabilité</h4>
+                            <p>
 
-								<t t-esc="company_name" /> ne sera, en aucun temps, tenue responsable des dommages, bris quelconque ou interruption partielle ou complète pouvant être occasionnés, à tout moment, lors de l'utilisation des Équipements. Le Client est le seul responsable des personnes qui, au cours de la durée de l'entente, pourraient être appelées à utiliser les Équipements. </p>
-						</li>
-						<li>
-							<h4>Indemnisation</h4>
-							<p> Le Client reconnaît que <t t-esc="company_name + ','" /> ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses sous-traitants, ne peuvent être tenus responsables de tout bris, perte, destruction de biens et/ou dommage, de quelque nature que ce soit, découlant de l'utilisation des Équipements. Le Client renonce à tout droit, recours, réclamation et demande quelconque contre <t t-esc="company_name + ','" /> ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses sous-traitants découlant de l'utilisation des Équipements. Le Client convient d'indemniser et de tenir <t t-esc="company_name" /> indemne de toute réclamation, de quelque nature, découlant ou pouvant découler de tout défaut du Client de respecter ses obligations aux termes de la présente entente ou de tout bris, perte, destruction de biens et/ou dommage, de quelque nature que ce soit, découlant de l'utilisation des Équipements. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>FIN DE L'ENTENTE</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>Résiliation de plein droit</h4>
-							<p> L'entente est résiliée de plein droit, sans avis ni mise en demeure nécessaire de la part de <t t-esc="company_name + ','" /> si le Client fait cession de ses biens au bénéfice de ses créanciers, ou s'il devient failli ou insolvable ou s'il permet que ses actifs soient saisis à la suite d'un bref d'exécution ou autre procédure légale; </p>
-						</li>
-						<li>
-							<h4>
-								Résiliation sur préavis
-							</h4>
-							<p> L'entente est résiliée à l'expiration d'un délai de dix (10) jours, à compter de l'envoi d'un avis écrit qui dénonce, le cas échéant, le défaut d'exécution de l'une des parties, si cette dernière ne remédie pas à ce défaut dans ce délai, dans l'un ou l'autre des cas suivants (i) le Client contrevient à ou ne respecte pas l'un ou l'autre des termes, clauses, conditions et stipulations de l'entente, avec pour obligation du Client de verser à <t t-esc="company_name" /> toutes les sommes qui lui sont dues ou (ii) si <t t-esc="company_name" /> contrevient à ou ne respecte pas l'un ou l'autre des termes, clauses, conditions et stipulations de l'entente. </p>
-						</li>
-						<li>
-							<h4>
-								Effet de la résiliation
-							</h4>
-							<p> Lors de la résiliation de la présente entente, le Client s'engage à verser à <t t-esc="company_name" /> toute somme due aux termes de l'entente. <t t-esc="company_name" /> pourra, en tout temps et sans préavis à compter de la résiliation, reprendre possession des Équipements et le Client, par les présentes, autorise <t t-esc="company_name + ','" /> ses agents, employés ou représentants à entrer sur sa propriété ou à tout autre endroit où se trouve les Équipements dans le but de prendre possession immédiate desdits Équipements, le tout aux frais du Client. </p>
-						</li>
-					</ol>
-				</li>
-				<li>
-					<h3>
-						<strong>DISPOSITIONS GÉNÉRALES</strong>
-					</h3>
-					<ol>
-						<li>
-							<h4>
-								Cession
-							</h4>
-							<p>
+                                <t t-esc="company_name" /> ne sera, en aucun temps, tenue responsable des dommages, bris quelconque ou interruption partielle ou complète pouvant être occasionnés, à tout moment, lors de l'utilisation des Équipements. Le Client est le seul responsable des personnes qui, au cours de la durée de l'entente, pourraient être appelées à utiliser les Équipements. </p>
+                        </li>
+                        <li>
+                            <h4>Indemnisation</h4>
+                            <p> Le Client reconnaît que <t t-esc="company_name + ','" /> ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses sous-traitants, ne peuvent être tenus responsables de tout bris, perte, destruction de biens et/ou dommage, de quelque nature que ce soit, découlant de l'utilisation des Équipements. Le Client renonce à tout droit, recours, réclamation et demande quelconque contre <t t-esc="company_name + ','" /> ses administrateurs, ses dirigeants, ses employés, ses agents, ses bénévoles et ses sous-traitants découlant de l'utilisation des Équipements. Le Client convient d'indemniser et de tenir <t t-esc="company_name" /> indemne de toute réclamation, de quelque nature, découlant ou pouvant découler de tout défaut du Client de respecter ses obligations aux termes de la présente entente ou de tout bris, perte, destruction de biens et/ou dommage, de quelque nature que ce soit, découlant de l'utilisation des Équipements. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>FIN DE L'ENTENTE</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>Résiliation de plein droit</h4>
+                            <p> L'entente est résiliée de plein droit, sans avis ni mise en demeure nécessaire de la part de <t t-esc="company_name + ','" /> si le Client fait cession de ses biens au bénéfice de ses créanciers, ou s'il devient failli ou insolvable ou s'il permet que ses actifs soient saisis à la suite d'un bref d'exécution ou autre procédure légale; </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Résiliation sur préavis
+                            </h4>
+                            <p> L'entente est résiliée à l'expiration d'un délai de dix (10) jours, à compter de l'envoi d'un avis écrit qui dénonce, le cas échéant, le défaut d'exécution de l'une des parties, si cette dernière ne remédie pas à ce défaut dans ce délai, dans l'un ou l'autre des cas suivants (i) le Client contrevient à ou ne respecte pas l'un ou l'autre des termes, clauses, conditions et stipulations de l'entente, avec pour obligation du Client de verser à <t t-esc="company_name" /> toutes les sommes qui lui sont dues ou (ii) si <t t-esc="company_name" /> contrevient à ou ne respecte pas l'un ou l'autre des termes, clauses, conditions et stipulations de l'entente. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Effet de la résiliation
+                            </h4>
+                            <p> Lors de la résiliation de la présente entente, le Client s'engage à verser à <t t-esc="company_name" /> toute somme due aux termes de l'entente. <t t-esc="company_name" /> pourra, en tout temps et sans préavis à compter de la résiliation, reprendre possession des Équipements et le Client, par les présentes, autorise <t t-esc="company_name + ','" /> ses agents, employés ou représentants à entrer sur sa propriété ou à tout autre endroit où se trouve les Équipements dans le but de prendre possession immédiate desdits Équipements, le tout aux frais du Client. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h3>
+                        <strong>DISPOSITIONS GÉNÉRALES</strong>
+                    </h3>
+                    <ol>
+                        <li>
+                            <h4>
+                                Cession
+                            </h4>
+                            <p>
 
-								<t t-esc="company_name" /> se réserve le droit de céder ou transférer à quiconque une partie ou la totalité de ses droits et obligations résultant de la présente entente, et ce, sans nécessiter de demander le consentement ou l'autorisation du Client. Toutefois, le Client ne peut céder ses droits ni demander ou permettre qu'un tiers assume ses obligations en vertu de la présente entente. </p>
-						</li>
-						<li>
-							<h4>
-								Avis
-							</h4>
-							<p>
-								Tout avis requis en vertu de la présente entente est suffisant s'il est consigné dans un écrit et
-								expédié par un mode de communication qui permet à la partie expéditrice de prouver que ledit avis
-								fut effectivement livré à la partie destinataire aux adresses indiquées à la première (1re) page de
-								l'entente ou à toute autre adresse que celle-ci peut faire connaître en conformité avec les
-								présentes.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Non-renonciation
-							</h4>
-							<p>
-								Le silence d'une partie, sa négligence ou son retard à exercer un droit ou un recours qui lui est
-								consenti en vertu de l'entente ne doit jamais être interprété contre telle partie comme une
-								renonciation à ses droits et recours, tant et aussi longtemps que la prescription conventionnelle
-								ou légale prévue pour l'exercice d'un tel droit ou recours n'est pas expirée.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Représentants légaux
-							</h4>
-							<p>
-								L'entente lie les parties, leurs successeurs, représentants légaux, liquidateurs de succession,
-								fiduciaires et ayants cause.
-							</p>
-						</li>
-						<li>
-							<h4>
-								Lois applicables et juridiction
-							</h4>
-							<p> La présente entente, son interprétation, son exécution, son application, sa validité et ses effets sont assujettis aux lois en vigueur dans la province de <t t-esc="state" /> et celles en vigueur au <t t-esc="country" /> applicables dans la province de <t t-esc="state" /> lesquelles régissent l'ensemble des dispositions qu'elle contient. Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que ce soit, relativement aux présentes, de choisir le district judiciaire de <t t-esc="city + ','" /> province de <t t-esc="state + ','" />
+                                <t t-esc="company_name" /> se réserve le droit de céder ou transférer à quiconque une partie ou la totalité de ses droits et obligations résultant de la présente entente, et ce, sans nécessiter de demander le consentement ou l'autorisation du Client. Toutefois, le Client ne peut céder ses droits ni demander ou permettre qu'un tiers assume ses obligations en vertu de la présente entente. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Avis
+                            </h4>
+                            <p>
+                                Tout avis requis en vertu de la présente entente est suffisant s'il est consigné dans un écrit et
+                                expédié par un mode de communication qui permet à la partie expéditrice de prouver que ledit avis
+                                fut effectivement livré à la partie destinataire aux adresses indiquées à la première (1re) page de
+                                l'entente ou à toute autre adresse que celle-ci peut faire connaître en conformité avec les
+                                présentes.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Non-renonciation
+                            </h4>
+                            <p>
+                                Le silence d'une partie, sa négligence ou son retard à exercer un droit ou un recours qui lui est
+                                consenti en vertu de l'entente ne doit jamais être interprété contre telle partie comme une
+                                renonciation à ses droits et recours, tant et aussi longtemps que la prescription conventionnelle
+                                ou légale prévue pour l'exercice d'un tel droit ou recours n'est pas expirée.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Représentants légaux
+                            </h4>
+                            <p>
+                                L'entente lie les parties, leurs successeurs, représentants légaux, liquidateurs de succession,
+                                fiduciaires et ayants cause.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Lois applicables et juridiction
+                            </h4>
+                            <p> La présente entente, son interprétation, son exécution, son application, sa validité et ses effets sont assujettis aux lois en vigueur dans la province de <t t-esc="state" /> et celles en vigueur au <t t-esc="country" /> applicables dans la province de <t t-esc="state" /> lesquelles régissent l'ensemble des dispositions qu'elle contient. Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que ce soit, relativement aux présentes, de choisir le district judiciaire de <t t-esc="city + ','" /> province de <t t-esc="state + ','" />
 								<t t-esc="country + ','" /> comme le lieu approprié pour l'audition desdites réclamations ou poursuites judiciaires, à l'exclusion de tout autre district judiciaire qui peut avoir juridiction sur un tel litige selon les prescriptions de la loi. </p>
-						</li>
-					</ol>
-				</li>
-			</ol>
-		</div>
-	</template>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
+    </template>
 </odoo>

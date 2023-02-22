@@ -32,18 +32,32 @@
 					</div> -->
 				<br />
 				<div>
-					<span t-if="clang == 'en_CA' or clang == 'en_US'">
-						Shipping address same as billing address
-					</span>
-					<span t-elif="clang == 'fr_CA'">
-						Adresse de livraison identique à l'adresse de facturation
-					</span>
-					<br />
-
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<input id="new-address" type="checkbox" checked="true" />
+					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
+					<input id="new-address" t-else="" type="checkbox" />
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span>Is the shipping address the same as the billing address?</span>
+						<label id="address_yes_label" for="new-address">
+							<span style="cursor: pointer;">Yes</span>
+						</label>
+						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Yes</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="cursor: pointer;">No</span>
+						</label>
+						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
+					</t>
+					<t t-elif="clang == 'fr_CA'">
+						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
+						<label id="address_yes_label" for="new-address">
+							<span style="cursor: pointer;">Oui</span>
+						</label>
+						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Oui</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="cursor: pointer;">Non</span>
+						</label>
+						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
+					</t>
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">
