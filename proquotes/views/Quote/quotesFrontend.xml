@@ -392,8 +392,8 @@
 					<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 				</h1>
 			</label>
-			<!-- <input id="rental-terms-checkbox" type="checkbox" style="display:none" /> -->
-			<input id="rental-terms-checkbox" type="checkbox" checked="true" />
+			<input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" />
+			<!-- <input id="rental-terms-checkbox" type="checkbox" checked="true" /> -->
 			<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
