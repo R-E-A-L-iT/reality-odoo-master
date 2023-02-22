@@ -1101,23 +1101,26 @@ class sync(models.Model):
              _logger.info("--------------- " + str(e))
              return
 
-        lines = self.env['sale.order.line'].search([])
+        # gatter product templte
         product_template = self.env['product.template'].search([
-            ('id', '=', product_template_id)])              
-                     
-        _logger.info("--------------- product_template.id: " + str(product_template.id))
-        _logger.info("--------------- product_template.name: " + str(product_template.name))
-                    
+            ('id', '=', product_template_id)])  
+                
+        # gatter all lines of all sales
+        lines = self.env['sale.order.line'].search([])           
+
+        # Check if the product.template.id appear in any sale.order.id    
         for line in lines:    
                 for line_product_template in line.product_template_id:                                                 
                     if (line_product_template.id == product_template.id):
                         for line_order in line.order_id:
                             sale = self.env['sale.order'].search([
                                 ('id', '=', line_order.id)])                           
-                            #_logger.info("--------------- line.product_template_id: " + str(line_product_template.id).ljust(20) + ", product_template.id: " + str(product_template.id))
-                            _logger.info("--------------- line_product_template.id: " + str(line_product_template.id).ljust(20) + 
+                            _logger.info("---------------" + 
+                                            "  product_template.id: " + str(product_template.id).ljust(10) +
+                                            ", product_template.name: " + str(product_template.name).ljust(100) +
+                                            ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
                                             ", sale.id: " + str(sale.id).ljust(10) +
-                                            ", sale.name" + str(sale.name))      
+                                            ", sale.name: " + str(sale.name))      
 
         _logger.info("--------------- END ---------------------------------------------")
 
