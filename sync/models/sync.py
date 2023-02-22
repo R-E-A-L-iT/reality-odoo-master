@@ -1096,7 +1096,7 @@ class sync(models.Model):
         sales = self.env['sale.order'].search([])
         lines_count = 0
         
-        _logger.info("--------------- Checking for sales with product id: " + str(product_id) + " ---------------------------------------------")
+        _logger.info("--------------- Checking for sales with product id: " + str(product.id) + " ---------------------------------------------")
         _logger.info("--------------- product name: " + str(product.name))
 
         for sale in sales:
