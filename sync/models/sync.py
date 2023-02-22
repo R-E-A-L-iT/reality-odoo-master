@@ -1148,7 +1148,7 @@ class sync(models.Model):
     def cleanProductByName(self, p_name):
         duplicate_names = self.getProductsWithSameName()
 
-        for name in duplicate_names:
+        #for name in duplicate_names:
 
 
 
