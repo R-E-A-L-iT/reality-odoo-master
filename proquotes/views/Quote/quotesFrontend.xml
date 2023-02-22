@@ -389,7 +389,7 @@
 			<label for="rental-terms-checkbox">
 				<h1>
 					<strong class="white-text">+</strong>
-					<strong class="white-text">x</strong>
+					<strong class="white-text">×</strong>
 					<strong class="white-text" t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
 					<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 				</h1>
