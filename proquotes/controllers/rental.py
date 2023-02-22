@@ -29,11 +29,11 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        _logger.warning(str(newAdd))
-
         if (str(newAdd) == True or str(newAdd) == False):
-            order_sudo.rental_diff_add = True if str(newAdd == "True") else False
+            order_sudo.rental_diff_add = True if str(
+                newAdd == "True") else False
 
+        _logger.warning(order_sudo.rental_diff_add)
         return
 
     @http.route(["/my/orders/<int:order_id>/street"], type='json', auth="public", website=True)
