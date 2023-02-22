@@ -1099,9 +1099,9 @@ class sync(models.Model):
             
             for line in lines:
                     for product in line.product_id:
-                        _logger.info("--------------- line.product_id: " + str(product.id))
-                # if (line.product_id == product_id):
-                #     _logger.info("--------------- id: " + str(line.product_id ))
+                        #_logger.info("--------------- line.product_id: " + str(product.id))
+                        if (product.id == product_id):
+                            _logger.info("--------------- id: " + str(line.product_id ))
 
 
 
