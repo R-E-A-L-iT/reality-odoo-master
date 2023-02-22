@@ -1101,7 +1101,7 @@ class sync(models.Model):
                     for product in line.product_id:
                         #_logger.info("--------------- line.product_id: " + str(product.id))
                         if (product.id == product_id):
-                            _logger.info("--------------- id: " + str(line.product_id ))
+                            _logger.info("--------------- product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
 
 
 
