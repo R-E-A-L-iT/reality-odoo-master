@@ -52,6 +52,6 @@
 	display: none;
 }
 
-#new-address:checked ~ #rental-address {
+#new-address:not(:checked) ~ #rental-address {
 	display: none;
 }
