@@ -289,7 +289,7 @@
 				<t t-set="company_name" t-value="doc.company_id.name" />
 				<label for="rental-terms-checkbox">
 					<h1>
-						<strong t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
+						<strong t-if="clang == 'en_CA' or clang == 'en_US'">Terms and rConditions</strong>
 						<strong t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 					</h1>
 				</label>
