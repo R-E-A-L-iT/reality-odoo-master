@@ -34,18 +34,27 @@
 				<div>
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Is the shipping address the same as the billing address?</span>
-						<label for="new-address">
+						<label id="address_yes_label" for="new-address">
 							<span style="background-color: #db0d0d; cursor: pointer;">Yes</span>
 						</label>
-						<span style="cursor: pointer;">Yes</span>
+						<span id="address_yes" style="cursor: pointer;">Yes</span>
 						<span>|</span>
-						<label for="new-address">
+						<label id="address_no_label" for="new-address">
 							<span style="background-color: #db0d0d; cursor: pointer;">No</span>
 						</label>
-						<span style="cursor: pointer;">No</span>
+						<span id="address_no" style="cursor: pointer;">No</span>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
 						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
+						<label id="address_yes_label" for="new-address">
+							<span style="background-color: #db0d0d; cursor: pointer;">Oui</span>
+						</label>
+						<span id="address_yes" style="cursor: pointer;">Oui</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="background-color: #db0d0d; cursor: pointer;">Non</span>
+						</label>
+						<span id="address_no" style="cursor: pointer;">Non</span>
 					</t>
 					<br />
 
