@@ -293,7 +293,7 @@
 						<strong t-if="clang == 'fr_CA'">Termes et Conditions</strong>
 					</h1>
 				</label>
-				<input type="checkbox" />
+				<input id="rental-terms-checkbox" type="checkbox" />
 				<t t-call="proquotes.rental_terms" />
 			</t>
 			<div id="quote_disclaimer">
