@@ -1111,12 +1111,13 @@ class sync(models.Model):
         for line in lines:    
                 for line_product_template in line.product_template_id:                                                 
                     if (line_product_template.id == product_template.id):
-                        #sale = self.env['sale.order'].search([
-                        #    ('id', '=', line.order_id)])                           
-                        #_logger.info("--------------- line.product_template_id: " + str(line_product_template.id).ljust(20) + ", product_template.id: " + str(product_template.id))
-                        _logger.info("--------------- line_product_template.id: " + str(line_product_template.id).ljust(20) + 
-                                        ", sale.id: " + str(line.order_id).ljust(10))# +
-                                        #", sale.name" + str(sale.name))      
+                        for line_order in line.order_id:
+                            sale = self.env['sale.order'].search([
+                                ('id', '=', line_order.id)])                           
+                            #_logger.info("--------------- line.product_template_id: " + str(line_product_template.id).ljust(20) + ", product_template.id: " + str(product_template.id))
+                            _logger.info("--------------- line_product_template.id: " + str(line_product_template.id).ljust(20) + 
+                                            ", sale.id: " + str(sale.id).ljust(10) +
+                                            ", sale.name" + str(sale.name))      
 
         _logger.info("--------------- END ---------------------------------------------")
 
