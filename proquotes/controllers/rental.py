@@ -29,6 +29,8 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        _logger.warning(newAdd)
+
         order_sudo.rental_diff_add = newAdd
 
         return
@@ -92,6 +94,8 @@ class RentalCustomerPortal(cPortal):
 
         if (state == "Select"):
             order_sudo.rental_state = False
+            return
+        if (not self.validate(state)):
             return
 
             # Canada
@@ -177,6 +181,9 @@ class RentalCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not self.validate(country)):
+            return
 
         if country == "Canada":
             order_sudo.rental_state = False
