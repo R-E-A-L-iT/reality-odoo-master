@@ -35,6 +35,6 @@
 	display: none;
 }
 
-#new-address:not(:checked) ~ #address_yes_label {
+#new-address:not(:checked) ~ #address_no_label {
 	display: none;
 }
