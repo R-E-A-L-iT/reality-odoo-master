@@ -1,4 +1,4 @@
-#rentalTerms {
+#rental-terms-checkbox:checked() + #rentalTerms {
     display: none !important;
 }
 
