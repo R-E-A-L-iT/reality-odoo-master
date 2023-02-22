@@ -1146,7 +1146,7 @@ class sync(models.Model):
 
 
     ################################################################### 
-    def cleanProductByName(self, p_name):
+    def cleanProductByName(self):
         duplicate_names = self.getProductsWithSameName()
 
         for ids in duplicate_names:
