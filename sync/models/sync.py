@@ -1107,6 +1107,8 @@ class sync(models.Model):
                         if (p.id == product_id):
                             _logger.info("--------------- product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
 
+        _logger.info("--------------- END ---------------------------------------------")
+
 
 
     def getProductIdBySku(self, p_sku):
