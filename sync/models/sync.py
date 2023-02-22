@@ -1095,8 +1095,8 @@ class sync(models.Model):
             ('id', '=', product_id)])            
         sales = self.env['sale.order'].search([])
         lines_count = 0
-
-        _logger.info("--------------- Checking for sales with product id: " + str(product_id))
+        
+        _logger.info("--------------- Checking for sales with product id: " + str(product_id) + " ---------------------------------------------")
         _logger.info("--------------- product name: " + str(product.name))
 
         for sale in sales:
@@ -1106,16 +1106,12 @@ class sync(models.Model):
             for line in lines:
                     lines_count += 1
                     for p in line.product_id:
-                        #_logger.info("--------------- line.product_id: " + str(product.id))
                         if (p.id == product.id):
-                            _logger.info("--------------- product id: " + str(p.id ) + " is in sale.id: " + str(sale.id))
-                        #else:
-                        #    _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! product id: " + str(line.product_id ) + " is in sale.id: " + str(sale.id))
+                            _logger.info("--------------- product id: " + str(p.id ) + " is in sale.id: " + str(sale.id) + ", customer_po_number" + str(sale.customer_po_number))                        
 
         _logger.info("--------------- Sales count: " + str(len(sales)))
         _logger.info("--------------- Lines count: " + str(lines_count))
         _logger.info("--------------- END ---------------------------------------------")
-
 
 
     def getProductIdBySku(self, p_sku):
