@@ -1064,6 +1064,7 @@ class sync(models.Model):
     def getProductsWithSameName(self):
         dup_product_template_name = dict()
         products = self.env['product.template'].search([])
+        count = 0
 
         _logger.info("------------------------------------------------------------------")
         _logger.info("---------------  getProductsWithSameName")        
@@ -1076,17 +1077,20 @@ class sync(models.Model):
 
             # Check if the product is already identfied
             if (product.name in dup_product_template_name):
-                continue            
-            dup_product_template_name[product.name] = []
+                continue                        
 
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
                 [('name', '=', product.name)])           
 
-            if (len(doubled_names) > 1):              
+            if (len(doubled_names) > 1):  
+                count += 1
+                dup_product_template_name[product.name] = []            
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
-                    _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                    _logger.info("--------------- " + 
+                                 str(count).ljust(5) +
+                                 ", id: " + str(doubled_name.id).ljust(10) + str(product.name))
                     dup_product_template_name[product.name].append(doubled_name.id)
         
         return dup_product_template_name
