@@ -3,477 +3,481 @@
 <odoo>
 
 
-	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
+<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
-			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
-		</xpath>
+<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
+	<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
+</xpath>
 
-		<xpath expr="//table/thead" position="replace">
-			<t t-set="clang" t-value="doc.env.context.get('lang')" />
-		</xpath>
+<xpath expr="//table/thead" position="replace">
+	<t t-set="clang" t-value="doc.env.context.get('lang')" />
+</xpath>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
-			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
-		</xpath>
+<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
+	<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
+</xpath>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
-			<attribute name="t-if">line.name[0] != '$'</attribute>
-		</xpath>
+<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
+	<attribute name="t-if">line.name[0] != '$'</attribute>
+</xpath>
 
 
-		<xpath expr="// t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
-			<span t-elif="line.name.strip()[0] == '#'">
-				<t t-set="sname" t-value="line.name.strip()[1:]" />
-				<t t-call="proquotes.section_name_resolution" />
-			</span>
-		</xpath>
+<xpath expr="// t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+	<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
+	<span t-elif="line.name.strip()[0] == '#'">
+		<t t-set="sname" t-value="line.name.strip()[1:]" />
+		<t t-call="proquotes.section_name_resolution" />
+	</span>
+</xpath>
 
-		<xpath expr="//table/tbody//tr[1]" position="before">
-			<style>
-				.quote-head * {
-				color: #fff; background-color: #db0d0d;
-				}
+<xpath expr="//table/tbody//tr[1]" position="before">
+	<style>
+		.quote-head * {
+		color: #fff; background-color: #db0d0d;
+		}
 
-				#rental-terms, #rental-terms *{
-				font-size: 1em;
-				margin: 0px !important;
-				padding: 0.15em !important;
-				}
+		#rental-terms, #rental-terms *{
+		font-size: 1em;
+		margin: 0px !important;
+		padding: 0.15em !important;
+		}
 
-				#rental-terms h3 {
-				font-size: 2em !important;
-				}
+		#rental-terms h3 {
+		font-size: 2em !important;
+		}
 
-				#rental-terms h1 strong {
-				font-size: 2em !important;
-				}
+		#rental-terms h1 strong {
+		font-size: 2em !important;
+		}
 
-				ol ol{
-				list-style: lower-alpha;
-				}
-			</style>
-			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<t t-if="line.name == '$block' or line.name == '$block+'">
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
-						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
-						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
-							Product Value
-						</td>
-						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qty</td>
-						<td class=" text-center" style=" border-top-style: none !important">Price</td>
-						<td class=" text-center" style=" border-top-style: none !important">Amount</td>
-					</t>
-					<t t-if=" clang== 'fr_CA'">
-						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
-						<td t-else="" class="text-left" style="border-top-style: none !important">Produit</td>
-						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
-							Valeur du Produit
-						</td>
-						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qté</td>
-						<td class=" text-center" style=" border-top-style: none !important">Prix</td>
-						<td class=" text-center" style=" border-top-style: none !important">Montant</td>
-					</t>
-				</t>
-			</tr>
-			<t t-if=" line.name== '$hardware'">
-				<tr>
-					<td colspan="100" style="border-style: none !important;">
-						<t t-set="isPDF" t-value="True" />
-						<t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english" />
-						<t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french" />
-					</td>
-				</tr>
-			</t>
-			<t t-if="line.name == '$software'">
-				<tr>
-					<td colspan="100" style="border-style: none !important;">
-						<t t-call="proquotes.renewal-software" />
-					</td>
-				</tr>
-			</t>
-			<t t-if="line.name == '$subscription'">
-				<td colspan="100" style="border-style: none !important;">
-					<t t-call="proquotes.renewal-subscription" />
+		ol ol{
+		list-style: lower-alpha;
+		}
+	</style>
+	<tr class="quote-head" t-if="line.display_type == 'line_section'">
+		<t t-if="line.name == '$block' or line.name == '$block+'">
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">
+				<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
+				<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
+				<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+					Product Value
 				</td>
+				<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
+				<td class=" text-center" style=" border-top-style: none !important">Qty</td>
+				<td class=" text-center" style=" border-top-style: none !important">Price</td>
+				<td class=" text-center" style=" border-top-style: none !important">Amount</td>
 			</t>
-			<t t-if="line.name == '$rental_address'">
-				<td colspan="99">
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
-					</t>
-					<t t-if="doc.rental_diff_add == True">
-						<span t-field="doc.rental_street" />
-						<br />
-						<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
-						<span t-esc="doc.rental_state.code" />
-						<span t-field="doc.rental_zip" />
-					</t>
+			<t t-if=" clang== 'fr_CA'">
+				<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
+				<td t-else="" class="text-left" style="border-top-style: none !important">Produit</td>
+				<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+					Valeur du Produit
 				</td>
+				<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
+				<td class=" text-center" style=" border-top-style: none !important">Qté</td>
+				<td class=" text-center" style=" border-top-style: none !important">Prix</td>
+				<td class=" text-center" style=" border-top-style: none !important">Montant</td>
 			</t>
-			<t t-if="line.name == '$rental_pricenote'">
-				<td style="border-style: none;" colspan="100">
-					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
-						* The final rental cost will be calculated once the equipement is returned.
-						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above). ‌
-					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
-						* Le coût final sera calculé lorsque l'équipement sera retourné.
-						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-					</p>
-					<!-- Format Estimated Rental Rate Number -->
-					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
-					<t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
-					<t t-if=" clang== 'en_CA' or clang == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
-					</t>
-					<br />
-					<br />
-
-					<!-- Format Remtal Value Number -->
-					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
-						<br />
-						<br />
-						<span>
-							Please upload your proof of insurance in the connents section below or send a copy by email.
-						</span>
-						<br />
-					</div>
-					<div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
-						<span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
-						<br />
-						<br />
-						<span>
-							Merci de fournir votre attestation d'assurance :
-						</span>
-						<br />
-					</div>
-				</td>
+		</t>
+	</tr>
+	<t t-if=" line.name== '$hardware'">
+		<tr>
+			<td colspan="100" style="border-style: none !important;">
+				<t t-set="isPDF" t-value="True" />
+				<t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english" />
+				<t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french" />
+			</td>
+		</tr>
+	</t>
+	<t t-if="line.name == '$software'">
+		<tr>
+			<td colspan="100" style="border-style: none !important;">
+				<t t-call="proquotes.renewal-software" />
+			</td>
+		</tr>
+	</t>
+	<t t-if="line.name == '$subscription'">
+		<td colspan="100" style="border-style: none !important;">
+			<t t-call="proquotes.renewal-subscription" />
+		</td>
+	</t>
+	<t t-if="line.name == '$rental_address'">
+		<td colspan="99">
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">
+				<p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+				<p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
 			</t>
-		</xpath>
-
-		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
-		</xpath>
-
-		<!-- Remove Special Sections for Renewal Quotes -->
-		<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
-			<attribute name="t-if">line.name[0] != '$'</attribute>
-		</xpath>
-
-		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
-			<style>
-				table {
-				border-style: none !important;
-				}
-
-				td {
-				border-style: solid !important;
-				border-color: black !important;
-				}
-
-				span {
-				white-space: nowrap;
-				}
-
-				.no-display {
-				display: none;
-				}
-
-				.english-mode+div+div {
-				display: none;
-				}
-
-				.french-mode+div {
-				display: none;
-				}
-
-				#renewal-text h4 {
-				border-bottom-style: solid;
-				border-bottom-color: #f55;
-				}
-
-				#renewal-text {
-				margin: auto;
-				}
-
-				#renewal-text * {
-				color: #000;
-				margin: auto;
-				line-height: 2.5rem;
-				}
-
-				#renewal-text p {
-				margin-bottom: 7.5vw;
-				line-height: 1.5em;
-				}
-
-				#renewal-text img {
-				width: 80%;
-				height: auto;
-				margin-left: 10%;
-				margin-right: 10%;
-				margin-bottom: 1em;
-				}
-
-				img {
-				width: 100% !important;
-				margin-left: 0px !important;
-				marign-right: 0px !important;
-				}
-			</style>
-		</xpath>
-
-		<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
-			<attribute name="id">partner_address</attribute>
-		</xpath>
-
-		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
-
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
-			<attribute name="style">margin-bottom: 20vh;</attribute>
-		</xpath>
-
-		<!-- Apply HTML-->
-		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<!-- <t t-set="name" t-value="line.applied_name"/> -->
-			<span t-raw="line.product_id.name"></span>
+			<t t-elif="clang == 'fr_CA'">
+				<p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+				<p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+			</t>
+			<t t-if="doc.rental_diff_add == True">
+				<span t-field="doc.rental_street" />
+				<br />
+				<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
+				<span t-esc="doc.rental_state.code" />
+				<span t-field="doc.rental_zip" />
+			</t>
+		</td>
+	</t>
+	<t t-if="line.name == '$rental_pricenote'">
+		<td style="border-style: none;" colspan="100">
+			<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+				* The final rental cost will be calculated once the equipement is returned.
+				Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
+				Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above). ‌
+			</p>
+			<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+				* Le coût final sera calculé lorsque l'équipement sera retourné.
+				Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
+				Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
+			</p>
+			<!-- Format Estimated Rental Rate Number -->
+			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
+			<t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
+			<t t-if=" clang== 'en_CA' or clang == 'en_US'">
+				<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
+			</t>
+			<t t-elif="clang == 'fr_CA'">
+				<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
+			</t>
+			<br />
 			<br />
 
-			<!-- <t t-set="description" t-value="line.name"/> -->
-			<style>
-				description-root, .description-root *{
-				font-size: .75rem;
-				margin-top: 0px !important;
-				margin-bottom: 0px !important;
-				}
-			</style>
-			<div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
-		</xpath>
+			<!-- Format Remtal Value Number -->
+			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+			<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+			<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+				<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
+				<br />
+				<br />
+				<span>
+					Please upload your proof of insurance in the connents section below or send a copy by email.
+				</span>
+				<br />
+			</div>
+			<div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
+				<span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+				<br />
+				<br />
+				<span>
+					Merci de fournir votre attestation d'assurance :
+				</span>
+				<br />
+			</div>
+		</td>
+	</t>
+</xpath>
 
-		<!--Hide Unselected-->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
-			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
-		</xpath>
+<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
+	<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
+</xpath>
 
-		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
-			<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
-			<span t-else="" t-field="line.product_uom_qty" />
-		</xpath>
+<!-- Remove Special Sections for Renewal Quotes -->
+<xpath expr="//table/tbody/t[2]/tr[2]" position="attributes">
+	<attribute name="t-if">line.name[0] != '$'</attribute>
+</xpath>
 
-		<!-- Remove Unit From PDF-->
-		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace" />
+<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
+	<style>
+		table {
+		border-style: none !important;
+		}
 
-		<!--Remove Tax Calculation-->
+		td {
+		border-style: solid !important;
+		border-color: black !important;
+		}
 
-		<!--Add Signature-->
-		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
-			<t t-if="doc.sale_order_template_id.name == 'Rental'">
-				<t t-set="company_name" t-value="doc.company_id.name" />
-				<t t-call="proquotes.rental_terms" />
-			</t>
-			<div id="quote_disclaimer">
-				<t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'" t-value="'canadiens'" />
-				<t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'" t-value="'américains'" />
-				<t t-set="currency_label" t-else="" t-value="doc.currency_id.name" />
-				<span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
-				<span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label" />. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.</span>
+		span {
+		white-space: nowrap;
+		}
 
-				<t t-if="'abtech' in doc.company_id.name.lower()">
+		.no-display {
+		display: none;
+		}
+
+		.english-mode+div+div {
+		display: none;
+		}
+
+		.french-mode+div {
+		display: none;
+		}
+
+		#renewal-text h4 {
+		border-bottom-style: solid;
+		border-bottom-color: #f55;
+		}
+
+		#renewal-text {
+		margin: auto;
+		}
+
+		#renewal-text * {
+		color: #000;
+		margin: auto;
+		line-height: 2.5rem;
+		}
+
+		#renewal-text p {
+		margin-bottom: 7.5vw;
+		line-height: 1.5em;
+		}
+
+		#renewal-text img {
+		width: 80%;
+		height: auto;
+		margin-left: 10%;
+		margin-right: 10%;
+		margin-bottom: 1em;
+		}
+
+		img {
+		width: 100% !important;
+		margin-left: 0px !important;
+		marign-right: 0px !important;
+		}
+	</style>
+</xpath>
+
+<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
+	<attribute name="id">partner_address</attribute>
+</xpath>
+
+<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
+
+<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
+	<attribute name="style">margin-bottom: 20vh;</attribute>
+</xpath>
+
+<!-- Apply HTML-->
+<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
+	<!-- <t t-set="name" t-value="line.applied_name"/> -->
+	<span t-raw="line.product_id.name"></span>
+	<br />
+
+	<!-- <t t-set="description" t-value="line.name"/> -->
+	<style>
+		description-root, .description-root *{
+		font-size: .75rem;
+		margin-top: 0px !important;
+		margin-bottom: 0px !important;
+		}
+	</style>
+	<div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
+</xpath>
+
+<!--Hide Unselected-->
+<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]" position="attributes">
+	<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
+</xpath>
+
+<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
+	<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
+	<span t-else="" t-field="line.product_uom_qty" />
+</xpath>
+
+<!-- Remove Unit From PDF-->
+<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace" />
+
+<!--Remove Tax Calculation-->
+
+<!--Add Signature-->
+<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+<t t-if="doc.sale_order_template_id.name == 'Rental'">
+<t t-set="company_name" t-value="doc.company_id.name" />
+<h1>
+	<strong t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
+	<strong t-if="clang == 'fr_CA'">Termes et Conditions</strong>
+</h1>
+<t t-call="proquotes.rental_terms" />
+</>
+<div id="quote_disclaimer">
+	<t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'" t-value="'canadiens'" />
+	<t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'" t-value="'américains'" />
+	<t t-set="currency_label" t-else="" t-value="doc.currency_id.name" />
+	<span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
+	<span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label" />. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.</span>
+
+	<t t-if="'abtech' in doc.company_id.name.lower()">
+		<br />
+		<br />
+		<t t-if="clang == 'en_CA' or clang == 'en_US'">
+			<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
+		</t>
+		<t t-elif="clang == 'fr_CA'">
+			<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
+		</t>
+	</t>
+</div>
+<div>
+	<h1>Customer Acceptance</h1>
+	<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+</div>
+<div>
+	<span style="height: 40px"> PO #:</span>
+	<span style="border-bottom: solid !important; width:500px !important;">
+		<span style="color: #fff;">________________________________________</span>
+	</span>
+	<br />
+	<br />
+	<span style="height: 40px"> Signature:</span>
+	<span style="border-bottom: solid !important; width:500px !important;">
+		<span style="color: #fff;">____________________________________</span>
+	</span>
+	<br />
+	<br />
+	<span style="height: 40px"> Date:</span>
+	<span style="border-bottom: solid !important; width:500px !important;">
+		<span style="color: #fff;">________________________________________</span>
+	</span>
+	<br />
+	<br />
+	<br />
+	<t t-set="footer" t-value="doc.footer"></t>
+
+	<footer>
+		<t t-if="doc.company_id.id == 15">
+			<div id="bank-info" style="width: 100%; text-align: center;">
+				<p>
+					<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 					<br />
+					<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 					<br />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
-					</t>
-				</t>
+					<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
+				</p>
 			</div>
-			<div>
-				<h1>Customer Acceptance</h1>
-				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+		</t>
+
+		<t t-if="doc.company_id.id == 3">
+			<br />
+			<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
+				<p>
+					<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
+					<br />
+					<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
+					<br />
+					<span>Routing No.: 071025661, Account No.: 3875473</span>
+				</p>
 			</div>
-			<div>
-				<span style="height: 40px"> PO #:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">________________________________________</span>
-				</span>
-				<br />
-				<br />
-				<span style="height: 40px"> Signature:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">____________________________________</span>
-				</span>
-				<br />
-				<br />
-				<span style="height: 40px"> Date:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">________________________________________</span>
-				</span>
-				<br />
-				<br />
-				<br />
-				<t t-set="footer" t-value="doc.footer"></t>
+		</t>
+	</footer>
+</div>
+</xpath>
 
-				<footer>
-					<t t-if="doc.company_id.id == 15">
-						<div id="bank-info" style="width: 100%; text-align: center;">
-							<p>
-								<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
-								<br />
-								<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
-								<br />
-								<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
-							</p>
-						</div>
-					</t>
+<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+	<t t-call="proquotes.proquotes_total_pdf" />
+</xpath>
 
-					<t t-if="doc.company_id.id == 3">
-						<br />
-						<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-							<p>
-								<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
-								<br />
-								<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
-								<br />
-								<span>Routing No.: 071025661, Account No.: 3875473</span>
-							</p>
-						</div>
-					</t>
-				</footer>
-			</div>
-		</xpath>
+<xpath expr="//h2" position="replace" />
 
-		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
-			<t t-call="proquotes.proquotes_total_pdf" />
-		</xpath>
+<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
-		<xpath expr="//h2" position="replace" />
-
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
-
-			<div style="position: relative; bottom: 50px; margin-bottom: -25px;">
-				<h2 style="color: #db0d0d;">
-					<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-						<span style="color: #db0d0d;" t-if="doc.state not in ['draft','sent']">Order # </span>
-						<span style="color: #db0d0d;" t-if="doc.state in ['draft','sent']">Quotation # </span>
-					</t>
-					<t t-if="env.context.get('proforma', False) or is_pro_forma">
-						<span style="color: #db0d0d;">Pro-Forma Invoice # </span>
-					</t>
-					<span style="color: #db0d0d;" t-field="doc.name" />
-				</h2>
-				<span t-if="doc.partner_id.parent_id != False" t-field="doc.partner_id.parent_id.name" />
-				<br t-if="doc.partner_id.parent_id != False" />
-				<span t-field="doc.partner_id.name" />
-				<br />
-				<span t-field="doc.partner_id.street" />
-				<br />
-				<span t-if="doc.partner_id.city != False" t-esc="doc.partner_id.city + ','" />
-				<span t-esc="doc.partner_id.state_id.code" />
-				<span t-field="doc.partner_shipping_id.zip" />
-				<span t-field="doc.partner_id.country_id.name" />
-				<br />
-				<span t-field="doc.partner_id.phone" />
-				<br />
-			</div>
-		</xpath>
-
-		<xpath expr="//h2/t/span[1]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
-
-		<xpath expr="//h2/t/span[2]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
-
-		<xpath expr="//h2/span" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
-
-		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
-
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
-			<t t-set="no_select" t-value="True" />
-		</xpath>
-
-		<!-- For rental quotes calculate relevant sums -->
-		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-set="rentalValue" t-value="0" />
-			<t t-set="rentalRate" t-value="0" />
-
-			<t t-if="doc.rental_start != False and doc.rental_end != False">
-				<t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
-				<t t-set="edate" t-value="str(doc.rental_end).split('-')" />
-				<t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
-				<t t-set="rentalMonths" t-value="rentalDays // 30" />
-				<t t-set="rentalDays" t-value="rentalDays % 30" />
-				<t t-set="rentalWeeks" t-value="rentalDays // 7" />
-				<t t-set="rentalDays" t-value="rentalDays % 7" />
+	<div style="position: relative; bottom: 50px; margin-bottom: -25px;">
+		<h2 style="color: #db0d0d;">
+			<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+				<span style="color: #db0d0d;" t-if="doc.state not in ['draft','sent']">Order # </span>
+				<span style="color: #db0d0d;" t-if="doc.state in ['draft','sent']">Quotation # </span>
 			</t>
-		</xpath>
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
-			<t t-if="'CAD' in doc.currency_id.name">
-				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+			<t t-if="env.context.get('proforma', False) or is_pro_forma">
+				<span style="color: #db0d0d;">Pro-Forma Invoice # </span>
 			</t>
-			<t t-elif="'USD' in doc.currency_id.name">
-				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usdVal" />
-			</t>
-			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
-			<t t-if="doc.rental_start != False and doc.rental_end != False and (rentalDayRate > line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
-			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
-			<t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
-			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
-			<t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
-		</xpath>
+			<span style="color: #db0d0d;" t-field="doc.name" />
+		</h2>
+		<span t-if="doc.partner_id.parent_id != False" t-field="doc.partner_id.parent_id.name" />
+		<br t-if="doc.partner_id.parent_id != False" />
+		<span t-field="doc.partner_id.name" />
+		<br />
+		<span t-field="doc.partner_id.street" />
+		<br />
+		<span t-if="doc.partner_id.city != False" t-esc="doc.partner_id.city + ','" />
+		<span t-esc="doc.partner_id.state_id.code" />
+		<span t-field="doc.partner_shipping_id.zip" />
+		<span t-field="doc.partner_id.country_id.name" />
+		<br />
+		<span t-field="doc.partner_id.phone" />
+		<br />
+	</div>
+</xpath>
 
-		<!-- Price Format Update -->
-		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
-			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
-			<span t-out="line_price" />
-		</xpath>
-		<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
-			<span t-out="'{value:,.2f}'.format(value= line.price_unit)" />
-		</xpath>
+<xpath expr="//h2/t/span[1]" position="attributes">
+	<attribute name="style">color: #db0d0d !important;</attribute>
+</xpath>
 
-		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
-			<td t-if="doc.is_rental == True and line.product_id.is_software == False">
-				<t t-if="line.product_id.is_software == False">
-					<t t-if="'CAD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.cadVal" />
-					<t t-elif="'USD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.usdVal" />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="singleProductValueFormated" t-value="'$ {value:,.2f}'.format(value= singleProductValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="singleProductValueFormated" t-value="'{value:,.2f} $'.format(value= singleProductValue)" />
-					<span t-out="singleProductValueFormated" />
-				</t>
-			</td>
-			<td t-else="" colspan="0" style="border-left-style: none !important;" />
-		</xpath>
+<xpath expr="//h2/t/span[2]" position="attributes">
+	<attribute name="style">color: #db0d0d !important;</attribute>
+</xpath>
 
-		<!-- Remove Right Border When Product Value Not Displayed -->
-		<xpath expr="//td[@name=&quot;td_name&quot;]" position="attributes">
-			<attribute name="t-attf-style">
-				{{'border-right-style: none !important;' if (doc.is_rental != True or line.product_id.is_software != True) else '' }}
-			</attribute>
-		</xpath>
-	</template>
+<xpath expr="//h2/span" position="attributes">
+	<attribute name="style">color: #db0d0d !important;</attribute>
+</xpath>
+
+<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
+
+<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
+	<t t-set="no_select" t-value="True" />
+</xpath>
+
+<!-- For rental quotes calculate relevant sums -->
+<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+	<t t-set="rentalValue" t-value="0" />
+	<t t-set="rentalRate" t-value="0" />
+
+	<t t-if="doc.rental_start != False and doc.rental_end != False">
+		<t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
+		<t t-set="edate" t-value="str(doc.rental_end).split('-')" />
+		<t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
+		<t t-set="rentalMonths" t-value="rentalDays // 30" />
+		<t t-set="rentalDays" t-value="rentalDays % 30" />
+		<t t-set="rentalWeeks" t-value="rentalDays // 7" />
+		<t t-set="rentalDays" t-value="rentalDays % 7" />
+	</t>
+</xpath>
+<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+	<t t-if="'CAD' in doc.currency_id.name">
+		<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+	</t>
+	<t t-elif="'USD' in doc.currency_id.name">
+		<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usdVal" />
+	</t>
+	<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
+	<t t-if="doc.rental_start != False and doc.rental_end != False and (rentalDayRate > line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
+	<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
+	<t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
+	<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
+	<t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
+</xpath>
+
+<!-- Price Format Update -->
+<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
+	<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
+	<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
+	<span t-out="line_price" />
+</xpath>
+<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
+	<span t-out="'{value:,.2f}'.format(value= line.price_unit)" />
+</xpath>
+
+<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
+	<td t-if="doc.is_rental == True and line.product_id.is_software == False">
+		<t t-if="line.product_id.is_software == False">
+			<t t-if="'CAD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.cadVal" />
+			<t t-elif="'USD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.usdVal" />
+			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="singleProductValueFormated" t-value="'$ {value:,.2f}'.format(value= singleProductValue)" />
+			<t t-elif="clang == 'fr_CA'" t-set="singleProductValueFormated" t-value="'{value:,.2f} $'.format(value= singleProductValue)" />
+			<span t-out="singleProductValueFormated" />
+		</t>
+	</td>
+	<td t-else="" colspan="0" style="border-left-style: none !important;" />
+</xpath>
+
+<!-- Remove Right Border When Product Value Not Displayed -->
+<xpath expr="//td[@name=&quot;td_name&quot;]" position="attributes">
+	<attribute name="t-attf-style">
+		{{'border-right-style: none !important;' if (doc.is_rental != True or line.product_id.is_software != True) else '' }}
+	</attribute>
+</xpath>
+</template>
 
 </odoo>
