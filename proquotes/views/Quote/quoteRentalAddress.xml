@@ -37,10 +37,12 @@
 						<label for="new-address">
 							<span style="background-color: #db0d0d;">Yes</span>
 						</label>
+						<span>Yes</span>
 						<span>|</span>
 						<label for="new-address">
 							<span style="background-color: #db0d0d;">No</span>
 						</label>
+						<span>No</span>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
 						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
