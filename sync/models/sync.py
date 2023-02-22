@@ -1063,15 +1063,15 @@ class sync(models.Model):
     #   values: list of product_template.id that have the same name
     def getProductsWithSameName(self):
         dup_product_template_name = dict()
-        products = self.env['product.template'].search([])
+        products_tmpl = self.env['product.template'].search([])
         count = 0
 
         _logger.info("------------------------------------------------------------------")
         _logger.info("---------------  getProductsWithSameName")        
-        _logger.info("---------------  getProductsWithSameName: Number of product to check: " + str(len(products)))        
+        _logger.info("---------------  Number of product template to check: " + str(len(products_tmpl)))        
        
         #For each product, 
-        for product in products:
+        for product in products_tmpl:
             if (product.active == False):
                 continue
 
@@ -1132,6 +1132,7 @@ class sync(models.Model):
                                             ", sale.name: " + str(sale.name)) 
                             product_solded_counter += 1     
 
+        _logger.info("--------------- product_solded_counter: " + str(product_solded_counter))
         _logger.info("--------------- END ---------------------------------------------")
         return product_solded_counter
 
@@ -1145,7 +1146,11 @@ class sync(models.Model):
 
     ################################################################### 
     def cleanProductByName(self, p_name):
-        name_in_double = self.getProductsWithSameName()
+        duplicate_names = self.getProductsWithSameName()
+
+        for name in duplicate_names:
+
+
 
 
 
