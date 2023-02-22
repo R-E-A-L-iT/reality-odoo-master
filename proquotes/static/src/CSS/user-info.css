@@ -22,66 +22,36 @@
 	cursor: pointer;
 }
 
-
-#user-info #new-address {
-	/* trying to display the checkbox, changed the visibility from hidden to visible */
-	visibility: visible;
-	display: block;
-	height: calc(1rem + 3px);
-}
-
-#user-info #new-address:before {	
-	display: flex;
-	visibility: visible;
-	white-space: pre;
-	color: white;
-	width: -moz-fit-content;
-	width: fit-content;
-	height: calc(1rem + 3px);
-	background-color: #db0d0d;
-	cursor: pointer;
-	padding: 3px;
-	align-content: center;
-	justify-content: center;
-	align-items: center;
-}
-
-#user-info .english-mode+#new-address:not(:checked):before {
-	content: "Yes";
-}
-
-#user-info .french-mode+#new-address:not(:checked):before {
-	content: "Oui";
-}
-
-#user-info .english-mode+#new-address:checked:before {
-	content: "No ";
-}
-
-#user-info .french-mode+#new-address:checked:before {
-	content: "Non";
-}
-
-#user-info #new-address+br {
-	display: none;
-}
-
-#user-info .rental-address {
-	display: none;
-}
-
-#user-info #new-address:checked+br {
-	display: block;
-}
-
-#user-info #new-address:checked+br+.rental-address {
-	display: block;
-}
-
 .Canada.us-op {
 	display: none;
 }
 
 .United.States.can-op {
+	display: none;
+}
+
+/* Addresse */
+#new-address {
+	display: none;
+}
+
+#new-address:checked ~ #address_no_label {
+	display: none;
+}
+
+#new-address:checked ~ #address_yes {
+	display: none;
+}
+
+#new-address:not(:checked) ~ #address_yes_label {
+	display: none;
+}
+
+
+#new-address:not(:checked) ~ #address_no {
+	display: none;
+}
+
+#new-address:not(:checked) ~ #rental-address {
 	display: none;
 }
