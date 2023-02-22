@@ -1090,9 +1090,11 @@ class sync(models.Model):
                 for doubled_name in doubled_names:
                     _logger.info("--------------- " + 
                                  str(count).ljust(5) +
-                                 ", id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                                 "id: " + str(doubled_name.id).ljust(10) + str(product.name))
                     dup_product_template_name[product.name].append(doubled_name.id)
-        
+
+        _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))           
+        _logger.info("--------------- END ---------------------------------------------")
         return dup_product_template_name
         
 
