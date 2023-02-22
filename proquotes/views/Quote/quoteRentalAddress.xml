@@ -32,6 +32,8 @@
 					</div> -->
 				<br />
 				<div>
+					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
+					<input id="new-address" t-else="" type="checkbox" />
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Is the shipping address the same as the billing address?</span>
 						<label id="address_yes_label" for="new-address">
@@ -56,14 +58,6 @@
 						</label>
 						<span id="address_no" style="cursor: pointer;">Non</span>
 					</t>
-					<br />
-
-
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
-					<input id="new-address" t-else="" type="checkbox" />
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">
