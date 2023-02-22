@@ -29,3 +29,8 @@
 .United.States.can-op {
 	display: none;
 }
+
+/* Addresse */
+#new-address:checked {
+	display: none;
+}
