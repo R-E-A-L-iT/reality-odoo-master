@@ -1153,34 +1153,25 @@ class sync(models.Model):
 
     ################################################################### 
     def cleanProductByName(self):
-        duplicate_names_dict = self.getProductsWithSameName(p_log=False)
+        duplicate_names_dict = self.getProductsWithSameName(p_log=True)
 
         for duplicate_name in duplicate_names_dict:
-            _logger.info("--------------- product_template.name " + str(duplicate_name) + " ---------------------------------------------")
-  
-            sale_order_count_by_template_id = dict()         
+            _logger.info("--------------- product_template.name " + str(duplicate_name).ljust(110) + " template list: " + str(duplicate_names_dict[duplicate_name]))  
+            sale_order_count_by_template_id = dict()   
+
             for template_id in duplicate_names_dict[duplicate_name]:                
-                #_logger.info("--------------- for id in ids:. id: " + str(template_id_list))
                 sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id, p_log=False)
 
-            for template_id in sale_order_count_by_template_id:
-                _logger.info("--------------- template_id " + str(template_id))
-                _logger.info("--------------- sale_order_count_by_template_id[template_id] " + str(sale_order_count_by_template_id[template_id]))
+            for template_id in sale_order_count_by_template_id:                
                 if (sale_order_count_by_template_id[template_id] <= 0):
-                    _logger.info("--------------- ARCHIVED product_template.id " + str(template_id))
+                    action = "ARCHIVE"
                 else:
-                    _logger.info("--------------- KEEP product_template.id " + str(template_id))
-
+                    action = "KEEP   "
+                _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " solded count: " + str(sale_order_count_by_template_id[template_id]))
+                _logger.info("")
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
-
-
-
-#     for lists in d:
-#         for item in d[lists]:
-#             print(item)
-
 
 
 
