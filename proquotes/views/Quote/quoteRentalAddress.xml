@@ -20,30 +20,74 @@
 					</label>
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
-				<!-- <div id="POinputLabel">
-						<span>Please insert your PO number here:</span>
+				<t t-if="rental_estimate_display == True">
+					<br />
+					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+						* The final rental cost will be calculated once the equipement is returned.
+						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
+						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
+					</p>
+					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+						* Le coût final sera calculé lorsque l'équipement sera retourné.
+						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
+						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
+					</p>
+
+					<br />
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
+					</t>
+					<t t-elif="clang == 'fr_CA'">
+						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-english" /></span>
+					</t>
+					<br />
+					<br />
+					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
+						<br />
+						<span>
+							Please upload your proof of insurance for the total amount in the comments below:
+						</span>
 						<br />
 					</div>
-					<input class="poNumber" id="poNumber" t-attf-value="{{source.customer_po_number}}" />
-					<br />
-					<div>
-						<span>Please Upload your PO File in the comments below:</span>
+					<div class=" rental_product_value" t-if=" clang== 'fr_CA'">
+						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
+						</span>
 						<br />
-					</div> -->
+						<span>
+							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
+						</span>
+						<br />
+					</div>
+				</t>
 				<br />
 				<div>
-					<span t-if="clang == 'en_CA' or clang == 'en_US'">
-						Shipping address same as billing address
-					</span>
-					<span t-elif="clang == 'fr_CA'">
-						Adresse de livraison identique à l'adresse de facturation
-					</span>
-					<br />
-
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<span t-elif="clang == 'fr_CA'" class="french-mode"></span>
-					<span t-if="clang == 'en_CA' or clang == 'en_US'" class="english-mode"></span>
-					<input id="new-address" type="checkbox" checked="true" />
+					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
+					<input id="new-address" t-else="" type="checkbox" />
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<span>Is the shipping address the same as the billing address?</span>
+						<label id="address_yes_label" for="new-address">
+							<span style="cursor: pointer;">Yes</span>
+						</label>
+						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Yes</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="cursor: pointer;">No</span>
+						</label>
+						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
+					</t>
+					<t t-elif="clang == 'fr_CA'">
+						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
+						<label id="address_yes_label" for="new-address">
+							<span style="cursor: pointer;">Oui</span>
+						</label>
+						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Oui</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="cursor: pointer;">Non</span>
+						</label>
+						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
+					</t>
 					<br />
 					<div id="rental-address" class="rental-address">
 						<label for="street">

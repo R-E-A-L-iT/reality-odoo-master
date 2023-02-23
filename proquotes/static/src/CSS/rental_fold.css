@@ -1,0 +1,12 @@
+#rental-terms-checkbox:checked + label + #rentalTerms {
+    display: none;
+}
+
+
+#rental-terms-checkbox:checked + label  #terms_open {
+    display: none;
+}
+
+#rental-terms-checkbox:not(:checked) + label  #terms_hidden {
+    display: none;
+}

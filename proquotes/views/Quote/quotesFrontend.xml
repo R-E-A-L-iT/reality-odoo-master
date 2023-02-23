@@ -72,6 +72,7 @@
 					</td>
 				</tr>
 			</t>
+			<!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
 			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
 					<td style="border-style: none;" colspan="100">
@@ -115,8 +116,18 @@
 					</td>
 				</tr>
 			</t>
-
+			<!--  Keep for Backwards Compatibility-->
 			<t t-if="line.name == '$rental_address'">
+				<t t-set="rental_estimate_display" t-value="False" />
+				<tr>
+					<td style="border-style: none;" colspan="100">
+						<t t-call="proquotes.rental_address_form" />
+					</td>
+				</tr>
+			</t>
+
+			<t t-if="line.name == '$rental_info'">
+				<t t-set="rental_estimate_display" t-value="True" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
 						<t t-call="proquotes.rental_address_form" />
@@ -386,7 +397,18 @@
 					<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
 				</t>
 			</div>
-			<t t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
+			<t t-if="sale_order.is_rental == True">
+				<input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" />
+				<label for="rental-terms-checkbox">
+					<h1>
+						<strong class="white-text" id="terms_hidden">+</strong>
+						<strong class="white-text" id="terms_open">×</strong>
+						<strong class="white-text" t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
+						<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
+					</h1>
+				</label>
+				<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
+			</t>
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>

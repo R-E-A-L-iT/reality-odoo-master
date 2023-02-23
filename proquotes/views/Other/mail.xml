@@ -49,14 +49,14 @@
 														<td valign="top" style="font-size:13px;">
 															<div>
 																<t t-if="record.partner_id.lang != 'fr_CA'">
-																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																	<h1 t-if="'sale.order' in str(record) or 'account.move' in str(record)" style="color: black;">
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">PURCHASE ORDER
 																	</h1>
 																</t>
 																<t t-elif="record.partner_id.lang == 'fr_CA'">
-																	<h1 t-if="record.state == 'draft' or record.state == 'sent'" style="color: black;">
+																	<h1 t-if="'sale.order' in str(record) or 'account.move' in str(record)" style="color: black;">
 																		<span t-esc="message.record_name" />
 																	</h1>
 																	<h1 t-else="" style="color: black;">BON DE COMMANDE</h1>
@@ -73,16 +73,22 @@
 																<t t-set="share_url" t-value="is_online and record._get_share_url(redirect=True, signup_partner=True, share_token=True)" />
 																<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''" />
 																<t t-if="record.partner_id.lang != 'fr_CA'">
-																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
+																	<a t-if="'sale.order' in str(record)" t-att-href="access_url" style="color:#db0d0d;">
 																		View Quotation
+																	</a>
+																	<a t-elif="'account.move' in str(record)" t-att-href=" access_url" style=" color:#db0d0d;">
+																		View Invoice
 																	</a>
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
 																		View Purchase Order
 																	</a>
 																</t>
 																<t t-if="record.partner_id.lang == 'fr_CA'">
-																	<a t-if="record.state == 'draft' or record.state == 'sent'" t-att-href="access_url" style="color:#db0d0d;">
+																	<a t-if="'sale.order' in str(record)" t-att-href="access_url" style="color:#db0d0d;">
 																		Voir Soumission
+																	</a>
+																	<a t-elif="'account.move' in str(record)" t-att-href="access_url" style="color:#db0d0d;">
+																		Voir la Facture
 																	</a>
 
 																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">
@@ -120,7 +126,7 @@
 
 	<template id="mail_notification_paynow_online" inherit_id="sale.mail_notification_paynow_online" priority="17">
 		<xpath expr="//t[@t-if=&quot;record._name == 'sale.order'&quot;]" position="after">
-			<t t-if="record.state == 'draft' or record.state == 'sent'" t-set="access_name">View Quotation</t>
+			<t t-if="'sale.order' in str(record)" t-set="access_name">View Quotation</t>
 			<t t-else="" t-set="access_name">View Purchase Order</t>
 		</xpath>
 	</template>

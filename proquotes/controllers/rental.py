@@ -9,6 +9,7 @@ from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 import re
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
+import datetime
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -29,7 +30,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        order_sudo.rental_diff_add = newAdd
+        if (str(newAdd) == "True" or str(newAdd) == "False"):
+            order_sudo.rental_diff_add = True if str(
+                newAdd) == "True" else False
 
         return
 
@@ -92,6 +95,8 @@ class RentalCustomerPortal(cPortal):
 
         if (state == "Select"):
             order_sudo.rental_state = False
+            return
+        if (not self.validate(state)):
             return
 
             # Canada
@@ -178,6 +183,9 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
+        if (not self.validate(country)):
+            return
+
         if country == "Canada":
             order_sudo.rental_state = False
             order_sudo.rental_country = 38
@@ -185,6 +193,25 @@ class RentalCustomerPortal(cPortal):
             order_sudo.rental_state = False
             order_sudo.rental_country = 233
 
+        return
+
+    def checkDates(self, order):
+        _logger.error("Here")
+        if (order.rental_end == False):
+            return
+        if (order.rental_start == False):
+            order.rental_end = False
+
+        start_year, start_month, start_day = str(
+            order.rental_start).split('-')
+        end_year, end_month, end_day = str(order.rental_end).split('-')
+
+        start_date = datetime.date(
+            int(start_year), int(start_month), int(start_day))
+        end_date = datetime.date(int(end_year), int(end_month), int(end_day))
+        _logger.error("Line: 211")
+        if (start_date > end_date):
+            order.rental_end = False
         return
 
     @ http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
@@ -200,7 +227,7 @@ class RentalCustomerPortal(cPortal):
             return
 
         order_sudo.rental_start = start
-
+        self.checkDates(order_sudo)
         return
 
     @ http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
@@ -216,5 +243,5 @@ class RentalCustomerPortal(cPortal):
             return
 
         order_sudo.rental_end = end
-
+        self.checkDates(order_sudo)
         return
