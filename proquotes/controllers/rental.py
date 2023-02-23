@@ -33,7 +33,6 @@ class RentalCustomerPortal(cPortal):
             order_sudo.rental_diff_add = True if str(
                 newAdd == "True") else False
 
-        _logger.warning(order_sudo.rental_diff_add)
         return
 
     @http.route(["/my/orders/<int:order_id>/street"], type='json', auth="public", website=True)
