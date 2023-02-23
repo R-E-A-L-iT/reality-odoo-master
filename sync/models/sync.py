@@ -1158,11 +1158,12 @@ class sync(models.Model):
                 sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id)
 
             for template_id in sale_order_count_by_template_id:
+                _logger.info("--------------- template_id " + str(template_id))
                 _logger.info("--------------- sale_order_count_by_template_id[template_id] " + str(sale_order_count_by_template_id[template_id]))
-                if (sale_order_count_by_template_id[template_id] <= 0):
-                    _logger.info("--------------- ARCHIVED product_template.id " + str(id))
+                if (sale_order_count_by_template_id[template_id] > 0):
+                    _logger.info("--------------- KEEP product_template.id " + str(id))                                        
                 else:
-                    _logger.info("--------------- KEEP product_template.id " + str(id))
+                    _logger.info("--------------- ARCHIVED product_template.id " + str(id))
 
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
