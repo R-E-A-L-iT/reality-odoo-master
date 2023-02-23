@@ -206,8 +206,8 @@ class RentalCustomerPortal(cPortal):
             order.rental_start()).split('-')
         end_year, end_month, end_day = str(order.rental_end()).split('-')
 
-        start_date = datetime.date(start_year, start_month, start_day)
-        end_date = datetime.date(end_year, end_month, end_day)
+        start_date = datetime.datetime(start_year, start_month, start_day)
+        end_date = datetime.datetime(end_year, end_month, end_day)
         _logger.error("Line: 211")
         if (start_date > end_date):
             _logger.warning("Valid")
