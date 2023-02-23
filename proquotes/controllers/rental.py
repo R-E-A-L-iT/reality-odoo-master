@@ -196,8 +196,8 @@ class RentalCustomerPortal(cPortal):
 
     def checkDates(self, order):
         _logger.error("Here")
-        if (order.rental_end == False):
-            return
+        # if (order.rental_end == False):
+        # return
         if (order.rental_start == False):
             order.rental_end = False
         _logger.warning(str(order.rental_start))
