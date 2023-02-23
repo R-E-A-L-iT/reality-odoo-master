@@ -340,7 +340,7 @@ class sync_pricelist():
             product.sale_ok = False
 
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
-        product.tracking = "serial"
+        # product.tracking = "serial"
         product.type = "product"
 
         product_sync_common.translatePricelist(
@@ -356,4 +356,7 @@ class sync_pricelist():
         product = self.database.env['product.template'].create(
             {'name': product_name})[0]
         ext.res_id = product.id
+
+        product.tracking = "serial"
+
         return product
