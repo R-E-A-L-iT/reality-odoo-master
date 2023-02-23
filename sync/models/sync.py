@@ -1156,6 +1156,7 @@ class sync(models.Model):
             d = dict()
             for id in ids:
                 d[i] = self.getSaleOrderByProductId(id)
+                i += 1
 
             for item in d:
                 if (item <= 0):
