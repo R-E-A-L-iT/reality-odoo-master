@@ -1156,7 +1156,7 @@ class sync(models.Model):
         duplicate_names_dict = self.getProductsWithSameName(p_log=True)
 
         for duplicate_name in duplicate_names_dict:
-            _logger.info("--------------- product_template.name " + str(duplicate_name))  
+            _logger.info(str(duplicate_name))  
             sale_order_count_by_template_id = dict()   
 
             for template_id in duplicate_names_dict[duplicate_name]:                
