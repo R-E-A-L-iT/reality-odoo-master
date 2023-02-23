@@ -210,7 +210,7 @@ class RentalCustomerPortal(cPortal):
             int(start_year), int(start_month), int(start_day))
         end_date = datetime.date(int(end_year), int(end_month), int(end_day))
         _logger.error("Line: 211")
-        if (start_date > end_date):
+        if (start_date < end_date):
             _logger.warning("Valid")
         else:
             _logger.warning("Invalid")
