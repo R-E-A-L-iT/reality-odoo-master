@@ -1093,7 +1093,7 @@ class sync(models.Model):
                     if p_log:
                         _logger.info("--------------- " + 
                                     str(count).ljust(5) +
-                                    "id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                                    "product_template.id: " + str(doubled_name.id).ljust(10) + str(product.name))
                     dup_product_template_name[product.name].append(doubled_name.id)
 
         if p_log:
@@ -1164,9 +1164,9 @@ class sync(models.Model):
 
             for template_id in sale_order_count_by_template_id:                
                 if (sale_order_count_by_template_id[template_id] <= 0):
-                    action = "ARCHIVE"
+                    action = "ARCHIVE "
                 else:
-                    action = "KEEP   "
+                    action = "KEEP    "
                 _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " solded count: " + str(sale_order_count_by_template_id[template_id]))
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
