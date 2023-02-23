@@ -151,6 +151,10 @@ body > div.o_thread_window.o_in_home_menu > div.o_thread_window_header > span.o_
 	color: #fff;
 }
 
+body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thread_message.o_mail_discussion > div.o_thread_message_core > div > p {
+	color: #fff;
+}
+
 #product_no_sell_email {
 	background-color: #db0d0d;
 }
