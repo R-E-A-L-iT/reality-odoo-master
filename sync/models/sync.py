@@ -1156,7 +1156,7 @@ class sync(models.Model):
         duplicate_names_dict = self.getProductsWithSameName(p_log=True)
 
         for duplicate_name in duplicate_names_dict:
-            _logger.info("--------------- product_template.name " + str(duplicate_name).ljust(110) + " template list: " + str(duplicate_names_dict[duplicate_name]))  
+            _logger.info("--------------- product_template.name " + str(duplicate_name))  
             sale_order_count_by_template_id = dict()   
 
             for template_id in duplicate_names_dict[duplicate_name]:                
@@ -1168,7 +1168,6 @@ class sync(models.Model):
                 else:
                     action = "KEEP   "
                 _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " solded count: " + str(sale_order_count_by_template_id[template_id]))
-                _logger.info("")
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
