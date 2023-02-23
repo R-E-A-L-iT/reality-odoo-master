@@ -1164,9 +1164,9 @@ class sync(models.Model):
 
             for template_id in sale_order_count_by_template_id:                
                 if (sale_order_count_by_template_id[template_id] <= 0):
-                    action = "ARCHIVE "
+                    action = "could ARCHIVE "
                 else:
-                    action = "KEEP    "
+                    action = "KEEP          "
                 _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " solded count: " + str(sale_order_count_by_template_id[template_id]))
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
