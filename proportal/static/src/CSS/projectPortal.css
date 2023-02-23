@@ -147,6 +147,10 @@ body>div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
 	color: #fff !important;
 }
 
+body > div.o_thread_window.o_in_home_menu > div.o_thread_window_header > span.o_thread_window_title {
+	color: #fff;
+}
+
 #product_no_sell_email {
 	background-color: #db0d0d;
 }
