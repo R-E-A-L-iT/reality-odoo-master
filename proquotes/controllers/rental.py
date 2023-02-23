@@ -195,12 +195,13 @@ class RentalCustomerPortal(cPortal):
         return
 
     def checkDates(self, order):
+        _logger.error("Here")
         if (order.rental_end == False):
             return
         if (order.rental_start == False):
             order.rental_end = False
-        _logger.error(str(order.rental_start))
-        _logger.error(str(order.rental_end))
+        _logger.warning(str(order.rental_start))
+        _logger.warning(str(order.rental_end))
         return
 
     @ http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
