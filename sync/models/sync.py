@@ -1155,6 +1155,7 @@ class sync(models.Model):
             i = 0
             d = dict()
             for id in ids:
+                 _logger.info("--------------- for id in ids:. id: " + str(id))
                 d[i] = self.getSaleOrderByProductId(id)
                 i += 1
 
