@@ -1147,20 +1147,18 @@ class sync(models.Model):
 
     ################################################################### 
     def cleanProductByName(self):
-        duplicate_names = self.getProductsWithSameName()
+        duplicate_names_dict = self.getProductsWithSameName()
 
-        for ids_list in duplicate_names:
-            _logger.info("--------------- product_template.name " + str(ids_list) + " ---------------------------------------------")
+        for duplicate_name in duplicate_names_dict:
+            _logger.info("--------------- product_template.name " + str(duplicate_name) + " ---------------------------------------------")
+  
+            sale_order_count_by_template_id = dict()         
+            for template_id in duplicate_names_dict[duplicate_name]:                
+                #_logger.info("--------------- for id in ids:. id: " + str(template_id_list))
+                sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id)
 
-            i = 0
-            d = dict()
-            for item in duplicate_names[ids_list]:
-                _logger.info("--------------- for id in ids:. id: " + str(item))
-                d[i] = self.getSaleOrderByProductId(item)
-                i += 1
-
-            for item in d:
-                if (len(item) <= 0):
+            for template_id in sale_order_count_by_template_id:
+                if (sale_order_count_by_template_id[template_id] <= 0):
                     _logger.info("--------------- ARCHIVED product_template.id " + str(id))
                 else:
                     _logger.info("--------------- KEEP product_template.id " + str(id))
