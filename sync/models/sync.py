@@ -1167,7 +1167,7 @@ class sync(models.Model):
                     action = "could ARCHIVE "
                 else:
                     action = "KEEP          "
-                _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " sold count: " + str(sale_order_count_by_template_id[template_id]))
+                _logger.info("           " + action + "template_id " + str(template_id).ljust(10)  + " sold count: " + str(sale_order_count_by_template_id[template_id]))
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
