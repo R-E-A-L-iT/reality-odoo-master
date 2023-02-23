@@ -899,6 +899,7 @@ class sync(models.Model):
         return -1
 
 
+    ################################################################### 
     # Method the return a list of product.id need to be archived.
     # The list include all product.id that does not have a prodcut.sku, or that the string or product.sku is False.
     # The list include all product.id that the product.sku is in Odoo and not in GoogleSheet Master Database.
@@ -909,8 +910,7 @@ class sync(models.Model):
     # Output
     #   to_archive: a list of product.id
     def getSkuToArchive(self, psw=None, p_optNoSku=True, p_optInOdooNotGs=True):
-        _logger.info(
-            "------------------------------------------- BEGIN  to get the sku in odoo and not in GoogleSheet")
+        _logger.info("------------------------------------------- BEGIN  getSkuToArchive")
         catalog_odoo = dict()
         catalog_gs = dict()
         to_archive = []
@@ -973,23 +973,30 @@ class sync(models.Model):
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("to_archive length: " + str(len(to_archive)))
+        _logger.info("--------------- END getSkuToArchive ---------------------------------------------")
+
         return to_archive
 
 
+    ################################################################### 
     # Method to clean all sku that are pulled by self.getSkuToArchive
-    def cleanSku(self, psw=None):
-        to_archive_list = self.getSkuToArchive(psw)
+    def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
+        to_archive_list = self.getSkuToArchive(psw, p_optNoSku, p_optInOdooNotGs)
         to_archive_dict = dict()
         sales_with_archived_product = 0
 
-        # Archiving all unwanted products
-        #_logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
-        #archiving_index = 0
-        # for item in to_archive_list:
-        #    _logger.info(str(archiving_index) + " archving :" + str(item))
-        #    archiving_index += 1
-        #    self.archive_product(str(item))
-        #_logger.info("------------------------------------------- ALL products with no SKU or Sku in Odoo and not in GoogleSheet DB are archived.")
+        if p_archive:
+            # Archiving all unwanted products
+            _logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
+            archiving_index = 0
+            for item in to_archive_list:
+                _logger.info(str(archiving_index) + " archving :" + str(item))
+                archiving_index += 1
+                self.archive_product(str(item))
+            if p_optNoSku:
+                _logger.info("------------------------------------------- ALL products with no SKU or are archived.")
+            if p_optInOdooNotGs:
+                _logger.info("------------------------------------------- ALL products with Sku in Odoo and not in GoogleSheet DB are archived.")
 
         # Switch to dictionnary to optimise the rest of the querry
         for i in range(len(to_archive_list)):
@@ -1018,8 +1025,10 @@ class sync(models.Model):
 
         _logger.info("number of sales with archived product: " +
                      str(sales_with_archived_product))
+        _logger.info("--------------- END cleanSku ---------------------------------------------")
 
 
+    ################################################################### 
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
@@ -1045,9 +1054,11 @@ class sync(models.Model):
                     _logger.info("---------------")
 
         if p_log:
-            _logger.info("Listing all product from: END")
+            _logger.info("--------------- END log_product_from_sale ---------------------------------------------")
+            
 
 
+    ################################################################### 
     # query to find the QUOTATION-2023-01-05-007, id 552
     def searchQuotation(self):
         sale = self.env['sale.order'].search(
@@ -1098,7 +1109,8 @@ class sync(models.Model):
 
         if p_log:
             _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))           
-            _logger.info("--------------- END ---------------------------------------------")
+            _logger.info("--------------- END getProductsWithSameName ---------------------------------------------")
+
         return dup_product_template_name
         
 
@@ -1139,7 +1151,8 @@ class sync(models.Model):
                             product_sold_counter += 1     
         if p_log:
             _logger.info("--------------- product_sold_counter: " + str(product_sold_counter))
-            _logger.info("--------------- END ---------------------------------------------")
+            _logger.info("--------------- END getSaleOrderByProductId ---------------------------------------------")
+
         return product_sold_counter
 
 
@@ -1171,7 +1184,9 @@ class sync(models.Model):
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
-            #blabla
+        
+        _logger.info("--------------- END cleanProductByName ---------------------------------------------")
+            
 
 
 
