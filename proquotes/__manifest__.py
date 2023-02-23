@@ -37,8 +37,8 @@
                 'proquotes/static/src/JS/rental.js',
             ]
     },
-
-    'version': '1.0.433',
+    
+    'version': '1.0.427',
 
     # always loaded
     'data': [
