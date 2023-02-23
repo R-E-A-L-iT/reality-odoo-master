@@ -21,6 +21,7 @@
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
 				<t t-if="rental_estimate_display == True">
+					<br />
 					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
 						* The final rental cost will be calculated once the equipement is returned.
 						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
