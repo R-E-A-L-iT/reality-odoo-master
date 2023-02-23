@@ -29,7 +29,7 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if (str(newAdd) == True or str(newAdd) == False):
+        if (str(newAdd) == "True" or str(newAdd) == "False"):
             order_sudo.rental_diff_add = True if str(
                 newAdd) == "True" else False
 
