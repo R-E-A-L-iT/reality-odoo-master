@@ -1160,12 +1160,14 @@ class sync(models.Model):
                 i += 1
 
             for item in d:
-                if (item <= 0):
+                if (len(item) <= 0):
                     _logger.info("--------------- ARCHIVED product_template.id " + str(id))
                 else:
                     _logger.info("--------------- KEEP product_template.id " + str(id))
 
-            _logger.info("----------------------------------------------------------------------------------------------------\n")
+            _logger.info("----------------------------------------------------------------------------------------------------")
+            _logger.info("")
+            _logger.info("")
 
 
 
