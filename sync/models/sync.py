@@ -1150,7 +1150,7 @@ class sync(models.Model):
         duplicate_names = self.getProductsWithSameName()
 
         for ids_list in duplicate_names:
-            _logger.info("--------------- product_template.name " + str(ids_list))
+            _logger.info("--------------- product_template.name " + str(ids_list) + " ---------------------------------------------")
 
             i = 0
             d = dict()
@@ -1164,6 +1164,9 @@ class sync(models.Model):
                     _logger.info("--------------- ARCHIVED product_template.id " + str(id))
                 else:
                     _logger.info("--------------- KEEP product_template.id " + str(id))
+
+            _logger.info("----------------------------------------------------------------------------------------------------\n")
+
 
 
 #     for lists in d:
