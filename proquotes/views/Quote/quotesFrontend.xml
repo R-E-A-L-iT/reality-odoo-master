@@ -72,6 +72,7 @@
 					</td>
 				</tr>
 			</t>
+			<!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
 			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
 					<td style="border-style: none;" colspan="100">
@@ -86,7 +87,7 @@
 							Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
 						</p>
 						<br />
-						<!-- 						
+
 						<t t-if="clang == 'en_CA' or clang == 'en_US'">
 							<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
 						</t>
@@ -111,12 +112,22 @@
 								Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
 							</span>
 							<br />
-						</div> -->
+						</div>
+					</td>
+				</tr>
+			</t>
+			<!--  Keep for Backwards Compatibility-->
+			<t t-if="line.name == '$rental_address'">
+				<t t-set="rental_estimate_display" t-value="True" />
+				<tr>
+					<td style="border-style: none;" colspan="100">
+						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
 			</t>
 
-			<t t-if="line.name == '$rental_address'">
+			<t t-if="line.name == '$rental_info'">
+				<t t-set="rental_estimate_display" t-value="True" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
 						<t t-call="proquotes.rental_address_form" />
