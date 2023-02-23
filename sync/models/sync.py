@@ -904,9 +904,11 @@ class sync(models.Model):
     # The list include all product.id that the product.sku is in Odoo and not in GoogleSheet Master Database.
     # Input
     #   psw: the password to acces the GoogleSheet Master Database.
+    #   p_optNoSku:
+    #   p_optInOdooNotGs:
     # Output
     #   to_archive: a list of product.id
-    def getSkuToArchive(self, psw=None):
+    def getSkuToArchive(self, psw=None, p_optNoSku=True, p_optInOdooNotGs=True):
         _logger.info(
             "------------------------------------------- BEGIN  to get the sku in odoo and not in GoogleSheet")
         catalog_odoo = dict()
@@ -927,16 +929,14 @@ class sync(models.Model):
             if (product.active == False):
                 continue
 
-            if ((str(product.sku) == "False") or (str(product.sku) == None)):
+            if (p_optNoSku and ((str(product.sku) == "False") or (str(product.sku) == None))):
                 if (str(product.id) != "False"):
                     to_archive.append(str(product.id))
-                else:
-                    _logger.info("Odoo section, str(product.id) was False.")
 
                 _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(
                     10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
 
-            if (str(product.sku) not in catalog_odoo):
+            if (p_optInOdooNotGs and (str(product.sku) not in catalog_odoo)):
                 catalog_odoo[str(product.sku)] = 1
             else:
                 catalog_odoo[str(product.sku)
@@ -1171,6 +1171,7 @@ class sync(models.Model):
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
+            #blabla
 
 
 
