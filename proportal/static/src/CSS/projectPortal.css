@@ -152,7 +152,7 @@ body > div.o_thread_window.o_in_home_menu > div.o_thread_window_header > span.o_
 }
 
 body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thread_message.o_mail_discussion > div.o_thread_message_core > div > p {
-	color: #fff;
+	color: #000;
 }
 
 #product_no_sell_email {
