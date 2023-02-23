@@ -20,27 +20,6 @@
 					</label>
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
-				<!-- <t t-if="sale_order.is_rental == True">
-					<td t-if="'CAD' in sale_order.currency_id.name" class="text-middle">
-						<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
-						<span t-if="line.product_id.is_software == False  and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
-					</td>
-					<td t-elif="'USD' in sale_order.currency_id.name" class="text-middle">
-						<span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
-						<span t-if="line.product_id.is_software == False and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
-					</td>
-				</t> -->
-				<td t-else="" />
-				<!-- <div id="POinputLabel">
-						<span>Please insert your PO number here:</span>
-						<br />
-					</div>
-					<input class="poNumber" id="poNumber" t-attf-value="{{source.customer_po_number}}" />
-					<br />
-					<div>
-						<span>Please Upload your PO File in the comments below:</span>
-						<br />
-					</div> -->
 				<br />
 				<div>
 					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
