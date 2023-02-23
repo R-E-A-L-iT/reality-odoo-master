@@ -9,6 +9,7 @@ from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 import re
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
+import datetime
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -196,12 +197,22 @@ class RentalCustomerPortal(cPortal):
 
     def checkDates(self, order):
         _logger.error("Here")
-        # if (order.rental_end == False):
-        # return
+        if (order.rental_end == False):
+            return
         if (order.rental_start == False):
             order.rental_end = False
-        _logger.warning(str(order.rental_start))
-        _logger.warning(str(order.rental_end))
+
+        start_year, start_month, start_day = str(
+            order.rental_start()).split('-')
+        end_year, end_month, end_day = str(order.rental_end()).split('-')
+
+        start_date = datetime.date(start_year, start_month, start_day)
+        end_date = datetime.date(end_year, end_month, end_day)
+
+        if (start_date > end_date):
+            _logger.warning("Valid")
+        else:
+            _logger.warning("Invalid")
         return
 
     @ http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
