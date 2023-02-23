@@ -1023,7 +1023,7 @@ class sync(models.Model):
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
-    def log_product_from_sale(self, sale_name):
+    def log_product_from_sale(self, sale_name, p_log=True):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search(
             [('name', '=', sale_name)])
@@ -1034,16 +1034,18 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                _logger.info("---------------")
-                _logger.info("orders name: " + str(order.name))
-                _logger.info("id in a sale order: " + str(product.id))
-                _logger.info("sku in a sale order: " + str(product.sku))
-                _logger.info("skuhidden name in a sale order: " +
-                             str(product.skuhidden.name))
-                _logger.info("name in a sale order: " + str(product.name))
-                _logger.info("---------------")
+                if p_log:
+                    _logger.info("---------------")
+                    _logger.info("orders name: " + str(order.name))
+                    _logger.info("id in a sale order: " + str(product.id))
+                    _logger.info("sku in a sale order: " + str(product.sku))
+                    _logger.info("skuhidden name in a sale order: " +
+                                str(product.skuhidden.name))
+                    _logger.info("name in a sale order: " + str(product.name))
+                    _logger.info("---------------")
 
-        _logger.info("Listing all product from: END")
+        if p_log:
+            _logger.info("Listing all product from: END")
 
 
     # query to find the QUOTATION-2023-01-05-007, id 552
@@ -1061,14 +1063,14 @@ class sync(models.Model):
     # Output a dictionary
     #   key : a product template name
     #   values: list of product_template.id that have the same name
-    def getProductsWithSameName(self):
+    def getProductsWithSameName(self, p_log=True):
         dup_product_template_name = dict()
         products_tmpl = self.env['product.template'].search([])
         count = 0
-
-        _logger.info("------------------------------------------------------------------")
-        _logger.info("---------------  getProductsWithSameName")        
-        _logger.info("---------------  Number of product template to check: " + str(len(products_tmpl)))        
+        if p_log:
+            _logger.info("------------------------------------------------------------------")
+            _logger.info("---------------  getProductsWithSameName")        
+            _logger.info("---------------  Number of product template to check: " + str(len(products_tmpl)))        
        
         #For each product, 
         for product in products_tmpl:
@@ -1088,19 +1090,21 @@ class sync(models.Model):
                 dup_product_template_name[product.name] = []            
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
-                    _logger.info("--------------- " + 
-                                 str(count).ljust(5) +
-                                 "id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                    if p_log:
+                        _logger.info("--------------- " + 
+                                    str(count).ljust(5) +
+                                    "id: " + str(doubled_name.id).ljust(10) + str(product.name))
                     dup_product_template_name[product.name].append(doubled_name.id)
 
-        _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))           
-        _logger.info("--------------- END ---------------------------------------------")
+        if p_log:
+            _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))           
+            _logger.info("--------------- END ---------------------------------------------")
         return dup_product_template_name
         
 
 
     ################################################################### 
-    def getSaleOrderByProductId(self, p_product_template_id):
+    def getSaleOrderByProductId(self, p_product_template_id, p_log=True):
         #validate that product_id is an integer
         try:
             product_template_id = int(p_product_template_id)
@@ -1124,30 +1128,32 @@ class sync(models.Model):
                     if (line_product_template.id == product_template.id):
                         for line_order in line.order_id:
                             sale = self.env['sale.order'].search([
-                                ('id', '=', line_order.id)])                           
-                            _logger.info("---------------" + 
-                                            "  product_template.id: " + str(product_template.id).ljust(10) +
-                                            ", product_template.name: " + str(product_template.name).ljust(100) +
-                                            ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
-                                            ", sale.id: " + str(sale.id).ljust(10) +
-                                            ", sale.name: " + str(sale.name)) 
+                                ('id', '=', line_order.id)])    
+                            if p_log:                       
+                                _logger.info("---------------" + 
+                                                "  product_template.id: " + str(product_template.id).ljust(10) +
+                                                ", product_template.name: " + str(product_template.name).ljust(100) +
+                                                ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
+                                                ", sale.id: " + str(sale.id).ljust(10) +
+                                                ", sale.name: " + str(sale.name)) 
                             product_solded_counter += 1     
-
-        _logger.info("--------------- product_solded_counter: " + str(product_solded_counter))
-        _logger.info("--------------- END ---------------------------------------------")
+        if p_log:
+            _logger.info("--------------- product_solded_counter: " + str(product_solded_counter))
+            _logger.info("--------------- END ---------------------------------------------")
         return product_solded_counter
 
 
     ################################################################### 
-    def getProductIdBySku(self, p_sku):
+    def getProductIdBySku(self, p_sku, p_log=True):
         product = self.env['product.product'].search([
-            ('sku', '=', p_sku)])        
-        _logger.info("--------------- p_sku: " + str(p_sku) + ", id: " + str(product.id))
+            ('sku', '=', p_sku)])   
+        if p_log:     
+            _logger.info("--------------- p_sku: " + str(p_sku) + ", id: " + str(product.id))
 
 
     ################################################################### 
     def cleanProductByName(self):
-        duplicate_names_dict = self.getProductsWithSameName()
+        duplicate_names_dict = self.getProductsWithSameName(p_log=False)
 
         for duplicate_name in duplicate_names_dict:
             _logger.info("--------------- product_template.name " + str(duplicate_name) + " ---------------------------------------------")
@@ -1155,7 +1161,7 @@ class sync(models.Model):
             sale_order_count_by_template_id = dict()         
             for template_id in duplicate_names_dict[duplicate_name]:                
                 #_logger.info("--------------- for id in ids:. id: " + str(template_id_list))
-                sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id)
+                sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id, p_log=False)
 
             for template_id in sale_order_count_by_template_id:
                 _logger.info("--------------- template_id " + str(template_id))
