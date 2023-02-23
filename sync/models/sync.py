@@ -1120,7 +1120,7 @@ class sync(models.Model):
         # gatter all lines of all sales
         lines = self.env['sale.order.line'].search([])           
 
-        product_solded_counter = 0 
+        product_sold_counter = 0 
 
         # Check if the product.template.id appear in any sale.order.id            
         for line in lines:                   
@@ -1136,11 +1136,11 @@ class sync(models.Model):
                                                 ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
                                                 ", sale.id: " + str(sale.id).ljust(10) +
                                                 ", sale.name: " + str(sale.name)) 
-                            product_solded_counter += 1     
+                            product_sold_counter += 1     
         if p_log:
-            _logger.info("--------------- product_solded_counter: " + str(product_solded_counter))
+            _logger.info("--------------- product_sold_counter: " + str(product_sold_counter))
             _logger.info("--------------- END ---------------------------------------------")
-        return product_solded_counter
+        return product_sold_counter
 
 
     ################################################################### 
@@ -1167,7 +1167,7 @@ class sync(models.Model):
                     action = "could ARCHIVE "
                 else:
                     action = "KEEP          "
-                _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " solded count: " + str(sale_order_count_by_template_id[template_id]))
+                _logger.info("---------------           " + action + "template_id " + str(template_id).ljust(10)  + " sold count: " + str(sale_order_count_by_template_id[template_id]))
             _logger.info("----------------------------------------------------------------------------------------------------")
             _logger.info("")
             _logger.info("")
