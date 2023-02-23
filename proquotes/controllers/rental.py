@@ -29,8 +29,11 @@ class RentalCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        order_sudo.rental_diff_add = newAdd
+        if (str(newAdd) == True or str(newAdd) == False):
+            order_sudo.rental_diff_add = True if str(
+                newAdd == "True") else False
 
+        _logger.warning(order_sudo.rental_diff_add)
         return
 
     @http.route(["/my/orders/<int:order_id>/street"], type='json', auth="public", website=True)
@@ -92,6 +95,8 @@ class RentalCustomerPortal(cPortal):
 
         if (state == "Select"):
             order_sudo.rental_state = False
+            return
+        if (not self.validate(state)):
             return
 
             # Canada
@@ -177,6 +182,9 @@ class RentalCustomerPortal(cPortal):
                 'sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
+
+        if (not self.validate(country)):
+            return
 
         if country == "Canada":
             order_sudo.rental_state = False
