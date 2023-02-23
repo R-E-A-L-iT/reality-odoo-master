@@ -1149,14 +1149,14 @@ class sync(models.Model):
     def cleanProductByName(self):
         duplicate_names = self.getProductsWithSameName()
 
-        for ids in duplicate_names:
-            _logger.info("--------------- product_template.name " + str(ids))
+        for ids_list in duplicate_names:
+            _logger.info("--------------- product_template.name " + str(ids_list))
 
             i = 0
             d = dict()
-            for id in ids:
-                 _logger.info("--------------- for id in ids:. id: " + str(id))
-                d[i] = self.getSaleOrderByProductId(id)
+            for item in duplicate_names[ids_list]:
+                _logger.info("--------------- for id in ids:. id: " + str(item))
+                d[i] = self.getSaleOrderByProductId(item)
                 i += 1
 
             for item in d:
