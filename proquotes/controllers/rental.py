@@ -194,6 +194,14 @@ class RentalCustomerPortal(cPortal):
 
         return
 
+    def checkDates(self, order):
+        if (order.rental_end == False):
+            return
+        if (order.rental_start == False):
+            order.rental_end = False
+
+        return
+
     @ http.route(["/my/orders/<int:order_id>/start_date"], type='json', auth="public", website=True)
     def start(self, order_id, start, access_token=None, **post):
 
@@ -207,7 +215,7 @@ class RentalCustomerPortal(cPortal):
             return
 
         order_sudo.rental_start = start
-
+        self.checkDates(order_sudo)
         return
 
     @ http.route(["/my/orders/<int:order_id>/end_date"], type='json', auth="public", website=True)
@@ -223,5 +231,5 @@ class RentalCustomerPortal(cPortal):
             return
 
         order_sudo.rental_end = end
-
+        self.checkDates(order_sudo)
         return
