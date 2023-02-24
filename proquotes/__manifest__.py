@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.468',
+    'version': '1.0.469',
 
     # always loaded
     'data': [
