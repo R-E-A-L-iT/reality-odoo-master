@@ -560,6 +560,14 @@
 		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="attributes">
 			<attribute name="class">text-left</attribute>
 		</xpath>
+
+		<!-- <xpath expr="//td[@name=&quot;td_quantity&quot;]" position="attributes">
+			<attribute name="class">text-left</attribute>
+		</xpath> -->
+
+		<xpath expr="//td[@name=&quot;td_subtotal&quot;]" position="attributes">
+			<attribute name="class">text-left</attribute>
+		</xpath>
 	</template>
 
 </odoo>
