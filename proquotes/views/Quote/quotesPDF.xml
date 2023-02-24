@@ -557,8 +557,8 @@
 		</xpath>
 
 		<!-- Change Alignment -->
-		<xpath expr="//td[@name=&quot;td_quantity&quot;]/span[1]" position="replace">
-			<!-- <attribute name="class">text-left</attribute> -->
+		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="replace">
+			<attribute name="class">text-left</attribute>
 		</xpath>
 	</template>
 
