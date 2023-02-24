@@ -22,8 +22,8 @@
 		</xpath>
 
 		<xpath expr="//div[@id=&quot;informations&quot;]/div[3]/strong" position="replace">
-			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong>
-			<strong t-elif="clang == 'fr_CA'">Date du devis:</strong>
+			<!-- <strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong> -->
+			<!-- <strong t-elif="clang == 'fr_CA'">Date du devis:</strong> -->
 			<strong t-out="clang" />
 		</xpath>
 
