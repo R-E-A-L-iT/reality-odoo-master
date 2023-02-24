@@ -3,3 +3,7 @@ body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_cha
     /* display: block !important; */
     /* width: 100vw !important; */
 }
+
+body > div.o_action_manager > div > div.o_content > div {
+    display: block;
+}
