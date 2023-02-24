@@ -11,3 +11,7 @@ body > div.o_action_manager > div > div.o_content > div {
 body > div.o_action_manager > div > div.o_content > div > div.o_form_sheet_bg {
     width: 95%;
 }
+
+body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_chatterContainer.o-aside {
+    width: 95%;
+}
