@@ -67,7 +67,7 @@
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
 						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
-						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+						<td t-if="line.name == '$block+'" class="text-left" style="border-top-style: none !important">
 							Product Value
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
