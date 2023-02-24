@@ -71,9 +71,9 @@
 							Product Value
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qty</td>
-						<td class=" text-center" style=" border-top-style: none !important">Price</td>
-						<td class=" text-center" style=" border-top-style: none !important">Amount</td>
+						<td class=" text-left" style=" border-top-style: none !important">Qty</td>
+						<td class=" text-left" style=" border-top-style: none !important">Price</td>
+						<td class=" text-left" style=" border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if=" clang== 'fr_CA'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
@@ -82,9 +82,9 @@
 							Valeur du Produit
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qté</td>
-						<td class=" text-center" style=" border-top-style: none !important">Prix</td>
-						<td class=" text-center" style=" border-top-style: none !important">Montant</td>
+						<td class=" text-left" style=" border-top-style: none !important">Qté</td>
+						<td class=" text-left" style=" border-top-style: none !important">Prix</td>
+						<td class=" text-left" style=" border-top-style: none !important">Montant</td>
 					</t>
 				</t>
 			</tr>
