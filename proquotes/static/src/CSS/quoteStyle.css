@@ -282,3 +282,7 @@ td.tax-column {
 #quote_disclaimer {
 	color:#fff;
 }
+
+.rendal_value_cell {
+	white-space: nowrap !important;
+}
