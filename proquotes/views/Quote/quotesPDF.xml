@@ -376,9 +376,13 @@
 					</t>
 				</t>
 			</div>
-			<div>
+			<div t-if="clang == 'en_CA' or clang == 'en_US'">
 				<h1>Customer Acceptance</h1>
 				<p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+			</div>
+			<div t-elif="clang == 'fr_CA'">
+				<h1>Acceptation client</h1>
+				<p>Par votre signature, vous acceptez cette offre au nom de votre compagnie et vous confirmez que vous en avez l'autorité de le faire.</p>
 			</div>
 			<div>
 				<span style="height: 40px"> PO #:</span>
