@@ -328,8 +328,8 @@
 			<attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attribrutes">
-			<attribute name="class">text-left</attribute>
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="after">
+			<!-- <attribute name="class">text-left</attribute> -->
 		</xpath>
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
