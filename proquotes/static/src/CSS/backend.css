@@ -1,4 +1,4 @@
-body > div.o_action_manager > div > div.o_content > div:not(:has(.o_kanban)) {
+body > div.o_action_manager > div > div.o_content > div:not(:has(.o_kanban_record)) {
     display: block;
 }
 
