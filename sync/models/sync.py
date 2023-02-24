@@ -919,6 +919,11 @@ class sync(models.Model):
         if (not self.is_psw_format_good(psw)):
             _logger.info("Password not valid")
             return
+        
+        template_id_exception_list = []
+        template_id_exception_list.append(18103) #services on Timesheet
+        for e in template_id_exception_list:
+             _logger.info("---------------- Exeption list: product.template.id: " + str(e))
 
         #################################
         # Odoo Section
@@ -927,6 +932,10 @@ class sync(models.Model):
 
         for product in products:
             if (product.active == False):
+                continue
+
+            #Check if the ID is in the exception list
+            if (item in template_id_exception_list):
                 continue
 
             if (p_optNoSku and ((str(product.sku) == "False") or (str(product.sku) == None))):
@@ -967,6 +976,9 @@ class sync(models.Model):
                         "listing product in Odoo and not in GS, str(product.id) was False.")
                 elif (str(product.sku) == "time_product_product_template"):
                     _logger.info("Can not archive Service on Timesheet.")
+                #Check if the ID is in the exception list                                   
+                elif (item in template_id_exception_list):
+                    continue
                 else:
                     to_archive.append(str(product.id))
 
@@ -981,18 +993,23 @@ class sync(models.Model):
     ################################################################### 
     # Method to clean all sku that are pulled by self.getSkuToArchive
     def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
+        _logger.info("--------------- BEGIN cleanSku ---------------------------------------------")
         to_archive_list = self.getSkuToArchive(psw, p_optNoSku, p_optInOdooNotGs)
         to_archive_dict = dict()
         sales_with_archived_product = 0
+
+
 
         if p_archive:
             # Archiving all unwanted products
             _logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
             archiving_index = 0
-            for item in to_archive_list:
-                _logger.info(str(archiving_index) + " archving :" + str(item))
-                archiving_index += 1
+
+            for item in to_archive_list:        
+                _logger.info(str(archiving_index).ljust(4) + " archving :" + str(item))
+                archiving_index += 1                
                 self.archive_product(str(item))
+            
             if p_optNoSku:
                 _logger.info("------------------------------------------- ALL products with no SKU or are archived.")
             if p_optInOdooNotGs:
