@@ -332,8 +332,8 @@
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
-			<span t-if="line.product_id.is_software == False" class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price" />
-			<span t-elif="line.product_id.is_software == True" class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price" />
+			<span t-if="line.product_id.is_software == False" class="text-left proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price" />
+			<span t-elif="line.product_id.is_software == True" class="text-left proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price" />
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
