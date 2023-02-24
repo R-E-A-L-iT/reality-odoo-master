@@ -17,5 +17,5 @@ body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_cha
 .o_form_view.o_xxl_form_view > .o_form_sheet_bg > .o_form_sheet {
     width: 100%;
     margin: 0px !important;
-    max-width: 100%;
+    max-width: 100% !important;
 }
