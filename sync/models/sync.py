@@ -935,7 +935,7 @@ class sync(models.Model):
                 continue
 
             #Check if the ID is in the exception list
-            if (item in template_id_exception_list):
+            if (product.id in template_id_exception_list):
                 continue
 
             if (p_optNoSku and ((str(product.sku) == "False") or (str(product.sku) == None))):
