@@ -10,10 +10,6 @@
 			<t t-set="clang" t-value="doc.env.context.get('lang')" />
 		</xpath>
 
-		<xpath expr="//table/thead" position="replace">
-			<t t-set="clang" t-value="doc.env.context.get('lang')" />
-		</xpath>
-
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
@@ -25,7 +21,6 @@
 		<xpath expr="//div[@id=&quot;informations&quot;]/div[3]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong>
 			<strong t-elif="clang == 'fr_CA'">Date du devis:</strong>
-			<strong t-out="str(clang)" />
 		</xpath>
 
 		<!-- <xpath expr="" position="replace">
