@@ -60,7 +60,7 @@
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
 						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
-							Product Value
+							Product Value Test
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-center" style=" border-top-style: none !important">Qty</td>
@@ -71,7 +71,7 @@
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
 						<td t-else="" class="text-left" style="border-top-style: none !important">Produit</td>
 						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
-							Valeur du Produi Test
+							Valeur du Produit
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-center" style=" border-top-style: none !important">Qté</td>
