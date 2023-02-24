@@ -7,6 +7,7 @@
 
 		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
 			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
+			<t t-set="clang" t-value="doc.env.context.get('lang')" />
 		</xpath>
 
 		<xpath expr="//table/thead" position="replace">
@@ -24,7 +25,7 @@
 		<xpath expr="//div[@id=&quot;informations&quot;]/div[3]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong>
 			<strong t-elif="clang == 'fr_CA'">Date du devis:</strong>
-			<strong t-out="str(clang)" />
+			<strong t-out="" />
 		</xpath>
 
 		<!-- <xpath expr="" position="replace">
