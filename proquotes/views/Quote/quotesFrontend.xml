@@ -328,7 +328,7 @@
 			<attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[9]" position="after">
+		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[8]" position="after">
 			<!-- <attribute name="class">text-left</attribute> -->
 		</xpath>
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
