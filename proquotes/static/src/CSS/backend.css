@@ -1,3 +1,5 @@
 body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_chatterContainer.o-aside {
-    display: none !important;
+    clear: both;
+    display: block;
+    width: 100vw;
 }
