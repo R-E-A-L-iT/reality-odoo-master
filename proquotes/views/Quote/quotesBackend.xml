@@ -51,7 +51,7 @@
 			</xpath>
 
 			<xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
-				<field name="optional" invisible="0" t-options="{'widget': 'radio'}" />
+				<field name="optional" invisible="0" widget="radio" />
 				<field name="selected" invisible="0" widget="radio" />
 				<field name="sectionSelected" invisible="1" />
 				<field name="quantityLocked" invisible="0" widget="radio" />
