@@ -133,7 +133,8 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	color: #fff;
 	background-color: #000;
 	text-align: center;
-	padding: 1.6rem !important;
+	padding-top: 1.6rem !important;
+	padding-bottom: 1.6rem !important;
 }
 
 .cHead {
@@ -280,4 +281,16 @@ td.tax-column {
 
 #quote_disclaimer {
 	color:#fff;
+}
+
+.rental_value_cell {
+	white-space: nowrap !important;
+}
+
+.proquotesLineTotal {
+	white-space: nowrap;
+}
+
+.nowrap {
+	white-space: nowrap !important;
 }

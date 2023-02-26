@@ -7,11 +7,10 @@
 
 		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
 			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
-		</xpath>
-
-		<xpath expr="//table/thead" position="replace">
 			<t t-set="clang" t-value="doc.env.context.get('lang')" />
 		</xpath>
+
+		<xpath expr="//thead" position="replace" />
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
@@ -21,6 +20,15 @@
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
+		<xpath expr="//div[@id=&quot;informations&quot;]/div[3]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong>
+			<strong t-elif="clang == 'fr_CA'">Date du devis:</strong>
+		</xpath>
+
+		<xpath expr="//div[@id=&quot;informations&quot;]/div[4]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Expiration:</strong>
+			<strong t-elif="clang == 'fr_CA'">Echéance:</strong>
+		</xpath>
 
 		<xpath expr="// t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
@@ -59,24 +67,24 @@
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
 						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
-						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+						<td t-if="line.name == '$block+'" class="text-left" style="border-top-style: none !important">
 							Product Value
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qty</td>
-						<td class=" text-center" style=" border-top-style: none !important">Price</td>
-						<td class=" text-center" style=" border-top-style: none !important">Amount</td>
+						<td class=" text-left" style=" border-top-style: none !important">Qty</td>
+						<td class=" text-left" style=" border-top-style: none !important">Price</td>
+						<td class=" text-left" style=" border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if=" clang== 'fr_CA'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Produit</td>
 						<td t-else="" class="text-left" style="border-top-style: none !important">Produit</td>
-						<td t-if="line.name == '$block+'" class="text-right" style="border-top-style: none !important">
+						<td t-if="line.name == '$block+'" class="text-left" style="border-top-style: none !important">
 							Valeur du Produit
 						</td>
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
-						<td class=" text-center" style=" border-top-style: none !important">Qté</td>
-						<td class=" text-center" style=" border-top-style: none !important">Prix</td>
-						<td class=" text-center" style=" border-top-style: none !important">Montant</td>
+						<td class=" text-left" style=" border-top-style: none !important">Qté</td>
+						<td class=" text-left" style=" border-top-style: none !important">Prix</td>
+						<td class=" text-left" style=" border-top-style: none !important">Montant</td>
 					</t>
 				</t>
 			</tr>
@@ -546,6 +554,19 @@
 			<attribute name="t-attf-style">
 				{{'border-right-style: none !important;' if (doc.is_rental != True or line.product_id.is_software != True) else '' }}
 			</attribute>
+		</xpath>
+
+		<!-- Change Alignment -->
+		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="attributes">
+			<attribute name="class">text-left</attribute>
+		</xpath>
+
+		<xpath expr="//td[@name=&quot;td_priceunit&quot;]" position="attributes">
+			<attribute name="class">text-left</attribute>
+		</xpath>
+
+		<xpath expr="//td[@name=&quot;td_subtotal&quot;]" position="attributes">
+			<attribute name="class">text-left</attribute>
 		</xpath>
 	</template>
 

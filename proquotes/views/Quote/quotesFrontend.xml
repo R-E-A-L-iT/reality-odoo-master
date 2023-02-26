@@ -138,20 +138,20 @@
 			<t t-if="line.name == '$block' or line.name == '$block+'">
 				<tr class="quote-head">
 					<td class="text-left">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Product</span>
-						<span t-elif="clang == 'fr_CA'" class="cHead">Produit</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead" style="padding-left: 20px !important;">Product</span>
+						<span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit</span>
 					</td>
-					<td t-if="line.name == '$block+'" class="text-middle">
+					<td t-if="line.name == '$block+'" class="text-left">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
 					</td>
 					<td t-else=""></td>
 					<td />
-					<td class="text-middle">
+					<td class="text-left">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
 					</td>
-					<td class="text-middle">
+					<td class="text-left">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
 					</td>
@@ -159,7 +159,7 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
 						<span t-elif="clang == 'fr_CA'">Taxes</span>
 					</td>
-					<td class="text-middle">
+					<td class="text-left">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Montant</span>
 					</td>
@@ -227,16 +227,16 @@
 
 				<label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
 					<span>
-						<strong t-if="clang == 'en_CA' or clang == 'en_us'" class="text-middle subtotal-label" style="font-weight: bolder">
+						<strong t-if="clang == 'en_CA' or clang == 'en_us'" class="text-left subtotal-label" style="font-weight: bolder">
 							Subtotal
 						</strong>
-						<strong t-if="clang == 'fr_CA'" class="text-middle subtotal-label" style="font-weight: bolder">
+						<strong t-if="clang == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
 							Sous-total
 						</strong>
 					</span>
-					<span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-middle" style="font-weight: 400 !important;" />
-					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-middle" style="font-weight: 400 !important;">0.00 $</span>
-					<span t-elif="clang == 'fr_CA'" class="text-middle" style="font-weight: 400 !important;">$ 0.00</span>
+					<span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-left" style="font-weight: 400 !important;" />
+					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left" style="font-weight: 400 !important;">0.00 $</span>
+					<span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
 				</label>
 			</div>
 		</xpath>
@@ -266,13 +266,13 @@
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
-				<td t-if="'CAD' in sale_order.currency_id.name" class="text-middle">
-					<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
-					<span t-if="line.product_id.is_software == False  and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)" class="text-middle itemValue test" />
+				<td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
+					<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-left itemValue test" />
+					<span t-if="line.product_id.is_software == False  and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)" class="text-left itemValue test" />
 				</td>
-				<td t-elif="'USD' in sale_order.currency_id.name" class="text-middle">
-					<span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
-					<span t-if="line.product_id.is_software == False and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)" class="text-middle itemValue test" />
+				<td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
+					<span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)" class="text-left itemValue test" />
+					<span t-if="line.product_id.is_software == False and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)" class="text-left itemValue test" />
 				</td>
 			</t>
 			<td t-else="" />
@@ -328,7 +328,6 @@
 			<attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
 		</xpath>
 
-
 		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
@@ -365,19 +364,19 @@
 		</xpath> -->
 
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
-			<attribute name="t-attf-class">tax-column text-middle {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+			<attribute name="t-attf-class">tax-column text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath>
 
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[3]" position="attributes">
-			<attribute name="t-attf-class">text-middle {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+			<attribute name="t-attf-class">text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath>
 
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[4]" position="attributes">
-			<attribute name="t-attf-class">tax-column text-middle {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+			<attribute name="t-attf-class">tax-column text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath>
 
 		<xpath expr="//t[@t-foreach=&quot;sale_order.order_line&quot;]//td[5]" position="attributes">
-			<attribute name="t-attf-class">text-middle {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
+			<attribute name="t-attf-class">text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} table-column-none</attribute>
 		</xpath>
 
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
