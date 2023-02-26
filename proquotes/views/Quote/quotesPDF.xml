@@ -479,6 +479,8 @@
 				<br />
 				<span t-out="len(list(doc.order_line))" />
 				<br />
+				<span t-out="len(list(filter(lambda x: True, range(100))))" />
+				<br />
 			</div>
 		</xpath>
 
