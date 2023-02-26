@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo> 
-    <template id="proquotes.logo_img" inherit_id="website.option_header_brand_logo" priority="17">
-        <xpath expr="//span[@t-field=&quot;website.logo&quot;]" position="replace">'
-            <img src="https://cdn.r-e-a-l.it/images/icons/product-cycle.gif" alt="R-E-A-L.it"></img>
-        </xpath>
-    </template>
-</odoo>
