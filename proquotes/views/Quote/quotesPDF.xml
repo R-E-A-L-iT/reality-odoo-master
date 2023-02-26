@@ -69,7 +69,7 @@
 				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(line.id)][0]" />
 				<t t-if="section_ids.index(line.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(line.id) + 1][0]" />
 				<t t-else="" t-set="section_index_end" t-value="-1" />
-				<t t-set="section_lines" t-value="doc.order_line[section_index_start:section_index_end]" />
+				<t t-set="section_lines" t-value="doc.order_line[section_index_start + 1:section_index_end]" />
 				<t t-set="substep" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
