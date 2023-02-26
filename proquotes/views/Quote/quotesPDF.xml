@@ -357,6 +357,10 @@
 			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
+		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
+			<strong class="mr16">Subtotal Test</strong>
+		</xpath>
+
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
 			<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
 			<span t-else="" t-field="line.product_uom_qty" />
