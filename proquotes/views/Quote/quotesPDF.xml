@@ -477,8 +477,9 @@
 				<br />
 				<span>Test</span>
 				<br />
-				<span t-out="len(list(filter(lambda x: True, doc.order_lines)))" />
+				<span t-out="len(doc.order_lines)" />
 				<br />
+				<span t-out="type(doc.order_lines)" />
 			</div>
 		</xpath>
 
