@@ -479,7 +479,7 @@
 				<br />
 				<span t-out="len(list(doc.order_line))" />
 				<br />
-				<span t-out="list(map(lambda y: y.name, list(filter(lambda x: x.selected == 'true', list(doc.order_line)))))" />
+				<span t-out="list(map(lambda y: y.display_type, list(filter(lambda x: x.selected == 'true', list(doc.order_line)))))" />
 				<br />
 			</div>
 		</xpath>
