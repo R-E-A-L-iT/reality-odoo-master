@@ -286,3 +286,7 @@ td.tax-column {
 .rental_value_cell {
 	white-space: nowrap !important;
 }
+
+.proquotesLineTotal {
+	white-space: nowrap;
+}
