@@ -19,7 +19,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
-			<attribute name="t-attf-class">text-left</attribute>
+			<attribute name="t-attf-class">text-left nowrap</attribute>
 		</xpath>
 
 		<!-- Tax Alignment -->

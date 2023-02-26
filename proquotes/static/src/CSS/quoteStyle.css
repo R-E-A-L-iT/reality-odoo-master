@@ -290,3 +290,7 @@ td.tax-column {
 .proquotesLineTotal {
 	white-space: nowrap;
 }
+
+.nowrap {
+	white-space: nowrap !important;
+}
