@@ -64,7 +64,7 @@
 			</style>
 			<!-- Test for empty section -->
 			<t t-set="section_empty'" t-value="False" />
-			<t t-if="line.display_type == 'line.section">
+			<t t-if="line.display_type == 'line.section'">
 
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
