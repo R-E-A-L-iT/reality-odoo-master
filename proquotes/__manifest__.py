@@ -39,7 +39,7 @@
             ]
     },
 
-    'vet sion': '1.0.570',
+    'vet sion': '1.0.571',
 
     # always loaded
     'data': [
