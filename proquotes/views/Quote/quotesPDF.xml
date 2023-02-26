@@ -67,7 +67,8 @@
 			<t t-set="substep" t-value="None" />
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(line.id)][0]" />
-				<t t-set="section_index_end" t-value="section_indexes[section_ids.index(line.id) + 1][0]" />
+				<t t-if="section_ids.index(line.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(line.id) + 1][0]" />
+				<t t-else="" t-set="section_index_end" t-value="-1" />
 				<t t-set="substep" t-value="doc.order_line[section_index_start:section_index_end]" />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
