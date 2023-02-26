@@ -479,7 +479,8 @@
 				<br />
 				<span t-out="len(list(doc.order_line))" />
 				<br />
-				<span t-out="list(map(lambda y: y.display_type, list(filter(lambda x, z: x.selected != 'rtrue', list(enumerate(list(doc.order_line)))))))" />
+				<t t-set="custom_list" t-value="list(enumerate(list(doc.order_line)))" />
+				<span t-out="custom_list" />
 				<br />
 			</div>
 		</xpath>
