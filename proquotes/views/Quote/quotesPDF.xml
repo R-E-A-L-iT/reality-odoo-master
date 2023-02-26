@@ -475,6 +475,10 @@
 				<br />
 				<span t-field="doc.partner_id.phone" />
 				<br />
+				<span>Test</span>
+				<br />
+				<span t-out="len(list(filter(lambda x: x.selected, doc.order_line)" />
+				<br />
 			</div>
 		</xpath>
 
@@ -494,8 +498,6 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
-			<p>Test</p>
-			<p t-out="len(list(filter(lambda x: x.selected, doc.order_line)" />
 		</xpath>
 
 		<!-- For rental quotes calculate relevant sums -->
