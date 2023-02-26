@@ -66,7 +66,8 @@
 			<t t-set="section_empty" t-value="False" />
 			<t t-set="substep" t-value="None" />
 			<t t-if="line.display_type == 'line_section'">
-				<t t-set="substep" t-value="str(section_indexes[section_ids.index(line.id)][0])" />
+				<t t-set="section_index" t-value="section_indexes[section_ids.index(line.id)][0]" />
+				<t t-set="substep" t-value="section_indexes" />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
