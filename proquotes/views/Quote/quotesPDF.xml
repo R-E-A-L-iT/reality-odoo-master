@@ -481,6 +481,7 @@
 				<br />
 				<t t-set="custom_list" t-value="list(enumerate(list(doc.order_line)))" />
 				<span t-out="custom_list" />
+				<t t-set="custom_list2" t-value="list(filter(lambda item: item[0].selected == 'true', custom_list)" />
 				<br />
 			</div>
 		</xpath>
