@@ -494,6 +494,7 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
+			<t t-out="len(list(filter(lambda x: x.selected, doc.order_line)" />
 		</xpath>
 
 		<!-- For rental quotes calculate relevant sums -->
