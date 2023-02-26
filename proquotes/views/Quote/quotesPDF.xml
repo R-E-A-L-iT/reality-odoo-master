@@ -479,11 +479,11 @@
 				<br />
 				<span t-out="len(list(doc.order_line))" />
 				<br />
-				<t t-set="custom_list" t-value="list(enumerate(list(doc.order_line)))" />
-				<span t-out="len(custom_list)" />
+				<t t-set="line_indexes" t-value="list(enumerate(list(doc.order_line)))" />
+				<span t-out="len(line_indexes)" />
 				<br />
-				<t t-set="custom_list2" t-value="list(filter(lambda item: item[1].display_type == 'line_section', custom_list))" />
-				<t t-out="custom_list2" />
+				<t t-set="section_indexes" t-value="list(filter(lambda item: item[1].display_type == 'line_section', line_indexes))" />
+				<t t-out="section_indexes" />
 				<br />
 			</div>
 		</xpath>
