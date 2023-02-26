@@ -477,7 +477,7 @@
 				<br />
 				<span>Test</span>
 				<br />
-				<span t-out="len(doc.order_line)" />
+				<span t-out="len(list(doc.order_line))" />
 				<br />
 			</div>
 		</xpath>
