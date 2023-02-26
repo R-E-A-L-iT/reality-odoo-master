@@ -5,31 +5,31 @@
 
 		<!-- Value Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
-			<attribute name="class">text-middle</attribute>
+			<attribute name="class">text-left</attribute>
 		</xpath>
 
 		<!-- Quantity Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
-			<attribute name="class">text-middle</attribute>
+			<attribute name="class">text-left</attribute>
 		</xpath>
 
 		<!-- Price Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
-			<attribute name="t-attf-class">text-middle</attribute>
+			<attribute name="t-attf-class">text-left</attribute>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
-			<attribute name="t-attf-class">text-middle</attribute>
+			<attribute name="t-attf-class">text-left</attribute>
 		</xpath>
 
 		<!-- Tax Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
-			<attribute name="t-attf-class">text-middle</attribute>
+			<attribute name="t-attf-class">text-left</attribute>
 		</xpath>
 
 		<!-- Line_Total Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
-			<attribute name="class">text-middle</attribute>
+			<attribute name="class">text-left</attribute>
 		</xpath>
 		<!-- <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="replace" /> -->
 	</template>
