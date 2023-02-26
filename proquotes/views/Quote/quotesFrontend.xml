@@ -328,7 +328,7 @@
 			<attribute name="t-if">line.selected == 'true' and current_section_ended</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
+		<xpath expr="//t[t-foreach=&quot;sale_order.order_line&quot;]//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
 			<attribute name="class">text-left</attribute>
 		</xpath>
 
