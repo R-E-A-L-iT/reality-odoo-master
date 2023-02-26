@@ -125,6 +125,7 @@
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+						<p t-out="str(substep)" />
 						<p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
 						<p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
 					</t>
@@ -170,7 +171,6 @@
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<p t-out="str(substep)" />
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
