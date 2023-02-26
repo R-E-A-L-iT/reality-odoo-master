@@ -63,7 +63,7 @@
 				}
 			</style>
 			<!-- Test for empty section -->
-			<t t-set="section_empty" t-value="False" />
+			<t t-set="section_empty'" t-value="False" />
 			<t t-if="line.display_type == 'line.section">
 
 			</t>
