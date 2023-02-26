@@ -63,7 +63,7 @@
 				}
 			</style>
 			<!-- Test for empty section -->
-			<t t-set="section_empty" t-value="False" />
+			<!-- <t t-set="section_empty" t-value="False" /> -->
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(line.id)][0]" />
 				<t t-if="section_ids.index(line.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(line.id) + 1][0]" />
@@ -359,7 +359,7 @@
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
 			<attribute name="t-if">
-				section_empty == False
+				not section_empty
 			</attribute>
 		</xpath>
 
