@@ -485,6 +485,9 @@
 				<t t-set="section_indexes" t-value="list(filter(lambda item: item[1].display_type == 'line_section', line_indexes))" />
 				<t t-out="section_indexes" />
 				<br />
+				<t t-set="section_ids" t-value="list(map(lambda item: item[1].id, section_indexes))" />
+				<span t-out="section_ids" />
+				<br />
 			</div>
 		</xpath>
 
