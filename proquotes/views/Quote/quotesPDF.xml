@@ -65,13 +65,13 @@
 			<!-- Test for empty section -->
 			<t t-set="section_empty'" t-value="False" />
 			<t t-if="line.display_type == 'line.section'">
-
+				<t t-set="substep" t-value="section_indexes[section_ids.index(line.id)][0]" />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
 				<t t-if="line.name == '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
-						<td t-else="" class="text-left" style="border-top-style: none !important">Product <p t-out="section_indexes[section_ids.index(line.id)][0]" />
+						<td t-else="" class="text-left" style="border-top-style: none !important"> Product <p t-out="substep" />
 						</td>
 						<td t-if="line.name == '$block+'" class="text-left" style="border-top-style: none !important">
 							Product Value
