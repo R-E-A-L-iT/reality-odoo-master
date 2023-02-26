@@ -521,6 +521,7 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
+			<t t-set="section_empty" t-value="False" />
 		</xpath>
 
 		<!-- For rental quotes calculate relevant sums -->
