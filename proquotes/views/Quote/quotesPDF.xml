@@ -113,7 +113,7 @@
 					</t>
 				</t>
 			</tr>
-			<t t-if=" line.name== '$hardware' and not section_empty">
+			<t t-if=" line.name== '$hardware'">
 				<tr>
 					<td colspan="100" style="border-style: none !important;">
 						<t t-set="isPDF" t-value="True" />
@@ -122,14 +122,14 @@
 					</td>
 				</tr>
 			</t>
-			<t t-if="line.name == '$software' and not section_empty">
+			<t t-if="line.name == '$software'">
 				<tr>
 					<td colspan="100" style="border-style: none !important;">
 						<t t-call="proquotes.renewal-software" />
 					</td>
 				</tr>
 			</t>
-			<t t-if="line.name == '$subscription' and not section_empty">
+			<t t-if="line.name == '$subscription'">
 				<td colspan="100" style="border-style: none !important;">
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
