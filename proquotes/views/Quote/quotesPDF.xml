@@ -66,7 +66,7 @@
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="current_line" t-value="line" />
 				<t t-set="index" t-value="section_indexes[section_ids.index(line.id)][0]" />
-				<t t-if="index + 1 &lt; len(doc.order_line)">
+				<t t-if="index + 1 &lt; len(doc.order_line) and False">
 					<t t-set="next_line" t-value="doc.order_line[index + 1]" />
 					<t t-if="next_line.name == '$block' or next_line.name == '$block+'" t-set="current_line" t-value="next_line" />
 				</t>
