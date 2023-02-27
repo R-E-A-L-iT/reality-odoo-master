@@ -52,7 +52,7 @@
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">
 			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">
-				<strong>Subtotal</strong>
+				<!-- <strong>Subtotal</strong> -->
 			</td>
 		</xpath>
 
