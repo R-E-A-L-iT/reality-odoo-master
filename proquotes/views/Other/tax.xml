@@ -52,7 +52,8 @@
 		</xpath>
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">
 			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">
-				<!-- <strong>Subtotal</strong> -->
+				<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>
+				<strong t-if="clang == 'fr_CA'">Sous-Total</strong>
 			</td>
 		</xpath>
 
