@@ -78,6 +78,7 @@
 				<t t-set="selected_list" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
 				<t t-set="section_empty" t-value="len(selected_list) == 0" />
 				<span t-out="current_line_empty.name" />
+				<span t-out="section_empty" />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
 				<!-- <tr class="quote-head" t-if="line.display_type == 'line_section'"> -->
