@@ -922,6 +922,9 @@ class sync(models.Model):
         
         template_id_exception_list = []
         template_id_exception_list.append(18103) #services on Timesheet
+        template_id_exception_list.append(561657)
+        template_id_exception_list.append(561658)
+        561657
         for e in template_id_exception_list:
              _logger.info("---------------- Exeption list: product.template.id: " + str(e))
 
