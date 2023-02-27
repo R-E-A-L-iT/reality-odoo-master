@@ -78,16 +78,6 @@
 				<t t-set="selected_list" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
 				<t t-if="len(selected_list) == 0" t-set="section_empty" t-value="True" />
 				<t t-else="" t-set="section_empty" t-value="False" />
-				<span t-out="line.name" />
-				<span> | </span>
-				<span t-out="current_line_empty.name" />
-				<span> | </span>
-				<span t-out="section_index_start" />
-				<span> | </span>
-				<span t-out="section_index_end" />
-				<span> | </span>
-				<span t-out="str(section_empty)" />
-				<br />
 			</t>
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
 				<t t-if=" line.name== '$block' or line.name == '$block+'">
@@ -374,16 +364,9 @@
 			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-			<!-- <attribute name="t-if">
-				not section_empty
-			</attribute> -->
-		</xpath>
-
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang== 'en_US'" class="mr16">Subtotal</strong>
 			<strong t-if="clang == 'fr_CA'" class="mr16">Sous-Total</strong>
-			<strong t-out="str(not section_empty)" />
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
