@@ -76,10 +76,10 @@
 				<t t-else="" t-set="section_index_end" t-value="-1" />
 				<t t-set="section_lines" t-value="doc.order_line[section_index_start + 1:section_index_end]" />
 				<t t-set="selected_list" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
-				<t t-set="section_empty" t-value="len(selected_list) == 0" />
+				<!-- <t t-set="section_empty" t-value="len(selected_list) == 0" /> -->
 			</t>
-			<!-- <tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)"> -->
-			<tr class="quote-head" t-if="line.display_type == 'line_section'">
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
+				<!-- <tr class="quote-head" t-if="line.display_type == 'line_section'"> -->
 				<t t-if=" line.name== '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
