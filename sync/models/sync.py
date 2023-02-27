@@ -899,16 +899,18 @@ class sync(models.Model):
         return -1
 
 
+    ################################################################### 
     # Method the return a list of product.id need to be archived.
     # The list include all product.id that does not have a prodcut.sku, or that the string or product.sku is False.
     # The list include all product.id that the product.sku is in Odoo and not in GoogleSheet Master Database.
     # Input
     #   psw: the password to acces the GoogleSheet Master Database.
+    #   p_optNoSku:
+    #   p_optInOdooNotGs:
     # Output
     #   to_archive: a list of product.id
-    def getSkuToArchive(self, psw=None):
-        _logger.info(
-            "------------------------------------------- BEGIN  to get the sku in odoo and not in GoogleSheet")
+    def getSkuToArchive(self, psw=None, p_optNoSku=True, p_optInOdooNotGs=True):
+        _logger.info("------------------------------------------- BEGIN  getSkuToArchive")
         catalog_odoo = dict()
         catalog_gs = dict()
         to_archive = []
@@ -917,6 +919,14 @@ class sync(models.Model):
         if (not self.is_psw_format_good(psw)):
             _logger.info("Password not valid")
             return
+        
+        template_id_exception_list = []
+        template_id_exception_list.append(18103) #services on Timesheet
+        template_id_exception_list.append(561657)
+        template_id_exception_list.append(561658)
+        561657
+        for e in template_id_exception_list:
+             _logger.info("---------------- Exeption list: product.template.id: " + str(e))
 
         #################################
         # Odoo Section
@@ -927,16 +937,18 @@ class sync(models.Model):
             if (product.active == False):
                 continue
 
-            if ((str(product.sku) == "False") or (str(product.sku) == None)):
+            #Check if the ID is in the exception list
+            if (product.id in template_id_exception_list):
+                continue
+
+            if (p_optNoSku and ((str(product.sku) == "False") or (str(product.sku) == None))):
                 if (str(product.id) != "False"):
                     to_archive.append(str(product.id))
-                else:
-                    _logger.info("Odoo section, str(product.id) was False.")
 
                 _logger.info("---------------- To archived: Product with NO SKU: Product id: " + str(product.id).ljust(
                     10) + ", active is: " + str(product.active).ljust(7) + ", name: " + str(product.name))
 
-            if (str(product.sku) not in catalog_odoo):
+            if (p_optInOdooNotGs and (str(product.sku) not in catalog_odoo)):
                 catalog_odoo[str(product.sku)] = 1
             else:
                 catalog_odoo[str(product.sku)
@@ -967,29 +979,44 @@ class sync(models.Model):
                         "listing product in Odoo and not in GS, str(product.id) was False.")
                 elif (str(product.sku) == "time_product_product_template"):
                     _logger.info("Can not archive Service on Timesheet.")
+                #Check if the ID is in the exception list                                   
+                elif (item in template_id_exception_list):
+                    continue
                 else:
                     to_archive.append(str(product.id))
 
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("to_archive length: " + str(len(to_archive)))
+        _logger.info("--------------- END getSkuToArchive ---------------------------------------------")
+
         return to_archive
 
 
+    ################################################################### 
     # Method to clean all sku that are pulled by self.getSkuToArchive
-    def cleanSku(self, psw=None):
-        to_archive_list = self.getSkuToArchive(psw)
+    def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
+        _logger.info("--------------- BEGIN cleanSku ---------------------------------------------")
+        to_archive_list = self.getSkuToArchive(psw, p_optNoSku, p_optInOdooNotGs)
         to_archive_dict = dict()
         sales_with_archived_product = 0
 
-        # Archiving all unwanted products
-        #_logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
-        #archiving_index = 0
-        # for item in to_archive_list:
-        #    _logger.info(str(archiving_index) + " archving :" + str(item))
-        #    archiving_index += 1
-        #    self.archive_product(str(item))
-        #_logger.info("------------------------------------------- ALL products with no SKU or Sku in Odoo and not in GoogleSheet DB are archived.")
+
+
+        if p_archive:
+            # Archiving all unwanted products
+            _logger.info("------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
+            archiving_index = 0
+
+            for item in to_archive_list:        
+                _logger.info(str(archiving_index).ljust(4) + " archving :" + str(item))
+                archiving_index += 1                
+                self.archive_product(str(item))
+            
+            if p_optNoSku:
+                _logger.info("------------------------------------------- ALL products with no SKU or are archived.")
+            if p_optInOdooNotGs:
+                _logger.info("------------------------------------------- ALL products with Sku in Odoo and not in GoogleSheet DB are archived.")
 
         # Switch to dictionnary to optimise the rest of the querry
         for i in range(len(to_archive_list)):
@@ -1018,12 +1045,14 @@ class sync(models.Model):
 
         _logger.info("number of sales with archived product: " +
                      str(sales_with_archived_product))
+        _logger.info("--------------- END cleanSku ---------------------------------------------")
 
 
+    ################################################################### 
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
-    def log_product_from_sale(self, sale_name):
+    def log_product_from_sale(self, sale_name, p_log=True):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search(
             [('name', '=', sale_name)])
@@ -1034,18 +1063,22 @@ class sync(models.Model):
             for line in sale_order_lines:
                 product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
-                _logger.info("---------------")
-                _logger.info("orders name: " + str(order.name))
-                _logger.info("id in a sale order: " + str(product.id))
-                _logger.info("sku in a sale order: " + str(product.sku))
-                _logger.info("skuhidden name in a sale order: " +
-                             str(product.skuhidden.name))
-                _logger.info("name in a sale order: " + str(product.name))
-                _logger.info("---------------")
+                if p_log:
+                    _logger.info("---------------")
+                    _logger.info("orders name: " + str(order.name))
+                    _logger.info("id in a sale order: " + str(product.id))
+                    _logger.info("sku in a sale order: " + str(product.sku))
+                    _logger.info("skuhidden name in a sale order: " +
+                                str(product.skuhidden.name))
+                    _logger.info("name in a sale order: " + str(product.name))
+                    _logger.info("---------------")
 
-        _logger.info("Listing all product from: END")
+        if p_log:
+            _logger.info("--------------- END log_product_from_sale ---------------------------------------------")
+            
 
 
+    ################################################################### 
     # query to find the QUOTATION-2023-01-05-007, id 552
     def searchQuotation(self):
         sale = self.env['sale.order'].search(
@@ -1056,39 +1089,127 @@ class sync(models.Model):
         _logger.info("---------------")
 
     
+    ################################################################### 
     # Method to identify all product with the same name
-    def getProductsWithSameName(self):
-        productNamesInDouble = []
-        names_identified = dict()
-        products = self.env['product.template'].search([])
-
-        _logger.info("------------------------------------------------------------------")
-        _logger.info("---------------  getProductsWithSameName")        
-        _logger.info("---------------  getProductsWithSameName: Number of product to check: " + str(len(products)))        
+    # Output a dictionary
+    #   key : a product template name
+    #   values: list of product_template.id that have the same name
+    def getProductsWithSameName(self, p_log=True):
+        dup_product_template_name = dict()
+        products_tmpl = self.env['product.template'].search([])
+        count = 0
+        if p_log:
+            _logger.info("------------------------------------------------------------------")
+            _logger.info("---------------  getProductsWithSameName")        
+            _logger.info("---------------  Number of product template to check: " + str(len(products_tmpl)))        
        
         #For each product, 
-        for product in products:
+        for product in products_tmpl:
             if (product.active == False):
                 continue
 
             # Check if the product is already identfied
-            if (product.name in names_identified):
-                continue            
-            names_identified[product.name] = True
+            if (product.name in dup_product_template_name):
+                continue                        
 
             #checking if their is other products with the same name.
             doubled_names = self.env['product.template'].search(
                 [('name', '=', product.name)])           
 
-            if (len(doubled_names) > 1):
-                id_list = []                
+            if (len(doubled_names) > 1):  
+                count += 1
+                dup_product_template_name[product.name] = []            
                 #if yes, adding all the product id founded and the name in a list
                 for doubled_name in doubled_names:
-                    _logger.info("--------------- id: " + str(doubled_name.id).ljust(10) + str(product.name))
-                    id_list.append(doubled_name.id)
+                    if p_log:
+                        _logger.info("--------------- " + 
+                                    str(count).ljust(5) +
+                                    "product_template.id: " + str(doubled_name.id).ljust(10) + str(product.name))
+                    dup_product_template_name[product.name].append(doubled_name.id)
 
-                productNamesInDouble.append((str(product.name), id_list))
+        if p_log:
+            _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))           
+            _logger.info("--------------- END getProductsWithSameName ---------------------------------------------")
+
+        return dup_product_template_name
         
+
+
+    ################################################################### 
+    def getSaleOrderByProductId(self, p_product_template_id, p_log=True):
+        #validate that product_id is an integer
+        try:
+            product_template_id = int(p_product_template_id)
+        except Exception as e:
+             _logger.info("--------------- Could not convert to int product_template_id: " + str(product_template_id))
+             _logger.info("--------------- " + str(e))
+             return
+
+        # gatter product templte
+        product_template = self.env['product.template'].search([
+            ('id', '=', product_template_id)])  
+                
+        # gatter all lines of all sales
+        lines = self.env['sale.order.line'].search([])           
+
+        product_sold_counter = 0 
+
+        # Check if the product.template.id appear in any sale.order.id            
+        for line in lines:                   
+                for line_product_template in line.product_template_id:                                                 
+                    if (line_product_template.id == product_template.id):
+                        for line_order in line.order_id:
+                            sale = self.env['sale.order'].search([
+                                ('id', '=', line_order.id)])    
+                            if p_log:                       
+                                _logger.info("---------------" + 
+                                                "  product_template.id: " + str(product_template.id).ljust(10) +
+                                                ", product_template.name: " + str(product_template.name).ljust(100) +
+                                                ", line_product_template.id: " + str(line_product_template.id).ljust(20) + 
+                                                ", sale.id: " + str(sale.id).ljust(10) +
+                                                ", sale.name: " + str(sale.name)) 
+                            product_sold_counter += 1     
+        if p_log:
+            _logger.info("--------------- product_sold_counter: " + str(product_sold_counter))
+            _logger.info("--------------- END getSaleOrderByProductId ---------------------------------------------")
+
+        return product_sold_counter
+
+
+    ################################################################### 
+    def getProductIdBySku(self, p_sku, p_log=True):
+        product = self.env['product.product'].search([
+            ('sku', '=', p_sku)])   
+        if p_log:     
+            _logger.info("--------------- p_sku: " + str(p_sku) + ", id: " + str(product.id))
+
+
+    ################################################################### 
+    def cleanProductByName(self):
+        duplicate_names_dict = self.getProductsWithSameName(p_log=True)
+
+        for duplicate_name in duplicate_names_dict:
+            _logger.info(str(duplicate_name))  
+            sale_order_count_by_template_id = dict()   
+
+            for template_id in duplicate_names_dict[duplicate_name]:                
+                sale_order_count_by_template_id[template_id] = self.getSaleOrderByProductId(template_id, p_log=False)
+
+            for template_id in sale_order_count_by_template_id:                
+                if (sale_order_count_by_template_id[template_id] <= 0):
+                    action = "could ARCHIVE "
+                else:
+                    action = "KEEP          "
+                _logger.info("           " + action + "template_id " + str(template_id).ljust(10)  + " sold count: " + str(sale_order_count_by_template_id[template_id]))
+            _logger.info("----------------------------------------------------------------------------------------------------")
+            _logger.info("")
+            _logger.info("")
         
+        _logger.info("--------------- END cleanProductByName ---------------------------------------------")
             
+
+
+
+
+
             
