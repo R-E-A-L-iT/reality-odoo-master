@@ -64,14 +64,14 @@
 			</style>
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
-				<t t-set="current_line" t-value="line" />
+				<t t-set="current_line_empty" t-value="line" />
 				<t t-set="index" t-value="section_indexes[section_ids.index(line.id)][0]" />
-				<t t-if="index + 1 &lt; len(doc.order_line) and False">
-					<t t-set="next_line" t-value="doc.order_line[index + 1]" />
-					<t t-if="next_line.name == '$block' or next_line.name == '$block+'" t-set="current_line" t-value="next_line" />
+				<t t-if="index + 1 &lt; len(doc.order_line)">
+					<t t-set="next_line_empty" t-value="doc.order_line[index + 1]" />
+					<t t-if="next_line.name == '$block' or next_line.name == '$block+'" t-set="current_line_empty" t-value="next_line_empty" />
 				</t>
-				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(current_line.id)][0]" />
-				<t t-if="section_ids.index(current_line.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(current_line.id) + 1][0]" />
+				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(current_line_empty.id)][0]" />
+				<t t-if="section_ids.index(current_line_empty.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(current_line_empty.id) + 1][0]" />
 				<t t-else="" t-set="section_index_end" t-value="-1" />
 				<t t-set="section_lines" t-value="doc.order_line[section_index_start + 1:section_index_end]" />
 				<t t-set="selected_list" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
