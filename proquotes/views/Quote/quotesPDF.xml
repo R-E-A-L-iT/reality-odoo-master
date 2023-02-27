@@ -13,7 +13,7 @@
 		<xpath expr="//thead" position="replace" />
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
-			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block'))</attribute>
+			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block')) and (not section_empty)</attribute>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
@@ -30,7 +30,7 @@
 			<strong t-elif="clang == 'fr_CA'">Echéance:</strong>
 		</xpath>
 
-		<xpath expr="// t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
 				<t t-set="sname" t-value="line.name.strip()[1:]" />
@@ -38,6 +38,13 @@
 			</span>
 		</xpath>
 
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]" position="attributes">
+			<attribute name="t-if">line.display_type == 'line_section' and not section_empty</attribute>
+		</xpath>
+
+		<xpath expr="//table/tbody//tr[1]" position="attributes">
+			<attribute name="t-if">section_empty</attribute>
+		</xpath>
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
@@ -62,11 +69,29 @@
 				list-style: lower-alpha;
 				}
 			</style>
-			<tr class="quote-head" t-if="line.display_type == 'line_section'">
-				<t t-if="line.name == '$block' or line.name == '$block+'">
+			<!-- Test for empty section -->
+			<t t-if="line.display_type == 'line_section'">
+				<t t-set="current_line_empty" t-value="line" />
+				<t t-set="index_empty" t-value="section_indexes[section_ids.index(line.id)][0]" />
+				<t t-set="current_line_empty" t-value="doc.order_line[index_empty]" />
+				<t t-if="index_empty + 1 &lt; len(doc.order_line)">
+					<t t-set="next_line_empty" t-value="doc.order_line[index_empty + 1]" />
+					<t t-if="next_line_empty.name == '$block' or next_line_empty.name == '$block+'" t-set="current_line_empty" t-value="next_line_empty" />
+				</t>
+				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(current_line_empty.id)][0]" />
+				<t t-if="section_ids.index(current_line_empty.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(current_line_empty.id) + 1][0]" />
+				<t t-else="" t-set="section_index_end" t-value="-1" />
+				<t t-set="section_lines" t-value="doc.order_line[section_index_start + 1:section_index_end]" />
+				<t t-set="selected_list" t-value="list(filter(lambda item: item.selected == 'true', section_lines))" />
+				<t t-if="len(selected_list) == 0" t-set="section_empty" t-value="True" />
+				<t t-else="" t-set="section_empty" t-value="False" />
+			</t>
+			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
+				<t t-if=" line.name== '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
-						<td t-else="" class="text-left" style="border-top-style: none !important">Product</td>
+						<td t-else="" class="text-left" style="border-top-style: none !important"> Product <t t-out="str(section_ids)" />
+						</td>
 						<td t-if="line.name == '$block+'" class="text-left" style="border-top-style: none !important">
 							Product Value
 						</td>
@@ -346,6 +371,11 @@
 			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
+		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang== 'en_US'" class="mr16">Subtotal</strong>
+			<strong t-if="clang == 'fr_CA'" class="mr16">Sous-Total</strong>
+		</xpath>
+
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
 			<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
 			<span t-else="" t-field="line.product_uom_qty" />
@@ -475,6 +505,11 @@
 				<br />
 				<span t-field="doc.partner_id.phone" />
 				<br />
+
+				<!-- Calculation Values -->
+				<t t-set="line_indexes" t-value="list(enumerate(list(doc.order_line)))" />
+				<t t-set="section_indexes" t-value="list(filter(lambda item: item[1].display_type == 'line_section', line_indexes))" />
+				<t t-set="section_ids" t-value="list(map(lambda item: item[1].id, section_indexes))" />
 			</div>
 		</xpath>
 
@@ -494,6 +529,7 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
+			<t t-set="section_empty" t-value="False" />
 		</xpath>
 
 		<!-- For rental quotes calculate relevant sums -->
