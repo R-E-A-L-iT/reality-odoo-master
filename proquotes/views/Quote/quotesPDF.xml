@@ -383,7 +383,7 @@
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang== 'en_US'" class="mr16">Subtotal</strong>
 			<strong t-if="clang == 'fr_CA'" class="mr16">Sous-Total</strong>
-			<strong t-out="str(section_empty)" />
+			<strong t-out="str(not section_empty)" />
 		</xpath>
 
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
