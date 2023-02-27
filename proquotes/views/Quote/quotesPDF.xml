@@ -113,23 +113,23 @@
 					</t>
 				</t>
 			</tr>
-			<t t-if=" line.name== '$hardware' and not section_empty">
+			<t t-if=" line.name== '$hardware'">
 				<tr>
-					<td colspan="100" style="border-style: none !important;">
-						<t t-set="isPDF" t-value="True" />
-						<t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english" />
+					<td colspan=" 100" style=" border-style: none !important;">
+						<t t-set=" isPDF" t-value=" True" />
+						<t t-if=" clang==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english" />
 						<t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french" />
 					</td>
 				</tr>
 			</t>
-			<t t-if="line.name == '$software' and not section_empty">
+			<t t-if="line.name == '$software'">
 				<tr>
 					<td colspan="100" style="border-style: none !important;">
 						<t t-call="proquotes.renewal-software" />
 					</td>
 				</tr>
 			</t>
-			<t t-if="line.name == '$subscription' and not section_empty">
+			<t t-if="line.name == '$subscription'">
 				<td colspan="100" style="border-style: none !important;">
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
