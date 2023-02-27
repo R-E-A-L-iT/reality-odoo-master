@@ -68,7 +68,7 @@
 				<t t-set="index" t-value="section_indexes[section_ids.index(line.id)][0]" />
 				<t t-if="doc.order_line.name == '$block'">
 					<t t-set="next_line" t-value="doc.order_line[index + 1]" />
-					<t t-if="next_line.name == '$block' or next_line.name == '$block')" t-set="current_line" t-value="next_line" />
+					<t t-if="next_line.name == '$block' or next_line.name == '$block+'" t-set="current_line" t-value="next_line" />
 				</t>
 				<t t-set="section_index_start" t-value="section_indexes[section_ids.index(current_line.id)][0]" />
 				<t t-if="section_ids.index(line.id) + 1 &lt; len(section_indexes)" t-set="section_index_end" t-value="section_indexes[section_ids.index(current_line.id) + 1][0]" />
