@@ -375,9 +375,9 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-			<attribute name="t-if">
+			<!-- <attribute name="t-if">
 				not section_empty
-			</attribute>
+			</attribute> -->
 		</xpath>
 
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
