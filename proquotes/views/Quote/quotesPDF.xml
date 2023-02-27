@@ -39,7 +39,7 @@
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="attributes">
-			<attribute name="t-if">not secstion_empty</attribute>
+			<attribute name="t-if">section_empty</attribute>
 		</xpath>
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
