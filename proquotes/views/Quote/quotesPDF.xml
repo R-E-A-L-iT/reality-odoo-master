@@ -30,13 +30,16 @@
 			<strong t-elif="clang == 'fr_CA'">Echéance:</strong>
 		</xpath>
 
-		<xpath expr="// t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<span t-out="line.name"></span>
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
 				<t t-set="sname" t-value="line.name.strip()[1:]" />
 				<t t-call="proquotes.section_name_resolution" />
 			</span>
+		</xpath>
+
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]" position="attributes">
+			<attribute name="t-if">line.display_type == 'line_section' and not section_empty</attribute>
 		</xpath>
 
 		<xpath expr="//table/tbody//tr[1]" position="attributes">
