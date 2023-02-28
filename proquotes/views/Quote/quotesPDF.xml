@@ -269,6 +269,7 @@
 						<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
 						<span t-esc="doc.rental_state.code" />
 						<span t-field="doc.rental_zip" />
+						<span t-field="doc.rental_country" />
 					</t>
 				</td>
 			</t>
