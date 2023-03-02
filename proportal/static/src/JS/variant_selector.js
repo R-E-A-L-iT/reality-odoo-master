@@ -9,8 +9,3 @@ function changeStyle() {
         }
     }
 }
-console.log("HELLO WORLD")
-var tabs = document.getElementsByClassName("var_radio_label")
-for(var i = 0; i < tabs.length; i++){
-    tabs[i].addEventListener("click", changeStyle)
-}
