@@ -935,10 +935,13 @@ h2.subtitle>span {
 	margin-top: 2rem !important;
 }
 
+label .var_chooser {
+	padding: 20px;
+	float: right;
+}
+
 input[name=variantSelector] {
 	display: none;
-	padding: 20px !important;
-	float: right !important;
 }
 
 input[name=variantSelector]:not(:checked) + .specs {
