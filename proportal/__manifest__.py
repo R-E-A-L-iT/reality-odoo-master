@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.27',
+    'version': '0.28',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -32,7 +32,7 @@
                 'proportal/static/src/CSS/footer.css',
                 'proportal/static/src/CSS/mobileWebsite.css',
                 'proportal/static/src/CSS/cart.css',
-                'proportal/static/src/JS/varient_selector.js',
+                # 'proportal/static/src/JS/varient_selector.js',
             ]
     },
 
