@@ -948,6 +948,7 @@ label .var_chooser {
 }
 
 input[name=variantSelector] {
+	display: block;
 	/* display: none; */
 }
 
