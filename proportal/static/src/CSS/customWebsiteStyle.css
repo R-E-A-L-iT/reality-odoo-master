@@ -942,13 +942,13 @@ div.specs_div{
 	flex-wrap: nowrap;
 }
 
-label .var_chooser {
+label.var_radio_label {
 	margin: 20px;
 	cursor: pointer;
 	color: #888;
 }
 
-label.var_var_chooser.selected {
+label.var_radio_label.selected {
 	color: #fff !important;	
 }
 
