@@ -948,7 +948,7 @@ label .var_chooser {
 }
 
 input[name=variantSelector] {
-	display: none;
+	/* display: none; */
 }
 
 label:for(:not(:checked)) {
