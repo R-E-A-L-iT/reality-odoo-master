@@ -937,17 +937,13 @@ h2.subtitle>span {
 
 div.specs_div{
 	display: flex;
-	justify-content: flex-end;
-	margin: 20px;
+	justify-content: center;
+	flex-direction: row;
+	flex-wrap: nowrap;
 }
 
 label .var_chooser {
 	margin: 20px;
-}
-
-label.var_radio_label {
-	justify-content: end;
-	flex-wrap: nowrap;
 }
 
 input[name=variantSelector] {
