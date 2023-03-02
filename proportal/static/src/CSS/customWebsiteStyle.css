@@ -940,8 +940,7 @@ label .var_chooser {
 }
 
 label.var_radio_label {
-	display: flex;
-	justify-content: flex-end;
+	justify-content: end;
 	flex-wrap: nowrap;
 }
 
