@@ -942,6 +942,7 @@ label .var_chooser {
 label.var_radio_label {
 	display: flex;
 	justify-content: flex-end;
+	flex-wrap: nowrap;
 }
 
 input[name=variantSelector] {
