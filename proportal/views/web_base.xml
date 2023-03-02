@@ -46,10 +46,13 @@
 				var tabs = document.getElementsByClassName("var_radio_label");
 				for(var i = 0; i &lt; tabs.length ; i++) {
 				var radio = document.getElementById(tabs[i].getAttribute("for"))
+				if(radio == undefined) {
+				var x = 0/0
+				}
 				if(radio.checked== true){
-				tabs[i].getElementsByClassName("var_chooser")[0].setAttribute("class", "var_radio_label selected" )
+				tabs[i].getElementsTagName("span")[0].setAttribute("class", "var_radio_label selected" )
 				} else {
-				tabs[i].getElementsByClassName("var_chooser")[0].setAttribute("class", "var_radio_label")
+				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_radio_label")
 				}
 				}
 				}
