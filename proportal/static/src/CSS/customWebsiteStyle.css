@@ -936,8 +936,11 @@ h2.subtitle>span {
 }
 
 label .var_chooser {
-	padding: 20px !important;
-	float: right !important;
+	padding: 20;
+}
+
+label.var_radio_label {
+	float: right;
 }
 
 input[name=variantSelector] {
