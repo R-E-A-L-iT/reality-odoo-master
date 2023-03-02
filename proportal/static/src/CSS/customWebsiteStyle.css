@@ -934,3 +934,7 @@ h2.subtitle>span {
 #question-icon {
 	margin-top: 2rem !important;
 }
+
+input[name=variantSelector] {
+	display: none;
+}
