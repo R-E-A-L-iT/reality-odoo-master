@@ -948,7 +948,7 @@ div.specs_div{
 	color: #888;
 }
 
-label.var_chooser.selected {
+.var_chooser.selected {
 	color: #fff !important;	
 }
 
