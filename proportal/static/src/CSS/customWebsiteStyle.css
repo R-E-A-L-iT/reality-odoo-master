@@ -937,6 +937,8 @@ h2.subtitle>span {
 
 input[name=variantSelector] {
 	display: none;
+	padding: 20px;
+	float: right;
 }
 
 input[name=variantSelector]:not(:checked) + .specs {
