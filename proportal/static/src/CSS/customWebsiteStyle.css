@@ -944,14 +944,11 @@ div.specs_div{
 
 .var_chooser {
 	margin: 20px;
-}
-
-label.var_radio_label {
 	cursor: pointer;
 	color: #888;
 }
 
-label.var_radio_label.selected {
+label.var_chooser.selected {
 	color: #fff !important;	
 }
 
