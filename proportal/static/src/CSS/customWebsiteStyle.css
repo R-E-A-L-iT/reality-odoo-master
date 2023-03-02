@@ -948,7 +948,7 @@ label .var_chooser {
 	color: #888;
 }
 
-label.var_radio_label.selected {
+label.var_var_chooser.selected {
 	color: #fff !important;	
 }
 
