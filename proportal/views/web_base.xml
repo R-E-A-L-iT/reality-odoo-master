@@ -40,6 +40,17 @@
 				b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
 				s.parentNode.insertBefore(b, s);})(window.lintrk);
 			</script>
+			<script type="text/javascript">
+				function changeStyle() { var tabs = document.getElementsByClassName("var_radio_label") for(var i = 0; i &lt; tabs.length ; i++) {
+				var radio= document.getElementById(tabs[i].for)
+				if(radio.checked== true){
+				tabs[i].setAttribute("class", "var_radio_label selected" )
+				} else {
+				tabs[i].setAttribute("class", "var_radio_label")
+				}
+				}
+				}
+			</script>
 			<noscript>
 				<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=4428316&amp;fmt=gif" />
 			</noscript>
