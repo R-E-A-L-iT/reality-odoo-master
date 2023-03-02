@@ -52,9 +52,9 @@
 				console.log("Id")
 				console.log(tabs[i].getAttribute("for"))
 				if(radio.checked== true){
-				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_radio_label selected" )
+				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_chooser selected" )
 				} else {
-				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_radio_label")
+				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_chooser")
 				}
 				}
 				}
