@@ -945,7 +945,7 @@ div.specs_div{
 .var_chooser {
 	margin: 20px;
 	cursor: pointer;
-	color: #888;
+	color: #999;
 }
 
 .var_chooser.selected {
