@@ -50,7 +50,7 @@
 				var x = 0/0
 				}
 				if(radio.checked== true){
-				tabs[i].getElementsTagName("span")[0].setAttribute("class", "var_radio_label selected" )
+				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_radio_label selected" )
 				} else {
 				tabs[i].getElementsByTagName("span")[0].setAttribute("class", "var_radio_label")
 				}
