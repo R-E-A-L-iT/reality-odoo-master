@@ -41,9 +41,11 @@
 				s.parentNode.insertBefore(b, s);})(window.lintrk);
 			</script>
 			<script type="text/javascript">
-				console.log("Hello World!")
-				function changeStyle() { var tabs = document.getElementsByClassName("var_radio_label") for(var i = 0; i &lt; tabs.length ; i++) {
-				var radio= document.getElementById(tabs[i].for)
+				console.log("Hello World!");
+				function changeStyle() {
+				var tabs = document.getElementsByClassName("var_radio_label");
+				for(var i = 0; i &lt; tabs.length ; i++) {
+				var radio = document.getElementById(tabs[i].for)
 				if(radio.checked== true){
 				tabs[i].setAttribute("class", "var_radio_label selected" )
 				} else {
