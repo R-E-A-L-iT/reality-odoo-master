@@ -949,7 +949,7 @@ label .var_chooser {
 }
 
 .selected.var_chooser {
-	color: #fff;	
+	color: #fff !important;	
 }
 
 input[name=variantSelector] {
