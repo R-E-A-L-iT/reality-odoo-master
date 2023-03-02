@@ -46,6 +46,7 @@
 				var tabs = document.getElementsByClassName("var_radio_label");
 				for(var i = 0; i &lt; tabs.length ; i++) {
 				var radio = document.getElementById(tabs[i].for)
+				console.log(radio)
 				if(radio.checked== true){
 				tabs[i].setAttribute("class", "var_radio_label selected" )
 				} else {
