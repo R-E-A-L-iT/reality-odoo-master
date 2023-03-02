@@ -937,7 +937,7 @@ h2.subtitle>span {
 
 label .var_chooser {
 	padding: 20px !important;
-	float: right !important;
+	/* float: right !important; */
 }
 
 input[name=variantSelector] {
