@@ -951,7 +951,7 @@ input[name=variantSelector] {
 	/* display: none; */
 }
 
-label:for(:not(:checked)) {
+label:not(:checked) {
 	color: red;
 }
 
