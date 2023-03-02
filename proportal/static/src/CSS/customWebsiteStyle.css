@@ -945,6 +945,11 @@ div.specs_div{
 label .var_chooser {
 	margin: 20px;
 	cursor: pointer;
+	color: #888;
+}
+
+.selected.var_chooser {
+	color: #fff;	
 }
 
 input[name=variantSelector] {
