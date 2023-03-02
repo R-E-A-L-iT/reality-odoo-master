@@ -935,8 +935,14 @@ h2.subtitle>span {
 	margin-top: 2rem !important;
 }
 
+div.specs_div{
+	display: flex;
+	justify-content: flex-end;
+	margin: 20px;
+}
+
 label .var_chooser {
-	padding: 20;
+	margin: 20px;
 }
 
 label.var_radio_label {
