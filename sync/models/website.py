@@ -37,18 +37,42 @@ class syncWeb():
                 msg, self.name, "Header", "Page ID Missing")
             missingColumn = True
 
+        if ("Type" in sheet[0]):
+            columns["type"] = sheet[0].inder("Type")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Type Missing"
+            )
+            missingColumn = True
+
         if ("HTML English" in sheet[0]):
             columns["html_en"] = sheet[0].index("HTML English")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "English HTML Missing")
+                msg, self.name, "Header", "HTML English Missing")
+            missingColumn = True
+
+        if ("Specs English" in sheet[0]):
+            columns["specs_en"] = sheet[0].index("specs_en")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Specs English Missing"
+            )
             missingColumn = True
 
         if ("HTML French" in sheet[0]):
             columns["html_fr"] = sheet[0].index("HTML French")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "French HTML Missing")
+                msg, self.name, "Header", "HTML French Missing")
+            missingColumn = True
+
+        if ("Specs French" in sheet[0]):
+            columns["specs_fr"] = sheet[0].index("specs_fr")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Specs French Missing"
+            )
             missingColumn = True
 
         if ("Enabled" in sheet[0]):
