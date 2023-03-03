@@ -130,6 +130,8 @@ class syncWeb():
             try:
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
+                page_type = str(sheet[i][columns]["type"])
+                _logger.error(page_type)
                 # _logger.info(external_id)
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English")
