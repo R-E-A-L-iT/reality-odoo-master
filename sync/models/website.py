@@ -131,12 +131,16 @@ class syncWeb():
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 page_type = str(sheet[i][columns["type"]])
-                _logger.error(page_type)
                 # _logger.info(external_id)
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French")
+                # Sync Extras
+                msg += self.updateSpecs(external_id, page_type,
+                                        sheet[i][columns["specs_en"]], "English")
+                msg += self.updateSpecs(external_id, page_type,
+                                        sheet[i][columns["specs_fr"]], "French")
                 i += 1
             except Exception as e:
                 _logger.info(sheet[i][columns['id']])
@@ -146,6 +150,10 @@ class syncWeb():
                 msg = ""
                 return True, msg
         return False, msg
+
+    def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
+        if (page_type == "product"):
+            _logger.error(page_type)
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
         msg = ""
