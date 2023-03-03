@@ -38,7 +38,7 @@ class syncWeb():
             missingColumn = True
 
         if ("Type" in sheet[0]):
-            columns["type"] = sheet[0].inder("Type")
+            columns["type"] = sheet[0].index("Type")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Type Missing"
