@@ -53,7 +53,7 @@ class syncWeb():
             missingColumn = True
 
         if ("Specs English" in sheet[0]):
-            columns["specs_en"] = sheet[0].index("specs_en")
+            columns["specs_en"] = sheet[0].index("Specs English")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Specs English Missing"
@@ -68,7 +68,7 @@ class syncWeb():
             missingColumn = True
 
         if ("Specs French" in sheet[0]):
-            columns["specs_fr"] = sheet[0].index("specs_fr")
+            columns["specs_fr"] = sheet[0].index("Specs French")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Specs French Missing"
