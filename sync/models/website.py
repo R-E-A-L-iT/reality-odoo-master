@@ -24,7 +24,7 @@ class syncWeb():
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
         # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 11
+        sheetWidth = 13
         columns = dict()
         missingColumn = False
 
@@ -37,15 +37,15 @@ class syncWeb():
                 msg, self.name, "Header", "Page ID Missing")
             missingColumn = True
 
-        if ("English HTML" in sheet[0]):
-            columns["html_en"] = sheet[0].index("English HTML")
+        if ("HTML English" in sheet[0]):
+            columns["html_en"] = sheet[0].index("HTML English")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "English HTML Missing")
             missingColumn = True
 
-        if ("French HTML" in sheet[0]):
-            columns["html_fr"] = sheet[0].index("French HTML")
+        if ("HTML French" in sheet[0]):
+            columns["html_fr"] = sheet[0].index("HTML French")
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "French HTML Missing")
