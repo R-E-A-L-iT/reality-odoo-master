@@ -152,7 +152,9 @@ class syncWeb():
         return False, msg
 
     def get_page(self, id):
-        pass
+        page_list = self.database.env['ir.model.data'].search(
+            [('name', '=', id), ('model', '=', 'ir.ui.view')])
+        _logger.error(page_list)
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
         lang_code = ""
@@ -161,9 +163,8 @@ class syncWeb():
         elif (lang == "French"):
             lang_code = "fr"
         id = id + "_specs_" + lang_code
-        if (page_type == "product"):
-            _logger.error(id + page_type)
-
+        if (page_type != "product"):
+            return
         page = self.get_page(id)
 
         return ""
