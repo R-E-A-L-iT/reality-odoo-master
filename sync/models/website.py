@@ -160,8 +160,8 @@ class syncWeb():
             lang_code = "en"
         elif (lang == "French"):
             lang_code = "fr"
-        id = id + "_specs_" + lang
-        if (page_type == " product"):
+        id = id + "_specs_" + lang_code
+        if (page_type == "product"):
             _logger.error(id + page_type)
 
         page = self.get_page(id)
