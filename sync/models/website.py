@@ -157,7 +157,7 @@ class syncWeb():
         _logger.error(str(page_list))
         return page_list
 
-    def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
+    def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
         lang_code = ""
         if (lang == "English"):
             lang_code = "en"
@@ -166,7 +166,7 @@ class syncWeb():
         id = str(id) + "_specs_" + str(lang_code)
         _logger.error(id)
         if (page_type != "product"):
-            return
+            return ""
         page = self.get_page(id)
 
         return ""
