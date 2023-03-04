@@ -164,11 +164,12 @@ class syncWeb():
         elif (lang == "French"):
             lang_code = "fr"
         id = str(id) + "_specs_" + str(lang_code)
+        _logger.error(id)
         if (page_type != "product"):
             return
         page = self.get_page(id)
 
-        return
+        return ""
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
         msg = ""
