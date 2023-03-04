@@ -155,6 +155,7 @@ class syncWeb():
         page_list = self.database.env['ir.model.data'].search(
             [('name', '=', id), ('model', '=', 'ir.ui.view')])
         _logger.error(str(page_list))
+        return page_list
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
         lang_code = ""
@@ -167,7 +168,7 @@ class syncWeb():
             return
         page = self.get_page(id)
 
-        return ""
+        return
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
         msg = ""
