@@ -157,51 +157,51 @@ class syncWeb():
         page = None
         if len(page_list) == 0:
             _logger.error("Create Page")
-            # page = self.database.env['ir.model.data'].create(
-            # [('name', '=', id), ('model', '=', 'ir.ui.view')])
+            page = self.database.env['ir.model.data'].create({'name': id, 'model': 'ir.ui.view'})
+                # [('name', '=', id), ('model', '=', 'ir.ui.view')])
         elif len(page_list) == 1:
-            page = page_list[0]
+            page=page_list[0]
         return page
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
-        lang_code = ""
+        lang_code=""
         if (lang == "English"):
-            lang_code = "en"
+            lang_code="en"
         elif (lang == "French"):
-            lang_code = "fr"
-        id = str(id) + "_specs_" + str(lang_code)
+            lang_code="fr"
+        id=str(id) + "_specs_" + str(lang_code)
         _logger.error(id)
         if (page_type != "product"):
             return ""
-        page = self.get_page(id)
+        page=self.get_page(id)
         _logger.error(page)
 
         return ""
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
-        msg = ""
-        langOps = None
+        msg=""
+        langOps=None
         if lang == "English":
-            external_id = id + "_en"
-            langOps = "['en_CA', 'en_US']"
+            external_id=id + "_en"
+            langOps="['en_CA', 'en_US']"
         elif lang == "French":
-            external_id = id + "_fr"
-            langOps = "['fr_CA']"
-        pageIds = self.database.env['ir.model.data'].search(
+            external_id=id + "_fr"
+            langOps="['fr_CA']"
+        pageIds=self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'ir.ui.view')])
         # _logger.info(pageIds)
         if (len(pageIds) > 0):
-            page = self.database.env['ir.ui.view'].browse(
+            page=self.database.env['ir.ui.view'].browse(
                 pageIds[-1].res_id)
-            opener = "<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
-            conditionOpen = "<t t-if=\"lang in " + langOps + "\">\n"
-            footer = "<t t-call=\"custom.custom-footer\"/>\n"
-            conditionClose = "</t>\n"
-            closer = "</xpath>\n</data>"
-            page.arch_base = opener + conditionOpen + \
+            opener="<?xml version=\"1.0\"?>\n<data>\n<xpath expr=\"//div[@id=&quot;wrap&quot;]\" position=\"inside\">\n"
+            conditionOpen="<t t-if=\"lang in " + langOps + "\">\n"
+            footer="<t t-call=\"custom.custom-footer\"/>\n"
+            conditionClose="</t>\n"
+            closer="</xpath>\n</data>"
+            page.arch_base=opener + conditionOpen + \
                 html + footer + conditionClose + closer
         else:
-            msg = utilities.buildMSG(msg, self.name, str(
+            msg=utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
             _logger.info(str(external_id) + " Page Not Created")
         return (msg)
