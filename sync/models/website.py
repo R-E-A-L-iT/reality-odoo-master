@@ -155,8 +155,13 @@ class syncWeb():
         pass
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
+        lang_code = ""
+        if (lang == "English"):
+            lang_code = "en"
+        elif (lang == "French"):
+            lang_code = "fr"
         id = id + "_specs_" + lang
-        if (page_type == "product"):
+        if (page_type == " product"):
             _logger.error(id + page_type)
 
         page = self.get_page(id)
