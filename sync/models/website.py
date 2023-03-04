@@ -154,6 +154,14 @@ class syncWeb():
     def get_page(self, id):
         page_list = self.database.env['ir.model.data'].search(
             [('name', '=', id), ('model', '=', 'ir.ui.view')])
+        page = None
+        if len(page_list) == 0:
+            page = self.database.env['ir.model.data'].create(
+                [('name', '=', id), ('model', '=', 'ir.ui.view')])
+        elif len(page_list == 1):
+            page = page_list[0]
+        return page
+
         _logger.error(str(page_list))
         return page_list
 
