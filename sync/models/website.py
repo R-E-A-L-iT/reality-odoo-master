@@ -151,7 +151,7 @@ class syncWeb():
                 return True, msg
         return False, msg
 
-    def get_page(id):
+    def get_page(self, id):
         pass
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str):
