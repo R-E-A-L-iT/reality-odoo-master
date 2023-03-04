@@ -158,7 +158,7 @@ class syncWeb():
         if len(page_list) == 0:
             page = self.database.env['ir.model.data'].create(
                 [('name', '=', id), ('model', '=', 'ir.ui.view')])
-        elif len(page_list == 1):
+        elif len(page_list) == 1:
             page = page_list[0]
         return page
 
