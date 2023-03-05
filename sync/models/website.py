@@ -175,6 +175,7 @@ class syncWeb():
             return ""
         page = self.get_page(id)
         _logger.error(page.name)
+        _logger.error(page.active)
 
         return ""
 
