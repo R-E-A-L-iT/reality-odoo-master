@@ -159,11 +159,12 @@ class syncWeb():
             _logger.warning("Create")
             page = self.database.env['ir.ui.view'].create(
                 {'name': id, 'type': 'qweb', 'arch': "<div></div>"})
+            page.key = id
             self.database.env['ir.model.data'].create(
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
             _logger.warning("Get")
-            # page = page_list[0]
+            page = page_list[0].res_id
         return page
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
