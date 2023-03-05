@@ -173,8 +173,8 @@ class syncWeb():
         id = str(id) + "_specs_" + str(lang_code)
         if (page_type != "product"):
             return ""
-        page = self.get_page(id.key)
-        _logger.error(page)
+        page = self.get_page(id)
+        _logger.error(page.key)
 
         return ""
 
