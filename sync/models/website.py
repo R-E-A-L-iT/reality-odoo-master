@@ -158,7 +158,7 @@ class syncWeb():
         if len(page_list) == 0:
             _logger.warning("Create")
             page = self.database.env['ir.ui.view'].create(
-                {'name': id}, 'arch', "<div></div>")
+                {'name': id, 'arch': "<div></div>"})
             self.database.env['ir.model.data'].create(
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
