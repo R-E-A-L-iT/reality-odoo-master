@@ -157,11 +157,13 @@ class syncWeb():
         page = None
         if len(page_list) == 0:
             _logger.warning("Create")
-            page = self.database.env['ir.model.data'].create(
+            page = self.database.env['ir.ui.view'].create(
                 {'name': id, 'model': 'ir.ui.view'})
+            self.database.env['ir.model.data'].create(
+                {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
             _logger.warning("Get")
-            page = page_list[0]
+            # page = page_list[0]
         return page
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
@@ -174,8 +176,6 @@ class syncWeb():
         if (page_type != "product"):
             return ""
         page = self.get_page(id)
-        _logger.error(page.name)
-        _logger.error(page.active)
 
         return ""
 
