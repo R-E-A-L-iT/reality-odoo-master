@@ -198,6 +198,7 @@ class syncWeb():
             footer = "<t t-call=\"custom.custom-footer\"/>\n"
             conditionClose = "</t>\n"
             closer = "</xpath>\n</data>"
+            _logger.error(page.name)
             page.arch_base = opener + conditionOpen + \
                 html + footer + conditionClose + closer
         else:
