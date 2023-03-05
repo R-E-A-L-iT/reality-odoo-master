@@ -199,7 +199,7 @@ class syncWeb():
             conditionClose = "</t>\n"
             closer = "</xpath>\n</data>"
             _logger.error(page.name)
-            _logger.error(dir(page))
+            _logger.error(page.active)
             page.arch_base = opener + conditionOpen + \
                 html + footer + conditionClose + closer
         else:
