@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from .utilities import utilities
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
-import logging
-
-from odoo.tools.translate import _
 from odoo import models
+from odoo.tools.translate import _
+import logging
+from itertools import groupby
+from functools import partial
+from datetime import datetime, timedelta
+from .utilities import utilities
+# -*- coding: utf-8 - *-
+
 
 _logger = logging.getLogger(__name__)
 
@@ -184,7 +183,7 @@ class syncWeb():
         try:
             opener = "<?xml version=\"1.0\"?>\n"
             full_html = opener + html
-            page.arch = str(full_html)s
+            page.arch = str(full_html)
         except Exception as e:
             _logger.error(e)
         return ""
