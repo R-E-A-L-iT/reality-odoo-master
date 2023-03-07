@@ -943,7 +943,7 @@ div.specs_div{
 }
 
 span.var_chooser {
-	margin: 20px;
+	margin: 20px important;
 	cursor: pointer;
 }
 
