@@ -180,12 +180,9 @@ class syncWeb():
             return ""
         page = self.get_page(id)
         _logger.info("ARCH")
-        try:
-            opener = "<?xml version=\"1.0\"?>\n"
-            full_html = opener + html
-            page.arch = str(full_html)
-        except Exception as e:
-            _logger.error(e)
+        opener = "<?xml version=\"1.0\"?>\n"
+        full_html = opener + html
+        page.arch = full_html
         return ""
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
