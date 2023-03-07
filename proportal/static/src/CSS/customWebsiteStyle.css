@@ -943,7 +943,7 @@ div.specs_div{
 }
 
 span.var_chooser {
-	padding: 20px important;
+	padding: 20px !important;
 	cursor: pointer;
 }
 
@@ -951,7 +951,7 @@ label.var_chooser {
 	color: #999;
 }
 
-.var_chooser.selected:nth-child(1) {
+.var_chooser.selected:nth-child(0) {
 	color: #fff !important;	
 }
 
