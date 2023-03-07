@@ -144,6 +144,7 @@ class syncWeb():
             except Exception as e:
                 _logger.error(sheet[i][columns['id']])
                 _logger.error(e)
+                _logger.warning(sheet[i][columns["specs_en"]])
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
