@@ -175,7 +175,8 @@ class syncWeb():
         if (page_type != "product"):
             return ""
         page = self.get_page(id)
-        _logger.info(page.arch)
+        page.arch = html
+        _logger.warning(html)
 
         return ""
 
