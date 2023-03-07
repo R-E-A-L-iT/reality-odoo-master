@@ -184,7 +184,7 @@ class syncWeb():
         try:
             opener = "<?xml version=\"1.0\"?>\n"
             full_html = opener + html
-            page.arch = full_html
+            page.arch = str(full_html)s
         except Exception as e:
             _logger.error(e)
         return ""
