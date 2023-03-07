@@ -182,7 +182,7 @@ class syncWeb():
         page = self.get_page(id)
         _logger.info("ARCH")
         try:
-            opener = "<?xml version=\"1.0\"?>?"
+            opener = "<?xml version=\"1.0\"?>\n"
             full_html = opener + html
             page.arch = full_html
         except Exception as e:
