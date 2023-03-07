@@ -181,8 +181,10 @@ class syncWeb():
             return ""
         page = self.get_page(id)
         _logger.info("ARCH")
-        page.arch = html
-
+        try:
+            page.arch = html
+        except Exception as e:
+            _logger.error(e)
         return ""
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
