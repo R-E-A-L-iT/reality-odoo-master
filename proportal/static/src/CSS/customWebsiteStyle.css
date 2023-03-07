@@ -942,13 +942,16 @@ div.specs_div{
 	flex-wrap: nowrap;
 }
 
-label.var_chooser {
+span.var_chooser {
 	margin: 20px;
 	cursor: pointer;
+}
+
+label.var_chooser {
 	color: #999;
 }
 
-.var_chooser.selected {
+.var_chooser.selected:nth-child(1) {
 	color: #fff !important;	
 }
 
