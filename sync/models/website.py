@@ -158,7 +158,7 @@ class syncWeb():
             page = self.database.env['ir.ui.view'].create(
                 {'name': id, 'type': 'qweb', 'arch': "<div></div>"})
             self.database.env['ir.model.data'].create(
-                {'name': id, 'res_id': page.id}
+                {'name': id, 'model': 'ir.ui.view', 'res_id': page.id}
             )
             page.key = id
             self.database.env['ir.model.data'].create(
