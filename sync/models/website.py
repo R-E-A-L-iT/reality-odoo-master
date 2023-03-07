@@ -165,7 +165,7 @@ class syncWeb():
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
             page = self.database.env['ir.ui.view'].search(
-                [('id', '=', page_list[0].res_id)][0]
+                [('id', '=', page_list[0].res_id)]
             )
         _logger.warning(page)
         return page
