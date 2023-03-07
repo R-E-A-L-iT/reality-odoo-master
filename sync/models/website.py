@@ -131,7 +131,6 @@ class syncWeb():
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
                 page_type = str(sheet[i][columns["type"]])
-                # _logger.info(external_id)
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English")
                 msg += self.updatePage(
@@ -143,8 +142,7 @@ class syncWeb():
                                         sheet[i][columns["specs_fr"]], "French")
                 i += 1
             except Exception as e:
-                _logger.info(sheet[i][columns['id']])
-                _logger.error(e)
+                _logger.error(sheet[i][columns['id']])
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
@@ -176,7 +174,6 @@ class syncWeb():
             return ""
         page = self.get_page(id)
         page.arch = html
-        _logger.warning(html)
 
         return ""
 
@@ -200,12 +197,10 @@ class syncWeb():
             footer = "<t t-call=\"custom.custom-footer\"/>\n"
             conditionClose = "</t>\n"
             closer = "</xpath>\n</data>"
-            _logger.error(page.name)
-            _logger.error(page.active)
             page.arch_base = opener + conditionOpen + \
                 html + footer + conditionClose + closer
         else:
             msg = utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
-            _logger.info(str(external_id) + " Page Not Created")
+            _logger.error(str(external_id) + " Page Not Created")
         return (msg)
