@@ -951,7 +951,7 @@ label.var_chooser {
 	color: #999;
 }
 
-.var_chooser.selected:nth-child(0) {
+label.var_chooser.selected:nth-child(1) {
 	color: #fff !important;	
 }
 
