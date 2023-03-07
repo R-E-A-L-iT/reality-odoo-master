@@ -165,6 +165,7 @@ class syncWeb():
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
             page = page_list[0].res_id
+            _logger.warning(page)
         return page
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
