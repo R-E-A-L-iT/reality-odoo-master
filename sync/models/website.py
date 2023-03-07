@@ -157,6 +157,9 @@ class syncWeb():
         if len(page_list) == 0:
             page = self.database.env['ir.ui.view'].create(
                 {'name': id, 'type': 'qweb', 'arch': "<div></div>"})
+            self.database.env['ir.model.data'].create(
+                {'name': id, 'res_id': page.id}
+            )
             page.key = id
             self.database.env['ir.model.data'].create(
                 {'name': page.id, 'model': 'ir.ui.view'})
