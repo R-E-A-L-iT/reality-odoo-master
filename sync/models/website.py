@@ -143,6 +143,7 @@ class syncWeb():
                 i += 1
             except Exception as e:
                 _logger.error(sheet[i][columns['id']])
+                _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
