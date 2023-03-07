@@ -144,7 +144,6 @@ class syncWeb():
             except Exception as e:
                 _logger.error(sheet[i][columns['id']])
                 _logger.error(e)
-                _logger.warning(sheet[i][columns["specs_en"]])
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
@@ -165,10 +164,10 @@ class syncWeb():
             self.database.env['ir.model.data'].create(
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
-
             page = self.database.env['ir.ui.view'].search(
-                [('id', '=', page_list[0].res_id)]
+                [('id', '=', page_list[0].res_id)][0]
             )
+        _logger.warning(page)
         return page
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
