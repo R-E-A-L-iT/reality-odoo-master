@@ -156,14 +156,12 @@ class syncWeb():
             [('name', '=', id), ('model', '=', 'ir.ui.view')])
         page = None
         if len(page_list) == 0:
-            _logger.warning("Create")
             page = self.database.env['ir.ui.view'].create(
                 {'name': id, 'type': 'qweb', 'arch': "<div></div>"})
             page.key = id
             self.database.env['ir.model.data'].create(
                 {'name': page.id, 'model': 'ir.ui.view'})
         elif len(page_list) == 1:
-            _logger.warning("Get")
             page = page_list[0].res_id
         return page
 
@@ -177,6 +175,7 @@ class syncWeb():
         if (page_type != "product"):
             return ""
         page = self.get_page(id)
+        _logger.info(page.arch)
 
         return ""
 
