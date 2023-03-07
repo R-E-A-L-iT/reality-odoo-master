@@ -180,6 +180,7 @@ class syncWeb():
         if (page_type != "product"):
             return ""
         page = self.get_page(id)
+        _logger.info("ARCH")
         page.arch = html
 
         return ""
