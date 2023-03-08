@@ -499,6 +499,8 @@ p {
 	font-family: HelveticaNeue-Light, Helvetica Neue Light;
 	margin-top: 50px;
 	width: 75vw;
+	margin-left: 12.5vw;
+	margin-right: 12.5vw;
 }
 
 #custom-webpage-root .specs-above>h3 {
