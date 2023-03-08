@@ -940,6 +940,7 @@ div.specs_div{
 	justify-content: center;
 	flex-direction: row;
 	flex-wrap: nowrap;
+	margin: auto;
 }
 
 span.var_chooser {
