@@ -934,3 +934,32 @@ h2.subtitle>span {
 #question-icon {
 	margin-top: 2rem !important;
 }
+
+div.specs_div{
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	margin: auto;
+}
+
+span.var_chooser {
+	padding: 20px !important;
+	cursor: pointer;
+}
+
+label.var_chooser {
+	color: #999;
+}
+
+span.var_chooser.selected {
+	color: #fff !important;	
+}
+
+input[name=variantSelector] {
+	display: none;
+}
+
+input[name=variantSelector]:not(:checked) + .specs {
+	display: none;
+}

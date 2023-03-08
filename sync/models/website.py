@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from .utilities import utilities
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
-import logging
-
-from odoo.tools.translate import _
 from odoo import models
+from odoo.tools.translate import _
+import logging
+from itertools import groupby
+from functools import partial
+from datetime import datetime, timedelta
+from .utilities import utilities
+# -*- coding: utf-8 - *-
+
 
 _logger = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ class syncWeb():
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
         # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 11
+        sheetWidth = 13
         columns = dict()
         missingColumn = False
 
@@ -37,18 +36,42 @@ class syncWeb():
                 msg, self.name, "Header", "Page ID Missing")
             missingColumn = True
 
-        if ("English HTML" in sheet[0]):
-            columns["html_en"] = sheet[0].index("English HTML")
+        if ("Type" in sheet[0]):
+            columns["type"] = sheet[0].index("Type")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "English HTML Missing")
+                msg, self.name, "Header", "Type Missing"
+            )
             missingColumn = True
 
-        if ("French HTML" in sheet[0]):
-            columns["html_fr"] = sheet[0].index("French HTML")
+        if ("HTML English" in sheet[0]):
+            columns["html_en"] = sheet[0].index("HTML English")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "French HTML Missing")
+                msg, self.name, "Header", "HTML English Missing")
+            missingColumn = True
+
+        if ("Specs English" in sheet[0]):
+            columns["specs_en"] = sheet[0].index("Specs English")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Specs English Missing"
+            )
+            missingColumn = True
+
+        if ("HTML French" in sheet[0]):
+            columns["html_fr"] = sheet[0].index("HTML French")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "HTML French Missing")
+            missingColumn = True
+
+        if ("Specs French" in sheet[0]):
+            columns["specs_fr"] = sheet[0].index("Specs French")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Specs French Missing"
+            )
             missingColumn = True
 
         if ("Enabled" in sheet[0]):
@@ -106,20 +129,59 @@ class syncWeb():
             try:
                 _logger.info(sheet[i][columns["id"]])
                 external_id = str(sheet[i][columns["id"]])
-                # _logger.info(external_id)
+                page_type = str(sheet[i][columns["type"]])
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French")
+                # Sync Extras
+                msg += self.updateSpecs(external_id, page_type,
+                                        sheet[i][columns["specs_en"]], "English")
+                msg += self.updateSpecs(external_id, page_type,
+                                        sheet[i][columns["specs_fr"]], "French")
                 i += 1
             except Exception as e:
-                _logger.info(sheet[i][columns['id']])
+                _logger.error(sheet[i][columns['id']])
                 _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, str(
                     sheet[i][columns['id']]), str(e))
                 msg = ""
                 return True, msg
         return False, msg
+
+    def get_page(self, id):
+        page_list = self.database.env['ir.model.data'].search(
+            [('name', '=', id), ('model', '=', 'ir.ui.view')])
+        page = None
+        if len(page_list) == 0:
+            page = self.database.env['ir.ui.view'].create(
+                {'name': id, 'type': 'qweb', 'arch': "<div></div>"})
+            self.database.env['ir.model.data'].create(
+                {'name': id, 'model': 'ir.ui.view', 'res_id': page.id}
+            )
+            page.key = id
+            self.database.env['ir.model.data'].create(
+                {'name': page.id, 'model': 'ir.ui.view'})
+        elif len(page_list) == 1:
+            page = self.database.env['ir.ui.view'].search(
+                [('id', '=', page_list[0].res_id)]
+            )
+        return page
+
+    def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
+        lang_code = ""
+        if (lang == "English"):
+            lang_code = "en"
+        elif (lang == "French"):
+            lang_code = "fr"
+        id = str(id) + "_specs_" + str(lang_code)
+        if (page_type != "product"):
+            return ""
+        page = self.get_page(id)
+        opener = "<?xml version=\"1.0\"?>\n"
+        full_html = opener + html
+        page.arch = full_html
+        return ""
 
     def updatePage(self, id: str, html: str, lang: str) -> str:
         msg = ""
@@ -146,5 +208,5 @@ class syncWeb():
         else:
             msg = utilities.buildMSG(msg, self.name, str(
                 external_id), "Page Not Created")
-            _logger.info(str(external_id) + " Page Not Created")
+            _logger.error(str(external_id) + " Page Not Created")
         return (msg)
