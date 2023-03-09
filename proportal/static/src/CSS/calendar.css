@@ -9,3 +9,7 @@
 #wrap > nav > div > a > i {
     color: #fff !important;
 }
+
+#wrap > div > h1 {
+    color: #fff;
+}
