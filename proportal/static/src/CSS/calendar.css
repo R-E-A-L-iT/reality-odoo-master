@@ -25,3 +25,7 @@ td.align-middle.o_weekend {
 tr.active > th {
     color: #fff;
 }
+
+tr.o_appointment_days > td {
+    color: #fff;
+}
