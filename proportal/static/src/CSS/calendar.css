@@ -1,3 +1,7 @@
 #wrap > nav {
-    background-color: #000 !important;
+    background-color: #000;
+}
+
+#wrap > nav > div > a {
+    color: #dbdbdb;
 }
