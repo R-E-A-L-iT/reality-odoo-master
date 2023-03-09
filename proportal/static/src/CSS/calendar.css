@@ -7,5 +7,5 @@
 }
 
 #wrap > nav > div > a > i {
-    color: #fff;
+    color: #fff !important;
 }
