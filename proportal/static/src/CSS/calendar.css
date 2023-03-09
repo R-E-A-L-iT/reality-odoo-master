@@ -1,3 +1,7 @@
-#wrap > nav {
+#wrap > nav.navbar-light {
+    background-color: #000 !important;
+}
+
+nav {
     background-color: #000 !important;
 }
