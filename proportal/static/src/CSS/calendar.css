@@ -13,3 +13,11 @@
 #wrap > div > h1 {
     color: #fff;
 }
+
+#calendarHeader > h3 {
+    color: #fff;
+}
+
+#month-0 > table > tbody > tr {
+    color: #fff;
+}
