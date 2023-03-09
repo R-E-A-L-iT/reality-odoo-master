@@ -3,5 +3,9 @@
 }
 
 #wrap > nav > div > a {
-    color: #dbdbdb;
+    color: #fff;
+}
+
+#wrap > nav > div > a > i {
+    color: #fff;
 }
