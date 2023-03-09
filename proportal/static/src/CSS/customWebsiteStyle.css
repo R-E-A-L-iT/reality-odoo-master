@@ -965,3 +965,7 @@ input[name=variantSelector] {
 input[name=variantSelector]:not(:checked) + .specs {
 	display: none;
 }
+
+#wrap > nav {
+    background-color: #000 !important;
+}
