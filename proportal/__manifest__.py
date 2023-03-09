@@ -23,7 +23,7 @@
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
 
     'assets': {
-            'web.assets_frontend': [
+            'web.assets__frontend': [
                 'proportal/static/src/CSS/homepage.css',
                 'proportal/static/src/CSS/projectPortal.css',
                 'proportal/static/src/CSS/productMiniMenu.css',
