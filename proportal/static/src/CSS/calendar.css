@@ -21,3 +21,7 @@
 td.align-middle.o_weekend {
     background-color: #000;
 }
+
+tr.active > th {
+    color: #fff;
+}
