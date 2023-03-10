@@ -60,3 +60,7 @@ div.text-muted {
     color: #fff;
     text-align: left !important;
 }
+
+#slotsList > div > div:nth-child(1) > a {
+    color: #fff !important;
+}
