@@ -63,4 +63,10 @@ div.text-muted {
 
 #slotsList > div > div > a {
     color: #fff !important;
+    border-color: #db0d0d;
+}
+
+
+#slotsList > div > div > a:hover {
+    background-color: #db0d0d;
 }
