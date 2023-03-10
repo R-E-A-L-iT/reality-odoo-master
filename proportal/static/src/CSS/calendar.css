@@ -31,7 +31,8 @@ tr.o_appointment_days > td {
 }
 
 div.text-muted {
-    color: #A0A !important;
+    color: #AAA !important;
+    opacity: 0;
 }
 
 #wrap > div > div.d-lg-flex.col.pl-0.mb-2.o_not_editable > div {
