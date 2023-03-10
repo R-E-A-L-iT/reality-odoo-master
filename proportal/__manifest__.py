@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.76',
+    'version': '0.77',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -25,7 +25,7 @@
     'assets': {
             'web.assets_frontend': [
                 'proportal/static/src/CSS/homepage.css',
-                'proportal/static/src/CSS/calendar.css',
+                # 'proportal/static/src/CSS/calendar.css',
                 'proportal/static/src/CSS/projectPortal.css',
                 'proportal/static/src/CSS/productMiniMenu.css',
                 'proportal/static/src/CSS/header.css',
