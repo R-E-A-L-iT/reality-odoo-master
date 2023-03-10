@@ -116,3 +116,8 @@ div.text-muted {
     background-color: #db0d0d;
     color: #FFF !important;
 }
+
+#wrap > div.oe_structure.container.mt-4 > div.alert.alert-info {
+    background-color: #db0d0d;
+    color: #FFF;
+}
