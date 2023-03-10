@@ -109,3 +109,8 @@ div.text-muted {
 #wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > form label {
     color: #FFF;
 }
+
+#wrap > div > ul > li {
+    background-color: #db0d0d;
+    color: #FFF;
+}
