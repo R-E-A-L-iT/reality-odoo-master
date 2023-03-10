@@ -61,6 +61,14 @@ div.text-muted {
     text-align: left !important;
 }
 
+.o_appointment_days .o_day {
+    border: 2px solid #db0d0d;
+}
+
+.o_appointment_days .o_day:hover {
+    background-color: #db0d0d;
+}
+
 #slotsList > div > div > a {
     color: #fff !important;
     border-color: #db0d0d;
