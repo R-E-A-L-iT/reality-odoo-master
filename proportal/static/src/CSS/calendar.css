@@ -111,6 +111,7 @@ div.text-muted {
 }
 
 #wrap > div > ul > li {
+    border: none;
     background-color: #db0d0d;
     color: #FFF !important;
 }
