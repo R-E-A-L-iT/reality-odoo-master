@@ -86,3 +86,7 @@ div.text-muted {
 #wrap > div > h2 {
     color: #FFF;
 }
+
+#wrap > div > section > div > p {
+    color: #FFF;
+}
