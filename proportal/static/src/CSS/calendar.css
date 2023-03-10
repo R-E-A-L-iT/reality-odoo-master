@@ -54,3 +54,8 @@ div.text-muted {
 .o_appointment_days .o_today div {
     border-bottom: 3px solid #db0d0d;
 }
+
+#slotsList > h5 {
+    font-size: large;
+    color: #fff;
+}
