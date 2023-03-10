@@ -3,10 +3,12 @@
 }
 
 #wrap > nav > div > a {
+    display: none;
     color: #FFF;
 }
 
 #wrap > nav > div > a > i {
+    display: none;
     color: #FFF !important;
 }
 
