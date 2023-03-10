@@ -50,3 +50,7 @@ div.text-muted {
 #calendar {
     margin: auto;
 }
+
+.o_appointment_days .o_today div {
+    border-bottom: 3px solid #db0d0d;
+}
