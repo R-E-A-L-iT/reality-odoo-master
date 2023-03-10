@@ -33,3 +33,7 @@ tr.o_appointment_days > td {
 #wrap > div > div.d-lg-flex.col.pl-0.mb-2.o_not_editable > div {
     color: #fff;
 }
+
+#timezoneSelection > span {
+    color: #fff;
+}
