@@ -74,6 +74,10 @@ div.text-muted {
     border-color: #db0d0d;
 }
 
+.o_appointment_days .o_day:hover, .o_appointment_days .o_slot_selected {
+    background-color: #db0d0d;
+}
+
 
 #slotsList > div > div > a:hover {
     background-color: #db0d0d;
