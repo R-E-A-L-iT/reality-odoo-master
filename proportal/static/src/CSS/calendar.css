@@ -128,5 +128,5 @@ div.text-muted {
 }
 
 #wrap > div.oe_structure.container.mt-4 > div > div > div > div.col-7.mx-md-0 > i {
-    color: #FFF;
+    color: #FFF !important;
 }
