@@ -41,3 +41,7 @@ tr.o_appointment_days > td {
 #slots_availabilities {
     flex-direction: column;
 }
+
+#calendar {
+    margin: auto;
+}
