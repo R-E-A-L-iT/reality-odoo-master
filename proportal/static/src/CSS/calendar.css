@@ -122,3 +122,7 @@ div.text-muted {
     color: #FFF;
     border: none;
 }
+
+#wrap > div.oe_structure.container.mt-4 > div > div {
+    color: #FFF;
+}
