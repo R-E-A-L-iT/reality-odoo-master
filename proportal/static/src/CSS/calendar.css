@@ -99,3 +99,7 @@ div.text-muted {
 #wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > div > a{
     color: #FFF;
 }
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > form > div:nth-child(8) > div > button {
+    background-color: #db0d0d;
+}
