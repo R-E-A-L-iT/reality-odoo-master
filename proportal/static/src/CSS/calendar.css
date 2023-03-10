@@ -37,3 +37,7 @@ tr.o_appointment_days > td {
 #timezoneSelection > span {
     color: #fff;
 }
+
+#slots_availabilities {
+    flex-direction: column;
+}
