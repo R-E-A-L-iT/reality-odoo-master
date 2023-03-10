@@ -90,3 +90,8 @@ div.text-muted {
 #wrap > div > section > div > p {
     color: #FFF;
 }
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > div {
+    background-color: #db0d0d;
+    color: #FFF;
+}
