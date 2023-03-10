@@ -61,6 +61,6 @@ div.text-muted {
     text-align: left !important;
 }
 
-#slotsList > div > div:nth-child(1) > a {
+#slotsList > div > div > a {
     color: #fff !important;
 }
