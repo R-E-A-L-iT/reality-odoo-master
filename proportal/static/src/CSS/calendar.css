@@ -3,19 +3,19 @@
 }
 
 #wrap > nav > div > a {
-    color: #fff;
+    color: #FFF;
 }
 
 #wrap > nav > div > a > i {
-    color: #fff !important;
+    color: #FFF !important;
 }
 
 #wrap > div > h1 {
-    color: #fff;
+    color: #FFF;
 }
 
 #calendarHeader > h3 {
-    color: #fff;
+    color: #FFF;
 }
 
 td.align-middle.o_weekend {
@@ -23,11 +23,11 @@ td.align-middle.o_weekend {
 }
 
 tr.active > th {
-    color: #fff;
+    color: #FFF;
 }
 
 tr.o_appointment_days > td {
-    color: #fff;
+    color: #FFF;
 }
 
 div.text-muted {
@@ -36,11 +36,11 @@ div.text-muted {
 }
 
 #wrap > div > div.d-lg-flex.col.pl-0.mb-2.o_not_editable > div {
-    color: #fff;
+    color: #FFF;
 }
 
 #timezoneSelection > span {
-    color: #fff;
+    color: #FFF;
 }
 
 #slots_availabilities {
@@ -57,7 +57,7 @@ div.text-muted {
 
 #slotsList > h5 {
     font-size: large;
-    color: #fff;
+    color: #FFF;
     text-align: left !important;
 }
 
@@ -70,7 +70,7 @@ div.text-muted {
 }
 
 #slotsList > div > div > a {
-    color: #fff !important;
+    color: #FFF !important;
     border-color: #db0d0d;
 }
 
@@ -81,4 +81,8 @@ div.text-muted {
 
 #slotsList > div > div > a:hover {
     background-color: #db0d0d;
+}
+
+#wrap > div > h2 {
+    color: #FFF;
 }
