@@ -972,9 +972,14 @@ input[name=variantSelector]:not(:checked) + .specs {
 	margin-right: 15vw;
 }
 
+
+/* @keyframes o-anim-heartbeat {
+	background-color: #9c0000;
+} */
+
 #o_wblog_post_content_jump {
 	color: #9C0000;
-	animation: none;
+	/* animation: none; */
 }
 
 #title > div {
