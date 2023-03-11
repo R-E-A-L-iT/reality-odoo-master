@@ -26,13 +26,15 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
-    @api.onchange('pricelist_id', 'invoice_line_ids.product_id')
+    @api.onchange('pricelist_id', 'invoice_line_ids')
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
+            if (product.price_unit != 0):
+                continue
 
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
