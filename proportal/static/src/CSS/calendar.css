@@ -1,0 +1,132 @@
+#wrap > nav {
+    background-color: #000;
+}
+
+#wrap > nav > div > a {
+    display: none;
+    color: #FFF;
+}
+
+#wrap > nav > div > a > i {
+    display: none;
+    color: #FFF !important;
+}
+
+#wrap > div > h1 {
+    color: #FFF;
+}
+
+#calendarHeader > h3 {
+    color: #FFF;
+}
+
+td.align-middle.o_weekend {
+    background-color: #000;
+}
+
+tr.active > th {
+    color: #FFF;
+}
+
+tr.o_appointment_days > td {
+    color: #FFF;
+}
+
+div.text-muted {
+    color: #AAA !important;
+    opacity: 0;
+}
+
+#wrap > div > div.d-lg-flex.col.pl-0.mb-2.o_not_editable > div {
+    color: #FFF;
+}
+
+#timezoneSelection > span {
+    color: #FFF;
+}
+
+#slots_availabilities {
+    flex-direction: column;
+}
+
+#calendar {
+    margin: auto;
+}
+
+.o_appointment_days .o_today div {
+    border-bottom: 3px solid #db0d0d;
+}
+
+#slotsList > h5 {
+    font-size: large;
+    color: #FFF;
+    text-align: left !important;
+}
+
+.o_appointment_days .o_day {
+    border: 2px solid #db0d0d;
+}
+
+.o_appointment_days .o_day:hover {
+    background-color: #db0d0d;
+}
+
+#slotsList > div > div > a {
+    color: #FFF !important;
+    border-color: #db0d0d;
+}
+
+.o_appointment_days .o_day:hover, .o_appointment_days .o_slot_selected {
+    background-color: #db0d0d;
+}
+
+
+#slotsList > div > div > a:hover {
+    background-color: #db0d0d;
+}
+
+#wrap > div > h2 {
+    color: #FFF;
+}
+
+#wrap > div > section > div > p {
+    color: #FFF;
+}
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > div {
+    background-color: #db0d0d;
+    border: none;
+}
+
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > div > a{
+    color: #FFF;
+}
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > form > div:nth-child(8) > div > button {
+    background-color: #db0d0d;
+}
+
+#wrap > div > div.oe_structure.container.mb64.o_appointment_attendee_form > form label {
+    color: #FFF;
+}
+
+#wrap > div > ul > li {
+    border: none;
+    background-color: #db0d0d;
+    color: #FFF !important;
+}
+
+#wrap > div.oe_structure.container.mt-4 > div.alert.alert-info {
+    background-color: #db0d0d;
+    color: #FFF;
+    border: none;
+}
+
+#wrap > div.oe_structure.container.mt-4 > div > div {
+    color: #FFF;
+}
+
+#wrap > div.oe_structure.container.mt-4 > div > div > div > div.col-7.mx-md-0 > i {
+    color: #FFF !important;
+}

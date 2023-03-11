@@ -1,6 +1,0 @@
-.productTable > .active > .customerPortalProducts {
-    padding: 0.75rem !important;
-}
-.customerPortalProducts, .customerPortalProducts > span {
-    color: #333;
-}
