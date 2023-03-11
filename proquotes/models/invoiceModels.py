@@ -69,8 +69,10 @@ class invoiceLine(models.Model):
         # Appy Price from Pricelist
         return priceResult[-1].fixed_price
 
-    @api.onchange('price_unit', 'pricelist_id')
+    @api.onchange('price_unit')
     def init_price(self):
+        self.price_unit = 41
+        return
         if (self.product_id != False and self.price_unit == 0):
             price = self.set_price()
             if (not price == False):
