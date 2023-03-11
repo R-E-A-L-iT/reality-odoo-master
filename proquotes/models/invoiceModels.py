@@ -60,6 +60,7 @@ class invoiceLine(models.Model):
     def set_price(self):
         pricelist = self.move_id.pricelist_id
         product = self.product_id
+        _logger.info("Invoice Price: " + str(product.name))
         priceResult = self.env['product.pricelist.item'].search(
             [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', product.sku)])
         if (len(priceResult) < 1):
@@ -72,7 +73,7 @@ class invoiceLine(models.Model):
     @api.onchange('price_unit', 'pricelist_id')
     def init_price(self):
         _logger.error("Invoice Price" + str(self.product_id.name))
-        if (True or self.product_id != False and self.price_unit == 0):
+        if (True or (self.product_id != False and self.price_unit == 0)):
             price = self.set_price()
             if (not price == False):
                 self.price_unit = price
