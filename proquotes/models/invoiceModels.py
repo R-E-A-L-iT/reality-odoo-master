@@ -69,7 +69,7 @@ class invoiceLine(models.Model):
         _logger.info(self.tax_ids)
         return priceResult[-1].fixed_price
 
-    @api.onchange('price_unit', 'product_id.id')
+    @api.onchange('price_unit')
     def init_price(self):
         if (self.product_id != False and self.price_unit == 0):
             price = self.set_price()
