@@ -982,8 +982,7 @@ input[name=variantSelector]:not(:checked) + .specs {
 	/* animation: none; */
 }
 
-#o_wblog_post_content_jump
-o-anim-heartbeat
+#o_wblog_post_content_jump > o-anim-heartbeat
 {
 	background-color: #00FF00;
 }
