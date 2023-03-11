@@ -34,6 +34,7 @@ class InvoiceMain(models.Model):
         for record in self.invoice_line_ids:
             product = record.product_id
             if (record.price_unit != 0):
+                _logger.error(record.price_unit)
                 continue
 
             # Select Pricelist Entry based on Pricelist and Product
