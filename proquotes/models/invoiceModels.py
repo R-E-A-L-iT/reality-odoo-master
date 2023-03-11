@@ -77,6 +77,7 @@ class invoiceLine(models.Model):
         if (True or (self.product_id != False and self.price_unit == 0)):
             price = self.set_price()
             if (not price == False):
+                _logger.warning("Price Will be set")
                 self.price_unit = price
 
     def get_applied_name(self):
