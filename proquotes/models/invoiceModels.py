@@ -57,6 +57,8 @@ class invoiceLine(models.Model):
 
     applied_name = fields.Char(
         compute='get_applied_name', string="Applied Name")
+    
+    price_override = fields.Bool(default=False, string="Override Price")
 
     def set_price(self):
         pricelist = self.move_id.pricelist_id
