@@ -1031,3 +1031,7 @@ article[name=blog_post] {
     background-color: #9C0000;
     border-color: #9C0000;
 }
+
+#o_wblog_blog_top > div > div.container.position-relative.h-100.d-flex.flex-column.justify-content-around > div > div {
+	display: none;
+}
