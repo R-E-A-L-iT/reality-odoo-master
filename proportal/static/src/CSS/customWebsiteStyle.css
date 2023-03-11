@@ -972,6 +972,10 @@ input[name=variantSelector]:not(:checked) + .specs {
 	margin-right: 15vw;
 }
 
+#o_wblog_post_content_jump {
+	color: #9C0000;
+}
+
 #title > div {
 	height: 55vw !important;
 }
