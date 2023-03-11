@@ -1008,3 +1008,7 @@ input[name=variantSelector]:not(:checked) + .specs {
 #o_wblog_post_content > div.o_wblog_post_content_field.o_wblog_read_text > p > a {
 	color: #9C0000;
 }
+
+#o_wblog_blog_top {
+	height: 30vh;
+}
