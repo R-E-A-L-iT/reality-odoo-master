@@ -1017,6 +1017,10 @@ article[name=blog_post] {
 	color: #FFF;
 }
 
+.page-link {
+	color: #9C0000;
+}
+
 #o_wblog_posts_loop_container > ul > li.page-item.active > a {
 	background-color: #9C0000;
 	border-color: #9C0000;
