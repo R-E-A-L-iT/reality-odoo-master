@@ -975,3 +975,7 @@ input[name=variantSelector]:not(:checked) + .specs {
 #title > div {
 	height: 55vw !important;
 }
+
+#o_wblog_post_content > nav > li > a {
+	color: #db0d0d;
+}
