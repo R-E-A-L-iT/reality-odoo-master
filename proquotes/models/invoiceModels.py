@@ -71,6 +71,7 @@ class invoiceLine(models.Model):
 
     @api.onchange('price_unit', 'pricelist_id')
     def init_price(self):
+        _logger.error("Invoice Price")
         if (True or self.product_id != False and self.price_unit == 0):
             price = self.set_price()
             if (not price == False):
