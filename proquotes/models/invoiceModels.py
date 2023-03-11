@@ -33,7 +33,8 @@ class InvoiceMain(models.Model):
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
-
+            if record.unit_price == product.price:
+                continue
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env['product.pricelist.item'].search(
                 [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
