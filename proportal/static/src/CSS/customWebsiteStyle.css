@@ -1035,3 +1035,7 @@ article[name=blog_post] {
 #o_wblog_blog_top > div > div.container.position-relative.h-100.d-flex.flex-column.justify-content-around > div > div {
 	display: none;
 }
+
+ #o_wblog_post_content > div.o_wblog_post_content_field.o_wblog_read_text > p {
+    background-image: linear-gradient(120deg, #24272A, #db0d0d);
+}
