@@ -1016,3 +1016,8 @@ input[name=variantSelector]:not(:checked) + .specs {
 article[name=blog_post] {
 	color: #FFF;
 }
+
+#o_wblog_posts_loop_container > ul > li.page-item.active > a {
+	background-color: #9C0000;
+	border-color: #9C0000;
+}
