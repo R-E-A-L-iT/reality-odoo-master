@@ -1039,4 +1039,12 @@ article[name=blog_post] {
  #o_wblog_post_content > div.o_wblog_post_content_field.o_wblog_read_text > p font {
     background-image: linear-gradient(120deg, #24272A, #db0d0d);
 	color: #FFF;
+
+    -moz-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    background-color: red;
+    background-repeat: repeat;
+    background-size: 100%;
 }
