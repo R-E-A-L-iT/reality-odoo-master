@@ -1025,3 +1025,9 @@ article[name=blog_post] {
 	background-color: #9C0000;
 	border-color: #9C0000;
 }
+
+.o_cc1 .btn-fill-primary, #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar .btn-fill-primary, .navbar-light .btn-fill-primary, .o_cc1 .btn-primary, #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar .btn-primary, .navbar-light .btn-primary, .o_colored_level .o_cc1 .btn-fill-primary {
+    color: #FFFFFF;
+    background-color: #9C0000;
+    border-color: #9C0000;
+}
