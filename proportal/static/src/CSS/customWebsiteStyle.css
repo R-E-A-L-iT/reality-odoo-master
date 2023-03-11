@@ -965,7 +965,8 @@ input[name=variantSelector] {
 input[name=variantSelector]:not(:checked) + .specs {
 	display: none;
 }
-#overview > h1 {
-	margin-left: 15vw;
-	margin-right: 15vw;
-}
+
+/* #overview > h1 { */
+	/* margin-left: 15vw; */
+	/* margin-right: 15vw; */
+/* } */
