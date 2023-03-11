@@ -971,3 +971,7 @@ input[name=variantSelector]:not(:checked) + .specs {
 	margin-left: 15vw;
 	margin-right: 15vw;
 }
+
+#title > div {
+	height: 55vw !important;
+}
