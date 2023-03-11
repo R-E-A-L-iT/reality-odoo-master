@@ -79,6 +79,7 @@ class invoiceLine(models.Model):
             if (not price == False):
                 _logger.warning("Price Will be set")
                 self.price_unit = price
+                _logger.error(self.price_unit)
 
     def get_applied_name(self):
         n = name_translation(self)
