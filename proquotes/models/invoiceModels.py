@@ -67,17 +67,13 @@ class invoiceLine(models.Model):
             return product.price
 
         # Appy Price from Pricelist
-        _logger.info(self.tax_ids)
-        _logger.warning(priceResult[-1].fixed_price)
         return priceResult[-1].fixed_price
 
     @api.onchange('price_unit', 'pricelist_id')
     def init_price(self):
-        _logger.error("Invoice Price" + str(self.product_id.name))
-        if (True or (self.product_id != False and self.price_unit == 0)):
+        if (self.product_id != False and self.price_unit == 0):
             price = self.set_price()
             if (not price == False):
-                _logger.warning("Price Will be set")
                 self.price_unit = price
                 _logger.error(self.price_unit)
 
