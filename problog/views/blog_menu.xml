@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Menu" id="blog_menu" inherit_id="website_blog.blog_post_short" priority="99">
-        <!-- <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
+        <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
             <t t-call="custom.custom-footer" />
-        </xpath> -->
+        </xpath>
     </template>
 </odoo>
