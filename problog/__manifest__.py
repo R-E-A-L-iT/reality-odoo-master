@@ -19,11 +19,10 @@
     # for the full list
     'category': 'Website',
 
-    'version': '0.14',
+    'version': '0.16',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website', 'website_abcdefgheijklmnopqrstuvwxxyzblog'],
-
+    'depends': ['base', 'website', 'website_blog'],
     'assets': {
             'web.assets_frontend': [
                 'problog/static/css/blog.css',
