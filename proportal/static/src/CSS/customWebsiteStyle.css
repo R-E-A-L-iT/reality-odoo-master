@@ -1048,3 +1048,7 @@ article[name=blog_post] {
     background-repeat: repeat;
     background-size: 100%;
 }
+#o_wblog_post_name {
+	text-align: center;
+	font-family: Helvetica !important;
+}
