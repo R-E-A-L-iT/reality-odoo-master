@@ -79,7 +79,7 @@ article[name=blog_post] {
 }
 
 .website_blog .o_wblog_post_title #o_wblog_post_subtotal {
-	font-weight: 300;
-	line-height: 1.2;
-	font-size: 3.5rem;
+	font-weight: 300 !important;
+	line-height: 1.2 !important;
+	font-size: 3.5rem !important;
 }
