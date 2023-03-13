@@ -972,55 +972,6 @@ input[name=variantSelector]:not(:checked) + .specs {
 	margin-right: 15vw;
 }
 
-
-/* @keyframes o-anim-heartbeat {
-	background-color: #9c0000;
-} */
-
-#o_wblog_post_content_jump {
-	color: #9C0000;
-	/* animation: none; */
-}
-
-@keyframes o-anim-heartbeat{
-	0%, 14%, 35% {
-		transform: scale(1);
-	}
-	7%, 21% {
-		transform: scale(1.3);
-		 background-color: #9C0000;
-	}
-}
-
-#o_wblog_post_content_jump > o-anim-heartbeat
-{
-	background-color: #9C0000;
-}
-
-#title > div {
-	height: 55vw !important;
-}
-
-#o_wblog_post_content > nav > li > a {
-	color: #9C0000;
-}
-
-#o_wblog_post_content > div.o_wblog_post_content_field.o_wblog_read_text > p > a {
-	color: #9C0000;
-}
-
-#o_wblog_blog_top {
-	height: 30vh;
-}
-
-article[name=blog_post] {
-	color: #FFF;
-}
-
-.page-link {
-	color: #9C0000;
-}
-
 #list_website_pages > div.table-responsive > table > tbody > tr > td > span {
 	color: #FFF !important;
 }
