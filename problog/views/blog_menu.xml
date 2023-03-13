@@ -7,8 +7,8 @@
     </template>
 
     <template name="Blog Menu Name" id="blog_menu_name" inherit_id="website_blog.opt_blog_cover_post" priority="99">
-        <xpath expr="//span[@t-field=&quot;blog.name&quot;]" position="after">
+        <!-- <xpath expr="//span[@t-field=&quot;blog.name&quot;]" position="after">
             <hr class="blog_divide" />
-        </xpath>
+        </xpath> -->
     </template>
 </odoo>
