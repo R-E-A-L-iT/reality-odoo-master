@@ -32,6 +32,7 @@
     # always loaded
     'data': [
         'views/blog_menu.xml',
+        'views/blog_page.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
