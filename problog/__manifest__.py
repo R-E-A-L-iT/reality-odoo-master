@@ -33,6 +33,7 @@
     'data': [
         'views/blog_menu.xml',
         'views/blog_page.xml',
+        'views/blog_backend.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
