@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Page" id="blog_page" inherit_id="website_blog.blog_post_complete" priority="99">
+
+        <xpath expr="//div[@t-field=&quot;blog_post.subtitle&quot;]" position="before">
+            <h3>test</h3>
+        </xpath>
         <xpath expr="//div[@t-field=&quot;blog_post.subtitle&quot;]" position="after">
             <div class="o_editable_no_shodow" t-field="blog_post.post_date" />
         </xpath>
