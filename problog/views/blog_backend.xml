@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_order_form_quote" model="ir.ui.view">
-        <field name="name">website_blog.view_blog_post_form</field>
+        <field name="name">Blog Backend</field>
         <field name="model">blog.post</field>
-        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="inherit_id" ref="website_blog.view_blog_post_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;subtitle&quot;]" position="after">
                 <field name="post_date" invisible="0" />
