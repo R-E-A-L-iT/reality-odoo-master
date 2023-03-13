@@ -7,7 +7,7 @@
         <t t-set="day" t-value="date_list[2]" />
         <t t-if="clang == 'en_CA' or clang == 'en_US'">
             <t t-set="month_text" t-value="'MONTH'" />
-            <span t-out="month_text + ' ' + day + ', ' + year"></span>
+            <!-- <span t-out="month_text + ' ' + day + ', ' + year"></span> -->
         </t>
         <t t-elif="clang == 'fr_CA">
             <span>French</span>
