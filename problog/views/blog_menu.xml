@@ -3,10 +3,10 @@
     <template name="Blog Menu" id="blog_menu" inherit_id="website_blog.blog_post_short" priority="99">
         <!-- Source is in inherited view -->
         <xpath expr="//div[@t-field=&quot;blog.name&quot;]" position="after">
+            <hr class="blog_divide" />
         </xpath>
 
         <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
-            <hr class="blog_divide" />
             <t t-call="custom.custom-footer" />
         </xpath>
     </template>
