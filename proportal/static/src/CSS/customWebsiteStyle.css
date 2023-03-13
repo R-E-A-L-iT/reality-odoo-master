@@ -1056,3 +1056,7 @@ article[name=blog_post] {
 #list_website_pages > div.table-responsive > table > tbody > tr > td > span {
 	color: #FFF !important;
 }
+
+#list_website_pages > div.table-responsive > table > tbody > tr > td > i.fa.fa-home {
+	columns: #FFF !important;
+}
