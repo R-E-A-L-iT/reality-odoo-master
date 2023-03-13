@@ -74,12 +74,13 @@ article[name=blog_post] {
     background-size: 100%;
 }
 #o_wblog_post_name {
+	font-weight: 900 !important;
 	text-align: center;
 	font-family: Helvetica !important;
 }
 
 #o_wblog_post_subtitle {
-	font-weight: 300 !important;
+	font-weight: 900 !important;
 	line-height: 1.2 !important;
 	font-size: 2.5rem !important;
 }

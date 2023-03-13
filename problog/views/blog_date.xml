@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Date" id="blog_date">
-        <spam>Test</spam>
+        <span>Test</span>
     </template>
 </odoo>
