@@ -1052,3 +1052,7 @@ article[name=blog_post] {
 	text-align: center;
 	font-family: Helvetica !important;
 }
+
+#list_website_pages > div.table-responsive > table > tbody > tr > td > span {
+	color: #FFF !important;
+}
