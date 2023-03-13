@@ -1057,6 +1057,6 @@ article[name=blog_post] {
 	color: #FFF !important;
 }
 
-#list_website_pages > div.table-responsive > table > tbody > tr > td > i.fa.fa-home {
+#list_website_pages > div.table-responsive > table > tbody > tr > td > i {
 	color: #FFF !important;
 }
