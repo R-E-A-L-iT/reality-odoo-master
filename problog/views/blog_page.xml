@@ -7,7 +7,7 @@
         </xpath>
         <xpath expr="//div[@t-field=&quot;blog_post.subtitle&quot;]" position="after">
             <div t-if="blog_post.post_date != False" id="blog_date_field" class="o_editable_no_shodow" t-out="str(blog_post.post_date)" />
-            <t t-call="proquotes.blog_date" />
+            <t t-call="problog.blog_date" />
         </xpath>
         <xpath expr="//section[@id=&quot;o_wblog_post_footer&quot;]/div" position="after">
             <t t-call="custom.custom-footer" />
