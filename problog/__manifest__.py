@@ -19,10 +19,10 @@
     # for the full list
     'category': 'Website',
 
-    'version': '0.9',
+    'version': '0.11',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website'],
+    'depends': ['base', 'website', 'website_blog'],
 
     'assets': {
             'web.assets_frontend': [
@@ -32,7 +32,7 @@
 
     # always loaded
     'data': [
-        # 'problog/views/blog_menu.xml',
+        'problog/views/blog_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
