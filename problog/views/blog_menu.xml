@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Menu" id="blog_menu" inherit_id="website_blog.blog_post_short" priority="99">
-        <xpath expr="//span[@t-field=&quot;blog.name&quot;]/div" position="after">
+        <xpath expr="//span[@t-field=&quot;blog.name&quot;]" position="after">
             <hr class="blog_divide" />
         </xpath>
         <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
