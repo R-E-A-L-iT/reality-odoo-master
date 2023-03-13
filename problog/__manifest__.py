@@ -26,12 +26,13 @@
 
     'assets': {
             'web.assets_frontend': [
-                'problog/static/css/blog.css'
+                'problog/static/css/blog.css',
             ]
     },
 
     # always loaded
     'data': [
+        'problog/views/blog_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="Blog Menu" id="blog_menu" inherit_id="website_blog.blog_post_short" priority="99">
+    </template>
+</odoo>
