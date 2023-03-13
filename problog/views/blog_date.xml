@@ -5,7 +5,11 @@
         <t t-set="year" t-value="date_list[0]" />
         <t t-set="month" t-value="date_list[1]" />
         <t t-set="day" t-value="date_list[2]" />
-        <!-- <span t-out="monthText + ' ' + day + ', ' + year"></span> -->
-        <span t-out="str(lang)" />
+        <t t-if="clang == 'en_CA' or clang == 'en_US'">
+            <span t-out="monthText + ' ' + day + ', ' + year"></span>
+        </t>
+        <t t-elif="clang == 'fr_CA">
+            <span>French</span>
+        </t>
     </template>
 </odoo>
