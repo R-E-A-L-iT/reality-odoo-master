@@ -94,3 +94,7 @@ article[name=blog_post] {
     width: 100px;
 	z-index: 99;
 }
+
+#blog_date_field {
+	font-size: 1.5rem;
+}
