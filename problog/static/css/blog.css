@@ -89,8 +89,8 @@ article[name=blog_post] {
     border: 1px solid #611008;
     background-color: #611008;
 	margin: auto;
-	margin-top: 0px;
-	margin-bottom: 10px;
+	margin-top: 24px;
+	margin-bottom: 24px;
     width: 100px;
 	z-index: 99;
 }
