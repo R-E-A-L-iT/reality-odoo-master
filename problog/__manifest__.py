@@ -19,7 +19,7 @@
     # for the full list
     'category': 'Website',
 
-    'version': '0.52',
+    'version': '0.53',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'website_blog'],
