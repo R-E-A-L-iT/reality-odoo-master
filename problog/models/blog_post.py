@@ -9,3 +9,4 @@ from odoo.tools.translate import html_translate
 
 class BlogPost(models.Model):
     _inherit = "blog.post"
+    post_date = fields.datetime(string="Post Date")
