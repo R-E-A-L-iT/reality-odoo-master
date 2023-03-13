@@ -79,7 +79,7 @@ article[name=blog_post] {
 }
 
 #o_wblog_post_subtitle {
-	font-weight: 300 !important;
-	line-height: 1.2 !important;
-	font-size: 3.5rem !important;
+	font-weight: 300;
+	line-height: 1.2;
+	font-size: 3.5rem;
 }
