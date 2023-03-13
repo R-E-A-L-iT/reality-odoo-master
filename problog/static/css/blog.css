@@ -90,4 +90,5 @@ article[name=blog_post] {
     background-color: #611008;
     margin: 0 10px;
     width: 100px;
+	z-index: 99;
 }
