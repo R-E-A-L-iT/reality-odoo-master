@@ -32,7 +32,7 @@
 
     # always loaded
     'data': [
-        'problog/views/blog_menu.xml',
+        'views/blog_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
