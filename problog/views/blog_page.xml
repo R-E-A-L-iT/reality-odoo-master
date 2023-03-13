@@ -4,7 +4,7 @@
 
         <xpath expr="//div[@t-field=&quot;blog_post.subtitle&quot;]" position="after">
             <hr class="blog_divide" />
-            <div class="o_editable_no_shodow" t-out="blog_post.post_date" />
+            <div class="o_editable_no_shodow" t-field="blog_post.post_date" widget="date" />
         </xpath>
         <xpath expr="//section[@id=&quot;o_wblog_post_footer&quot;]/div" position="after">
             <t t-call="custom.custom-footer" />
