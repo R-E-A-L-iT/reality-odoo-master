@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template name="Blog Page" id="blog_page" inherit_id="o_wblog_post_footer" priority="99">
-        <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
+    <template name="Blog Page" id="blog_page" inherit_id="website_blog.blog_post_complete" priority="99">
+        <xpath expr="//section[@id=&quot;o_wblog_post_footer&quot;]/div" position="after">
             <t t-call="custom.custom-footer" />
         </xpath>
     </template>
