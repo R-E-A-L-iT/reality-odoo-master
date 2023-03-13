@@ -19,7 +19,7 @@
     # for the full list
     'category': 'Website',
 
-    'version': '0.56',
+    'version': '0.57',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'website_blog'],
@@ -34,7 +34,7 @@
         'views/blog_menu.xml',
         'views/blog_page.xml',
         'views/blog_backend.xml',
-        'views/blog_post.xml',
+        'views/blog_page.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
