@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Menu" id="blog_menu" inherit_id="website_blog.blog_post_short" priority="99">
+        <!-- Source is in inherited view -->
         <xpath expr="//div[@t-field=&quot;blog.name&quot;]" position="after">
             <hr class="blog_divide" />
         </xpath>
+
         <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
             <t t-call="custom.custom-footer" />
         </xpath>
-    </template>
-
-    <template name="Blog Menu Name" id="blog_menu_name" inherit_id="website_blog.opt_blog_cover_post" priority="99">
-        <!-- <xpath expr="//div[@t-field=&quot;blog.name&quot;]" position="after">
-            <hr class="blog_divide" />
-        </xpath> -->
     </template>
 </odoo>
