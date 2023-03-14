@@ -392,7 +392,6 @@ class sync(models.Model):
                 _logger.error(company.property_product_pricelist.name)
         company.is_company = True
 
-        _logger.info("Company StringRep")
         company.stringRep = str(sheet[i][:])
 
     # creates object and updates it
