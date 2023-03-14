@@ -341,7 +341,8 @@ class sync(models.Model):
 				if (len(company_ids) > 0):
 					self.updateCompany(self.env['res.partner'].browse(
 						company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i, columns)
-					_logger.warning(str(company_ids))
+					if("Borden" in sheet[i][columns["companyName"]]):
+						_logger.warning(str(company_ids))
 				else:
 					self.createCompany(sheet, external_id,
 									   sheetWidth, i, columns)
