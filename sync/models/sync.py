@@ -381,6 +381,7 @@ class sync(models.Model):
         company.lang = sheet[i][columns["language"]]
         company.email = sheet[i][columns["language"]]
         if (sheet[i][columns["pricelist"]] != ""):
+            _logger.error(company.property_product_pricelist.name)
             company.property_product_pricelist = False
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
