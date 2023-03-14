@@ -971,3 +971,11 @@ input[name=variantSelector]:not(:checked) + .specs {
 	margin-left: 15vw;
 	margin-right: 15vw;
 }
+
+#list_website_pages > div.table-responsive > table > tbody > tr > td > span {
+	color: #FFF !important;
+}
+
+#list_website_pages > div.table-responsive > table > tbody > tr > td > i {
+	color: #FFF !important;
+}
