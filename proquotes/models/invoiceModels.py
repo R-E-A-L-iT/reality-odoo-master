@@ -60,7 +60,7 @@ class invoiceLine(models.Model):
 
     price_override = fields.Boolean(default=False, string="Override Price")
 
-    def set_price(self):
+    def get_price(self):
         pricelist = self.move_id.pricelist_id
         product = self.product_id
         _logger.info("Invoice Price: " + str(product.name))
@@ -74,8 +74,8 @@ class invoiceLine(models.Model):
 
     @api.onchange('price_unit')
     def init_price(self):
-        self.price_override = True
-        _logger.warning("Triggered")
+
+        self.price_override = self.price_unit == self.get_price()
 
     def get_applied_name(self):
         n = name_translation(self)
