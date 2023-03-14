@@ -7,11 +7,11 @@
         <t t-set="day" t-value="date_list[2]" />
         <t t-if="clang == 'en_CA' or clang == 'en_US'">
             <t t-set="month_list" t-value="[None, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
-            <t t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
+            <span class="blog_date" t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
         </t>
         <t t-elif="clang == 'fr_CA'">
             <t t-set="month_list" t-value="[None, 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
-            <t t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
+            <span class="blog_date" t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
         </t>
     </template>
 </odoo>
