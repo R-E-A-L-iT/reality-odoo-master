@@ -364,7 +364,6 @@ class sync(models.Model):
 
         # reads values and puts them in appropriate fields
         company.name = sheet[i][columns["companyName"]]
-        company.name = "test"
         company.phone = sheet[i][columns["phone"]]
         company.website = sheet[i][columns["website"]]
         company.street = sheet[i][columns["street"]]
