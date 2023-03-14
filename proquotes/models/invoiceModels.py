@@ -28,6 +28,7 @@ class InvoiceMain(models.Model):
 
     @api.onchange('partner_id')
     def _setpricelist(self):
+        self.pricelist_id = self.partner_id.property_product_pricelist
         _logger.error(self.partner_id.property_product_pricelist)
         _logger.error(self.pricelist_id.name)
 
