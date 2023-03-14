@@ -124,7 +124,7 @@ class sql_queries(models.Model):
             WHERE
             is_company = True
             AND
-            name LIKE "%Borden%"
+            name LIKE "%Borden%";
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
