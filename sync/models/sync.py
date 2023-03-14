@@ -336,7 +336,7 @@ class sync(models.Model):
 
 				# attempts to access existing item (item/row)
 				external_id = str(sheet[i][columns["id"]])
-				if ("borden" in external_id):
+				if ("BORDEN" in external_id):
 					_logger.warning(external_id)
 				company_ids = self.env['ir.model.data'].search(
 					[('name', '=', external_id), ('model', '=', 'res.partner')])
