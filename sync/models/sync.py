@@ -391,6 +391,8 @@ class sync(models.Model):
             company.property_product_pricelist = pricelist
 
             if ("Borden" in company.name):
+				_logger.error(
+				    "Compute: " + str(self.env['product.pricelist']._get_partner_pricelist_multi(self.ids, company_id=company)))
                 _logger.warning(sheet[i][columns["companyName"]])
                 _logger.warning(company.name)
                 _logger.warning(company.website)
