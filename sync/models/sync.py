@@ -341,8 +341,6 @@ class sync(models.Model):
 				if (len(company_ids) > 0):
 					self.updateCompany(self.env['res.partner'].browse(
 						company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i, columns)
-					if("Borden" in sheet[i][columns["companyName"]]):
-						_logger.warning(str(company_ids))
 				else:
 					self.createCompany(sheet, external_id,
 									   sheetWidth, i, columns)
@@ -381,7 +379,7 @@ class sync(models.Model):
 				self.env['res.country'].search([('name', '=', name)])[0].id)
 		company.zip = sheet[i][columns["postalCode"]]
 		company.lang = sheet[i][columns["language"]]
-		company.email = sheet[i][columns["language"]]
+		company.email = sheet[i][columns["email"]]
 		if (sheet[i][columns["pricelist"]] != ""):
 			if ("Borden" in company.name):
 				_logger.error(company.property_product_pricelist.name)
