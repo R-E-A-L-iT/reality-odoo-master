@@ -381,9 +381,8 @@ class sync(models.Model):
         company.lang = sheet[i][columns["language"]]
         company.email = sheet[i][columns["language"]]
         if (sheet[i][columns["pricelist"]] != ""):
-            _logger.error(sheet[i][columns["pricelist"]])
-            company.property_product_pricelist = int(self.env['product.pricelist'].search(
-                [('name', '=', sheet[i][columns["pricelist"]])])[0].id)
+            company.property_product_pricelist = self.env['product.pricelist'].search(
+                [('name', '=', sheet[i][columns["pricelist"]])])[0]
         company.is_company = True
 
         _logger.info("Company StringRep")
