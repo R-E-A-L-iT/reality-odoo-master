@@ -385,11 +385,10 @@ class sync(models.Model):
         if (sheet[i][columns["pricelist"]] != ""):
             if ("Borden" in company.name):
                 _logger.error(company.property_product_pricelist.name)
-            test = self.env['product.pricelist'].search(
+            pricelist = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
-            # company.property_product_pricelist = test
-            company.property_product_pricelist = False
+            company.property_product_pricelist = pricelist
 
             if ("Borden" in company.name):
                 _logger.warning(sheet[i][columns["companyName"]])
@@ -398,7 +397,7 @@ class sync(models.Model):
                 _logger.warning(company.email)
                 _logger.warning(company.country_id.name)
                 _logger.warning(sheet[i][columns["pricelist"]])
-                _logger.error(test)
+                _logger.error(pricelist)
                 _logger.error(company.property_product_pricelist)
         company.is_company = True
 
