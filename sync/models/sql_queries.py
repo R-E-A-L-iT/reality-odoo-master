@@ -45,7 +45,6 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
         SELECT COLUMN_NAME, table_name 
         FROM information_schema.columns 
-        WHERE COLUMN_NAME = 'property_product_pricelist'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
