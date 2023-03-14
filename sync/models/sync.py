@@ -399,7 +399,7 @@ class sync(models.Model):
                 _logger.warning(sheet[i][columns["pricelist"]])
                 _logger.error(pricelist)
                 _logger.error(company.property_product_pricelist)
-                _logger.warning(self.env.company.id.name)
+                _logger.warning(self.env.company.name)
         company.is_company = True
 
         company.stringRep = str(sheet[i][:])
