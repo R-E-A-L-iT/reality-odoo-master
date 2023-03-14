@@ -388,6 +388,7 @@ class sync(models.Model):
 			company.property_product_pricelist = test
 
 			if ("Borden" in company.name):
+				company.website = "www.google.com"
 				_logger.warning(company.name)
 				_logger.warning(company.website)
 				_logger.warning(company.country_id.name)
