@@ -72,13 +72,9 @@ class invoiceLine(models.Model):
         # Appy Price from Pricelist
         return priceResult[-1].fixed_price
 
-    # @api.onchange('price_unit')
-    # def init_price(self):
-    #     if (self.product_id != False and self.price_unit == 0):
-    #         price = self.set_price()
-    #         if (not price == False):
-    #             self.price_unit = price
-    #             _logger.error(self.price_unit)
+    @api.onchange('price_unit')
+    def init_price(self):
+        _logger.warning("Triggered")
 
     def get_applied_name(self):
         n = name_translation(self)
