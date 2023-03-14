@@ -19,3 +19,9 @@ body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_cha
     margin: 0px !important;
     max-width: 100% !important;
 }
+
+.o_form_view.o_xxl_form_view {
+    display: flex;
+    height: 100%;
+    flex-wrap: wrap;
+}
