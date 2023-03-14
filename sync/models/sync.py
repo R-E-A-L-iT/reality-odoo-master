@@ -383,6 +383,8 @@ class sync(models.Model):
         if (sheet[i][columns["pricelist"]] != ""):
             company.property_product_pricelist = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
+
+            _logger.error(company.property_product_pricelist)
         company.is_company = True
 
         _logger.info("Company StringRep")
