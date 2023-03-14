@@ -127,7 +127,7 @@ class sql_queries(models.Model):
         for table in tables:
             res += str(table)
             res += "\n"
-        _logger.error(res)
+        raise UserError(res)
 
     def listProductFromSpecificSaleOrder(self):
         self.sql_queries_lockout()
