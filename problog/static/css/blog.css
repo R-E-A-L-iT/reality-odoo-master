@@ -72,6 +72,7 @@ article[name=blog_post] {
     background-color: red;
     background-repeat: repeat;
     background-size: 100%;
+	font-weight: 700;
 }
 
 #o_wblog_post_name {
