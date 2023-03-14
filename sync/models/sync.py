@@ -382,7 +382,7 @@ class sync(models.Model):
         company.email = sheet[i][columns["email"]]
         if (sheet[i][columns["pricelist"]] != ""):
             if ("Borden" in company.name):
-                _logger.error(company.property_product_pricelist)
+                _logger.error(company.property_product_pricelist.name)
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
