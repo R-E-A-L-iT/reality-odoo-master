@@ -384,6 +384,7 @@ class sync(models.Model):
             # company.property_product_pricelist =
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
+            _logger.warning(sheet[i][columns["pricelist"]])
             _logger.error(test.name)
 
             _logger.error(company.property_product_pricelist.name)
