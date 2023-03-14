@@ -16,7 +16,7 @@
 				<field name="pricelist_id" />
 			</xpath>
 			<xpath expr="//field[@name=&quot;price_unit&quot;]" position="before">
-				<field name="price_override" invisible="1" />
+				<field name="price_override" hidden="1" />
 			</xpath>
 		</field>
 	</record>
