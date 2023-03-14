@@ -73,6 +73,7 @@ article[name=blog_post] {
     background-repeat: repeat;
     background-size: 100%;
 }
+
 #o_wblog_post_name {
 	font-weight: 900 !important;
 	text-align: center;
@@ -80,6 +81,7 @@ article[name=blog_post] {
 }
 
 #o_wblog_post_subtitle {
+	font-size: 64px;
 	font-weight: 900 !important;
 	line-height: 1.2 !important;
 	font-size: 2.5rem !important;
