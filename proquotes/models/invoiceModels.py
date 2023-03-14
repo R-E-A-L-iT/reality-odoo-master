@@ -74,6 +74,7 @@ class invoiceLine(models.Model):
 
     @api.onchange('price_unit')
     def init_price(self):
+        self.price_override = True
         _logger.warning("Triggered")
 
     def get_applied_name(self):
