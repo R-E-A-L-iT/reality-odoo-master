@@ -357,7 +357,7 @@ class sync(models.Model):
     def updateCompany(self, company, sheet, sheetWidth, i, columns):
 
         # check if any update to item is needed and skips if there is none
-        if (company.stringRep == str(sheet[i][:])):
+        if (False and company.stringRep == str(sheet[i][:])):
             return
 
         # reads values and puts them in appropriate fields
