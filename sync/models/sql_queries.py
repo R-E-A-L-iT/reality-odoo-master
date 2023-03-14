@@ -45,7 +45,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
         SELECT COLUMN_NAME 
         FROM information_schema.columns 
-        WHERE table_name = 'ir_translation'
+        WHERE table_name = 'res_partner'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
