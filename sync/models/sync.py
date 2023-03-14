@@ -386,7 +386,8 @@ class sync(models.Model):
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
-            company.property_product_pricelist = test
+            # company.property_product_pricelist = test
+            company.property_product_pricelist = False
 
             if ("Borden" in company.name):
                 _logger.warning(company.name)
