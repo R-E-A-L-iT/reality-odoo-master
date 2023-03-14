@@ -19,19 +19,22 @@
     # for the full list
     'category': 'Website',
 
-    'version': '0.5',
+    'version': '0.96',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website'],
-
+    'depends': ['base', 'website', 'website_blog'],
     'assets': {
             'web.assets_frontend': [
-                'problog/static/css/blog.css'
+                'problog/static/css/blog.css',
             ]
     },
 
     # always loaded
     'data': [
+        'views/blog_menu.xml',
+        'views/blog_page.xml',
+        'views/blog_backend.xml',
+        'views/blog_date.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
