@@ -384,7 +384,7 @@ class sync(models.Model):
             company.property_product_pricelist = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
-            _logger.error(company.property_product_pricelist)
+            _logger.error(company.property_product_pricelist.name)
         company.is_company = True
 
         _logger.info("Company StringRep")
