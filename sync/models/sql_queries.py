@@ -118,7 +118,7 @@ class sql_queries(models.Model):
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
             SELECT 
-            name, property_product_pricelist
+            name
             FROM 
             res_partner
             WHERE
