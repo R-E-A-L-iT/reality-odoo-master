@@ -10,7 +10,8 @@
             <t t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
         </t>
         <t t-elif="clang == 'fr_CA'">
-            <span>French</span>
+            <t t-set="month_list" t-value="[None, 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
+            <t t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
         </t>
     </template>
 </odoo>
