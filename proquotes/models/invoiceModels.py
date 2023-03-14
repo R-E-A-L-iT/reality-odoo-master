@@ -75,7 +75,7 @@ class invoiceLine(models.Model):
     @api.onchange('price_unit')
     def init_price(self):
 
-        self.price_override = self.price_unit == self.get_price()
+        self.price_override = self.price_unit != self.get_price()
 
     def get_applied_name(self):
         n = name_translation(self)
