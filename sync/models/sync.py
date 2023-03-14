@@ -389,8 +389,7 @@ class sync(models.Model):
                 _logger.warning(company.country_id.name)
                 _logger.warning(sheet[i][columns["pricelist"]])
                 _logger.error(test.name)
-
-            _logger.error(company.property_product_pricelist.name)
+                _logger.error(company.property_product_pricelist.name)
         company.is_company = True
 
         _logger.info("Company StringRep")
