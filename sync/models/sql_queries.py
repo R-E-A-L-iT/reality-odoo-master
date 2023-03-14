@@ -112,6 +112,23 @@ class sql_queries(models.Model):
             res += "\n"
         _logger.info(res)
 
+    def listCompanies(self):
+        self.sql_queries_lockout()
+
+        _logger.info("listSpecificLineFromTable")
+        self.env.cr.execute("""
+            SELECT 
+            *
+            FROM 
+            res.partner
+            """)
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        _logger.info(res)
+
     def listProductFromSpecificSaleOrder(self):
         self.sql_queries_lockout()
 
