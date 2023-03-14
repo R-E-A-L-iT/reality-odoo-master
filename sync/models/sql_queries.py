@@ -120,7 +120,7 @@ class sql_queries(models.Model):
             SELECT 
             *
             FROM 
-            res.partner
+            res_partner
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
