@@ -43,9 +43,9 @@ class sql_queries(models.Model):
 
         _logger.info("listTableAttributs")
         self.env.cr.execute("""
-        SELECT COLUMN_NAME 
+        SELECT COLUMN_NAME, table_name 
         FROM information_schema.columns 
-        WHERE table_name = 'res_partner'
+        WHERE COLUMN_NAME = 'property_product_pricelist'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
