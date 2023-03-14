@@ -15,6 +15,9 @@
 			<xpath expr="//group[@id=&quot;header_right_group&quot;]//field[@name=&quot;date&quot;]" position="after">
 				<field name="pricelist_id" />
 			</xpath>
+			<xpath expr="//field[@name=&quot;price_unit&quot;]" position="before">
+				<field name="price_override" />
+			</xpath>
 		</field>
 	</record>
 </odoo>
