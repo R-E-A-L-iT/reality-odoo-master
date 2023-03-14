@@ -121,6 +121,10 @@ class sql_queries(models.Model):
             *
             FROM 
             res_partner
+            WHERE
+            is_company == True
+            AND
+            name LIKE "%Borden%"
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
