@@ -385,7 +385,8 @@ class sync(models.Model):
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
             if ("Borden" in company.name):
-                _logger.info(company.name)
+                _logger.warning(company.name)
+                _logger.warning(company.email)
                 _logger.warning(company.country_id.name)
                 _logger.warning(sheet[i][columns["pricelist"]])
                 _logger.error(test.name)
