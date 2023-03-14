@@ -22,6 +22,6 @@ body > div.o_action_manager > div > div.o_content > div > div.o_FormRenderer_cha
 
 .o_form_view.o_xxl_form_view {
     display: flex;
-    height: 100%;
-    flex-wrap: wrap;
+    height: 100% !important;
+    flex-wrap: wrap !important;
 }
