@@ -380,19 +380,10 @@ class sync(models.Model):
         company.zip = sheet[i][columns["postalCode"]]
         company.lang = sheet[i][columns["language"]]
         company.email = sheet[i][columns["email"]]
-        if (sheet[i][columns["pricelist"]] != ""):
-            if ("Borden" in company.name):
-                _logger.error(
-                    "Before: " + str(company.property_product_pricelist.name))
-            pricelist = self.env['product.pricelist'].search(
-                [('name', '=', sheet[i][columns["pricelist"]])])[0]
+        pricelist = self.env['product.pricelist'].search(
+            [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
-            # company.property_product_pricelist = pricelist
-            company.pricelist_id = pricelist
-            if ("Borden" in company.name):
-                _logger.error("Custom: " + str(company.pricelist_id))
-                _logger.error(
-                    "After: " + str(company.property_product_pricelist.name))
+        company.pricelist_id = pricelist
 
         company.is_company = True
 
