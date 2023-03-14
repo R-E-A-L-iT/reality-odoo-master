@@ -26,6 +26,10 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
+    @api.onchange('partner_id')
+    def _setpricelist(self):
+        _logger.error(self.pricelist_id)
+
     @api.onchange('pricelist_id', 'invoice_line_ids')
     def _update_prices(self):
         pricelist = self.pricelist_id.id
