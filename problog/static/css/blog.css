@@ -75,7 +75,7 @@ article[name=blog_post] {
 }
 
 #o_wblog_post_name {
-	font-size: 64px !important;
+	font-size: 64px;
 	font-weight: 900 !important;
 	text-align: center;
 	font-family: Helvetica !important;
