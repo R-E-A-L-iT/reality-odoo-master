@@ -384,7 +384,7 @@ class sync(models.Model):
             # company.property_product_pricelist =
             test = self.env['product.pricelist'].search(
                 [('name', '=', sheet[i][columns["pricelist"]])])[0]
-            if ("USD" in sheet[i][columns["pricelist"]]):
+            if ("Borden" in company.name):
                 _logger.info(company.name)
                 _logger.warning(company.country_id.name)
                 _logger.warning(sheet[i][columns["pricelist"]])
