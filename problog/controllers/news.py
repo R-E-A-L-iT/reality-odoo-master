@@ -42,6 +42,9 @@ class WebsiteNews(Blog):
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])[0].name
         blog_post_record = request.env['blog.post'].search(
-            [('name', '=', blog_post)])[0]
+            [('name', '=', blog_post)])
+        if (len(blog_post_record) == 0):
+            return
+        blog_post_record = blog_post_record[0]
         return self.blog_post(blog=blog_record, blog_post=blog_post_record, tag_id=tag_id,
                               enable_editor=enable_editor, post=post)
