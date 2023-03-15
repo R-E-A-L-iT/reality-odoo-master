@@ -40,7 +40,7 @@ class WebsiteNews(Blog):
     def news_post(self, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])[0].name
-        blog_post_record = request.env['blog.post'].seach(
+        blog_post_record = request.env['blog.post'].search(
             [('name', '=', blog_post)])[0]
         _logger.error(blog_record)
         _logger.info(blog_post)
