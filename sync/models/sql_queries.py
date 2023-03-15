@@ -43,9 +43,8 @@ class sql_queries(models.Model):
 
         _logger.info("listTableAttributs")
         self.env.cr.execute("""
-        SELECT COLUMN_NAME 
+        SELECT COLUMN_NAME, table_name 
         FROM information_schema.columns 
-        WHERE table_name = 'ir_translation'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
@@ -111,6 +110,27 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+
+    def listCompanies(self):
+        self.sql_queries_lockout()
+
+        _logger.info("listSpecificLineFromTable")
+        self.env.cr.execute("""
+            SELECT 
+            name
+            FROM 
+            res_partner
+            WHERE
+            is_company = True
+            AND
+            name LIKE '%Borden%';
+            """)
+        tables = self.env.cr.fetchall()
+        res = "\n"
+        for table in tables:
+            res += str(table)
+            res += "\n"
+        raise UserError(res)
 
     def listProductFromSpecificSaleOrder(self):
         self.sql_queries_lockout()
