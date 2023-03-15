@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import re
-import werkzeug
-import itertools
-import pytz
-import babel.dates
 from collections import OrderedDict
 
 from odoo import http, fields
@@ -43,7 +38,8 @@ class WebsiteNews(Blog):
         '''/news/<model("blog.blog"):blog>/<model("blog.post", "[('blog_id','=',blog.id)]"):blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news_post(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
-        blog_record = self.env['blog.blog'].search({['name', '=', 'news-2']})
+        blog_record = request.env['blog.blog'].search(
+            {['name', '=', 'news-2']})
         _logger.error(blog_record)
         _logger.error(blog)
         return self.blog_post(blog=blog, blog_post=blog_post, tag_id=tag_id,
