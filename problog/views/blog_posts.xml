@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="Blog Posts" id="blog_posts" inherit_id="website_blog.posts_loop" priority="99">
+    </template>
+</odoo>
