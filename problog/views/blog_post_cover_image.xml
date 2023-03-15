@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="Blog Post Cover Image" id="blog_post_cover_image" inherit_id="website_blog.post_cover_image" priority="99">
+    </template>
+</odoo>
