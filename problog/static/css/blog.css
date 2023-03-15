@@ -85,6 +85,8 @@ article[name=blog_post] {
 #o_wblog_post_subtitle {
 	font-size: 32px !important;
 	font-weight: 100 !important;
+	color: #D8D8D8;
+	text-shadow: #000 3px;
 }
 
 .blog_date {
