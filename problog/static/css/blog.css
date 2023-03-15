@@ -90,7 +90,8 @@ article[name=blog_post] {
 }
 
 .blog_date {
-	font-size: 24px !important;
+	text-transform: uppercase;
+	font-size: 16px !important;
 	color: #D8D8D8;
 	text-shadow: #000 3px;
 }
