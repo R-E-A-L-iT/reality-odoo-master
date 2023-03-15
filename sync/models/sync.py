@@ -380,10 +380,11 @@ class sync(models.Model):
         company.zip = sheet[i][columns["postalCode"]]
         company.lang = sheet[i][columns["language"]]
         company.email = sheet[i][columns["email"]]
-        pricelist = self.env['product.pricelist'].search(
-            [('name', '=', sheet[i][columns["pricelist"]])])[0]
+        if (sheet[i][columns["pricelist"]] != ""):
+            pricelist = self.env['product.pricelist'].search(
+                [('name', '=', sheet[i][columns["pricelist"]])])[0]
 
-        company.pricelist_id = pricelist
+            company.pricelist_id = pricelist
 
         company.is_company = True
 
