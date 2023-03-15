@@ -2,7 +2,7 @@
 <odoo>
     <template name="Blog Post Heading" id="blog_post_heading" inherit_id="website_blog.post_heading" priority="99">
         <xpath expr="//a" position="replace">
-            <p t-out="blog_post.blog_id"></p>
+            <p t-out="slug(blog_post.blog_id)"></p>
             <a t-if="blog_post.blog_id != 'news-2'" t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}" t-field="blog_post.name" t-attf-class="d-block text-reset text-decoration-none o_blog_post_title my-0 #{'h3' if opt_blog_list_view else ('h5' if opt_blog_readable else 'h6')}">
                 Untitled Post
             </a>
