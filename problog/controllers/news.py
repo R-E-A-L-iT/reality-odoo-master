@@ -42,7 +42,6 @@ class WebsiteNews(Blog):
             [('name', '=', 'NEWS')])[0].name
         blog_post_record = request.env['blog.post'].search(
             [('name', '=', blog_post)])[0]
-        _logger.error(blog_record)
-        _logger.info(blog_post)
+        _logger.error(blog_post)
         return self.blog_post(blog=blog_record, blog_post=blog_post_record, tag_id=tag_id,
                               enable_editor=enable_editor, post=post)
