@@ -27,20 +27,6 @@ _logger = logging.getLogger(__name__)
 
 class WebsiteNews(Blog):
     @http.route([
-        '/blog',
-        '/blog/page/<int:page>',
-        '/blog/tag/<string:tag>',
-        '/blog/tag/<string:tag>/page/<int:page>',
-        '''/blog/<model("blog.blog"):blog>''',
-        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
-        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
-        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
-    ], type='http', auth="public", website=True, sitemap=True)
-    def blogRedirect(self, blog=None, tag=None, page=1, search=None, **opt):
-        _logger.error("Test")
-        return request.redirect('/')
-
-    @http.route([
         '/news',
         '/news/page/<int:page>',
         '/news/tag/<string:tag>',
@@ -51,4 +37,5 @@ class WebsiteNews(Blog):
         '''/news/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news(self, blog=None, tag=None, page=1, search=None, **opt):
+        _logger.error("Here")
         return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
