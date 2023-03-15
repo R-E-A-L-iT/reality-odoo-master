@@ -38,10 +38,10 @@ class WebsiteNews(Blog):
         '''/news/<string:blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news_post(self, blog_post, tag_id=None, page=1, enable_editor=None, **post):
+        _logger.error(blog_post)
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])[0].name
         blog_post_record = request.env['blog.post'].search(
             [('name', '=', blog_post)])[0]
-        _logger.error(blog_post)
         return self.blog_post(blog=blog_record, blog_post=blog_post_record, tag_id=tag_id,
                               enable_editor=enable_editor, post=post)
