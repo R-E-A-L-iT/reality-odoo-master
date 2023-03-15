@@ -38,6 +38,7 @@ class WebsiteNews(Blog):
         '''/news/<model("blog.blog"):b>/<blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news_post(self, b, blog_post, tag_id=None, page=1, enable_editor=None, **post):
+        _logger.info(blog_post)
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])
         return self.blog_post(blog=blog_record, blog_post=blog_post, tag_id=tag_id,
