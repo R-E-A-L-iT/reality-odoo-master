@@ -29,6 +29,7 @@ class WebsiteNews(Blog):
     @http.route([
         '/news',
         '/news/page/<int:page>',
+        '/news/<int:page>'
         '/news/tag/<string:tag>',
         '/news/tag/<string:tag>/page/<int:page>',
         '''/news/<model("blog.blog"):blog>''',
