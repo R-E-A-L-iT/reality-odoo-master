@@ -33,4 +33,4 @@ class WebsiteNews(Blog):
         '''/news/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news(self, blog=None, tag=None, page=1, search=None, **opt):
-        self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
+        return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
