@@ -35,7 +35,7 @@ class WebsiteNews(Blog):
         return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
 
     @http.route([
-        '''/news/<str:blog_post>''',
+        '''/news/<string:blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news_post(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         blog_record = request.env['blog.blog'].search(
