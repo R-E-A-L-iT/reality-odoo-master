@@ -23,13 +23,6 @@ _logger = logging.getLogger(__name__)
 class WebsiteNews(Blog):
     @http.route([
         '/news',
-        '/news/page/<int:page>',
-        '/news/tag/<string:tag>',
-        '/news/tag/<string:tag>/page/<int:page>',
-        '''/news/<model("blog.blog"):blog>''',
-        '''/news/<model("blog.blog"):blog>/page/<int:page>''',
-        '''/news/<model("blog.blog"):blog>/tag/<string:tag>''',
-        '''/news/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def news(self, blog=None, tag=None, page=1, search=None, **opt):
         return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
