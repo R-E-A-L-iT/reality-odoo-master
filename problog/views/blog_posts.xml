@@ -2,8 +2,7 @@
 <odoo>
     <template name="Blog Posts" id="blog_posts" inherit_id="website_blog.posts_loop" priority="99">
         <xpath expr="//a[@t-attf-href=&quot;/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}&quot;]" position="replace">
-            <p t-out="blog_post.blog_id"></p>
-            <a t-if="blog_post.blog_id != 'news-2'" t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}"> Read more <i class="fa fa-chevron-right ml-2" />
+            <a t-if="slug(blog_post.blog_id) != 'news-2'" t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}"> Read more <i class="fa fa-chevron-right ml-2" />
             </a>
             <a t-else="" t-attf-href="/news/#{slug(blog_post)}"> Read more <i class="fa fa-chevron-right ml-2" />
             </a>
