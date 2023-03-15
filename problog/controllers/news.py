@@ -37,7 +37,7 @@ class WebsiteNews(Blog):
     @http.route([
         '''/news/<string:blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
-    def news_post(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
+    def news_post(self, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])[0].name
         _logger.error(blog_record)
