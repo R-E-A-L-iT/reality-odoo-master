@@ -91,6 +91,8 @@ article[name=blog_post] {
 
 .blog_date {
 	font-size: 24px !important;
+	color: #D8D8D8;
+	text-shadow: #000 3px;
 }
 
 .blog_divide {
