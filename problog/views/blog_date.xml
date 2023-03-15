@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="Blog Date" id="blog_date">
+        <t t-set="date_list" t-value="str(date_input).split('-')" />
+        <t t-set="year" t-value="date_list[0]" />
+        <t t-set="month" t-value="date_list[1]" />
+        <t t-set="day" t-value="date_list[2]" />
+        <t t-if="clang == 'en_CA' or clang == 'en_US'">
+            <t t-set="month_list" t-value="[None, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
+            <span class="blog_date" t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
+        </t>
+        <t t-elif="clang == 'fr_CA'">
+            <t t-set="month_list" t-value="[None, 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
+            <span class="blog_date" t-out="month_list[int(month)] + ' ' + day + ', ' + year" />
+        </t>
+    </template>
+</odoo>

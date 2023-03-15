@@ -72,8 +72,41 @@ article[name=blog_post] {
     background-color: red;
     background-repeat: repeat;
     background-size: 100%;
+	font-weight: 700;
 }
+
 #o_wblog_post_name {
+	font-size: 64px !important;
+	font-weight: 900 !important;
 	text-align: center;
 	font-family: Helvetica !important;
+}
+
+#o_wblog_post_subtitle {
+	font-size: 32px !important;
+	font-weight: 100 !important;
+	color: #D8D8D8;
+	text-shadow: #000 3px;
+}
+
+.blog_date {
+	text-transform: uppercase;
+	font-size: 16px !important;
+	color: #D8D8D8;
+	text-shadow: #000 3px;
+}
+
+.blog_divide {
+    align-self: center;
+    border: 1px solid #611008;
+    background-color: #611008;
+	margin: auto;
+	margin-top: 24px;
+	margin-bottom: 24px;
+    width: 100px;
+	z-index: 99;
+}
+
+#blog_date_field {
+	font-size: 1.5rem;
 }
