@@ -18,7 +18,7 @@ from odoo.tools import html2plaintext
 from odoo.tools.misc import get_lang
 from odoo.tools import sql
 
-from odoo.addons.website_blog.controllers import WebsiteBlog as Blog
+from odoo.addons.website_blog.controllers.main import WebsiteBlog as Blog
 
 
 class WebsiteNews(Blog):
