@@ -35,10 +35,12 @@ class WebsiteNews(Blog):
         return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
 
     @http.route([
-        '''/news/<model("blog.post", "[('blog_id','=',2)]"):blog_post>''',
+        '''/news/<model("blog.blog"):blog>/<model("blog.post", "[('blog_id','=',blog.id)]"):blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
-    def news_post(self, blog_post, tag_id=None, page=1, enable_editor=None, **post):
+    def news_post(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         blog_record = request.env['blog.blog'].search(
             [('name', '=', 'NEWS')])[0].name
-        return self.blog_post(blog=blog_record, blog_post=blog_post, tag_id=tag_id,
+        _logger.error(blog_record)
+        _logger.error(blog.name)
+        return self.blog_post(blog=blog, blog_post=blog_post, tag_id=tag_id,
                               enable_editor=enable_editor, post=post)
