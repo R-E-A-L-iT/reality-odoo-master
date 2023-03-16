@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="Blog Post Content" id="blog_post_content" inherit_id="website_blog.blog_post_content" priority="99">
+        <xpath expr="//a[1]" position="after">
+            <a class="badge border mr-1 post_link" t-attf-href="#{blog_url(tag=slug(one_tag), date_begin=False, date_end=False)}" t-esc="one_tag.name" />
+        </xpath>
+    </template>
+</odoo>
