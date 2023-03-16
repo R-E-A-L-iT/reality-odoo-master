@@ -110,3 +110,7 @@ article[name=blog_post] {
 #blog_date_field {
 	font-size: 1.5rem;
 }
+
+#o_wblog_post_subtitle {
+	text-align: center;
+}
