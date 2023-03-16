@@ -119,7 +119,7 @@ class sql_queries(models.Model):
             SELECT 
             name, documents_spreadsheet_folder_id
             FROM 
-            res_partner
+            res_company
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
