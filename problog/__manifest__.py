@@ -19,6 +19,7 @@
     # for the full list
     'category': 'Website',
     # Blog post content
+
     'version': '0.205',
 
     # any module necessary for this one to work correctly
