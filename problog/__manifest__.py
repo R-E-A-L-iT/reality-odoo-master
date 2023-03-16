@@ -20,7 +20,7 @@
     'category': 'Website',
     # Blog post content
 
-    'version': '0.205',
+    'version': '0.206',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'website_blog'],
@@ -40,7 +40,7 @@
         'views/blog_post_heading.xml',
         'views/blog_post_cover_image.xml',
         'views/blog_info.xml',
-        'views/blog_post_content.xml',
+        # 'views/blog_post_content.xml',
         'views/blog_teaser.xml',
     ],
     # only loaded in demonstration mode
