@@ -18,8 +18,8 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Website',
-
-    'version': '0.181',
+    # Blog post content
+    'version': '0.182',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'website_blog'],
