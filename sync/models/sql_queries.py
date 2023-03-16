@@ -117,7 +117,7 @@ class sql_queries(models.Model):
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
             SELECT 
-            name, documents_spreadsheet_folder
+            name, document_spreadsheet_folder
             FROM 
             res_partner
             """)
