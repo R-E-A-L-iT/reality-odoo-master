@@ -2,7 +2,7 @@
 <odoo>
     <template name="Blog Teaser" id="blog_teaser" inherit_id="website_blog.post_teaser" priority="99">
         <xpath expr="//div[@t-if=&quot;len(blog_post.tag_ids)&quot;]//a" position="replace">
-            <span t-out="one_tag" />
+            <span t-out="blog_url(tag=slug(one_tag), date_begin=False, date_end=False)" />
             <a class="badge border mr-1 post_link" t-attf-href="#{blog_url(tag=slug(one_tag), date_begin=False, date_end=False)}" t-esc="one_tag.name" />
         </xpath>
     </template>
