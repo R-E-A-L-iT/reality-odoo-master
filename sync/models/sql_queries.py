@@ -117,13 +117,9 @@ class sql_queries(models.Model):
         _logger.info("listSpecificLineFromTable")
         self.env.cr.execute("""
             SELECT 
-            name
+            name, documents_spreadsheet_folder
             FROM 
             res_partner
-            WHERE
-            is_company = True
-            AND
-            name LIKE '%Borden%';
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
