@@ -108,7 +108,7 @@ class sync_companies():
                 msg, self.name, "Header", "Pricelist Missing")
             missingColumn = True
 
-        if ("Industry" in self.sheed[0]):
+        if ("Industry" in self.sheet[0]):
             columns["industry"] = self.sheet[0].index("Industry")
         else:
             msg = utilities.buildMSG(
