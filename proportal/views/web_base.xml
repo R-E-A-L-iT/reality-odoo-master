@@ -26,7 +26,7 @@
 		</xpath>
 		<xpath expr="//body/t" position="after">
 			<t t-set="clang" t-value="lang" />
-			<t t-if="True">
+			<t t-if="False">
 				<t t-if="clang == 'en_CA' or clang == 'en_US'">
 					<link rel="stylesheet" href="https://r-e-a-l.it/im_livechat/external_lib.css" />
 					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/external_lib.js"></script>
