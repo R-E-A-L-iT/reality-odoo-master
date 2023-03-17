@@ -45,6 +45,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
         SELECT COLUMN_NAME, table_name 
         FROM information_schema.columns 
+        where table_name = 'res_partner_industry'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
@@ -62,7 +63,7 @@ class sql_queries(models.Model):
         _logger.info("listAllLineFromTable")
         self.env.cr.execute("""
             SELECT * 
-            FROM product_attribute
+            FROM res_partner_industry
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
