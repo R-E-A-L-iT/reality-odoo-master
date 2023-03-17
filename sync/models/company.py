@@ -222,7 +222,7 @@ class sync_companies():
             industry_ids = self.database.env['res.partner.industry'].search(
                 [('name', '=', industry)])
             if (len(industry_ids) != 1):
-                raise Exception("Invalid Industry ID Return Count")
+                raise Exception("Invalid Industry: " + industry)
             else:
                 company.industry_id = industry_ids[0]
 
