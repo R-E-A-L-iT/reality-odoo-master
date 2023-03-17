@@ -25,6 +25,7 @@
 			<!-- End Google Tag Manager (noscript) -->
 		</xpath>
 		<xpath expr="//body/t" position="after">
+			<t t-set="clang" t-value="lang" />
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<script type="text/javascript">alert("HELLO")</script>
 				<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
