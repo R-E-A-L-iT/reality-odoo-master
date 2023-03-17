@@ -30,12 +30,12 @@
 				<t t-if="clang == 'en_CA' or clang == 'en_US'">
 					<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
 					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
-					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/2"></script>
+					<!-- <script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/2"></script> -->
 				</t>
 				<t t-elif="clang == 'fr_CA'">
 					<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
 					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
-					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/3"></script>
+					<!-- <script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/3"></script> -->
 				</t>
 			</t>
 			<script type="text/javascript">
