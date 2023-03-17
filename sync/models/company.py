@@ -25,7 +25,7 @@ class sync_companies():
 
         # check sheet width to filter out invalid sheets
         # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 17
+        sheetWidth = 18
         columns = dict()
         missingColumn = False
         msg = ""
@@ -106,6 +106,13 @@ class sync_companies():
         else:
             msg = utilities.buildMSG(
                 msg, self.name, "Header", "Pricelist Missing")
+            missingColumn = True
+
+        if ("Industry"):
+            columns["industry"] = self.sheet[0].index("Industry")
+        else:
+            msg = utilities.buildMSG(
+                msg, self.name, "Header", "Industry Missing")
             missingColumn = True
 
         if ("OCOMID" in self.sheet[0]):
