@@ -28,18 +28,14 @@
 			<t t-set="clang" t-value="lang" />
 			<t t-if="True">
 				<t t-if="clang == 'en_CA' or clang == 'en_US'">
-					<script type="text/javascript">alert("Test EN")</script>
 					<link rel="stylesheet" href="https://r-e-a-l.it/im_livechat/external_lib.css" />
 					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/external_lib.js"></script>
 					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/loader/2"></script>
-					<script type="text/javascript">alert("Test EN2")</script>
 				</t>
 				<t t-elif="clang == 'fr_CA'">
-					<script type="text/javascript">alert("Test FR")</script>
 					<link rel="stylesheet" href="https://r-e-a-l.it/im_livechat/external_lib.css" />
 					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/external_lib.js"></script>
 					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/loader/3"></script>
-					<script type="text/javascript">alert("Test FR2")</script>
 				</t>
 			</t>
 			<script type="text/javascript">
