@@ -165,7 +165,7 @@ class sync_companies():
                     [('name', '=', external_id), ('model', '=', 'res.partner')])
                 if (len(company_ids) > 0):
                     self.updateCompany(self.database.env['res.partner'].browse(
-                        company_ids[len(company_ids) - 1].res_id), self.sheet, sheetWidth, i, columns)
+                        company_ids[len(company_ids) - 1].res_id), i, columns)
                 else:
                     self.createCompany(self.sheet, external_id,
                                        sheetWidth, i, columns)
