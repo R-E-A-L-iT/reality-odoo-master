@@ -26,17 +26,17 @@
 		</xpath>
 		<xpath expr="//body/t" position="after">
 			<t t-set="clang" t-value="lang" />
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">
-				<p>LIVECHAT</p>
-				<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
-				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
-				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/2"></script>
-			</t>
-			<t t-elif="clang == 'fr_CA'">
-				<p>FRENCH</p>
-				<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
-				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
-				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/3"></script>
+			<t t-if="False">
+				<t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
+					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
+					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/2"></script>
+				</t>
+				<t t-elif="clang == 'fr_CA'">
+					<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
+					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
+					<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/3"></script>
+				</t>
 			</t>
 			<script type="text/javascript">
 				_linkedin_partner_id = "4428316";
