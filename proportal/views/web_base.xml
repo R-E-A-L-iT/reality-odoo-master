@@ -25,6 +25,7 @@
 			<!-- End Google Tag Manager (noscript) -->
 		</xpath>
 		<xpath expr="//body/t" position="after">
+			<script t-if="lang == 'en_CA' or lang == 'en_US'" type="text/javascript">alert("Livechat")</script>
 			<script type="text/javascript">
 				_linkedin_partner_id = "4428316";
 				window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
