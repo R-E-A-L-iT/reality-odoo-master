@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 
 import ast
 import logging
@@ -28,6 +28,7 @@ from .ccp import sync_ccp
 from .googlesheetsAPI import sheetsAPI
 from .website import syncWeb
 from .product import sync_products
+from .company import sync_companies
 
 _logger = logging.getLogger(__name__)
 
@@ -184,7 +185,8 @@ class sync(models.Model):
         _logger.info("Sync Type is: " + syncType)
         # identify the type of sheet
         if (syncType == "Companies"):
-            quit, msg = self.syncCompanies(sheet)
+            syncer = sync_companies(sheetName, sheet, self)
+            quit, msg = sync.syncCompanies()
 
         elif (syncType == "Contacts"):
             quit, msg = self.syncContacts(sheet)
@@ -220,187 +222,6 @@ class sync(models.Model):
         return quit, msg
 
     # same pattern for all sync items
-
-    def syncCompanies(self, sheet):
-
-        # check sheet width to filter out invalid sheets
-        # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 17
-        columns = dict()
-        missingColumn = False
-
-        # Calculate Indexes
-        if ("Company Name" in sheet[0]):
-            columns["companyName"] = sheet[0].index("Company Name")
-        else:
-            missingColumn = True
-
-        if ("Phone" in sheet[0]):
-            columns["phone"] = sheet[0].index("Phone")
-        else:
-            missingColumn = True
-
-        if ("Website" in sheet[0]):
-            columns["website"] = sheet[0].index("Website")
-        else:
-            missingColumn = True
-
-        if ("Street" in sheet[0]):
-            columns["street"] = sheet[0].index("Street")
-        else:
-            missingColumn = True
-
-        if ("City" in sheet[0]):
-            columns["city"] = sheet[0].index("City")
-        else:
-            missingColumn = True
-
-        if ("State" in sheet[0]):
-            columns["state"] = sheet[0].index("State")
-        else:
-            missingColumn = True
-
-        if ("Country Code" in sheet[0]):
-            columns["country"] = sheet[0].index("Country Code")
-        else:
-            missingColumn = True
-
-        if ("Postal Code" in sheet[0]):
-            columns["postalCode"] = sheet[0].index("Postal Code")
-        else:
-            missingColumn = True
-
-        if ("Language" in sheet[0]):
-            columns["language"] = sheet[0].index("Language")
-        else:
-            missingColumn = True
-
-        if ("Email" in sheet[0]):
-            columns["email"] = sheet[0].index("Email")
-        else:
-            missingColumn = True
-
-        if ("Pricelist" in sheet[0]):
-            columns["pricelist"] = sheet[0].index("Pricelist")
-        else:
-            missingColumn = True
-
-        if ("OCOMID" in sheet[0]):
-            columns["id"] = sheet[0].index("OCOMID")
-        else:
-            missingColumn = True
-
-        if ("Valid" in sheet[0]):
-            columns["valid"] = sheet[0].index("Valid")
-        else:
-            missingColumn = True
-
-        if ("Continue" in sheet[0]):
-            columns["continue"] = sheet[0].index("Continue")
-        else:
-            missingColumn = True
-
-        i = 1
-        if (len(sheet[i]) != sheetWidth or missingColumn):
-            msg = "<h1>Sync Page Invalid<h1>"
-            self.sendSyncReport(msg)
-            _logger.info("Sheet Width: " + str(len(sheet[i])))
-            return True, msg
-
-        r = ""
-        msg = ""
-        msg = self.startTable(msg, sheet, sheetWidth)
-
-        # loop through all the rows
-        while (True):
-
-            # check if should continue
-            if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
-                break
-
-            # validation checks (vary depending on tab/function)
-            if (str(sheet[i][columns["valid"]]).upper() != "TRUE"):
-                _logger.info("Invalid")
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i += 1
-                continue
-
-            if (not self.check_id(str(sheet[i][columns["id"]]))):
-
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                i += 1
-                continue
-
-            # if it gets here data should be valid
-            try:
-
-                # attempts to access existing item (item/row)
-                external_id = str(sheet[i][columns["id"]])
-                company_ids = self.env['ir.model.data'].search(
-                    [('name', '=', external_id), ('model', '=', 'res.partner')])
-                if (len(company_ids) > 0):
-                    self.updateCompany(self.env['res.partner'].browse(
-                        company_ids[len(company_ids) - 1].res_id), sheet, sheetWidth, i, columns)
-                else:
-                    self.createCompany(sheet, external_id,
-                                       sheetWidth, i, columns)
-            except Exception as e:
-                _logger.info("Companies")
-                _logger.info(e)
-                msg = self.buildMSG(msg, sheet, sheetWidth, i)
-                msg = self.endTable(msg)
-                return True, msg
-            i += 1
-        msg = self.endTable(msg)
-        return False, msg
-
-    def updateCompany(self, company, sheet, sheetWidth, i, columns):
-
-        # check if any update to item is needed and skips if there is none
-        if (company.stringRep == str(sheet[i][:])):
-            return
-
-        # reads values and puts them in appropriate fields
-        company.name = sheet[i][columns["companyName"]]
-        company.phone = sheet[i][columns["phone"]]
-        company.website = sheet[i][columns["website"]]
-        company.street = sheet[i][columns["street"]]
-        company.city = sheet[i][columns["city"]]
-        if (sheet[i][columns["state"]] != ""):
-            stateTup = self.env['res.country.state'].search(
-                [('code', '=', sheet[i][columns["state"]])])
-            if (len(stateTup) > 0):
-                company.state_id = int(stateTup[0].id)
-        name = sheet[i][columns["country"]]
-        if (name != ""):
-            if (name == "US"):
-                name = "United States"
-            company.country_id = int(
-                self.env['res.country'].search([('name', '=', name)])[0].id)
-        company.zip = sheet[i][columns["postalCode"]]
-        company.lang = sheet[i][columns["language"]]
-        company.email = sheet[i][columns["email"]]
-        if (sheet[i][columns["pricelist"]] != ""):
-            pricelist = self.env['product.pricelist'].search(
-                [('name', '=', sheet[i][columns["pricelist"]])])[0]
-
-            company.pricelist_id = pricelist
-
-        company.is_company = True
-
-        company.stringRep = str(sheet[i][:])
-
-    # creates object and updates it
-
-    def createCompany(self, sheet, external_id, sheetWidth, i, columns):
-        ext = self.env['ir.model.data'].create(
-            {'name': external_id, 'model': "res.partner"})[0]
-        company = self.env['res.partner'].create(
-            {'name': sheet[i][columns["companyName"]]})[0]
-        ext.res_id = company.id
-        self.updateCompany(company, sheet, sheetWidth, i, columns)
-
-    # follows same pattern
 
     def syncContacts(self, sheet):
 
