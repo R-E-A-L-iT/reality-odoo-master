@@ -62,7 +62,7 @@ class sql_queries(models.Model):
 
         _logger.info("listAllLineFromTable")
         self.env.cr.execute("""
-            SELECT * 
+            SELECT name 
             FROM res_partner_industry
             """)
         tables = self.env.cr.fetchall()
