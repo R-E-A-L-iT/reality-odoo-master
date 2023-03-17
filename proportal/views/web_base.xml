@@ -26,14 +26,12 @@
 		</xpath>
 		<xpath expr="//body/t" position="after">
 			<t t-set="clang" t-value="lang" />
-			<t t-if="False and clang == 'en_CA' or False and clang == 'en_US'">
-				<script type="text/javascript">alert("HELLO")</script>
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
 				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
 				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/2"></script>
 			</t>
-			<t t-elif="False and clang == 'fr_CA'">
-				<script type="text/javascript">alert("HELLO French")</script>
+			<t t-elif="clang == 'fr_CA'">
 				<link rel="stylesheet" href="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.css" />
 				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/external_lib.js"></script>
 				<script type="text/javascript" src="https://lezejde-reality-dev-ty-2023-03-16-03-7631420.dev.odoo.com/im_livechat/loader/3"></script>
