@@ -186,7 +186,7 @@ class sync(models.Model):
         # identify the type of sheet
         if (syncType == "Companies"):
             syncer = sync_companies(sheetName, sheet, self)
-            quit, msg = sync.syncCompanies()
+            quit, msg = syncer.syncCompanies()
 
         elif (syncType == "Contacts"):
             quit, msg = self.syncContacts(sheet)
