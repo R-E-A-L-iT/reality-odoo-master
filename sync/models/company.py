@@ -163,6 +163,16 @@ class sync_companies():
                 i += 1
                 continue
 
+            industry = self.sheet[i][columns["industry"]]
+            if (industry != ""):
+                industry_ids = self.database.env['res.partner.industry'].search(
+                    [('name', '=', industry)])
+                if (len(industry_ids) != 1):
+                    msg = utilities.buildMSG(
+                        msg, self.sheetName, self.sheet[i][columns["id"]], "Invalid Industry: " + str(industry))
+                    i += 1
+                    continue
+
             # if it gets here data should be valid
             external_id = str(self.sheet[i][columns["id"]])
             try:
