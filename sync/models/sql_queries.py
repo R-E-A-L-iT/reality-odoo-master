@@ -71,6 +71,7 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+        raise UserError(res)
 
     # Log a specific sale order
 
