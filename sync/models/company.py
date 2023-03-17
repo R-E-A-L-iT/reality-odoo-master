@@ -217,6 +217,15 @@ class sync_companies():
 
             company.pricelist_id = pricelist
 
+        industry = self.sheet[i][columns["industry"]]
+        if (industry != ""):
+            industry_ids = self.database.env['res.partner.industry'].search(
+                [('name', '=', industry)])
+            if (len(industry_ids) != 1):
+                raise Exception("Invalid Industry ID Return Count")
+            else:
+                company.industry_id = industry_ids[0]
+
         company.is_company = True
 
         company.stringRep = str(self.sheet[i][:])
