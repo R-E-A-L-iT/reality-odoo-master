@@ -163,6 +163,19 @@ class sync_companies():
                 i += 1
                 continue
 
+            industry = self.sheet[i][columns["industry"]]
+            if (industry != ""):
+                industry = " ".join([word[0].upper() + word[1:]
+                                     for word in industry.lower().split(" ")])
+                _logger.error(industry)
+                industry_ids = self.database.env['res.partner.industry'].search(
+                    [('name', '=', industry)])
+                if (len(industry_ids) > 1):
+                    msg = utilities.buildMSG(
+                        msg, self.sheetName, self.sheet[i][columns["id"]], "Invalid Industry: " + str(industry))
+                    i += 1
+                    continue
+
             # if it gets here data should be valid
             external_id = str(self.sheet[i][columns["id"]])
             try:
@@ -174,8 +187,8 @@ class sync_companies():
                     self.updateCompany(self.database.env['res.partner'].browse(
                         company_ids[len(company_ids) - 1].res_id), i, columns)
                 else:
-                    self.createCompany(self.sheet, external_id,
-                                       sheetWidth, i, columns)
+                    self.createCompany(external_id,
+                                       i, columns)
             except Exception as e:
                 _logger.info("Companies")
                 _logger.info(e)
@@ -217,6 +230,19 @@ class sync_companies():
 
             company.pricelist_id = pricelist
 
+        industry = self.sheet[i][columns["industry"]]
+        if (industry != ""):
+            industry = " ".join([word[0].upper() + word[1:]
+                                 for word in industry.lower().split(" ")])
+            industry_ids = self.database.env['res.partner.industry'].search(
+                [('name', '=', industry)])
+            if (len(industry_ids) > 1):
+                raise Exception("Invalid Industry: " + industry)
+            elif (len(industry_ids) == 0):
+                company.industry_id = self.database.env['res.partner.industry'].create(
+                    {"name": industry, "display_name": industry})
+            else:
+                company.industry_id = industry_ids[0]
         company.is_company = True
 
         company.stringRep = str(self.sheet[i][:])

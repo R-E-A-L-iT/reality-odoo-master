@@ -45,6 +45,7 @@ class sql_queries(models.Model):
         self.env.cr.execute("""
         SELECT COLUMN_NAME, table_name 
         FROM information_schema.columns 
+        where table_name = 'res_partner_industry'
         """)
         tables = self.env.cr.fetchall()
         res = "\n"
@@ -61,8 +62,8 @@ class sql_queries(models.Model):
 
         _logger.info("listAllLineFromTable")
         self.env.cr.execute("""
-            SELECT * 
-            FROM product_attribute
+            SELECT name 
+            FROM res_partner_industry
             """)
         tables = self.env.cr.fetchall()
         res = "\n"
@@ -70,6 +71,7 @@ class sql_queries(models.Model):
             res += str(table)
             res += "\n"
         _logger.info(res)
+        raise UserError(res)
 
     # Log a specific sale order
 
