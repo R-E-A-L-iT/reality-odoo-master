@@ -167,7 +167,7 @@ class sync_companies():
             if (industry != ""):
                 _logger.error(industry)
                 industry = " ".join([word[0].upper() + word[1:]
-                                     for word in industry.lower().split(" ")])
+                                     for word in industry.replace("  ", " ").lower().split(" ")])
                 _logger.warning(industry)
                 industry_ids = self.database.env['res.partner.industry'].search(
                     [('name', '=', industry)])
@@ -234,7 +234,7 @@ class sync_companies():
         industry = self.sheet[i][columns["industry"]]
         if (industry != ""):
             industry = " ".join([word[0].upper() + word[1:]
-                                 for word in industry.lower().split(" ")])
+                                 for word in industry.replace("  ", " ").lower().split(" ")])
             industry_ids = self.database.env['res.partner.industry'].search(
                 [('name', '=', industry)])
             if (len(industry_ids) > 1):
