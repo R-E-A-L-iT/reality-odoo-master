@@ -168,6 +168,7 @@ class sync_companies():
                 _logger.error(industry)
                 industry = " ".join([word[0].upper() + word[1:]
                                      for word in industry.lower().split(" ")])
+                _logger.warning(industry)
                 industry_ids = self.database.env['res.partner.industry'].search(
                     [('name', '=', industry)])
                 if (len(industry_ids) > 1):
