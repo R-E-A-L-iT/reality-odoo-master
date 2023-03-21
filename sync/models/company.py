@@ -187,8 +187,8 @@ class sync_companies():
                     self.updateCompany(self.database.env['res.partner'].browse(
                         company_ids[len(company_ids) - 1].res_id), i, columns)
                 else:
-                    self.createCompany(self.sheet, external_id,
-                                       sheetWidth, i, columns)
+                    self.createCompany(external_id,
+                                       i, columns)
             except Exception as e:
                 _logger.info("Companies")
                 _logger.info(e)
