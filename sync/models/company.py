@@ -163,12 +163,9 @@ class sync_companies():
                 i += 1
                 continue
 
-            industry = self.sheet[i][columns["industry"]]
+            industry = self.industry_name_format(
+                self.sheet[i][columns["industry"]])
             if (industry != ""):
-                _logger.error(industry)
-                industry = " ".join([word[0].upper() + word[1:]
-                                     for word in industry.replace("  ", " ").lower().split(" ")])
-                _logger.warning(industry)
                 industry_ids = self.database.env['res.partner.industry'].search(
                     [('name', '=', industry)])
                 if (len(industry_ids) > 1):
@@ -198,6 +195,15 @@ class sync_companies():
                 return True, msg
             i += 1
         return False, msg
+
+    def industry_name_format(self, industry: str) -> str:
+        words = industry.lower().split(" ")
+        result = ""
+        for word in words:
+            if word == "":
+                continue
+            result += " " + word[0].upper() + word[1:]
+        return result
 
     def updateCompany(self, company, i, columns):
 
@@ -231,10 +237,9 @@ class sync_companies():
 
             company.pricelist_id = pricelist
 
-        industry = self.sheet[i][columns["industry"]]
+        industry = self.industry_name_format(
+            self.sheet[i][columns["industry"]])
         if (industry != ""):
-            industry = " ".join([word[0].upper() + word[1:]
-                                 for word in industry.replace("  ", " ").lower().split(" ")])
             industry_ids = self.database.env['res.partner.industry'].search(
                 [('name', '=', industry)])
             if (len(industry_ids) > 1):
