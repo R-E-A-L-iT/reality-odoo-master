@@ -163,11 +163,12 @@ class sync_companies():
                 i += 1
                 continue
 
-            industry = self.sheet[i][columns["industry"]]
+            industry = " ".join([word[0].upper() + word[1:]
+                                for word in self.sheet[i][columns["industry"]].lower().split(" ")])
             if (industry != ""):
                 industry_ids = self.database.env['res.partner.industry'].search(
                     [('name', '=', industry)])
-                if (len(industry_ids) != 1):
+                if (len(industry_ids) > 1):
                     msg = utilities.buildMSG(
                         msg, self.sheetName, self.sheet[i][columns["id"]], "Invalid Industry: " + str(industry))
                     i += 1
@@ -227,12 +228,16 @@ class sync_companies():
 
             company.pricelist_id = pricelist
 
-        industry = self.sheet[i][columns["industry"]]
+        industry = " ".join([word[0].upper() + word[1:]
+                            for word in self.sheet[i][columns["industry"]].lower().split(" ")])
         if (industry != ""):
             industry_ids = self.database.env['res.partner.industry'].search(
                 [('name', '=', industry)])
-            if (len(industry_ids) != 1):
+            if (len(industry_ids) > 1):
                 raise Exception("Invalid Industry: " + industry)
+            elif (len(industry_ids) == 0):
+                company.industry_id = self.database.env['res.partner'].create(
+                    {"name": industry, "display_name": industry})
             else:
                 company.industry_id = industry_ids[0]
 
