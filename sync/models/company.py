@@ -239,7 +239,7 @@ class sync_companies():
             if (len(industry_ids) > 1):
                 raise Exception("Invalid Industry: " + industry)
             elif (len(industry_ids) == 0):
-                company.industry_id = self.database.env['res.partner'].create(
+                company.industry_id = self.database.env['res.partner.industry'].create(
                     {"name": industry, "display_name": industry})
             else:
                 company.industry_id = industry_ids[0]
