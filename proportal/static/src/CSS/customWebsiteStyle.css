@@ -277,7 +277,7 @@ p {
 @media (min-width: 750px) {
 	#custom-webpage-root #landing>iframe, #custom-webpage-root #landing>iframe[src=""] {
 		border: none;
-		height: calc(calc(calc(100vw / 16) * 9) - 100px);
+		height: calc(calc(100vw / 16) * 9);
 		min-height: 500px;
 		width: 100vw;
 		display: block;
