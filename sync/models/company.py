@@ -243,7 +243,6 @@ class sync_companies():
                     {"name": industry, "display_name": industry})
             else:
                 company.industry_id = industry_ids[0]
-
         company.is_company = True
 
         company.stringRep = str(self.sheet[i][:])
