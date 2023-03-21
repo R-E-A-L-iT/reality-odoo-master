@@ -163,9 +163,10 @@ class sync_companies():
                 i += 1
                 continue
 
-            industry = " ".join([word[0].upper() + word[1:]
-                                for word in self.sheet[i][columns["industry"]].lower().split(" ")])
+            industry = self.sheet[i][columns["industry"]]
             if (industry != ""):
+                industry = " ".join([word[0].upper() + word[1:]
+                                     for word in industry.lower().split(" ")])
                 industry_ids = self.database.env['res.partner.industry'].search(
                     [('name', '=', industry)])
                 if (len(industry_ids) > 1):
@@ -228,9 +229,10 @@ class sync_companies():
 
             company.pricelist_id = pricelist
 
-        industry = " ".join([word[0].upper() + word[1:]
-                            for word in self.sheet[i][columns["industry"]].lower().split(" ")])
+        industry = self.sheet[i][columns["industry"]]
         if (industry != ""):
+            industry = " ".join([word[0].upper() + word[1:]
+                                 for word in industry.lower().split(" ")])
             industry_ids = self.database.env['res.partner.industry'].search(
                 [('name', '=', industry)])
             if (len(industry_ids) > 1):
