@@ -202,8 +202,8 @@ class sync_companies():
         for word in words:
             if word == "":
                 continue
-            result += " " + word[0].upper() + word[1:]
-        return result
+            result += word[0].upper() + word[1:] + " "
+        return result[:-1]
 
     def updateCompany(self, company, i, columns):
 
