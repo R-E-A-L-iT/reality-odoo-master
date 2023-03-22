@@ -12,7 +12,7 @@ from odoo import models
 from .product_common import product_sync_common
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = True
+SKIP_NO_CHANGE = False
 
 
 class sync_contacts():
@@ -182,7 +182,7 @@ class sync_contacts():
 
     def updateContacts(self, contact, i, columns):
 
-        if (contact.stringRep == str(self.sheet[i][:])):
+        if (contact.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
             return
 
         contact.name = self.sheet[i][columns["name"]]
