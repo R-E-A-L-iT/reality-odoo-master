@@ -165,7 +165,7 @@ class sync_contacts():
                     [('name', '=', external_id), ('model', '=', 'res.partner')])
                 if (len(contact_ids) > 0):
                     self.updateContacts(self.database.env['res.partner'].browse(
-                        contact_ids[len(contact_ids) - 1].res_id), self.sheet, sheetWidth, i, columns)
+                        contact_ids[len(contact_ids) - 1].res_id), i, columns)
                 else:
                     self.createContacts(self.sheet, external_id,
                                         sheetWidth, i, columns)
