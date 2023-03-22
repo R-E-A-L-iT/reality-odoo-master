@@ -152,7 +152,7 @@ class sync_contacts():
                 i += 1
                 continue
 
-            if (not self.check_id(str(self.sheet[i][columns["company"]]))):
+            if (not utilities.check_id(str(self.sheet[i][columns["company"]]))):
                 msg = utilities.buildMSG(
                     msg, self.sheetName, self.sheet[i][columns["id"]], "Invalid Company ID")
                 i += 1
