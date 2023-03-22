@@ -161,10 +161,10 @@ class sync_contacts():
             external_id = str(self.sheet[i][columns["id"]])
             try:
 
-                contact_ids = self.env['ir.model.data'].search(
+                contact_ids = self.database.env['ir.model.data'].search(
                     [('name', '=', external_id), ('model', '=', 'res.partner')])
                 if (len(contact_ids) > 0):
-                    self.updateContacts(self.env['res.partner'].browse(
+                    self.updateContacts(self.database.env['res.partner'].browse(
                         contact_ids[len(contact_ids) - 1].res_id), self.sheet, sheetWidth, i, columns)
                 else:
                     self.createContacts(self.sheet, external_id,
@@ -189,12 +189,12 @@ class sync_contacts():
         contact.phone = self.sheet[i][columns["phone"]]
         contact.email = self.sheet[i][columns["email"]]
         if (self.sheet[i][columns["company"]] != ""):
-            contact.parent_id = int(self.env['ir.model.data'].search(
+            contact.parent_id = int(self.database.env['ir.model.data'].search(
                 [('name', '=', self.sheet[i][columns["company"]]), ('model', '=', 'res.partner')])[0].res_id)
         contact.street = self.sheet[i][columns["streetAddress"]]
         contact.city = self.sheet[i][columns["city"]]
         if (self.sheet[i][columns["state"]] != ""):
-            stateTup = self.env['res.country.state'].search(
+            stateTup = self.database.env['res.country.state'].search(
                 [('code', '=', self.sheet[i][columns["state"]])])
             if (len(stateTup) > 0):
                 contact.state_id = int(stateTup[0].id)
@@ -204,13 +204,13 @@ class sync_contacts():
             if (name == "US"):
                 name = "United States"
             contact.country_id = int(
-                self.env['res.country'].search([('name', '=', name)])[0].id)
+                self.database.env['res.country'].search([('name', '=', name)])[0].id)
         contact.zip = self.sheet[i][columns["postalCode"]]
 
         contact.lang = self.sheet[i][columns["language"]]
 
         if (self.sheet[i][columns["pricelist"]] != ""):
-            contact.property_product_pricelist = int(self.env['product.pricelist'].search(
+            contact.property_product_pricelist = int(self.database.env['product.pricelist'].search(
                 [('name', '=', self.sheet[i][columns["pricelist"]])])[0].id)
         contact.is_company = False
 
@@ -220,9 +220,9 @@ class sync_contacts():
     # follows same pattern
 
     def createContacts(self, sheet, external_id, i, columns):
-        ext = self.env['ir.model.data'].create(
+        ext = self.database.env['ir.model.data'].create(
             {'name': external_id, 'model': "res.partner"})[0]
-        contact = self.env['res.partner'].create(
+        contact = self.database.env['res.partner'].create(
             {'name': self.sheet[i][columns["name"]]})[0]
         ext.res_id = contact.id
         self.updateContacts(contact, i, columns)
