@@ -25,6 +25,19 @@
 			<!-- End Google Tag Manager (noscript) -->
 		</xpath>
 		<xpath expr="//body/t" position="after">
+			<t t-set="clang" t-value="lang" />
+			<t t-if="False">
+				<t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<link rel="stylesheet" href="https://r-e-a-l.it/im_livechat/external_lib.css" />
+					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/external_lib.js"></script>
+					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/loader/2"></script>
+				</t>
+				<t t-elif="clang == 'fr_CA'">
+					<link rel="stylesheet" href="https://r-e-a-l.it/im_livechat/external_lib.css" />
+					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/external_lib.js"></script>
+					<script type="text/javascript" src="https://r-e-a-l.it/im_livechat/loader/3"></script>
+				</t>
+			</t>
 			<script type="text/javascript">
 				_linkedin_partner_id = "4428316";
 				window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
