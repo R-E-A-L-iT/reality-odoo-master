@@ -8,6 +8,7 @@ from . import pricelist
 from . import utilities
 from . import product
 from . import company
+from . import contact
 from . import sql_queries
 from . import product_common
 from . import partner_model
