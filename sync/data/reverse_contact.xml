@@ -3,7 +3,7 @@
 <odoo>
     <record id="reverse_sync_schedule" model="ir.cron">
         <field name="name">Rerverse Sync Contact</field>
-        <field name="model_id" ref="sync.reverse_sync" />
+        <field name="model_id" ref="reverse_sync" />
         <field name="state">code</field>
         <field name='interval_number'>1</field>
         <field name='interval_type'>day</field>
