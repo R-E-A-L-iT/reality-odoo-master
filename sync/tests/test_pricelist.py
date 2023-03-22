@@ -1,5 +1,5 @@
 from odoo.tests import TransactionCase
-from odoo.addons.sync.models.pricelist import sync_pricelist
+from odoo.addons.sync.models.forward_sync.pricelist import sync_pricelist
 from odoo.addons.sync.models.product_common import product_sync_common
 
 # To run the test, open the console and type :
