@@ -983,3 +983,7 @@ input[name=variantSelector]:not(:checked) + .specs {
 img.embed-responsive-item {
 	width: 100vw;
 }
+
+#oe_main_menu_navbar > div.o_menu_sections {
+	margin-left: 90px;
+}
