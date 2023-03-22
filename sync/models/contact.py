@@ -17,7 +17,7 @@ SKIP_NO_CHANGE = False
 
 class sync_contacts():
 
-    def __init__(self, sheet, sheetName, database):
+    def __init__(self, sheetName, sheet, database):
         self.sheet = sheet
         self.sheetName = sheetName
         self.database = database
