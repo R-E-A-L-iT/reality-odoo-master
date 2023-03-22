@@ -27,5 +27,6 @@
     'data': [
         'security/ir.model.access.csv',
         'data/schedule.xml',
+        'data/reverse_contact.xml',
     ]
 }
