@@ -175,7 +175,6 @@ class sync_contacts():
                 msg = utilities.buildMSG(msg, self.sheetName, external_id, e)
                 return True, msg
             i += 1
-        msg = self.endTable(msg)
         return False, msg
 
     # follows same pattern
