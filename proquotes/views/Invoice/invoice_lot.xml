@@ -6,5 +6,24 @@
         <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]" position="attributes">
             <attribute name="style">width: 100%;</attribute>
         </xpath>
+
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[0]" position="before">
+            <th class="text-right">
+                <span>QTY</span>
+            </th>
+        </xpath>
+
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[1]" position="replace" />
+
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[2]" position="replace">
+            <th class="text-right">
+                <span>SN/EID</span>
+            </th>
+        </xpath>
+
+
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[0]" position="before">
+            <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="move" />
+        </xpath>
     </template>
 </odoo>
