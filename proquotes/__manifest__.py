@@ -40,7 +40,7 @@
     },
 
 
-    'version': '1.0.803',
+    'version': '1.0.804',
 
     # always loaded
     'data': [
