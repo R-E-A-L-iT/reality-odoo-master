@@ -16,10 +16,11 @@ class reverse_sync_contacts(models.Model):
         return ["First Name", "Last Name", "Phone", "Email", "Company", "Street Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
 
     def value(self, headerItem, expected, cellValue):
-        if (headerItem == expected):
-            return cellValue
-        else:
+        if (headerItem != expected):
             raise Exception("Invalid Header Item: " + headerItem)
+        if (cellValue == False):
+            return ""
+        return cellValue
 
     def createRow(self, header, contact):
         row = []
