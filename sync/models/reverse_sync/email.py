@@ -9,7 +9,7 @@ class reverse_sync_email():
     def sendReport(type, msg):
         _logger.warning("Reverse Sync Report")
         values = {'subject': str(type) + ': Reverse Sync Report'}
-        recipients = ["ty@r-e-a-l.it"]
+        recipients = ["sync@store.r-e-a-l.it"]
         for email_address in recipients:
             message = request.env['mail.message'].create(values)[0]
             values = {'mail_message_id': message.id}
