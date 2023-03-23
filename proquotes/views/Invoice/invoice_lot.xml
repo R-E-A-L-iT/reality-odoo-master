@@ -13,7 +13,7 @@
             </th>
         </xpath>
 
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[2]" position="replace" />
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace" />
 
         <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace">
             <th class="text-right">
