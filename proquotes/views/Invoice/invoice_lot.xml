@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="invoice_lot" name="invoice_item_id_style" inherit_id="stock_account.stock_account_report_invoice_document" priority="17">
+        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]" position="attributes">
+            <attribute name="style">width: 100%;</attribute>
+        </xpath>
+    </template>
+</odoo>
