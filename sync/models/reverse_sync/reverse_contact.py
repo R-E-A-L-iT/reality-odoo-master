@@ -12,7 +12,17 @@ class reverse_sync_contacts(models.Model):
     def getSpreadSheetID(self):
         return "1pDPKv2bH8_Be5aCCyU4bqTuwJNcXsADlAYDAGG8P1Ls"
 
+    def createHeader():
+        return ["First", "Name", "Last", "Name", "Phone", "Email", "Company", "Street", "Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
+
+    def createRow(contact):
+        return ['' for _ in range(contact)]
+
+    def createBlank(length):
+        return ['' for _ in range(length)]
+
     def reverseSync(self, psw):
         spreadSheetID = self.getSpreadSheetID()
         sheet = sheetsAPI.getSpreadSheet(spreadSheetID, sheetIndex=0, auth=psw)
         _logger.error(sheet.get_all_values())
+        sheet.update('A1:M1', [self.createHeader()])
