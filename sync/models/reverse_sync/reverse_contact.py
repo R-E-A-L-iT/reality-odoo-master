@@ -54,7 +54,7 @@ class reverse_sync_contacts(models.Model):
             [('is_company', '=', False)])
 
         for contact in contacts:
-            sheetTable.append(header, self.createRow(contact))
+            sheetTable.append(header, self.createRow(header, contact))
         height = len(sheet.get_all_values())
 
         while (len(sheetTable) < height):
