@@ -24,5 +24,6 @@ class reverse_sync_contacts(models.Model):
     def reverseSync(self, psw):
         spreadSheetID = self.getSpreadSheetID()
         sheet = sheetsAPI.getSpreadSheet(spreadSheetID, sheetIndex=0, auth=psw)
-        _logger.error(sheet.get_all_values())
-        sheet.update('A1:M1', [self.createHeader()])
+        sheetTable = [self.createHeader()]
+        writeRange = 'A1:M' + str(len(sheetTable))
+        sheet.update(writeRange, sheetTable)
