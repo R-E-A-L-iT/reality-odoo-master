@@ -15,8 +15,31 @@ class reverse_sync_contacts(models.Model):
     def createHeader(self):
         return ["First Name", "Last Name", "Phone", "Email", "Company", "Street Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
 
-    def createRow(self, contact):
-        return ['' for _ in range(contact)]
+    def value(self, headerItem, expected, cellValue):
+        if (headerItem == expected):
+            return cellValue
+        else:
+            raise Exception("Invalid Header Item: " + headerItem)
+
+    def createRow(self, header, contact):
+        row = []
+        row.append(self.value(
+            header[0], "First Name", contact.name.split(" ")[0]))
+
+        row.append(self.value(
+            header[0], "Last Name", " ".join(contact.name.split(" ")[1:])))
+
+        row.append(self.value(header[1], "Phone", contact.phone))
+        row.append(self.value(header[2], "Email", contact.email))
+        row.append(self.value(header[3], "Comany", contact.company_id.name))
+        row.append(self.value(header[4], "Street Address", contact.street))
+        row.append(self.value(header[5], "City", contact.city))
+        row.append(self.value(header[6], "State/Region", contact.state))
+        row.append(self.value(header[7], "Country", contact.country_id.name))
+        row.append(self.value(header[8], "Postal Code", contact.zip))
+        row.append(self.value(header[9], "Industry", contact.industry_id.name))
+        row.append(self.value(header[10], "Job Title", contact.function))
+        row.append(self.value(header[11], "Mobile", contact.mobile))
 
     def createBlank(self, length):
         return ['' for _ in range(length)]
@@ -24,9 +47,17 @@ class reverse_sync_contacts(models.Model):
     def reverseSync(self, psw):
         spreadSheetID = self.getSpreadSheetID()
         sheet = sheetsAPI.getSpreadSheet(spreadSheetID, sheetIndex=0, auth=psw)
-        sheetTable = [self.createHeader()]
+        header = self.createHeader()
+        width = len(header)
+        sheetTable = [header]
         contacts = self.env['res.partner'].search(
             [('is_company', '=', False)])
-        _logger.error(len(contacts))
+
+        for contact in contacts:
+            sheetTable.append(header, self.createRow(contact))
+        height = len(sheet.get_all_values())
+
+        while (len(sheetTable) < height):
+            sheetTable.append(width)
         writeRange = 'A1:M' + str(len(sheetTable))
         sheet.update(writeRange, sheetTable)
