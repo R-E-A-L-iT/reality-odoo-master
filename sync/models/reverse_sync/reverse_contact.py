@@ -24,7 +24,7 @@ class reverse_sync_contacts(models.Model):
     def createRow(self, header, contact):
         row = []
         _logger.error(str(contact.name))
-        if (row.name == False):
+        if (contact.name == False):
             return None
         row.append(self.value(
             header[0], "First Name", contact.name.split(" ")[0]))
