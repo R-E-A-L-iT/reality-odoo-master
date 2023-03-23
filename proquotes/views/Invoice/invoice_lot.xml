@@ -25,5 +25,9 @@
         <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="before">
             <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[2]" position="move" />
         </xpath>
+
+        <xpath expr="//t[@t-esc=&quot;snln_line['quantity']&quot;]" position="replace">
+            <t t-esc="snln_line['quantity']" />
+        </xpath>
     </template>
 </odoo>
