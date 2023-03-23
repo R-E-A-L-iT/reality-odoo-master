@@ -2,7 +2,7 @@
 from odoo.tests import TransactionCase
 import logging
 
-from odoo.addons.sync.models.product import sync_products
+from odoo.addons.sync.models.forward_sync.product import sync_products
 _logger = logging.getLogger(__name__)
 
 # To run the test, open the console and type :
