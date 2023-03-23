@@ -40,7 +40,7 @@
     },
 
 
-    'verion': '1.0.807',
+    'verion': '1.0.808',
 
     # always loaded
     'data': [
