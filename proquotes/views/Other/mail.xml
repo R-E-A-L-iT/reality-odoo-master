@@ -23,11 +23,8 @@
 												<tbody>
 													<tr>
 														<td colspan="100">
-															<t t-if="'R-E-A-L.IT' in record.company_id.name.upper()">
+															<t t-if="True or 'R-E-A-L.IT' in record.company_id.name.upper()">
 																<img src="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
-															</t>
-															<t t-elif="'ABTECH' in record.company_id.name.upper()">
-																<img src="https://cdn.r-e-a-l.it//images/icons/REALiT-Abtech.jpg" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
 															</t>
 														</td>
 													</tr>
