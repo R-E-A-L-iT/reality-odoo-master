@@ -34,7 +34,8 @@ class reverse_sync_contacts(models.Model):
         row.append(self.value(header[4], "Company", contact.company_id.name))
         row.append(self.value(header[5], "Street Address", contact.street))
         row.append(self.value(header[6], "City", contact.city))
-        row.append(self.value(header[7], "State/Region", contact.state))
+        row.append(self.value(
+            header[7], "State/Region", contact.state_id.code))
         row.append(self.value(header[8], "Country", contact.country_id.name))
         row.append(self.value(header[9], "Postal Code", contact.zip))
         row.append(self.value(
