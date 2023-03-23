@@ -184,7 +184,7 @@
 		<!-- </xpath> -->
 		<!--Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<!-- <span t-raw="line.product_id.name"></span> -->
+			<span t-raw="line.product_id.name"></span>
 			<br />
 
 			<style>
