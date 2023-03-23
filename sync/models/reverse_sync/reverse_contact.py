@@ -44,7 +44,6 @@ class reverse_sync_contacts(models.Model):
         return ["First Name", "Last Name", "Phone", "Email", "Company", "Street Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
 
     def value(self, headerItem, expected, cellValue):
-        _logger.warning(headerItem)
         if (headerItem != expected):
             raise Exception("Invalid Header Item: " + headerItem)
         if (cellValue == False):
@@ -53,7 +52,6 @@ class reverse_sync_contacts(models.Model):
 
     def createRow(self, header, contact):
         row = []
-        _logger.error(str(contact.name))
         if (contact.name == False):
             return None
         row.append(self.value(
