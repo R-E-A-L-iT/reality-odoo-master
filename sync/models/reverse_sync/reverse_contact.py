@@ -24,6 +24,8 @@ class reverse_sync_contacts(models.Model):
     def createRow(self, header, contact):
         row = []
         _logger.error(str(contact.name))
+        if (row.name == False):
+            return None
         row.append(self.value(
             header[0], "First Name", contact.name.split(" ")[0]))
 
@@ -58,7 +60,9 @@ class reverse_sync_contacts(models.Model):
             [('is_company', '=', False)])
 
         for contact in contacts:
-            sheetTable.append(self.createRow(header, contact))
+            row = self.createRow(header, contact)
+            if (row != None):
+                sheetTable.append(row)
         height = len(sheet.get_all_values())
 
         while (len(sheetTable) < height):
