@@ -26,7 +26,7 @@ class reverse_sync_contacts(models.Model):
         sheet = sheetsAPI.getSpreadSheet(spreadSheetID, sheetIndex=0, auth=psw)
         sheetTable = [self.createHeader()]
         contacts = self.env['res.partner'].search(
-            [('is_a_company', '=', False)])
+            [('is_company', '=', False)])
         _logger.error(len(contacts))
         writeRange = 'A1:M' + str(len(sheetTable))
         sheet.update(writeRange, sheetTable)
