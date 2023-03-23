@@ -168,7 +168,7 @@ class sync_contacts():
                         contact_ids[len(contact_ids) - 1].res_id), i, columns)
                 else:
                     self.createContacts(self.sheet, external_id,
-                                        sheetWidth, i, columns)
+                                        i, columns)
             except Exception as e:
                 _logger.info("Contacts")
                 _logger.info(e)
@@ -183,7 +183,7 @@ class sync_contacts():
 
         if (contact.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
             return
-        
+
         contact.name = self.sheet[i][columns["name"]]
         contact.phone = self.sheet[i][columns["phone"]]
         contact.email = self.sheet[i][columns["email"]]
