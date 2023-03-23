@@ -68,6 +68,6 @@ class reverse_sync_contacts(models.Model):
         height = len(sheet.get_all_values())
 
         while (len(sheetTable) < height):
-            sheetTable.append(width)
+            sheetTable.append(self.createBlank(width))
         writeRange = 'A1:M' + str(len(sheetTable))
         sheet.update(writeRange, sheetTable)
