@@ -27,19 +27,20 @@ class reverse_sync_contacts(models.Model):
             header[0], "First Name", contact.name.split(" ")[0]))
 
         row.append(self.value(
-            header[0], "Last Name", " ".join(contact.name.split(" ")[1:])))
+            header[1], "Last Name", " ".join(contact.name.split(" ")[1:])))
 
-        row.append(self.value(header[1], "Phone", contact.phone))
-        row.append(self.value(header[2], "Email", contact.email))
-        row.append(self.value(header[3], "Comany", contact.company_id.name))
-        row.append(self.value(header[4], "Street Address", contact.street))
-        row.append(self.value(header[5], "City", contact.city))
-        row.append(self.value(header[6], "State/Region", contact.state))
-        row.append(self.value(header[7], "Country", contact.country_id.name))
-        row.append(self.value(header[8], "Postal Code", contact.zip))
-        row.append(self.value(header[9], "Industry", contact.industry_id.name))
-        row.append(self.value(header[10], "Job Title", contact.function))
-        row.append(self.value(header[11], "Mobile", contact.mobile))
+        row.append(self.value(header[2], "Phone", contact.phone))
+        row.append(self.value(header[3], "Email", contact.email))
+        row.append(self.value(header[4], "Comany", contact.company_id.name))
+        row.append(self.value(header[5], "Street Address", contact.street))
+        row.append(self.value(header[6], "City", contact.city))
+        row.append(self.value(header[7], "State/Region", contact.state))
+        row.append(self.value(header[8], "Country", contact.country_id.name))
+        row.append(self.value(header[9], "Postal Code", contact.zip))
+        row.append(self.value(
+            header[10], "Industry", contact.industry_id.name))
+        row.append(self.value(header[11], "Job Title", contact.function))
+        row.append(self.value(header[12], "Mobile", contact.mobile))
 
     def createBlank(self, length):
         return ['' for _ in range(length)]
