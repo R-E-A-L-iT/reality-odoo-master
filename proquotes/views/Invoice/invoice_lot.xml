@@ -23,7 +23,7 @@
 
 
         <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="before">
-            <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="move" />
+            <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[2]" position="move" />
         </xpath>
     </template>
 </odoo>
