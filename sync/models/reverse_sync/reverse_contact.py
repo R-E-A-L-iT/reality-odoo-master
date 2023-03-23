@@ -42,6 +42,7 @@ class reverse_sync_contacts(models.Model):
             header[10], "Industry", contact.industry_id.name))
         row.append(self.value(header[11], "Job Title", contact.function))
         row.append(self.value(header[12], "Mobile", contact.mobile))
+        return row
 
     def createBlank(self, length):
         return ['' for _ in range(length)]
@@ -56,7 +57,7 @@ class reverse_sync_contacts(models.Model):
             [('is_company', '=', False)])
 
         for contact in contacts:
-            sheetTable.append(header, self.createRow(header, contact))
+            sheetTable.append(self.createRow(header, contact))
         height = len(sheet.get_all_values())
 
         while (len(sheetTable) < height):
