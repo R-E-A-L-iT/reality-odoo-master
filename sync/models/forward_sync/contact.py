@@ -183,7 +183,7 @@ class sync_contacts():
 
         if (contact.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
             return
-
+        
         contact.name = self.sheet[i][columns["name"]]
         contact.phone = self.sheet[i][columns["phone"]]
         contact.email = self.sheet[i][columns["email"]]

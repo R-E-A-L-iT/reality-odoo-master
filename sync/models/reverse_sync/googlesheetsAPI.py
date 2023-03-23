@@ -9,4 +9,4 @@ class sheetsAPI():
         creds = sac.from_json_keyfile_dict(auth, scope)
         client = gspread.authorize(creds)
         doc = client.open_by_key(spreadSheetID)
-        return doc.getWorksheet(sheetIndex)
+        return doc.get_worksheet(sheetIndex)
