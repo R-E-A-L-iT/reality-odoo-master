@@ -6,7 +6,7 @@ _logger = logging.getLogger(__name__)
 
 
 class reverse_sync_contacts(models.Model):
-    _name = "sync.reverse_sync_contact"
+    _name = "sync.reverseSyncContact"
     _description = "Reverse Contact Sync"
 
     def getSpreadSheetID(self):
