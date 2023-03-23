@@ -5,7 +5,6 @@
         <field name="name">Reverse Sync Contact</field>
         <field name="model_id" ref="reverse_sync_contact" />
         <field name="state">code</field>
-        <field name='code'>model.reverseSync()</field>
         <field name='interval_number'>1</field>
         <field name='interval_type'>days</field>
         <field name="numbercall">-1</field>
