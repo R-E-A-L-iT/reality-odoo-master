@@ -40,7 +40,7 @@
     },
 
 
-    'version': '1.0.811',
+    'version': '1.0.812',
 
     # always loaded
     'data': [
@@ -61,6 +61,7 @@
         'views/Other/section_name.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
+        'views/Invoice/invoice_lot.xml',
         'views/PO/PO_Frontend.xml',
         'views/PO/PO_Backend.xml',
         'views/PO/PO_PDF.xml',
