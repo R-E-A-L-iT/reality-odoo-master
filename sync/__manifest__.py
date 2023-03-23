@@ -18,7 +18,6 @@
     # for the full list
     'category': 'Technical',
 
-
     'version': '0.0.209',
 
     # any module necessary for this one to work correctly
