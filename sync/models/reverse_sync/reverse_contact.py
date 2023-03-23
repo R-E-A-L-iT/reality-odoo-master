@@ -1,4 +1,5 @@
 from .googlesheetsAPI import sheetsAPI
+from .email import reverse_sync_email
 from odoo import api, fields, models, SUPERUSER_ID, _
 
 import logging
@@ -53,21 +54,28 @@ class reverse_sync_contacts(models.Model):
         return ['' for _ in range(length)]
 
     def reverseSync(self, psw):
-        spreadSheetID = self.getSpreadSheetID()
-        sheet = sheetsAPI.getSpreadSheet(spreadSheetID, sheetIndex=0, auth=psw)
-        header = self.createHeader()
-        width = len(header)
-        sheetTable = [header]
-        contacts = self.env['res.partner'].search(
-            [('is_company', '=', False)])
+        _logger.info("Reverse Sync Contacts")
+        try:
+            spreadSheetID = self.getSpreadSheetID()
+            sheet = sheetsAPI.getSpreadSheet(
+                spreadSheetID, sheetIndex=0, auth=psw)
+            header = self.createHeader()
+            width = len(header)
+            sheetTable = [header]
+            contacts = self.env['res.partner'].search(
+                [('is_company', '=', False)])
 
-        for contact in contacts:
-            row = self.createRow(header, contact)
-            if (row != None):
-                sheetTable.append(row)
-        height = len(sheet.get_all_values())
+            for contact in contacts:
+                row = self.createRow(header, contact)
+                if (row != None):
+                    sheetTable.append(row)
+            height = len(sheet.get_all_values())
 
-        while (len(sheetTable) < height):
-            sheetTable.append(self.createBlank(width))
-        writeRange = 'A1:M' + str(len(sheetTable))
-        sheet.update(writeRange, sheetTable)
+            while (len(sheetTable) < height):
+                sheetTable.append(self.createBlank(width))
+            writeRange = 'A1:M' + str(len(sheetTable))
+            sheet.update(writeRange, sheetTable)
+        except Exception as e:
+            _logger.error(e)
+            reverse_sync_email.sendReport("Contacts", e)
+        _logger.info("End Reverse Sync Contacts")
