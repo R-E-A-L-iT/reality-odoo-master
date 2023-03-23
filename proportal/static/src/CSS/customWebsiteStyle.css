@@ -979,3 +979,11 @@ input[name=variantSelector]:not(:checked) + .specs {
 #list_website_pages > div.table-responsive > table > tbody > tr > td > i {
 	color: #FFF !important;
 }
+
+img.embed-responsive-item {
+	width: 100vw;
+}
+
+#oe_main_menu_navbar > div.o_menu_sections {
+	margin-left: 90px;
+}

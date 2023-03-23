@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="reverse_sync_schedule" model="ir.cron">
+        <field name="name">Reverse Sync Contact</field>
+        <field name="model_id" ref="model_sync_reverse_sync_contact" />
+        <field name="state">code</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">0</field>
+        <field name="doall">False</field>
+    </record>
+</odoo>

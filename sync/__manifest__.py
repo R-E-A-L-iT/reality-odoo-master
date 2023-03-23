@@ -18,7 +18,7 @@
     # for the full list
     'category': 'Technical',
 
-    'version': '0.0.142',
+    'version': '0.0.179',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'proportal', 'proquotes', 'product', 'google_account', 'google_drive'],
@@ -27,5 +27,6 @@
     'data': [
         'security/ir.model.access.csv',
         'data/schedule.xml',
+        'data/reverse_contact.xml',
     ]
 }
