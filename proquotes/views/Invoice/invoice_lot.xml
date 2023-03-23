@@ -27,7 +27,7 @@
         </xpath>
 
         <xpath expr="//t[@t-esc=&quot;snln_line['quantity']&quot;]" position="replace">
-            <t t-if="round(snln-line['quantity']) == round(snln-line['quantity'])" t-esc="round(snln_line['quantity'])" />
+            <t t-if="round(snln-line['quantity']) == snln-line['quantity']" t-esc="round(snln_line['quantity'])" />
             <t t-else="" t-esc="snln_line['quantity']" />
         </xpath>
     </template>
