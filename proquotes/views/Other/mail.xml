@@ -23,8 +23,7 @@
 												<tbody>
 													<tr>
 														<td colspan="100">
-															<img style="width: 90vw; margin: auto; height: auto;" t-attf-src="data:image/png;base64,{{record.company_id.logo}}" alt="Company Log" />
-														</td>
+															<img style="width: 90vw; margin: auto; height: auto;" t-att-src="data:image/png;base64,{{record.company_id.logo}}" alt="Company Log" />
 													</tr>
 													<tr>
 														<td colspan="2" style="text-align:center;">
