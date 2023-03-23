@@ -20,7 +20,7 @@ class reverse_sync_contacts(models.Model):
             raise Exception("Invalid Header Item: " + headerItem)
         if (cellValue == False):
             return ""
-        return cellValue
+        return str(cellValue)
 
     def createRow(self, header, contact):
         row = []
