@@ -19,7 +19,7 @@
     'category': 'Technical',
 
 
-    'version': '0.0.205',
+    'version': '0.0.206',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'proportal', 'proquotes', 'product', 'google_account', 'google_drive'],

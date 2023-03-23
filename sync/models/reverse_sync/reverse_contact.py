@@ -5,13 +5,40 @@ from odoo import api, fields, models, SUPERUSER_ID, _
 import logging
 _logger = logging.getLogger(__name__)
 
+dev1_prefix = "dev-ty-"
+dev2_prefix = "dev-oli-"
+
 
 class reverse_sync_contacts(models.Model):
     _name = "sync.reverse_sync_contact"
     _description = "Reverse Contact Sync"
 
     def getSpreadSheetID(self):
-        return "1pDPKv2bH8_Be5aCCyU4bqTuwJNcXsADlAYDAGG8P1Ls"
+        _db_name = self.env['ir.config_parameter'].sudo(
+        ).get_param('web.base.url')
+        # Production DB name
+        _db_name_prod = "https://www.r-e-a-l.it"
+
+        # R-E-A-L.iT Master Database
+        _master_contacts = "1pDPKv2bH8_Be5aCCyU4bqTuwJNcXsADlAYDAGG8P1Ls"
+
+        # Dev Numbers Set Based on When Developer Joined
+        _dev_1_contacts = "1guw41PVLezHrYxvjdhfswCJc6wzI6JlITynZH9BK5Mg"
+        _dev_2_contacts = "1guw41PVLezHrYxvjdhfswCJc6wzI6JlITynZH9BK5Mg"
+
+        # Return the proper GoogleSheet Template ID base on the environement
+        if (_db_name == _db_name_prod):
+            _logger.info("Production")
+            return _master_contacts
+        elif (dev1_prefix in _db_name):
+            _logger.info("Dev 1")
+            return _dev_1_contacts
+        elif (dev2_prefix in _db_name):
+            _logger.info("Dev 2")
+            return _dev_2_contacts
+        else:
+            _logger.info("Default Dev GS")
+            return _master_contacts
 
     def createHeader(self):
         return ["First Name", "Last Name", "Phone", "Email", "Company", "Street Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
@@ -75,7 +102,6 @@ class reverse_sync_contacts(models.Model):
                 sheetTable.append(self.createBlank(width))
             writeRange = 'A1:M' + str(len(sheetTable))
             sheet.update(writeRange, sheetTable)
-            reverse_sync_email.sendReport("Contacts", "Succsess")
         except Exception as e:
             _logger.error(e)
             reverse_sync_email.sendReport("Contacts", e)
