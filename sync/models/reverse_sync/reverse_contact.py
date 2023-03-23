@@ -75,6 +75,7 @@ class reverse_sync_contacts(models.Model):
                 sheetTable.append(self.createBlank(width))
             writeRange = 'A1:M' + str(len(sheetTable))
             sheet.update(writeRange, sheetTable)
+            reverse_sync_email.sendReport("Contacts", "Succsess")
         except Exception as e:
             _logger.error(e)
             reverse_sync_email.sendReport("Contacts", e)
