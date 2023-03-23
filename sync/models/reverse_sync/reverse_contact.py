@@ -12,13 +12,13 @@ class reverse_sync_contacts(models.Model):
     def getSpreadSheetID(self):
         return "1pDPKv2bH8_Be5aCCyU4bqTuwJNcXsADlAYDAGG8P1Ls"
 
-    def createHeader():
+    def createHeader(self):
         return ["First", "Name", "Last", "Name", "Phone", "Email", "Company", "Street", "Address", "City", "State/Region", "Country", "Postal Code", "Industry", "Job Title", "Mobile"]
 
-    def createRow(contact):
+    def createRow(self, contact):
         return ['' for _ in range(contact)]
 
-    def createBlank(length):
+    def createBlank(self, length):
         return ['' for _ in range(length)]
 
     def reverseSync(self, psw):
