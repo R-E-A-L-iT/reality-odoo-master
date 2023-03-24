@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-
     <record id="proquotes_internal_company_backend"
         model="ir.ui.view">
         <field name="name">Internal Company_Backend</field>
@@ -9,7 +8,7 @@
         <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;logo&quot;]" position="after">
-                <field name="logo_url" />
+                <field name="logo_url" invisible="0" />
             </xpath>
         </field>
     </record>
