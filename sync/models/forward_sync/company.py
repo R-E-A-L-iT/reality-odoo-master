@@ -227,7 +227,7 @@ class sync_companies():
 
         if (self.sheet[i][columns["state"]] != ""):
             stateTup = self.database.env['res.country.state'].search(
-                [('code', '=', self.sheet[i][columns["state"]]), ('country_id', '=', company.country_id)])
+                [('code', '=', self.sheet[i][columns["state"]]), ('country_id', '=', company.country_id.id)])
             if (len(stateTup) > 0):
                 company.state_id = int(stateTup[0].id)
         company.zip = self.sheet[i][columns["postalCode"]]
