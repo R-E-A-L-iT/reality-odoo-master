@@ -217,17 +217,19 @@ class sync_companies():
         company.website = self.sheet[i][columns["website"]]
         company.street = self.sheet[i][columns["street"]]
         company.city = self.sheet[i][columns["city"]]
-        if (self.sheet[i][columns["state"]] != ""):
-            stateTup = self.database.env['res.country.state'].search(
-                [('code', '=', self.sheet[i][columns["state"]])])
-            if (len(stateTup) > 0):
-                company.state_id = int(stateTup[0].id)
+
         name = self.sheet[i][columns["country"]]
         if (name != ""):
             if (name == "US"):
                 name = "United States"
             company.country_id = int(
                 self.database.env['res.country'].search([('name', '=', name)])[0].id)
+
+        if (self.sheet[i][columns["state"]] != ""):
+            stateTup = self.database.env['res.country.state'].search(
+                [('code', '=', self.sheet[i][columns["state"]]), ('country_id', '=', company.country.id)])
+            if (len(stateTup) > 0):
+                company.state_id = int(stateTup[0].id)
         company.zip = self.sheet[i][columns["postalCode"]]
         company.lang = self.sheet[i][columns["language"]]
         company.email = self.sheet[i][columns["email"]]
