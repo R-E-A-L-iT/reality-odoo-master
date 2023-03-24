@@ -1011,7 +1011,7 @@ img.embed-responsive-item {
 
 #wrapwrap > main > div > div > form:nth-child(2) > div.mb-2.mt-2.text-muted {
 	opacity: 1;
-	color: #fff;
+	color: #fff !important;
 }
 
 #wrapwrap > main > div > div > form:nth-child(2) > div.text-center.py-2.border-top > div.clearfix.oe_login_buttons.text-center.mb-1 > button {
