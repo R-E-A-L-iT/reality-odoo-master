@@ -138,7 +138,7 @@
 			<t t-if="line.name == '$block' or line.name == '$block+'">
 				<tr class="quote-head">
 					<td class="text-left">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead" style="padding-left: 20px !important;">Products</span>
+						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead" style="padding-left: 20px !important;">Product</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit</span>
 					</td>
 					<td t-if="line.name == '$block+'" class="text-left">
