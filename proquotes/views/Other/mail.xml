@@ -23,7 +23,7 @@
 												<tbody>
 													<tr>
 														<td colspan="100">
-															<img t-attf-src="record.company_id.logo_url" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
+															<img t-attf-src="{{record.company_id.logo_url}}" style="vertical-align: middle; width: 100% !important; height: auto;" alt="logo" />
 														</td>
 													</tr>
 													<tr>
