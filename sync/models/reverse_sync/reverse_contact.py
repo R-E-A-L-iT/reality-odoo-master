@@ -63,8 +63,6 @@ class reverse_sync_contacts(models.Model):
         row.append(self.value(header[2], "Phone", contact.phone))
         row.append(self.value(header[3], "Email", contact.email))
         row.append(self.value(header[4], "Company", contact.parent_id.name))
-        _logger.warning(contact.parent_id)
-        _logger.warning(contact.parent_id.name)
         row.append(self.value(header[5], "Street Address", contact.street))
         row.append(self.value(header[6], "City", contact.city))
         row.append(self.value(
