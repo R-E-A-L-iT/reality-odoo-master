@@ -1004,3 +1004,16 @@ img.embed-responsive-item {
 #wrapwrap > main > div > div > a {
 	color: #db0d0d;
 }
+
+#wrapwrap > main > div > div > h5 {
+	color: #fff;
+}
+
+#wrapwrap > main > div > div > form:nth-child(2) > div.mb-2.mt-2.text-muted {
+	opacity: 1;
+	color: #fff;
+}
+
+#wrapwrap > main > div > div > form:nth-child(2) > div.text-center.py-2.border-top > div.clearfix.oe_login_buttons.text-center.mb-1 > button {
+	background-color: #db0d0d;;
+}
