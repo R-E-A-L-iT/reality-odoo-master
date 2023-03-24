@@ -996,3 +996,11 @@ img.embed-responsive-item {
 #wrapwrap > main > div > form > div.clearfix.oe_login_buttons > button {
 	background-color: #db0d0d;
 }
+
+.form-group > label {
+	color: #fff;
+}
+
+#wrapwrap > main > div > div > a {
+	color: #db0d0d;
+}
