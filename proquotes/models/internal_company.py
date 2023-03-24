@@ -19,4 +19,4 @@ from odoo import models, fields, api
 
 class company(models.Model):
     _inherit = "res.company"
-    logo_url = fields.Char(string="Logo URL")
+    logo_url = fields.Char(string="Logo URL", default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif" required="True")
