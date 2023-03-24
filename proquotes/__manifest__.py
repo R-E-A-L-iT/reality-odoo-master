@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.831',
+    'version': '1.0.832',
 
 
     # always loaded
@@ -59,6 +59,7 @@
         'views/Other/deliverPDF.xml',
         'views/Other/pdf_boxed.xml',
         'views/Other/section_name.xml',
+        'views/Other/internal_company_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoice_lot.xml',
