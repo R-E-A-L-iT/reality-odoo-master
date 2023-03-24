@@ -19,4 +19,4 @@ from odoo import models, fields, api
 
 class company(models.Model):
     _inherit = "res.company"
-    logo_url = fields.char(string="Logo URL")
+    # logo_url = fields.char(string="Logo URL")
