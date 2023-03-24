@@ -987,3 +987,12 @@ img.embed-responsive-item {
 #oe_main_menu_navbar > div.o_menu_sections {
 	margin-left: 90px;
 }
+
+/* Password Reset */
+#wrapwrap > main > div > form > div.form-group.field-login > label {
+	color: white;
+}
+
+#wrapwrap > main > div > form > div.clearfix.oe_login_buttons > button {
+	background-color: #db0d0d;
+}
