@@ -25,5 +25,5 @@ class account(models.Model):
 
     @api.model
     def _create_user_from_template(self, values):
-        _logger.warning(values)
+        _logger.warning(values["email"])
         return super()._create_user_from_template(values)
