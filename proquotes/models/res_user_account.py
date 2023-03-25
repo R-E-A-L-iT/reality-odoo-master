@@ -26,4 +26,4 @@ class account(models.Model):
     @api.model
     def signup(self, values, token=None):
         _logger.error("HERE")
-        # super().signup(values=values, token=token)
+        return super().signup(values=values, token=token)
