@@ -29,6 +29,6 @@ class account(models.Model):
         contacts = self.env["res.partner"].search(
             [('email', '=', values["email"]), ('is_company', '=', False), ('active', '=', True)])
         if (len(contacts) > 0):
-            values['partner_id'] = contacts[-1]
+            values['partner_id'] = contacts[-1].id
         _logger.info(contacts)
         return super()._create_user_from_template(values)
