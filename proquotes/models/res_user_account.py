@@ -15,7 +15,7 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
-from odoo.addons.auth_signup.models.res_useres import ResUsers as res_users
+from odoo.models.auth_signup.models.res_useres import res_users as res_users
 
 import logging
 _logger = logging.getLogger(__name__)
