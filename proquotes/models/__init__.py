@@ -6,3 +6,4 @@ from . import templates
 from . import product
 from . import stock
 from . import internal_company
+from . import res_user_account
