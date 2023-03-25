@@ -16,6 +16,13 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class account(models.Model):
     _inherit = "res.users"
+
+    def signup(self, values, token=None):
+        _logger.error("HERE")
+        self.super().signup(values, token)
