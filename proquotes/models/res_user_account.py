@@ -24,6 +24,6 @@ class account(models.Model):
     _inherit = "res.users"
 
     @api.model
-    def signup(self, values, token=None):
-        _logger.error(values)
-        return super().signup(values=values, token=token)
+    def _create_user_from_template(self, values):
+        _logger.warning(values)
+        return super()._create_user_from_template(values)
