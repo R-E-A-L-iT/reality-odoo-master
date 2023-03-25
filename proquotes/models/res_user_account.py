@@ -28,5 +28,7 @@ class account(models.Model):
         _logger.warning(values["email"])
         contacts = self.env["res.partner"].search(
             [('email', '=', values["email"]), ('is_company', '=', False), ('active', '=', True)])
+        for contact in contacts:
+            _logger.error(contact.name)
         _logger.info(contacts)
         return super()._create_user_from_template(values)
