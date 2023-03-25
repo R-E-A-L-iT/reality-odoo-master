@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 
 
 class account(models.Model):
-    _inherit = "res.user"
+    _inherit = "res.users"
 
     @api.model
     def signup(self, values, token=None):
