@@ -23,6 +23,7 @@ _logger = logging.getLogger(__name__)
 class account(models.Model):
     _inherit = "res.users"
 
+    @api.model
     def signup(self, values, token=None):
         _logger.error("HERE")
-        super().signup(values, token)
+        super().signup(values=values, token=token)
