@@ -15,13 +15,13 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
+from odoo.auth_signup.models.res_useres import ResUsers as res_users
 
 import logging
 _logger = logging.getLogger(__name__)
 
 
-class account(models.Model):
-    _inherit = "res.users"
+class account(res_users):
 
     @api.model
     def signup(self, values, token=None):
