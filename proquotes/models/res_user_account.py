@@ -25,4 +25,4 @@ class account(models.Model):
 
     def signup(self, values, token=None):
         _logger.error("HERE")
-        self.super().signup(values, token)
+        super().signup(values, token)
