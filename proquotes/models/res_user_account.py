@@ -25,6 +25,7 @@ class account(models.Model):
 
     @api.model
     def _create_user_from_template(self, values):
+        _logger.info("New Contact")
         contacts = self.env["res.partner"].search(
             [('email', '=', values["email"]), ('is_company', '=', False), ('active', '=', True)])
         if (len(contacts) > 0):
