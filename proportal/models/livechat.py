@@ -26,5 +26,5 @@ class livechat(models.Model):
 
     @api.depends('mail_channel_ids.livechat_active', 'mail_channel_ids.livechat_operator_id')
     def _compute_livechat_operator_id(self):
-        _logger.error("ASSIGN LIVECHAT: request.lang")
+        _logger.error("ASSIGN LIVECHAT:" + str(request.lang))
         super()._compute_livechat_operator_id()
