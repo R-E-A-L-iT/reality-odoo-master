@@ -15,14 +15,12 @@
 				})(window, document, 'script', 'dataLayer', 'GTM-P29CMWQ');
 			</script>
 			<!-- End Google Tag Manager -->
-			<div>
-				<link rel="stylesheet" href="https://www.r-e-a-l.it/im_livechat/external_lib.css" />
-				<script>console.log("HELLO")</script>
-				<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/external_lib.js"></script>
-				<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/loader/2"></script>
-			</div>
 		</xpath>
 		<xpath expr="//body/t" position="before">
+			<link rel="stylesheet" href="https://www.r-e-a-l.it/im_livechat/external_lib.css" />
+			<script>console.log("HELLO")</script>
+			<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/external_lib.js"></script>
+			<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/loader/2"></script>
 			<!-- Google Tag Manager (noscript) -->
 			<noscript>
 				<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P29CMWQ"
