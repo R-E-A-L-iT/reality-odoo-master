@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template id="web_base" name="Website Base" inherit_id="web.layout" priority="17">
-		<xpath expr="//head//script[1]" position="before">
+		<xpath expr="//head//script[1]/bla" position="before">
 			<!-- Google Tag Manager -->
 			<!-- <script src="proportal/static/JS/analytics.js" /> -->
 			<script>
