@@ -245,7 +245,6 @@ class proquotesMail(models.TransientModel):
                 res_id_values['partner_ids'] = self.env['sale.order'].browse(
                     res_id).partner_ids + self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')])
             values[res_id] = res_id_values
-            _logger.error(res_id_values['partner_ids'])
         return multi_mode and values or values[res_ids[0]]
 
 
