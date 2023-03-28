@@ -15,9 +15,6 @@
 				})(window, document, 'script', 'dataLayer', 'GTM-P29CMWQ');
 			</script>
 
-			<link rel="stylesheet" href="https://www.r-e-a-l.it/im_livechat/external_lib.css" />
-			<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/external_lib.js"></script>
-			<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/loader/2"></script>
 			<!-- End Google Tag Manager -->
 		</xpath>
 		<xpath expr="//body/t" position="before">
