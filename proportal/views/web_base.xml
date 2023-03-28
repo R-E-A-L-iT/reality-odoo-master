@@ -15,7 +15,7 @@
 				})(window, document, 'script', 'dataLayer', 'GTM-P29CMWQ');
 			</script>
 			<!-- End Google Tag Manager -->
-			<script>console.log("RIGHT HERE")</script>
+			<script>alert("Test")</script>
 		</xpath>
 		<xpath expr="//body/t" position="before">
 			<!-- Google Tag Manager (noscript) -->
