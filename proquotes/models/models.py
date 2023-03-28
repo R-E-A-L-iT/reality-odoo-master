@@ -245,9 +245,7 @@ class proquotesMail(models.TransientModel):
                 res_id_values['partner_ids'] = self.env['sale.order'].browse(
                     res_id).partner_id + self.env['sale.order'].browse(res_id).partner_ids
             values[res_id] = res_id_values
-        for k, v in values:
-            _logger.error(str(k) + ": " + str(v))
-        _logger.error(values)
+        _logger.error(values['res_ids'])
         return multi_mode and values or values[res_ids[0]]
 
 
