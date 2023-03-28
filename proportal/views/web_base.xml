@@ -19,7 +19,7 @@
 		<xpath expr="//body/t" position="before">
 			<link rel="stylesheet" href="https://www.r-e-a-l.it/im_livechat/external_lib.css" />
 			<!-- <script>console.log("HELLO")</script> -->
-			<!-- <script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/external_lib.js"></script> -->
+			<script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/external_lib.js"></script>
 			<!-- <script type="text/javascript" src="https://www.r-e-a-l.it/im_livechat/loader/2"></script> -->
 			<!-- Google Tag Manager (noscript) -->
 			<noscript>
