@@ -14,7 +14,7 @@
 				'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
 				})(window, document, 'script', 'dataLayer', 'GTM-P29CMWQ');
 			</script>
-			<script>alert('Test')</script>
+			<script type="txt/javascript">alert('Test')</script>
 			<!-- End Google Tag Manager -->
 		</xpath>
 		<xpath expr="//body/t" position="before">
