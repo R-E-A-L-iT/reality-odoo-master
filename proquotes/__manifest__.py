@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.838',
+    'version': '1.0.839',
 
 
     # always loaded
