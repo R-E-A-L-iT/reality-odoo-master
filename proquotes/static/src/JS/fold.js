@@ -34,6 +34,7 @@ odoo.define('proquotes.fold', function (require) {
 				while (x.tagName != "TR") {
 					x = x.parentNode;
 				}
+				console.log(x.querySelector('.quote-folding-arrow'))
 				x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
 				var y = x.nextElementSibling;
 				while (y != null && y != undefined) {
