@@ -318,7 +318,6 @@ odoo.define("proquotes.price", function (require) {
 						var tdList = y.querySelectorAll("td");
 
 						for (var j = 0; j < tdList.length; j++) {
-							console.log(tdList[j])
 							var inner = tdList[j].innerHTML;
 							var l = document.createElement("label");
 							l.setAttribute(
@@ -368,6 +367,7 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updateFoldDisplay: function () {
+			console.log("FOLD DISPLAY\n")
 			var TRstyle;
 			var expandHTML;
 			var cbl = document.querySelectorAll(".foldInput");
