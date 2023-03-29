@@ -109,8 +109,6 @@ odoo.define("proquotes.price", function (require) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
 					) {
-						console.log("BUGFIX")
-						console.log(items[i].getElementsByClassName("itemValue")[0])
 						total += parseInt(
 							items[i].getElementsByClassName("itemValue")[0]
 								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
@@ -187,6 +185,8 @@ odoo.define("proquotes.price", function (require) {
 						}
 					}
 				}
+				console.log("BUGFIX")
+				console.log(productPrices[i].innerHTML)
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				console.log("Rental Estimate Total" + rentalEstimateTotal)
 				var rentalEstimateSubTotal = 0;
