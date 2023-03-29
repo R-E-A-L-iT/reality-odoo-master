@@ -50,7 +50,8 @@ odoo.define('proquotes.fold', function (require) {
 			}
 			var subTotalList = document.getElementsByClassName("subtotal-destination");
 			for (var i = 0; i < subTotalList.length; i++) {
-				var subTotal = document.getElementsByClassName("subtotal-source")[i];
+				var subTotal = subTotalList[i];
+				console.log("HERE: " + document.getElementsByClassName("subtotal-source")[i])
 				subTotal.innerHTML = document.getElementsByClassName("subtotal-source")[i].innerHTML;
 			}
 		},
