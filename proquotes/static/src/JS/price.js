@@ -186,7 +186,7 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 				console.log("BUGFIX")
-				console.log(productPrices[i].innerHTML)
+				console.log(productPrices[i])
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				console.log("Rental Estimate Total" + rentalEstimateTotal)
 				var rentalEstimateSubTotal = 0;
