@@ -51,7 +51,7 @@ odoo.define('proquotes.fold', function (require) {
 			var subTotalList = document.getElementsByClassName("subtotal-destination");
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
-				console.log(x.querySelector('.quote-folding-arrow'))
+				console.log("HERE: " + x.querySelector('.quote-folding-arrow'))
 				subTotal.innerHTML = document.getElementsByClassName("subtotal-source")[i].innerHTML;
 			}
 		},
