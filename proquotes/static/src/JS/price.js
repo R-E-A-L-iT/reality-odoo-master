@@ -367,7 +367,6 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updateFoldDisplay: function () {
-			console.log("FOLD DISPLAY\n")
 			var TRstyle;
 			var expandHTML;
 			var cbl = document.querySelectorAll(".foldInput");
@@ -403,6 +402,7 @@ odoo.define("proquotes.price", function (require) {
 			var subTotalList = document.getElementsByClassName(
 				"subtotal-destination"
 			);
+			console.log("INFO")
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
 				var inner_html = ""
