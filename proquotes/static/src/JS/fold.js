@@ -34,7 +34,6 @@ odoo.define('proquotes.fold', function (require) {
 				while (x.tagName != "TR") {
 					x = x.parentNode;
 				}
-				console.log(x.querySelector('.quote-folding-arrow'))
 				x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
 				var y = x.nextElementSibling;
 				while (y != null && y != undefined) {
@@ -52,6 +51,7 @@ odoo.define('proquotes.fold', function (require) {
 			var subTotalList = document.getElementsByClassName("subtotal-destination");
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
+				console.log(x.querySelector('.quote-folding-arrow'))
 				subTotal.innerHTML = document.getElementsByClassName("subtotal-source")[i].innerHTML;
 			}
 		},
