@@ -405,7 +405,7 @@ odoo.define("proquotes.price", function (require) {
 			console.log(subTotalList.length);
 
 			for (var i = 0; i < subTotalList.length; i++) {
-				console.log("407: " + i);
+				console.log("408: " + i);
 				var subTotal = subTotalList[i];
 				var inner_html = ""
 				var subtotal_source = document.getElementsByClassName("subtotal-source")
@@ -413,6 +413,7 @@ odoo.define("proquotes.price", function (require) {
 					inner_html = subtotal_source[i].innerHTML;
 				}
 				subTotal.innerHTML = inner_html;
+				console.log("416: " + i);
 			}
 		},
 
