@@ -212,3 +212,7 @@ body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thre
 .align-items-center {
 	background-color: #24272A !important;
 }
+
+ul.nav:nth-child(1) > li> a {
+	color: #000;
+}
