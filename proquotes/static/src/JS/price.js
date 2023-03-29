@@ -415,6 +415,7 @@ odoo.define("proquotes.price", function (require) {
 				subTotal.innerHTML = inner_html;
 				console.log("416: " + i);
 			}
+			console.log("418")
 		},
 
 		_updateTotal: function (total) {
