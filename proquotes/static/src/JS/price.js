@@ -106,7 +106,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 
 				if (include) {
-					console.log(items[i])
+					console.log("HERE: " + items[i])
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
 					) {
