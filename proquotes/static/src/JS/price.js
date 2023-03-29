@@ -106,6 +106,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 
 				if (include) {
+					console.log(items[i])
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
 					) {
@@ -418,9 +419,7 @@ odoo.define("proquotes.price", function (require) {
 		_updateTotal: function (total) {
 			var div = document.querySelector("#portalTotal b");
 			if (div != null) {
-				console.log("BEFORE")
 				document.querySelector("#portalTotal b").innerHTML = total;
-				console.log("AFTER")
 			}
 		},
 
