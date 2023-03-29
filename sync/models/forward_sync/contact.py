@@ -158,6 +158,15 @@ class sync_contacts():
                 i += 1
                 continue
 
+            if (str(self.sheet[i][columns["company"]]) != 0):
+                companies = self.database.env['ir.model.data'].search(
+                    [('name', '=', self.sheet[i][columns["company"]]), ('model', '=', 'res.partner')])
+                if (len(companies) == 0):
+                    msg = utilities.buildMSG(
+                        msg, self.sheetName, self.sheet[i][columns["id"]], "Unknown Company ID: " + str(self.sheet[i][columns["company"]]))
+                    i += 1
+                    continue
+
             external_id = str(self.sheet[i][columns["id"]])
             try:
 
@@ -190,6 +199,8 @@ class sync_contacts():
         if (self.sheet[i][columns["company"]] != ""):
             contact.parent_id = int(self.database.env['ir.model.data'].search(
                 [('name', '=', self.sheet[i][columns["company"]]), ('model', '=', 'res.partner')])[0].res_id)
+        else:
+            contact.parent_id = False
         contact.street = self.sheet[i][columns["streetAddress"]]
         contact.city = self.sheet[i][columns["city"]]
         if (self.sheet[i][columns["state"]] != ""):
