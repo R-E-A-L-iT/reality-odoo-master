@@ -402,6 +402,7 @@ odoo.define("proquotes.price", function (require) {
 			var subTotalList = document.getElementsByClassName(
 				"subtotal-destination"
 			);
+			console.log(subTotalList.length);
 
 			for (var i = 0; i < subTotalList.length; i++) {
 				console.log("407: " + i);
