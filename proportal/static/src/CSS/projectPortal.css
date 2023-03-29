@@ -208,3 +208,7 @@ body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thre
 	padding-block-start: 36px !important;
 	padding-block-end: 36px !important;
 }
+
+.align-items-center {
+	background-color: #24272A !important;
+}
