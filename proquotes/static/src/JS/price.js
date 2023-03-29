@@ -402,7 +402,7 @@ odoo.define("proquotes.price", function (require) {
 			var subTotalList = document.getElementsByClassName(
 				"subtotal-destination"
 			);
-			console.log("INFO")
+
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
 				var inner_html = ""
@@ -412,7 +412,7 @@ odoo.define("proquotes.price", function (require) {
 				}
 				subTotal.innerHTML = inner_html;
 			}
-			console.log("HERE")
+			_logger.info("415")
 		},
 
 		_updateTotal: function (total) {
