@@ -185,6 +185,7 @@ odoo.define("proquotes.price", function (require) {
 						}
 					}
 				}
+				console.log(productPrices[i])
 				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				console.log("Rental Estimate Total" + rentalEstimateTotal)
 				var rentalEstimateSubTotal = 0;
@@ -318,6 +319,7 @@ odoo.define("proquotes.price", function (require) {
 						var tdList = y.querySelectorAll("td");
 
 						for (var j = 0; j < tdList.length; j++) {
+							console.log(tdList[j])
 							var inner = tdList[j].innerHTML;
 							var l = document.createElement("label");
 							l.setAttribute(
@@ -402,12 +404,15 @@ odoo.define("proquotes.price", function (require) {
 			var subTotalList = document.getElementsByClassName(
 				"subtotal-destination"
 			);
+
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
-				subTotal.innerHTML =
-					document.getElementsByClassName("subtotal-source")[
-						i
-					].innerHTML;
+				var inner_html = ""
+				var subtotal_source = document.getElementsByClassName("subtotal-source")
+				if(subTotal.length > i){
+					inner_html = subtotal_source[i].innerHTML;
+				}
+				subTotal.innerHTML = inner_html;
 			}
 		},
 
