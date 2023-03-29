@@ -51,7 +51,7 @@ odoo.define('proquotes.fold', function (require) {
 			var subTotalList = document.getElementsByClassName("subtotal-destination");
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
-				source = document.getElementsByClassName("subtotal-source")[i]
+				var source = document.getElementsByClassName("subtotal-source")[i]
 				if(source != undefined){
 					subTotal.innerHTML = source.innerHTML;
 				} else {
