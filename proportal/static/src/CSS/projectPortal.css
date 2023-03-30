@@ -228,6 +228,7 @@ ul.nav > li> a {
 #sidebar_content, #sidebar_content *{
 	color: #fff;
 	background-color: #333 !important;
+	border: none;
 }
 
 #sidebar_content .o_download_btn, #sidebar_content .fa-download {
