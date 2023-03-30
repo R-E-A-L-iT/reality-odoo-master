@@ -23,5 +23,6 @@ class mail(models.Model):
     _inherit = "mail.group"
 
     def action_send_guidelines(self, members=None):
+        raise Exception("HELLO WORLD")
         _logger.error("MAIL 26")
         return super().action.send_guidelines(members)
