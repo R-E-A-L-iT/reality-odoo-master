@@ -234,6 +234,10 @@ ul.nav > li> a {
 	background-color: #db0d0d !important;
 }
 
+#sidebar_content strong.text-muted {
+	color: #888 !important;
+}
+
 .o_portal_chatter .o_portal_chatter_messages .o_portal_chatter_message_title p {
 	color: #888;
 }
