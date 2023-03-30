@@ -220,3 +220,7 @@ main {
 ul.nav > li> a {
 	color: #000;
 }
+
+.o_message_counter {
+	color: #888;
+}
