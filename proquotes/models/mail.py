@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 
 class mail(models.Model):
-    _inherit = "mail.compose.mssage"
+    _inherit = "mail.compose.message"
 
     def get_mail_values(self, res_ids):
         _logger.error("MAIL 26")
