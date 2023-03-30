@@ -225,7 +225,8 @@ ul.nav > li> a {
 	color: #000;
 }
 
-#sidebar_content {
+#sidebar_content, #sidebar_content *{
+	color: #fff;
 	background-color: #333 !important;
 }
 
