@@ -19,7 +19,7 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 
 
-class mail(models.TransientModelel):
+class mail(models.TransientModel):
     _inherit = "mail.compose.message"
 
     def get_mail_values(self, res_ids):
