@@ -226,12 +226,12 @@ ul.nav > li> a {
 }
 
 #sidebar_content, #sidebar_content *{
-	/* color: #fff; */
-	/* background-color: #333 !important; */
+	color: #fff;
+	background-color: #333 !important;
 }
 
 #sidebar_content .o_download_btn {
-
+	background-color: #db0d0d !important;
 }
 
 .o_portal_chatter .o_portal_chatter_messages .o_portal_chatter_message_title p {
