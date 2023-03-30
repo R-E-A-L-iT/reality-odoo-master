@@ -26,7 +26,7 @@ class mail(models.TransientModel):
         result = super().get_mail_values(res_ids)
         _logger.warning(result)
         _logger.error(len(result))
-        _logger.error(type(result))
+        _logger.error(result['741']['email_from'])
         # _logger.warning(result['email_from'])
         # _logger.warning(result['reply_to'])
         return result
