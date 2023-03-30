@@ -27,6 +27,6 @@ class mail(models.TransientModel):
         for key in result:
             _logger.error(key)
 
-        for key in result[741]:
-            _logger.error(str(key) + str(result[741][key]))
+            for key2 in result[key]:
+                _logger.error(str(key) + str(result[741][key2]))
         return result
