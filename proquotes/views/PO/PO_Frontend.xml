@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="purchase_frontend" inherit_id="purchase.portal_my_purchase_order" priority="17">
-		<xpath expr="//div[@t-call=&quot;purchase.purchase_order_portal_content&quot;]" position="after">
+	<template id="purchase_frontend" inherit_id="purchase.purchase_order_portal_content" priority="17">
+		<xpath expr="//div[@id=&quot;introduction&quot;]" position="after">
 			<t t-set="footer" t-value="order.footer" />
-			<p>HERE</p>
 			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 		</xpath>
 	</template>
