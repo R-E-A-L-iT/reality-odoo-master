@@ -213,6 +213,10 @@ main {
 	height: fit-content;
 }
 
+#wrap.o_portal_wrap {
+	height: fit-content;
+}
+
 .align-items-center {
 	background-color: #24272A !important;
 }
