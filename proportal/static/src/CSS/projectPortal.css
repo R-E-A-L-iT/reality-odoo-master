@@ -217,6 +217,6 @@ main {
 	background-color: #24272A !important;
 }
 
-ul.nav:nth-child(1) > li> a {
+ul.nav > li> a {
 	color: #000;
 }
