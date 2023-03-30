@@ -20,9 +20,8 @@ _logger = logging.getLogger(__name__)
 
 
 class mail(models.Model):
-    _inherit = "mail.group"
+    _inherit = "mail.compose.mssage"
 
-    def action_send_guidelines(self, members=None):
-        raise Exception("HELLO WORLD")
+    def get_mail_values(self, res_ids):
         _logger.error("MAIL 26")
-        return super().action.send_guidelines(members)
+        return super().action.send_guidelines(res_ids)
