@@ -24,7 +24,7 @@ class mail(models.TransientModel):
 
     def get_mail_values(self, res_ids):
         result = super().get_mail_values(res_ids)
-        for key, value in result:
+        for key in result:
             _logger.error(key)
 
         for key in result[741]:
