@@ -20,7 +20,7 @@
 
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'mail', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
+    'depends': ['base', 'web', 'mail', 'mail_group', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
 
     'assets': {
             'web.assets_common': [
@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.882',
+    'version': '1.0.883',
 
 
     # always loaded
