@@ -217,6 +217,10 @@ main {
 	background-color: #24272A !important;
 }
 
+h5.mb-1 {
+	color: #fff;
+}
+
 ul.nav > li> a {
 	color: #000;
 }
