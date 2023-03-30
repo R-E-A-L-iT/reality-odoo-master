@@ -213,6 +213,10 @@ main {
 	height: fit-content;
 }
 
+#wrap.o_portal_wrap {
+	height: fit-content;
+}
+
 .align-items-center {
 	background-color: #24272A !important;
 }
@@ -223,6 +227,20 @@ h5.mb-1 {
 
 ul.nav > li> a {
 	color: #000;
+}
+
+div.col-lg-auto, #sidebar_content, #sidebar_content *{
+	color: #fff;
+	background-color: #333 !important;
+	border: none !important;
+}
+
+#sidebar_content .o_download_btn, #sidebar_content .fa-download {
+	background-color: #db0d0d !important;
+}
+
+#sidebar_content strong.text-muted {
+	color: #888 !important;
 }
 
 .o_portal_chatter .o_portal_chatter_messages .o_portal_chatter_message_title p {
