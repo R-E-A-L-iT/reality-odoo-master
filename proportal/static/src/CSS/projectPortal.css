@@ -225,7 +225,7 @@ ul.nav > li> a {
 	color: #000;
 }
 
-div.o_portal_chatter_message_title > p.o_portal_chatter_puslished_date {
+.o_portal_chatter .o_portal_chatter_messages .o_portal_chatter_message_title p {
 	color: #808;
 }
 
