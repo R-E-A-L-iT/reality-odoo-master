@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template id="purchase_frontend" inherit_id="purchase.purchase_order_portal_content" priority="17">
-		<xpath expr="//div[@id=&quot;introduction&quot;]" position="after">
+		<xpath expr="//section[@t-if=&quot;order.payment_term_id&quot;]" position="after">
 			<t t-set="footer" t-value="order.footer" />
 			<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
 		</xpath>
