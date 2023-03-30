@@ -23,5 +23,6 @@ class mail(models.TransientModel):
     _inherit = "mail.compose.message"
 
     def get_mail_values(self, res_ids):
-        _logger.error("MAIL 26")
-        return super().get_mail_values(res_ids)
+        result = super().get_mail_values(res_ids)
+        _logger.warning(result)
+        return result
