@@ -225,10 +225,10 @@ ul.nav > li> a {
 	color: #000;
 }
 
-#sidebar_content, #sidebar_content *{
+div.col-lg-auto, #sidebar_content, #sidebar_content *{
 	color: #fff;
 	background-color: #333 !important;
-	border: none;
+	border: none !important;
 }
 
 #sidebar_content .o_download_btn, #sidebar_content .fa-download {
