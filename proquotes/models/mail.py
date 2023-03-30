@@ -29,6 +29,6 @@ class mail(models.TransientModel):
 
             for key2 in result[key]:
                 _logger.error(str(key2) + str(result[key][key2]))
-            result[key]['reply_to'] = result[key]['email_from']
+            # result[key]['reply_to'] = result[key]['email_from']
             # result[key]['reply_to_force_new'] = True
         return result
