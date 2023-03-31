@@ -127,6 +127,14 @@ class order(models.Model):
         else:
             self.is_rental = False
 
+    def generate_section_line(self, name, *, special="regular"):
+        section = self.env['sale.order.line'].create(
+            {'name': name, 'special': special})
+        return section
+
+    def generate_product_line(self, product_id, *, selected=True, locked_qty=False, optional=False):
+        pass
+
     @api.onchange('sale_order_template_id')
     def renewalQuoteAutoFill(self):
         if (not "Renewal Auto" in self.sale_order_template_id.name):
@@ -134,8 +142,9 @@ class order(models.Model):
         for product in self.products:
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
-            else:
-                _logger.error(product.name)
+                section = self.generate_section_line(
+                    product.label, special="multiple")
+                _logger.error(section)
 
     def _amount_all(self):
         for order in self:
