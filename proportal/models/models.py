@@ -49,7 +49,7 @@ class productInstance(models.Model):
     def _label(self):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
-            if len(parsedLabel) > 0:
+            if len(parsedLabel) > 1:
                 result = parsedLabel[1]
                 for section in parsedLabel[2:]:
                     result = result + " - " + str(section)
