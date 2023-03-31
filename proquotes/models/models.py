@@ -132,6 +132,8 @@ class order(models.Model):
         if (not "Renewal Auto" in self.sale_order_template_id.name):
             _logger.error("Other")
             return
+        for product in self.products:
+            _logger.warning(product.name)
         _logger.error("Renewal")
 
     def _amount_all(self):
