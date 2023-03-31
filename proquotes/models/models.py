@@ -133,7 +133,8 @@ class order(models.Model):
             _logger.error("Other")
             return
         for product in self.products:
-            _logger.warning(product.name)
+            _logger.warning(str(product.name) + ": " +
+                            str(product.product_id.name))
         _logger.error("Renewal")
 
     def _amount_all(self):
