@@ -25,11 +25,6 @@ class mail(models.TransientModel):
     def get_mail_values(self, res_ids):
         result = super().get_mail_values(res_ids)
         for key in result:
-            _logger.error(key)
-
-            for key2 in result[key]:
-                _logger.error(str(key2) + str(result[key][key2]))
-            # result[key]['reply_to'] = result[key]['email_from']
-            result[key]['reply_to_mode'] = 'new'
-            # result[key]['reply_to_force_new'] = True
+            result[key]['reply_to'] = result[key]['email_from']
+            result[key]['reply_to_force_new'] = True
         return result
