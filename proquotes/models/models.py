@@ -134,6 +134,8 @@ class order(models.Model):
         for product in self.products:
             if (product.name == "838300 - RTC360"):
                 _logger.warning("RTC")
+            else:
+                _logger.error(product.name)
 
     def _amount_all(self):
         for order in self:
