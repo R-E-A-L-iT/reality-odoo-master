@@ -133,6 +133,7 @@ class order(models.Model):
             _logger.error("Other")
             return
         for product in self.products:
+            _logger.info("HERE")
             _logger.warning(product.name)
         _logger.error("Renewal")
 
