@@ -230,14 +230,14 @@
 						<br />
 						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
-						<span>Routing No.: 071025661, Account No.: 3875473</span>
+						<span>Routing No.: 071000288, Account No.: 3875473</span>
 					</p>
 					<p t-elif="clang == 'fr_CA'">
 						<span>Infos bancaires pour R-E-A-L.iT U.S. Inc.</span>
 						<br />
 						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
-						<span>Numéro de routage.: 071025661, N ° de Compte.: 3875473</span>
+						<span>Numéro de routage.: 071000288, N ° de Compte.: 3875473</span>
 					</p>
 				</div>
 			</t>
