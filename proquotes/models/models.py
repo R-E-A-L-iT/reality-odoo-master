@@ -132,7 +132,7 @@ class order(models.Model):
         if (not "Renewal Auto" in self.sale_order_template_id.name):
             return
         for product in self.products:
-            if (product.product_id.name == "838300 - RTC360"):
+            if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
             else:
                 _logger.error(product.name)
