@@ -41,7 +41,6 @@
 
     'version': '1.0.913',
 
-
     # always loaded
     'data': [
         'security/ir.model.access.csv',
