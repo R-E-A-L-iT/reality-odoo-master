@@ -127,6 +127,13 @@ class order(models.Model):
         else:
             self.is_rental = False
 
+    @api.onchange('sale_order_template_id')
+    def renewalQuoteAutoFill(self):
+        if ("Renewal Auto" in self.sale_order_template_id.name):
+            _logger.error("Renewal")
+        else:
+            _logger.error("Other")
+
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0
