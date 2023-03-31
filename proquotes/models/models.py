@@ -129,15 +129,11 @@ class order(models.Model):
 
     @api.onchange('sale_order_template_id')
     def renewalQuoteAutoFill(self):
-        if (not "Renewal" in self.sale_order_template_id.name):
-            _logger.error("Other")
+        if (not "Renewal Auto" in self.sale_order_template_id.name):
             return
         for product in self.products:
-            _logger.warning(str(product.name) + ": " +
-                            str(product.product_id.name))
-        for line in self.order_line:
-            _logger.warning(line.name)
-        _logger.error("Renewal")
+            if (product.name == "838300 - RTC360"):
+                _logger.info("RTC")
 
     def _amount_all(self):
         for order in self:
