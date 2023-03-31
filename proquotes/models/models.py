@@ -128,9 +128,10 @@ class order(models.Model):
             self.is_rental = False
 
     def generate_section_line(self, name, *, special="regular"):
-        section = self.env['sale.order.line'].create(
-            {'name': name, 'special': special, 'order_id': self.id})
-        return section
+        # section = self.env['sale.order.line'].create(
+        # {'name': name, 'special': special, 'order_id': self.id})
+        _logger.error(self.id)
+        return None
 
     def generate_product_line(self, product_id, *, selected=True, locked_qty=False, optional=False):
         pass
