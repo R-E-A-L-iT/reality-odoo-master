@@ -143,7 +143,7 @@ class order(models.Model):
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
                 section = self.generate_section_line(
-                    product.label, special="multiple")
+                    product.formated_label, special="multiple")
                 _logger.error(section)
 
     def _amount_all(self):
