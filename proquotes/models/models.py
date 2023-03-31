@@ -135,7 +135,8 @@ class order(models.Model):
         for product in self.products:
             _logger.warning(str(product.name) + ": " +
                             str(product.product_id.name))
-        _logger.info(self.order_line.name)
+        for line in self.order_line:
+            _logger.warning(line.name)
         _logger.error("Renewal")
 
     def _amount_all(self):
