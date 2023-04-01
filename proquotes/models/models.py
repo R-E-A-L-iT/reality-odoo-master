@@ -146,6 +146,7 @@ class order(models.Model):
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
                 _logger.warning(dir(section))
+                _logger.error(dir(section))
                 _logger.error(section)
 
     def _amount_all(self):
