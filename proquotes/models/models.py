@@ -145,6 +145,7 @@ class order(models.Model):
                 _logger.warning("RTC")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
+                self.order_line.append(section)
                 _logger.error(section)
 
     def _amount_all(self):
