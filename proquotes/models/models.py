@@ -136,7 +136,7 @@ class order(models.Model):
         product = self.env['product.template'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
             {'name': product.name,
-             #  'product_id': product.id,
+             'product_id': product.id,
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
