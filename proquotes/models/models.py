@@ -134,15 +134,13 @@ class order(models.Model):
 
     def generate_product_line(self, sku, *, selected='true', locked_qty='true', optional='true'):
         product = self.env['product.template'].search([('sku', '=', sku)])
-        _logger.error(product.id)
-        line = self.env['sale.order.line'].create(
+        line = self.env['sale.order.line'].new(
             {'name': product.name,
              'product_id': product.id,
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
              'order_id': self.id})
-        _logger.warning(line)
         return line
 
     @api.onchange('sale_order_template_id')
