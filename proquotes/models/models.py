@@ -159,6 +159,7 @@ class order(models.Model):
 
                 product = self.env['product.template'].search(
                     [('sku', '=', 6013561)])
+                line.update({'product_id': product})
                 _logger.error(line.product_id)
 
     def _amount_all(self):
