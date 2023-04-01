@@ -136,7 +136,13 @@ class order(models.Model):
         product = self.env['product.template'].search([('sku', '=', sku)])
         _logger.error(product.id)
         line = self.env['sale.order.line'].new(
-            {'name': product.name, 'product_id': product.id, 'selected': selected, 'optional': optional, 'quantityLocked': locked_qty, 'order_id': self._origin.id})
+            {'name': product.name,
+             'product_id': product.id,
+             'selected': selected,
+             'optional': optional,
+             'quantityLocked': locked_qty,
+             'order_id': self._origin.id})
+        _logger.warning(line)
         return line
 
     @api.onchange('sale_order_template_id')
