@@ -150,7 +150,7 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 addList = [block, section]
                 addList.append(self.generate_product_line(6013561).id)
-                self.order_line = [6, 0, addList]
+                self.order_line = [(6, 0, addList)]
 
     def _amount_all(self):
         for order in self:
