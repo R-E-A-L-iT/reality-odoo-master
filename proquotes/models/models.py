@@ -146,6 +146,7 @@ class order(models.Model):
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
                 block = self.generate_section_line("$block")
+                _logger.error(section.next)
                 self.update({'order_line': section})
                 # self.update({'order_line': block})
 
