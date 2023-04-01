@@ -147,7 +147,7 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 _logger.warning(dir(self.order_line))
                 _logger.error(type(self.order_line))
-                self.update({'order.lines': [section]})
+                self.update({'order_line': [section]})
 
     def _amount_all(self):
         for order in self:
