@@ -136,12 +136,10 @@ class order(models.Model):
         product = self.env['product.template'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
             {'name': product.name,
-             #  'product_id': product.id,
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
              'order_id': self._origin.id})
-        # line.product_id = product.id
         return line
 
     @api.onchange('sale_order_template_id')
@@ -158,6 +156,10 @@ class order(models.Model):
                 line = self.generate_product_line(6013561)
                 addList.append(line.id)
                 self.order_line = [(6, 0, addList)]
+
+                product = self.env['product.template'].search(
+                    [('sku', '=', 6013561)])
+                line.product_id = product.id
 
     def _amount_all(self):
         for order in self:
