@@ -159,7 +159,7 @@ class order(models.Model):
 
                 product = self.env['product.template'].search(
                     [('sku', '=', 6013561)])
-                line.product_id = product.id
+                # line.product_id = product.id
 
     def _amount_all(self):
         for order in self:
