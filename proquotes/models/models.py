@@ -140,8 +140,7 @@ class order(models.Model):
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
-             'order_id': self.id})
-        line.save()
+             'order_id': self._origin.id})
         return line
 
     @api.onchange('sale_order_template_id')
