@@ -153,6 +153,7 @@ class order(models.Model):
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
                 block = self.generate_section_line("$block")
+                _logger.warning("HERE")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
                 addList = [block.id, section.id]
