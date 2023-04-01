@@ -148,9 +148,9 @@ class order(models.Model):
                 block = self.generate_section_line("$block")
                 # self.update({'order_line': section})
                 self.order_line = [
-                    (6, section.id)]
+                    (6, 0, [section.id])]
                 self.order_line = [
-                    (6, block.id)]
+                    (6, 0, [block.id])]
                 # self.update({'order_line': block})
 
     def _amount_all(self):
