@@ -134,7 +134,7 @@ class order(models.Model):
 
     def generate_product_line(self, sku, *, selected=True, locked_qty=False, optional=False):
         line = None
-        product = self.env['product.template'].search({('sku', '=', sku)})
+        product = self.env['product.template'].search([('sku', '=', sku)])
         _logger.error(product.name)
         return line
         pass
