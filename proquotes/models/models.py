@@ -151,14 +151,11 @@ class order(models.Model):
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
                 block = self.generate_section_line("$block")
-                _logger.warning("HERE")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
                 addList = [block.id, section.id]
                 line = self.generate_product_line(6013561)
                 addList.append(line.id)
-                for lineItem in addList:
-                    _logger.error(lineItem)
                 self.order_line = [(6, 0, addList)]
 
     def _amount_all(self):
