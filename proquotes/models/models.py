@@ -130,7 +130,7 @@ class order(models.Model):
     def generate_section_line(self, name, *, special="regular", selected=True):
         _logger.error(str(self._origin.id))
         section = self.env['sale.order.line'].new(
-            {'name': name, 'special': special, 'display_type': 'section', 'order_id': self._origin.id, 'selected': selected})
+            {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
     def generate_product_line(self, product_id, *, selected=True, locked_qty=False, optional=False):
