@@ -136,7 +136,6 @@ class order(models.Model):
         product = self.env['product.template'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
             {'product_id': product.id, 'selected': selected, 'optional': optional, 'quantityLocked': locked_qty, 'order_id': self._origin.id})
-        _logger.error(product.name)
         return line
 
     @api.onchange('sale_order_template_id')
@@ -149,9 +148,9 @@ class order(models.Model):
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
-                addlist = [block, section]
-                # addlist.append(self.generate_product_line(6013561))
-                self.generate_product_line(6013561)
+                addList = [block, section]
+                addList.append(self.generate_product_line(6013561))
+                self.order_line = [6, self._orgin.id, addList]
 
     def _amount_all(self):
         for order in self:
