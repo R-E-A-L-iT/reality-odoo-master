@@ -128,12 +128,15 @@ class order(models.Model):
             self.is_rental = False
 
     def generate_section_line(self, name, *, special="regular", selected=True):
-        _logger.error(str(self._origin.id))
         section = self.env['sale.order.line'].new(
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_product_line(self, product_id, *, selected=True, locked_qty=False, optional=False):
+    def generate_product_line(self, sku, *, selected=True, locked_qty=False, optional=False):
+        line = None
+        product = self.env['product.template'].search({('sku', '=', sku)})
+        _logger.error(product.name)
+        return line
         pass
 
     @api.onchange('sale_order_template_id')
@@ -143,15 +146,12 @@ class order(models.Model):
         for product in self.products:
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
+                block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
-                block = self.generate_section_line("$block")
-                # self.update({'order_line': section})
-                self.order_line = [
-                    (6, 0, [section.id])]
-                self.order_line = [
-                    (6, 0, [block.id])]
-                # self.update({'order_line': block})
+                addlist = [block, section]
+                # addlist.append(self.generate_product_line(6013561))
+                self.generate_product_line(6013561)
 
     def _amount_all(self):
         for order in self:
