@@ -128,7 +128,7 @@ class order(models.Model):
             self.is_rental = False
 
     def generate_section_line(self, name, *, special="regular"):
-        _logger.error(str(self))
+        _logger.error(str(self._origin.id))
         section = self.env['sale.order.line'].create(
             {'name': name, 'special': special, 'order_id': self.id})
         return section
