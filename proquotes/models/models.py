@@ -151,8 +151,9 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 addList = [block.id, section.id]
                 line = self.generate_product_line(6013561)
-                _logger.error(line)
                 addList.append(line.id)
+                for lineItem in addList:
+                    _logger.error(lineItem)
                 self.order_line = [(6, 0, addList)]
 
     def _amount_all(self):
