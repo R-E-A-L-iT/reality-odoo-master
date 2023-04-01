@@ -128,8 +128,6 @@ class order(models.Model):
             self.is_rental = False
 
     def generate_section_line(self, name, *, special="regular", selected='true'):
-        _logger.warning(self._origin.id)
-        _logger.warning(self.id)
         section = self.env['sale.order.line'].new(
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
@@ -143,7 +141,7 @@ class order(models.Model):
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
-             'order_id': self._origin.id})
+             'order_id': self.id})
         _logger.warning(line)
         return line
 
