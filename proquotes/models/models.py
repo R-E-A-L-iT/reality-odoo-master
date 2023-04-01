@@ -147,7 +147,7 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 block = self.generate_section_line("$block")
                 self.update({'order_line': section})
-                self.update({'order_line': (block, section)})
+                # self.update({'order_line': block})
 
     def _amount_all(self):
         for order in self:
