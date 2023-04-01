@@ -135,7 +135,7 @@ class order(models.Model):
     def generate_product_line(self, sku, *, selected=True, locked_qty=False, optional=False):
         product = self.env['product.template'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
-            {'product_id': product.id, 'selected': selected, 'locked_qty': locked_qty, 'optional': optional, 'quantityLocked': locked_qty, 'order_id': self._origin.id})
+            {'product_id': product.id, 'selected': selected, 'optional': optional, 'quantityLocked': locked_qty, 'order_id': self._origin.id})
         _logger.error(product.name)
         return line
 
