@@ -148,7 +148,7 @@ class order(models.Model):
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
-                addList = [block, section]
+                addList = [block.id, section.id]
                 addList.append(self.generate_product_line(6013561).id)
                 self.order_line = [(6, 0, addList)]
 
