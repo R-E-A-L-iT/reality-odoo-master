@@ -141,6 +141,7 @@ class order(models.Model):
              'optional': optional,
              'quantityLocked': locked_qty,
              'order_id': self.id})
+        line.save()
         return line
 
     @api.onchange('sale_order_template_id')
