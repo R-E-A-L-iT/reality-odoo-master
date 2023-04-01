@@ -141,7 +141,7 @@ class order(models.Model):
              'optional': optional,
              'quantityLocked': locked_qty,
              'order_id': self._origin.id})
-        line.product_id = product.id
+        # line.product_id = product.id
         return line
 
     @api.onchange('sale_order_template_id')
