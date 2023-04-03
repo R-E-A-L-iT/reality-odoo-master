@@ -127,6 +127,41 @@ class order(models.Model):
         else:
             self.is_rental = False
 
+    def generate_section_line(self, name, *, special="regular", selected='true'):
+        section = self.env['sale.order.line'].new(
+            {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
+        return section
+
+    def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
+        product = self.env['product.template'].search([('sku', '=', sku)])
+        line = self.env['sale.order.line'].new(
+            {'name': product.name,
+             'selected': selected,
+             'optional': optional,
+             'quantityLocked': locked_qty,
+             'order_id': self._origin.id})
+        return line
+
+    @api.onchange('sale_order_template_id')
+    def renewalQuoteAutoFill(self):
+        if (not "Renewal Auto" in self.sale_order_template_id.name):
+            return
+        for product in self.products:
+            if (product.product_id.sku == "838300"):
+                _logger.warning("RTC")
+                block = self.generate_section_line("$block")
+                section = self.generate_section_line(
+                    product.formated_label, special="multiple")
+                addList = [block.id, section.id]
+                line = self.generate_product_line(6013561)
+                addList.append(line.id)
+                # self.order_line = [(6, 0, addList)]
+
+                product = self.env['product.template'].search(
+                    [('sku', '=', 6013561)])
+                line.update({'product_id': product.id})
+                _logger.error(line.product_id)
+
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0
