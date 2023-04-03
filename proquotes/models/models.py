@@ -127,6 +127,9 @@ class order(models.Model):
         else:
             self.is_rental = False
 
+    def test_action(self):
+        _logger.error("HELLO THERE")
+
     def generate_section_line(self, name, *, special="regular", selected='true'):
         section = self.env['sale.order.line'].new(
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
