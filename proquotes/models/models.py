@@ -163,7 +163,7 @@ class order(models.Model):
                 _logger.warning(product.name)
                 # line.update({'product_id': product.id})
                 self.order_line = [(
-                    0, 0, {'name': "HELLO"})]
+                    0, 0, {'name': "Hello World!"})]
                 # _logger.error(line.product_id)
 
     def _amount_all(self):
