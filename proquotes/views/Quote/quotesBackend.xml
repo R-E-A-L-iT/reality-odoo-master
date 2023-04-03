@@ -14,12 +14,11 @@
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
-					<button name="test_action" type="object" string="Add To Quote"></button>
 					<tree>
+						<button name="test_action" type="object" string="Add To Quote"></button>
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
-						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
 					</tree>
 				</field>
 				<group name="custom_quote_details">
