@@ -139,7 +139,7 @@ class order(models.Model):
              'selected': selected,
              'optional': optional,
              'quantityLocked': locked_qty,
-             #  'product_id': product.id,
+             'product_id': product.id,
              'order_id': self._origin.id})
         _logger.error(line.id)
         return line
