@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
-						<button name="test_action" type="" string="Add To Quote" binding_model_id="sale.order"></button>
+						<button name="test_action" type="object" string="Add To Quote" binding_model_id="sale.order"></button>
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
