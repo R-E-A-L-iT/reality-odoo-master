@@ -134,7 +134,7 @@ class order(models.Model):
 
     def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
         product = self.env['product.template'].search([('sku', '=', sku)])
-        line = self.env['sale.order.line'].new(
+        line = self.env['sale.order.line'].create(
             {'name': product.name,
              'selected': selected,
              'optional': optional,
