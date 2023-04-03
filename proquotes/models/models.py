@@ -132,7 +132,7 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_no_ccp(self, *, selected='true', uom='Units', locked_qty='yes', optional='no'):
+    def generate_no_ccp(self, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
         product = self.env['product.product'].search([('name', '=', "No CCP")])
         uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
@@ -149,7 +149,7 @@ class order(models.Model):
              'order_id': self._origin.id})
         return line
 
-    def generate_product_line(self, sku, *, selected='true', uom='Units', locked_qty='yes', optional='no'):
+    def generate_product_line(self, sku, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
         product = self.env['product.product'].search([('sku', '=', sku)])
         uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
