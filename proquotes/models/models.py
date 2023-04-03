@@ -132,6 +132,17 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
+    def generate_no_ccp(self, *, selected='true', locked_qty='yes', optional='yes'):
+        product = self.env['product.product'].search([('name', '=', "No CCP")])
+        line = self.env['sale.order.line'].new(
+            {'name': product.name,
+             'selected': selected,
+             'optional': optional,
+             'quantityLocked': locked_qty,
+             'product_id': product.id,
+             'order_id': self._origin.id})
+        return line
+
     def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
         product = self.env['product.product'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
@@ -155,7 +166,12 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 lines.append(section.id)
                 lines.append(block.id)
+                lines.append(self.generate_no_ccp().id)
                 lines.append(self.generate_product_line(6013561).id)
+                lines.append(self.generate_product_line(6009445).id)
+                lines.append(self.generate_product_line(6009450).id)
+                lines.append(self.generate_product_line(6009454).id)
+                lines.append(self.generate_product_line(6009458).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
