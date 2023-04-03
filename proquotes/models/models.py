@@ -158,7 +158,7 @@ class order(models.Model):
              'quantityLocked': locked_qty,
              'product_id': product.id,
              'product_uom_qty': 1,
-             'pice_unit': product.price,
+             'price_unit': product.price,
              'order_id': self._origin.id})
         return line
 
