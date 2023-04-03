@@ -22,7 +22,7 @@
 					</tree>
 				</field>
 				<group name="custom_quote_details">
-					<button name="test_action" type="object" string="add_to_quote"></button>
+					<button name="test_action" type="object" string="Add To Quote"></button>
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="rental_street" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
