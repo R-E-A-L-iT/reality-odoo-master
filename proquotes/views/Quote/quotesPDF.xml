@@ -456,12 +456,19 @@
 				<footer>
 					<t t-if="doc.company_id.id == 15">
 						<div id="bank-info" style="width: 100%; text-align: center;">
-							<p>
+							<p t-if="clang == 'en_CA' or clang == 'en_US'">
 								<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 								<br />
 								<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 								<br />
 								<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
+							</p>
+							<p t-elif="clang == 'fr_CA'">
+								<span>Info pour transfert bancaire à Solutions R-E-A-L.iT</span>
+								<br />
+								<span>BMO succursales de Vaudreuil: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
+								<br />
+								<span>Transit: 33201, Institution: 001, No. de compte: 1986 858</span>
 							</p>
 						</div>
 					</t>
