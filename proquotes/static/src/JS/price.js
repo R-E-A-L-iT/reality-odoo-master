@@ -116,6 +116,7 @@ odoo.define("proquotes.price", function (require) {
 					}
 				}
 			}
+			console.log("HERE")
 			if (totalLandingEnglish != undefined) {
 				console.log("HELLO")
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
