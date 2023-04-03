@@ -148,15 +148,17 @@ class order(models.Model):
         if (not "Renewal Auto" in self.sale_order_template_id.name):
             return
         for product in self.products:
+            lines = []
             if (product.product_id.sku == "838300"):
                 _logger.warning("RTC")
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
-                addList = [block.id, section.id]
+                lines.append(section.id)
+                lines.append(block.id)
                 # line = self.generate_product_line(6013561)
                 # addList.append(line.id)
-                self.order_line = [(6, 0, addList)]
+            self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
         for order in self:
