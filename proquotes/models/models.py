@@ -171,11 +171,11 @@ class order(models.Model):
                 lines.append(section.id)
                 lines.append(block.id)
                 lines.append(self.generate_no_ccp().id)
-                lines.append(self.generate_product_line(6013561).id)
-                lines.append(self.generate_product_line(6009445).id)
-                lines.append(self.generate_product_line(6009450).id)
-                lines.append(self.generate_product_line(6009454).id)
-                lines.append(self.generate_product_line(6009458).id)
+                # lines.append(self.generate_product_line(6013561).id)
+                # lines.append(self.generate_product_line(6009445).id)
+                # lines.append(self.generate_product_line(6009450).id)
+                # lines.append(self.generate_product_line(6009454).id)
+                # lines.append(self.generate_product_line(6009458).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
