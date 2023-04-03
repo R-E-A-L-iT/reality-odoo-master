@@ -132,7 +132,7 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_product_line(self, sku, *, selected='true', locked_qty='true', optional='true'):
+    def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
         product = self.env['product.template'].search([('sku', '=', sku)])
         line = self.env['sale.order.line'].new(
             {'name': product.name,
