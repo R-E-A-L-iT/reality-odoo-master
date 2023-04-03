@@ -141,8 +141,6 @@ class order(models.Model):
              'quantityLocked': locked_qty,
              'product_id': product.id,
              'order_id': self._origin.id})
-        _logger.info(product.id)
-        _logger.error(line.id)
         return line
 
     @api.onchange('sale_order_template_id')
@@ -152,14 +150,12 @@ class order(models.Model):
         lines = []
         for product in self.products:
             if (product.product_id.sku == "838300"):
-                _logger.warning("RTC")
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
                 lines.append(section.id)
                 lines.append(block.id)
-                line = self.generate_product_line(6013561)
-                lines.append(line.id)
+                lines.append(self.generate_product_line(6013561))
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
