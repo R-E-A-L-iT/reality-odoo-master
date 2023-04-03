@@ -65,7 +65,7 @@
 			</xpath>
 
 			<xpath expr="//field[@name='order_line']/tree" position="attributes">
-				<attribute name="limit">200</attribute>
+				<attribute name="limit">2</attribute>
 			</xpath>
 
 		</field>
