@@ -170,7 +170,7 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 lines.append(section.id)
                 lines.append(block.id)
-                lines.append(self.generate_no_ccp().id)
+                # lines.append(self.generate_no_ccp().id)
                 # lines.append(self.generate_product_line(6013561).id)
                 # lines.append(self.generate_product_line(6009445).id)
                 # lines.append(self.generate_product_line(6009450).id)
