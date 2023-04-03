@@ -141,6 +141,7 @@ class order(models.Model):
              'quantityLocked': locked_qty,
              'product_id': product.id,
              'order_id': self._origin.id})
+        _logger.info(product.id)
         _logger.error(line.id)
         return line
 
