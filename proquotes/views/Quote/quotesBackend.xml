@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
-						<button string="add_to_quote"></button>
+						<button name="test_action" string="add_to_quote"></button>
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
