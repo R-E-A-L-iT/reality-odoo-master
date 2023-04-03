@@ -62,7 +62,10 @@
 			<xpath expr="//create[3]" position="after">
 				<create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}" />
 				<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}" />
+			</xpath>
 
+			<xpath expr="//field[@name='order_line']/tree" position="attributes">
+				<attribute name="limit">150</attribute>
 			</xpath>
 
 		</field>
