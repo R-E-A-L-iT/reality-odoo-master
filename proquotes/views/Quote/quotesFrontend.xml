@@ -228,7 +228,7 @@
 				<label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
 					<span>
 						<strong t-if="clang == 'en_CA' or clang == 'en_us'" class="text-left subtotal-label" style="font-weight: bolder">
-							Subtotal
+							Subtotal_TEST
 						</strong>
 						<strong t-if="clang == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
 							Sous-total

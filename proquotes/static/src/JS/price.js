@@ -406,13 +406,11 @@ odoo.define("proquotes.price", function (require) {
 				"subtotal-destination"
 			);
 
-			console.log("Hello World")
 			for (var i = 0; i < subTotalList.length; i++) {
 				var subTotal = subTotalList[i];
 				var inner_html = ""
 				var subtotal_source = document.getElementsByClassName("subtotal-source")
 				if(subTotalList.length > i){
-					console.log("HELLO");
 					inner_html = subtotal_source[i].innerHTML;
 				}
 				subTotal.innerHTML = inner_html;
