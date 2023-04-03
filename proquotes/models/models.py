@@ -132,9 +132,9 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_no_ccp(self, *, selected='true', locked_qty='yes', optional='yes'):
+    def generate_no_ccp(self, *, selected='true', uom='Units', locked_qty='yes', optional='no'):
         product = self.env['product.product'].search([('name', '=', "No CCP")])
-        uom = self.env['uom.uom'].search([('name', '=', "Units")])
+        uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
             raise Exception("Invalid Matches for Name='No CCP'")
         line = self.env['sale.order.line'].new(
@@ -144,14 +144,14 @@ class order(models.Model):
              'quantityLocked': locked_qty,
              'product_id': product.id,
              'product_uom_qty': 1,
-             'product_uom': uom,
+             'product_uom': uomitem,
              'price_unit': product.price,
              'order_id': self._origin.id})
         return line
 
-    def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
+    def generate_product_line(self, sku, *, selected='true', uom='Units', locked_qty='yes', optional='no'):
         product = self.env['product.product'].search([('sku', '=', sku)])
-        uom = self.env['uom.uom'].search([('name', '=', "Units")])
+        uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
             raise Exception("Invalid Responses for: sku=" + str(sku))
         line = self.env['sale.order.line'].new(
@@ -161,7 +161,7 @@ class order(models.Model):
              'quantityLocked': locked_qty,
              'product_id': product.id,
              'product_uom_qty': 1,
-             'product_uom': uom,
+             'product_uom': uomitem,
              'price_unit': product.price,
              'order_id': self._origin.id})
         return line
@@ -179,7 +179,8 @@ class order(models.Model):
                 lines.append(section.id)
                 lines.append(block.id)
                 lines.append(self.generate_no_ccp().id)
-                lines.append(self.generate_product_line(6013561).id)
+                lines.append(self.generate_product_line(
+                    6013561, selected="false").id)
                 lines.append(self.generate_product_line(6009445).id)
                 lines.append(self.generate_product_line(6009450).id)
                 lines.append(self.generate_product_line(6009454).id)
