@@ -176,7 +176,6 @@ class order(models.Model):
                 lines.append(self.generate_product_line(6009450).id)
                 lines.append(self.generate_product_line(6009454).id)
                 lines.append(self.generate_product_line(6009458).id)
-                lines.append(self.generate_product_line(1230003).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
