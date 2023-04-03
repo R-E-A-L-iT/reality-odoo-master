@@ -161,8 +161,8 @@ class order(models.Model):
                 product = self.env['product.template'].search(
                     [('sku', '=', 6013561)])
                 # line.update({'product_id': product.id})
-                self.order_line = [
-                    0, 0, {'product_id': product.id, 'product_uom_qty': 1}]
+                self.order_line = [(
+                    0, 0, {'product_id': product.id, 'product_uom_qty': 1})]
                 _logger.error(line.product_id)
 
     def _amount_all(self):
