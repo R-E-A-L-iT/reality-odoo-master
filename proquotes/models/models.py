@@ -134,7 +134,7 @@ class order(models.Model):
 
     def generate_no_ccp(self, *, selected='true', locked_qty='yes', optional='yes'):
         product = self.env['product.product'].search([('name', '=', "No CCP")])
-        uom = self.env[uom.uom].search([('name', '=', "Units")])
+        uom = self.env['uom.uom'].search([('name', '=', "Units")])
         if (len(product) != 1):
             raise Exception("Invalid Matches for Name='No CCP'")
         line = self.env['sale.order.line'].new(
@@ -151,7 +151,7 @@ class order(models.Model):
 
     def generate_product_line(self, sku, *, selected='true', locked_qty='yes', optional='yes'):
         product = self.env['product.product'].search([('sku', '=', sku)])
-        uom = self.env[uom.uom].search([('name', '=', "Units")])
+        uom = self.env['uom.uom'].search([('name', '=', "Units")])
         if (len(product) != 1):
             raise Exception("Invalid Responses for: sku=" + str(sku))
         line = self.env['sale.order.line'].new(
