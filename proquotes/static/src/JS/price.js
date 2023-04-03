@@ -117,10 +117,17 @@ odoo.define("proquotes.price", function (require) {
 				}
 			}
 			if (totalLandingEnglish != undefined) {
+				console.log("HELLO")
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
+			} else {
+				console.log("BYE")
 			}
+
 			if (totalLandingFrench != undefined) {
+				console.log("HELLO")
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
+			} else {
+				console.log("BYE")
 			}
 
 			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
