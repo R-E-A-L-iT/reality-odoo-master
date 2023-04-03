@@ -142,6 +142,7 @@ class order(models.Model):
              'optional': optional,
              'quantityLocked': locked_qty,
              'product_id': product.id,
+             'product_uom_qty': 1,
              'order_id': self._origin.id})
         return line
 
@@ -155,6 +156,7 @@ class order(models.Model):
              'optional': optional,
              'quantityLocked': locked_qty,
              'product_id': product.id,
+             'product_uom_qty': 1,
              'order_id': self._origin.id})
         return line
 
@@ -170,12 +172,12 @@ class order(models.Model):
                     product.formated_label, special="multiple")
                 lines.append(section.id)
                 lines.append(block.id)
-                # lines.append(self.generate_no_ccp().id)
-                # lines.append(self.generate_product_line(6013561).id)
-                # lines.append(self.generate_product_line(6009445).id)
-                # lines.append(self.generate_product_line(6009450).id)
-                # lines.append(self.generate_product_line(6009454).id)
-                # lines.append(self.generate_product_line(6009458).id)
+                lines.append(self.generate_no_ccp().id)
+                lines.append(self.generate_product_line(6013561).id)
+                lines.append(self.generate_product_line(6009445).id)
+                lines.append(self.generate_product_line(6009450).id)
+                lines.append(self.generate_product_line(6009454).id)
+                lines.append(self.generate_product_line(6009458).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
