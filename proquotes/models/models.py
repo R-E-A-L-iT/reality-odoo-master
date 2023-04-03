@@ -153,14 +153,10 @@ class order(models.Model):
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
                     product.formated_label, special="multiple")
-
-                # product = self.env['product.template'].search(
-                # [('sku', '=', 6013561)])
-                # _logger.warning(product.name)
-                # line.update({'product_id': product.id})
-                self.order_line = [(
-                    0, 0, {'id': section.id})]
-                # _logger.error(line.product_id)
+                addList = [block.id, section.id]
+                # line = self.generate_product_line(6013561)
+                # addList.append(line.id)
+                self.order_line = [(6, 0, addList)]
 
     def _amount_all(self):
         for order in self:
