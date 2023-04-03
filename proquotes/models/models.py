@@ -180,7 +180,7 @@ class order(models.Model):
                 lines.append(block.id)
                 lines.append(self.generate_no_ccp().id)
                 lines.append(self.generate_product_line(
-                    6013561, selected="false").id)
+                    6013561, selected="true").id)
                 lines.append(self.generate_product_line(6009445).id)
                 lines.append(self.generate_product_line(6009450).id)
                 lines.append(self.generate_product_line(6009454).id)
