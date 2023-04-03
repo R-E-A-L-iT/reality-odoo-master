@@ -476,8 +476,15 @@
 					<t t-if="doc.company_id.id == 3">
 						<br />
 						<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-							<p>
+							<p t-if="clang == 'en_CA' or clang == 'en_US'">
 								<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
+								<br />
+								<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
+								<br />
+								<span>Routing No.: 071000288, Account No.: 3875473</span>
+							</p>
+							<p t-if="clang == 'fr_CA'">
+								<span>Info pour transfert bancaire à R-E-A-L.iT U.S. Inc.</span>
 								<br />
 								<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 								<br />
