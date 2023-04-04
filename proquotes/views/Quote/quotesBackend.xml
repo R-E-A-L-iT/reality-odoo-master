@@ -21,7 +21,7 @@
 					</tree>
 				</field>
 				<t t-foreach="producs" t-as="product">
-					<button string="product.name" type="" />
+					<button t-attf-string="{{product.name}}" type="" />
 					<!-- <field name="product.name" /> -->
 				</t>
 				<group name="custom_quote_details">
