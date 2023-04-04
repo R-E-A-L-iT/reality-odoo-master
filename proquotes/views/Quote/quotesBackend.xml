@@ -21,7 +21,7 @@
 						<field name="formated_label" />
 					</tree>
 				</field>
-				<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" widget="Tags" />
+				<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" widget="tag" invisible="0" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
