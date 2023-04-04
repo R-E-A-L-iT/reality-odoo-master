@@ -13,16 +13,6 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" />
-				<!-- <field name="partner_ids" invisible="0" /> -->
-				<field name="products" invisible="0">
-					<tree>
-						<field name="name" />
-						<field name="sku" />
-						<field name="product_id" />
-						<field name="expire" />
-						<field name="formated_label" />
-					</tree>
-				</field>
 				<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" invisible="0">
 					<tree>
 						<field name="name"></field>
@@ -81,6 +71,20 @@
 			</xpath>
 
 		</field>
+
+		<xpath expr="//page[@name=&quot;other_information&quot;]" position="after">
+			<page string="Customer Products" name="customer_products">
+				<field name="products" invisible="0">
+					<tree>
+						<field name="name" />
+						<field name="sku" />
+						<field name="product_id" />
+						<field name="expire" />
+						<field name="formated_label" />
+					</tree>
+				</field>
+			</page>
+		</xpath>
 
 	</record>
 
