@@ -72,8 +72,8 @@
 
 		</field>
 
-		<xpath expr="//page[@name=&quot;other_information&quot;]" position="after">
-			<!-- <page string="Customer Products" name="customer_products">
+		<!-- <xpath expr="//page[@name=&quot;other_information&quot;]" position="after">
+			<page string="Customer Products" name="customer_products">
 				<field name="products" invisible="0">
 					<tree>
 						<field name="name" />
@@ -83,8 +83,8 @@
 						<field name="formated_label" />
 					</tree>
 				</field>
-			</page> -->
-		</xpath>
+			</page>
+		</xpath> -->
 
 	</record>
 
