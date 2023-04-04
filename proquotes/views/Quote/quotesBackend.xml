@@ -71,19 +71,19 @@
 			</xpath>
 
 			<xpath expr="//page[@name=&quot;other_information&quot;]" position="after">
-				<page string="Customer Products" name="customer_products" invisible="0">
-					<group>
-						<field name="products" invisible="0">
-							<tree>
-								<field name="name" />
-								<field name="sku" />
-								<field name="product_id" />
-								<field name="expire" />
-								<field name="formated_label" />
-							</tree>
-						</field>
-					</group>
-				</page>
+				<!-- <page string="Customer Products" name="customer_products" invisible="0"> -->
+				<!-- <group> -->
+				<!-- <field name="products" invisible="0"> -->
+				<!-- <tree> -->
+				<!-- <field name="name" /> -->
+				<!-- <field name="sku" /> -->
+				<!-- <field name="product_id" /> -->
+				<!-- <field name="expire" /> -->
+				<!-- <field name="formated_label" /> -->
+				<!-- </tree> -->
+				<!-- </field> -->
+				<!-- </group> -->
+				<!-- </page> -->
 			</xpath>
 		</field>
 	</record>
