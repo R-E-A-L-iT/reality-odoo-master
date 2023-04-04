@@ -23,7 +23,7 @@
 				</field>
 
 				<t t-set="HELLO" t-value="'BYE'" />
-				<button string="Add to Quote" name="test_action" type="object" args="1" />
+				<button string="Add to Quote" name="test_action" type="object" args="HELLO" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
