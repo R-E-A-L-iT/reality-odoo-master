@@ -120,7 +120,7 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
-        string="Renewal Items", comodel_name="stock.production.lot", domain="")
+        string="Renewal Items", comodel_name="stock.production.lot")
     # rental_insurance = fields.Binary(string="Insurance")
 
     @ api.onchange('sale_order_template_id')
