@@ -69,7 +69,7 @@
 				<attribute name="limit">150</attribute>
 			</xpath>
 
-			<xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
+			<!-- <xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
 				<page string="Customer Products" name="customer_products" invisible="0">
 					<group>
 						<field name="products" nolabel="1">
@@ -82,8 +82,8 @@
 							</tree>
 						</field>
 					</group>
-				</page>
-			</xpath>
+				</page> -->
+			<!-- </xpath> -->
 		</field>
 	</record>
 
