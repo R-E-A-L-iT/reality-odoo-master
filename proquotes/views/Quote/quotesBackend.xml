@@ -21,7 +21,7 @@
 					</tree>
 				</field>
 
-				<!-- <t t-set="HELLO" t-value="'BYE'" /> -->
+				<t t-set="HELLO" t-value="'BYE'" />
 				<button string="Add to Quote" name="test_action" type="object" args="1234" />
 
 				<group name="custom_quote_details">
