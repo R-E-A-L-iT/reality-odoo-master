@@ -15,12 +15,13 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
-						<button string="Add to Quote" action="" type="object" />
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
 					</tree>
 				</field>
+
+				<button string="Add to Quote" action="test_action" type="object" args="'123'" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
