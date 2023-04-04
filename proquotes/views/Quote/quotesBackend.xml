@@ -21,10 +21,7 @@
 						<field name="formated_label" />
 					</tree>
 				</field>
-				<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" widget="tags" />
-
-				<t t-set="HELLO" t-value="'BYE'" />
-				<button string="Add to Quote" name="test_action" type="object" args="HELLO" />
+				<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" widget="Tags" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
