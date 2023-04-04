@@ -178,12 +178,13 @@ class order(models.Model):
              'order_id': self._origin.id})
         return line
 
-    @api.onchange('sale_order_template_id')
+    @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
         if (not "Renewal Auto" in self.sale_order_template_id.name):
+            self.renewal_product_items = False
             return
         lines = []
-        for product in self.products:
+        for product in self.renewal_product_items:
             if (product.product_id.sku == "838300"):
                 block = self.generate_section_line("$block")
                 section = self.generate_section_line(
