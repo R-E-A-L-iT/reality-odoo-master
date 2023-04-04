@@ -107,6 +107,8 @@ class order(models.Model):
         ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
+    is_renewal = fields.Boolean(string="Renewal Quote", default=False)
+
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
     rental_street = fields.Char(string="Street Address")
     rental_city = fields.Char(string="City")
@@ -129,6 +131,10 @@ class order(models.Model):
             self.is_rental = True
         else:
             self.is_rental = False
+        if ("Renewal" in self.sale_order_template_id.name):
+            self.is_renewal = True
+        else:
+            self.is_renewal = False
 
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
