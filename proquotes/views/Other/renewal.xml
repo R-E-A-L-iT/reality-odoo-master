@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <menuitem id="proquotes_renewal" name="Renewal Configuration" action="proquotes_renewal_menu" />
+
+    <record id="proquotes_renewal_menu">
+        <field name="name">proquotes.renewal_menu</field>
+        <field name="model">proquotes.renewal.map</field>
+        <field name="arch">
+            <field name="id" />
+        </field>
+    </record>
+
+</odoo>
