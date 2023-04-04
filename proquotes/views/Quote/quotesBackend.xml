@@ -15,6 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
+						<a src="r-e-a-l.it"></a>
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
