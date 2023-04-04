@@ -73,7 +73,7 @@
 			<xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
 				<page string="Customer Products" name="customer_products" invisible="0">
 					<group>
-						<field name="products" invisible="0">
+						<field name="products">
 							<tree>
 								<field name="name" />
 								<field name="sku" />
