@@ -8,7 +8,9 @@
         <field name="res_model">proquotes.renewal.map</field>
         <field name="view_mode">tree</field>
         <field name="arch" type="xml">
-            <field name="id" />
+            <group name="hello">
+                <field name="id" />
+            </group>
         </field>
     </record>
 
