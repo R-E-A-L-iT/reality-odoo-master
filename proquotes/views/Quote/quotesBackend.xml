@@ -15,7 +15,6 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
-						<field name="id" widget="checkbox"></field>
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
