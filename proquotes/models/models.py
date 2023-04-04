@@ -118,6 +118,9 @@ class order(models.Model):
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
+
+    renewal_product_items = fields.one2Many(
+        string="Renewal Items", related="stock.production.lot")
     # rental_insurance = fields.Binary(string="Insurance")
 
     @ api.onchange('sale_order_template_id')
