@@ -15,15 +15,13 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="products" invisible="0">
 					<tree>
+						<button string="Add to Quote" />
 						<field name="name" />
 						<field name="product_id" />
 						<field name="formated_label" />
 					</tree>
 				</field>
-				<t t-foreach="producs" t-as="product">
-					<button t-att-string="{{product.name}}" type="" />
-					<!-- <field name="product.name" /> -->
-				</t>
+
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
