@@ -4,7 +4,7 @@
     <!-- <menuitem id="proquotes_renewal" name="Renewal Configuration" action="proquotes_renewal_menu" /> -->
 
     <record id="proquotes_renewal_menu" model="ir.ui.view">
-        <field name="name">proquotes.renewal_menu</field>
+        <field name="name">Proquotes Renewal Menu</field>
         <field name="model">renewal.map</field>
         <field name="arch">
             <field name="id" />
