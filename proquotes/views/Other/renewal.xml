@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <menuitem id="proquotes_renewal" name="Renewal Configuration" action="proquotes_renewal_form" />
+    <menuitem id="proquotes_renewal" name="Renewal_Configuration" action="proquotes_renewal_form" />
     <record id="renewal_map_form" model="ir.ui.view">
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
