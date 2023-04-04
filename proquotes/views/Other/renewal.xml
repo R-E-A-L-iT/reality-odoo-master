@@ -6,7 +6,7 @@
     <record id="proquotes_renewal_menu" model="ir.ui.view">
         <field name="name">Proquotes Renewal Menu</field>
         <field name="res_model">proquotes.renewal.map</field>
-        <field name="view_mode">tree</field>
+        <!-- <field name="view_mode">tree</field> -->
         <field name="arch" type="xml">
             <group name="hello">
                 <field name="id" />
