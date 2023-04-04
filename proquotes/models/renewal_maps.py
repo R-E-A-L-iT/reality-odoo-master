@@ -22,7 +22,9 @@ _logger = logging.getLogger(__name__)
 
 class renewal_map(models.Model):
     _name = 'renewal.map'
+    _description = 'Map Product Types to Renewal Offers'
 
 
 class renewal_entry(models.Model):
     _name = 'renewal.entry'
+    _description = 'Hold order information for renewal.map'
