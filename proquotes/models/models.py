@@ -119,7 +119,7 @@ class order(models.Model):
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
 
-    renewal_product_items = fields.one2Many(
+    renewal_product_items = fields.One2many(
         string="Renewal Items", related="stock.production.lot")
     # rental_insurance = fields.Binary(string="Insurance")
 
