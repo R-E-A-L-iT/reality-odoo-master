@@ -45,7 +45,7 @@ class productInstance(models.Model):
                          default=lambda self: fields.Date.today(), required=False)
     formated_label = fields.Char(compute='_label')
     publish = fields.Boolean(string="publish", default="True")
-    quotes = fields.Many2one(string="hidden", comodel_name="sale.order")
+    # quotes = fields.Many2one(string="hidden", comodel_name="sale.order")
 
     def _label(self):
         for i in self:
