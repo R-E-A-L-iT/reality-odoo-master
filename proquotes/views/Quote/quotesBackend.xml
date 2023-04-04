@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" />
 				<group name="Renewal Items" attrs="{'invisible': [('is_renewal', '!=', True)]}">
 					<field name="is_renewal" invisible="1" />
-					<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
+					<field name="renewal_product_items" domain="[('owner', '=', partner_id)]" invisible="0">
 						<tree>
 							<field name="name"></field>
 							<field name="product_id"></field>
