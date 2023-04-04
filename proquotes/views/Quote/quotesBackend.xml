@@ -21,7 +21,7 @@
 					</tree>
 				</field>
 				<t t-foreach="producs" t-as="product">
-					<field name="product.name" />
+					<!-- <field name="product.name" /> -->
 				</t>
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
