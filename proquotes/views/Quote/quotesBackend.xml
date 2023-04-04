@@ -71,7 +71,7 @@
 			</xpath>
 
 			<xpath expr="//page[@name=&quot;other_information&quot;]" position="after">
-				<page string="Customer Products" name="customer_products">
+				<page string="Customer Products" name="customer_products" invisible="0">
 					<group>
 						<field name="products" invisible="0">
 							<tree>
