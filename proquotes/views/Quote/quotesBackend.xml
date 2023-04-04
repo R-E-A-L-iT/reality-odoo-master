@@ -13,7 +13,7 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
-				<field name="products" invisible="0">
+				<field name="products" invisible="1">
 					<tree>
 						<field name="name" />
 						<field name="product_id" />
