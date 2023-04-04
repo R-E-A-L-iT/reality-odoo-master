@@ -30,6 +30,8 @@
 					</tree>
 				</field>
 
+				<field name="renewal_product_items.name" domain="[('owner', '=', partner_id)]" invisible="0" widget="tags" />
+
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
