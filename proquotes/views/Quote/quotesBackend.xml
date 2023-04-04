@@ -21,7 +21,7 @@
 					</tree>
 				</field>
 
-				<button string="Add to Quote" name="test_action" type="object" args="'HELLO'" />
+				<button string="Add to Quote" name="test_action" type="object" t-attf-args="{{'HELLO'}}" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
