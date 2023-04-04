@@ -21,7 +21,7 @@
 						<field name="formated_label" />
 					</tree>
 				</field>
-				<field name="renewal_product_items" domain="[(partner_id, '=', owner)]" />
+				<field name="renewal_product_items" domain="[(partner_id, '=', renewal_product_items.owner)]" />
 
 				<t t-set="HELLO" t-value="'BYE'" />
 				<button string="Add to Quote" name="test_action" type="object" args="HELLO" />
