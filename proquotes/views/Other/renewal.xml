@@ -7,6 +7,7 @@
         <field name="name">Proquotes Renewal Menu</field>
         <field name="model">proquotes.renewal.map</field>
         <field name="arch" type="xml">
+            <field name="id" />
         </field>
     </record>
 
