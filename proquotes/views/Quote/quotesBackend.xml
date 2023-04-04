@@ -13,7 +13,7 @@
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" />
-				<group name="Renewal Items">
+				<group name="Renewal Items" attrs="{'invisible': [('is_renewal', '!=', True)]}">
 					<field name="is_renewal" invisible="1" />
 					<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
 						<tree>
