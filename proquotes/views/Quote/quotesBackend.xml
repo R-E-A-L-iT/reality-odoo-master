@@ -12,8 +12,8 @@
 			</xpath>
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
-				<!-- <field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" /> -->
-				<field name="partner_ids" invisible="0" />
+				<field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" />
+				<!-- <field name="partner_ids" invisible="0" /> -->
 				<!-- <field name="products" invisible="0">
 					<tree>
 						<button string="Add to Quote" name="test_action" type="" args="HELLO" />
