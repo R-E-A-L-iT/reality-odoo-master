@@ -30,7 +30,7 @@
 					</tree>
 				</field>
 
-				<field name="renewal_product_items.name" invisible="0" widget="tags" />
+				<field name="renewal_product_items" invisible="0" widget="tags" />
 
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
