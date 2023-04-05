@@ -5,17 +5,18 @@
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="priority">4</field>
-        <field name="arc" type="xml">
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
             <tree>
-                <field name="id" />
+                <field name=" id" />
             </tree>
         </field>
     </record>
 
     <!-- <menuitem
-        id="proquotes_renewal_menu_item"
-        name="Renewal Configuration"
-        parent="sale.menu_sale_config"
-        sequence="1"
+        id=" proquotes_renewal_menu_item"
+        name=" Renewal Configuration"
+        parent=" sale.menu_sale_config"
+        sequence=" 1"
     /> -->
 </odoo>
