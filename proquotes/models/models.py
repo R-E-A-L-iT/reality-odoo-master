@@ -176,10 +176,10 @@ class order(models.Model):
                 continue
             renewal_map = renewal_maps[0]
             lines.append(self.generate_section_line(
-                product.formated_label, special='mulpiple'))
-            lines.append('$block')
+                product.formated_label, special='mulpiple').id)
+            lines.append(self.generate_section_line('$block').id)
             for map_product in renewal_map.product_offers:
-                lines.append(map_product)
+                lines.append(self.generate_product_line(map_product).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
