@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="action_renewal_map_form" model="ir.ui.view">
+    <record id="renewal_map_form" model="ir.ui.view">
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="type">tree</field>
-        <!-- <field name="mode">primary</field> -->
         <field name="arc" type="xml">
             <tree>
                 <field name="id" />
