@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="action_renewal_map_form" model="ir.actions.act">
+    <record id="action_renewal_map_form" model="ir.actions.act_window">
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="arch" type="xml">
