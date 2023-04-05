@@ -5,7 +5,7 @@
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="type">tree</field>
-        <field mode="primary"></field>
+        <field name="mode">primary</field>
         <field name="arc" type="xml">
             <tree>
                 <field name="id" />
