@@ -20,7 +20,7 @@
         <field name="priority">4</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Renewal Entry">
                 <field name="product_id" />
             </form>
         </field>
