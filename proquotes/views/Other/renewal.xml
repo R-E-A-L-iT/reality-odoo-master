@@ -20,11 +20,11 @@
         <field name="view_id" ref="renewal_map_form" />
     </record>
 
-    <!-- <menuitem
+    <menuitem
         id="proquotes_renewal_menu_item"
         name="Renewal Configuration"
         parent="sale.menu_sale_config"
-        action="action_my_form"
+        action="action_renewal_map"
         sequence=" 1"
-    /> -->
+    />
 </odoo>
