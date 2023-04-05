@@ -30,7 +30,7 @@ class renewal_map(models.Model):
         comodel_name='renewal.entry',  inverse_name="map_id", string="Renewal Offers")
 
     @api.onchange('product_id')
-    def verifyUnique(self):
+    def verify_unique(self):
         records = self.env['renewal.map'].search(
             {('product_id', '=', self.product_id)})
         if (len(records) > 1):
