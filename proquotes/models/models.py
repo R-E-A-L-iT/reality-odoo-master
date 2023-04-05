@@ -150,11 +150,14 @@ class order(models.Model):
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env['product.pricelist.item'].search(
             [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
+        price = 0
         if (len(pricelist_entry) != 1):
             raise Exception("Duplicate Pricelist Rules: " +
                             str(product_id.sku))
+        elif (len(pricelist_entry) == 1):
+            price = pricelist_entry[-1].fixed_price
         uomitem = self.env['uom.uom'].search([('name', '=', uom)])
-        if (len(product) != 1):
+        if (len(product) > 1):
             raise Exception("Invalid Responses for: sku=" +
                             str(product_id.sku))
         line = self.env['sale.order.line'].new(
@@ -165,7 +168,7 @@ class order(models.Model):
              'product_id': product.id,
              'product_uom_qty': 1,
              'product_uom': uomitem,
-             'price_unit': pricelist_entry[-1].fixed_price,
+             'price_unit': price,
              'order_id': self._origin.id})
         return line
 
