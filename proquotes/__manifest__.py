@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.1238',
+    'version': '1.0.1239',
 
     # always loaded
     'data': [
@@ -59,7 +59,7 @@
         'views/Other/pdf_boxed.xml',
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
-        'views/Other/renewal.xml',
+        # 'views/Other/renewal.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoice_lot.xml',
