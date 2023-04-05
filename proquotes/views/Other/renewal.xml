@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="renewal_map_form" model="ir.actions.act_window">
+    <record id="renewal_map_form" model="ir.ui.view">
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="priority">4</field>
-        <field name="type">tree</field>
+        <field name="type">tree,form</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="sku" />
             </tree>
         </field>
+    </record>
+
+    <record id="action_renewal_map" model="ir.actions.act_window">
+        <field name="name">Renewal</field>
+        <field name="name">renewal.map</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="renewal_map_form" />
+        <field name="view_mode">tree,form</field>
     </record>
 
     <!-- <menuitem
