@@ -22,7 +22,7 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
-                <!-- <field name="name" /> -->
+                <label for="product_id">Product</label>
                 <field name="product_id" />
                 <field name="product_offers">
                     <tree>
