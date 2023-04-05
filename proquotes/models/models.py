@@ -174,6 +174,9 @@ class order(models.Model):
                 [('product_id', '=', product.product_id.id)])
             if (len(renewal_maps) != 1):
                 continue
+            else:
+                raise UserError("No Mapping for: " +
+                                str(product.product_id.name))
             renewal_map = renewal_maps[0]
             lines.append(self.generate_section_line(
                 product.formated_label, special='mulpiple').id)
