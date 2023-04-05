@@ -27,7 +27,12 @@
                 <field name="product_offers">
                     <tree>
                         <field name="order" />
-                        <field name="product_id" />
+                        <field name="product_id">
+                            <tree>
+                                <field name="sku" />
+                                <field name="name" />
+                            </tree>
+                        </field>
                     </tree>
                 </field>
             </form>
