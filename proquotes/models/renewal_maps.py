@@ -27,7 +27,7 @@ class renewal_map(models.Model):
     product_id = fields.Many2one(
         'product.product', string="Product", required=True)
     product_offers = fields.One2many(
-        'renewal.entry', string="Renewal Offers")
+        comodel_name='renewal.entry', string="Renewal Offers")
 
 
 class renewal_entry(models.Model):
@@ -36,4 +36,5 @@ class renewal_entry(models.Model):
     order = fields.Integer(string="Order", required=True)
     product_id = fields.Many2one(
         'product.product', string="Product", required="True")
-    map_id = fields.One2many('renewal.map')
+    map_id = fields.One2many(comodel_name='renewal.map',
+                             inverse_name='product_offers')
