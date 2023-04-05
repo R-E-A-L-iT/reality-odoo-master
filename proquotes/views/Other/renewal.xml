@@ -8,7 +8,7 @@
         <field mode="primary"></field>
         <field name="arc" type="xml">
             <tree>
-
+                <field name="id" />
             </tree>
         </field>
     </record>
