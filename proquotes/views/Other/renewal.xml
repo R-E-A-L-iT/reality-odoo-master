@@ -13,6 +13,9 @@
         </field>
     </record>
 
-    <menuitem id="proquotes_renewal_menu_item" parent="menu_sale_config" name="Renewal_Configuration" />
+    <menuitem
+        id="proquotes_renewal_menu_item"
+        parent="sale.menu_sale_config"
+        name="Renewal Configuration" />
 
 </odoo>
