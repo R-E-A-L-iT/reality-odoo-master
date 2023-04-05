@@ -54,16 +54,20 @@
 				<t t-set="year" t-value="date[0]" />
 				<t t-set="monthNum" t-value="date[1]" />
 				<t t-set="day" t-value="date[2]" />
+				<t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-set="monthList" t-value="['', 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
+					<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + monthList[int(monthNum)] + ' ' + str(day) + ', ' + str(year)" />
+				</t>
+				<t t-elif="clang == 'fr_CA'">
+					<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
+					<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + str(day) + ' ' + monthList[int(monthNum)] + ', ' + str(year)" />
+				</t>
+			</t>
+			<t t-else="">
+				<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="str(name) + ' (' + str(id) + ')'" />
+				<t t-elif="clang == 'fr_CA'" t-out="str(name) + ' (' + str(id) + ')" />
+			</t>
 
-			</t>
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">
-				<t t-set="monthList" t-value="['', 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
-				<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + monthList[int(monthNum)] + ' ' + str(day) + ', ' + str(year)" />
-			</t>
-			<t t-elif="clang == 'fr_CA'">
-				<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
-				<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + str(day) + ' ' + monthList[int(monthNum)] + ', ' + str(year)" />
-			</t>
 		</t>
 		<t t-else="">
 			<t t-out="sname" />
