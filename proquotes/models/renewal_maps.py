@@ -36,3 +36,4 @@ class renewal_entry(models.Model):
     order = fields.Integer(string="Order", required=True)
     product_id = fields.Many2one(
         'product.product', string="Product", required="True")
+    map_id = fields.One2many('renewal.map')
