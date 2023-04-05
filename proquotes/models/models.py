@@ -180,9 +180,9 @@ class order(models.Model):
                 product.formated_label, special='multiple').id)
             lines.append(self.generate_section_line('$block').id)
             for i, map_product in enumerate(renewal_map.product_offers):
-                selected = "no"
+                selected = "false"
                 if (i == 1):
-                    selected = "yes"
+                    selected = "true"
                 lines.append(self.generate_product_line(
                     map_product.product_id, selected=selected).id)
         self.order_line = [(6, 0, lines)]
