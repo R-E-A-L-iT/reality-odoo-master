@@ -179,7 +179,8 @@ class order(models.Model):
                 product.formated_label, special='mulpiple').id)
             lines.append(self.generate_section_line('$block').id)
             for map_product in renewal_map.product_offers:
-                lines.append(self.generate_product_line(map_product).id)
+                lines.append(self.generate_product_line(
+                    map_product.product_id).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
