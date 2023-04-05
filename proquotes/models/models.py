@@ -177,7 +177,7 @@ class order(models.Model):
                                 str(product.product_id.name))
             renewal_map = renewal_maps[0]
             lines.append(self.generate_section_line(
-                product.formated_label, special='mulpiple').id)
+                product.formated_label, special='multiple').id)
             lines.append(self.generate_section_line('$block').id)
             for map_product in renewal_map.product_offers:
                 lines.append(self.generate_product_line(
