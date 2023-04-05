@@ -176,7 +176,7 @@ class order(models.Model):
                 continue
             renewal_map = renewal_maps[0]
             lines.append(self.generate_section_line(
-                product.formated_label), special='mulpiple')
+                product.formated_label, special='mulpiple'))
             lines.append('$block')
             for map_product in renewal_map.product_offers:
                 lines.append(map_product)
