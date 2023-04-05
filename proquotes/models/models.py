@@ -173,8 +173,6 @@ class order(models.Model):
             renewal_maps = self.env['renewal.map'].search(
                 [('product_id', '=', product.product_id.id)])
             if (len(renewal_maps) != 1):
-                continue
-            else:
                 raise UserError("No Mapping for: " +
                                 str(product.product_id.name))
             renewal_map = renewal_maps[0]
