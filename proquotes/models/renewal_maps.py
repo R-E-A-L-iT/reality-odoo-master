@@ -31,6 +31,7 @@ class renewal_map(models.Model):
 
     @api.onchange('product_id')
     def verify_unique(self):
+        _logger.error(self.product_id)
         if (self.product_id == False):
             return
         records = self.env['renewal.map'].search(
