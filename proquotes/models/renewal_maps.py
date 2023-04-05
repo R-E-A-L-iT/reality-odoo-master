@@ -39,8 +39,6 @@ class renewal_map(models.Model):
             raise ValidationError(
                 "Renewal Map Entry Already Made for: " + str(self.product_id.name))
         if (len(records) == 1 and records[0].id != self.id):
-            _logger.error(records[0].id)
-            _logger.error(self.id)
             raise ValidationError(
                 "Renewal Map Entry Already Made for: " + str(self.product_id.name))
         _logger.error(records)
