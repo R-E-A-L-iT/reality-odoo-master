@@ -29,6 +29,14 @@ class renewal_map(models.Model):
     product_offers = fields.One2many(
         comodel_name='renewal.entry',  inverse_name="map_id", string="Renewal Offers")
 
+    @api.onchange(product_id)
+    def verifyUnique(self):
+        records = self.env['renewal.map'].search(
+            {('product_id', '=', self.product_id)})
+        if (len(records) > 1):
+            raise ValidationError(
+                "Renewal Map Entry Already Made for: " + self.product_id.name)
+
 
 class renewal_entry(models.Model):
     _name = 'renewal.entry'
