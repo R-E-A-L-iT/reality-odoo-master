@@ -14,11 +14,10 @@
     </record>
 
     <record id="action_renewal_map" model="ir.actions.act_window">
-        <field name="name">Renewal</field>
-        <field name="name">renewal.map</field>
-        <field name="view_type">tree</field>
-        <field name="view_id" ref="renewal_map_form" />
+        <field name="name">Renewal Maping</field>
+        <field name="renewal.map"></field>
         <field name="view_mode">tree</field>
+        <field name="view_id" ref="renewal_map_form" />
     </record>
 
     <!-- <menuitem
