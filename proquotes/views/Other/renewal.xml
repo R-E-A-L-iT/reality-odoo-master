@@ -24,6 +24,7 @@
             <form>
                 <label for="product_id">Product</label>
                 <field name="product_id" />
+                <field name="product_offers"></field>
             </form>
         </field>
     </record>
