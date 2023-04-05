@@ -144,28 +144,13 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_no_ccp(self, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
-        product = self.env['product.product'].search([('name', '=', "No CCP")])
+    def generate_product_line(self, product_id, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
+        product = self.env['product.product'].search(
+            [('id', '=', product_id.id)])
         uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
-            raise Exception("Invalid Matches for Name='No CCP'")
-        line = self.env['sale.order.line'].new(
-            {'name': product.name,
-             'selected': selected,
-             'optional': optional,
-             'quantityLocked': locked_qty,
-             'product_id': product.id,
-             'product_uom_qty': 1,
-             'product_uom': uomitem,
-             'price_unit': product.price,
-             'order_id': self._origin.id})
-        return line
-
-    def generate_product_line(self, sku, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
-        product = self.env['product.product'].search([('sku', '=', sku)])
-        uomitem = self.env['uom.uom'].search([('name', '=', uom)])
-        if (len(product) != 1):
-            raise Exception("Invalid Responses for: sku=" + str(sku))
+            raise Exception("Invalid Responses for: sku=" +
+                            str(product_id.sku))
         line = self.env['sale.order.line'].new(
             {'name': product.name,
              'selected': selected,
@@ -185,19 +170,16 @@ class order(models.Model):
             return
         lines = []
         for product in self.renewal_product_items:
-            if (product.product_id.sku == "838300"):
-                block = self.generate_section_line("$block")
-                section = self.generate_section_line(
-                    product.formated_label, special="multiple")
-                lines.append(section.id)
-                lines.append(block.id)
-                lines.append(self.generate_no_ccp().id)
-                lines.append(self.generate_product_line(
-                    6013561, selected="true").id)
-                lines.append(self.generate_product_line(6009445).id)
-                lines.append(self.generate_product_line(6009450).id)
-                lines.append(self.generate_product_line(6009454).id)
-                lines.append(self.generate_product_line(6009458).id)
+            renewal_maps = self.env['renewal.map'].search(
+                [('product_id', '=', product.product_id.id)])
+            if (len(renewal_maps) != 1):
+                continue
+            renewal_map = renewal_maps[0]
+            lines.append(self.generate_section_line(
+                product.formated_label), special='mulpiple')
+            lines.append('$block')
+            for map_product in renewal_map.product_offers:
+                lines.append(map_product)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
