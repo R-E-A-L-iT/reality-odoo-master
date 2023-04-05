@@ -4,6 +4,13 @@
     <record id="action_renewal_map_form" model="ir.actions.act_window">
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
+        <field name="type">tree</field>
+        <field mode="primary"></field>
+        <field name="arc" type="xml">
+            <tree>
+
+            </tree>
+        </field>
     </record>
 
     <!-- <menuitem
