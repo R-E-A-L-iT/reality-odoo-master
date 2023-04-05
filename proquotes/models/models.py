@@ -179,9 +179,12 @@ class order(models.Model):
             lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
             lines.append(self.generate_section_line('$block').id)
-            for map_product in renewal_map.product_offers:
+            for i, map_product in enumerate(renewal_map.product_offers):
+                selected = "no"
+                if (i == 1):
+                    selected = "yes"
                 lines.append(self.generate_product_line(
-                    map_product.product_id).id)
+                    map_product.product_id, selected=selected).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
