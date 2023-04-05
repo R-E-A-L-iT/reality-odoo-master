@@ -32,10 +32,10 @@ class renewal_map(models.Model):
     @api.onchange('product_id')
     def verify_unique(self):
         records = self.env['renewal.map'].search(
-            {('product_id', '=', self.product_id)})
+            [('product_id', '=', self.product_id)])
         if (len(records) > 1):
             raise ValidationError(
-                "Renewal Map Entry Already Made for: " + self.product_id.name)
+                "Renewal Map Entry Already Made for: " + str(self.product_id.name))
         _logger.error(records)
 
 
