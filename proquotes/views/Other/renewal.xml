@@ -5,7 +5,7 @@
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="priority">4</field>
-        <field name="type">tree</field>
+        <field name="type">tree,form</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="product_id" />
