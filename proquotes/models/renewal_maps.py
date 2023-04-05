@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 class renewal_map(models.Model):
     _name = 'renewal.map'
     _description = 'Map Product Types to Renewal Offers'
-    product_id = fields.many2One(comodel="product.product")
+    product_id = fields.Many2one(comodel="product.product")
 
 
 class renewal_entry(models.Model):
