@@ -13,6 +13,6 @@
         </field>
     </record>
 
-    <menuitem id="proquotes_renewal_menu_item" name="Renewal_Configuration" />
+    <menuitem id="proquotes_renewal_menu_item" parent="configuration" name="Renewal_Configuration" />
 
 </odoo>
