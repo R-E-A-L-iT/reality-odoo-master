@@ -29,6 +29,7 @@ class renewal_map(models.Model):
     product_offers = fields.One2many(
         comodel_name='renewal.entry',  inverse_name="map_id", string="Renewal Offers")
 
+# Ensure that that there is only one map per product
     @api.onchange('product_id')
     def verify_unique(self):
         if (len(self.product_id) == 0):
