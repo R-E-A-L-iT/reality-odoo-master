@@ -17,7 +17,6 @@
         id="proquotes_renewal_menu_item"
         name="Renewal Configuration"
         parent="sale.menu_sale_config_settings"
-        view="proquotes.action_renewal_map_form"
         sequence="1"
     />
 </odoo>
