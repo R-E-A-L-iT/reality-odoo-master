@@ -15,7 +15,7 @@
 
     <record id="action_renewal_map" model="ir.actions.act_window">
         <field name="name">Renewal Maping</field>
-        <field name="proquotes.renewal.map"></field>
+        <field name="res_model">renewal.map</field>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="renewal_map_form" />
     </record>
