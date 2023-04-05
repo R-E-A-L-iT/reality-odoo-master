@@ -37,4 +37,5 @@ class renewal_entry(models.Model):
     product_id = fields.Many2one(
         'product.product', string="Product", required="True")
     map_id = fields.Many2one(comodel_name='renewal.map')
+    _rec_name = "order + ', ' + product_id"
     _order = 'order'
