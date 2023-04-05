@@ -27,7 +27,7 @@ class renewal_map(models.Model):
     product_id = fields.Many2one(
         'product.product', string="Product", required=True)
     product_offers = fields.Many2many(
-        'product.product', string="Renewal Offers")
+        'renewal.entry', string="Renewal Offers")
 
 
 class renewal_entry(models.Model):
