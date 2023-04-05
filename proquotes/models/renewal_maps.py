@@ -33,6 +33,6 @@ class renewal_map(models.Model):
 class renewal_entry(models.Model):
     _name = 'renewal.entry'
     _description = 'Hold order information for renewal.map'
-    order = fields.integer(string="Order", required=True)
+    order = fields.Integer(string="Order", required=True)
     product_id = fields.Many2one(
         'product.product', string="Product", required="True")
