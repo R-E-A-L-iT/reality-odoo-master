@@ -12,8 +12,8 @@
 			</xpath>
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
+				<filter name="partner_ids" string="company" domain="[('parent_id', '=', partner_id)]" />
 				<field name="partner_ids" invisible="0">
-					<filter name="same_company" string="company" domain="[('parent_id', '=', partner_id)]" />
 				</field>
 				<field name="is_renewal" invisible="1" />
 				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
