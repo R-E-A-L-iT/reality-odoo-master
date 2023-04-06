@@ -410,7 +410,7 @@ odoo.define("proquotes.price", function (require) {
 				var subTotal = subTotalList[i];
 				var inner_html = ""
 				var subtotal_source = document.getElementsByClassName("subtotal-source")
-				if(subTotalList.length > i){
+				if(subtotal_source.length > i){
 					inner_html = subtotal_source[i].innerHTML;
 				}
 				subTotal.innerHTML = inner_html;
