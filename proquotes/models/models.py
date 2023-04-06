@@ -148,7 +148,7 @@ class order(models.Model):
         if (selected == True):
             selected = 'true'
         elif (selected == False):
-            selected = 'true'
+            selected = 'false'
         product = self.env['product.product'].search(
             [('id', '=', product_id.id)])
         pricelist = self.pricelist_id.id
@@ -192,7 +192,7 @@ class order(models.Model):
             lines.append(self.generate_section_line('$block').id)
             lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
-            for i, map_product in enumerate(renewal_map.product_offers):
+            for map_product in renewal_map.product_offers:
                 lines.append(self.generate_product_line(
                     map_product.product_id, selected=map_product.selected).id)
         self.order_line = [(6, 0, lines)]
