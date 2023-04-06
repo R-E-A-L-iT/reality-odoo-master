@@ -12,15 +12,17 @@
 			</xpath>
 
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
-				<field name="partner_ids" invisible="0" />
-				<field name="products" invisible="0">
+				<field name="partner_ids" invisible="0" domain="[('parent_id', '=', partner_id)]" />
+				<field name="is_renewal" invisible="1" />
+				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
 					<tree>
-						<field name="name" />
-						<field name="product_id" />
-						<field name="formated_label" />
-						<!-- <widget name="copyClipboardChar" invisible="0" /> -->
+						<field name="name"></field>
+						<field name="product_id"></field>
+						<field name="expire" />
+						<field name="formated_label"></field>
 					</tree>
 				</field>
+
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
@@ -68,8 +70,23 @@
 				<attribute name="limit">150</attribute>
 			</xpath>
 
-		</field>
+			<xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
+				<page string="Customer Products" name="customer_products" invisible="0">
+					<group>
+						<field name="products" nolabel="1">
+							<tree>
+								<field name="name" />
+								<field name="sku" />
+								<field name="product_id" />
+								<field name="expire" />
+								<field name="formated_label" />
+							</tree>
+						</field>
+					</group>
+				</page>
+			</xpath>
 
+		</field>
 	</record>
 
 	<record id="hide_view_order_form_proquotes" model="ir.ui.view">

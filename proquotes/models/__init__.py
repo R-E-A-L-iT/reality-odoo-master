@@ -7,3 +7,4 @@ from . import product
 from . import stock
 from . import internal_company
 from . import mail
+from . import renewal_maps

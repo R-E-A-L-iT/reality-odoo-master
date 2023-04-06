@@ -107,6 +107,8 @@ class order(models.Model):
         ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
+    is_renewal = fields.Boolean(string="Renewal Quote", default=False)
+
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
     rental_street = fields.Char(string="Street Address")
     rental_city = fields.Char(string="City")
@@ -118,6 +120,9 @@ class order(models.Model):
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
+
+    renewal_product_items = fields.Many2many(
+        string="Renewal Items", comodel_name="stock.production.lot")
     # rental_insurance = fields.Binary(string="Insurance")
 
     @ api.onchange('sale_order_template_id')
@@ -126,6 +131,71 @@ class order(models.Model):
             self.is_rental = True
         else:
             self.is_rental = False
+        if ("Renewal" in self.sale_order_template_id.name):
+            self.is_renewal = True
+        else:
+            self.is_renewal = False
+
+    def test_action(self, *args):
+        _logger.error("HELLO THERE" + str(args[0]))
+
+    def generate_section_line(self, name, *, special="regular", selected='true'):
+        section = self.env['sale.order.line'].new(
+            {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
+        return section
+
+    def generate_product_line(self, product_id, *, selected=False, uom='Units', locked_qty='yes', optional='no'):
+        if (selected == True):
+            selected = 'true'
+        elif (selected == False):
+            selected = 'false'
+        product = self.env['product.product'].search(
+            [('id', '=', product_id.id)])
+        pricelist = self.pricelist_id.id
+        pricelist_entry = self.env['product.pricelist.item'].search(
+            [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
+        price = 0
+        if (len(pricelist_entry) > 1):
+            raise Exception("Duplicate Pricelist Rules: " +
+                            str(product_id.sku))
+        elif (len(pricelist_entry) == 1):
+            price = pricelist_entry[-1].fixed_price
+        uomitem = self.env['uom.uom'].search([('name', '=', uom)])
+        if (len(product) != 1):
+            raise Exception("Invalid Responses for: sku=" +
+                            str(product_id.sku))
+        line = self.env['sale.order.line'].new(
+            {'name': product.name,
+             'selected': selected,
+             'optional': optional,
+             'quantityLocked': locked_qty,
+             'product_id': product.id,
+             'product_uom_qty': 1,
+             'product_uom': uomitem,
+             'price_unit': price,
+             'order_id': self._origin.id})
+        return line
+
+    @api.onchange('sale_order_template_id', 'renewal_product_items')
+    def renewalQuoteAutoFill(self):
+        if ("Renewal Hardware" not in self.sale_order_template_id.name):
+            self.renewal_product_items = False
+            return
+        lines = []
+        for product in self.renewal_product_items:
+            renewal_maps = self.env['renewal.map'].search(
+                [('product_id', '=', product.product_id.id)])
+            if (len(renewal_maps) != 1):
+                raise UserError("No Mapping for: " +
+                                str(product.product_id.name))
+            renewal_map = renewal_maps[0]
+            lines.append(self.generate_section_line('$block').id)
+            lines.append(self.generate_section_line(
+                product.formated_label, special='multiple').id)
+            for map_product in renewal_map.product_offers:
+                lines.append(self.generate_product_line(
+                    map_product.product_id, selected=map_product.selected).id)
+        self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
         for order in self:
