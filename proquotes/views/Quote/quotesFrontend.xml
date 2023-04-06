@@ -251,10 +251,10 @@
 		</xpath>
 		<!-- Hide Default Subtotal-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">
-			<attribute name="style">display: none;</attribute>
+			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">
-			<attribute name="style">display: none;</attribute>
+			<!-- <attribute name="style">display: none;</attribute> -->
 		</xpath>
 
 		<!--Mark Original Subtotal locations-->
