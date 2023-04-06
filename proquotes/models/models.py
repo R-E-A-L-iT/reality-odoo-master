@@ -147,15 +147,15 @@ class order(models.Model):
     def generate_product_line(self, product_id, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
         product = self.env['product.product'].search(
             [('id', '=', product_id.id)])
-        # pricelist = self.pricelist_id.id
-        # pricelist_entry = self.env['product.pricelist.item'].search(
-        #     [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
-        # price = 0
-        # if (len(pricelist_entry) > 1):
-        #     raise Exception("Duplicate Pricelist Rules: " +
-        #                     str(product_id.sku))
-        # elif (len(pricelist_entry) == 1):
-        #     price = pricelist_entry[-1].fixed_price
+        pricelist = self.pricelist_id.id
+        pricelist_entry = self.env['product.pricelist.item'].search(
+            [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
+        price = 0
+        if (len(pricelist_entry) > 1):
+            raise Exception("Duplicate Pricelist Rules: " +
+                            str(product_id.sku))
+        elif (len(pricelist_entry) == 1):
+            price = pricelist_entry[-1].fixed_price
         uomitem = self.env['uom.uom'].search([('name', '=', uom)])
         if (len(product) != 1):
             raise Exception("Invalid Responses for: sku=" +
@@ -185,9 +185,9 @@ class order(models.Model):
                 raise UserError("No Mapping for: " +
                                 str(product.product_id.name))
             renewal_map = renewal_maps[0]
+            lines.append(self.generate_section_line('$block').id)
             lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
-            lines.append(self.generate_section_line('$block').id)
             for i, map_product in enumerate(renewal_map.product_offers):
                 selected = "false"
                 if (i == 1):
