@@ -247,7 +247,7 @@
 
 		<!--No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
-			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' and sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>
+			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
 		<!-- Hide Default Subtotal-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">
