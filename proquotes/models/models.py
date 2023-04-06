@@ -168,7 +168,7 @@ class order(models.Model):
              'product_id': product.id,
              'product_uom_qty': 1,
              'product_uom': uomitem,
-             'price_unit': 0,
+             'price_unit': price,
              'order_id': self._origin.id})
         return line
 
@@ -185,9 +185,9 @@ class order(models.Model):
                 raise UserError("No Mapping for: " +
                                 str(product.product_id.name))
             renewal_map = renewal_maps[0]
-            lines.append(self.generate_section_line('$block').id)
             lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
+            lines.append(self.generate_section_line('$block').id)
             for i, map_product in enumerate(renewal_map.product_offers):
                 selected = "false"
                 if (i == 1):
