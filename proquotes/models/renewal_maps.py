@@ -53,4 +53,5 @@ class renewal_entry(models.Model):
     product_id = fields.Many2one(
         'product.product', string="Product", required="True")
     map_id = fields.Many2one(comodel_name='renewal.map')
-    selected = fields.Boolean(string="Option Selected")
+    selected = fields.Boolean(string="Option Selected",
+                              required=True, default=False)

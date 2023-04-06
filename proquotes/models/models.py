@@ -144,7 +144,11 @@ class order(models.Model):
             {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
         return section
 
-    def generate_product_line(self, product_id, *, selected='false', uom='Units', locked_qty='yes', optional='no'):
+    def generate_product_line(self, product_id, *, selected=False, uom='Units', locked_qty='yes', optional='no'):
+        if (selected == True):
+            selected = 'true'
+        elif (selected == False):
+            selected = 'true'
         product = self.env['product.product'].search(
             [('id', '=', product_id.id)])
         pricelist = self.pricelist_id.id
@@ -189,11 +193,8 @@ class order(models.Model):
             lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
             for i, map_product in enumerate(renewal_map.product_offers):
-                selected = "false"
-                if (i == 1):
-                    selected = "true"
                 lines.append(self.generate_product_line(
-                    map_product.product_id, selected=selected).id)
+                    map_product.product_id, selected=map_product.selected).id)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
