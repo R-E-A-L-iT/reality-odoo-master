@@ -178,7 +178,7 @@ class order(models.Model):
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
-        if (not "Renewal Auto" in self.sale_order_template_id.name):
+        if ("Renewal Hardware" not in self.sale_order_template_id.name):
             self.renewal_product_items = False
             return
         lines = []
