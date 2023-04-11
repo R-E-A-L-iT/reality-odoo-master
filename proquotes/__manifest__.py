@@ -39,7 +39,7 @@
             ]
     },
 
-    'version': '1.0.1363',
+    'version': '1.0.1364',
 
     # always loaded
     'data': [
@@ -60,6 +60,7 @@
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
         'views/Other/renewal.xml',
+        'views/Other/product_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoice_lot.xml',
