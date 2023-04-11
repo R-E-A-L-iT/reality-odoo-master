@@ -314,6 +314,7 @@ class sync_pricelist():
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
         else:
+            _logger.error("LINE 317")
             _logger.error("Pricelist: " + str(i))
 
         product.name = self.sheet[i][columns["eName"]]
