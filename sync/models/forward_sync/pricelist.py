@@ -369,7 +369,7 @@ class sync_pricelist():
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
         _logger.error("LINE 371")
-        _logger.warning("TYPE" + str(self.sheet[i][columns["eName"]]))
+        _logger.warning("TYPE: " + str(self.sheet[i][columns["type"]]))
         # if (str(self.sheet[i][[columns["type"]]]) == "H"):
         #     pass
         #     # product.type_selection = "H"
