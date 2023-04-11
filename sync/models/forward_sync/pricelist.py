@@ -20,6 +20,7 @@ class sync_pricelist():
     def __init__(self, name, sheet, database):
         self.name = name
         self.sheet = sheet
+        _logger.error("Rows: " + len(sheet))
         self.database = database
 
 # follows same pattern
