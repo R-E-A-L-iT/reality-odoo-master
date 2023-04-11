@@ -285,6 +285,7 @@ class sync_pricelist():
                     product.stringRep = ""
                 else:
                     product.stringRep = str(self.sheet[i][:])
+                _logger.error("LINE 288")
             except Exception as e:
                 _logger.info(e)
                 return True, msg
