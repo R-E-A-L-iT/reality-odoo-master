@@ -226,6 +226,7 @@ class sync_pricelist():
         # msg = self.startTable(msg, sheetWidth)
         while (True):
             if (i == len(self.sheet) or str(self.sheet[i][columns["continue"]]) != "TRUE"):
+                _logger.error("i: " + str(i))
                 break
             if (str(self.sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
