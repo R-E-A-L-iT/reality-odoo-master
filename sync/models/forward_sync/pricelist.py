@@ -24,7 +24,7 @@ class sync_pricelist():
 
 # follows same pattern
     def syncPricelist(self):
-        sheetWidth = 31
+        sheetWidth = 32
         i = 1
 
         columns = dict()
@@ -68,7 +68,13 @@ class sync_pricelist():
             columns["isSoftware"] = self.sheet[0].index("isSoftware")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "isSoftwareMissing")
+                msg, self.name, "Header", "isSoftware Missing")
+            columnsMissing = True
+
+        if ("Type" in self.sheet[0]):
+            columns["type"] = self.sheet[0].index("Type")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Type Missing")
             columnsMissing = True
 
         if ("Price CAD" in self.sheet[0]):
