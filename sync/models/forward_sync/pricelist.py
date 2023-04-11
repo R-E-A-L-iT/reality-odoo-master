@@ -268,6 +268,8 @@ class sync_pricelist():
                 if (product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
                     i = i + 1
                     continue
+                else:
+                    _logger.error("Pricelist")
 
                 self.pricelist(product, "canPrice",
                                "CAN Pricelist", i, columns)
@@ -308,6 +310,8 @@ class sync_pricelist():
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
+        else:
+            _logger.error("Pricelist")
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
