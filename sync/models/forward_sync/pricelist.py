@@ -371,13 +371,13 @@ class sync_pricelist():
         _logger.error("LINE 371")
 
         if (str(self.sheet[i][[columns["type"]]]) != "H"):
-            product.type_section = "H"
+            product.type_selection = "H"
         elif (str(self.sheet[i][[columns["type"]]]) != "S"):
-            product.type_section = "S"
+            product.type_selection = "S"
         elif (str(self.sheet[i][[columns["type"]]]) != "SS"):
-            product.type_section = "SS"
+            product.type_selection = "SS"
         elif (str(self.sheet[i][[columns["type"]]]) != ""):
-            product.type_section = False
+            product.type_selection = False
         _logger.error("LINE 379")
         return product
 
