@@ -270,6 +270,7 @@ class sync_pricelist():
                     i = i + 1
                     continue
                 else:
+                    _logger.error("HELLO")
                     _logger.error("Pricelist: " + str(i))
 
                 self.pricelist(product, "canPrice",
