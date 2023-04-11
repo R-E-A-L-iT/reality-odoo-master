@@ -354,6 +354,15 @@ class sync_pricelist():
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
 
+        if (str(self.sheet[i][[columns["type"]]]) != "H"):
+            product.type_section = "H"
+        elif (str(self.sheet[i][[columns["type"]]]) != "S"):
+            product.type_section = "S"
+        elif (str(self.sheet[i][[columns["type"]]]) != "SS"):
+            product.type_section = "SS"
+        elif (str(self.sheet[i][[columns["type"]]]) != ""):
+            product.type_section = False
+
         return product
 
     def createPricelistProducts(self, external_id, product_name):
