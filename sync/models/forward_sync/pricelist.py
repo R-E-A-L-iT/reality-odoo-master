@@ -370,18 +370,18 @@ class sync_pricelist():
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
         _logger.error("LINE 371")
         _logger.warning("TYPE" + str(self.sheet[i][[columns["type"]]]))
-        if (str(self.sheet[i][[columns["type"]]]) == "H"):
-            pass
-            # product.type_selection = "H"
-        elif (str(self.sheet[i][[columns["type"]]]) == "S"):
-            pass
-            # product.type_selection = "S"
-        elif (str(self.sheet[i][[columns["type"]]]) == "SS"):
-            pass
-            # product.type_selection = "SS"
-        elif (str(self.sheet[i][[columns["type"]]]) == ""):
-            pass
-            # product.type_selection = False
+        # if (str(self.sheet[i][[columns["type"]]]) == "H"):
+        #     pass
+        #     # product.type_selection = "H"
+        # elif (str(self.sheet[i][[columns["type"]]]) == "S"):
+        #     pass
+        #     # product.type_selection = "S"
+        # elif (str(self.sheet[i][[columns["type"]]]) == "SS"):
+        #     pass
+        #     # product.type_selection = "SS"
+        # elif (str(self.sheet[i][[columns["type"]]]) == ""):
+        #     pass
+        #     # product.type_selection = False
         _logger.error("LINE 379")
         return product
 
