@@ -376,7 +376,7 @@ class sync_pricelist():
             product.type_section = "SS"
         elif (str(self.sheet[i][[columns["type"]]]) != ""):
             product.type_section = False
-
+        _logger.error("LINE 379")
         return product
 
     def createPricelistProducts(self, external_id, product_name):
