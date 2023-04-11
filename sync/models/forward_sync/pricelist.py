@@ -20,7 +20,6 @@ class sync_pricelist():
     def __init__(self, name, sheet, database):
         self.name = name
         self.sheet = sheet
-        _logger.error("Rows: " + str(len(sheet)))
         self.database = database
 
 # follows same pattern
@@ -270,7 +269,7 @@ class sync_pricelist():
                     i = i + 1
                     continue
                 else:
-                    _logger.error("Pricelist")
+                    _logger.error("Pricelist: " + str(i))
 
                 self.pricelist(product, "canPrice",
                                "CAN Pricelist", i, columns)
@@ -312,7 +311,7 @@ class sync_pricelist():
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
         else:
-            _logger.error("Pricelist")
+            _logger.error("Pricelist: " + str(i))
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
