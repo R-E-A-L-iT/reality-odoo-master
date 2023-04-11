@@ -365,8 +365,10 @@ class sync_pricelist():
         _logger.error("LINE 365")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
+        _logger.error("LINE 368")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
+        _logger.error("LINE 371")
 
         if (str(self.sheet[i][[columns["type"]]]) != "H"):
             product.type_section = "H"
