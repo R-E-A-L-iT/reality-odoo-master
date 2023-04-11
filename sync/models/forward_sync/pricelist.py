@@ -267,6 +267,7 @@ class sync_pricelist():
                 _logger.error("LINE 267")
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
+                _logger.error("LINE 270")
                 if (product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
                     i = i + 1
                     continue
