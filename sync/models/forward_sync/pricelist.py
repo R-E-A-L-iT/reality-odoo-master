@@ -370,13 +370,13 @@ class sync_pricelist():
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
         _logger.error("LINE 371")
 
-        if (str(self.sheet[i][[columns["type"]]]) != "H"):
+        if (str(self.sheet[i][[columns["type"]]]) == "H"):
             product.type_selection = "H"
-        elif (str(self.sheet[i][[columns["type"]]]) != "S"):
+        elif (str(self.sheet[i][[columns["type"]]]) == "S"):
             product.type_selection = "S"
-        elif (str(self.sheet[i][[columns["type"]]]) != "SS"):
+        elif (str(self.sheet[i][[columns["type"]]]) == "SS"):
             product.type_selection = "SS"
-        elif (str(self.sheet[i][[columns["type"]]]) != ""):
+        elif (str(self.sheet[i][[columns["type"]]]) == ""):
             product.type_selection = False
         _logger.error("LINE 379")
         return product
