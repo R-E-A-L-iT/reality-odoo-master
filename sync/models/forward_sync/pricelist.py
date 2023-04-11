@@ -288,6 +288,7 @@ class sync_pricelist():
                 return True, msg
 
             i = i + 1
+        _logger.error("HERE")
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
