@@ -39,7 +39,7 @@
             ]
     },
 
-    'vesion': '1.0.1366',
+    'vesion': '1.0.1367',
 
     # always loaded
     'data': [
