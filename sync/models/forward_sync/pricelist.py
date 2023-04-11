@@ -362,7 +362,7 @@ class sync_pricelist():
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"
         product.type = "product"
-
+        _logger.error("LINE 365")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
         product_sync_common.translatePricelist(
