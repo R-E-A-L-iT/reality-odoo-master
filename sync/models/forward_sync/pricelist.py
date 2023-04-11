@@ -296,6 +296,7 @@ class sync_pricelist():
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
+        _logger.error("LINE 299")
         external_id = str(self.sheet[i][columns["sku"]])
         product_ids = self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'product.template')])
