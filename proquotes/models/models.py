@@ -181,7 +181,8 @@ class order(models.Model):
         if ("Renewal Hardware" not in self.sale_order_template_id.name):
             self.renewal_product_items = False
             return
-        lines = []
+        hardware_lines = []
+        hardware_lines.append(self.generate_section_line('$hardware').id)
         for product in self.renewal_product_items:
             renewal_maps = self.env['renewal.map'].search(
                 [('product_id', '=', product.product_id.id)])
@@ -189,13 +190,15 @@ class order(models.Model):
                 raise UserError("No Mapping for: " +
                                 str(product.product_id.name))
             renewal_map = renewal_maps[0]
-            lines.append(self.generate_section_line('$block').id)
-            lines.append(self.generate_section_line(
+            hardware_lines.append(self.generate_section_line('$block').id)
+            hardware_lines.append(self.generate_section_line(
                 product.formated_label, special='multiple').id)
             for map_product in renewal_map.product_offers:
-                lines.append(self.generate_product_line(
+                hardware_lines.append(self.generate_product_line(
                     map_product.product_id, selected=map_product.selected).id)
-        self.order_line = [(6, 0, lines)]
+        lines = []
+        lines.extend(hardware_lines)
+        self.order_line = [(6, 0, hardware_lines)]
 
     def _amount_all(self):
         for order in self:
