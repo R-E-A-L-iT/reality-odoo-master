@@ -20,7 +20,7 @@
 
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'mail', 'mail_group', 'account', 'proportal', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
+    'depends': ['base', 'web', 'mail', 'mail_group', 'account', 'proportal', 'stock', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
 
     'assets': {
             'web.assets_common': [
@@ -39,7 +39,7 @@
             ]
     },
 
-    'vesion': '1.0.1369',
+    'vesion': '1.0.1370',
 
     # always loaded
     'data': [
@@ -60,7 +60,7 @@
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
         'views/Other/renewal.xml',
-        # 'views/Other/product_backend.xml',
+        'views/Other/product_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
         'views/Invoice/invoice_lot.xml',
