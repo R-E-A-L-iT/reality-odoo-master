@@ -301,8 +301,10 @@ class sync_pricelist():
         product_ids = self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'product.template')])
         if (len(product_ids) > 0):
+            _logger.error("LINE 304")
             return self.updatePricelistProducts(self.database.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), i, columns), False
         else:
+            _logger.error("LINE 307")
             product = self.createPricelistProducts(
                 external_id, self.sheet[i][columns["eName"]])
             product = self.updatePricelistProducts(product, i, columns)
