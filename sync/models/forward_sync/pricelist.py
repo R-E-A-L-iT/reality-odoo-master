@@ -226,7 +226,6 @@ class sync_pricelist():
         # msg = self.startTable(msg, sheetWidth)
         while (True):
             if (i == len(self.sheet) or str(self.sheet[i][columns["continue"]]) != "TRUE"):
-                _logger.error("i: " + str(i))
                 break
             if (str(self.sheet[i][columns["valid"]]) != "TRUE"):
                 i = i + 1
@@ -264,16 +263,11 @@ class sync_pricelist():
                 continue
 
             try:
-                _logger.error("LINE 267")
                 product, new = self.pricelistProduct(
                     sheetWidth, i, columns)
-                _logger.error("LINE 270")
                 if (product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE):
                     i = i + 1
                     continue
-                else:
-                    _logger.error("HELLO")
-                    _logger.error("Pricelist: " + str(i))
 
                 self.pricelist(product, "canPrice",
                                "CAN Pricelist", i, columns)
@@ -286,25 +280,20 @@ class sync_pricelist():
                     product.stringRep = ""
                 else:
                     product.stringRep = str(self.sheet[i][:])
-                _logger.error("LINE 288")
             except Exception as e:
-                _logger.info(e)
+                _logger.error(e)
                 return True, msg
 
             i = i + 1
-        _logger.error("HERE")
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
-        _logger.error("LINE 299")
         external_id = str(self.sheet[i][columns["sku"]])
         product_ids = self.database.env['ir.model.data'].search(
             [('name', '=', external_id), ('model', '=', 'product.template')])
         if (len(product_ids) > 0):
-            _logger.error("LINE 304")
             return self.updatePricelistProducts(self.database.env['product.template'].browse(product_ids[len(product_ids) - 1].res_id), i, columns), False
         else:
-            _logger.error("LINE 307")
             product = self.createPricelistProducts(
                 external_id, self.sheet[i][columns["eName"]])
             product = self.updatePricelistProducts(product, i, columns)
@@ -319,9 +308,6 @@ class sync_pricelist():
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
-        else:
-            _logger.error("LINE 317")
-            _logger.error("Pricelist: " + str(i))
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
@@ -362,27 +348,18 @@ class sync_pricelist():
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"
         product.type = "product"
-        _logger.error("LINE 365")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
-        _logger.error("LINE 368")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
-        _logger.error("LINE 371")
-        _logger.warning("TYPE: " + str(self.sheet[i][columns["type"]]))
-        # if (str(self.sheet[i][[columns["type"]]]) == "H"):
-        #     pass
-        #     # product.type_selection = "H"
-        # elif (str(self.sheet[i][[columns["type"]]]) == "S"):
-        #     pass
-        #     # product.type_selection = "S"
-        # elif (str(self.sheet[i][[columns["type"]]]) == "SS"):
-        #     pass
-        #     # product.type_selection = "SS"
-        # elif (str(self.sheet[i][[columns["type"]]]) == ""):
-        #     pass
-        #     # product.type_selection = False
-        _logger.error("LINE 379")
+        if (str(self.sheet[i][columns["type"]]) == "H"):
+            product.type_selection = "H"
+        elif (str(self.sheet[i][columns["type"]]) == "S"):
+            product.type_selection = "S"
+        elif (str(self.sheet[i][columns["type"]]) == "SS"):
+            product.type_selection = "SS"
+        elif (str(self.sheet[i][columns["type"]]) == ""):
+            product.type_selection = False
         return product
 
     def createPricelistProducts(self, external_id, product_name):
