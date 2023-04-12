@@ -178,7 +178,7 @@ class order(models.Model):
 
     def hardwareCCP(self, hardware_lines, product):
         if (len(hardware_lines) == 0):
-            hardware_lines.append("$hardware")
+            hardware_lines.append(self.generate_section_line('$hardware').id)
         renewal_maps = self.env['renewal.map'].search(
             [('product_id', '=', product.product_id.id)])
         if (len(renewal_maps) != 1):
