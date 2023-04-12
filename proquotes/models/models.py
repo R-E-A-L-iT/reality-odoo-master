@@ -217,7 +217,7 @@ class order(models.Model):
         lines.extend(hardware_lines)
         lines.extend(software_lines)
         lines.extend(software_sub_lines)
-        self.order_line = [(6, 0, hardware_lines)]
+        self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
         for order in self:
