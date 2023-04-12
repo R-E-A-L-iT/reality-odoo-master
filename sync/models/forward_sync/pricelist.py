@@ -309,10 +309,6 @@ class sync_pricelist():
 
         if (product.stringRep == str(self.sheet[i][:]) and product.stringRep != "" and SKIP_NO_CHANGE):
             return product
-        if (product.sku == "868744"):
-            _logger.error(self.name)
-            _logger.error(product.sku)
-            _logger.error(self.sheet[i][columns["eName"]])
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
