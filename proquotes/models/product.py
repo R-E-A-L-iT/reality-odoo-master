@@ -22,4 +22,6 @@ class product(models.Model):
     # ('software', "Software")], default="equipment", required=True, string="Equipment/Software")
     cadVal = fields.Monetary(string="Canadian Product Value")
     usdVal = fields.Monetary(string="United States Product Value")
+    type_selection = fields.Selection(
+        [("H", "H"), ("S", "S"), ("SS", "SS")], string="Type (H/S/SS)", default=False)
     is_software = fields.Boolean(string="Is Software", default=False)

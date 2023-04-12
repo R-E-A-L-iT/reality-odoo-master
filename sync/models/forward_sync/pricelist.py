@@ -281,7 +281,7 @@ class sync_pricelist():
                 else:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
-                _logger.info(e)
+                _logger.error(e)
                 return True, msg
 
             i = i + 1
@@ -348,12 +348,18 @@ class sync_pricelist():
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"
         product.type = "product"
-
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
-
+        if (str(self.sheet[i][columns["type"]]) == "H"):
+            product.type_selection = "H"
+        elif (str(self.sheet[i][columns["type"]]) == "S"):
+            product.type_selection = "S"
+        elif (str(self.sheet[i][columns["type"]]) == "SS"):
+            product.type_selection = "SS"
+        elif (str(self.sheet[i][columns["type"]]) == ""):
+            product.type_selection = False
         return product
 
     def createPricelistProducts(self, external_id, product_name):

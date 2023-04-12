@@ -176,28 +176,39 @@ class order(models.Model):
              'order_id': self._origin.id})
         return line
 
+    def hardwareCCP(self, hardware_lines, product):
+        if (len(hardware_lines == 0)):
+            hardware_lines.append("$hardware")
+        renewal_maps = self.env['renewal.map'].search(
+            [('product_id', '=', product.product_id.id)])
+        if (len(renewal_maps) != 1):
+            raise UserError("No Mapping for: " + str(product.product_id.name))
+        renewal_map = renewal_maps[0]
+        hardware_lines.append(self.generate_section_line('$block').id)
+        hardware_lines.append(self.generate_section_line(
+            product.formated_label, special='multiple').id)
+        for map_product in renewal_map.product_offers:
+            hardware_lines.append(self.generate_product_line(
+                map_product.product_id, selected=map_product.selected).id)
+
+    def softwareCCP(product):
+        pass
+
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
-        if ("Renewal Hardware" not in self.sale_order_template_id.name):
+        if ("Renewal Auto" not in self.sale_order_template_id.name):
             self.renewal_product_items = False
             return
+        software_lines = []
+        software_sub_lines = []
         hardware_lines = []
-        hardware_lines.append(self.generate_section_line('$hardware').id)
         for product in self.renewal_product_items:
-            renewal_maps = self.env['renewal.map'].search(
-                [('product_id', '=', product.product_id.id)])
-            if (len(renewal_maps) != 1):
-                raise UserError("No Mapping for: " +
-                                str(product.product_id.name))
-            renewal_map = renewal_maps[0]
-            hardware_lines.append(self.generate_section_line('$block').id)
-            hardware_lines.append(self.generate_section_line(
-                product.formated_label, special='multiple').id)
-            for map_product in renewal_map.product_offers:
-                hardware_lines.append(self.generate_product_line(
-                    map_product.product_id, selected=map_product.selected).id)
+            if (product.product_id.type_selection == "H"):
+                self.hardwareCCP(hardware_lines, product)
         lines = []
         lines.extend(hardware_lines)
+        lines.extend(software_lines)
+        lines.extend(software_sub_lines)
         self.order_line = [(6, 0, hardware_lines)]
 
     def _amount_all(self):
