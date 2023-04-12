@@ -211,6 +211,7 @@ class order(models.Model):
             if (product.product_id.type_selection == "H"):
                 self.hardwareCCP(hardware_lines, product)
             if (product.product_id.type_selection == "SS"):
+                _logger.error("SS")
                 self.softwareSubCCP(software_sub_lines, product)
         lines = []
         lines.extend(hardware_lines)
