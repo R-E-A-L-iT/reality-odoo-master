@@ -153,8 +153,7 @@ class sync_ccp:
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
         product_ids = self.database.env['product.product'].search(
-            [('name', '=', self.sheet[i][columns["name"]])])
-        _logger.warning(str(len(product_ids)))
+            [('sku', '=', self.sheet[i][columns["code"]])])
 
         ccp_item.product_id = product_ids[-1].id
 
