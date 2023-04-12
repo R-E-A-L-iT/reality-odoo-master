@@ -208,7 +208,7 @@ class order(models.Model):
         software_sub_lines.append(
             self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(self.generate_product_line(
-            product_list[0], optional='yes').id)
+            product_list[0], selected=True, optional='yes').id)
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
