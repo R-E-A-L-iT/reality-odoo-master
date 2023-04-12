@@ -199,7 +199,7 @@ class order(models.Model):
             software_sub_lines.append(
                 self.generate_section_line('$subscription').id)
         eid = product.name
-        _logger.error(eid)
+        self.env['product.product'].search([('name', 'in', eid)])
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
