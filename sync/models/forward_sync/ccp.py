@@ -154,6 +154,7 @@ class sync_ccp:
 
         product_ids = self.database.env['product.product'].search(
             [('name', '=', self.sheet[i][columns["name"]])])
+        _logger.warning(str(len(product_ids)))
 
         ccp_item.product_id = product_ids[-1].id
 
