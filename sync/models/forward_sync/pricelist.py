@@ -311,6 +311,7 @@ class sync_pricelist():
             return product
         if (product.sku == "868744"):
             _logger.error(product.sku)
+            _logger.error(self.sheet[i][columns["eName"]])
 
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
