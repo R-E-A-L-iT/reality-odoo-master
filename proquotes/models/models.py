@@ -199,7 +199,7 @@ class order(models.Model):
             software_sub_lines.append(
                 self.generate_section_line('$subscription').id)
         eid = product.name
-        product_list = self.env['product.product'].search([('sku', '=', eid)])
+        product_list = self.env['product.product'].search([('sku', 'in', eid)])
         raise UserError(str(len(product_list)))
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
