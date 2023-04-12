@@ -191,8 +191,13 @@ class order(models.Model):
             hardware_lines.append(self.generate_product_line(
                 map_product.product_id, selected=map_product.selected).id)
 
-    def softwareCCP(product):
+    def softwareCCP(self, software_lines, product):
         pass
+
+    def softwareSubCCP(self, software_sub_lines, product):
+        if (len(software_sub_lines) == 0):
+            software_sub_lines.append(
+                self.generate_section_line('$subscription').id)
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
@@ -205,7 +210,8 @@ class order(models.Model):
         for product in self.renewal_product_items:
             if (product.product_id.type_selection == "H"):
                 self.hardwareCCP(hardware_lines, product)
-                _logger.error(hardware_lines)
+            if (product.product_id.type_selection == "SS"):
+                self.softwareSubCCP(software_sub_lines, product)
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
