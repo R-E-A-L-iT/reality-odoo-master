@@ -204,7 +204,7 @@ class order(models.Model):
         if (len(product_list) != 1):
             raise UserError("Invalid Match Count for EID: " +
                             len(product_list))
-        software_sub_lines.append('&block')
+        software_sub_lines.append(self.generate_section_line('$block'))
         software_sub_lines.append(
             self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(self.generate_product_line(
