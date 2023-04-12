@@ -192,7 +192,20 @@ class order(models.Model):
                 map_product.product_id, selected=map_product.selected).id)
 
     def softwareCCP(self, software_lines, product):
-        pass
+        if (len(software_lines) == 0):
+            software_lines.append(
+                self.generate_section_line('$software').id)
+            software_lines.append(self.generate_section_line('$block').id)
+        eid = product.name
+        product_list = self.env['product.product'].search(
+            [('sku', 'like', eid)])
+        if (len(product_list) != 1):
+            raise UserError("Invalid Match Count for EID: " +
+                            len(product_list))
+        software_lines.append(
+            self.generate_section_line(product.formated_label).id)
+        software_lines.append(self.generate_product_line(
+            product_list[0], selected=True, optional='yes').id)
 
     def softwareSubCCP(self, software_sub_lines, product):
         if (len(software_sub_lines) == 0):
@@ -204,7 +217,7 @@ class order(models.Model):
             [('sku', 'like', eid)])
         if (len(product_list) != 1):
             raise UserError("Invalid Match Count for EID: " +
-                            len(product_list))
+                            str(len(product_list)))
         software_sub_lines.append(
             self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(self.generate_product_line(
@@ -221,6 +234,8 @@ class order(models.Model):
         for product in self.renewal_product_items:
             if (product.product_id.type_selection == "H"):
                 self.hardwareCCP(hardware_lines, product)
+            if (product.product_id.type_selection == "S"):
+                self.softwareCCP(hardware_lines, product)
             if (product.product_id.type_selection == "SS"):
                 self.softwareSubCCP(software_sub_lines, product)
         lines = []
