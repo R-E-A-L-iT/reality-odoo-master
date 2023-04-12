@@ -205,6 +205,7 @@ class order(models.Model):
         for product in self.renewal_product_items:
             if (product.product_id.type_selection == "H"):
                 self.hardwareCCP(hardware_lines, product)
+                _logger.error(hardware_lines)
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
