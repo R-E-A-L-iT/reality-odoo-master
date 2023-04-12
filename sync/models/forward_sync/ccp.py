@@ -135,7 +135,7 @@ class sync_ccp:
                     self.createCCP(external_id, i, columns)
             except Exception as e:
                 _logger.info("CCP")
-                _logger.info(e)
+                _logger.error(e)
                 _logger.info(i)
                 msg = utilities.buildMSG(
                     msg, self.name, str(external_id), str(e))
