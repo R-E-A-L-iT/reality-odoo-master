@@ -345,6 +345,8 @@ class sync_pricelist():
         else:
             product.sale_ok = False
 
+        product.active = True
+
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"
         product.type = "product"
