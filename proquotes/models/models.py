@@ -179,12 +179,12 @@ class order(models.Model):
     def hardwareCCP(self, hardware_lines, product):
         if (len(hardware_lines) == 0):
             hardware_lines.append(self.generate_section_line('$hardware').id)
+            hardware_lines.append(self.generate_section_line('$block').id)
         renewal_maps = self.env['renewal.map'].search(
             [('product_id', '=', product.product_id.id)])
         if (len(renewal_maps) != 1):
             raise UserError("No Mapping for: " + str(product.product_id.name))
         renewal_map = renewal_maps[0]
-        hardware_lines.append(self.generate_section_line('$block').id)
         hardware_lines.append(self.generate_section_line(
             product.formated_label, special='multiple').id)
         for map_product in renewal_map.product_offers:
@@ -198,13 +198,13 @@ class order(models.Model):
         if (len(software_sub_lines) == 0):
             software_sub_lines.append(
                 self.generate_section_line('$subscription').id)
+            software_sub_lines.append(self.generate_section_line('$block').id)
         eid = product.name
         product_list = self.env['product.product'].search(
             [('sku', 'like', eid)])
         if (len(product_list) != 1):
             raise UserError("Invalid Match Count for EID: " +
                             len(product_list))
-        software_sub_lines.append(self.generate_section_line('$block').id)
         software_sub_lines.append(
             self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(self.generate_product_line(
