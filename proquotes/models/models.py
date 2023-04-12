@@ -201,7 +201,14 @@ class order(models.Model):
         eid = product.name
         product_list = self.env['product.product'].search(
             [('sku', 'like', eid)])
-        raise UserError(str(len(product_list)))
+        if (len(product_list) != 1):
+            raise UserError("Invalid Match Count for EID: " +
+                            len(product_list))
+        software_sub_lines.append('&block')
+        software_sub_lines.append(
+            self.generate_section_line(product.formated_label).id)
+        software_sub_lines.append(self.generate_product_line(
+            product_list[0], optional='yes').id)
 
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
