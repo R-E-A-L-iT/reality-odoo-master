@@ -217,7 +217,7 @@ class order(models.Model):
             [('sku', 'like', eid)])
         if (len(product_list) != 1):
             raise UserError("Invalid Match Count for EID: " +
-                            str(len(product_list)))
+                            str(eid))
         software_sub_lines.append(
             self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(self.generate_product_line(
