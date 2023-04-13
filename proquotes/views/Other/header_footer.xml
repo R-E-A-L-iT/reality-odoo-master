@@ -51,7 +51,7 @@
         id="proquotes_header_footer_menu_item"
         name="Header Footer List"
         parent="sale.menu_sale_config"
-        action="proquotes.header_footer_window"
-        sequence="2"
+        action="header_footer_window"
+        sequence="1"
     />
 </odoo>
