@@ -25,6 +25,6 @@ class footer_header(models.Model):
     _description = "Hold info for Headers and Footer"
     _rec_name = 'name'
     name = fields.Char(string="Name", required=True)
-    record_type = fields.Selection(
-        [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
+    # record_type = fields.Selection(
+    # [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
     url = fields.Char(string="Resourse URL", required=True)
