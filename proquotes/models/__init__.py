@@ -8,3 +8,4 @@ from . import stock
 from . import internal_company
 from . import mail
 from . import renewal_maps
+from . import footer_header
