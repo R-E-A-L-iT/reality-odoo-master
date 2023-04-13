@@ -23,8 +23,8 @@ _logger = logging.getLogger(__name__)
 class footer_header(models.Model):
     _name = "proquotes.header_footer"
     _description = "Hold info for Headers and Footer"
-    _rec_name = 'record_name'
-    record_name = fields.Char(string="Name", required=True)
+    _rec_name = 'name'
+    name = fields.Char(string="Name", required=True)
     record_type = fields.Selection(
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
     url = fields.Char(string="Resourse URL", required=True)
