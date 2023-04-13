@@ -38,7 +38,7 @@
             ]
     },
 
-    'version': '1.0.1485',
+    'verrion': '1.0.1486',
 
     # always loaded
     'data': [
