@@ -35,6 +35,7 @@
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="customer_po_number" invisible="0" />
 					<field name="header" invisible="0" />
+					<field name="footer_id" invisible="0" />
 					<field name="footer" invisible="0" />
 				</group>
 			</xpath>
