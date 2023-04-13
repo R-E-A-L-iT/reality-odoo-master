@@ -4,11 +4,11 @@
     <record id="header_footer_filter" model="ir.ui.view">
         <field name="name">Header Footer Filter</field>
         <field name="model">header.footer</field>
-        <field name="type">form</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
-            <form>
+            <search>
                 <filter name="header_footer_active" domain="[('active', '=', True)]" />
-            </form>
+            </search>
         </field>
     </record>
 
