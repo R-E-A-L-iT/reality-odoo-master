@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <record id="header_footer_filter">
+        <field name="Header Footer Filter" />
+        <field name="model">header.footer</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <filter name="header_footer_active" domain="[('active', '=', True)]" />
+        </field>
+    </record>
     <search>
-        <filter string="Active" name="header_footer_active_Filter" domain="[('active', '=', True)]"></filter>
+        <filter string="Active" name="header_footer_active" domain="[('active', '=', True)]"></filter>
     </search>
     <record id="header_footer_tree" model="ir.ui.view">
         <field name="name">Header Footer</field>
         <field name="model">header.footer</field>
         <field name="priority">4</field>
         <field name="type">tree</field>
-        <field name="context">{"header_footer_active_Filter": 1}</field>
+        <field name="context">{"search_default_header_footer_active": 1}</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
