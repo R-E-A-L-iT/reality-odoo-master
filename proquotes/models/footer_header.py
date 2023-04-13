@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 
 
 class footer_header(models.Model):
-    _name = "proquotes.footer_header"
+    _name = "proquotes.header_footer"
     _description = "Hold info for Headers and Footer"
     _rec_name = 'name'
     name = fields.Char(string="Name", required=True)
