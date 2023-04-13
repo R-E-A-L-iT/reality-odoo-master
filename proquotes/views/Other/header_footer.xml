@@ -4,12 +4,8 @@
     <record id="header_footer_filter" model="ur.ui.view">
         <field name="Header Footer Filter" />
         <field name="model">header.footer</field>
-        <field name="priority">4</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
-            <search>
-                <!-- <filter name="header_footer_active" domain="[('active', '=', True)]" /> -->
-            </search>
+            <filter name="header_footer_active" domain="[('active', '=', True)]" />
         </field>
     </record>
 
