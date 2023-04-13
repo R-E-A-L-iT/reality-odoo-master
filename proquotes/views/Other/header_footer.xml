@@ -24,6 +24,7 @@
                 <label for="name" />
                 <field name="name" />
                 <field name="record_type" />
+                <label for="url" />
                 <field name="url" />
             </form>
         </field>
