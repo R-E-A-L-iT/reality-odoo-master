@@ -27,6 +27,8 @@
                 <field name="record_type" />
                 <label for="url" />
                 <field name="url" />
+                <label for="company_ids" />
+                <field name="company_ids" widget="many2many_tags" />
             </form>
         </field>
     </record>
