@@ -16,7 +16,7 @@
         <field name="model">header.footer</field>
         <field name="priority">4</field>
         <field name="type">tree</field>
-        <field name="filter_domain">[('active', '=', True)]</field>
+        <field name="context">{'search_default_header_footer_active': 1}</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
@@ -81,4 +81,3 @@
         sequence="1"
     />
 </odoo>
-<!-- <field name="context">{'search_default_header_footer_active': 1}</field> -->
