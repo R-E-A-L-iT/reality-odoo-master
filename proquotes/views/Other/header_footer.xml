@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="header_footer_filter" model="ur.ui.view">
+    <record id="header_footer_filter" model="ir.ui.view">
         <field name="Header Footer Filter" />
         <field name="model">header.footer</field>
         <field name="arch" type="xml">
