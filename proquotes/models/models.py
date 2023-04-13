@@ -38,6 +38,7 @@ class purchase_order(models.Model):
         ('GeoplusFooterUS', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
@@ -60,6 +61,7 @@ class invoice(models.Model):
         ('GeoplusFooterUS', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
@@ -95,6 +97,7 @@ class order(models.Model):
         ('GeoplusFooterUS', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
@@ -176,25 +179,72 @@ class order(models.Model):
              'order_id': self._origin.id})
         return line
 
+    def hardwareCCP(self, hardware_lines, product):
+        if (len(hardware_lines) == 0):
+            hardware_lines.append(self.generate_section_line('$hardware').id)
+            hardware_lines.append(self.generate_section_line('$block').id)
+        renewal_maps = self.env['renewal.map'].search(
+            [('product_id', '=', product.product_id.id)])
+        if (len(renewal_maps) != 1):
+            raise UserError("No Mapping for: " + str(product.product_id.name))
+        renewal_map = renewal_maps[0]
+        hardware_lines.append(self.generate_section_line(
+            product.formated_label, special='multiple').id)
+        for map_product in renewal_map.product_offers:
+            hardware_lines.append(self.generate_product_line(
+                map_product.product_id, selected=map_product.selected).id)
+
+    def softwareCCP(self, software_lines, product):
+        if (len(software_lines) == 0):
+            software_lines.append(
+                self.generate_section_line('$software').id)
+            software_lines.append(self.generate_section_line('$block').id)
+        eid = product.name
+        product_list = self.env['product.product'].search(
+            [('sku', 'like', eid)])
+        if (len(product_list) != 1):
+            raise UserError("Invalid Match Count for EID: " +
+                            str(eid))
+        software_lines.append(
+            self.generate_section_line(product.formated_label).id)
+        software_lines.append(self.generate_product_line(
+            product_list[0], selected=True, optional='yes').id)
+
+    def softwareSubCCP(self, software_sub_lines, product):
+        if (len(software_sub_lines) == 0):
+            software_sub_lines.append(
+                self.generate_section_line('$subscription').id)
+            software_sub_lines.append(self.generate_section_line('$block').id)
+        eid = product.name
+        product_list = self.env['product.product'].search(
+            [('sku', 'like', eid)])
+        if (len(product_list) != 1):
+            raise UserError("Invalid Match Count for EID: " +
+                            str(eid))
+        software_sub_lines.append(
+            self.generate_section_line(product.formated_label).id)
+        software_sub_lines.append(self.generate_product_line(
+            product_list[0], selected=True, optional='yes').id)
+
     @api.onchange('sale_order_template_id', 'renewal_product_items')
     def renewalQuoteAutoFill(self):
-        if ("Renewal Hardware" not in self.sale_order_template_id.name):
+        if ("Renewal Auto" not in self.sale_order_template_id.name):
             self.renewal_product_items = False
             return
-        lines = []
+        software_lines = []
+        software_sub_lines = []
+        hardware_lines = []
         for product in self.renewal_product_items:
-            renewal_maps = self.env['renewal.map'].search(
-                [('product_id', '=', product.product_id.id)])
-            if (len(renewal_maps) != 1):
-                raise UserError("No Mapping for: " +
-                                str(product.product_id.name))
-            renewal_map = renewal_maps[0]
-            lines.append(self.generate_section_line('$block').id)
-            lines.append(self.generate_section_line(
-                product.formated_label, special='multiple').id)
-            for map_product in renewal_map.product_offers:
-                lines.append(self.generate_product_line(
-                    map_product.product_id, selected=map_product.selected).id)
+            if (product.product_id.type_selection == "H"):
+                self.hardwareCCP(hardware_lines, product)
+            if (product.product_id.type_selection == "S"):
+                self.softwareCCP(hardware_lines, product)
+            if (product.product_id.type_selection == "SS"):
+                self.softwareSubCCP(software_sub_lines, product)
+        lines = []
+        lines.extend(hardware_lines)
+        lines.extend(software_lines)
+        lines.extend(software_sub_lines)
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):

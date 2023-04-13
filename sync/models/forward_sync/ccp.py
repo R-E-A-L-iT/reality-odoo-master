@@ -135,7 +135,7 @@ class sync_ccp:
                     self.createCCP(external_id, i, columns)
             except Exception as e:
                 _logger.info("CCP")
-                _logger.info(e)
+                _logger.error(e)
                 _logger.info(i)
                 msg = utilities.buildMSG(
                     msg, self.name, str(external_id), str(e))
@@ -153,7 +153,7 @@ class sync_ccp:
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
         product_ids = self.database.env['product.product'].search(
-            [('name', '=', self.sheet[i][columns["name"]])])
+            [('sku', '=', self.sheet[i][columns["code"]])])
 
         ccp_item.product_id = product_ids[-1].id
 

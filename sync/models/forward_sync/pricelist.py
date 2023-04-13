@@ -24,7 +24,7 @@ class sync_pricelist():
 
 # follows same pattern
     def syncPricelist(self):
-        sheetWidth = 31
+        sheetWidth = 32
         i = 1
 
         columns = dict()
@@ -68,7 +68,13 @@ class sync_pricelist():
             columns["isSoftware"] = self.sheet[0].index("isSoftware")
         else:
             msg = utilities.buildMSG(
-                msg, self.name, "Header", "isSoftwareMissing")
+                msg, self.name, "Header", "isSoftware Missing")
+            columnsMissing = True
+
+        if ("Type" in self.sheet[0]):
+            columns["type"] = self.sheet[0].index("Type")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Type Missing")
             columnsMissing = True
 
         if ("Price CAD" in self.sheet[0]):
@@ -275,7 +281,8 @@ class sync_pricelist():
                 else:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
-                _logger.info(e)
+                _logger.error(e)
+                msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
             i = i + 1
@@ -339,15 +346,23 @@ class sync_pricelist():
         else:
             product.sale_ok = False
 
+        product.active = True
+
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"
         product.type = "product"
-
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["fName"]], self.sheet[i][columns["fDisc"]], "fr_CA")
         product_sync_common.translatePricelist(
             self.database, product, self.sheet[i][columns["eName"]], self.sheet[i][columns["eDisc"]], "en_US")
-
+        if (str(self.sheet[i][columns["type"]]) == "H"):
+            product.type_selection = "H"
+        elif (str(self.sheet[i][columns["type"]]) == "S"):
+            product.type_selection = "S"
+        elif (str(self.sheet[i][columns["type"]]) == "SS"):
+            product.type_selection = "SS"
+        elif (str(self.sheet[i][columns["type"]]) == ""):
+            product.type_selection = False
         return product
 
     def createPricelistProducts(self, external_id, product_name):
