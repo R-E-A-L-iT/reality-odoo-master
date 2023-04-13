@@ -21,7 +21,10 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
+                <label for="name" />
                 <field name="name" />
+                <field name="record_type" />
+                <field name="url" />
             </form>
         </field>
     </record>
