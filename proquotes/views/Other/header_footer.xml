@@ -52,6 +52,6 @@
         name="Header Footer List"
         parent="sale.menu_sale_config"
         action="proquotes.header_footer_window"
-        sequence="1"
+        sequence="2"
     />
 </odoo>
