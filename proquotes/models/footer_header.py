@@ -20,6 +20,10 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 
 
+class company(models.Model):
+    _inherit = "res.company"
+
+
 class footer_header(models.Model):
     _name = "header.footer"
     _description = "Hold info for Headers and Footer"
@@ -28,4 +32,4 @@ class footer_header(models.Model):
     record_type = fields.Selection(
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
     url = fields.Char(string="Resourse URL", required=True)
-    company_ids = fields.One2many(related="res.company")
+    company_ids = fields.Many2many(related="res.company")
