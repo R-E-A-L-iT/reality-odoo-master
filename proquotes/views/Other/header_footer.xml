@@ -7,7 +7,7 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
-                <!-- <filter name="header_footer_active" domain="[('active', '=', True)]" /> -->
+                <filter name="header_footer_active" domain="[('active', '=', True)]" />
             </form>
         </field>
     </record>
