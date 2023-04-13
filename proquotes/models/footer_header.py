@@ -28,3 +28,4 @@ class footer_header(models.Model):
     record_type = fields.Selection(
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
     url = fields.Char(string="Resourse URL", required=True)
+    def hello(self):
