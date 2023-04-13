@@ -22,15 +22,27 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
-                <label for="name" />
-                <field name="name" />
-                <field name="record_type" />
-                <label for="url" />
-                <field name="url" />
-                <label for="company_ids" />
-                <field name="company_ids" widget="many2many_tags" />
-                <label for="active" />
-                <field name="active" />
+                <group>
+
+                    <label for="name" />
+                    <field name="name" />
+                </group>
+                <group>
+                    <field name="record_type" />
+                </group>
+                <group>
+
+                    <label for="url" />
+                    <field name="url" />
+                </group>
+                <group>
+                    <label for="company_ids" />
+                    <field name="company_ids" widget="many2many_tags" />
+                </group>
+                <group>
+                    <label for="active" />
+                    <field name="active" />
+                </group>
             </form>
         </field>
     </record>
