@@ -89,6 +89,7 @@ class order(models.Model):
             return False
         header_footer_item = self.env['header.footer'].search(
             ['name', '=', self.footer + "OLD"], ['active', '=', False])
+        _logger.error(header_footer_item)
         if (len(header_footer_item == 1)):
             return header_footer_item[0].id
         elif (len(header_footer_item) == 0):
