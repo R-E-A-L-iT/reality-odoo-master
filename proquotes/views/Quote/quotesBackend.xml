@@ -36,7 +36,7 @@
 					<field name="customer_po_number" invisible="0" />
 					<field name="header_id" invisible="0" domain="[('active', '=', True),('record_type', '=', 'Header')]" />
 					<field name="header" invisible="1" />
-					<field name="footer_id" invisible="0" domain="[('active', '=', True),('record_type', '=', 'Footer'),('|',('company_ids', 'like', 'company_id'), (company_ids, '=', False))]" />
+					<field name="footer_id" invisible="0" domain="[('active', '=', True),('record_type', '=', 'Footer'), (company_ids, '=', False)]" />
 					<field name="footer" invisible="1" />
 				</group>
 			</xpath>
