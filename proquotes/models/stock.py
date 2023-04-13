@@ -37,6 +37,7 @@ class stock(models.Model):
         ('GeoplusFooterUS', "Geoplus_America"),
         ('Leica_Footer_Ali', "Leica Ali"),
         ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),

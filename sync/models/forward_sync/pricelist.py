@@ -282,6 +282,7 @@ class sync_pricelist():
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.error(e)
+                msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
             i = i + 1
@@ -344,6 +345,8 @@ class sync_pricelist():
             product.sale_ok = True
         else:
             product.sale_ok = False
+
+        product.active = True
 
         product.storeCode = self.sheet[i][columns["ecommerceWebsiteCode"]]
         # product.tracking = "serial"

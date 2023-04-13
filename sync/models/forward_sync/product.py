@@ -117,7 +117,7 @@ class sync_products():
         msg = ""
         while (True):
 
-            #_logger.info("sheet[i][:]: " + str(sheet[i][:]))
+            # _logger.info("sheet[i][:]: " + str(sheet[i][:]))
 
             if (str(sheet[i][columns["continue"]]).upper() != "TRUE"):
                 break
@@ -181,7 +181,7 @@ class sync_products():
 
             except Exception as e:
                 _logger.info("Products Exception")
-                _logger.info(e)
+                _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
