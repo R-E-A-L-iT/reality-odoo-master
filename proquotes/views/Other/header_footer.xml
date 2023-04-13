@@ -17,7 +17,6 @@
         <field name="model">header.footer</field>
         <field name="priority">4</field>
         <field name="type">tree</field>
-        <field name="context">{"search_default_header_footer_active": 1}</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
