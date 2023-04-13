@@ -5,7 +5,6 @@
         <field name="Header Footer Filter" />
         <field name="model">header.footer</field>
         <field name="priority">4</field>
-        <field name="type"></field>
         <field name="arch" type="xml">
             <filter name="header_footer_active" domain="[('active', '=', True)]" />
         </field>
