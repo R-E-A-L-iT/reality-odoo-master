@@ -60,7 +60,7 @@
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
         'views/Other/renewal.xml',
-        # 'views/Other/header_footer.xml',
+        'views/Other/header_footer.xml',
         'views/Other/product_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
