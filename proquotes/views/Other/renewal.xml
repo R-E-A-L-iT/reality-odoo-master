@@ -7,7 +7,7 @@
         <field name="priority">4</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree filter="[('active', '=', True)]">
+            <tree>
                 <field name="product_id" />
                 <field name="product_offers" widget="many2many_tags" />
             </tree>
