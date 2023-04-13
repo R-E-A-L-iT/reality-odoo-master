@@ -6,7 +6,7 @@
         <field name="model">header.footer</field>
         <field name="priority">4</field>
         <field name="type">tree</field>
-        <field name="context">{'active': True}</field>
+        <field name="context">{"active": True}</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
