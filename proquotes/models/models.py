@@ -103,6 +103,8 @@ class order(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], help="Footer selection field")
 
+    header_id = fields.Many2one(
+        'header.footer', required=True)
     footer_id = fields.Many2one(
         'header.footer', required=True)
 
