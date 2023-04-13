@@ -105,6 +105,7 @@ class order(models.Model):
 
     @api.model
     def _default_footer(self):
+        _logger.error("FOOTER")
         if (self.footer == False):
             return False
         header_footer_item = self.env['header.footer'].search(
