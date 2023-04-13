@@ -17,6 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
+    'auto_install': True,
 
 
     # any module necessary for this one to work correctly
@@ -39,7 +40,7 @@
             ]
     },
 
-    'vesion': '1.0.1400',
+    'vesion': '1.0.1434',
 
     # always loaded
     'data': [
@@ -60,6 +61,7 @@
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
         'views/Other/renewal.xml',
+        'views/Other/header_footer.xml',
         'views/Other/product_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',
