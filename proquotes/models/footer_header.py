@@ -29,3 +29,4 @@ class footer_header(models.Model):
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
     url = fields.Char(string="Resourse URL", required=True)
     company_ids = fields.Many2many("res.company")
+    active = fields.Bool(string="Active", default=True)
