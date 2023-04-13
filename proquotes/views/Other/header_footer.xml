@@ -28,7 +28,7 @@
 
     <record id="header_footer_window" model="ir.actions.act_window">
         <field name="name">Renewal Maping</field>
-        <field name="res_model"></field>
+        <field name="res_model">proquotes.header_footer</field>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="" />
     </record>
