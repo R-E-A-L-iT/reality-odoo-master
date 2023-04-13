@@ -24,7 +24,7 @@ class footer_header(models.Model):
     _name = "proquotes.footer_header"
     _description = "Hold info for Headers and Footer"
     _rec_name = 'name'
-    name = fields.char(string="Name", required=True)
-    record_type = fields.selection(
+    name = fields.Char(string="Name", required=True)
+    record_type = fields.Selection(
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer")
-    url = fields.char(string="Resourse URL", required=True)
+    url = fields.Char(string="Resourse URL", required=True)
