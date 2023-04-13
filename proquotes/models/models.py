@@ -83,6 +83,21 @@ class order(models.Model):
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True)
 
+    @api.model
+    def _default_footer(self):
+        if (self.footer == False):
+            return False
+        header_footer_item = self.env['header.footer'].search(
+            ['name', '=', self.footer + "OLD"], ['active', '=', False])
+        if (len(header_footer_item == 1)):
+            return header_footer_item[0].id
+        elif (len(header_footer_item) == 0):
+            return self.env['header.footer'].create({'name': self.footer + "OLD", 'active': False, 'url': "https://cdn.r-e-a-l.it/images/footer/" + self.footer}).id
+        return False
+
+    footer_id = fields.Many2one(
+        'header.footer', required=True, default=_default_footer)
+
     footer = fields.Selection([
         ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
         ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
@@ -101,7 +116,7 @@ class order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], help="Footer selection field")
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
