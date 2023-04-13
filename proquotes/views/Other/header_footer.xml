@@ -10,9 +10,6 @@
             <filter name="header_footer_active" domain="[('active', '=', True)]" />
         </field>
     </record>
-    <search>
-        <filter string="Active" name="header_footer_active" domain="[('active', '=', True)]"></filter>
-    </search>
     <record id="header_footer_tree" model="ir.ui.view">
         <field name="name">Header Footer</field>
         <field name="model">header.footer</field>
