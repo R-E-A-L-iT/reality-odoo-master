@@ -2,7 +2,7 @@
 
 <odoo>
     <record id="header_footer_filter" model="ir.ui.view">
-        <field name="Header Footer Filter" />
+        <field name="name">Header Footer Filter</field>
         <field name="model">header.footer</field>
         <field name="arch" type="xml">
             <filter name="header_footer_active" domain="[('active', '=', True)]" />
