@@ -248,6 +248,7 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
     def _amount_all(self):
+        _logger.error("HERE 3")
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
