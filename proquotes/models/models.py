@@ -264,9 +264,11 @@ class order(models.Model):
 
         rentalRate = 0
         rentalDayRate = price * rentalDays
-        rentalDayRate = price * 4
+        if (rentalDayRate > price * 4):
+            rentalDayRate = price * 4
         rentalWeekDayRate = 4 * price * rentalWeeks + rentalDayRate
-        rentalDayRate = price * 12
+        if (rentalWeekDayRate > price * 12):
+            rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
