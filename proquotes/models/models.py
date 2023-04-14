@@ -277,6 +277,7 @@ class order(models.Model):
                 lang=order.partner_id.lang).env, currency_obj=currency)
             res = {}
             for line in order.order_line:
+                _logger.error("HERE")
                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
                 taxes = line.tax_id.compute_all(
                     price_reduce, quantity=line.product_uom_qty, product=line.product_id, partner=order.partner_shipping_id)['taxes']
