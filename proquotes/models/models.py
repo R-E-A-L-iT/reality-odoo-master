@@ -261,6 +261,7 @@ class order(models.Model):
             })
 
     def _compute_amount_undiscounted(self):
+        _logger.error("HERE 1")
         for order in self:
             total = 0.0
             for line in order.order_line:
@@ -271,13 +272,13 @@ class order(models.Model):
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
+        _logger.error("HERE 2")
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
             fmt = partial(formatLang, self.with_context(
                 lang=order.partner_id.lang).env, currency_obj=currency)
             res = {}
             for line in order.order_line:
-                _logger.error("HERE")
                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
                 taxes = line.tax_id.compute_all(
                     price_reduce, quantity=line.product_uom_qty, product=line.product_id, partner=order.partner_shipping_id)['taxes']
