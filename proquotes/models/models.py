@@ -248,7 +248,7 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
     def calc_rental_price(self, price):
-        if (self.start_date == False or self.end_date == False):
+        if (self.rental_start == False or self.rental_end == False):
             return price
             result = 0
         sdate = str(self.rental_start).split('-')
