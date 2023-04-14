@@ -285,10 +285,10 @@
 					<t t-set="sub_sdate" t-value="str(doc.rental_start).split('-')" />
 					<t t-set="sub_edate" t-value="str(doc.rental_end).split('-')" />
 					<t t-set="sub_rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
-					<t t-set="sub_rentalMonths" t-value="rentalDays // 30" />
-					<t t-set="sub_rentalDays" t-value="rentalDays % 30" />
-					<t t-set="sub_rentalWeeks" t-value="rentalDays // 7" />
-					<t t-set="sub_rentalDays" t-value="rentalDays % 7" />
+					<t t-set="sub_rentalMonths" t-value="sub_rentalDays // 30" />
+					<t t-set="sub_rentalDays" t-value="sub_rentalDays % 30" />
+					<t t-set="sub_rentalWeeks" t-value="sub_rentalDays // 7" />
+					<t t-set="sub_rentalDays" t-value="sub_rentalDays % 7" />
 
 
 					<t t-set="sub_rentalRate" t-value="0" />
