@@ -278,6 +278,7 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
+				<t t-set="current_subtotal" t-value="current_subtotal" />
 				<t t-if="doc.is_rental == False or line.product_id.is_software or doc.rental_start == False or doc.rental_end == False">
 					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
 				</t>
