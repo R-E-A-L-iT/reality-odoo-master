@@ -269,7 +269,6 @@ class order(models.Model):
         return dayRate + weekRate + monthRate
 
     def _amount_all(self):
-        _logger.error("HERE 3")
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
@@ -278,11 +277,9 @@ class order(models.Model):
                         amount_untaxed += line.price_subtotal
                         amount_tax += line.price_tax
                     elif (order.is_rental and line.product_id.is_software == False):
-                        _logger.error("HERE 4")
                         price = self.calc_rental_price(line.price_subtotal)
                         amount_untaxed += price
-                        _logger.warning(line.price_tax)
-                        amount_tax += line.price_tax
+                        amount_tax += self.calc_rental_price(line.price_tax)
 
             order.update({
                 'amount_untaxed': amount_untaxed,
@@ -291,7 +288,6 @@ class order(models.Model):
             })
 
     def _compute_amount_undiscounted(self):
-        _logger.error("HERE 1")
         for order in self:
             total = 0.0
             for line in order.order_line:
@@ -302,7 +298,6 @@ class order(models.Model):
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
-        _logger.error("HERE 2")
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
             fmt = partial(formatLang, self.with_context(
