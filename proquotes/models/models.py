@@ -250,9 +250,9 @@ class order(models.Model):
     def calc_rental_price(self, price):
         if (self.rental_start == False or self.rental_end == False):
             return price
-            result = 0
         sdate = str(self.rental_start).split('-')
         edate = str(self.rental_end).split('-')
+        _logger.error(str(datetime.date(2023, 12, 20)))
         rentalDays = datetime.date(int(edate[0]), int(edate[1]), int(
             edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2])).days
         rentalMonths = rentalDays // 30
