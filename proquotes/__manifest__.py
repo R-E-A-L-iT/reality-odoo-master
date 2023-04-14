@@ -38,12 +38,12 @@
             ]
     },
 
-    'verrion': '1.0.1490',
+    'verrion': '1.0.1491',
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/Quote/quotesBackend.xml',
+        'views/Quote/quotesBackend.xml',
         'views/Quote/quotesFrontend.xml',
         'views/Quote/quotesPDF.xml',
         'views/Quote/rentalTerms.xml',
