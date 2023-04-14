@@ -247,6 +247,10 @@ class order(models.Model):
         lines.extend(software_sub_lines)
         self.order_line = [(6, 0, lines)]
 
+    def calc_rental_price(self, price):
+        result = price * 41
+        return result
+
     def _amount_all(self):
         _logger.error("HERE 3")
         for order in self:
@@ -256,6 +260,10 @@ class order(models.Model):
                     if (order.is_rental == False or line.product_id.is_software):
                         amount_untaxed += line.price_subtotal
                         amount_tax += line.price_tax
+                    elif (order.is_renatal and line.product_id.is_software == False):
+                        price = self.calc_rental_price(line.price_subtotal)
+                        amount_tax += line.price_tax
+
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
