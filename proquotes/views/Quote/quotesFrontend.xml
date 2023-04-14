@@ -321,8 +321,10 @@
 
 		<!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
-			<!-- <t t-set="current_subtotal" t-value="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" /> -->
-			<t t-set="current_subtotal" t-value="41" groups="account.group_show_line_subtotals_tax_excluded" />
+			<t t-if="line.selected == 'true' and not current_section_ended">
+				<t t-if="doc.is_rental == False or line.product_id.is_software" t-set="current_subtotal" t-value="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
+				<t t-else="" t-set="current_subtotal" t-value="41" groups="account.group_show_line_subtotals_tax_excluded" />
+			</t>
 			<!-- <attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute> -->
 		</xpath>
 
