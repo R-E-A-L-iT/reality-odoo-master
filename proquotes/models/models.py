@@ -262,14 +262,13 @@ class order(models.Model):
         _logger.error(rentalWeeks)
         _logger.error(rentalMonths)
 
-        dayRate = rentalDays * price
-        if (dayRate > price * 4):
-            dayRate = price * 4
-        weekRate = rentalWeeks * (price * 4)
-        if (weekRate > price * 12):
-            weekRate = price * 12
-        monthRate = price * rentalMonths * 12
-        return dayRate + weekRate + monthRate
+        rentalRate = 0
+        rentalDayRate = price * rentalDays
+        rentalDayRate = price * 4
+        rentalWeekDayRate = 4 * price * rentalWeeks + rentalDayRate
+        rentalDayRate = price * 12
+        rentalMonthRate = 12 * price * rentalMonths
+        return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     def _amount_all(self):
         for order in self:
