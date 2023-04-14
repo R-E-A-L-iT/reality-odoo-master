@@ -268,7 +268,7 @@ class order(models.Model):
         weekRate = rentalWeeks * (price * 4)
         if (weekRate > price * 12):
             weekRate = price * 12
-        monthRate = price * rentalMonths
+        monthRate = price * rentalMonths * 12
         return dayRate + weekRate + monthRate
 
     def _amount_all(self):
