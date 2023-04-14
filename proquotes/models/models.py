@@ -104,9 +104,9 @@ class order(models.Model):
     ], help="Footer selection field")
 
     header_id = fields.Many2one(
-        'header.footer', required=True)
+        'header.footer')
     footer_id = fields.Many2one(
-        'header.footer', required=True)
+        'header.footer')
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
