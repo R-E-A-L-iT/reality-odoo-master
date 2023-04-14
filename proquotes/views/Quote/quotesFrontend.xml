@@ -335,7 +335,7 @@
 					<t t-set="rentalDays" t-value="rentalDays % 7" />
 
 
-					<t t-value="line.price_subtotal * rentalDays" />
+					<t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
 					<t t-if="(rentalDayRate> line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
 					<t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
 					<t t-if="(rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
