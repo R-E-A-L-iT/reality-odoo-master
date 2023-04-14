@@ -281,6 +281,7 @@ class order(models.Model):
                         _logger.error("HERE 4")
                         price = self.calc_rental_price(line.price_subtotal)
                         amount_untaxed += price
+                        _logger.warning(line.price_tax)
                         amount_tax += line.price_tax
 
             order.update({
