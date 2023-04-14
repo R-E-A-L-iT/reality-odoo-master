@@ -5,7 +5,7 @@ import base64
 from email.policy import default
 import re
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from functools import partial
 from itertools import groupby
 import logging
@@ -252,9 +252,9 @@ class order(models.Model):
             return price
         sdate = str(self.rental_start).split('-')
         edate = str(self.rental_end).split('-')
-        _logger.error(str(datetime.date(2023, 12, 20)))
-        rentalDays = datetime.date(int(edate[0]), int(edate[1]), int(
-            edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2])).days
+        _logger.error(str(date(2023, 12, 20)))
+        rentalDays = date(int(edate[0]), int(edate[1]), int(
+            edate[2])) - date(int(sdate[0]), int(sdate[1]), int(sdate[2])).days
         rentalMonths = rentalDays // 30
         rentalDays = rentalDays % 30
         rentalWeeks = rentalDays // 7
