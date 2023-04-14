@@ -260,7 +260,7 @@ class order(models.Model):
                     if (order.is_rental == False or line.product_id.is_software):
                         amount_untaxed += line.price_subtotal
                         amount_tax += line.price_tax
-                    elif (order.is_renatal and line.product_id.is_software == False):
+                    elif (order.is_rental and line.product_id.is_software == False):
                         price = self.calc_rental_price(line.price_subtotal)
                         amount_tax += line.price_tax
 
