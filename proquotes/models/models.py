@@ -253,6 +253,7 @@ class order(models.Model):
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
                 if (line.selected == 'true' and line.sectionSelected == 'true'):
+                    _logger.error(order.isRental)
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
             order.update({
