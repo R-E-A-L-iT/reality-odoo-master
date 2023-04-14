@@ -252,9 +252,8 @@ class order(models.Model):
             return price
         sdate = str(self.rental_start).split('-')
         edate = str(self.rental_end).split('-')
-        _logger.error(str(date(2023, 12, 20)))
-        rentalDays = date(int(edate[0]), int(edate[1]), int(
-            edate[2])) - date(int(sdate[0]), int(sdate[1]), int(sdate[2])).days
+        rentalDays = (date(int(edate[0]), int(edate[1]), int(
+            edate[2])) - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days
         rentalMonths = rentalDays // 30
         rentalDays = rentalDays % 30
         rentalWeeks = rentalDays // 7
