@@ -293,9 +293,9 @@
 
 					<t t-set="sub_rentalRate" t-value="0" />
 					<t t-set="sub_rentalDayRate" t-value="line.price_subtotal * sub_rentalDays" />
-					<t t-if="(rentalDayRate> line.price_subtotal * 4)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 4" />
+					<t t-if="(sub_rentalDayRate> line.price_subtotal * 4)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 4" />
 					<t t-set="sub_rentalWeekDayRate" t-value="4 * line.price_subtotal * sub_rentalWeeks + sub_rentalDayRate" />
-					<t t-if="(rentalWeekDayRate > line.price_subtotal * 12)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 12" />
+					<t t-if="(sub_rentalWeekDayRate > line.price_subtotal * 12)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 12" />
 					<t t-set="sub_rentalMonthRate" t-value="12 * line.price_subtotal * sub_rentalMonths" />
 					<t t-set="sub_rentalRate" t-value="sub_rentalRate + sub_rentalMonthRate + sub_rentalWeekDayRate" />
 					<t t-set="current_subtotal" t-value="current_subtotal + sub_rentalRate" groups="account.group_show_line_subtotals_tax_excluded" />
