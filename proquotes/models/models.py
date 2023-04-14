@@ -261,6 +261,7 @@ class order(models.Model):
                         amount_untaxed += line.price_subtotal
                         amount_tax += line.price_tax
                     elif (order.is_rental and line.product_id.is_software == False):
+                        _logger.error("HERE 4")
                         price = self.calc_rental_price(line.price_subtotal)
                         amount_untaxed = price
                         amount_tax += line.price_tax
