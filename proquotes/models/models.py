@@ -248,8 +248,26 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
     def calc_rental_price(self, price):
-        result = price * 41
-        return result
+        if (self.start_date == False or self.end_date == False):
+            return price
+            result = 0
+        sdate = str(self.rental_start).split('-')
+        edate = str(self.rental_end).split('-')
+        rentalDays = datetime.date(int(edate[0]), int(edate[1]), int(
+            edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2])).days
+        rentalMonths = rentalDays // 30
+        rentalDays = rentalDays % 30
+        rentalWeeks = rentalDays // 7
+        rentalDays = rentalDays % 7
+
+        dayRate = rentalDays * price
+        if (dayRate > price * 4):
+            dayRate = price * 4
+        weekRate = rentalWeeks * (price * 4)
+        if (weekRate > price * 12):
+            weekRate = price * 12
+        monthRate = price * rentalMonths
+        return dayRate + weekRate + monthRate
 
     def _amount_all(self):
         _logger.error("HERE 3")
@@ -360,7 +378,7 @@ class proquotesMail(models.TransientModel):
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """ Call email_template.generate_email(), get fields relevant for
-                mail.compose.message, transform email_cc and email_to into partner_ids """
+                                                                        mail.compose.message, transform email_cc and email_to into partner_ids """
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False
