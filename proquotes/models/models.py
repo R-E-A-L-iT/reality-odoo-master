@@ -45,7 +45,7 @@ class purchase_order(models.Model):
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     footer_id = fields.Many2one(
-        'header.footer')
+        'header.footer', required="True")
 
 
 class invoice(models.Model):
@@ -71,7 +71,7 @@ class invoice(models.Model):
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
     footer_id = fields.Many2one(
-        'header.footer')
+        'header.footer', required=True)
 
 
 class order(models.Model):
@@ -116,9 +116,9 @@ class order(models.Model):
         ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
 
     header_id = fields.Many2one(
-        'header.footer')
+        'header.footer', required=True)
     footer_id = fields.Many2one(
-        'header.footer')
+        'header.footer', required=True)
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
