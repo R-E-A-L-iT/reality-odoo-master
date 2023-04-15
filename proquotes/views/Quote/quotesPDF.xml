@@ -276,8 +276,33 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="attributes">
-			<attribute name="t-if">line.selected == 'true' and not current_section_ended</attribute>
+		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
+			<t t-if="line.selected == 'true' and not current_section_ended">
+				<!-- Following line puts a landing point for future upgrades that is not stuck within an if statement Do Not Delete-->
+				<t t-set="current_subtotal" t-value="current_subtotal" />
+				<t t-if="doc.is_rental == False or line.product_id.is_software or doc.rental_start == False or doc.rental_end == False">
+					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
+				</t>
+				<t t-elif="doc.rental_start != False and doc.rental_end != False">
+					<t t-set="sub_sdate" t-value="str(doc.rental_start).split('-')" />
+					<t t-set="sub_edate" t-value="str(doc.rental_end).split('-')" />
+					<t t-set="sub_rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
+					<t t-set="sub_rentalMonths" t-value="sub_rentalDays // 30" />
+					<t t-set="sub_rentalDays" t-value="sub_rentalDays % 30" />
+					<t t-set="sub_rentalWeeks" t-value="sub_rentalDays // 7" />
+					<t t-set="sub_rentalDays" t-value="sub_rentalDays % 7" />
+
+
+					<t t-set="sub_rentalRate" t-value="0" />
+					<t t-set="sub_rentalDayRate" t-value="line.price_subtotal * sub_rentalDays" />
+					<t t-if="(sub_rentalDayRate> line.price_subtotal * 4)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 4" />
+					<t t-set="sub_rentalWeekDayRate" t-value="4 * line.price_subtotal * sub_rentalWeeks + sub_rentalDayRate" />
+					<t t-if="(sub_rentalWeekDayRate > line.price_subtotal * 12)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 12" />
+					<t t-set="sub_rentalMonthRate" t-value="12 * line.price_subtotal * sub_rentalMonths" />
+					<t t-set="sub_rentalRate" t-value="sub_rentalRate + sub_rentalMonthRate + sub_rentalWeekDayRate" />
+					<t t-set="current_subtotal" t-value="current_subtotal + sub_rentalRate" groups="account.group_show_line_subtotals_tax_excluded" />
+				</t>
+			</t>
 		</xpath>
 
 		<!-- Remove Special Sections for Renewal Quotes -->
@@ -570,6 +595,7 @@
 				<t t-set="rentalDays" t-value="rentalDays % 7" />
 			</t>
 		</xpath>
+		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after"> -->
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
