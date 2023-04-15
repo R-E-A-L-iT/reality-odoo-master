@@ -3,7 +3,7 @@
 	<template name="Purchase Order PDF" id="purchase_pdf"
 		inherit_id="purchase.report_purchaseorder_document">
 		<xpath expr="//div[1]" position="after">
-			<t t-set="footer" t-value="o.footer" />
+			<t t-set="footer" t-value="o.footer_id" />
 		</xpath>
 	</template>
 </odoo>

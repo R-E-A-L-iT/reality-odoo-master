@@ -241,7 +241,7 @@
 					</p>
 				</div>
 			</t>
-			<t t-set="footer" t-value="o.footer" />
+			<t t-set="footer" t-value="o.footer_id" />
 		</xpath>
 	</template>
 </odoo>

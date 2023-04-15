@@ -497,7 +497,7 @@
 				</a>
 			</div> -->
 			<br />
-			<img id="footer-img" alt="Footer Img" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{sale_order.footer}}.png" />
+			<img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer}}" />
 		</xpath>
 	</template>
 
