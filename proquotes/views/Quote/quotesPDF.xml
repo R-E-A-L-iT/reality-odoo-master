@@ -476,7 +476,7 @@
 				<br />
 				<br />
 				<br />
-				<t t-set="footer" t-value="doc.footer"></t>
+				<t t-set="footer" t-value="doc.footer_id.url"></t>
 
 				<footer>
 					<t t-if="doc.company_id.id == 15">
