@@ -44,6 +44,8 @@ class purchase_order(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
 
+    footer_id = fields.Many2one(
+        'header.footer')
 
 class invoice(models.Model):
     _inherit = 'account.move'
@@ -66,6 +68,9 @@ class invoice(models.Model):
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+
+    footer_id = fields.Many2one(
+        'header.footer')
 
 
 class order(models.Model):
@@ -103,16 +108,16 @@ class order(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], help="Footer selection field", string="Footer OLD")
 
-    header_id = fields.Many2one(
-        'header.footer')
-    footer_id = fields.Many2one(
-        'header.footer')
-
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
         ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
         ('Architecture.jpg', "Architecture.jpg"),
         ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
+
+    header_id = fields.Many2one(
+        'header.footer')
+    footer_id = fields.Many2one(
+        'header.footer')
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
