@@ -31,3 +31,6 @@ class footer_header(models.Model):
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
     _order_by = 'active'
+
+    def init_records(self, model):
+        _logger.error("INIT_RECORDS")
