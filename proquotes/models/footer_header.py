@@ -45,21 +45,21 @@ class footer_header(models.Model):
 
     def _get_header(self, url):
         complete_url = "https://cdn.r-e-a-l.it/images/header/" + url
-        footers = self.env['header.footer'].search(
+        headers = self.env['header.footer'].search(
             [('url', '=', complete_url), ('record_type', '=', 'Header')])
-        if (len(footers) == 1):
-            return footers[0].id
-        elif (len(footers) == 0):
+        if (len(headers) == 1):
+            return headers[0].id
+        elif (len(headers) == 0):
             return self.env['header.footer'].create(
                 {'name': url, 'url': complete_url, 'record_type': 'Header'})
         raise UserError("Invalid Match Count for URL: " + str(complete_url))
 
-    def _init_footer(self, model):
+    def _init_footers(self, model):
         records = self.env[model].search([('footer', '!=', False)])
         for record in records:
             record.footer_id = self._get_footer(record.footer)
 
-    def _init_header(self, model):
+    def _init_headers(self, model):
         records = self.env[model].search([('header', '!=', False)])
         for record in records:
             record.header_id = self._get_header(record.header)
@@ -68,6 +68,6 @@ class footer_header(models.Model):
         records = self.env[model]
 
         if ("footer_id" in dir(records) and "footer" in dir(records)):
-            self._init_footer(model)
+            self._init_footers(model)
         if ("header_id" in dir(records) and "header" in dir(records)):
-            self._init_footer(model)
+            self._init_headers(model)
