@@ -47,6 +47,7 @@ class purchase_order(models.Model):
     footer_id = fields.Many2one(
         'header.footer')
 
+
 class invoice(models.Model):
     _inherit = 'account.move'
     footer = fields.Selection([

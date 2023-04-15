@@ -9,8 +9,8 @@
 		<field name="arch" type="xml">
 			<xpath expr="//field[@name=&quot;currency_id&quot;]"
 				position="after">
-				<field name="footer" invisible="0" />
-				<field name="footer_id" invisible="0" />
+				<field name="footer" invisible="1" />
+				<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 			</xpath>
 		</field>
 	</record>
