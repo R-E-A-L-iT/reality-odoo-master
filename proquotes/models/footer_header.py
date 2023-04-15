@@ -33,7 +33,9 @@ class footer_header(models.Model):
     _order_by = 'active'
 
     def init_records(self, model):
-        records = self.env[model]
+        if ("footer" not in dir(self.env[model])):
+            raise UserError(str(model) + " does not contain field footer")
+        records = self.env[model].search([('footer', '!=', False)])
 
         if ("footer_id" in dir(records) and "footer" in dir(records)):
             _logger.error("footer")
