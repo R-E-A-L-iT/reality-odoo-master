@@ -101,7 +101,7 @@ class order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], help="Footer selection field")
+    ], help="Footer selection field", string="Footer OLD")
 
     header_id = fields.Many2one(
         'header.footer')
@@ -112,7 +112,7 @@ class order(models.Model):
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
         ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
         ('Architecture.jpg', "Architecture.jpg"),
-        ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
+        ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, string="Header OLD", help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)

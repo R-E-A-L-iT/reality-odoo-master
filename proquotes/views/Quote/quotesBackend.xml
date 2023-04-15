@@ -35,8 +35,8 @@
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="customer_po_number" invisible="0" />
 					<field name="header_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
-					<field name="header" invisible="1" />
-					<field name="footer" invisible="1" />
+					<field name="header" invisible="0" />
+					<field name="footer" invisible="0" />
 					<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 				</group>
 			</xpath>
