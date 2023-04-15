@@ -38,7 +38,7 @@
             ]
     },
 
-    'verrion': '1.0.1503',
+    'verrion': '1.0.1504',
 
     # always loaded
     'data': [

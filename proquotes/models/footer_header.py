@@ -32,14 +32,34 @@ class footer_header(models.Model):
     active = fields.Boolean(string="Active", default=True)
     _order_by = 'active'
 
-    def init_records(self, model):
-        if ("footer" not in dir(self.env[model])):
-            raise UserError(str(model) + " does not contain field footer")
+    def _get_footer(self, url):
+        complete_url = "https://cdn.r-e-a-l.it/images/footer/" + url + ".png"
+        footers = self.env['header.footer'].search(
+            [('url', '=', complete_url), ('record_type', '=', 'Footer')])
+        if (len(footers) == 1):
+            return footers[0].id
+        elif (len(footers) == 0):
+            return self.env['header.footer'].create(
+                {'name': url, 'url': complete_url})
+        raise UserError("Invalid Match Count for URL: " + str(complete_url))
+
+    def _get_header(self, url):
+        pass
+
+    def _init_footer(self, model):
         records = self.env[model].search([('footer', '!=', False)])
+        for record in records:
+            record.footer_id = self._get_footer(record.footer)
+
+    def _init_header(self, model):
+        records = self.env[model].search([('header', '!=', False)])
+        for record in records:
+            record.header_id = self._get_header(record.header)
+
+    def init_records(self, model):
+        records = self.env[model]
 
         if ("footer_id" in dir(records) and "footer" in dir(records)):
-            _logger.error("footer")
-            _logger.error(records)
-
+            self._init_footer(model)
         if ("header_id" in dir(records) and "header" in dir(records)):
-            _logger.error("header")
+            self._init_footer(model)
