@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <record id="header_footer_filter" model="ir.ui.view">
+        <field name="name">Header Footer Filter</field>
+        <field name="model">header.footer</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="header_footer_active" domain="[('active', '=', True)]" />
+            </search>
+        </field>
+    </record>
+
     <record id="header_footer_tree" model="ir.ui.view">
         <field name="name">Header Footer</field>
         <field name="model">header.footer</field>
@@ -22,13 +32,21 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
-                <label for="name" />
-                <field name="name" />
-                <field name="record_type" />
-                <label for="url" />
-                <field name="url" />
-                <label for="company_ids" />
-                <field name="company_ids" widget="many2many_tags" />
+                <group>
+                    <field name="name" />
+                </group>
+                <group>
+                    <field name="record_type" />
+                </group>
+                <group>
+                    <field name="url" />
+                </group>
+                <group>
+                    <field name="company_ids" widget="many2many_tags" />
+                </group>
+                <group>
+                    <field name="active" />
+                </group>
             </form>
         </field>
     </record>

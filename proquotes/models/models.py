@@ -101,7 +101,12 @@ class order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], help="Footer selection field")
+
+    header_id = fields.Many2one(
+        'header.footer')
+    footer_id = fields.Many2one(
+        'header.footer')
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),

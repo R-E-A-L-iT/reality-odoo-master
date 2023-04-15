@@ -17,8 +17,6 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Sales',
-    'auto_install': True,
-
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'web', 'mail', 'mail_group', 'account', 'proportal', 'stock', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
@@ -40,7 +38,7 @@
             ]
     },
 
-    'vesion': '1.0.178',
+    'verrion': '1.0.1493',
 
     # always loaded
     'data': [
