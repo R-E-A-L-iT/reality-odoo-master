@@ -35,9 +35,9 @@ class footer_header(models.Model):
     def init_records(self, model):
         records = self.env[model]
 
-        if ("footer_id" in dir(records)):
+        if ("footer_id" in dir(records) and "footer" in dir(records)):
             _logger.error("footer")
 
-        if ("header_id" in dir(records)):
+        if ("header_id" in dir(records) and "header" in dir(records)):
             _logger.error("header")
         _logger.warning(dir(records))
