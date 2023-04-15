@@ -37,6 +37,7 @@ class footer_header(models.Model):
 
         if ("footer_id" in dir(records) and "footer" in dir(records)):
             _logger.error("footer")
+            _logger.error(records)
 
         if ("header_id" in dir(records) and "header" in dir(records)):
             _logger.error("header")
