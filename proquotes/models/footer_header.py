@@ -40,3 +40,4 @@ class footer_header(models.Model):
 
         if ("header_id" in dir(records)):
             _logger.error("header")
+        _logger.warning(dir(records))
