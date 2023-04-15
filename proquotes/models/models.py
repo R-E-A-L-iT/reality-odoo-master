@@ -112,7 +112,7 @@ class order(models.Model):
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
         ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
         ('Architecture.jpg', "Architecture.jpg"),
-        ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, string="Header OLD", help="Header selection field")
+        ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
