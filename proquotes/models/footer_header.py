@@ -44,7 +44,15 @@ class footer_header(models.Model):
         raise UserError("Invalid Match Count for URL: " + str(complete_url))
 
     def _get_header(self, url):
-        pass
+        complete_url = "https://cdn.r-e-a-l.it/images/header/" + url
+        footers = self.env['header.footer'].search(
+            [('url', '=', complete_url), ('record_type', '=', 'Header')])
+        if (len(footers) == 1):
+            return footers[0].id
+        elif (len(footers) == 0):
+            return self.env['header.footer'].create(
+                {'name': url, 'url': complete_url, 'record_type': 'Header'})
+        raise UserError("Invalid Match Count for URL: " + str(complete_url))
 
     def _init_footer(self, model):
         records = self.env[model].search([('footer', '!=', False)])

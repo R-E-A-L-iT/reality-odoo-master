@@ -15,8 +15,8 @@
 			<t t-set="company_name" t-value="sale_order.company_id.name" />
 			<t t-set="clang" t-value="lang" />
 			<div class="quote-address">
-				<img t-if="sale_order.header[-4:] == '.jpg'" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
-				<video t-if="sale_order.header[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="https://cdn.r-e-a-l.it/images/header/{{sale_order.header}}" />
+				<img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img" t-attf-src="{{sale_order.header}}" />
+				<video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="{{sale_order.header}}" />
 				<div class="quote-address-block">
 					<h1 class="title" t-field="sale_order.partner_id.name" />
 					<div class="hr"></div>
