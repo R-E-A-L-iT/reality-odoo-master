@@ -42,7 +42,7 @@ class purchase_order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
     footer_id = fields.Many2one(
         'header.footer', required="True")
@@ -68,7 +68,7 @@ class invoice(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
     footer_id = fields.Many2one(
         'header.footer', required=True)
