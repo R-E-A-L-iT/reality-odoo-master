@@ -30,3 +30,4 @@ class footer_header(models.Model):
     url = fields.Char(string="Resourse URL", required=True)
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
+    _order_by = 'active'
