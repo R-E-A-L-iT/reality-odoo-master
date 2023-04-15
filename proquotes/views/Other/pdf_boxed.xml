@@ -15,7 +15,7 @@
 		<xpath expr="/t/div[3]/div/div" position="replace">
 			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
 			<div>
-				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="{{footer}}" />
 				<!-- <img t-if="footer != undefined" id="insert-footer" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
 				<t t-else="">
 					<t t-if="doc != undefined" t-set="source" t-value="doc" />
