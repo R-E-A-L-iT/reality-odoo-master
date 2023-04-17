@@ -248,10 +248,13 @@ class order(models.Model):
         for product in self.renewal_product_items:
             if (product.product_id.type_selection == "H"):
                 self.hardwareCCP(hardware_lines, product)
-            if (product.product_id.type_selection == "S"):
+            elif (product.product_id.type_selection == "S"):
                 self.softwareCCP(hardware_lines, product)
-            if (product.product_id.type_selection == "SS"):
+            elif (product.product_id.type_selection == "SS"):
                 self.softwareSubCCP(software_sub_lines, product)
+            else:
+                raise UserError("Product: " + str(product.product_id.name) +
+                                " has unknown type \"" + str(product.product_id.type_selection) + "\"")
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
