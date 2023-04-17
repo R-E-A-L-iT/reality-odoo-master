@@ -658,6 +658,11 @@
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]" position="attributes">
 			<attribute name="t-if">doc.is_rental != True</attribute>
 		</xpath>
+		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]" position="after">
+			<td>
+				<span t-out="doc.is_rental" />
+			</td>
+		</xpath>
 	</template>
 
 </odoo>
