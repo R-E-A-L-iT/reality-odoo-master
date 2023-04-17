@@ -34,7 +34,7 @@
 
 		<!-- Hide Total On Rental Quotes -->
 		<xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
-			<!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
+			<attribute name="t-if">sale_order.is_rental != True</attribute>
 		</xpath>
 
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
