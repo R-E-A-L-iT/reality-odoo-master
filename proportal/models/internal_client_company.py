@@ -49,6 +49,8 @@ class company(models.Model):
 
     @api.onchange("company_nickname")
     def verify_unique(self):
+        if (self.is_company):
+            return
         if (self.company_nickname == False):
             return
         if (self.is_company == True and self.company_nickname == "_"):
