@@ -55,7 +55,7 @@ class company(models.Model):
             return
         if (self.is_company == True and self.company_nickname == "_"):
             raise UserError("Company Nickname Cannot Be _")
-        records = self.env['renewal.map'].search(
+        records = self.env['res.partner'].search(
             [('company_nickname', '=', self.company_nickname)])
         if (len(records) > 1):
             raise ValidationError(
