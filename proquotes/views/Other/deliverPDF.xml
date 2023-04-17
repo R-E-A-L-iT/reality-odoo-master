@@ -8,12 +8,12 @@
 			<!-- <xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace"> -->
 			<style>
 				#addressTable, #addressTable * {
-					color: #495057;
-					background-color: #fff !important;
-					margin-left: 0px;
-					border-color: #fff !important;
-					border-width: 0px !important;
-					border-style: none !important;
+				color: #495057;
+				background-color: #fff !important;
+				margin-left: 0px;
+				border-color: #fff !important;
+				border-width: 0px !important;
+				border-style: none !important;
 				}
 			</style>
 			<table id="addressTable" style="border-style: collapse !important;" border="0">
@@ -54,13 +54,13 @@
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<style>
 				td {
-					border-style: solid;
+				border-style: solid;
 				}
 
 				.description-root, .description-root *{
-					font-size: 0.75rem
-					margin-top: 0px !important;
-					margin-bottom: 0px !important;
+				font-size: 0.75rem
+				margin-top: 0px !important;
+				margin-bottom: 0px !important;
 				}
 			</style>
 			<t t-if="str(move.name) != str(move.product_id.description_sale)">
@@ -93,7 +93,7 @@
 				<br />
 				<br />
 				<br />
-				<t t-set="footer" t-value="o.footer"></t>
+				<t t-set="footer" t-value="o.footer_id"></t>
 			</div>
 		</xpath>
 	</template>

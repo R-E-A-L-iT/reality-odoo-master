@@ -18,7 +18,6 @@
     # for the full list
     'category': 'Sales',
 
-
     # any module necessary for this one to work correctly
     'depends': ['base', 'web', 'mail', 'mail_group', 'account', 'proportal', 'stock', 'product', 'website', 'sale_management', 'sale', 'digest', 'portal'],
 
@@ -39,7 +38,7 @@
             ]
     },
 
-    'vesion': '1.0.1400',
+    'verrion': '1.0.1522',
 
     # always loaded
     'data': [
@@ -60,6 +59,7 @@
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
         'views/Other/renewal.xml',
+        'views/Other/header_footer.xml',
         'views/Other/product_backend.xml',
         'views/Invoice/invoicePDF.xml',
         'views/Invoice/invoiceBackend.xml',

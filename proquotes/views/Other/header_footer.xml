@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="header_footer_tree" model="ir.ui.view">
+        <field name="name">Header Footer</field>
+        <field name="model">header.footer</field>
+        <field name="priority">4</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="url" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="header_footer_form" model="ir.ui.view">
+        <field name="name">Header Footer</field>
+        <field name="model">header.footer</field>
+        <field name="priority">4</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" />
+                </group>
+                <group>
+                    <field name="record_type" />
+                </group>
+                <group>
+                    <field name="url" />
+                </group>
+                <group>
+                    <field name="company_ids" widget="many2many_tags" />
+                </group>
+                <group>
+                    <field name="active" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="header_footer_window" model="ir.actions.act_window">
+        <field name="name">Header Footer</field>
+        <field name="res_model">header.footer</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="header_footer_tree" />
+    </record>
+
+    <record id="header_footer_window_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="header_footer_tree" />
+        <field name="act_window_id" ref="proquotes.header_footer_window"></field>
+    </record>
+
+    <record id="header_footer_window_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="header_footer_form" />
+        <field name="act_window_id" ref="proquotes.header_footer_window"></field>
+    </record>
+
+    <menuitem
+        id="proquotes_header_footer_menu_item"
+        name="Header Footer List"
+        parent="sale.menu_sale_config"
+        action="header_footer_window"
+        sequence="1"
+    />
+</odoo>

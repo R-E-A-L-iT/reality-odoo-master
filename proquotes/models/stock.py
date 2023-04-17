@@ -41,4 +41,7 @@ class stock(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field", string="Footer OLD")
+
+    footer_id = fields.Many2one(
+        'header.footer')

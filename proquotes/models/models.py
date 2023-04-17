@@ -5,7 +5,7 @@ import base64
 from email.policy import default
 import re
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from functools import partial
 from itertools import groupby
 import logging
@@ -42,7 +42,10 @@ class purchase_order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
+
+    footer_id = fields.Many2one(
+        'header.footer', required="True")
 
 
 class invoice(models.Model):
@@ -65,7 +68,10 @@ class invoice(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
+
+    footer_id = fields.Many2one(
+        'header.footer', required=True)
 
 
 class order(models.Model):
@@ -101,13 +107,18 @@ class order(models.Model):
         ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
         ('REALiTFooter_Derek', "REALiTFooter_Derek"),
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field")
+    ], help="Footer selection field", string="Footer OLD")
 
     header = fields.Selection([
         ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
         ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
         ('Architecture.jpg', "Architecture.jpg"),
-        ('Software.jpg', "Software.jpg")], default='ChurchXRAY.jpg', required=True, help="Header selection field")
+        ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
+
+    header_id = fields.Many2one(
+        'header.footer', required=True)
+    footer_id = fields.Many2one(
+        'header.footer', required=True)
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
@@ -247,13 +258,44 @@ class order(models.Model):
         lines.extend(software_sub_lines)
         self.order_line = [(6, 0, lines)]
 
+    def calc_rental_price(self, price):
+        if (self.rental_start == False or self.rental_end == False):
+            return price
+        sdate = str(self.rental_start).split('-')
+        edate = str(self.rental_end).split('-')
+        rentalDays = (date(int(edate[0]), int(edate[1]), int(
+            edate[2])) - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days
+        rentalMonths = rentalDays // 30
+        rentalDays = rentalDays % 30
+        rentalWeeks = rentalDays // 7
+        rentalDays = rentalDays % 7
+        _logger.error(rentalDays)
+        _logger.error(rentalWeeks)
+        _logger.error(rentalMonths)
+
+        rentalRate = 0
+        rentalDayRate = price * rentalDays
+        if (rentalDayRate > price * 4):
+            rentalDayRate = price * 4
+        rentalWeekDayRate = 4 * price * rentalWeeks + rentalDayRate
+        if (rentalWeekDayRate > price * 12):
+            rentalDayRate = price * 12
+        rentalMonthRate = 12 * price * rentalMonths
+        return rentalRate + rentalMonthRate + rentalWeekDayRate
+
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
                 if (line.selected == 'true' and line.sectionSelected == 'true'):
-                    amount_untaxed += line.price_subtotal
-                    amount_tax += line.price_tax
+                    if (order.is_rental == False or line.product_id.is_software):
+                        amount_untaxed += line.price_subtotal
+                        amount_tax += line.price_tax
+                    elif (order.is_rental and line.product_id.is_software == False):
+                        price = self.calc_rental_price(line.price_subtotal)
+                        amount_untaxed += price
+                        amount_tax += self.calc_rental_price(line.price_tax)
+
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
@@ -346,7 +388,7 @@ class proquotesMail(models.TransientModel):
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """ Call email_template.generate_email(), get fields relevant for
-                mail.compose.message, transform email_cc and email_to into partner_ids """
+                                                                                                                                        mail.compose.message, transform email_cc and email_to into partner_ids """
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False
