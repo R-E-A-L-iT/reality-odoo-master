@@ -34,5 +34,8 @@ class company(models.Model):
         for partner in self.env['res.partner'].search([('company_nickname', '=', False)]):
             partner.company_nickname = "_"
 
+        for partner in self.env['res.partner'].search([('company_nickname', '=', False), ('active', '=', False)]):
+            partner.company_nickname = "_"
+
     company_nickname = fields.Char(
         string="Unique Company Nickname", required=True, default=_calc_nick)
