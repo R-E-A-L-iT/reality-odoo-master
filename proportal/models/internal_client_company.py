@@ -46,3 +46,18 @@ class company(models.Model):
             self.company_nickname = False
         elif (self.is_company == False and self.company_nickname == False):
             self.company_nickname = "_"
+
+    @api.onchange("company_nickname")
+    def verify_unique(self):
+        if (self.company_nickname == False):
+            return
+        if (self.is_company == True and self.company_nickname == "_"):
+            raise UserError("Company Nickname Cannot Be _")
+        records = self.env['renewal.map'].search(
+            [('company_nickname', '=', self.company_nickname)])
+        if (len(records) > 1):
+            raise ValidationError(
+                "Company Nickname already used: " + str(self.company_nickname))
+        if (len(records) == 1 and records[0].id != self.id):
+            raise ValidationError(
+                "Company Nickname already used: " + str(self.company_nickname))
