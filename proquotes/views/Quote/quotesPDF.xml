@@ -570,7 +570,7 @@
 		</xpath>
 
 		<xpath expr="//h2/span" position="attributes">
-			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
+			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
 		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
@@ -655,9 +655,9 @@
 		</xpath>
 
 		<!-- Hide Subtotal on Rental Quotes -->
-		<!-- <xpath expr="//" position="attributes"> -->
-		<!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
-		<!-- </xpath> -->
+		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]" position="attributes">
+			<attribute name="t-if">sale_order.is_rental != True</attribute>
+		</xpath>
 	</template>
 
 </odoo>
