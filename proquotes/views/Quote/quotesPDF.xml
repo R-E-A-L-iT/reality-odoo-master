@@ -562,11 +562,11 @@
 		</xpath>
 
 		<xpath expr="//h2/t/span[1]" position="attributes">
-			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
+			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
 		<xpath expr="//h2/t/span[2]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
+			<!-- <attribute name="style">color: #db0d0d !important;</attribute> -->
 		</xpath>
 
 		<xpath expr="//h2/span" position="attributes">
