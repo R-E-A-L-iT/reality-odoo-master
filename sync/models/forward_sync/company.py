@@ -12,7 +12,7 @@ from odoo import models
 from .product_common import product_sync_common
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = True
+SKIP_NO_CHANGE = False
 
 
 class sync_companies():
@@ -233,7 +233,7 @@ class sync_companies():
         company.zip = self.sheet[i][columns["postalCode"]]
         company.lang = self.sheet[i][columns["language"]]
         company.email = self.sheet[i][columns["email"]]
-        company.company_nickname = self.sheet[i][columns["ids"]]
+        company.company_nickname = self.sheet[i][columns["id"]]
         if (self.sheet[i][columns["pricelist"]] != ""):
             pricelist = self.database.env['product.pricelist'].search(
                 [('name', '=', self.sheet[i][columns["pricelist"]])])[0]
