@@ -656,7 +656,7 @@
 
 		<!-- Hide Subtotal on Rental Quotes -->
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]" position="attributes">
-			<attribute name="t-if">sale_order.is_rental != True</attribute>
+			<attribute name="t-if">doc.is_rental != True</attribute>
 		</xpath>
 	</template>
 
