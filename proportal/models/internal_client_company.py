@@ -42,7 +42,7 @@ class company(models.Model):
 
     @api.onchange("is_company")
     def type_change(self):
-        if (self.is_company == True):
+        if (self.is_company == True and self.company_nickname == "_"):
             self.company_nickname = False
-        else:
+        elif (self.is_company == False and self.company_nickname == False):
             self.company_nickname = "_"
