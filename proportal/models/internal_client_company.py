@@ -26,5 +26,9 @@ class company(models.Model):
         else:
             self.company_nickname = "_"
 
+    def init_company_nickname(self):
+        for partner in self.env['res.partner'].search([('company_nickname', '=', False)]):
+            partner.company_nickname = "_"
+
     company_nickname = fields.Char(
         string="Unique Company Nickname", default=_calc_nick)
