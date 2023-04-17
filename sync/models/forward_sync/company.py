@@ -233,7 +233,7 @@ class sync_companies():
         company.zip = self.sheet[i][columns["postalCode"]]
         company.lang = self.sheet[i][columns["language"]]
         company.email = self.sheet[i][columns["email"]]
-        company.company_nickname = self.sheet[i][columns["id"]]
+        company.company_nickname = self.sheet[i][columns["ids"]]
         if (self.sheet[i][columns["pricelist"]] != ""):
             pricelist = self.database.env['product.pricelist'].search(
                 [('name', '=', self.sheet[i][columns["pricelist"]])])[0]
