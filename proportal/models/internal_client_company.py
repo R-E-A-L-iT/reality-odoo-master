@@ -15,6 +15,9 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class company(models.Model):
@@ -27,6 +30,7 @@ class company(models.Model):
             self.company_nickname = "_"
 
     def init_company_nickname(self):
+        _logger.error("INIT NICKNAME")
         for partner in self.env['res.partner'].search([('company_nickname', '=', False)]):
             partner.company_nickname = "_"
 
