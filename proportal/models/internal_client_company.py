@@ -49,7 +49,7 @@ class company(models.Model):
 
     @api.onchange("company_nickname")
     def verify_unique(self):
-        if (self.is_company):
+        if (self.is_company == False):
             return
         if (self.company_nickname == False):
             return
