@@ -21,4 +21,5 @@ class company(models.Model):
     _inherit = "res.company"
     logo_url = fields.Char(
         string="Logo URL", default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif", required="True")
-    prefered_invoice_footers = fields.Many2many(string="Invoice Footer List")
+    prefered_invoice_footers = fields.Many2many(
+        "header.footer", string="Invoice Footer List")
