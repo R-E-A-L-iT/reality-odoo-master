@@ -71,7 +71,7 @@ class invoice(models.Model):
     ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
     def _get_default_footer(self):
-        results = self.prefered_invoice_footers.search
+        results = self.company_id.prefered_invoice_footers.search
         if (len(results) == 0):
             return
         return results[-1].id
