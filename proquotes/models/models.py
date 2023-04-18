@@ -70,8 +70,11 @@ class invoice(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
+    def _get_default_footer(self):
+        return self.env['header.footer'].search([('name', '=', 'Default Footer')])[-1]
+
     footer_id = fields.Many2one(
-        'header.footer', required=True)
+        'header.footer', required=True, default=_get_default_footer)
 
 
 class order(models.Model):
