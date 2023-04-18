@@ -157,7 +157,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
+			<span t-if="line.name.strip()[0] != '#' and line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
 				<t t-set="sname" t-value="line.name.strip()[1:]" />
 				<t t-call="proquotes.section_name_resolution" />
