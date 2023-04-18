@@ -38,7 +38,7 @@ class company(models.Model):
             partner.company_nickname = "_"
 
     company_nickname = fields.Char(
-        string="Unique Company Nickname", required=True)
+        string="Unique Company Nickname")
 
     @api.onchange("is_company")
     def type_change(self):
