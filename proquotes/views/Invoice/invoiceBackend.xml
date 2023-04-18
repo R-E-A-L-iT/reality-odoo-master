@@ -11,7 +11,7 @@
 		<field name="arch" type="xml">
 			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
 				<field name="footer" invisible="1" />
-				<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), ('company_id.prefered_invoice_footers', 'like', id)]" />
+				<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), ('id', 'in', 'company_id.prefered_invoice_footers')]" />
 			</xpath>
 			<xpath expr="//group[@id=&quot;header_right_group&quot;]//field[@name=&quot;date&quot;]" position="after">
 				<field name="pricelist_id" />
