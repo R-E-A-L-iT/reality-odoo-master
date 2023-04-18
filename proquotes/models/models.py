@@ -70,6 +70,7 @@ class invoice(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
+    @api.depends('company_id')
     def _get_default_footer(self):
         results = self.company_id.prefered_invoice_footers
         _logger.error(self.company_id)
