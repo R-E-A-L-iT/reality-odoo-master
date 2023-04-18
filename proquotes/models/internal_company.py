@@ -22,4 +22,4 @@ class company(models.Model):
     logo_url = fields.Char(
         string="Logo URL", default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif", required="True")
     prefered_invoice_footers = fields.Many2many(
-        "header.footer", related=False, string="Invoice Footer List")
+        "header.footer", column1=False, string="Invoice Footer List")
