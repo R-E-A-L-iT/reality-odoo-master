@@ -26,7 +26,7 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
     footer_list = fields.Many2many(
-        related="company_id.prefered_invoice_footers", stored=False)
+        related="company_id.prefered_invoice_footers", readonly=True)
 
     @api.onchange('partner_id')
     def _setpricelist(self):
