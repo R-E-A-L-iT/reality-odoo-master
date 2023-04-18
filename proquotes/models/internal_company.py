@@ -24,4 +24,4 @@ class company(models.Model):
     header_footer_ids = fields.Many2many(
         "header.footer", string="Invoice Footer List")
     prefered_invoice_footers = fields.Many2many(
-        "header.footer", string="Invoice Footer List")
+        "header.footer", column1="invoicefooter", string="Invoice Footer List")
