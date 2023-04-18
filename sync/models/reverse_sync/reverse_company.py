@@ -26,6 +26,20 @@ class reverse_sync_company(models.Model):
         _dev_1_db = "19izgmIl_fg002YfqtNbIgkwSKY3Tk5r32XYEfq7nXT0"
         _dev_2_db = "19izgmIl_fg002YfqtNbIgkwSKY3Tk5r32XYEfq7nXT0"
 
+        # Return the proper GoogleSheet Template ID base on the environement
+        if (_db_name == _db_name_prod):
+            _logger.info("Production")
+            return _master_db
+        elif (dev1_prefix in _db_name):
+            _logger.info("Dev 1")
+            return _dev_1_db
+        elif (dev2_prefix in _db_name):
+            _logger.info("Dev 2")
+            return _dev_2_db
+        else:
+            _logger.info("Default Dev GS")
+            return _master_db
+
     def createHeader(self):
         return ["COMPANY NICK NAME", "Company Name", "Phone", "Email", "Website", "Street Adress", "City", "Province", "Country", "Postal Code", "Industry", "Language", "Currency"]
 
@@ -67,4 +81,21 @@ class reverse_sync_company(models.Model):
         return ['' for _ in range(length)]
 
     def reverseSync(self, psw):
-        pass
+        _logger.info("Reverse Sync Contacts")
+        try:
+            spreadSheetID = self.getSpreadSheetID()
+            return
+            header = self.createHeader()
+            sheetTable = [header]
+            companies = self.env['res.partner'].search(
+                [('is_company', '=', True), ('company_nickname', '!=', "_")])
+
+            for company in companies:
+                row = self.createRow(header, company)
+                if (row != None):
+                    sheetTable.append(row)
+
+        except Exception as e:
+            _logger.error(e)
+            reverse_sync_email.sendReport("Contacts", e)
+        _logger.info("End Reverse Sync Contacts")
