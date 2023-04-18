@@ -156,6 +156,14 @@
 			</t>
 		</xpath>
 
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
+			<span t-elif="line.name.strip()[0] == '#'">
+				<t t-set="sname" t-value="line.name.strip()[1:]" />
+				<t t-call="proquotes.section_name_resolution" />
+			</span>
+		</xpath>
+
 		<xpath expr="//img" position="after">
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto" style="margin-bottom: 0px;" />
 			<style>
