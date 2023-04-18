@@ -71,7 +71,10 @@ class invoice(models.Model):
     ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
     def _get_default_footer(self):
-        return self.env['header.footer'].search([('name', '=', 'Default Footer')])[-1]
+        results = self.prefered_invoice_footers.search
+        if (len(results) == 0):
+            return
+        return results[-1].id
 
     footer_id = fields.Many2one(
         'header.footer', required=True, default=_get_default_footer)
