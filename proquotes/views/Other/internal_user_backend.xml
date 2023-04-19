@@ -3,7 +3,7 @@
 <odoo>
     <record id="proquotes_internal_user_backend" model="ir.ui.view">
         <field name="name">Internal User_Backend</field>
-        <field name="model">res.user</field>
+        <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_users_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;company_id&quot;]" position="after">
