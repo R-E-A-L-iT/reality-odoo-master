@@ -99,7 +99,7 @@ class reverse_sync_company(models.Model):
             if sheet_object == None:
                 raise Exception("Invalid Document or Tabname: " + str(tabname))
             sheet = sheet_object.get_all_values()[2:]
-            nicknames = list(map(lambda row: row[0].strip(), sheet))
+            nicknames = list(map(lambda row: row[0], sheet))
             _logger.error(nicknames)
 
             header = self.createHeader()
@@ -110,8 +110,8 @@ class reverse_sync_company(models.Model):
 
             for company in companies:
                 if (
-                    company.company_nickname.strip() not in nicknames
-                    and company.company_nickname != "_"
+                    company.company_nickname not in nicknames
+                    or company.company_nickname == "_"
                 ):
                     continue
                 _logger.info(company.company_nickname)
