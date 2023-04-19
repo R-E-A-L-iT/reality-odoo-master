@@ -72,7 +72,12 @@ class invoice(models.Model):
 
     @api.depends('company_id')
     def _get_default_footer(self):
-        results = self.company_id.prefered_invoice_footers
+        company = None
+        if (self.company_id != False):
+            company = self.company_id
+        else:
+            company = self.context.get('company_id')
+        results = company.prefered_invoice_footers
         _logger.error(self.company_id)
         if (len(results) == 0):
             return
