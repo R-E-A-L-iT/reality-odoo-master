@@ -86,7 +86,7 @@ class reverse_sync_company(models.Model):
         _logger.error(company.property_product_pricelist.name)
         if (
             company.property_product_pricelist.name != False
-            and "CAD" in company.property_product_pricelist.name
+            and "CAN" in company.property_product_pricelist.name
         ):
             currency = "CAD"
         elif (
