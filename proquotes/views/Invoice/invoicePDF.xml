@@ -137,7 +137,7 @@
 				AMOUNT
 			</span>
 			<span t-if="clang == 'fr_CA'" groups="account.group_show_line_subtotals_tax_excluded">
-				MOMONT
+				MONTANT
 			</span>
 		</xpath>
 
@@ -154,6 +154,14 @@
 					</b>
 				</p>
 			</t>
+		</xpath>
+
+		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+			<span t-if="line.name.strip()[0] != '#' and line.name.strip()[0] != '#'" t-field="line.name" />
+			<span t-elif="line.name.strip()[0] == '#'">
+				<t t-set="sname" t-value="line.name.strip()[1:]" />
+				<t t-call="proquotes.section_name_resolution" />
+			</span>
 		</xpath>
 
 		<xpath expr="//img" position="after">
