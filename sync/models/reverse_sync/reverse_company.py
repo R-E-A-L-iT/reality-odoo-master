@@ -95,7 +95,6 @@ class reverse_sync_company(models.Model):
         _logger.info("Reverse Sync Company")
         try:
             spreadSheetID = self.getSpreadSheetID()
-            _logger.error(spreadSheetID)
             sheet = sheetsAPI.getSpreadSheetByName(spreadSheetID, tabname, psw)
             if sheet == None:
                 raise Exception("Invalid Document or Tabname: " + str(tabname))

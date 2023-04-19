@@ -20,9 +20,7 @@ class sheetsAPI:
         creds = sac.from_json_keyfile_dict(auth, scope)
         client = gspread.authorize(creds)
         doc = client.open_by_key(spreadSheetID)
-        _logger.error(dir(doc.worksheets()[0]))
         tabs = list(map(lambda item: item.title, doc.worksheets()))
-        _logger.error(tabs)
         if sheetName not in tabs:
             return None
         return doc.worksheet(sheetName)
