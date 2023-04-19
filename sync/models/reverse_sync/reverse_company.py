@@ -117,6 +117,7 @@ class reverse_sync_company(models.Model):
                     row = self.createRow(header, company)
                     if row != None:
                         sheetTable.append(row)
+                    _logger.error("LINE: 120")
 
         except Exception as e:
             _logger.error(e)
