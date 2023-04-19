@@ -23,8 +23,8 @@ class reverse_sync_company(models.Model):
         _master_db = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
 
         # Dev Numbers Set Based on When Developer Joined
-        _dev_1_db = "19izgmIl_fg002YfqtNbIgkwSKY3Tk5r32XYEfq7nXT0"
-        _dev_2_db = "19izgmIl_fg002YfqtNbIgkwSKY3Tk5r32XYEfq7nXT0"
+        _dev_1_db = "16MmMH4C_pwA2r2X9GUPQRQO9ntWKMGfON2BWZOYaH14"
+        _dev_2_db = "16MmMH4C_pwA2r2X9GUPQRQO9ntWKMGfON2BWZOYaH14"
 
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
@@ -44,8 +44,9 @@ class reverse_sync_company(models.Model):
         return [
             "COMPANY NICK NAME",
             "Company Name",
+            "Customer ID",
+            "SAP-Account",
             "Phone",
-            "Email",
             "Website",
             "Street Address",
             "City",
@@ -54,6 +55,14 @@ class reverse_sync_company(models.Model):
             "Postal Code",
             "Industry",
             "Language",
+            "Address-conc",
+            "Latitude",
+            "Longitude",
+            "Email",
+            "Total value purchased",
+            "Rank" "Company name",
+            "Amount",
+            "Province",
             "Currency",
         ]
 
@@ -70,20 +79,28 @@ class reverse_sync_company(models.Model):
             return None
         row.append(self.value(header[0], "COMPANY NICK NAME", company.company_nickname))
         row.append(self.value(header[1], "Company Name", company.name))
+        row.append(self.value(header[2], "Customer ID", ""))
+        row.append(self.value(header[3], "SAP-Account", ""))
 
-        row.append(self.value(header[2], "Phone", company.phone))
-        row.append(self.value(header[3], "Email", company.email))
-        row.append(self.value(header[4], "Website", company.website))
-        row.append(self.value(header[5], "Street Address", company.street))
-        row.append(self.value(header[6], "City", company.city))
-        row.append(self.value(header[7], "State/Region", company.state_id.code))
-        row.append(self.value(header[8], "Country", company.country_id.name))
-        row.append(self.value(header[9], "Postal Code", company.zip))
-        row.append(self.value(header[10], "Industry", company.industry_id.name))
-        row.append(self.value(header[11], "Language", company.lang))
+        row.append(self.value(header[4], "Phone", company.phone))
+        row.append(self.value(header[5], "Website", company.website))
+        row.append(self.value(header[6], "Street Address", company.street))
+        row.append(self.value(header[7], "City", company.city))
+        row.append(self.value(header[8], "State/Region", company.state_id.code))
+        row.append(self.value(header[9], "Country", company.country_id.name))
+        row.append(self.value(header[10], "Postal Code", company.zip))
+        row.append(self.value(header[11], "Industry", company.industry_id.name))
+        row.append(self.value(header[12], "Language", company.lang))
+        row.append(self.value(header[13], "Latitude", ""))
+        row.append(self.value(header[14], "Longitude", ""))
+        row.append(self.value(header[15], "Email", company.email))
+        row.append(self.value(header[16], "Total value purchased", ""))
+        row.append(self.value(header[17], "Rank", ""))
+        row.append(self.value(header[18], "Company name", company.name))
+        row.append(self.value(header[19], "Amount", ""))
+        row.append(self.value(header[20], "Province", company.state_id.code))
 
         currency = ""
-        _logger.error(company.property_product_pricelist.name)
         if (
             company.property_product_pricelist.name != False
             and "CAN" in company.property_product_pricelist.name
@@ -94,7 +111,7 @@ class reverse_sync_company(models.Model):
             and "USD" in company.property_product_pricelist.name
         ):
             currency = "USD"
-        row.append(self.value(header[12], "Currency", currency))
+        row.append(self.value(header[21], "Currency", currency))
         return row
 
     def createBlank(self, length):
@@ -121,7 +138,6 @@ class reverse_sync_company(models.Model):
                     company.company_nickname not in nicknames
                     and company.company_nickname != "_"
                 ):
-                    _logger.info(company.company_nickname in nicknames)
                     _logger.info(company.company_nickname)
                     row = self.createRow(header, company)
                     if row != None:
