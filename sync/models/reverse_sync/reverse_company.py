@@ -91,7 +91,7 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[10], "Postal Code", company.zip))
         row.append(self.value(header[11], "Industry", company.industry_id.name))
         row.append(self.value(header[12], "Language", company.lang))
-        row.append(self.value(header[13], "Latitude", ""))
+        row.append(self.value(header[13], "Address-conc", ""))
         row.append(self.value(header[14], "Latitude", ""))
         row.append(self.value(header[15], "Longitude", ""))
         row.append(self.value(header[16], "Email", company.email))
