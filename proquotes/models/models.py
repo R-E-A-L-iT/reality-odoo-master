@@ -141,7 +141,7 @@ class order(models.Model):
             return result[-1]
 
     def _default_header(self):
-        return self.env['header.footer'].search([('name', '=' 'Starfield'), ('record_type', '=', "Header"), ('active', '=', True)])[0]
+        return self.env['header.footer'].search([('name', '=', 'Starfield'), ('record_type', '=', "Header"), ('active', '=', True)])[0]
 
     header_id = fields.Many2one(
         'header.footer', default=_default_header, required=True)
