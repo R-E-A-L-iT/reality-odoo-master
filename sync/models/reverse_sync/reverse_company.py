@@ -83,6 +83,7 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[11], "Language", company.lang))
 
         currency = ""
+        _logger.error(company.property_product_pricelist.name)
         if (
             company.property_product_pricelist.name != False
             and "CAD" in company.property_product_pricelist.name
