@@ -72,6 +72,11 @@ class reverse_sync_contacts(models.Model):
         digit_search = re.compile("\\d")
         if digit_search.search(contact.name) != None:
             return None
+
+        at_search = re.compile("[@]")
+        if at_search.search(contact.name) != None:
+            return None
+
         row.append(self.value(header[0], "First Name", contact.name.split(" ")[0]))
 
         row.append(
