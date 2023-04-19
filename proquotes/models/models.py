@@ -130,7 +130,7 @@ class order(models.Model):
 
     def _default_footer(self):
         result = self.env.user.prefered_quote_footers.search(
-            [(self.env.company, 'in', 'company_ids')])
+            [('company_ids', '=', self.env.company)])
         if (len(result) == 0):
             return False
         else:
