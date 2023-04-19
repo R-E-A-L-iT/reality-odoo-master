@@ -131,6 +131,8 @@ class order(models.Model):
 
     def _default_footer(self):
         result_raw = self.env.user.prefered_quote_footers
+        if(result_raw == False):
+            return
         result = []
         for item in result_raw:
             if (self.env.company in item.company_ids or len(item.company_ids) == 0):
