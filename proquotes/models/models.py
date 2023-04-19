@@ -76,7 +76,7 @@ class invoice(models.Model):
         if (self.company_id == False):
             company = self.company_id
         else:
-            company = self.env.company_id
+            company = self.env.company
         results = company.prefered_invoice_footers
         _logger.error(self.company_id)
         if (len(results) == 0):
