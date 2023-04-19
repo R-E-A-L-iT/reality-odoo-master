@@ -129,7 +129,7 @@ class order(models.Model):
         ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
 
     def _default_footer(self):
-        result = self.env.user.prefered_invoice_footers.search(
+        result = self.env.user.prefered_quote_footers.search(
             [('company_ids', '=', self.env.company_id)])
         if (len(result) == 0):
             return False
