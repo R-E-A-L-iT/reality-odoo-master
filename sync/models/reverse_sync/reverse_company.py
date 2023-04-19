@@ -47,9 +47,9 @@ class reverse_sync_company(models.Model):
             "Phone",
             "Email",
             "Website",
-            "Street Adress",
+            "Street Address",
             "City",
-            "Province",
+            "State/Region",
             "Country",
             "Postal Code",
             "Industry",
@@ -91,11 +91,15 @@ class reverse_sync_company(models.Model):
     def createBlank(self, length):
         return ["" for _ in range(length)]
 
-    def reverseSync(self, psw):
+    def reverseSync(self, psw, tabname):
         _logger.info("Reverse Sync Company")
         try:
             spreadSheetID = self.getSpreadSheetID()
             _logger.error(spreadSheetID)
+            sheet = sheetsAPI.getSpreadSheetByName(spreadSheetID, tabname, psw)
+            if sheet == None:
+                raise Exception("Invalid Document or Tabname: " + str(tabname))
+
             return
             header = self.createHeader()
             sheetTable = [header]
