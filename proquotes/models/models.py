@@ -129,8 +129,11 @@ class order(models.Model):
         ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
 
     def _default_footer(self):
-        result = self.env.user.prefered_quote_footers.search(
-            [('company_ids', 'in', self.env.company)])
+        result_raw = self.env.user.prefered_quote_footers
+        result = []
+        for item in result_raw:
+            if (self.env.company in item.company_ids):
+                result.append(item)
         if (len(result) == 0):
             return False
         else:
