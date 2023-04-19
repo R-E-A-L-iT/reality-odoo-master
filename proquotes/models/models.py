@@ -134,10 +134,7 @@ class order(models.Model):
         for item in result_raw:
             if (self.env.company in item.company_ids or item.company_ids == False):
                 result.append(item)
-        if (len(result) == 0):
-            return False
-        else:
-            return result[-1]
+        _logger.error(self.env.user.prefered_quote_footers)
 
     def _default_header(self):
         pass
