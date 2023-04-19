@@ -3,3 +3,4 @@ access_sync_sync,access_sync_sync,model_sync_sync,base.group_user,1,1,1,1
 access_sync_sheets,access_sync_sheets,model_sync_sheets,base.group_user,1,1,1,1
 sync.access_sync_sql_runner,access_sync_sql_runner,sync.model_sync_sql_runner,base.group_user,1,1,1,1
 sync.access_sync_reverse_sync_contact,access_sync_reverse_sync_contact,sync.model_sync_reverse_sync_contact,base.group_user,1,1,1,1
+sync.access_sync_reverse_sync_company,access_sync_reverse_sync_company,sync.model_sync_reverse_sync_company,base.group_user,1,1,1,1
