@@ -82,6 +82,7 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[10], "Industry", company.industry_id.name))
         row.append(self.value(header[11], "Language", company.lang.name))
         currency = ""
+        _logger.error("LINE 85")
         if "CAD" in company.property_product_pricelist.name:
             currency = "CAD"
         elif "USD" in company.property_product_pricelist.name:
