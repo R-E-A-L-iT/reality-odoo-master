@@ -132,7 +132,7 @@ class order(models.Model):
         result_raw = self.env.user.prefered_quote_footers
         result = []
         for item in result_raw:
-            if (self.env.company in item.company_ids or item.company_ids == False):
+            if (self.env.company in item.company_ids or len(item.company_ids) == 0):
                 result.append(item)
         _logger.error(self.env.user.prefered_quote_footers)
         _logger.error(self.env.user.prefered_quote_footers[0].company_ids)
