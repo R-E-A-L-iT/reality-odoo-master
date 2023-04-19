@@ -65,11 +65,13 @@ class reverse_sync_company(models.Model):
         return str(cellValue)
 
     def createRow(self, header, company):
+        _logger.error("LINE 68")
         row = []
         if company.name == False:
             return None
         row.append(self.value(header[0], "COMPANY NICK NAME", company.company_nickname))
         row.append(self.value(header[1], "Company Name", company.name))
+        _logger.error("LINE 74")
 
         row.append(self.value(header[2], "Phone", company.phone))
         row.append(self.value(header[3], "Email", company.email))
@@ -81,6 +83,8 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[9], "Postal Code", company.zip))
         row.append(self.value(header[10], "Industry", company.industry_id.name))
         row.append(self.value(header[11], "Language", company.lang))
+
+        _logger.error("LINE 87")
         currency = ""
         if "CAD" in company.property_product_pricelist.name:
             currency = "CAD"
