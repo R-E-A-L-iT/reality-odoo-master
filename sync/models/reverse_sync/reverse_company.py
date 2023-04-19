@@ -87,9 +87,15 @@ class reverse_sync_company(models.Model):
         _logger.error("LINE 87")
         _logger.error(company.property_product_pricelist.name)
         currency = ""
-        if "CAD" in company.property_product_pricelist.name:
+        if (
+            company.property_product_pricelist.name != False
+            and "CAD" in company.property_product_pricelist.name
+        ):
             currency = "CAD"
-        elif "USD" in company.property_product_pricelist.name:
+        elif (
+            company.property_product_pricelist.name != False
+            and "USD" in company.property_product_pricelist.name
+        ):
             currency = "USD"
         row.append(self.value(header[12], "Currency", currency))
         _logger.error("LINE 94")
