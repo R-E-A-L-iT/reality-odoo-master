@@ -17,9 +17,7 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 
-class company(models.Model):
-    _inherit = "res.company"
-    logo_url = fields.Char(
-        string="Logo URL", default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif", required="True")
-    prefered_invoice_footers = fields.Many2many(
-        "header.footer", 'headerfooter_subset', string="Invoice Footer List")
+class partner(models.Model):
+    _inherit = "res.users"
+    prefered_quote_footers = fields.Many2many(
+        "header.footer", string="Prefered Footers")

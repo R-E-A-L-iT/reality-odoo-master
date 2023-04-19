@@ -70,8 +70,19 @@ class invoice(models.Model):
         ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
     ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
 
+    @api.depends('company_id')
     def _get_default_footer(self):
-        return self.env['header.footer'].search([('name', '=', 'Default Footer')])[-1]
+        company = None
+        if (self.company_id == False):
+            company = self.company_id
+        else:
+            company = self.env.company
+        results = company.prefered_invoice_footers
+        _logger.error(self.company_id)
+        if (len(results) == 0):
+            raise UserError(str(company.name) +
+                            " does not have any configured invoice footers")
+        return results[-1].id
 
     footer_id = fields.Many2one(
         'header.footer', required=True, default=_get_default_footer)
@@ -118,10 +129,24 @@ class order(models.Model):
         ('Architecture.jpg', "Architecture.jpg"),
         ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
 
+    def _default_footer(self):
+        result_raw = self.env.user.prefered_quote_footers
+        result = []
+        for item in result_raw:
+            if (self.env.company in item.company_ids or len(item.company_ids) == 0):
+                result.append(item)
+        if (len(result) == 0):
+            return False
+        else:
+            return result[-1]
+
+    def _default_header(self):
+        return self.env['header.footer'].search([('name', '=', 'Starfield'), ('record_type', '=', "Header"), ('active', '=', True)])[0]
+
     header_id = fields.Many2one(
-        'header.footer', required=True)
+        'header.footer', default=_default_header, required=True)
     footer_id = fields.Many2one(
-        'header.footer', required=True)
+        'header.footer', default=_default_footer, required=True)
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
