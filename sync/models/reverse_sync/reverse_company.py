@@ -95,13 +95,14 @@ class reverse_sync_company(models.Model):
         _logger.info("Reverse Sync Company")
         try:
             spreadSheetID = self.getSpreadSheetID()
-            sheet = sheetsAPI.getSpreadSheetByName(spreadSheetID, tabname, psw)
-            if sheet == None:
+            sheet_object = sheetsAPI.getSpreadSheetByName(spreadSheetID, tabname, psw)
+            if sheet_object == None:
                 raise Exception("Invalid Document or Tabname: " + str(tabname))
+            sheet = sheet_object.get_all_values()
+            nicknames = list(map(lambda row: row[0], sheet))
 
-            return
             header = self.createHeader()
-            sheetTable = [header]
+            sheetTable = []
             companies = self.env["res.partner"].search(
                 [("is_company", "=", True), ("company_nickname", "!=", "_")]
             )
