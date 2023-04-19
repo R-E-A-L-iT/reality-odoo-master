@@ -76,7 +76,7 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[4], "Website", company.website))
         row.append(self.value(header[5], "Street Address", company.street))
         row.append(self.value(header[6], "City", company.city))
-        row.append(self.value(header[7], "Province", company.state_id.code))
+        row.append(self.value(header[7], "State/Region", company.state_id.code))
         row.append(self.value(header[8], "Country", company.country_id.name))
         row.append(self.value(header[9], "Postal Code", company.zip))
         row.append(self.value(header[10], "Industry", company.industry_id.name))
@@ -100,6 +100,8 @@ class reverse_sync_company(models.Model):
                 raise Exception("Invalid Document or Tabname: " + str(tabname))
             sheet = sheet_object.get_all_values()
             nicknames = list(map(lambda row: row[0], sheet))
+            _logger.error(nicknames)
+            return
 
             header = self.createHeader()
             sheetTable = []
