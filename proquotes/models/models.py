@@ -135,6 +135,7 @@ class order(models.Model):
             if (self.env.company in item.company_ids or item.company_ids == False):
                 result.append(item)
         _logger.error(self.env.user.prefered_quote_footers)
+        _logger.error(self.env.user.prefered_quote_footers[0].company_ids)
 
     def _default_header(self):
         pass
