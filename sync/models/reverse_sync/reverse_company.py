@@ -66,8 +66,10 @@ class reverse_sync_company(models.Model):
 
     def createRow(self, header, company):
         row = []
+        _logger.error("LINE 69")
         if company.name == False:
             return None
+        _logger.error("LINE 71")
         row.append(self.value(header[0], "COMPANY NICK NAME", company.company_nickname))
         row.append(self.value(header[1], "Company Name", company.name))
 
