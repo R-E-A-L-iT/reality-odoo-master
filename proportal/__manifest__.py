@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Sales',
 
-    'version': '0.217',
+    'version': '0.242',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'stock_account', 'product', 'purchase', 'stock', 'portal', 'website_sale'],
@@ -53,6 +53,7 @@
         'views/shopTile.xml',
         'views/language_selector.xml',
         'views/companyBackend.xml',
+        'views/partner_internal.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
