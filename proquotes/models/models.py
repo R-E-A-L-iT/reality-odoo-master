@@ -80,7 +80,8 @@ class invoice(models.Model):
         results = company.prefered_invoice_footers
         _logger.error(self.company_id)
         if (len(results) == 0):
-            return
+            raise UserError(str(company.name) +
+                            " does not have any configured invoice footers")
         return results[-1].id
 
     footer_id = fields.Many2one(
