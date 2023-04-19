@@ -66,10 +66,8 @@ class reverse_sync_company(models.Model):
 
     def createRow(self, header, company):
         row = []
-        _logger.error("LINE 69")
         if company.name == False:
             return None
-        _logger.error("LINE 71")
         row.append(self.value(header[0], "COMPANY NICK NAME", company.company_nickname))
         row.append(self.value(header[1], "Company Name", company.name))
 
@@ -81,12 +79,9 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[7], "State/Region", company.state_id.code))
         row.append(self.value(header[8], "Country", company.country_id.name))
         row.append(self.value(header[9], "Postal Code", company.zip))
-        _logger.error("LINE 84")
         row.append(self.value(header[10], "Industry", company.industry_id.name))
-        _logger.error("LINE 86")
-        row.append(self.value(header[11], "Language", company.lang.name))
+        row.append(self.value(header[11], "Language", company.lang))
         currency = ""
-        _logger.error("LINE 89")
         if "CAD" in company.property_product_pricelist.name:
             currency = "CAD"
         elif "USD" in company.property_product_pricelist.name:
