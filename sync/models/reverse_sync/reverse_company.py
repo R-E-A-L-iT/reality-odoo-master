@@ -98,7 +98,7 @@ class reverse_sync_company(models.Model):
             sheet_object = sheetsAPI.getSpreadSheetByName(spreadSheetID, tabname, psw)
             if sheet_object == None:
                 raise Exception("Invalid Document or Tabname: " + str(tabname))
-            sheet = sheet_object.get_all_values()
+            sheet = sheet_object.get_all_values()[1:]
             nicknames = list(map(lambda row: row[0], sheet))
             _logger.error(nicknames)
             return
