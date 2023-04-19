@@ -68,7 +68,7 @@ class reverse_sync_company(models.Model):
 
     def value(self, headerItem, expected, cellValue):
         if headerItem != expected:
-            raise Exception("Invalid Header Item: " + headerItem)
+            raise Exception("Invalid Header Item: " + headerItem + " vs " + expected)
         if cellValue == False:
             return ""
         return str(cellValue)
@@ -92,13 +92,14 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[11], "Industry", company.industry_id.name))
         row.append(self.value(header[12], "Language", company.lang))
         row.append(self.value(header[13], "Latitude", ""))
-        row.append(self.value(header[14], "Longitude", ""))
-        row.append(self.value(header[15], "Email", company.email))
-        row.append(self.value(header[16], "Total value purchased", ""))
-        row.append(self.value(header[17], "Rank", ""))
-        row.append(self.value(header[18], "Company name", company.name))
-        row.append(self.value(header[19], "Amount", ""))
-        row.append(self.value(header[20], "Province", company.state_id.code))
+        row.append(self.value(header[14], "Latitude", ""))
+        row.append(self.value(header[15], "Longitude", ""))
+        row.append(self.value(header[16], "Email", company.email))
+        row.append(self.value(header[17], "Total value purchased", ""))
+        row.append(self.value(header[18], "Rank", ""))
+        row.append(self.value(header[19], "Company name", company.name))
+        row.append(self.value(header[20], "Amount", ""))
+        row.append(self.value(header[21], "Province", company.state_id.code))
 
         currency = ""
         if (
@@ -111,7 +112,7 @@ class reverse_sync_company(models.Model):
             and "USD" in company.property_product_pricelist.name
         ):
             currency = "USD"
-        row.append(self.value(header[21], "Currency", currency))
+        row.append(self.value(header[22], "Currency", currency))
         return row
 
     def createBlank(self, length):
