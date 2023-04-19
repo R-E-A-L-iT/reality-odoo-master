@@ -127,7 +127,7 @@ class reverse_sync_company(models.Model):
                         sheetTable.append(row)
             start_row = len(nicknames) + 2
             end_row = start_row + len(sheetTable)
-            writeRange = "A" + str(start_row) + ":O" + str(end_row)
+            writeRange = "A" + str(start_row) + ":M" + str(end_row)
             _logger.info(sheetTable)
             sheet_object.update(writeRange, sheetTable)
 
