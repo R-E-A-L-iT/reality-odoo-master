@@ -58,6 +58,7 @@
         'views/Other/pdf_boxed.xml',
         'views/Other/section_name.xml',
         'views/Other/internal_company_backend.xml',
+        'views/Other/internal_user_backend.xml',
         'views/Other/renewal.xml',
         'views/Other/header_footer.xml',
         'views/Other/product_backend.xml',
