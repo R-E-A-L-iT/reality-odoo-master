@@ -65,13 +65,11 @@ class reverse_sync_company(models.Model):
         return str(cellValue)
 
     def createRow(self, header, company):
-        _logger.error("LINE 68")
         row = []
         if company.name == False:
             return None
         row.append(self.value(header[0], "COMPANY NICK NAME", company.company_nickname))
         row.append(self.value(header[1], "Company Name", company.name))
-        _logger.error("LINE 74")
 
         row.append(self.value(header[2], "Phone", company.phone))
         row.append(self.value(header[3], "Email", company.email))
@@ -84,8 +82,6 @@ class reverse_sync_company(models.Model):
         row.append(self.value(header[10], "Industry", company.industry_id.name))
         row.append(self.value(header[11], "Language", company.lang))
 
-        _logger.error("LINE 87")
-        _logger.error(company.property_product_pricelist.name)
         currency = ""
         if (
             company.property_product_pricelist.name != False
@@ -98,7 +94,6 @@ class reverse_sync_company(models.Model):
         ):
             currency = "USD"
         row.append(self.value(header[12], "Currency", currency))
-        _logger.error("LINE 94")
 
     def createBlank(self, length):
         return ["" for _ in range(length)]
@@ -129,7 +124,10 @@ class reverse_sync_company(models.Model):
                     row = self.createRow(header, company)
                     if row != None:
                         sheetTable.append(row)
-                    _logger.error("LINE: 120")
+            start_row = len(nicknames) + 2
+            end_row = start_row = len(sheetTable)
+            writeRange = "A" + str(start_row) + "O" + str(end_row)
+            sheet_object.update(writeRange, sheetTable)
 
         except Exception as e:
             _logger.error(e)
