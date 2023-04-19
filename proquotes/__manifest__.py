@@ -38,7 +38,7 @@
             ]
     },
 
-    'version': '1.0.2008',
+    'version': '1.0.2009',
 
     # always loaded
     'data': [
