@@ -113,7 +113,9 @@ class reverse_sync_company(models.Model):
                     company.company_nickname not in nicknames
                     or company.company_nickname == "_"
                 ):
+                    _logger.error(company.company_nickname in nicknames)
                     continue
+                _logger.error(company.company_nickname in nicknames)
                 _logger.info(company.company_nickname)
                 row = self.createRow(header, company)
                 if row != None:
@@ -121,5 +123,5 @@ class reverse_sync_company(models.Model):
 
         except Exception as e:
             _logger.error(e)
-            reverse_sync_email.sendReport("Contacts", e)
-        _logger.info("End Reverse Sync Contacts")
+            reverse_sync_email.sendReport("Company", e)
+        _logger.info("End Reverse Sync Ccompany")
