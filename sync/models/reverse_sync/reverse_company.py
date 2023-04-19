@@ -91,6 +91,7 @@ class reverse_sync_company(models.Model):
         elif "USD" in company.property_product_pricelist.name:
             currency = "USD"
         row.append(self.value(header[12], "Currency", currency))
+        _logger.error("LINE 94")
 
     def createBlank(self, length):
         return ["" for _ in range(length)]
