@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="sync_company_backend" model="ir.ui.view">
+        <field name="name">Company_Backend</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name=&quot;property_product_pricelist&quot;]" position="replace">
+                <field name="pricelist_id" invisible="0" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
