@@ -44,7 +44,9 @@
             "proquotes/static/src/JS/rental.js",
         ]
     },
-    "version": "1.0.2058",
+
+    "version": "1.0.2062",
+
     # always loaded
     "data": [
         "security/ir.model.access.csv",
