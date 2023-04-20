@@ -84,10 +84,10 @@ class invoice(models.Model):
     @api.depends("company_id")
     def _get_default_footer(self):
         company = None
-        if self.company != False:
-            company = self.company
+        if self.company == False and self.company_id != None:
+            company = self.company_id
         else:
-            company = self.env.company
+            company = self.env.company_id
 
         result_raw = self.env.user.prefered_quote_footers
         if result_raw == False:
