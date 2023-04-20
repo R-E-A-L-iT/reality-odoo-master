@@ -112,6 +112,7 @@ class invoice(models.Model):
     def _get_default_footer(self):
         company = None
         if self.company_id == False or self.company_id == None:
+
             company = self.company_id
         else:
             company = self.env.company
@@ -123,6 +124,7 @@ class invoice(models.Model):
             user = self.env.user
 
         result_raw = user.prefered_quote_footers
+
         if result_raw == False:
             return
         result = []
