@@ -23,76 +23,82 @@ _logger = logging.getLogger(__name__)
 
 
 class purchase_order(models.Model):
-    _inherit = 'purchase.order'
-    footer = fields.Selection([
-        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
-        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
-        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
-        ('GeoplusFooterCanada', "Geoplus_Canada"),
-        ('GeoplusFooterUS', "Geoplus_America"),
-        ('Leica_Footer_Ali', "Leica Ali"),
-        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
-        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
-        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
+    _inherit = "purchase.order"
+    footer = fields.Selection(
+        [
+            ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
+            ("ABtechFooter_Atlantic_Ryan", "Abtech_Atlantic_Ryan"),
+            ("ABtechFooter_Ontario_Derek", "Abtech_Ontario_Derek"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Ontario_Phil", "Abtech_Ontario_Phil"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Quebec_Alexandre", "Abtech_Quebec_Alexandre"),
+            ("ABtechFooter_Quebec_Benoit_Carl", "ABtechFooter_Quebec_Benoit_Carl"),
+            ("ABtechFooter_Quebec_Derek", "Abtech_Quebec_Derek"),
+            ("GeoplusFooterCanada", "Geoplus_Canada"),
+            ("GeoplusFooterUS", "Geoplus_America"),
+            ("Leica_Footer_Ali", "Leica Ali"),
+            ("REALiTFooter_Derek_US", "REALiTFooter_Derek_US"),
+            ("REALiTFooter_Martin", "REALiTFooter_Martin"),
+            ("REALiTSOLUTIONSLLCFooter_Derek_US", "R-E-A-L.iT Solutions Derek"),
+            ("REALiTFooter_Derek", "REALiTFooter_Derek"),
+            ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
+        ],
+        default="REALiTFooter_Derek",
+        required=True,
+        string="Footer OLD",
+        help="Footer selection field",
+    )
 
-    footer_id = fields.Many2one(
-        'header.footer', required="True")
+    footer_id = fields.Many2one("header.footer", required="True")
 
 
 class invoice(models.Model):
-    _inherit = 'account.move'
-    footer = fields.Selection([
-        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
-        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
-        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
-        ('GeoplusFooterCanada', "Geoplus_Canada"),
-        ('GeoplusFooterUS', "Geoplus_America"),
-        ('Leica_Footer_Ali', "Leica Ali"),
-        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
-        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
-        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, string="Footer OLD", help="Footer selection field")
+    _inherit = "account.move"
+    footer = fields.Selection(
+        [
+            ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
+            ("ABtechFooter_Atlantic_Ryan", "Abtech_Atlantic_Ryan"),
+            ("ABtechFooter_Ontario_Derek", "Abtech_Ontario_Derek"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Ontario_Phil", "Abtech_Ontario_Phil"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Quebec_Alexandre", "Abtech_Quebec_Alexandre"),
+            ("ABtechFooter_Quebec_Benoit_Carl", "ABtechFooter_Quebec_Benoit_Carl"),
+            ("ABtechFooter_Quebec_Derek", "Abtech_Quebec_Derek"),
+            ("GeoplusFooterCanada", "Geoplus_Canada"),
+            ("GeoplusFooterUS", "Geoplus_America"),
+            ("Leica_Footer_Ali", "Leica Ali"),
+            ("REALiTFooter_Derek_US", "REALiTFooter_Derek_US"),
+            ("REALiTFooter_Martin", "REALiTFooter_Martin"),
+            ("REALiTSOLUTIONSLLCFooter_Derek_US", "R-E-A-L.iT Solutions Derek"),
+            ("REALiTFooter_Derek", "REALiTFooter_Derek"),
+            ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
+        ],
+        default="REALiTFooter_Derek",
+        required=True,
+        string="Footer OLD",
+        help="Footer selection field",
+    )
 
-    @api.depends('company_id')
+    @api.depends("company_id")
     def _get_default_footer(self):
         company = None
-        if (self.company_id == False):
+        if self.company_id == False:
             company = self.company_id
         else:
             company = self.env.company
-        results = company.prefered_invoice_footers
-        _logger.error(self.company_id)
-        if (len(results) == 0):
-            raise UserError(str(company.name) +
-                            " does not have any configured invoice footers")
-        return results[-1].id
+        return False
 
     footer_id = fields.Many2one(
-        'header.footer', required=True, default=_get_default_footer)
+        "header.footer", required=True, default=_get_default_footer
+    )
 
 
 class order(models.Model):
-    _inherit = 'sale.order'
+    _inherit = "sale.order"
 
-    partner_ids = fields.Many2many(
-        'res.partner', 'display_name', string="Contacts")
+    partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
 
     products = fields.One2many(related="partner_id.products", readonly=True)
 
@@ -101,54 +107,68 @@ class order(models.Model):
     # customer_po_file = fields.Binary(string="PO File")
 
     company_name = fields.Char(
-        related="company_id.name", string="company_name", required=True)
+        related="company_id.name", string="company_name", required=True
+    )
 
-    footer = fields.Selection([
-        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
-        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
-        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
-        ('GeoplusFooterCanada', "Geoplus_Canada"),
-        ('GeoplusFooterUS', "Geoplus_America"),
-        ('Leica_Footer_Ali', "Leica Ali"),
-        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
-        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
-        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], help="Footer selection field", string="Footer OLD")
+    footer = fields.Selection(
+        [
+            ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
+            ("ABtechFooter_Atlantic_Ryan", "Abtech_Atlantic_Ryan"),
+            ("ABtechFooter_Ontario_Derek", "Abtech_Ontario_Derek"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Ontario_Phil", "Abtech_Ontario_Phil"),
+            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
+            ("ABtechFooter_Quebec_Alexandre", "Abtech_Quebec_Alexandre"),
+            ("ABtechFooter_Quebec_Benoit_Carl", "ABtechFooter_Quebec_Benoit_Carl"),
+            ("ABtechFooter_Quebec_Derek", "Abtech_Quebec_Derek"),
+            ("GeoplusFooterCanada", "Geoplus_Canada"),
+            ("GeoplusFooterUS", "Geoplus_America"),
+            ("Leica_Footer_Ali", "Leica Ali"),
+            ("REALiTFooter_Derek_US", "REALiTFooter_Derek_US"),
+            ("REALiTFooter_Martin", "REALiTFooter_Martin"),
+            ("REALiTSOLUTIONSLLCFooter_Derek_US", "R-E-A-L.iT Solutions Derek"),
+            ("REALiTFooter_Derek", "REALiTFooter_Derek"),
+            ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
+        ],
+        help="Footer selection field",
+        string="Footer OLD",
+    )
 
-    header = fields.Selection([
-        ('QH_REALiT+Abtech.mp4', "QH_REALiT+Abtech.mp4"),
-        ('ChurchXRAY.jpg', "ChurchXRAY.jpg"),
-        ('Architecture.jpg', "Architecture.jpg"),
-        ('Software.jpg', "Software.jpg")], string="Header OLD", help="Header selection field")
+    header = fields.Selection(
+        [
+            ("QH_REALiT+Abtech.mp4", "QH_REALiT+Abtech.mp4"),
+            ("ChurchXRAY.jpg", "ChurchXRAY.jpg"),
+            ("Architecture.jpg", "Architecture.jpg"),
+            ("Software.jpg", "Software.jpg"),
+        ],
+        string="Header OLD",
+        help="Header selection field",
+    )
 
     def _default_footer(self):
         result_raw = self.env.user.prefered_quote_footers
-        if(result_raw == False):
+        if result_raw == False:
             return
         result = []
         for item in result_raw:
-            if (self.env.company in item.company_ids or len(item.company_ids) == 0):
+            if self.env.company in item.company_ids or len(item.company_ids) == 0:
                 result.append(item)
-        if (len(result) == 0):
+        if len(result) == 0:
             return False
         else:
             return result[-1]
 
     def _default_header(self):
-        return self.env['header.footer'].search([('name', '=', 'Starfield'), ('record_type', '=', "Header"), ('active', '=', True)])[0]
+        return self.env["header.footer"].search(
+            [
+                ("name", "=", "Starfield"),
+                ("record_type", "=", "Header"),
+                ("active", "=", True),
+            ]
+        )[0]
 
-    header_id = fields.Many2one(
-        'header.footer', default=_default_header, required=True)
-    footer_id = fields.Many2one(
-        'header.footer', default=_default_footer, required=True)
+    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
+    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
@@ -158,24 +178,25 @@ class order(models.Model):
     rental_city = fields.Char(string="City")
     rental_zip = fields.Char(string="ZIP/Postal Code")
     rental_state = fields.Many2one(
-        "res.country.state", string="State/Province", store="true")
-    rental_country = fields.Many2one(
-        "res.country", string="Country", store="true")
+        "res.country.state", string="State/Province", store="true"
+    )
+    rental_country = fields.Many2one("res.country", string="Country", store="true")
 
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
-        string="Renewal Items", comodel_name="stock.production.lot")
+        string="Renewal Items", comodel_name="stock.production.lot"
+    )
     # rental_insurance = fields.Binary(string="Insurance")
 
-    @ api.onchange('sale_order_template_id')
+    @api.onchange("sale_order_template_id")
     def set_is_rental(self):
-        if (self.sale_order_template_id.name == "Rental"):
+        if self.sale_order_template_id.name == "Rental":
             self.is_rental = True
         else:
             self.is_rental = False
-        if ("Renewal" in self.sale_order_template_id.name):
+        if "Renewal" in self.sale_order_template_id.name:
             self.is_renewal = True
         else:
             self.is_renewal = False
@@ -183,108 +204,135 @@ class order(models.Model):
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
 
-    def generate_section_line(self, name, *, special="regular", selected='true'):
-        section = self.env['sale.order.line'].new(
-            {'name': name, 'special': special, 'display_type': 'line_section', 'order_id': self._origin.id, 'selected': selected})
+    def generate_section_line(self, name, *, special="regular", selected="true"):
+        section = self.env["sale.order.line"].new(
+            {
+                "name": name,
+                "special": special,
+                "display_type": "line_section",
+                "order_id": self._origin.id,
+                "selected": selected,
+            }
+        )
         return section
 
-    def generate_product_line(self, product_id, *, selected=False, uom='Units', locked_qty='yes', optional='no'):
-        if (selected == True):
-            selected = 'true'
-        elif (selected == False):
-            selected = 'false'
-        product = self.env['product.product'].search(
-            [('id', '=', product_id.id)])
+    def generate_product_line(
+        self,
+        product_id,
+        *,
+        selected=False,
+        uom="Units",
+        locked_qty="yes",
+        optional="no"
+    ):
+        if selected == True:
+            selected = "true"
+        elif selected == False:
+            selected = "false"
+        product = self.env["product.product"].search([("id", "=", product_id.id)])
         pricelist = self.pricelist_id.id
-        pricelist_entry = self.env['product.pricelist.item'].search(
-            [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
+        pricelist_entry = self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id.id", "=", pricelist),
+                ("product_tmpl_id.sku", "=", product.sku),
+            ]
+        )
         price = 0
-        if (len(pricelist_entry) > 1):
-            raise Exception("Duplicate Pricelist Rules: " +
-                            str(product_id.sku))
-        elif (len(pricelist_entry) == 1):
+        if len(pricelist_entry) > 1:
+            raise Exception("Duplicate Pricelist Rules: " + str(product_id.sku))
+        elif len(pricelist_entry) == 1:
             price = pricelist_entry[-1].fixed_price
-        uomitem = self.env['uom.uom'].search([('name', '=', uom)])
-        if (len(product) != 1):
-            raise Exception("Invalid Responses for: sku=" +
-                            str(product_id.sku))
-        line = self.env['sale.order.line'].new(
-            {'name': product.name,
-             'selected': selected,
-             'optional': optional,
-             'quantityLocked': locked_qty,
-             'product_id': product.id,
-             'product_uom_qty': 1,
-             'product_uom': uomitem,
-             'price_unit': price,
-             'order_id': self._origin.id})
+        uomitem = self.env["uom.uom"].search([("name", "=", uom)])
+        if len(product) != 1:
+            raise Exception("Invalid Responses for: sku=" + str(product_id.sku))
+        line = self.env["sale.order.line"].new(
+            {
+                "name": product.name,
+                "selected": selected,
+                "optional": optional,
+                "quantityLocked": locked_qty,
+                "product_id": product.id,
+                "product_uom_qty": 1,
+                "product_uom": uomitem,
+                "price_unit": price,
+                "order_id": self._origin.id,
+            }
+        )
         return line
 
     def hardwareCCP(self, hardware_lines, product):
-        if (len(hardware_lines) == 0):
-            hardware_lines.append(self.generate_section_line('$hardware').id)
-            hardware_lines.append(self.generate_section_line('$block').id)
-        renewal_maps = self.env['renewal.map'].search(
-            [('product_id', '=', product.product_id.id)])
-        if (len(renewal_maps) != 1):
+        if len(hardware_lines) == 0:
+            hardware_lines.append(self.generate_section_line("$hardware").id)
+            hardware_lines.append(self.generate_section_line("$block").id)
+        renewal_maps = self.env["renewal.map"].search(
+            [("product_id", "=", product.product_id.id)]
+        )
+        if len(renewal_maps) != 1:
             raise UserError("No Mapping for: " + str(product.product_id.name))
         renewal_map = renewal_maps[0]
-        hardware_lines.append(self.generate_section_line(
-            product.formated_label, special='multiple').id)
+        hardware_lines.append(
+            self.generate_section_line(product.formated_label, special="multiple").id
+        )
         for map_product in renewal_map.product_offers:
-            hardware_lines.append(self.generate_product_line(
-                map_product.product_id, selected=map_product.selected).id)
+            hardware_lines.append(
+                self.generate_product_line(
+                    map_product.product_id, selected=map_product.selected
+                ).id
+            )
 
     def softwareCCP(self, software_lines, product):
-        if (len(software_lines) == 0):
-            software_lines.append(
-                self.generate_section_line('$software').id)
-            software_lines.append(self.generate_section_line('$block').id)
+        if len(software_lines) == 0:
+            software_lines.append(self.generate_section_line("$software").id)
+            software_lines.append(self.generate_section_line("$block").id)
         eid = product.name
-        product_list = self.env['product.product'].search(
-            [('sku', 'like', eid)])
-        if (len(product_list) != 1):
-            raise UserError("Invalid Match Count for EID: " +
-                            str(eid))
+        product_list = self.env["product.product"].search([("sku", "like", eid)])
+        if len(product_list) != 1:
+            raise UserError("Invalid Match Count for EID: " + str(eid))
+        software_lines.append(self.generate_section_line(product.formated_label).id)
         software_lines.append(
-            self.generate_section_line(product.formated_label).id)
-        software_lines.append(self.generate_product_line(
-            product_list[0], selected=True, optional='yes').id)
+            self.generate_product_line(
+                product_list[0], selected=True, optional="yes"
+            ).id
+        )
 
     def softwareSubCCP(self, software_sub_lines, product):
-        if (len(software_sub_lines) == 0):
-            software_sub_lines.append(
-                self.generate_section_line('$subscription').id)
-            software_sub_lines.append(self.generate_section_line('$block').id)
+        if len(software_sub_lines) == 0:
+            software_sub_lines.append(self.generate_section_line("$subscription").id)
+            software_sub_lines.append(self.generate_section_line("$block").id)
         eid = product.name
-        product_list = self.env['product.product'].search(
-            [('sku', 'like', eid)])
-        if (len(product_list) != 1):
-            raise UserError("Invalid Match Count for EID: " +
-                            str(eid))
+        product_list = self.env["product.product"].search([("sku", "like", eid)])
+        if len(product_list) != 1:
+            raise UserError("Invalid Match Count for EID: " + str(eid))
+        software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         software_sub_lines.append(
-            self.generate_section_line(product.formated_label).id)
-        software_sub_lines.append(self.generate_product_line(
-            product_list[0], selected=True, optional='yes').id)
+            self.generate_product_line(
+                product_list[0], selected=True, optional="yes"
+            ).id
+        )
 
-    @api.onchange('sale_order_template_id', 'renewal_product_items')
+    @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
-        if ("Renewal Auto" not in self.sale_order_template_id.name):
+        if "Renewal Auto" not in self.sale_order_template_id.name:
             self.renewal_product_items = False
             return
         software_lines = []
         software_sub_lines = []
         hardware_lines = []
         for product in self.renewal_product_items:
-            if (product.product_id.type_selection == "H"):
+            if product.product_id.type_selection == "H":
                 self.hardwareCCP(hardware_lines, product)
-            elif (product.product_id.type_selection == "S"):
+            elif product.product_id.type_selection == "S":
                 self.softwareCCP(hardware_lines, product)
-            elif (product.product_id.type_selection == "SS"):
+            elif product.product_id.type_selection == "SS":
                 self.softwareSubCCP(software_sub_lines, product)
             else:
-                raise UserError("Product: " + str(product.product_id.name) +
-                                " has unknown type \"" + str(product.product_id.type_selection) + "\"")
+                raise UserError(
+                    "Product: "
+                    + str(product.product_id.name)
+                    + ' has unknown type "'
+                    + str(product.product_id.type_selection)
+                    + '"'
+                )
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
@@ -292,12 +340,14 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
     def calc_rental_price(self, price):
-        if (self.rental_start == False or self.rental_end == False):
+        if self.rental_start == False or self.rental_end == False:
             return price
-        sdate = str(self.rental_start).split('-')
-        edate = str(self.rental_end).split('-')
-        rentalDays = (date(int(edate[0]), int(edate[1]), int(
-            edate[2])) - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days
+        sdate = str(self.rental_start).split("-")
+        edate = str(self.rental_end).split("-")
+        rentalDays = (
+            date(int(edate[0]), int(edate[1]), int(edate[2]))
+            - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+        ).days
         rentalMonths = rentalDays // 30
         rentalDays = rentalDays % 30
         rentalWeeks = rentalDays // 7
@@ -308,10 +358,10 @@ class order(models.Model):
 
         rentalRate = 0
         rentalDayRate = price * rentalDays
-        if (rentalDayRate > price * 4):
+        if rentalDayRate > price * 4:
             rentalDayRate = price * 4
         rentalWeekDayRate = 4 * price * rentalWeeks + rentalDayRate
-        if (rentalWeekDayRate > price * 12):
+        if rentalWeekDayRate > price * 12:
             rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
@@ -320,90 +370,126 @@ class order(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
-                if (line.selected == 'true' and line.sectionSelected == 'true'):
-                    if (order.is_rental == False or line.product_id.is_software):
+                if line.selected == "true" and line.sectionSelected == "true":
+                    if order.is_rental == False or line.product_id.is_software:
                         amount_untaxed += line.price_subtotal
                         amount_tax += line.price_tax
-                    elif (order.is_rental and line.product_id.is_software == False):
+                    elif order.is_rental and line.product_id.is_software == False:
                         price = self.calc_rental_price(line.price_subtotal)
                         amount_untaxed += price
                         amount_tax += self.calc_rental_price(line.price_tax)
 
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax,
-            })
+            order.update(
+                {
+                    "amount_untaxed": amount_untaxed,
+                    "amount_tax": amount_tax,
+                    "amount_total": amount_untaxed + amount_tax,
+                }
+            )
 
     def _compute_amount_undiscounted(self):
         for order in self:
             total = 0.0
             for line in order.order_line:
-                if (line.selected == 'true' and line.sectionSelected == 'true'):
+                if line.selected == "true" and line.sectionSelected == "true":
                     # why is there a discount in a field named amount_undiscounted ??
-                    total += line.price_subtotal + line.price_unit * \
-                        ((line.discount or 0.0) / 100.0) * line.product_uom_qty
+                    total += (
+                        line.price_subtotal
+                        + line.price_unit
+                        * ((line.discount or 0.0) / 100.0)
+                        * line.product_uom_qty
+                    )
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
-            fmt = partial(formatLang, self.with_context(
-                lang=order.partner_id.lang).env, currency_obj=currency)
+            fmt = partial(
+                formatLang,
+                self.with_context(lang=order.partner_id.lang).env,
+                currency_obj=currency,
+            )
             res = {}
             for line in order.order_line:
                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
                 taxes = line.tax_id.compute_all(
-                    price_reduce, quantity=line.product_uom_qty, product=line.product_id, partner=order.partner_shipping_id)['taxes']
+                    price_reduce,
+                    quantity=line.product_uom_qty,
+                    product=line.product_id,
+                    partner=order.partner_shipping_id,
+                )["taxes"]
                 for tax in line.tax_id:
                     group = tax.tax_group_id
-                    res.setdefault(group, {'amount': 0.0, 'base': 0.0})
+                    res.setdefault(group, {"amount": 0.0, "base": 0.0})
                     for t in taxes:
-                        if (line.selected != 'true' or line.sectionSelected != 'true'):
+                        if line.selected != "true" or line.sectionSelected != "true":
                             break
-                        if (t['id'] == tax.id or t['id'] in tax.children_tax_ids.ids):
-                            res[group]['amount'] += t['amount']
-                            res[group]['base'] += t['base']
+                        if t["id"] == tax.id or t["id"] in tax.children_tax_ids.ids:
+                            res[group]["amount"] += t["amount"]
+                            res[group]["base"] += t["base"]
             res = sorted(res.items(), key=lambda l: l[0].sequence)
-            order.amount_by_group = [(
-                l[0].name, l[1]['amount'], l[1]['base'],
-                fmt(l[1]['amount']), fmt(l[1]['base']),
-                len(res),
-            ) for l in res]
+            order.amount_by_group = [
+                (
+                    l[0].name,
+                    l[1]["amount"],
+                    l[1]["base"],
+                    fmt(l[1]["amount"]),
+                    fmt(l[1]["base"]),
+                    len(res),
+                )
+                for l in res
+            ]
 
 
 class orderLineProquotes(models.Model):
-    _inherit = 'sale.order.line'
+    _inherit = "sale.order.line"
 
-    variant = fields.Many2one('proquotes.variant', string="Variant Group")
+    variant = fields.Many2one("proquotes.variant", string="Variant Group")
 
-    applied_name = fields.Char(
-        compute='get_applied_name', string="Applied Name")
+    applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
 
-    selected = fields.Selection([
-        ('true', "Yes"),
-        ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
+    selected = fields.Selection(
+        [("true", "Yes"), ("false", "No")],
+        default="true",
+        required=True,
+        help="Field to Mark Wether Customer has Selected Product",
+    )
 
-    sectionSelected = fields.Selection([
-        ('true', "Yes"),
-        ('false', "No")], default="true", required=True, help="Field to Mark Wether Container Section is Selected")
+    sectionSelected = fields.Selection(
+        [("true", "Yes"), ("false", "No")],
+        default="true",
+        required=True,
+        help="Field to Mark Wether Container Section is Selected",
+    )
 
-    special = fields.Selection([
-        ('regular', "regular"),
-        ('multiple', "Multiple"),
-        ('optional', "Optional")], default='regular', required=True, help="Technical field for UX purpose.")
+    special = fields.Selection(
+        [("regular", "regular"), ("multiple", "Multiple"), ("optional", "Optional")],
+        default="regular",
+        required=True,
+        help="Technical field for UX purpose.",
+    )
 
-    hiddenSection = fields.Selection([
-        ('yes', "Yes"),
-        ('no', "No")], default='no', required=True, help="Field To Track if Sections are folded")
+    hiddenSection = fields.Selection(
+        [("yes", "Yes"), ("no", "No")],
+        default="no",
+        required=True,
+        help="Field To Track if Sections are folded",
+    )
 
-    optional = fields.Selection([
-        ('yes', "Yes"),
-        ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
+    optional = fields.Selection(
+        [("yes", "Yes"), ("no", "No")],
+        default="no",
+        required=True,
+        help="Field to Mark Product as Optional",
+    )
 
-    quantityLocked = fields.Selection([
-        ('yes', "Yes"),
-        ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
+    quantityLocked = fields.Selection(
+        [("yes", "Yes"), ("no", "No")],
+        string="Lock Quantity",
+        default="yes",
+        required=True,
+        help="Field to Lock Quantity on Products",
+    )
 
     def get_applied_name(self):
         n = name_translation(self)
@@ -417,38 +503,49 @@ class orderLineProquotes(models.Model):
 
 
 class proquotesMail(models.TransientModel):
-    _inherit = 'mail.compose.message'
+    _inherit = "mail.compose.message"
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
-        """ Call email_template.generate_email(), get fields relevant for
-                                                                                                                                        mail.compose.message, transform email_cc and email_to into partner_ids """
+        """Call email_template.generate_email(), get fields relevant for
+        mail.compose.message, transform email_cc and email_to into partner_ids"""
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False
             res_ids = [res_ids]
 
-        returned_fields = fields + ['partner_ids', 'attachments']
+        returned_fields = fields + ["partner_ids", "attachments"]
         values = dict.fromkeys(res_ids, False)
 
-        template_values = self.env['mail.template'].with_context(
-            tpl_partners_only=True).browse(template_id).generate_email(res_ids, fields)
+        template_values = (
+            self.env["mail.template"]
+            .with_context(tpl_partners_only=True)
+            .browse(template_id)
+            .generate_email(res_ids, fields)
+        )
         for res_id in res_ids:
-            res_id_values = dict((field, template_values[res_id][field])
-                                 for field in returned_fields if template_values[res_id].get(field))
-            res_id_values['body'] = res_id_values.pop('body_html', '')
-            if template_values[res_id].get('model') == 'sale.order':
-                res_id_values['partner_ids'] = self.env['sale.order'].browse(
-                    res_id).partner_ids + self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')])
+            res_id_values = dict(
+                (field, template_values[res_id][field])
+                for field in returned_fields
+                if template_values[res_id].get(field)
+            )
+            res_id_values["body"] = res_id_values.pop("body_html", "")
+            if template_values[res_id].get("model") == "sale.order":
+                res_id_values["partner_ids"] = self.env["sale.order"].browse(
+                    res_id
+                ).partner_ids + self.env["res.partner"].search(
+                    [("email", "=", "sales@r-e-a-l.it")]
+                )
             values[res_id] = res_id_values
         return multi_mode and values or values[res_ids[0]]
 
 
 class variant(models.Model):
-    _name = 'proquotes.variant'
+    _name = "proquotes.variant"
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
 
-    name = fields.Char(string='Variant Group', required=True,
-                       copy=False, index=True, default="New")
+    name = fields.Char(
+        string="Variant Group", required=True, copy=False, index=True, default="New"
+    )
 
     rule = fields.Char(string="Variant Rule", required=True, default="None")
 
@@ -456,14 +553,13 @@ class variant(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
 
-    products = fields.One2many(
-        'stock.production.lot', 'owner', string="Products")
+    products = fields.One2many("stock.production.lot", "owner", string="Products")
 
 
 class owner(models.Model):
     _inherit = "stock.production.lot"
 
-    owner = fields.Many2one('res.partner', string="Owner")
+    owner = fields.Many2one("res.partner", string="Owner")
 
     def copy_label(self):
         # Form Button Needs a Python Target Function
@@ -471,6 +567,7 @@ class owner(models.Model):
 
 
 # pdf footer
+
 
 class pdf_quote(models.Model):
     _inherit = "sale.report"
