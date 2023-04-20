@@ -84,8 +84,8 @@ class invoice(models.Model):
     @api.depends("company_id")
     def _get_default_footer(self):
         company = None
-        if self.company_id != False:
-            company = self.company_id
+        if self.company != False:
+            company = self.company
         else:
             company = self.env.company
 
