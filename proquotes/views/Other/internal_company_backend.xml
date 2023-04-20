@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;documents_spreadsheet_folder_id&quot;]" position="after">
                 <field name="logo_url" invisible="0" />
-                <field name="prefered_invoice_footers" invisible="0" domain="[('active', '=', True),('record_type', '=', 'Footer'), ('company_ids', 'like', id)]" />
+                <!-- <field name="prefered_invoice_footers" invisible="0" domain="[('active', '=', True),('record_type', '=', 'Footer'), ('company_ids', 'like', id)]" /> -->
             </xpath>
         </field>
     </record>
