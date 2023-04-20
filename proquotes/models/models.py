@@ -87,7 +87,7 @@ class invoice(models.Model):
         if self.company_id == False and self.company_id != None:
             company = self.company_id
         else:
-            company = self.env.company_id
+            company = self.env.company
 
         result_raw = self.env.user.prefered_quote_footers
         if result_raw == False:
