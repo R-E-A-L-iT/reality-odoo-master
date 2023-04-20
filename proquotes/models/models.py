@@ -50,7 +50,34 @@ class purchase_order(models.Model):
         help="Footer selection field",
     )
 
-    footer_id = fields.Many2one("header.footer", required="True")
+    def _get_default_footer(self):
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
+
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        result_raw = user.prefered_quote_footers
+        if result_raw == False:
+            return
+        result = []
+        for item in result_raw:
+            if company in item.company_ids or len(item.company_ids) == 0:
+                result.append(item)
+        if len(result) == 0:
+            return False
+        else:
+            return result[-1]
+
+    footer_id = fields.Many2one(
+        "header.footer", default=_get_default_footer, required="True"
+    )
 
 
 class invoice(models.Model):
