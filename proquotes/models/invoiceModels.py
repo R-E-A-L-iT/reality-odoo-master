@@ -24,15 +24,15 @@ _logger = logging.getLogger(__name__)
 
 class InvoiceMain(models.Model):
     _inherit = "account.move"
-    pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
-    footer_list = fields.Many2many(
-        related="company_id.prefered_invoice_footers", readonly=True)
+    pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
+    # footer_list = fields.Many2many(
+    # related="company_id.prefered_invoice_footers", readonly=True)
 
-    @api.onchange('partner_id')
+    @api.onchange("partner_id")
     def _setpricelist(self):
         self.pricelist_id = self.partner_id.property_product_pricelist
 
-    @api.onchange('pricelist_id', 'invoice_line_ids')
+    @api.onchange("pricelist_id", "invoice_line_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
@@ -42,9 +42,13 @@ class InvoiceMain(models.Model):
             if record.price_override == True:
                 continue
             # Select Pricelist Entry based on Pricelist and Product
-            priceResult = self.env['product.pricelist.item'].search(
-                [('pricelist_id.id', '=', pricelist), ('product_tmpl_id.sku', '=', product.sku)])
-            if (len(priceResult) < 1):
+            priceResult = self.env["product.pricelist.item"].search(
+                [
+                    ("pricelist_id.id", "=", pricelist),
+                    ("product_tmpl_id.sku", "=", product.sku),
+                ]
+            )
+            if len(priceResult) < 1:
                 record.price_unit = product.price
                 record.price_subtotal = product.price
                 continue
@@ -52,8 +56,7 @@ class InvoiceMain(models.Model):
             # Appy Price from Pricelist
             _logger.info(record.tax_ids)
             record.price_unit = priceResult[-1].fixed_price
-            record.price_subtotal = record.quantity * \
-                priceResult[-1].fixed_price
+            record.price_subtotal = record.quantity * priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
 
@@ -61,8 +64,7 @@ class InvoiceMain(models.Model):
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
 
-    applied_name = fields.Char(
-        compute='get_applied_name', string="Applied Name")
+    applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
 
     price_override = fields.Boolean(default=False, string="Override Price")
 
@@ -70,17 +72,20 @@ class invoiceLine(models.Model):
         pricelist = self.move_id.pricelist_id
         product = self.product_id
         _logger.info("Invoice Price: " + str(product.name))
-        priceResult = self.env['product.pricelist.item'].search(
-            [('pricelist_id.id', '=', pricelist.id), ('product_tmpl_id.sku', '=', product.sku)])
-        if (len(priceResult) < 1):
+        priceResult = self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id.id", "=", pricelist.id),
+                ("product_tmpl_id.sku", "=", product.sku),
+            ]
+        )
+        if len(priceResult) < 1:
             return product.price
 
         # Appy Price from Pricelist
         return priceResult[-1].fixed_price
 
-    @api.onchange('price_unit')
+    @api.onchange("price_unit")
     def init_price(self):
-
         self.price_override = self.price_unit != self.get_price()
 
     def get_applied_name(self):
