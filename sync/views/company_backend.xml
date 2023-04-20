@@ -6,8 +6,11 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name=&quot;property_product_pricelist&quot;]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name=&quot;property_product_pricelist&quot;]" position="after">
-                <field name="pricelist_id" invisible="0" />
+                <field string="Pricelist" name="pricelist_id" invisible="0" />
             </xpath>
         </field>
     </record>
