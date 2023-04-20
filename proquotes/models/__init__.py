@@ -5,7 +5,7 @@ from . import invoiceModels
 from . import templates
 from . import product
 
-# from . import stock
+from . import stock
 from . import internal_company
 from . import internal_user
 from . import mail
