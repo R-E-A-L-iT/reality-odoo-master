@@ -97,7 +97,7 @@ class invoice(models.Model):
             if company in item.company_ids or len(item.company_ids) == 0:
                 result.append(item)
         if len(result) == 0:
-            return False
+            raise UserError("No Prefered Footers For User: " + self.env.user.name)
         else:
             return result[-1]
 
