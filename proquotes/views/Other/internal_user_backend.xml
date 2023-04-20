@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="base.view_users_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;company_id&quot;]" position="after">
-                <field name="prefered_quote_footers" domain="[('active', '=', True), ('type_selection', '=', 'Footer')]" />
+                <field name="prefered_quote_footers" domain="[('active', '=', True), ('record_type', '=', 'Footer')]" />
             </xpath>
         </field>
     </record>
