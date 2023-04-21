@@ -76,7 +76,7 @@ class purchase_order(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", company.id),
             ]
         )
@@ -146,7 +146,7 @@ class invoice(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", company.id),
             ]
         )
@@ -156,7 +156,7 @@ class invoice(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", False),
             ]
         )
@@ -247,7 +247,7 @@ class order(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", company.id),
             ]
         )
@@ -257,7 +257,7 @@ class order(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", False),
             ]
         )
@@ -292,7 +292,7 @@ class order(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Header"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", company.id),
             ]
         )
@@ -302,7 +302,7 @@ class order(models.Model):
             [
                 ("active", "=", True),
                 ("record_type", "=", "Header"),
-                ("prefered", "=", True),
+                ("default", "=", True),
                 ("company_ids", "=", False),
             ]
         )
