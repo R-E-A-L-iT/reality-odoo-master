@@ -112,7 +112,6 @@ class invoice(models.Model):
     def _get_default_footer(self):
         company = None
         if self.company_id == False or self.company_id == None:
-
             company = self.company_id
         else:
             company = self.env.company
@@ -358,6 +357,8 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
+        if self.sale_order_template_id.name == False:
+            return
         if "Renewal Auto" not in self.sale_order_template_id.name:
             self.renewal_product_items = False
             return
