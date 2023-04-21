@@ -307,6 +307,18 @@ td.tax-column {
 	overflow: visible;
 }
 
+#portal_sale_content > div.card-body {
+	padding-top: 0px;
+}
+
+#portalTotal > div.mt16.o_portal_sale_sidebar {
+	margin-top: 0px !important;
+}
+
+#details {
+	margin-top: 0px !important;
+}
+
 #details > .quote-address > img  {
 	width: 100vw;
 	margin-left: -50vw;
