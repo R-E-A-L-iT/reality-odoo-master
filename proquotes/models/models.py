@@ -64,16 +64,26 @@ class purchase_order(models.Model):
             user = self.env.user
 
         result_raw = user.prefered_quote_footers
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            return False
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("prefered", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
         else:
-            return result[-1]
+            raise UserError("No Default Footer Available")
 
     footer_id = fields.Many2one(
         "header.footer", default=_get_default_footer, required="True"
@@ -131,12 +141,23 @@ class invoice(models.Model):
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Footer"),
+                ("record_type", "=", "Header"),
                 ("prefered", "=", True),
                 ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Header"),
+                ("prefered", "=", True),
+                ("company_ids", "=", False),
             ]
         )
         if len(defaults) != 0:
@@ -221,12 +242,23 @@ class order(models.Model):
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Footer"),
+                ("record_type", "=", "Header"),
                 ("prefered", "=", True),
                 ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Header"),
+                ("prefered", "=", True),
+                ("company_ids", "=", False),
             ]
         )
         if len(defaults) != 0:
