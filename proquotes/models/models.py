@@ -405,7 +405,7 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
-            return {"warning": (error_msg)}
+            return {"warning": {'title': "Renewal Automation", 'message': error_msg}}
 
     def calc_rental_price(self, price):
         if self.rental_start == False or self.rental_end == False:
