@@ -2,6 +2,8 @@
 <odoo>
 	<template name="Purchase Order PDF" id="purchase_pdf"
 		inherit_id="purchase.report_purchaseorder_document">
+		<xpath expr="//th[@name=&quot;th_date_req&quot;]" position="replace" />
+		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
