@@ -345,7 +345,7 @@ class order(models.Model):
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
-        ).id
+        )
         if str(type(line)) == "<class 'str'>":
             return line
         software_lines.append(line.id)
@@ -364,7 +364,7 @@ class order(models.Model):
         software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
-        ).id
+        ) 
         if str(type(line)) == "<class 'str'>":
             return line
         software_sub_lines.append(line.id)
