@@ -199,17 +199,38 @@ class order(models.Model):
     )
 
     def _default_footer(self):
-        result_raw = self.env.user.prefered_quote_footers
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if self.env.company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            return False
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
         else:
-            return result[-1]
+            company = self.env.company
+
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        result_raw = user.prefered_quote_footers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("prefered", "=", True),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            raise UserError("No Default footer Available")
 
     def _default_header(self):
         return self.env["header.footer"].search(
