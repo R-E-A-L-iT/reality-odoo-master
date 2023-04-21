@@ -241,7 +241,10 @@ class order(models.Model):
             self.is_rental = True
         else:
             self.is_rental = False
-        if "Renewal" in self.sale_order_template_id.name:
+        if (
+            self.sale_order_template_id.name != False
+            and "Renewal" in self.sale_order_template_id.name
+        ):
             self.is_renewal = True
         else:
             self.is_renewal = False
