@@ -64,16 +64,26 @@ class purchase_order(models.Model):
             user = self.env.user
 
         result_raw = user.prefered_quote_footers
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            return False
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
         else:
-            return result[-1]
+            raise UserError("No Default Footer Available")
 
     footer_id = fields.Many2one(
         "header.footer", default=_get_default_footer, required="True"
@@ -124,16 +134,36 @@ class invoice(models.Model):
 
         result_raw = user.prefered_quote_footers
 
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            raise UserError("No Prefered Footers For User: " + self.env.user.name)
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
         else:
-            return result[-1]
+            raise UserError("No Default Footer Available")
 
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
@@ -191,26 +221,95 @@ class order(models.Model):
     )
 
     def _default_footer(self):
-        result_raw = self.env.user.prefered_quote_footers
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if self.env.company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            return False
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
         else:
-            return result[-1]
+            company = self.env.company
+
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        result_raw = user.prefered_quote_footers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            raise UserError("No Default Footer Available")
 
     def _default_header(self):
-        return self.env["header.footer"].search(
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
+
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        result_raw = user.prefered_headers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
             [
-                ("name", "=", "Starfield"),
-                ("record_type", "=", "Header"),
                 ("active", "=", True),
+                ("record_type", "=", "Header"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
             ]
-        )[0]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Header"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            raise UserError("No Default Header Available")
 
     header_id = fields.Many2one("header.footer", default=_default_header, required=True)
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
@@ -364,7 +463,7 @@ class order(models.Model):
         software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
-        ) 
+        )
         if str(type(line)) == "<class 'str'>":
             return line
         software_sub_lines.append(line.id)
@@ -405,7 +504,7 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
-            return {"warning": {'title': "Renewal Automation", 'message': error_msg}}
+            return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
         if self.rental_start == False or self.rental_end == False:
