@@ -351,7 +351,7 @@ class order(models.Model):
             software_sub_lines.append(self.generate_section_line("$block").id)
         eid = product.name
         product_list = self.env["product.product"].search(
-            [("sku", "like", eid)], ("active", "=", True)
+            [("sku", "like", eid), ("active", "=", True)]
         )
         if len(product_list) != 1:
             raise UserError("Invalid Match Count for EID: " + str(eid))
