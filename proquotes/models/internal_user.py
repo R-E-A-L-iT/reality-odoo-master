@@ -24,5 +24,5 @@ class partner(models.Model):
     )
     # Legacy Name quote is irrelavent
     prefered_quote_footers = fields.Many2many(
-        "header.footer", "footer", string="Prefered Footers"
+        "header.footer", string="Prefered Footers"
     )
