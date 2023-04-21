@@ -1021,3 +1021,7 @@ img.embed-responsive-item {
 #list_website_pages > h3 {
 	color: #fff;
 }
+
+#basic_page_info > div> label {
+	color: #000;
+}
