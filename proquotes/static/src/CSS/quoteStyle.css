@@ -307,6 +307,10 @@ td.tax-column {
 	overflow: visible;
 }
 
+#portalTotal > div.mt16.o_portal_sale_sidebar {
+	margin-top: 0px !important;
+}
+
 #details {
 	margin-top: 0px !important;
 }
