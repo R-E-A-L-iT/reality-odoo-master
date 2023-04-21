@@ -29,7 +29,7 @@ class footer_header(models.Model):
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer"
     )
     url = fields.Char(string="Resourse URL", required=True)
-    default = fields.Char(string="Default", default=False)
+    default = fields.Boolean(string="Default", default=False)
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
     _order_by = "active"
