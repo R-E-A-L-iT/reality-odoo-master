@@ -287,12 +287,12 @@ class order(models.Model):
         )
         price = 0
         if len(pricelist_entry) > 1:
-            raise Exception("Duplicate Pricelist Rules: " + str(product_id.sku))
+            return "Duplicate Pricelist Rules: " + str(product_id.sku)
         elif len(pricelist_entry) == 1:
             price = pricelist_entry[-1].fixed_price
         uomitem = self.env["uom.uom"].search([("name", "=", uom)])
         if len(product) != 1:
-            raise Exception("Invalid Responses for: sku=" + str(product_id.sku))
+            return "Invalid Responses for: sku=" + str(product_id.sku)
         line = self.env["sale.order.line"].new(
             {
                 "name": product.name,
@@ -316,17 +316,20 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)]
         )
         if len(renewal_maps) != 1:
-            raise UserError("No Mapping for: " + str(product.product_id.name))
+            return "No Mapping for: " + str(product.product_id.name)
         renewal_map = renewal_maps[0]
         hardware_lines.append(
             self.generate_section_line(product.formated_label, special="multiple").id
         )
+        section_lines = []
         for map_product in renewal_map.product_offers:
-            hardware_lines.append(
-                self.generate_product_line(
-                    map_product.product_id, selected=map_product.selected
-                ).id
+            line = self.generate_product_line(
+                map_product.product_id, selected=map_product.selected
             )
+            if str(type(line)) == "<class 'str'>":
+                return line
+            hardware_lines.append(line.id)
+        hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
         if len(software_lines) == 0:
@@ -337,13 +340,15 @@ class order(models.Model):
             [("sku", "like", eid), ("active", "=", True)]
         )
         if len(product_list) != 1:
-            raise UserError("Invalid Match Count for EID: " + str(eid))
+            return "Invalid Match Count for EID: " + str(eid)
         software_lines.append(self.generate_section_line(product.formated_label).id)
-        software_lines.append(
-            self.generate_product_line(
-                product_list[0], selected=True, optional="yes"
-            ).id
+
+        line = self.generate_product_line(
+            product_list[0], selected=True, optional="yes"
         )
+        if str(type(line)) == "<class 'str'>":
+            return line
+        software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
         if len(software_sub_lines) == 0:
@@ -354,13 +359,15 @@ class order(models.Model):
             [("sku", "like", eid), ("active", "=", True)]
         )
         if len(product_list) != 1:
-            raise UserError("Invalid Match Count for EID: " + str(eid))
+            return "Invalid Match Count for EID: " + str(eid)
+
         software_sub_lines.append(self.generate_section_line(product.formated_label).id)
-        software_sub_lines.append(
-            self.generate_product_line(
-                product_list[0], selected=True, optional="yes"
-            ).id
-        )
+        line = self.generate_product_line(
+            product_list[0], selected=True, optional="yes"
+        ) 
+        if str(type(line)) == "<class 'str'>":
+            return line
+        software_sub_lines.append(line.id)
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
@@ -372,26 +379,33 @@ class order(models.Model):
         software_lines = []
         software_sub_lines = []
         hardware_lines = []
+        error_msg = ""
         for product in self.renewal_product_items:
             if product.product_id.type_selection == "H":
-                self.hardwareCCP(hardware_lines, product)
+                msg = self.hardwareCCP(hardware_lines, product)
             elif product.product_id.type_selection == "S":
-                self.softwareCCP(hardware_lines, product)
+                msg = self.softwareCCP(hardware_lines, product)
             elif product.product_id.type_selection == "SS":
-                self.softwareSubCCP(software_sub_lines, product)
+                msg = self.softwareSubCCP(software_sub_lines, product)
             else:
-                raise UserError(
+                msg = (
                     "Product: "
                     + str(product.product_id.name)
                     + ' has unknown type "'
                     + str(product.product_id.type_selection)
                     + '"'
                 )
+            if msg != None:
+                error_msg += msg + "\n"
+
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
         lines.extend(software_sub_lines)
         self.order_line = [(6, 0, lines)]
+
+        if error_msg != "":
+            return {"warning": {'title': "Renewal Automation", 'message': error_msg}}
 
     def calc_rental_price(self, price):
         if self.rental_start == False or self.rental_end == False:
