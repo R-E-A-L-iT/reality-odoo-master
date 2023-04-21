@@ -136,6 +136,7 @@ class invoice(models.Model):
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
+                ("company_ids", "=", company.id),
             ]
         )
         if len(defaults) != 0:
@@ -225,6 +226,7 @@ class order(models.Model):
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
+                ("company_ids", "=", company.id),
             ]
         )
         if len(defaults) != 0:
@@ -259,6 +261,7 @@ class order(models.Model):
                 ("active", "=", True),
                 ("record_type", "=", "Header"),
                 ("prefered", "=", True),
+                ("company_ids", "=", company.id),
             ]
         )
         if len(defaults) != 0:
