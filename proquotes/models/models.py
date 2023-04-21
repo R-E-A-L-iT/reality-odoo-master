@@ -233,13 +233,38 @@ class order(models.Model):
             raise UserError("No Default footer Available")
 
     def _default_header(self):
-        return self.env["header.footer"].search(
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
+
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        result_raw = user.prefered_headers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
             [
-                ("name", "=", "Starfield"),
-                ("record_type", "=", "Header"),
                 ("active", "=", True),
+                ("record_type", "=", "Header"),
+                ("prefered", "=", True),
             ]
-        )[0]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            raise UserError("No Default footer Available")
 
     header_id = fields.Many2one("header.footer", default=_default_header, required=True)
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
