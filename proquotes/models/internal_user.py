@@ -19,8 +19,10 @@ from odoo import models, fields, api
 
 class partner(models.Model):
     _inherit = "res.users"
-    prefered_headers = fields.Many2many("header.footer", string="Prefered Headers")
+    prefered_headers = fields.Many2many(
+        "header.footer", "header", string="Prefered Headers"
+    )
     # Legacy Name quote is irrelavent
     prefered_quote_footers = fields.Many2many(
-        "header.footer", string="Prefered Footers"
+        "header.footer", "footer", string="Prefered Footers"
     )
