@@ -396,7 +396,7 @@ class order(models.Model):
                     + '"'
                 )
             if msg != None:
-                error_msg += msg
+                error_msg += msg + "\n"
 
         lines = []
         lines.extend(hardware_lines)
