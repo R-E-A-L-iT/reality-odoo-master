@@ -27,7 +27,7 @@
         </xpath>
 
         <xpath expr="//t[@t-esc=&quot;snln_line['quantity']&quot;]" position="replace">
-            <t t-set="snln_line_quatnity" t-value="snln_line_quantity.replace(',','.')" />
+            <t t-set="snln_line_quantity" t-value="snln_line_quantity.replace(',','.')" />
             <t t-if="round(float(snln_line_quantity)) == float(snln_line_quantity)" t-esc="round(float(snln_line_quantity))" />
             <t t-else="" t-esc="snln_line_quantity" />
         </xpath>
