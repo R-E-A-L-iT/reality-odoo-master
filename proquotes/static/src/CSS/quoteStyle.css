@@ -304,7 +304,7 @@ td.tax-column {
 }
 
 #portal_sale_content {
-	overflow-x: visible;
+	overflow: visible;
 }
 
 #details > .quote-address > img  {
