@@ -32,7 +32,6 @@ class footer_header(models.Model):
     prefered = fields.Boolean(string="Prefered", default=False)
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
-    _order_by = "prefered"
 
     def _get_footer(self, url):
         complete_url = "https://cdn.r-e-a-l.it/images/footer/" + url + ".png"
