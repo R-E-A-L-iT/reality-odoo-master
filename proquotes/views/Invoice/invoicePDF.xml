@@ -251,5 +251,10 @@
 			</t>
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
+		<!-- Subtotal Lang -->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]//strong" position="replace">
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>
+			<strong t-if="clang == 'fr_CA'">Sous-Total</strong>
+		</xpath>
 	</template>
 </odoo>
