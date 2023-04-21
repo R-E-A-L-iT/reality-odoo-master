@@ -307,6 +307,10 @@ td.tax-column {
 	overflow: visible;
 }
 
+#details {
+	margin-top: 0px !important;
+}
+
 #details > .quote-address > img  {
 	width: 100vw;
 	margin-left: -50vw;
