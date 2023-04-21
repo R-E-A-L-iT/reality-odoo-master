@@ -145,7 +145,7 @@ class invoice(models.Model):
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Header"),
+                ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
                 ("company_ids", "=", company.id),
             ]
@@ -155,7 +155,7 @@ class invoice(models.Model):
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Header"),
+                ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
                 ("company_ids", "=", False),
             ]
@@ -246,7 +246,7 @@ class order(models.Model):
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Header"),
+                ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
                 ("company_ids", "=", company.id),
             ]
@@ -256,7 +256,7 @@ class order(models.Model):
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Header"),
+                ("record_type", "=", "Footer"),
                 ("prefered", "=", True),
                 ("company_ids", "=", False),
             ]
