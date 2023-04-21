@@ -302,3 +302,11 @@ td.tax-column {
 #portal_sale_content > div.card-body > section.mt-5 > span {
 	color: #fff !important;
 }
+
+#details > .quote-address > img  {
+	margin-left: -50vw;
+	margin-right: -50vw;
+	left: 50%;
+	right: 50%;
+	position: relative;
+}
