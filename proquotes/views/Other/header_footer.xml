@@ -33,6 +33,9 @@
                     <field name="url" />
                 </group>
                 <group>
+                    <field name="default" />
+                </group>
+                <group>
                     <field name="company_ids" widget="many2many_tags" />
                 </group>
                 <group>

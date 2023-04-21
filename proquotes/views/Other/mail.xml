@@ -104,10 +104,10 @@
 										</td>
 									</tr>
 									<!-- FOOTER -->
-									<tr t-if="record.footer != None" style="background-color: #fff;">
+									<tr t-if="record.footer_id != None" style="background-color: #fff;">
 										<td>
-											<t t-set="footer" t-value="record.footer" />
-											<img id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" />
+											<t t-set="footer" t-value="record.footer_id.url" />
+											<img id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="footer" />
 										</td>
 									</tr>
 								</tbody>
