@@ -303,6 +303,10 @@ td.tax-column {
 	color: #fff !important;
 }
 
+#portal_sale_content {
+	overflow-x: visible;
+}
+
 #details > .quote-address > img  {
 	width: 100vw;
 	margin-left: -50vw;
