@@ -258,12 +258,21 @@ class order(models.Model):
                 return result[-1]
         defaults = self.env["header.footer"].search(
             [
-                "&",
                 ("active", "=", True),
                 ("record_type", "=", "Header"),
                 ("prefered", "=", True),
-                ("|", ("company_ids", "=", False), ("company_ids", "=", company.id)),
+                ("company_ids", "=", company.id),
             ]
+        )
+        defaults.extend(
+            self.env["header.footer"].search(
+                [
+                    ("active", "=", True),
+                    ("record_type", "=", "Header"),
+                    ("prefered", "=", True),
+                    ("company_ids", "=", False),
+                ]
+            )
         )
         if len(defaults) != 0:
             return defaults[-1]
