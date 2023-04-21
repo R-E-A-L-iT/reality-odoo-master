@@ -333,7 +333,7 @@ class order(models.Model):
             software_lines.append(self.generate_section_line("$software").id)
             software_lines.append(self.generate_section_line("$block").id)
         eid = product.name
-        product_list = self.env["product.product"].search([("sku", "like", eid)])
+        product_list = self.env["product.product"].search([(eid, "like", "sku")])
         if len(product_list) != 1:
             raise UserError("Invalid Match Count for EID: " + str(eid))
         software_lines.append(self.generate_section_line(product.formated_label).id)
@@ -348,7 +348,7 @@ class order(models.Model):
             software_sub_lines.append(self.generate_section_line("$subscription").id)
             software_sub_lines.append(self.generate_section_line("$block").id)
         eid = product.name
-        product_list = self.env["product.product"].search([("sku", "like", eid)])
+        product_list = self.env["product.product"].search([(eid, "like", "sku")])
         if len(product_list) != 1:
             raise UserError("Invalid Match Count for EID: " + str(eid))
         software_sub_lines.append(self.generate_section_line(product.formated_label).id)
