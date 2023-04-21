@@ -124,16 +124,24 @@ class invoice(models.Model):
 
         result_raw = user.prefered_quote_footers
 
-        if result_raw == False:
-            return
-        result = []
-        for item in result_raw:
-            if company in item.company_ids or len(item.company_ids) == 0:
-                result.append(item)
-        if len(result) == 0:
-            raise UserError("No Prefered Footers For User: " + self.env.user.name)
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("prefered", "=", True),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
         else:
-            return result[-1]
+            raise UserError("No Default footer Available")
 
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
@@ -364,7 +372,7 @@ class order(models.Model):
         software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
-        ) 
+        )
         if str(type(line)) == "<class 'str'>":
             return line
         software_sub_lines.append(line.id)
@@ -405,7 +413,7 @@ class order(models.Model):
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
-            return {"warning": {'title': "Renewal Automation", 'message': error_msg}}
+            return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
         if self.rental_start == False or self.rental_end == False:
