@@ -258,6 +258,7 @@ class order(models.Model):
                 return result[-1]
         defaults = self.env["header.footer"].search(
             [
+                "&",
                 ("active", "=", True),
                 ("record_type", "=", "Header"),
                 ("prefered", "=", True),
