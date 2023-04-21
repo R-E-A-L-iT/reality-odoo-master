@@ -8,6 +8,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="prefered" widget="star" />
                 <field name="name" />
                 <field name="url" />
                 <field name="active" />
