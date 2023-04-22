@@ -427,7 +427,7 @@ class order(models.Model):
             )
             if str(type(line)) == "<class 'str'>":
                 return line
-            hardware_lines.append(line.id)
+            section_lines.append(line.id)
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
@@ -440,7 +440,7 @@ class order(models.Model):
         )
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
-        software_lines.append(self.generate_section_line(product.formated_label).id)
+        # software_lines.append(self.generate_section_line(product.formated_label).id)
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -460,7 +460,7 @@ class order(models.Model):
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
 
-        software_sub_lines.append(self.generate_section_line(product.formated_label).id)
+        # software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
         )
@@ -481,11 +481,14 @@ class order(models.Model):
         error_msg = ""
         for product in self.renewal_product_items:
             if product.product_id.type_selection == "H":
+                _logger.info("Hardware")
                 msg = self.hardwareCCP(hardware_lines, product)
             elif product.product_id.type_selection == "S":
-                msg = self.softwareCCP(hardware_lines, product)
+                msg = self.softwareCCP(software_lines, product)
+                _logger.info("Softare")
             elif product.product_id.type_selection == "SS":
                 msg = self.softwareSubCCP(software_sub_lines, product)
+                _logger.info("Software Subscription")
             else:
                 msg = (
                     "Product: "
