@@ -429,6 +429,7 @@ class order(models.Model):
                 return line
             section_lines.append(line.id)
         hardware_lines.extend(section_lines)
+        _logger.error(hardware_lines)
 
     def softwareCCP(self, software_lines, product):
         if len(software_lines) == 0:
