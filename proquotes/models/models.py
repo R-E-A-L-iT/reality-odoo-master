@@ -429,7 +429,6 @@ class order(models.Model):
                 return line
             section_lines.append(line.id)
         hardware_lines.extend(section_lines)
-        _logger.error(hardware_lines)
 
     def softwareCCP(self, software_lines, product):
         if len(software_lines) == 0:
@@ -484,7 +483,6 @@ class order(models.Model):
             if product.product_id.type_selection == "H":
                 _logger.info("Hardware")
                 msg = self.hardwareCCP(hardware_lines, product)
-                _logger.error(hardware_lines)
             elif product.product_id.type_selection == "S":
                 msg = self.softwareCCP(hardware_lines, product)
                 _logger.info("Softare")
@@ -504,11 +502,8 @@ class order(models.Model):
 
         lines = []
         lines.extend(hardware_lines)
-        _logger.warning(lines)
-        # lines.extend(software_lines)
-        _logger.warning(lines)
-        # lines.extend(software_sub_lines)
-        _logger.warning(lines)
+        lines.extend(software_lines)
+        lines.extend(software_sub_lines)
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
