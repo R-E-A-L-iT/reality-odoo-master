@@ -506,7 +506,9 @@ class order(models.Model):
         lines.extend(hardware_lines)
         _logger.warning(lines)
         lines.extend(software_lines)
+        _logger.warning(lines)
         lines.extend(software_sub_lines)
+        _logger.warning(lines)
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
