@@ -481,11 +481,14 @@ class order(models.Model):
         error_msg = ""
         for product in self.renewal_product_items:
             if product.product_id.type_selection == "H":
+                _logger.info("Hardware")
                 msg = self.hardwareCCP(hardware_lines, product)
             elif product.product_id.type_selection == "S":
                 msg = self.softwareCCP(hardware_lines, product)
+                _logger.info("Softare")
             elif product.product_id.type_selection == "SS":
                 msg = self.softwareSubCCP(software_sub_lines, product)
+                _logger.info("Software Subscription")
             else:
                 msg = (
                     "Product: "
