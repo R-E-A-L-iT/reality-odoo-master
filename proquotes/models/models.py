@@ -440,7 +440,7 @@ class order(models.Model):
         )
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
-        software_lines.append(self.generate_section_line(product.formated_label).id)
+        # software_lines.append(self.generate_section_line(product.formated_label).id)
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -460,7 +460,7 @@ class order(models.Model):
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
 
-        software_sub_lines.append(self.generate_section_line(product.formated_label).id)
+        # software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
         )
@@ -504,7 +504,6 @@ class order(models.Model):
         lines.extend(hardware_lines)
         lines.extend(software_lines)
         lines.extend(software_sub_lines)
-        _logger.error(lines)
         self.order_line = [(6, 0, lines)]
 
         if error_msg != "":
