@@ -484,7 +484,7 @@ class order(models.Model):
                 _logger.info("Hardware")
                 msg = self.hardwareCCP(hardware_lines, product)
             elif product.product_id.type_selection == "S":
-                msg = self.softwareCCP(hardware_lines, product)
+                msg = self.softwareCCP(software_lines, product)
                 _logger.info("Softare")
             elif product.product_id.type_selection == "SS":
                 msg = self.softwareSubCCP(software_sub_lines, product)
@@ -502,8 +502,8 @@ class order(models.Model):
 
         lines = []
         lines.extend(hardware_lines)
-        # lines.extend(software_lines)
-        # lines.extend(software_sub_lines)
+        lines.extend(software_lines)
+        lines.extend(software_sub_lines)
         _logger.error(lines)
         self.order_line = [(6, 0, lines)]
 
