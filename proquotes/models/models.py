@@ -427,7 +427,7 @@ class order(models.Model):
             )
             if str(type(line)) == "<class 'str'>":
                 return line
-            hardware_lines.append(line.id)
+            section_lines.append(line.id)
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
