@@ -2,6 +2,7 @@
 
 <odoo>
     <template id="email_debrand" name="Debrand Email" inherit_id="digest.digest_mail_main" priority="17">
-        <xpath expr="//div[hasclass('by_odoo')]" position="replace" />
+        <!-- <xpath expr="//div[hasclass('by_odoo')]" position="replace" /> -->
+        <xpath expr="//div[@t-if=&quot;preferences&quot;]" position="replace" />
     </template>
 </odoo>
