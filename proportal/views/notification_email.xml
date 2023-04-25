@@ -1,1 +1,6 @@
-<!--  -->
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <template id="email_debrand" name="Debrand Email" inherit_id="digest.digest_mail_main" priority="17">
+    </template>
+</odoo>
