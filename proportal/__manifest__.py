@@ -54,6 +54,7 @@
         "views/language_selector.xml",
         "views/companyBackend.xml",
         "views/partner_internal.xml",
+        "views/notification_email.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
