@@ -11,7 +11,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     "category": "Sales",
-    "version": "0.245",
+    "version": "0.259",
     # any module necessary for this one to work correctly
     "depends": [
         "base",
@@ -54,6 +54,7 @@
         "views/language_selector.xml",
         "views/companyBackend.xml",
         "views/partner_internal.xml",
+        "views/notification_email.xml",
     ],
     # only loaded in demonstration mode
     "demo": [

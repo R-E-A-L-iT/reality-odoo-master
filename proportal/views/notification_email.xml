@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <template id="email_debrand" name="Debrand Email" inherit_id="mail.message_notification_email">
+        <xpath expr="//p[@style=&quot;color: #555555; margin-top:32px;&quot;]" position="replace" />
+    </template>
+</odoo>

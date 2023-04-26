@@ -83,6 +83,7 @@ class purchase_order(models.Model):
         if len(defaults) != 0:
             return defaults[-1]
         else:
+            return False
             raise UserError("No Default Footer Available")
 
     footer_id = fields.Many2one(
@@ -163,6 +164,7 @@ class invoice(models.Model):
         if len(defaults) != 0:
             return defaults[-1]
         else:
+            return False
             raise UserError("No Default Footer Available")
 
     footer_id = fields.Many2one(
@@ -264,6 +266,7 @@ class order(models.Model):
         if len(defaults) != 0:
             return defaults[-1]
         else:
+            return False
             raise UserError("No Default Footer Available")
 
     def _default_header(self):
@@ -309,6 +312,7 @@ class order(models.Model):
         if len(defaults) != 0:
             return defaults[-1]
         else:
+            return False
             raise UserError("No Default Header Available")
 
     header_id = fields.Many2one("header.footer", default=_default_header, required=True)
