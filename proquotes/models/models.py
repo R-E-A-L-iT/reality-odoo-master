@@ -309,7 +309,7 @@ class order(models.Model):
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
-        
+
         # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
@@ -402,6 +402,7 @@ class order(models.Model):
         elif selected == False:
             selected = "false"
         product = self.env["product.product"].search([("id", "=", product_id.id)])
+        # Get Price
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env["product.pricelist.item"].search(
             [
@@ -433,6 +434,9 @@ class order(models.Model):
         return line
 
     def hardwareCCP(self, hardware_lines, product):
+        # Generate lines based on renewal_map entries specifing what to offer
+
+        # Initilize Hardware Line Section if Needed
         if len(hardware_lines) == 0:
             hardware_lines.append(self.generate_section_line("$hardware").id)
             hardware_lines.append(self.generate_section_line("$block").id)
@@ -456,6 +460,7 @@ class order(models.Model):
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
+        # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
             software_lines.append(self.generate_section_line("$software").id)
             software_lines.append(self.generate_section_line("$block").id)
@@ -475,6 +480,7 @@ class order(models.Model):
         software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
+        # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
             software_sub_lines.append(self.generate_section_line("$subscription").id)
             software_sub_lines.append(self.generate_section_line("$block").id)
