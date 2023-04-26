@@ -51,27 +51,32 @@ class purchase_order(models.Model):
     )
 
     def _get_default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -121,28 +126,33 @@ class invoice(models.Model):
 
     @api.depends("company_id")
     def _get_default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
 
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -180,8 +190,6 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
-    # customer_po_file_name = fields.Char(string="PO File Name")
-    # customer_po_file = fields.Binary(string="PO File")
 
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True
@@ -223,28 +231,33 @@ class order(models.Model):
     )
 
     def _default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
 
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -255,6 +268,7 @@ class order(models.Model):
         )
         if len(defaults) != 0:
             return defaults[-1]
+
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -270,27 +284,33 @@ class order(models.Model):
             raise UserError("No Default Footer Available")
 
     def _default_header(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Headers
         result_raw = user.prefered_headers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify headers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+        
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -340,6 +360,7 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id")
     def set_is_rental(self):
+        # Set a flag if quotes is a rental quote
         if self.sale_order_template_id.name == "Rental":
             self.is_rental = True
         else:

@@ -24,5 +24,3 @@ class company(models.Model):
         default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif",
         required="True",
     )
-    # prefered_invoice_footers = fields.Many2many(
-    # "header.footer", 'headerfooter_subset', string="Invoice Footer List")
