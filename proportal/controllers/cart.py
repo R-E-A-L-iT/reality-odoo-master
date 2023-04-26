@@ -9,23 +9,38 @@ from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as CP
-from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
+from odoo.addons.portal.controllers.portal import (
+    pager as portal_pager,
+    get_records_pager,
+)
 from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
 
 class CustomerCart(CP):
-    @http.route(['/shop/add-to-cart', '/shop/add-to-cart/<int:sku>'], type='http', auth="public", website=True)
+    @http.route(
+        ["/shop/add-to-cart", "/shop/add-to-cart/<int:sku>"],
+        type="http",
+        auth="public",
+        website=True,
+    )
     def add_to_cart(self, sku):
+        # Add item to cart based on product SKU
         qty = 1
         _logger.info("Add To Cart: " + str(sku))
-        cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
+        cr, uid, context, registry = (
+            request.cr,
+            request.uid,
+            request.context,
+            request.registry,
+        )
 
         # Check user input
         try:
-            product_id = request.env['product.product'].sudo().search([
-                ('sku', '=', sku)])[0]
+            product_id = (
+                request.env["product.product"].sudo().search([("sku", "=", sku)])[0]
+            )
         except:
             product_id = None
         _logger.info(product_id)
