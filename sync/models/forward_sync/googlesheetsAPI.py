@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 import logging
+
 _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
 dev1_prefix = "dev-ty-"
@@ -27,20 +28,26 @@ class sheetsAPI(models.Model):
         _db_name_prod = "https://www.r-e-a-l.it"
 
         # R-E-A-L.iT Master Database
-        _master_database_template_id_prod = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        _master_database_template_id_prod = (
+            "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        )
 
         # Dev Numbers Set Based on When Developer Joined
-        _master_database_template_id_dev1 = "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-        _master_database_template_id_dev2 = "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
+        _master_database_template_id_dev1 = (
+            "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
+        )
+        _master_database_template_id_dev2 = (
+            "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
+        )
 
         # Return the proper GoogleSheet Template ID base on the environement
-        if (_db_name == _db_name_prod):
+        if _db_name == _db_name_prod:
             _logger.info("Production")
             return _master_database_template_id_prod
-        elif (dev1_prefix in _db_name):
+        elif dev1_prefix in _db_name:
             _logger.info("Dev 1")
             return _master_database_template_id_dev1
-        elif (dev2_prefix in _db_name):
+        elif dev2_prefix in _db_name:
             _logger.info("Dev 2")
             return _master_database_template_id_dev2
         else:
