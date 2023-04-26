@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Date" id="blog_date">
+        <!-- Create Date With Word Format -->
         <t t-set="date_list" t-value="str(date_input).split('-')" />
         <t t-set="year" t-value="date_list[0]" />
         <t t-set="month" t-value="date_list[1]" />
