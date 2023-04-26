@@ -470,7 +470,6 @@ class order(models.Model):
         )
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
-        # software_lines.append(self.generate_section_line(product.formated_label).id)
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -491,7 +490,6 @@ class order(models.Model):
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
 
-        # software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
         )
@@ -501,15 +499,18 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
+        # Verify Correct Template
         if self.sale_order_template_id.name == False:
             return
         if "Renewal Auto" not in self.sale_order_template_id.name:
             self.renewal_product_items = False
             return
+        # Initilize Sections
         software_lines = []
         software_sub_lines = []
         hardware_lines = []
         error_msg = ""
+        # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
             if product.product_id.type_selection == "H":
                 _logger.info("Hardware")
@@ -531,6 +532,7 @@ class order(models.Model):
             if msg != None:
                 error_msg += msg + "\n"
 
+        # Combine Sections and add to quote
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
@@ -541,8 +543,11 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
+        # Take into account length of rental
         if self.rental_start == False or self.rental_end == False:
             return price
+
+        # Calculate Rental Length
         sdate = str(self.rental_start).split("-")
         edate = str(self.rental_end).split("-")
         rentalDays = (
@@ -553,10 +558,8 @@ class order(models.Model):
         rentalDays = rentalDays % 30
         rentalWeeks = rentalDays // 7
         rentalDays = rentalDays % 7
-        _logger.error(rentalDays)
-        _logger.error(rentalWeeks)
-        _logger.error(rentalMonths)
 
+        # Calulate Rental Price based on rental length
         rentalRate = 0
         rentalDayRate = price * rentalDays
         if rentalDayRate > price * 4:
@@ -568,6 +571,7 @@ class order(models.Model):
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     def _amount_all(self):
+        # Ensure sale order lines are selected to included in calculation
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
@@ -589,6 +593,7 @@ class order(models.Model):
             )
 
     def _compute_amount_undiscounted(self):
+        # Ensure sale order lines are selected to included in calculation
         for order in self:
             total = 0.0
             for line in order.order_line:
@@ -603,6 +608,7 @@ class order(models.Model):
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
+        #  Overden Method to Ensure sale order lines are selected to included in calculation
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
             fmt = partial(
@@ -709,6 +715,7 @@ class proquotesMail(models.TransientModel):
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
+        # Overriden to define the default recipients of a message.
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False
