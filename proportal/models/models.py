@@ -19,8 +19,8 @@ from odoo import models, fields, api
 
 class productType(models.Model):
     _inherit = "product.template"
-    skuhidden = fields.One2many('ir.model.data', 'res_id', readonly=True)
-    sku = fields.Char(related='skuhidden.name', string="SKU",  readonly=True)
+    skuhidden = fields.One2many("ir.model.data", "res_id", readonly=True)
+    sku = fields.Char(related="skuhidden.name", string="SKU", readonly=True)
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
     ecom_folder = fields.Char(string="folder", required=True, default="")
     ecom_media = fields.Char(string="Img Count", required=True, default="")
@@ -29,23 +29,31 @@ class productType(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
 
+    # Identify Owned Products
     products = fields.One2many(
-        'stock.production.lot', 'owner', string="Products", readonly=True)
+        "stock.production.lot", "owner", string="Products", readonly=True
+    )
     parentProducts = fields.One2many(
-        related='parent_id.products', string="Company Products", readonly=True)
+        related="parent_id.products", string="Company Products", readonly=True
+    )
 
 
 class productInstance(models.Model):
     _inherit = "stock.production.lot"
 
-    owner = fields.Many2one('res.partner', string="Owner")
+    # Store Data For CCP Tracking
+    owner = fields.Many2one("res.partner", string="Owner")
     equipment_number = fields.Char(string="Equipment Number")
-    sku = fields.Char(related='product_id.sku', readonly=True, string="SKU")
-    expire = fields.Date(string='Expiration Date',
-                         default=lambda self: fields.Date.today(), required=False)
-    formated_label = fields.Char(compute='_label')
+    sku = fields.Char(related="product_id.sku", readonly=True, string="SKU")
+    expire = fields.Date(
+        string="Expiration Date",
+        default=lambda self: fields.Date.today(),
+        required=False,
+    )
+    formated_label = fields.Char(compute="_label")
     publish = fields.Boolean(string="publish", default="True")
 
+    # Automate formated_label
     def _label(self):
         for i in self:
             parsedLabel = i.product_id.name.split(" - ")
@@ -57,10 +65,9 @@ class productInstance(models.Model):
             else:
                 parsedLabel = parsedLabel[0]
 
-            r = '#ccplabel+' + str(i.name) + '+' + \
-                str(parsedLabel)
-            if (i.expire != False):
-                r = r + '+' + str(i.expire)
+            r = "#ccplabel+" + str(i.name) + "+" + str(parsedLabel)
+            if i.expire != False:
+                r = r + "+" + str(i.expire)
             i.formated_label = r
             return
 
@@ -69,68 +76,80 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     def init(self):
-        internal_group = self.env.ref('base.group_user')
+        internal_group = self.env.ref("base.group_user")
         portal_purchase_order_user_rule = self.env.ref(
-            'purchase.portal_purchase_order_user_rule')
+            "purchase.portal_purchase_order_user_rule"
+        )
         if portal_purchase_order_user_rule:
-            portal_purchase_order_user_rule.sudo().write({
-                'domain_force': "['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]"
-            })
+            portal_purchase_order_user_rule.sudo().write(
+                {
+                    "domain_force": "['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]"
+                }
+            )
         portal_purchase_order_line_rule = self.env.ref(
-            'purchase.portal_purchase_order_line_rule')
+            "purchase.portal_purchase_order_line_rule"
+        )
         if portal_purchase_order_line_rule:
-            portal_purchase_order_line_rule.sudo().write({
-                'domain_force': "['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]"
-            })
+            portal_purchase_order_line_rule.sudo().write(
+                {
+                    "domain_force": "['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]"
+                }
+            )
         portal_purchase_order_comp_rule = self.env.ref(
-            'purchase.purchase_order_comp_rule')
+            "purchase.purchase_order_comp_rule"
+        )
         if portal_purchase_order_comp_rule and internal_group:
-            portal_purchase_order_comp_rule.sudo().write({
-                'groups': [(4, internal_group.id)]
-            })
+            portal_purchase_order_comp_rule.sudo().write(
+                {"groups": [(4, internal_group.id)]}
+            )
         portal_purchase_order_line_comp_rule = self.env.ref(
-            'purchase.purchase_order_line_comp_rule')
+            "purchase.purchase_order_line_comp_rule"
+        )
         if portal_purchase_order_line_comp_rule and internal_group:
-            portal_purchase_order_line_comp_rule.sudo().write({
-                'groups': [(4, internal_group.id)]
-            })
-        portal_project_comp_rule = self.env.ref('project.project_comp_rule')
+            portal_purchase_order_line_comp_rule.sudo().write(
+                {"groups": [(4, internal_group.id)]}
+            )
+        portal_project_comp_rule = self.env.ref("project.project_comp_rule")
         if portal_project_comp_rule and internal_group:
-            portal_project_comp_rule.sudo().write({
-                'groups': [(4, internal_group.id)]
-            })
+            portal_project_comp_rule.sudo().write({"groups": [(4, internal_group.id)]})
         portal_project_project_rule_portal = self.env.ref(
-            'project.project_project_rule_portal')
+            "project.project_project_rule_portal"
+        )
         if portal_project_project_rule_portal:
-            portal_project_project_rule_portal.sudo().write({
-                'domain_force': "['&', ('privacy_visibility', '=', 'portal'), ('partner_id', 'child_of', [user.partner_id.id])]"
-            })
-        portal_task_comp_rule = self.env.ref('project.task_comp_rule')
+            portal_project_project_rule_portal.sudo().write(
+                {
+                    "domain_force": "['&', ('privacy_visibility', '=', 'portal'), ('partner_id', 'child_of', [user.partner_id.id])]"
+                }
+            )
+        portal_task_comp_rule = self.env.ref("project.task_comp_rule")
         if portal_task_comp_rule and internal_group:
-            portal_task_comp_rule.sudo().write({
-                'groups': [(4, internal_group.id)]
-            })
+            portal_task_comp_rule.sudo().write({"groups": [(4, internal_group.id)]})
         portal_project_task_rule_portal = self.env.ref(
-            'project.project_task_rule_portal')
+            "project.project_task_rule_portal"
+        )
         if portal_project_task_rule_portal:
-            portal_project_task_rule_portal.sudo().write({
-                'domain_force': """[
+            portal_project_task_rule_portal.sudo().write(
+                {
+                    "domain_force": """[
 		('project_id.privacy_visibility', '=', 'portal'),
 		('active', '=', True),
 		'|',
 			('project_id.partner_id', 'child_of', [user.partner_id.id]),
 			('partner_id', 'child_of', [user.partner_id.id]),
 		]"""
-            })
-        portal_account_move_comp_rule = self.env.ref(
-            'account.account_move_comp_rule')
+                }
+            )
+        portal_account_move_comp_rule = self.env.ref("account.account_move_comp_rule")
         if portal_account_move_comp_rule and internal_group:
-            portal_account_move_comp_rule.sudo().write({
-                'groups': [(4, internal_group.id)]
-            })
+            portal_account_move_comp_rule.sudo().write(
+                {"groups": [(4, internal_group.id)]}
+            )
         portal_account_invoice_rule_portal = self.env.ref(
-            'account.account_invoice_rule_portal')
+            "account.account_invoice_rule_portal"
+        )
         if portal_account_invoice_rule_portal:
-            portal_account_invoice_rule_portal.sudo().write({
-                'domain_force': "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
-            })
+            portal_account_invoice_rule_portal.sudo().write(
+                {
+                    "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
+                }
+            )

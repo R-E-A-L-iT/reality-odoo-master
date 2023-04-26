@@ -72,6 +72,7 @@ class CustomerPortalINH(CustomerPortal):
         # use sudo to allow accessing/viewing orders for public user
         # only if he knows the private token
         if order_sudo:
+            # Const ID is the ID assigneg to Derek DeBlois
             constId = [58319]
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
