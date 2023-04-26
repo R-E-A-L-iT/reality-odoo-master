@@ -29,6 +29,7 @@ class QuoteCustomerPortal(cPortal):
     @http.route(["/my/orders/<int:order_id>/ponumber"], type='json', auth="public", website=True)
     def poNumber(self, order_id, ponumber, access_token=None, **post):
 
+        # Confirm Access
         try:
             order_sudo = self._document_check_access(
                 'sale.order', order_id, access_token=access_token)
@@ -59,6 +60,7 @@ class QuoteCustomerPortal(cPortal):
     @ http.route(["/my/orders/<int:order_id>/select"], type='json', auth="public", website=True)
     def select(self, order_id, line_ids, selected,  access_token=None, **post):
 
+        # Confirm Access
         try:
             order_sudo = self._document_check_access(
                 'sale.order', order_id, access_token=access_token)
@@ -121,6 +123,7 @@ class QuoteCustomerPortal(cPortal):
     @ http.route(["/my/orders/<int:order_id>/sectionSelect"], type='json', auth="public", website=True)
     def sectionSelect(self, order_id, section_id, line_ids, selected,  access_token=None, **post):
 
+        # Confirm Access
         try:
             order_sudo = self._document_check_access(
                 'sale.order', order_id, access_token=access_token)
@@ -189,6 +192,7 @@ class QuoteCustomerPortal(cPortal):
     @ http.route(["/my/orders/<int:order_id>/fold/<string:line_id>"], type='json', auth="public", website=True)
     def hideUnhide(self, order_id, line_id, checked,  access_token=None, **post):
 
+        # Confirm Access
         try:
             order_sudo = self._document_check_access(
                 'sale.order', order_id, access_token=access_token)
@@ -222,6 +226,8 @@ class QuoteCustomerPortal(cPortal):
 
     @ http.route(["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"], type='json', auth="public", website=True)
     def change_quantity(self, order_id, line_id, quantity, access_token=None, **post):
+
+        # Confirm Access
         try:
             order_sudo = self._document_check_access(
                 'sale.order', order_id, access_token=access_token)
