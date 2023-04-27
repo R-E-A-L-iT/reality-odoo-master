@@ -2,4 +2,3 @@
 
 from . import controllers
 from . import rental
-# from . import notifcation

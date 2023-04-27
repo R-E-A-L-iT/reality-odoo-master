@@ -23,20 +23,6 @@ odoo.define("proquotes.price", function (require) {
 			console.log("load");
 			this._updatePriceTotalsEvent();
 			this._rentalValueTotal();
-
-			// var items = document.getElementsByClassName("approveHandle");
-			// var linkItems = "";
-			// for (var i = 0; i < items.length; i++) {
-			// 	linkItems = linkItems + items[i].innerHTML.replaceAll("&amp;", "and");
-			// 	if (i < items.length - 1) {
-			// 		linkItems = linkItems + ",";
-			// 	}
-			// }
-			// var link = "https://www.kwipped.com/approve/finance?approveid=eyJpdiI6InI1enRNZXZWRm1IU0hXTUlyQTRiWlE9PSIsInZhbHVlIjoiRGp"
-			// 	+ "hbFV2MDk4V2RHekZhMThzRzNqdz09IiwibWFjIjoiYWY2MmNiYzc2NWVhMjQzMmQzNTViZWRkZjU1ODE1MGIzMjE1ZThlNDhiNjJlYzc0YjlhZTQxMDE2Mm"
-			// 	+ "ViN2JiOSJ9&items=[" + linkItems + "]&clearcart=true";
-			// document.getElementById("approve-button").href = link;
-			// console.log(link)
 		},
 
 		_updateQuantityEvent: function (t) {
@@ -179,7 +165,6 @@ odoo.define("proquotes.price", function (require) {
 				}
 				var inputs = node.getElementsByTagName("input");
 				if (inputs.length > 0) {
-					// console.log(inputs[0])
 					if (inputs[0].type == "checkbox") {
 						if (inputs[0].checked != true) {
 							continue;

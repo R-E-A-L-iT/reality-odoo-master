@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+	<!-- Return Appropriate result based on SNAME -->
 	<template name="Section Bilingual Names" id="section_name_resolution">
 		<t t-set="sname" t-value="sname" />
 		<t t-if="sname == 'rental_equipment'">

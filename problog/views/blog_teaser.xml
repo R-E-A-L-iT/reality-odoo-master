@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Teaser" id="blog_teaser" inherit_id="website_blog.post_teaser" priority="99">
+
+        <!-- Update Blog Links to do to /news directly -->
         <xpath expr="//a[1]" position="replace">
             <a t-if="slug(blog_post.blog_id) != 'news-2'" t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}" class="text-reset text-decoration-none">
                 <div t-if="opt_blog_list_view" t-field="blog_post.teaser" class="mt-2 o_wblog_read_text" />

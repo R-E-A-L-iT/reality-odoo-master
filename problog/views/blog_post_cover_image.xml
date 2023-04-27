@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template name="Blog Post Cover Image" id="blog_post_cover_image" inherit_id="website_blog.post_cover_image" priority="99">
+
+        <!-- Update Blog Links to do to /news directly -->
         <xpath expr="//a" position="replace">
             <a t-if="slug(blog_post.blog_id) != 'news-2'" t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}" t-attf-class="text-decoration-none d-block #{classes or 'mb-2'}" t-att-style="not blog_post.website_published and 'opacity:0.6;'">
 

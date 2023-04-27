@@ -26,6 +26,7 @@ class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
 
+    # Setup Initilize Pricelist for Invoice
     @api.onchange("partner_id")
     def _setpricelist(self):
         self.pricelist_id = self.partner_id.property_product_pricelist
@@ -84,6 +85,7 @@ class invoiceLine(models.Model):
 
     @api.onchange("price_unit")
     def init_price(self):
+        # Set flag marking price as custom
         self.price_override = self.price_unit != self.get_price()
 
     def get_applied_name(self):

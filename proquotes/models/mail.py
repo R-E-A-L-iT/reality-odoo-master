@@ -23,8 +23,9 @@ class mail(models.TransientModel):
     _inherit = "mail.compose.message"
 
     def get_mail_values(self, res_ids):
+        # Force 'reply_to' to be the same as 'email_from'
         result = super().get_mail_values(res_ids)
         for key in result:
-            result[key]['reply_to'] = result[key]['email_from']
-            result[key]['reply_to_force_new'] = True
+            result[key]["reply_to"] = result[key]["email_from"]
+            result[key]["reply_to_force_new"] = True
         return result

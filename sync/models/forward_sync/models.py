@@ -14,21 +14,24 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.translate import _
 from odoo import models, fields, api
 
+# Add String Rep to facilitate quick check to prevent running a full update every sync
+
 
 class partner(models.Model):
     _inherit = "res.partner"
     stringRep = fields.Char(default="")
-    
+
+
 class product(models.Model):
     _inherit = "product.template"
     stringRep = fields.Char(default="")
-    
+
+
 class pricelist(models.Model):
     _inherit = "product.pricelist"
     stringRep = fields.Char(default="")
-    
+
+
 class ccp(models.Model):
     _inherit = "stock.production.lot"
     stringRep = fields.Char(default="")
-    
-    

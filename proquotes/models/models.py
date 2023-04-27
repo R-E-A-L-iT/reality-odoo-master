@@ -51,27 +51,32 @@ class purchase_order(models.Model):
     )
 
     def _get_default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -121,28 +126,33 @@ class invoice(models.Model):
 
     @api.depends("company_id")
     def _get_default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
 
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -180,8 +190,6 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
-    # customer_po_file_name = fields.Char(string="PO File Name")
-    # customer_po_file = fields.Binary(string="PO File")
 
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True
@@ -223,28 +231,33 @@ class order(models.Model):
     )
 
     def _default_footer(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
 
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -255,6 +268,7 @@ class order(models.Model):
         )
         if len(defaults) != 0:
             return defaults[-1]
+
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -270,27 +284,33 @@ class order(models.Model):
             raise UserError("No Default Footer Available")
 
     def _default_header(self):
+        # Get Company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
+        # Get User
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
+        # Get Prefered Headers
         result_raw = user.prefered_headers
 
         if result_raw != False:
             result = []
             for item in result_raw:
+                # Verify headers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
+
+        # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -340,6 +360,7 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id")
     def set_is_rental(self):
+        # Set a flag if quotes is a rental quote
         if self.sale_order_template_id.name == "Rental":
             self.is_rental = True
         else:
@@ -381,6 +402,7 @@ class order(models.Model):
         elif selected == False:
             selected = "false"
         product = self.env["product.product"].search([("id", "=", product_id.id)])
+        # Get Price
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env["product.pricelist.item"].search(
             [
@@ -412,6 +434,9 @@ class order(models.Model):
         return line
 
     def hardwareCCP(self, hardware_lines, product):
+        # Generate lines based on renewal_map entries specifing what to offer
+
+        # Initilize Hardware Line Section if Needed
         if len(hardware_lines) == 0:
             hardware_lines.append(self.generate_section_line("$hardware").id)
             hardware_lines.append(self.generate_section_line("$block").id)
@@ -435,6 +460,7 @@ class order(models.Model):
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
+        # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
             software_lines.append(self.generate_section_line("$software").id)
             software_lines.append(self.generate_section_line("$block").id)
@@ -444,7 +470,6 @@ class order(models.Model):
         )
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
-        # software_lines.append(self.generate_section_line(product.formated_label).id)
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -454,6 +479,7 @@ class order(models.Model):
         software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
+        # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
             software_sub_lines.append(self.generate_section_line("$subscription").id)
             software_sub_lines.append(self.generate_section_line("$block").id)
@@ -464,7 +490,6 @@ class order(models.Model):
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
 
-        # software_sub_lines.append(self.generate_section_line(product.formated_label).id)
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
         )
@@ -474,15 +499,18 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
+        # Verify Correct Template
         if self.sale_order_template_id.name == False:
             return
         if "Renewal Auto" not in self.sale_order_template_id.name:
             self.renewal_product_items = False
             return
+        # Initilize Sections
         software_lines = []
         software_sub_lines = []
         hardware_lines = []
         error_msg = ""
+        # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
             if product.product_id.type_selection == "H":
                 _logger.info("Hardware")
@@ -504,6 +532,7 @@ class order(models.Model):
             if msg != None:
                 error_msg += msg + "\n"
 
+        # Combine Sections and add to quote
         lines = []
         lines.extend(hardware_lines)
         lines.extend(software_lines)
@@ -514,8 +543,11 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
+        # Take into account length of rental
         if self.rental_start == False or self.rental_end == False:
             return price
+
+        # Calculate Rental Length
         sdate = str(self.rental_start).split("-")
         edate = str(self.rental_end).split("-")
         rentalDays = (
@@ -526,10 +558,8 @@ class order(models.Model):
         rentalDays = rentalDays % 30
         rentalWeeks = rentalDays // 7
         rentalDays = rentalDays % 7
-        _logger.error(rentalDays)
-        _logger.error(rentalWeeks)
-        _logger.error(rentalMonths)
 
+        # Calulate Rental Price based on rental length
         rentalRate = 0
         rentalDayRate = price * rentalDays
         if rentalDayRate > price * 4:
@@ -541,6 +571,7 @@ class order(models.Model):
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     def _amount_all(self):
+        # Ensure sale order lines are selected to included in calculation
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
@@ -562,6 +593,7 @@ class order(models.Model):
             )
 
     def _compute_amount_undiscounted(self):
+        # Ensure sale order lines are selected to included in calculation
         for order in self:
             total = 0.0
             for line in order.order_line:
@@ -576,6 +608,7 @@ class order(models.Model):
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
+        #  Overden Method to Ensure sale order lines are selected to included in calculation
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
             fmt = partial(
@@ -682,6 +715,7 @@ class proquotesMail(models.TransientModel):
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
+        # Overriden to define the default recipients of a message.
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False

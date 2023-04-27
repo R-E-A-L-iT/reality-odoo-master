@@ -12,23 +12,15 @@
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
+		<!-- Setup Context -->
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
 			<t t-set="clang" t-value="lang" />
 			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
 		</xpath>
-		<xpath expr="//h2" position="replace">
-			<!-- <xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after"> -->
-			<!-- todo Restore Or Delete 2022-12-23 -->
-			<!-- <style>
-				table {
-				page-break-inside: avoid !important;
-				}
-			</style> -->
-			<!-- </xpath> -->
-		</xpath>
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
+			<!-- Setup Translations -->
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
 				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
 					<span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
@@ -59,6 +51,7 @@
 					border-style: none !important;
 					}
 				</style>
+				<!-- Display Address -->
 				<table id="addressTable" style="border-style: collapse !important;" border="0">
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 						<h5 t-if="(clang == 'en_CA' or clang == 'en_US')" style="color: #db0d0d">Bill To</h5>
@@ -89,21 +82,27 @@
 			</div>
 		</xpath>
 
+		<!-- Translate Invoice Date Label -->
 		<xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Invoice Date:</strong>
 			<strong t-if="clang == 'fr_CA'">Date de la facture:</strong>
 		</xpath>
 
+
+		<!-- Translate Due Date Label -->
 		<xpath expr="//div[@name=&quot;due_date&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Due Date:</strong>
 			<strong t-if="clang == 'fr_CA'">Date d'échéance</strong>
 		</xpath>
 
+		<!-- Translate Source Label -->
 		<xpath expr="//div[@name=&quot;origin&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Source:</strong>
 			<strong t-if="clang == 'fr_CA'">Origine:</strong>
 		</xpath>
 
+
+		<!-- Translate Description Label -->
 		<xpath expr="//th[@name=&quot;th_description&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Description
@@ -114,6 +113,7 @@
 		</xpath>
 
 
+		<!-- Translate Quantity Label -->
 		<xpath expr="//th[@name=&quot;th_quantity&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Quantity
@@ -123,6 +123,7 @@
 			</span>
 		</xpath>
 
+		<!-- Translate Unit Price Label -->
 		<xpath expr="//th[@name=&quot;th_priceunit&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				UNIT PRICE
@@ -132,6 +133,7 @@
 			</span>
 		</xpath>
 
+		<!-- Translate Amount Label -->
 		<xpath expr="//th[@name=&quot;th_subtotal&quot;]//span" position="replace">
 			<span t-if="clang == 'en_CA' or clang == 'en_US'" groups="account.group_show_line_subtotals_tax_excluded">
 				AMOUNT
@@ -141,6 +143,7 @@
 			</span>
 		</xpath>
 
+		<!-- Translate Payment Info Label -->
 		<xpath expr="//p[@name=&quot;payment_communication&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication"> Please use the following communication for your payment: <b>
@@ -156,6 +159,7 @@
 			</t>
 		</xpath>
 
+		<!-- Section Name Handling -->
 		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#' and line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
@@ -164,6 +168,7 @@
 			</span>
 		</xpath>
 
+		<!-- Header Image -->
 		<xpath expr="//img" position="after">
 			<img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto" height="auto" style="margin-bottom: 0px;" />
 			<style>
@@ -191,6 +196,8 @@
 		<!-- <strong>Subtotal</strong> -->
 		<!-- </xpath> -->
 		<!--Apply HTML-->
+
+		<!-- Add Description -->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
 			<span t-raw="line.product_id.name"></span>
 			<br />
@@ -202,13 +209,13 @@
 				margin-bottom: 0px !important;
 				}
 			</style>
-			<!-- <t t-if="str(line.name) != str(line.product_id.description_sale)"> -->
 			<span class="description-root">
 				<span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;" />
 			</span>
-			<!-- </t> -->
 			<br />
 		</xpath>
+
+		<!-- Bank Info -->
 		<xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
 			<t t-if="o.company_id.id == 15">
 				<br />
@@ -249,8 +256,10 @@
 					</p>
 				</div>
 			</t>
+			<!-- Footer Image -->
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
+
 		<!-- Subtotal Lang -->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]//strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>

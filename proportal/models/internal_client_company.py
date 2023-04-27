@@ -29,6 +29,7 @@ class company(models.Model):
         else:
             self.company_nickname = "_"
 
+    # Function to initilize required field.
     def init_company_nickname(self):
         _logger.error("INIT NICKNAME")
         for partner in self.env["res.partner"].search(
@@ -43,6 +44,7 @@ class company(models.Model):
 
     company_nickname = fields.Char(string="Unique Company Nickname", required=True)
 
+    # Set company Nickname when 'res.parner' toggles between company and individual
     @api.onchange("is_company")
     def type_change(self):
         if self.is_company == True and self.company_nickname == "_":
@@ -50,6 +52,7 @@ class company(models.Model):
         elif self.is_company == False and self.company_nickname == False:
             self.company_nickname = "_"
 
+    # Verify Company Nickname
     @api.onchange("company_nickname")
     def verify_unique(self):
         if self.is_company == False:
