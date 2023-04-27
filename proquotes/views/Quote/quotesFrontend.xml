@@ -4,6 +4,7 @@
 	<template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
 
 		<xpath expr="//div" position="attributes">
+			<!-- ID For Easier CSS statements -->
 			<attribute name="id">portalTotal</attribute>
 		</xpath>
 
@@ -42,11 +43,13 @@
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
 
+		<!-- Quote Label -->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
 		</xpath>
 
-		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
+
+		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" /> -->
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<t t-if="line.name == '$hardware'">
