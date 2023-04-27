@@ -402,7 +402,7 @@
 		</xpath>
 
 		<!-- Hide Uneeded Unit Column -->
-		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"></xpath>
+		<!-- <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"></xpath> -->
 
 		<!-- Add Attributes For Easier CSS -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
