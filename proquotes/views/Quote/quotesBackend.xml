@@ -14,6 +14,7 @@
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />
+				<!-- Renewal Quotes Added Products -->
 				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
 					<tree>
 						<field name="name"></field>
@@ -23,6 +24,7 @@
 					</tree>
 				</field>
 
+				<!-- Rental Info -->
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
@@ -54,6 +56,7 @@
 				<field name="applied_name" invisible="0" />
 			</xpath>
 
+			<!-- Custom Line Fields -->
 			<xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
 				<field name="optional" invisible="0" />
 				<field name="selected" invisible="0" />
@@ -68,10 +71,12 @@
 				<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}" />
 			</xpath>
 
+			<!-- Line Display Default Limit -->
 			<xpath expr="//field[@name='order_line']/tree" position="attributes">
 				<attribute name="limit">150</attribute>
 			</xpath>
 
+			<!-- Products Owned By Customer -->
 			<xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
 				<page string="Customer Products" name="customer_products" invisible="0">
 					<group>
@@ -96,7 +101,8 @@
 		<field name="model">sale.order</field>
 		<field name="inherit_id" ref="sale_management.sale_order_form_quote" />
 		<field name="arch" type="xml">
-			<xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
+			<!-- Hide Original Optional Products Implementation -->
+			<!-- <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath> -->
 		</field>
 	</record>
 </odoo>

@@ -54,6 +54,7 @@
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr" position="attributes">
 			<!-- <attribute name="t-if">doc.is_rental != True</attribute> -->
 		</xpath>
+		<!-- Subtotal Language -->
 		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">
 			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">
 				<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>
