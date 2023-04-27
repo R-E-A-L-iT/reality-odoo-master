@@ -96,13 +96,13 @@
 		</field>
 	</record>
 
-	<!-- <record id="hide_view_order_form_proquotes" model="ir.ui.view">
+	<record id="hide_view_order_form_proquotes" model="ir.ui.view">
 		<field name="name">sale.view_order_form</field>
 		<field name="model">sale.order</field>
 		<field name="inherit_id" ref="sale_management.sale_order_form_quote" />
 		<field name="arch" type="xml">
-			Hide Original Optional Products Implementation
+			<!-- Hide Original Optional Products Implementation -->
 			<xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
 		</field>
-	</record> -->
+	</record>
 </odoo>
