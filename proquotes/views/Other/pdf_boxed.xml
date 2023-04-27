@@ -2,7 +2,8 @@
 
 <odoo>
 	<template id="boxed_layout" name="Boxed Layout" inherit_id="web.external_layout_boxed" priority="17">
-		<xpath expr="//div[@name=&quot;company_address&quot;]" position="replace" />
+		<!-- Remove Internal Address -->
+		<!-- <xpath expr="//div[@name=&quot;company_address&quot;]" position="replace" /> -->
 		<xpath expr="/t/div[3]" position="attributes">
 			<!-- <attribute name="style">height: fit-content !important;</attribute> -->
 		</xpath>
@@ -13,10 +14,8 @@
 
 
 		<xpath expr="/t/div[3]/div/div" position="replace">
-			<!-- <xpath expr="//div[@t-field=&quot;company.report_footer&quot;]" position="replace"> -->
 			<div>
 				<img t-if="footer != undefined" id="insert-footer" style="width: 100% !important; display: block !important; position: relative !important;" t-attf-src="{{footer}}" />
-				<!-- <img t-if="footer != undefined" id="insert-footer" t-attf-src="https://cdn.r-e-a-l.it/images/footer/{{footer}}.png" /> -->
 				<t t-else="">
 					<t t-if="doc != undefined" t-set="source" t-value="doc" />
 					<t t-elif="o != undefined" t-set="source" t-value="o" />

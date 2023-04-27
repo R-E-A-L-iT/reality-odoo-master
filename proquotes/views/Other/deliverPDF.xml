@@ -3,9 +3,9 @@
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
+		<!-- Translate Info Labels -->
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
 			<t t-set="src" t-value="o.sale_id" />
-			<!-- <xpath expr="//div[@name=&quot;div_incoming_address&quot;]" position="replace"> -->
 			<style>
 				#addressTable, #addressTable * {
 				color: #495057;
@@ -51,6 +51,7 @@
 			</table>
 		</xpath>
 
+		<!-- Add Description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<style>
 				td {
@@ -72,6 +73,7 @@
 			<span class="description-root" t-raw="move.product_id.description_sale" style="color: #777;" />
 		</xpath>
 
+		<!-- Add Detail Lines -->
 		<xpath expr="//div[@t-if=&quot;o.signature&quot;]" position="replace">
 			<div>
 				<span style="height: 40px"> PO #:</span>
