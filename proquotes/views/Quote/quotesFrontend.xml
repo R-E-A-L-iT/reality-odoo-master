@@ -49,7 +49,8 @@
 		</xpath>
 
 
-		<!-- <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" /> -->
+		<!-- Remove Original Table Header-->
+		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
 
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[2]/tr" position="before">
 			<t t-if="line.name == '$hardware'">
