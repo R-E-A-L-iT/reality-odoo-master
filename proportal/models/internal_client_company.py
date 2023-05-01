@@ -29,6 +29,12 @@ class company(models.Model):
         else:
             self.company_nickname = "_"
 
+    def _calc_nick_return(self):
+        if self.is_company == True:
+            return False
+        else:
+            return "_"
+
     # Function to initilize required field.
     def init_company_nickname(self):
         _logger.error("INIT NICKNAME")
@@ -43,7 +49,7 @@ class company(models.Model):
             partner.company_nickname = "_"
 
     company_nickname = fields.Char(
-        string="Unique Company Nickname", default=_calc_nick, required=True
+        string="Unique Company Nickname", default=_calc_nick_return, required=True
     )
 
     # Set company Nickname when 'res.parner' toggles between company and individual
