@@ -42,7 +42,9 @@ class company(models.Model):
         ):
             partner.company_nickname = "_"
 
-    company_nickname = fields.Char(string="Unique Company Nickname", required=True)
+    company_nickname = fields.Char(
+        string="Unique Company Nickname", default=_calc_nick, required=True
+    )
 
     # Set company Nickname when 'res.parner' toggles between company and individual
     @api.onchange("is_company")
