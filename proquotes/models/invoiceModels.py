@@ -35,6 +35,9 @@ class InvoiceMain(models.Model):
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
+        if pricelist == False:
+            raise UserError("Price List is not set")
+
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
@@ -53,6 +56,7 @@ class InvoiceMain(models.Model):
                 continue
 
             # Appy Price from Pricelist
+            # Apply tax info
             _logger.info(record.tax_ids)
             record.price_unit = priceResult[-1].fixed_price
             record.price_subtotal = record.quantity * priceResult[-1].fixed_price
