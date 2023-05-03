@@ -56,8 +56,14 @@ class InvoiceMain(models.Model):
             # Apply tax info
             _logger.info("line 57")
             _logger.info(record.tax_ids)
-            record.price_unit = priceResult[-1].fixed_price
-            record.price_subtotal = record.quantity * priceResult[-1].fixed_price
+            base_price = priceResult[-1].fixed_price
+            taxes = 0
+
+            for tax_item in record.tax_ids:
+                taxes += (base_price * tax_item.amount) / 100
+
+            record.price_unit = base_price
+            record.price_subtotal = record.quantity * (base_price + taxes)
 
         _logger.info("Prices Updated")
 
