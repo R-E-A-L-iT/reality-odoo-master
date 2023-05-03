@@ -36,7 +36,7 @@ class InvoiceMain(models.Model):
         pricelist = self.pricelist_id.id
 
         if pricelist == False:
-            raise UserError("Price List is not set")
+            return {'warning': {'title' : 'price list issue', 'message' : 'pricelist not set'}}
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
