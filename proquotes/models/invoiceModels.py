@@ -40,6 +40,7 @@ class InvoiceMain(models.Model):
         for child in tax_obj.children_tax_ids:
             result += self._calculate_tax(price, child)
 
+        _logger.info(result)
         return result
 
     @api.onchange("pricelist_id", "invoice_line_ids")
