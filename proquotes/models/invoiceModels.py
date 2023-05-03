@@ -31,6 +31,17 @@ class InvoiceMain(models.Model):
     def _setpricelist(self):
         self.pricelist_id = self.partner_id.property_product_pricelist
 
+    def _calculate_tax(self, price, tax_obj):
+        if tax_obj.children_tax_ids == False :
+            return price * tax_obj.amount / 100
+
+        result = 0
+
+        for child in tax_obj.children_tax_ids:
+            result += self._calculate_tax(price, child)
+
+        return result
+
     @api.onchange("pricelist_id", "invoice_line_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
@@ -41,7 +52,7 @@ class InvoiceMain(models.Model):
             taxes = 0
 
             for tax_item in record.tax_ids:
-                taxes += (record.price_unit * tax_item.amount) / 100
+                taxes += self._calculate_tax(record.price_unit, tax_item)
 
             if record.price_override == True:
                 record.price_subtotal = record.quantity * (record.price_unit + taxes)
@@ -68,7 +79,7 @@ class InvoiceMain(models.Model):
 
             for tax_item in record.tax_ids:
                 _logger.info(tax_item.amount)
-                taxes += (base_price * tax_item.amount) / 100
+                taxes += self._calculate_tax(base_price, tax_item)
 
             record.price_unit = base_price
             record.price_subtotal = record.quantity * (base_price + taxes)
