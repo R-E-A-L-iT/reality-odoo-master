@@ -67,6 +67,7 @@ class InvoiceMain(models.Model):
             base_price = priceResult[-1].fixed_price
 
             for tax_item in record.tax_ids:
+                _logger.info(tax_item.amount)
                 taxes += (base_price * tax_item.amount) / 100
 
             record.price_unit = base_price
