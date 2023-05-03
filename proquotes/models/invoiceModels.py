@@ -44,7 +44,7 @@ class InvoiceMain(models.Model):
         _logger.info(result)
         return result
 
-    @api.onchange("pricelist_id", "invoice_line_ids")
+    @api.onchange("pricelist_id", "invoice_line_ids", "tax_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
