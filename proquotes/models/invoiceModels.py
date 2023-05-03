@@ -33,6 +33,7 @@ class InvoiceMain(models.Model):
 
     def _calculate_tax(self, price, tax_obj):
         if tax_obj.children_tax_ids == False :
+            _logger.info("amount: " + str(tax_obj.amount))
             return price * tax_obj.amount / 100
 
         result = 0
