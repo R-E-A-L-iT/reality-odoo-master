@@ -38,8 +38,16 @@ class InvoiceMain(models.Model):
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
+            taxes = 0
+
+            for tax_item in record.tax_ids:
+                taxes += (record.price_unit * tax_item.amount) / 100
+
             if record.price_override == True:
+                record.price_subtotal = record.quantity * (record.price_unit + taxes)
+
                 continue
+
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env["product.pricelist.item"].search(
                 [
@@ -57,7 +65,6 @@ class InvoiceMain(models.Model):
             _logger.info("line 57")
             _logger.info(record.tax_ids)
             base_price = priceResult[-1].fixed_price
-            taxes = 0
 
             for tax_item in record.tax_ids:
                 taxes += (base_price * tax_item.amount) / 100
