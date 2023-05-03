@@ -35,9 +35,6 @@ class InvoiceMain(models.Model):
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
-        if pricelist == False:
-            return {'warning': {'title' : 'price list issue', 'message' : 'pricelist not set'}}
-
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
@@ -62,6 +59,9 @@ class InvoiceMain(models.Model):
             record.price_subtotal = record.quantity * priceResult[-1].fixed_price
 
         _logger.info("Prices Updated")
+
+        if pricelist == False:
+            return {'warning': {'title' : 'price list issue', 'message' : 'pricelist not set'}}
 
 
 class invoiceLine(models.Model):
