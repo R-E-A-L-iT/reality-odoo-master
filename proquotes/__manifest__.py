@@ -45,7 +45,7 @@
         ]
     },
 
-    "version": "1.0.2117",
+    "version": "1.0.2118",
 
     # always loaded
     "data": [

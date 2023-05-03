@@ -32,7 +32,7 @@ class InvoiceMain(models.Model):
         self.pricelist_id = self.partner_id.property_product_pricelist
 
     def _calculate_tax(self, price, tax_obj):
-        if tax_obj.children_tax_ids == False :
+        if tax_obj.amount_type != "group" :
             _logger.info("amount: " + str(tax_obj.amount))
             return price * tax_obj.amount / 100
 
