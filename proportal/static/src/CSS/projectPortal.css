@@ -252,5 +252,5 @@ div.col-lg-auto, #sidebar_content, #sidebar_content *{
 }
 
 #product_name > img{
-	display: none;
+	display: none !important;
 }
