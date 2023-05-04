@@ -91,7 +91,7 @@ class InvoiceMain(models.Model):
         _logger.info("Prices Updated")
 
         if pricelist == False:
-            return {'warning': {'title' : 'price list issue', 'message' : 'pricelist not set'}}
+            return {'warning': {'title' : 'Pricelist', 'message' : 'Pricelist not set'}}
 
 
 class invoiceLine(models.Model):
