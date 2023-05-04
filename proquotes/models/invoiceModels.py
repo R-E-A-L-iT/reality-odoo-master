@@ -78,6 +78,7 @@ class InvoiceMain(models.Model):
             _logger.info("line 57")
             _logger.info(record.tax_ids)
             base_price = priceResult[-1].fixed_price
+            taxes = 0
 
             for tax_item in record.tax_ids:
                 _logger.info(tax_item.amount)
