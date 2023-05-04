@@ -34,7 +34,7 @@ class InvoiceMain(models.Model):
     def _calculate_tax(self, price, tax_obj):
         if tax_obj.amount_type != "group" :
             _logger.info("amount: " + str(tax_obj.amount))
-            return price * tax_obj.amount / 100
+            return round(price * tax_obj.amount / 100, 2)
 
         result = 0
 
