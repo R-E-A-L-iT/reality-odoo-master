@@ -31,15 +31,36 @@ class InvoiceMain(models.Model):
     def _setpricelist(self):
         self.pricelist_id = self.partner_id.property_product_pricelist
 
-    @api.onchange("pricelist_id", "invoice_line_ids")
+    def _calculate_tax(self, price, tax_obj):
+        if tax_obj.amount_type != "group" :
+            _logger.info("amount: " + str(tax_obj.amount))
+            return round(price * tax_obj.amount / 100, 2)
+
+        result = 0
+
+        for child in tax_obj.children_tax_ids:
+            result += self._calculate_tax(price, child)
+
+        _logger.info(result)
+        return result
+
+    @api.onchange("pricelist_id", "invoice_line_ids", "invoice_line_ids.tax_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
+            taxes = 0
+
+            for tax_item in record.tax_ids:
+                taxes += self._calculate_tax(record.price_unit, tax_item)
+
             if record.price_override == True:
+                record.price_subtotal = record.quantity * (record.price_unit + taxes)
+
                 continue
+
             # Select Pricelist Entry based on Pricelist and Product
             priceResult = self.env["product.pricelist.item"].search(
                 [
@@ -53,11 +74,24 @@ class InvoiceMain(models.Model):
                 continue
 
             # Appy Price from Pricelist
+            # Apply tax info
+            _logger.info("line 57")
             _logger.info(record.tax_ids)
-            record.price_unit = priceResult[-1].fixed_price
-            record.price_subtotal = record.quantity * priceResult[-1].fixed_price
+            base_price = priceResult[-1].fixed_price
+            taxes = 0
+
+            for tax_item in record.tax_ids:
+                _logger.info(tax_item.amount)
+                taxes += self._calculate_tax(base_price, tax_item)
+                _logger.info("taxes: " + str(taxes))
+
+            record.price_unit = base_price
+            record.price_subtotal = record.quantity * (base_price + taxes)
 
         _logger.info("Prices Updated")
+
+        if pricelist == False:
+            return {'warning': {'title' : 'Pricelist', 'message' : 'Pricelist not set'}}
 
 
 class invoiceLine(models.Model):
