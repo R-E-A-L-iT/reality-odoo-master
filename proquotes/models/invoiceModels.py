@@ -83,6 +83,7 @@ class InvoiceMain(models.Model):
                 _logger.info(tax_item.amount)
                 taxes += self._calculate_tax(base_price, tax_item)
 
+            _logger.info("taxes: " + str(taxes))
             record.price_unit = base_price
             record.price_subtotal = record.quantity * (base_price + taxes)
 
