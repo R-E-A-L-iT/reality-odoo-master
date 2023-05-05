@@ -47,19 +47,22 @@ class InvoiceMain(models.Model):
     @api.onchange("pricelist_id", "invoice_line_ids", "invoice_line_ids.tax_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
-
-        _logger.info(pricelist)
-        _logger.info(self.pricelist_id)
+        _logger.info("line 50", "pricelist: " + pricelist, "invoice_line_ids: ", self.invoice_line_ids)
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
+
+            _logger.info("line 55", "record: " + record)
+            _logger.info("line 55", "record_type: " + type(record))
+            _logger.info("line 55", "record_attr: " + dir(record))
+
             product = record.product_id
             taxes = 0
 
             for tax_item in record.tax_ids:
                 taxes += self._calculate_tax(record.price_unit, tax_item)
 
-            if record.price_override == True:
+            if record.price_override == True or pricelist == False:
                 record.price_subtotal = record.quantity * (record.price_unit + taxes)
 
                 continue
@@ -93,8 +96,6 @@ class InvoiceMain(models.Model):
 
         _logger.info("Prices Updated")
 
-        if pricelist == False:
-            return {'warning': {'title' : 'Pricelist', 'message' : 'Pricelist not set'}}
 
 
 class invoiceLine(models.Model):
