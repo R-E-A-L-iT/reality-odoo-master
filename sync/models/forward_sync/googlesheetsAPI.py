@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
 dev1_prefix = "dev-ty-"
 dev2_prefix = "dev-oli-"
+dev3_prefix = "dev-asif-"
 
 
 class sheetsAPI(models.Model):
@@ -39,6 +40,9 @@ class sheetsAPI(models.Model):
         _master_database_template_id_dev2 = (
             "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
         )
+        _master_database_template_id_dev3 = (
+            "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
+        )#test out data with master datasheet with google sheet
 
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
@@ -50,6 +54,9 @@ class sheetsAPI(models.Model):
         elif dev2_prefix in _db_name:
             _logger.info("Dev 2")
             return _master_database_template_id_dev2
+        elif dev3_prefix in _db_name:
+            _logger.info("Dev 3")
+            return _master_database_template_id_dev3
         else:
             _logger.info("Default Dev GS")
             return _master_database_template_id_prod

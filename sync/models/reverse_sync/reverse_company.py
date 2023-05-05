@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 dev1_prefix = "dev-ty-"
 dev2_prefix = "dev-oli-"
+dev3_prefix = "dev-asif-"
 
 
 class reverse_sync_company(models.Model):
@@ -25,6 +26,8 @@ class reverse_sync_company(models.Model):
         # Dev Numbers Set Based on When Developer Joined
         _dev_1_db = "16MmMH4C_pwA2r2X9GUPQRQO9ntWKMGfON2BWZOYaH14"
         _dev_2_db = "16MmMH4C_pwA2r2X9GUPQRQO9ntWKMGfON2BWZOYaH14"
+        _dev_3_db = "16MmMH4C_pwA2r2X9GUPQRQO9ntWKMGfON2BWZOYaH14"
+        #google sheet id
 
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
@@ -36,6 +39,9 @@ class reverse_sync_company(models.Model):
         elif dev2_prefix in _db_name:
             _logger.info("Dev 2")
             return _dev_2_db
+        elif dev3_prefix in _db_name:
+            _logger.info("Dev 3")
+            return _dev_3_db
         else:
             _logger.info("Default Dev GS")
             return _master_db
