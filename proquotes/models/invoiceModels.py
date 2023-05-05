@@ -52,9 +52,9 @@ class InvoiceMain(models.Model):
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
 
-            _logger.info("line 55", "record: " + record)
-            _logger.info("line 55", "record_type: " + type(record))
-            _logger.info("line 55", "record_attr: " + dir(record))
+            _logger.info("line 55", "record: ", record)
+            _logger.info("line 55", "record_type: ", type(record))
+            _logger.info("line 55", "record_attr: ", dir(record))
 
             product = record.product_id
             taxes = 0
