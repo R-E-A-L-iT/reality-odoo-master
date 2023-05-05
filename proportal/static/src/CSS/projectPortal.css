@@ -250,3 +250,7 @@ div.col-lg-auto, #sidebar_content, #sidebar_content *{
 .o_message_counter {
 	color: #888;
 }
+
+#product_name > img{
+	display: none !important;
+}
