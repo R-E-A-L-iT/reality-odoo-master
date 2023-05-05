@@ -48,6 +48,9 @@ class InvoiceMain(models.Model):
     def _update_prices(self):
         pricelist = self.pricelist_id.id
 
+        _logger.info(pricelist)
+        _logger.info(pricelist.__dict__)
+
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
             product = record.product_id
