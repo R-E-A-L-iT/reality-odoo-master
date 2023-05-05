@@ -49,7 +49,7 @@ class InvoiceMain(models.Model):
         pricelist = self.pricelist_id.id
 
         _logger.info(pricelist)
-        _logger.info(pricelist.__dict__)
+        _logger.info(self.pricelist_id)
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
