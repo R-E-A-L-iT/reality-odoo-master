@@ -47,7 +47,7 @@ class InvoiceMain(models.Model):
     @api.onchange("pricelist_id", "invoice_line_ids", "invoice_line_ids.tax_ids")
     def _update_prices(self):
         pricelist = self.pricelist_id.id
-        _logger.info("line 50", "pricelist: " + pricelist, "invoice_line_ids: ", self.invoice_line_ids)
+        _logger.info("line 50", "pricelist: ", pricelist, "invoice_line_ids: ", self.invoice_line_ids)
 
         # Apply the correct price to every product in the invoice
         for record in self.invoice_line_ids:
