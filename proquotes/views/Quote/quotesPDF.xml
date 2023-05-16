@@ -97,6 +97,8 @@
 			</t>
 			<!-- Custom Table Head -->
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
+				<!-- Is there a discount on atleast on line? -->
+				<t t-set="display_discount" t-value="any(line.discount for line in doc.order_line)" />
 				<t t-if=" line.name== '$block' or line.name == '$block+'">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<td t-if="line.name == '$block'" class="text-left" style="border-top-style: none !important; border-right-style: none !important">Product</td>
@@ -109,6 +111,7 @@
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-left" style=" border-top-style: none !important">Qty</td>
 						<td class=" text-left" style=" border-top-style: none !important">Price</td>
+						<td name="t_discount" t-if="display_discount" class=" text-left" style=" border-top-style: none !important">Disc.%</td>
 						<td class=" text-left" style=" border-top-style: none !important">Amount</td>
 					</t>
 					<t t-if=" clang== 'fr_CA'">
@@ -120,6 +123,7 @@
 						<td t-else="" colspan="0" style="border-top-style: none !important; border-left-style: none !important" />
 						<td class=" text-left" style=" border-top-style: none !important">Qté</td>
 						<td class=" text-left" style=" border-top-style: none !important">Prix</td>
+						<td name="t_discount" t-if="display_discount" class=" text-left" style=" border-top-style: none !important">Rabais%</td>
 						<td class=" text-left" style=" border-top-style: none !important">Montant</td>
 					</t>
 				</t>
