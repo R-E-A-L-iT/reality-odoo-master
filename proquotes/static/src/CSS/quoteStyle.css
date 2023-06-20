@@ -163,6 +163,10 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	z-index: 0;
 }
 
+.quote-address>video{
+	z-index: 0;
+}
+
 .quote-address-block {
 	top: 25%;
 	height: 50%;
@@ -320,6 +324,15 @@ td.tax-column {
 }
 
 #details > .quote-address > img  {
+	width: 100vw;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	left: 50%;
+	right: 50%;
+	position: relative;
+}
+
+#details > .quote-address > video  {
 	width: 100vw;
 	margin-left: -50vw;
 	margin-right: -50vw;
