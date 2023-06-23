@@ -22,24 +22,6 @@
 
 			<!-- Setup Translations -->
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
-				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
-					<span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Credit Note</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Vendor Credit Note</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
-					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
-				</h2>
-				<h2 t-if="clang == 'fr_CA'" style="color: #db0d0d;">
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Facture</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Facture Provisoire</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Facture Annulée</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Note de Crédit</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Note de Crédit Fournisseur</span>
-					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Facture du Fournisseur</span>
-					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
-				</h2>
 				<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />
 				<h3 t-field="o.partner_id.name" />
 				<br />
@@ -80,6 +62,28 @@
 					</td>
 				</table>
 			</div>
+		</xpath>
+
+
+		<xpath expr="//div[@class='page']/h2[1]" position="replace">
+				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
+					<span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Credit Note</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Vendor Credit Note</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
+					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
+				</h2>
+				<h2 t-if="clang == 'fr_CA'" style="color: #db0d0d;">
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Facture</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Facture Provisoire</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Facture Annulée</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'out_refund'">Note de Crédit</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_refund'">Note de Crédit Fournisseur</span>
+					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Facture du Fournisseur</span>
+					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
+				</h2>
 		</xpath>
 
 		<!-- Translate Invoice Date Label -->
