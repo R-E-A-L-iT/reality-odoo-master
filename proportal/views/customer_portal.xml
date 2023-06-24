@@ -10,21 +10,6 @@
         </xpath>
     </template>-->
 
-
-<!--	<template id="report_external_layout_demo" inherit_id="report.external_layout_header">-->
-
-<!--<xpath expr="//div[@class='header']" position="replace">-->
-
-<!--<div class="header">-->
-
-<!--<<<<your customer header or text >>>>>>-->
-
-<!--</div>-->
-
-<!--</xpath>-->
-
-<!--</template>-->
-
 	<template id="logout" name="proportal_logout" inherit_id="portal.portal_layout" priority="17">
 		<xpath expr="//div[@id=&quot;o_my_sidebar&quot;]//div[3]" position="after">
 			<div>
