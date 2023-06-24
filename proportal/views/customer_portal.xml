@@ -19,12 +19,38 @@
 	</template>
 
 	<template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
-		<xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+		<xpath expr="//div[hasclass('o_portal_docs')]" position="replace">
 			<t t-call="portal.portal_docs_entry">
-				<t t-set="title">Products</t>
-				<t t-set="url" t-value="'/my/products'" />
-				<t t-set="count" t-value="0" />
-			</t>
+                <t t-set="title">Quotations</t>
+                <t t-set="url" t-value="'/my/quotes'"/>
+                <t t-set="placeholder_count" t-value="'quotation_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Sales Orders</t>
+                <t t-set="url" t-value="'/my/orders'"/>
+                <t t-set="placeholder_count" t-value="'order_count'"/>
+            </t>
+			<t t-call="portal.portal_docs_entry">
+                <t t-set="title">Invoices &amp; Bills</t>
+                <t t-set="url" t-value="'/my/invoices'"/>
+                <t t-set="placeholder_count" t-value="'invoice_count'"/>
+            </t>
+			<t t-call="portal.portal_docs_entry">
+            <t t-set="title">Requests for Quotation</t>
+            <t t-set="url" t-value="'/my/rfq'"/>
+            <t t-set="placeholder_count" t-value="'rfq_count'"/>
+		  	</t>
+            <t  t-call="portal.portal_docs_entry">
+                <t t-set="title">Tickets</t>
+                <t t-set="url" t-value="'/my/tickets'"/>
+                <t t-set="placeholder_count" t-value="'ticket_count'"/>
+            </t>
+			<t t-call="portal.portal_docs_entry">
+            <t t-set="title">Products</t>
+            <t t-set="url" t-value="'/my/products'"/>
+            <t t-set="placeholder_count" t-value="'product_count'"/>
+        </t>
+
 		</xpath>
 	</template>
 
