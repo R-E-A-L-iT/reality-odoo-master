@@ -38,7 +38,7 @@ class sheetsAPI(models.Model):
             "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
         )
         _master_database_template_id_dev2 = (
-            "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
+            "1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU"
         )
         _master_database_template_id_dev3 = (
             "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
