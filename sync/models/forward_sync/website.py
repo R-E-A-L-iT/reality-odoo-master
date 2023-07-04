@@ -66,13 +66,13 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML French Missing")
             missingColumn = True
 
-        if "Specs French" in sheet[0]:
+        if "Specs French-01" in sheet[0]:            
             columns["specs_fr"] = sheet[0].index("Specs French-01")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-01 Missing")
             missingColumn = True
 
-        if "Specs French" in sheet[0]:
+        if "Specs French-02" in sheet[0]:
             columns["specs_fr"] += sheet[0].index("Specs French-02")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
