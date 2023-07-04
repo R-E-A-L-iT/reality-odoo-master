@@ -194,18 +194,33 @@ class syncWeb:
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
         # Update Specs View
+        _logger.info("lang_code: " + str(id))
+        _logger.info("page_type: " + str(page_type))
+        _logger.info("html: " + str(html))
+        _logger.info("lang: " + str(lang))
+
         lang_code = ""
         if lang == "English":
             lang_code = "en"
         elif lang == "French":
             lang_code = "fr"
+        _logger.info("lang_code:" + str(lang_code))
+
         id = str(id) + "_specs_" + str(lang_code)
+        _logger.info("id (new): " + str(id))
+
         if page_type != "product":
-            return ""
+            return ""        
+
         # Get or create page
         page = self.get_page(id)
+        _logger.info("page: " + str(page))
+
         opener = '<?xml version="1.0"?>\n'
+        _logger.info("opener: " + str(opener))
+
         full_html = opener + html
+
         page.arch = full_html
         return ""
 
