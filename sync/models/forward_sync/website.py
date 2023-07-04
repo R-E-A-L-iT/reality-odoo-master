@@ -23,7 +23,7 @@ class syncWeb:
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
         # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 13
+        sheetWidth = 15
         columns = dict()
         missingColumn = False
 
@@ -47,11 +47,18 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML English Missing")
             missingColumn = True
 
-        if "Specs English" in sheet[0]:
-            columns["specs_en"] = sheet[0].index("Specs English")
+        if "Specs English-01" in sheet[0]:
+            columns["specs_en"] = sheet[0].index("Specs English-01")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
             missingColumn = True
+
+        if "Specs English-02" in sheet[0]:
+            columns["specs_en"] += sheet[0].index("Specs English-02")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-02 Missing")
+            missingColumn = True
+
 
         if "HTML French" in sheet[0]:
             columns["html_fr"] = sheet[0].index("HTML French")
@@ -60,10 +67,16 @@ class syncWeb:
             missingColumn = True
 
         if "Specs French" in sheet[0]:
-            columns["specs_fr"] = sheet[0].index("Specs French")
+            columns["specs_fr"] = sheet[0].index("Specs French-01")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-01 Missing")
             missingColumn = True
+
+        if "Specs French" in sheet[0]:
+            columns["specs_fr"] += sheet[0].index("Specs French-02")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
+            missingColumn = True            
 
         if "Enabled" in sheet[0]:
             columns["enabled"] = sheet[0].index("Enabled")
@@ -127,37 +140,23 @@ class syncWeb:
             # if it gets here data should be valid
             try:
                 # Inititilize values
-                _logger.info("step 1")
                 _logger.info(sheet[i][columns["id"]])
-
-                _logger.info("step 2")
                 external_id = str(sheet[i][columns["id"]])
-
-                _logger.info("step 3")
                 page_type = str(sheet[i][columns["type"]])
-
-                _logger.info("step 4")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English"
                 )
-
-                _logger.info("step 5")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French"
                 )
 
                 # Sync Extras
-                _logger.info("step 6")
                 msg += self.updateSpecs(
                     external_id, page_type, sheet[i][columns["specs_en"]], "English"
                 )
-
-                _logger.info("step 7")
                 msg += self.updateSpecs(
                     external_id, page_type, sheet[i][columns["specs_fr"]], "French"
                 )
-
-                _logger.info("step 8")
                 i += 1
             except Exception as e:
                 _logger.error(sheet[i][columns["id"]])
@@ -194,33 +193,19 @@ class syncWeb:
 
     def updateSpecs(self, id: str, page_type: str, html: str, lang: str) -> str:
         # Update Specs View
-        _logger.info("lang_code: " + str(id))
-        _logger.info("page_type: " + str(page_type))
-        _logger.info("html: " + str(html))
-        _logger.info("lang: " + str(lang))
-
         lang_code = ""
         if lang == "English":
             lang_code = "en"
         elif lang == "French":
             lang_code = "fr"
-        _logger.info("lang_code:" + str(lang_code))
-
         id = str(id) + "_specs_" + str(lang_code)
-        _logger.info("id (new): " + str(id))
-
         if page_type != "product":
             return ""        
 
         # Get or create page
         page = self.get_page(id)
-        _logger.info("page: " + str(page))
-
         opener = '<?xml version="1.0"?>\n'
-        _logger.info("opener: " + str(opener))
-
         full_html = opener + html
-
         page.arch = full_html
         return ""
 
