@@ -47,17 +47,17 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML English Missing")
             missingColumn = True
 
-        if "Specs English-01" in sheet[0]:
-            columns["specs_en-01"] = sheet[0].index("Specs English-01")
-            columns["specs_en"] = sheet[0].index("Specs English-01")
+        if "Specs English-00" in sheet[0]:
+            columns["specs_en-00"] = sheet[0].index("Specs English-00")
+            columns["specs_en"] = sheet[0].index("Specs English-00")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-00 Missing")
             missingColumn = True
 
-        if "Specs English-02" in sheet[0]:
-            columns["specs_en-02"] = sheet[0].index("Specs English-02")
+        if "Specs English-01" in sheet[0]:
+            columns["specs_en-01"] = sheet[0].index("Specs English-01")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-02 Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
             missingColumn = True
 
 
@@ -67,15 +67,15 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML French Missing")
             missingColumn = True
 
-        if "Specs French-01" in sheet[0]:            
-            columns["specs_fr-01"] = sheet[0].index("Specs French-01")
-            columns["specs_fr"] = sheet[0].index("Specs French-01")
+        if "Specs French-00" in sheet[0]:            
+            columns["specs_fr-00"] = sheet[0].index("Specs French-00")
+            columns["specs_fr"] = sheet[0].index("Specs French-00")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-01 Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-00 Missing")
             missingColumn = True
 
-        if "Specs French-02" in sheet[0]:
-            columns["specs_fr-02"] = sheet[0].index("Specs French-02")
+        if "Specs French-01" in sheet[0]:
+            columns["specs_fr-01"] = sheet[0].index("Specs French-01")
 
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
@@ -120,8 +120,8 @@ class syncWeb:
             # check if should continue
             if i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE":
                 break
-            sheet[i][columns["specs_en-01"]] += sheet[i][columns["specs_en-02"]]
-            sheet[i][columns["specs_fr-01"]] += sheet[i][columns["specs_fr-02"]]
+            sheet[i][columns["specs_en-00"]] += sheet[i][columns["specs_en-01"]]
+            sheet[i][columns["specs_fr-00"]] += sheet[i][columns["specs_fr-01"]]
             i += 1
 
 
