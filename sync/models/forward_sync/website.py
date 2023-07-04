@@ -122,29 +122,42 @@ class syncWeb:
                     msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row"
                 )
                 i += 1
-                continue
+                continue     
             
-            _logger.info("All Valid")
-
             # if it gets here data should be valid
             try:
                 # Inititilize values
+                _logger.info("step 1")
                 _logger.info(sheet[i][columns["id"]])
+
+                _logger.info("step 2")
                 external_id = str(sheet[i][columns["id"]])
+
+                _logger.info("step 3")
                 page_type = str(sheet[i][columns["type"]])
+
+                _logger.info("step 4")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_en"]], "English"
                 )
+
+                _logger.info("step 5")
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French"
                 )
+
                 # Sync Extras
+                _logger.info("step 6")
                 msg += self.updateSpecs(
                     external_id, page_type, sheet[i][columns["specs_en"]], "English"
                 )
+
+                _logger.info("step 7")
                 msg += self.updateSpecs(
                     external_id, page_type, sheet[i][columns["specs_fr"]], "French"
                 )
+
+                _logger.info("step 8")
                 i += 1
             except Exception as e:
                 _logger.error(sheet[i][columns["id"]])
