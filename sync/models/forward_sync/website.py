@@ -112,7 +112,8 @@ class syncWeb:
 
         i = 1
 
-        # join Specs French-01 and Specs French-02
+        # joinning Specs English-01 and Specs English-02
+        # joinning Specs French-01 and Specs French-02
         # loop through all the rows
         i = 1
         while True:
