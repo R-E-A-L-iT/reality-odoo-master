@@ -122,6 +122,7 @@ class syncWeb:
                 break
             sheet[i][columns["specs_en-01"]] += sheet[i][columns["specs_en-02"]]
             sheet[i][columns["specs_fr-01"]] += sheet[i][columns["specs_fr-02"]]
+            i += 1
 
 
         # loop through all the rows
