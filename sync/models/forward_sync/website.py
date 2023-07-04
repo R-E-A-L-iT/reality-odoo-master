@@ -48,13 +48,14 @@ class syncWeb:
             missingColumn = True
 
         if "Specs English-01" in sheet[0]:
+            columns["specs_en-01"] = sheet[0].index("Specs English-01")
             columns["specs_en"] = sheet[0].index("Specs English-01")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
             missingColumn = True
 
         if "Specs English-02" in sheet[0]:
-            columns["specs_en"] += sheet[0].index("Specs English-02")
+            columns["specs_en-02"] += sheet[0].index("Specs English-02")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-02 Missing")
             missingColumn = True
@@ -67,13 +68,15 @@ class syncWeb:
             missingColumn = True
 
         if "Specs French-01" in sheet[0]:            
+            columns["specs_fr-01"] = sheet[0].index("Specs French-01")
             columns["specs_fr"] = sheet[0].index("Specs French-01")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-01 Missing")
             missingColumn = True
 
         if "Specs French-02" in sheet[0]:
-            columns["specs_fr"] += sheet[0].index("Specs French-02")
+            columns["specs_fr-02"] += sheet[0].index("Specs French-02")
+
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
             missingColumn = True            
@@ -109,7 +112,19 @@ class syncWeb:
 
         i = 1
 
+        # join Specs French-01 and Specs French-02
         # loop through all the rows
+        i = 1
+        while True:
+            # check if should continue
+            if i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE":
+                break
+            sheet[i][columns["specs_en-01"]] += sheet[i][columns["specs_en-02"]]
+            sheet[i][columns["specs_fr-01"]] += sheet[i][columns["specs_fr-02"]]
+
+
+        # loop through all the rows
+        i = 1
         while True:
             # check if should continue
             _logger.info("Website: " + str(i))
