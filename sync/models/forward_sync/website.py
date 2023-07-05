@@ -152,7 +152,7 @@ class syncWeb:
                     msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row"
                 )
                 i += 1
-                continue     
+                continue
             
             # if it gets here data should be valid
             try:
@@ -166,7 +166,6 @@ class syncWeb:
                 msg += self.updatePage(
                     external_id, sheet[i][columns["html_fr"]], "French"
                 )
-
                 # Sync Extras
                 msg += self.updateSpecs(
                     external_id, page_type, sheet[i][columns["specs_en"]], "English"
