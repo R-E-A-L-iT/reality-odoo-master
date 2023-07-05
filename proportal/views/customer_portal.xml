@@ -36,15 +36,10 @@
                 <t t-set="placeholder_count" t-value="'order_count'"/>
             </t>
 			<t t-call="portal.portal_docs_entry">
-                <t t-set="title">Invoices &amp; Bills</t>
+                <t t-set="title">Invoices</t>
                 <t t-set="url" t-value="'/my/invoices'"/>
                 <t t-set="placeholder_count" t-value="'invoice_count'"/>
             </t>
-			<t t-call="portal.portal_docs_entry">
-            <t t-set="title">Requests for Quotation</t>
-            <t t-set="url" t-value="'/my/rfq'"/>
-            <t t-set="placeholder_count" t-value="'rfq_count'"/>
-		  	</t>
             <t  t-call="portal.portal_docs_entry">
                 <t t-set="title">Tickets</t>
                 <t t-set="url" t-value="'/my/tickets'"/>
