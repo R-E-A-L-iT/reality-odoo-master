@@ -67,7 +67,7 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML French Missing")
             missingColumn = True
 
-        if "Specs French-00" in sheet[0]:            
+        if "Specs French-00" in sheet[0]:
             columns["specs_fr-00"] = sheet[0].index("Specs French-00")
             columns["specs_fr"] = sheet[0].index("Specs French-00")
         else:
@@ -79,7 +79,7 @@ class syncWeb:
 
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
-            missingColumn = True            
+            missingColumn = True
 
         if "Enabled" in sheet[0]:
             columns["enabled"] = sheet[0].index("Enabled")
@@ -216,7 +216,7 @@ class syncWeb:
             lang_code = "fr"
         id = str(id) + "_specs_" + str(lang_code)
         if page_type != "product":
-            return ""        
+            return ""
         # Get or create page
         page = self.get_page(id)
         opener = '<?xml version="1.0"?>\n'
