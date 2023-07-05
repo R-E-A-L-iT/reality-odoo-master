@@ -153,7 +153,6 @@ class syncWeb:
                 )
                 i += 1
                 continue
-            
             # if it gets here data should be valid
             try:
                 # Inititilize values
@@ -217,7 +216,6 @@ class syncWeb:
         id = str(id) + "_specs_" + str(lang_code)
         if page_type != "product":
             return ""        
-
         # Get or create page
         page = self.get_page(id)
         opener = '<?xml version="1.0"?>\n'
