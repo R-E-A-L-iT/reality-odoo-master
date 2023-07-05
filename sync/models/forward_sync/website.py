@@ -23,7 +23,7 @@ class syncWeb:
     def syncWebCode(self, sheet):
         # check sheet width to filter out invalid sheets
         # every company tab will have the same amount of columns (Same with others)
-        sheetWidth = 13
+        sheetWidth = 15
         columns = dict()
         missingColumn = False
 
@@ -47,11 +47,19 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML English Missing")
             missingColumn = True
 
-        if "Specs English" in sheet[0]:
-            columns["specs_en"] = sheet[0].index("Specs English")
+        if "Specs English-00" in sheet[0]:
+            columns["specs_en-00"] = sheet[0].index("Specs English-00")
+            columns["specs_en"] = sheet[0].index("Specs English-00")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-00 Missing")
             missingColumn = True
+
+        if "Specs English-01" in sheet[0]:
+            columns["specs_en-01"] = sheet[0].index("Specs English-01")
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
+            missingColumn = True
+
 
         if "HTML French" in sheet[0]:
             columns["html_fr"] = sheet[0].index("HTML French")
@@ -59,10 +67,18 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "HTML French Missing")
             missingColumn = True
 
-        if "Specs French" in sheet[0]:
-            columns["specs_fr"] = sheet[0].index("Specs French")
+        if "Specs French-00" in sheet[0]:
+            columns["specs_fr-00"] = sheet[0].index("Specs French-00")
+            columns["specs_fr"] = sheet[0].index("Specs French-00")
         else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French Missing")
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-00 Missing")
+            missingColumn = True
+
+        if "Specs French-01" in sheet[0]:
+            columns["specs_fr-01"] = sheet[0].index("Specs French-01")
+
+        else:
+            msg = utilities.buildMSG(msg, self.name, "Header", "Specs French-02 Missing")
             missingColumn = True
 
         if "Enabled" in sheet[0]:
@@ -94,9 +110,21 @@ class syncWeb:
             _logger.info("Sheet Width: " + str(len(sheet[0])))
             return True, msg
 
+        # joinning Specs English-01 and Specs English-02
+        # joinning Specs French-01 and Specs French-02
+        # loop through all the rows
         i = 1
+        while True:
+            # check if should continue
+            if i == len(sheet) or str(sheet[i][columns["continue"]]).upper() != "TRUE":
+                break
+            sheet[i][columns["specs_en-00"]] += sheet[i][columns["specs_en-01"]]
+            sheet[i][columns["specs_fr-00"]] += sheet[i][columns["specs_fr-01"]]
+            i += 1
+
 
         # loop through all the rows
+        i = 1        
         while True:
             # check if should continue
             _logger.info("Website: " + str(i))
