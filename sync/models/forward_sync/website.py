@@ -153,6 +153,7 @@ class syncWeb:
                 )
                 i += 1
                 continue
+
             # if it gets here data should be valid
             try:
                 # Inititilize values
