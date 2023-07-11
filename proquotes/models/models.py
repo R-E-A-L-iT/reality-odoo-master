@@ -340,6 +340,7 @@ class order(models.Model):
 
     #
     #is_rental = fields.Boolean(string="Rental Quote", default=False)
+    is_rental = False
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
 
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
