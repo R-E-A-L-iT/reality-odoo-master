@@ -339,7 +339,7 @@ class order(models.Model):
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
     #
-    is_rental = fields.Boolean(string="Rental Quote", default=False)
+    #is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
 
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
@@ -362,10 +362,10 @@ class order(models.Model):
     @api.onchange("sale_order_template_id")
     def set_is_rental(self):
         # Set a flag if quotes is a rental quote
-        if self.sale_order_template_id.name == "Rental":
-            self.is_rental = True
-        else:
-            self.is_rental = False
+        # if self.sale_order_template_id.name == "Rental":
+        #     self.is_rental = True
+        # else:
+        #     self.is_rental = False
         if (
             self.sale_order_template_id.name != False
             and "Renewal" in self.sale_order_template_id.name
