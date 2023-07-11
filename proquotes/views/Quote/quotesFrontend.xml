@@ -266,6 +266,7 @@
 
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
+		<!-- 
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
 					<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-left itemValue test" />
@@ -277,6 +278,7 @@
 				</td>
 			</t>
 			<td t-else="" />
+			-->
 		</xpath>
 
 		<!--Apply HTML tags to description and Names And Add User Control Elements-->
@@ -323,7 +325,8 @@
 		<!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
-				<t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
+				<!--<t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False"></t> -->
+				<t t-if="line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
 					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
 				</t>
 				<t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
@@ -351,7 +354,8 @@
 		<!-- Section Rental Estimate Given Rental Dates -->
 		<xpath expr="//t[@groups=&quot;account.group_show_line_subtotals_tax_included&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
-				<t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
+				<!-- <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False"> -->
+				<t t-if="line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
 					<t t-set="current_total" t-value="current_total + line.price_subtotal" groups="account.group_show_line_subtotals_tax_included" />
 				</t>
 				<t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
@@ -442,6 +446,7 @@
 					<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
 				</t>
 			</div>
+			<!--
 			<t t-if="sale_order.is_rental == True">
 				<input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" />
 				<label for="rental-terms-checkbox">
@@ -454,6 +459,7 @@
 				</label>
 				<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			</t>
+			-->
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
