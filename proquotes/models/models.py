@@ -362,10 +362,10 @@ class order(models.Model):
     @api.onchange("sale_order_template_id")
     def set_is_rental(self):
         # Set a flag if quotes is a rental quote
-        # if self.sale_order_template_id.name == "Rental":
-        #     self.is_rental = True
-        # else:
-        #     self.is_rental = False
+        if self.sale_order_template_id.name == "Rental":
+            self.is_rental = True
+        else:
+            self.is_rental = False
         if (
             self.sale_order_template_id.name != False
             and "Renewal" in self.sale_order_template_id.name
