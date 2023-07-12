@@ -851,7 +851,7 @@ class sync(models.Model):
     #     return product_template.id
 
     def remove_all_rental_pricing(self):
-
+        _logger.info("--------------- remove_all_rental_pricing")
         # Get the product template record you want to update
         products_template = self.env['product.template']
 
