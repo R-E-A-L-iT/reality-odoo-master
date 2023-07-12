@@ -513,6 +513,9 @@ class sync_pricelist:
 
     ###################################################################        
     def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):
+        if (str(dayPrice) == ""):
+            return
+        
         try:
             dayPrice = float(dayPrice)
         except:
