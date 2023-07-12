@@ -333,7 +333,7 @@ class sync_pricelist:
                 product_template_id=product.id, 
                 pricelist_id=pricelist_id, 
                 dayPrice=price)
-        
+                    
         # Adds price to given pricelist        
         product_sync_common.addProductToPricelist(
             self.database, product, pricelistName, price
@@ -457,17 +457,14 @@ class sync_pricelist:
         _logger.info("--------------- insert_rental_pricing")
 
         #Validation
-        _logger.info("--------------- type(product_template_id: " + str(type(product_template_id)))
         if (product_template_id < 0):
             raise Exception(
                 'BadProductTemplateId', ("The following product_template_id is invalid: " + str(product_template_id)))
 
-        _logger.info("--------------- type(pricelist_id: " + str(type(pricelist_id)))
         if (pricelist_id < 0):
             raise Exception(
                 'BadPricelistId', ("The following pricelist_id is invalid: " + str(pricelist_id)))        
         
-        _logger.info("--------------- type(duration: " + str(type(duration)))
         if (duration < 0):
             raise Exception(
                 'BadDuration', ("The following duration is invalid: " + str(duration)))
@@ -511,6 +508,12 @@ class sync_pricelist:
 
     ###################################################################        
     def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):
-        self.insert_rental_pricing(product_template_id, pricelist_id, 1, dayPrice, 'day')  
-        self.insert_rental_pricing(product_template_id, pricelist_id, 1, (4 * dayPrice), 'week')  
-        self.insert_rental_pricing(product_template_id, pricelist_id, 1, (12 * dayPrice), 'month')          
+        try:
+            dayPrice = float(dayPrice)
+        except:
+            raise Exception(
+                'BadPrice', ("The following price is invalid: " + str(dayPrice)))   
+        finally:
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, dayPrice, 'day')  
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, (4 * dayPrice), 'week')  
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, (12 * dayPrice), 'month')          
