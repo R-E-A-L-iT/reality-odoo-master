@@ -846,8 +846,10 @@ class sync(models.Model):
 
         _logger.info("--------------- getTemplateId: " + str(pt.id))
         if (pt.id < 0):
+            _logger.info("--------------- getTemplateId GOOD")
             return pt.it
         
+        _logger.info("--------------- getTemplateId BAD")
         return -1
         
     ###################################################################
