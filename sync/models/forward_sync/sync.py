@@ -848,7 +848,7 @@ class sync(models.Model):
             _logger.info("--------------- getTemplateId: " + str(pt.id))
             return -1
 
-        return pt.it
+        return pt.id
         
     ###################################################################
 
