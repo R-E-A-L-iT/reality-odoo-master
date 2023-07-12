@@ -832,3 +832,28 @@ class sync(models.Model):
 
         _logger.info(
             "--------------- END cleanProductByName ---------------------------------------------")
+        
+    ###################################################################
+
+    def insert_rental_pricing(self):
+
+        blkt = self.env["product.template"].search(
+            [
+                ("name", "=", "BLK2GO rental kit")
+            ]
+        )                                                                                                                                                                                                                                                            
+
+        
+        # Get the product template record you want to update
+        product_template = self.env['product.template'].browse(blkt.id)
+
+        # Create a new rental pricing line
+        rental_pricing = self.env['rental.pricing'].create(
+            {
+                'duration': 2,
+                'price': 1400
+            }
+        )
+
+        # Link the rental pricing line to the product template
+        product_template.rental_pricing_ids = [(4, rental_pricing.id)]
