@@ -266,11 +266,11 @@ class sync_pricelist:
             try:
                 # Creates or fetch corrisponding record
                 product, new = self.pricelistProduct(sheetWidth, i, columns)
-                #if product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE:
-                #    i = i + 1
-                #    continue
+                if product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE:
+                    i = i + 1
+                    continue
+
                 # Add Prices to the 4 pricelists
-                _logger.info("--------------- 4 Call of pricelist")
                 self.pricelist(product, "canPrice", "CAN Pricelist", i, columns)
                 self.pricelist(product, "canRental", "CAN RENTAL", i, columns)
                 self.pricelist(product, "usPrice", "USD Pricelist", i, columns)
@@ -317,18 +317,11 @@ class sync_pricelist:
 
     ###################################################################
     def pricelist(self, product, priceName, pricelistName, i, columns):
-        _logger.info("--------------- pricelist function")
         price = self.sheet[i][columns[priceName]]
         pricelist_id = self.getPricelistId(pricelistName)
 
         #Add the price to the rental module
         rentalPricelists = ['CAN RENTAL', 'USD RENTAL']
-        _logger.info("--------------- pricelist priceName: " + str(priceName))
-        _logger.info("--------------- pricelist pricelistName: " + str(pricelistName))
-        _logger.info("--------------- pricelist product.id: " + str(product.id))
-        _logger.info("--------------- pricelist product.name: " + str(product.name))
-        _logger.info("--------------- pricelist pricelist_id: " + str(pricelist_id))
-
         if (pricelistName in rentalPricelists):
             self.insert_all_rental_price(
                 product_template_id=product.id, 
@@ -442,8 +435,7 @@ class sync_pricelist:
     ###################################################################
     def getPricelistId(self, name):
         pricelist = self.database.env["product.pricelist"].search(
-            [("name", "=", name)]
-        )
+            [("name", "=", name)])
 
         if (pricelist.id < 0):        
             _logger.info("--------------- getPricelistId BAD")
@@ -455,8 +447,6 @@ class sync_pricelist:
 
     ###################################################################
     def insert_rental_pricing(self, product_template_id, pricelist_id, duration, price, unit):                                                                                                                                                                                                                                               
-        _logger.info("--------------- insert_rental_pricing")
-
         #Validation
         if (product_template_id < 0):
             raise Exception(
@@ -469,8 +459,7 @@ class sync_pricelist:
         if (duration < 0):
             raise Exception(
                 'BadDuration', ("The following duration is invalid: " + str(duration)))
-        
-        _logger.info("--------------- type(price: " + str(type(price)))
+
         try:    
             if (float(price) < 0):
                 raise Exception(

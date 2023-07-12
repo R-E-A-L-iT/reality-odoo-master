@@ -849,3 +849,12 @@ class sync(models.Model):
     #         return -1
 
     #     return product_template.id
+
+    def remove_all_rental_pricing(self):
+
+        # Get the product template record you want to update
+        products_template = self.env['product.template']
+
+        for p in products_template:
+            # Remove all rental pricing records from the product template
+            p.rental_pricing_ids = [(5,)]
