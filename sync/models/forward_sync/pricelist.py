@@ -441,7 +441,7 @@ class sync_pricelist:
 
     ###################################################################
     def getPricelistId(self, name):
-        pricelist = self.env["product.pricelist"].search(
+        pricelist = self.database.env["product.pricelist"].search(
             [("name", "=", name)]
         )
 
@@ -481,19 +481,19 @@ class sync_pricelist:
                 
         
         # Get the product template record you want to update
-        product_template = self.env['product.template'].browse(product_template_id)
+        product_template = self.database.env['product.template'].browse(product_template_id)
         if (len(product_template) <= 0):
             raise Exception(
                 'BadId', ("The following product_template_id does not exist: " + str(product_template_id)))            
         
         # Get the priclist record you want
-        pricelist = self.env['product.pricelist'].browse(pricelist_id)   
+        pricelist = self.database.env['product.pricelist'].browse(pricelist_id)   
         if (len(pricelist) <= 0):
             raise Exception(
                 'BadPricelist', ("The following pricelist_id does not exist: " + str(pricelist_id))) 
 
         # Create a new rental pricing line
-        rental_pricing = self.env['rental.pricing'].create(
+        rental_pricing = self.database.env['rental.pricing'].create(
             {
                 'duration': duration,
                 'price': price,
