@@ -837,20 +837,18 @@ class sync(models.Model):
     ###################################################################
 
     def getTemplateId(self, name):
-        _logger.info("--------------- getTemplateId")
         pt = self.env["product.template"].search(
             [
                 ("name", "=", name)
             ]
         )
 
-        _logger.info("--------------- getTemplateId: " + str(pt.id))
-        if (pt.id < 0):
-            _logger.info("--------------- getTemplateId GOOD")
-            return pt.it
-        
-        _logger.info("--------------- getTemplateId BAD")
-        return -1
+        if (pt.id < 0):        
+            _logger.info("--------------- getTemplateId BAD")
+            _logger.info("--------------- getTemplateId: " + str(pt.id))
+            return -1
+
+        return pt.it
         
     ###################################################################
 
