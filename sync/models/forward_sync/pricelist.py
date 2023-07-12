@@ -326,6 +326,7 @@ class sync_pricelist:
         _logger.info("--------------- pricelist priceName: " + str(priceName))
         _logger.info("--------------- pricelist pricelistName: " + str(pricelistName))
         _logger.info("--------------- pricelist product.id: " + str(product.id))
+        _logger.info("--------------- pricelist product.name: " + str(product.name))
         _logger.info("--------------- pricelist pricelist_id: " + str(pricelist_id))
 
         if (pricelistName in rentalPricelists):
