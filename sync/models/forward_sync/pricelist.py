@@ -270,6 +270,7 @@ class sync_pricelist:
                 #    i = i + 1
                 #    continue
                 # Add Prices to the 4 pricelists
+                _logger.info("--------------- 4 Call of pricelist")
                 self.pricelist(product, "canPrice", "CAN Pricelist", i, columns)
                 self.pricelist(product, "canRental", "CAN RENTAL", i, columns)
                 self.pricelist(product, "usPrice", "USD Pricelist", i, columns)
@@ -316,6 +317,7 @@ class sync_pricelist:
 
     ###################################################################
     def pricelist(self, product, priceName, pricelistName, i, columns):
+        _logger.info("--------------- pricelist function")
         price = self.sheet[i][columns[priceName]]
         pricelist_id = self.getPricelistId(pricelistName)
 
