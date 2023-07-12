@@ -315,11 +315,16 @@ class sync_pricelist:
     ###################################################################
     def pricelist(self, product, priceName, pricelistName, i, columns):
         price = self.sheet[i][columns[priceName]]
+        pricelist_id = self.getPricelistId(pricelistName)
 
         #Add the price to the rental module
         rentalPricelists = ['CAN RENTAL', 'USD RENTAL']
+        _logger.info("--------------- pricelist priceName: " + str(priceName))
+        _logger.info("--------------- pricelist pricelistName: " + str(pricelistName))
+        _logger.info("--------------- pricelist product.id: " + str(product.id))
+        _logger.info("--------------- pricelist pricelist_id: " + str(pricelist_id))
+
         if (pricelistName in rentalPricelists):
-            pricelist_id = self.getPricelistId(pricelistName)
             self.insert_all_rental_price(
                 self, 
                 product_template_id=product.id, 
