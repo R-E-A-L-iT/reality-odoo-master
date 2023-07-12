@@ -844,6 +844,7 @@ class sync(models.Model):
             ]
         )
 
+        _logger.info("--------------- getTemplateId: " + str(pt.id))
         if (pt.id < 0):
             return pt.it
         
