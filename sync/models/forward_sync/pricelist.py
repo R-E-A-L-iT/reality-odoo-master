@@ -264,9 +264,9 @@ class sync_pricelist:
             try:
                 # Creates or fetch corrisponding record
                 product, new = self.pricelistProduct(sheetWidth, i, columns)
-                if product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE:
-                    i = i + 1
-                    continue
+                #if product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE:
+                #    i = i + 1
+                #    continue
                 # Add Prices to the 4 pricelists
                 self.pricelist(product, "canPrice", "CAN Pricelist", i, columns)
                 self.pricelist(product, "canRental", "CAN RENTAL", i, columns)
