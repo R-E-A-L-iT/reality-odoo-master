@@ -837,6 +837,7 @@ class sync(models.Model):
     ###################################################################
 
     def getTemplateId(self, name):
+        _logger.info("--------------- getTemplateId")
         pt = self.env["product.template"].search(
             [
                 ("name", "=", name)
@@ -851,7 +852,8 @@ class sync(models.Model):
     ###################################################################
 
     def insert_rental_pricing(self, id, duration, price, unit):                                                                                                                                                                                                                                               
-        
+        _logger.info("--------------- insert_rental_pricing")
+
         #Validation
         if (id < 0):
             raise Exception(
@@ -893,6 +895,8 @@ class sync(models.Model):
     ###################################################################        
 
     def insert_all_rental_price(self, id, dayPrice):
+        _logger.info("--------------- insert_all_rental_price")
+
         #Validation
         if (id < 0):
             raise Exception(
