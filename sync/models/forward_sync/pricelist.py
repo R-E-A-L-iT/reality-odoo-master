@@ -28,6 +28,8 @@ class sync_pricelist:
 
     ###################################################################
     def syncPricelist(self):
+
+        _logger.info("--------------- syncPricelist")
         # Confirm GS Tab is in the correct Format
         sheetWidth = 32
         i = 1
