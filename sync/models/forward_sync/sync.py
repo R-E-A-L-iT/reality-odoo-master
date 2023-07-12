@@ -856,5 +856,6 @@ class sync(models.Model):
         products_template = self.env['product.template']
 
         for p in products_template:
+            _logger.info("--------------- remove_all_rental_pricing. p:" + str(p.name))
             # Remove all rental pricing records from the product template
             p.rental_pricing_ids = [(5,)]
