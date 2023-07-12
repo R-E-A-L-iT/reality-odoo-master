@@ -470,7 +470,11 @@ class sync_pricelist:
                 'BadDuration', ("The following duration is invalid: " + str(duration)))
         
         _logger.info("--------------- type(price: " + str(type(price)))
-        if (price < 0):
+        try:    
+            if (float(price) < 0):
+                raise Exception(
+                    'BadPrice', ("The following price is invalid: " + str(price)))  
+        except:
             raise Exception(
                 'BadPrice', ("The following price is invalid: " + str(price)))     
 
