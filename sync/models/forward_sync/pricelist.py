@@ -319,7 +319,7 @@ class sync_pricelist:
         #Add the price to the rental module
         rentalPricelists = ['CAN RENTAL', 'USD RENTAL']
         if (pricelistName in rentalPricelists):
-            pricelist_id = self.getPricelistId(self, pricelistName)
+            pricelist_id = self.getPricelistId(pricelistName)
             self.insert_all_rental_price(
                 self, 
                 product_template_id=product.id, 
