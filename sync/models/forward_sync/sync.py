@@ -836,77 +836,16 @@ class sync(models.Model):
 
     ###################################################################
 
-    def getTemplateId(self, name):
-        pt = self.env["product.template"].search(
-            [
-                ("name", "=", name)
-            ]
-        )
+    # def getProductTemplateId(self, name):
+    #     product_template = self.env["product.template"].search(
+    #         [
+    #             ("name", "=", name)
+    #         ]
+    #     )
 
-        if (pt.id < 0):        
-            _logger.info("--------------- getTemplateId BAD")
-            _logger.info("--------------- getTemplateId: " + str(pt.id))
-            return -1
+    #     if (product_template.id < 0):        
+    #         _logger.info("--------------- getProductTemplateId BAD")
+    #         _logger.info("--------------- getProductTemplateId: " + str(product_template.id))
+    #         return -1
 
-        return pt.id
-        
-    ###################################################################
-
-    def insert_rental_pricing(self, id, duration, price, unit):                                                                                                                                                                                                                                               
-        _logger.info("--------------- insert_rental_pricing")
-
-        #Validation
-        if (id < 0):
-            raise Exception(
-                'BadId', ("The following ID is invalid: " + str(id)))
-        
-        if (duration < 0):
-            raise Exception(
-                'BadDuration', ("The following duration is invalid: " + str(duration)))
-        
-        if (price < 0):
-            raise Exception(
-                'BadPrice', ("The following price is invalid: " + str(price)))     
-
-        units = ['hour', 'day', 'week', 'month']
-        if (unit not in units):
-            raise Exception(
-                'BadUnit', ("The following unit is invalid: " + str(unit)))                 
-                
-        
-        # Get the product template record you want to update
-        product_template = self.env['product.template'].browse(id)
-
-        if (len(product_template) <= 0):
-            raise Exception(
-                'BadId', ("The following ID does not exist: " + str(id)))            
-
-        # Create a new rental pricing line
-        rental_pricing = self.env['rental.pricing'].create(
-            {
-                'duration': duration,
-                'price': price,
-                'unit': unit
-            }
-        )
-
-        # Link the rental pricing line to the product template
-        product_template.rental_pricing_ids = [(4, rental_pricing.id)]
-
-    ###################################################################        
-
-    def insert_all_rental_price(self, id, dayPrice):
-        _logger.info("--------------- insert_all_rental_price")
-
-        #Validation
-        if (id < 0):
-            raise Exception(
-                'BadId', ("The following ID is invalid: " + str(id)))
-
-        if (dayPrice < 0):
-            raise Exception(
-                'BadPrice', ("The following day price is invalid: " + str(dayPrice)))    
-
-        self.insert_rental_pricing(id, 1, dayPrice, 'day')  
-        self.insert_rental_pricing(id, 1, (4 * dayPrice), 'week')  
-        self.insert_rental_pricing(id, 1, (12 * dayPrice), 'month')  
+    #     return product_template.id
