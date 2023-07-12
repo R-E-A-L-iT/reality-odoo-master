@@ -457,18 +457,22 @@ class sync_pricelist:
         _logger.info("--------------- insert_rental_pricing")
 
         #Validation
+        _logger.info("--------------- type(product_template_id: " + str(type(product_template_id)))
         if (product_template_id < 0):
             raise Exception(
                 'BadProductTemplateId', ("The following product_template_id is invalid: " + str(product_template_id)))
 
+        _logger.info("--------------- type(pricelist_id: " + str(type(pricelist_id)))
         if (pricelist_id < 0):
             raise Exception(
                 'BadPricelistId', ("The following pricelist_id is invalid: " + str(pricelist_id)))        
         
+        _logger.info("--------------- type(duration: " + str(type(duration)))
         if (duration < 0):
             raise Exception(
                 'BadDuration', ("The following duration is invalid: " + str(duration)))
         
+        _logger.info("--------------- type(price: " + str(type(price)))
         if (price < 0):
             raise Exception(
                 'BadPrice', ("The following price is invalid: " + str(price)))     
