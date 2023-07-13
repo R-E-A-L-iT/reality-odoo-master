@@ -44,53 +44,53 @@ class InvoiceMain(models.Model):
         _logger.info(result)
         return result
 
-    @api.onchange("pricelist_id", "invoice_line_ids", "invoice_line_ids.tax_ids")
-    def _update_prices(self):
-        pricelist = self.pricelist_id.id
-
-        # Apply the correct price to every product in the invoice
-        for record in self.invoice_line_ids:
-
-            product = record.product_id
-            taxes = 0
-
-            for tax_item in record.tax_ids:
-                taxes += self._calculate_tax(record.price_unit, tax_item)
-
-            if record.price_override == True or pricelist == False:
-                record.price_subtotal = record.quantity * (record.price_unit + taxes)
-
-                continue
-
-            # Select Pricelist Entry based on Pricelist and Product
-            priceResult = self.env["product.pricelist.item"].search(
-                [
-                    ("pricelist_id.id", "=", pricelist),
-                    ("product_tmpl_id.sku", "=", product.sku),
-                ]
-            )
-            if len(priceResult) < 1:
-                record.price_unit = product.price
-                record.price_subtotal = product.price
-                continue
-
-            # Appy Price from Pricelist
-            # Apply tax info
-            _logger.info("line 57")
-            _logger.info(record.tax_ids)
-            base_price = priceResult[-1].fixed_price
-            taxes = 0
-
-            for tax_item in record.tax_ids:
-                _logger.info(tax_item.amount)
-                taxes += self._calculate_tax(base_price, tax_item)
-                _logger.info("taxes: " + str(taxes))
-
-            record.price_unit = base_price
-            record.price_subtotal = record.quantity * (base_price + taxes)
-
-        _logger.info("Prices Updated")
-
+    # @api.onchange("pricelist_id", "invoice_line_ids", "invoice_line_ids.tax_ids")
+    # def _update_prices(self):
+    #     pricelist = self.pricelist_id.id
+    #
+    #     # Apply the correct price to every product in the invoice
+    #     for record in self.invoice_line_ids:
+    #
+    #         product = record.product_id
+    #         taxes = 0
+    #
+    #         for tax_item in record.tax_ids:
+    #             taxes += self._calculate_tax(record.price_unit, tax_item)
+    #
+    #         if record.price_override == True or pricelist == False:
+    #             record.price_subtotal = record.quantity * (record.price_unit + taxes)
+    #
+    #             continue
+    #
+    #         # Select Pricelist Entry based on Pricelist and Product
+    #         priceResult = self.env["product.pricelist.item"].search(
+    #             [
+    #                 ("pricelist_id.id", "=", pricelist),
+    #                 ("product_tmpl_id.sku", "=", product.sku),
+    #             ]
+    #         )
+    #         if len(priceResult) < 1:
+    #             record.price_unit = product.price
+    #             record.price_subtotal = product.price
+    #             continue
+    #
+    #         # Appy Price from Pricelist
+    #         # Apply tax info
+    #         _logger.info("line 57")
+    #         _logger.info(record.tax_ids)
+    #         base_price = priceResult[-1].fixed_price
+    #         taxes = 0
+    #
+    #         for tax_item in record.tax_ids:
+    #             _logger.info(tax_item.amount)
+    #             taxes += self._calculate_tax(base_price, tax_item)
+    #             _logger.info("taxes: " + str(taxes))
+    #
+    #         record.price_unit = base_price
+    #         record.price_subtotal = record.quantity * (base_price + taxes)
+    #
+    #     _logger.info("Prices Updated")
+    #
 
 
 class invoiceLine(models.Model):
