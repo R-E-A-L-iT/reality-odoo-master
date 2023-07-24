@@ -48,7 +48,7 @@ class sheetsAPI(models.Model):
             return _master_database_template_id_dev_zek
         else:
             _logger.info("Default Dev GS")
-            return _master_database_template_id_dev_oli
+            return _master_database_template_id_prod
 
     # Methode to read a googlesheet document.
     # Input
