@@ -20,7 +20,7 @@ from odoo import models, fields, api
 class individual(models.Model):
     _inherit = 'res.partner'
 
-    linkedin_link = fields.One2many(
+    linkedin_link = fields.Char(
         string="LinkedIn link"
     )   
 
