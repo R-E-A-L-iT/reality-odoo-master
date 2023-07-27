@@ -6,8 +6,7 @@
 	""",
     "author": "Olivier Cote",
     "license": "LGPL-3",
-    'version': '0.003',
-    'summary': 'Description of your module',
+    'version': '0.004',
     'depends': ['base'],
     "data": [
         "views/contact_internal.xml"
