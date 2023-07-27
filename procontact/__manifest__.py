@@ -1,7 +1,9 @@
 {
-    "name": "Custom Contact",
+    "name": "ProContact",
     "summary": "Modifying contact to support custom need.",
-    "description": "Module that support LinkedIn link in the contact",
+    "description": """Module that support 
+        -LinkedIn link in the contact
+    """,
     "author": "Olivier Cote",
     "license": "LGPL-3",
     "version": "0.004",
