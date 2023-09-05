@@ -45,8 +45,8 @@ class sync(models.Model):
 
     _odoo_sync_data_index = 0
 
+    ###################################################################
     # STARTING POINT
-
     def start_sync(self, psw=None):
         _logger.info("Starting Sync")
         db_name = self.env['ir.config_parameter'].sudo(
@@ -107,13 +107,13 @@ class sync(models.Model):
 
         _logger.info("Ending Sync")
 
+    ###################################################################
     # Check the password format
     # Input
     #   psw:   The password to open the googlesheet
     # Output
     #   True : Password format is good
     #   False: Password format if bad
-
     def is_psw_format_good(self, psw):
 
         # Checks authentication values
@@ -125,6 +125,7 @@ class sync(models.Model):
 
         return True
 
+    ###################################################################
     # Get a tab in the GoogleSheet Master Database
     # Input
     #   template_id:    The GoogleSheet Template ID to acces the master database
@@ -132,7 +133,6 @@ class sync(models.Model):
     #   index:          The index of the tab to pull
     # Output
     #   data:           A tab in the GoogleSheet Master Database
-
     def getMasterDatabaseSheet(self, template_id, psw, index):
         # get the database data; reading in the sheet
 
@@ -145,6 +145,7 @@ class sync(models.Model):
             self.syncFail(msg, self._sync_fail_reason)
             quit
 
+    ###################################################################
     # Get the Sheet Index of the Odoo Sync Data tab, column B
     # Input
     #   sync_data:  The GS ODOO_SYNC_DATA tab
@@ -152,7 +153,6 @@ class sync(models.Model):
     # Output
     #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
     #   msg:        Message to append to the repport
-
     def getSheetIndex(self, sync_data, lineIndex):
         sheetIndex = -1
         i = -1
@@ -179,6 +179,7 @@ class sync(models.Model):
 
         return sheetIndex, msg
 
+    ###################################################################
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
         sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
@@ -223,6 +224,7 @@ class sync(models.Model):
 
         return quit, msg
 
+    ###################################################################
     # Build the message when a sync fail occurs.  Once builded, it will display the message
     # in the logger, and send a repport by email.
     # Input
@@ -235,6 +237,7 @@ class sync(models.Model):
         _logger.info(msg)
         self.sendSyncReport(msg)
 
+    ###################################################################
     def sendSyncReport(self, msg):
         values = {'subject': 'Sync Report'}
         message = self.env['mail.message'].create(values)[0]
@@ -247,11 +250,13 @@ class sync(models.Model):
         email_id = {email.id}
         email.process_email_queue(email_id)
 
+    ###################################################################
     def archive_product(self, product_id):
         product = self.env['product.template'].search(
             [('id', '=', product_id)])
         product.active = False
 
+    ###################################################################
     # Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
     # IMPORTANT:     Row must containt a Valid and Continue column.
     #               Row is skippd if valid is False
@@ -265,7 +270,6 @@ class sync(models.Model):
     #   sheet: The sheet to look for all the SKU
     # Output
     #   sku_dict: A dictionnary that contain all the SKU as key, and the value is set to 'SKU'
-
     def getAllValueFromColumn(self, sheet, column_name):
         sku_dict = dict()
         columnIndex = self.getColumnIndex(sheet, column_name)
@@ -297,6 +301,7 @@ class sync(models.Model):
 
         return sku_dict
 
+    ###################################################################
     # Check if a all key unique in two dictionnary
     # Input
     #   dict_small: the smallest dictionnary
@@ -305,7 +310,6 @@ class sync(models.Model):
     #   1st:    True: There is at least one key that exists in both dictionary
     #           False: All key are unique
     #   2nd:    The name of the duplicated Sku
-
     def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
         for sku in dict_small.keys():
             if sku in dict_big.keys():
@@ -315,6 +319,7 @@ class sync(models.Model):
                 return True, errorMsg
         return False, ""
 
+    ###################################################################
     # Method to get the ODOO_SYNC_DATA column index
     # Exception
     #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
@@ -323,7 +328,6 @@ class sync(models.Model):
     # Output
     #   result: A dictionnary:  Key: named of the column
     #                           Value: the index number of that column.
-
     def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
         odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
             odoo_sync_data_sheet, "Sheet Name")
@@ -382,6 +386,7 @@ class sync(models.Model):
     # Output
     #   sku_catalog_gs: A dictionnary that contain all the SKU as key, and 'SKU as value
 
+    ###################################################################
     def getListSkuGS(self, psw, template_id):
         sku_catalog_gs = dict()
 
@@ -484,6 +489,7 @@ class sync(models.Model):
 
         return sku_catalog_gs
 
+    ###################################################################
     # Return the column index of the columnName
     # Input
     #   sheet:      The sheet to find the Valid column index
@@ -513,7 +519,6 @@ class sync(models.Model):
     #   p_optInOdooNotGs:
     # Output
     #   to_archive: a list of product.id
-
     def getSkuToArchive(self, psw=None, p_optNoSku=True, p_optInOdooNotGs=True):
         _logger.info(
             "------------------------------------------- BEGIN  getSkuToArchive")
@@ -603,7 +608,6 @@ class sync(models.Model):
 
     ###################################################################
     # Method to clean all sku that are pulled by self.getSkuToArchive
-
     def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
         _logger.info(
             "--------------- BEGIN cleanSku ---------------------------------------------")
@@ -665,7 +669,6 @@ class sync(models.Model):
     # Method to log all product id, sku, skuhidden and name
     # Input
     #   sale_name: the name of the sale order
-
     def log_product_from_sale(self, sale_name, p_log=True):
         _logger.info("Listing all product from: " + str(sale_name))
         order_object_ids = self.env['sale.order'].search(
@@ -693,7 +696,6 @@ class sync(models.Model):
 
     ###################################################################
     # query to find the QUOTATION-2023-01-05-007, id 552
-
     def searchQuotation(self):
         sale = self.env['sale.order'].search(
             [('id', '=', 552)])
@@ -707,7 +709,6 @@ class sync(models.Model):
     # Output a dictionary
     #   key : a product template name
     #   values: list of product_template.id that have the same name
-
     def getProductsWithSameName(self, p_log=True):
         dup_product_template_name = dict()
         products_tmpl = self.env['product.template'].search([])
@@ -753,7 +754,6 @@ class sync(models.Model):
         return dup_product_template_name
 
     ###################################################################
-
     def getSaleOrderByProductId(self, p_product_template_id, p_log=True):
         # validate that product_id is an integer
         try:
@@ -797,7 +797,6 @@ class sync(models.Model):
         return product_sold_counter
 
     ###################################################################
-
     def getProductIdBySku(self, p_sku, p_log=True):
         product = self.env['product.product'].search([
             ('sku', '=', p_sku)])
@@ -806,7 +805,6 @@ class sync(models.Model):
                          str(p_sku) + ", id: " + str(product.id))
 
     ###################################################################
-
     def cleanProductByName(self):
         duplicate_names_dict = self.getProductsWithSameName(p_log=True)
 
@@ -832,3 +830,6 @@ class sync(models.Model):
 
         _logger.info(
             "--------------- END cleanProductByName ---------------------------------------------")
+
+    ###################################################################
+    
