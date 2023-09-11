@@ -126,6 +126,7 @@ class sync_pricelist:
                 msg, self.name, "Header", "E-Commerce_Website_Code Missing"
             )
             columnsMissing = True
+
         # if "CAN PL SEL" in self.sheet[0]:
         #     columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
         # else:
@@ -264,7 +265,7 @@ class sync_pricelist:
                     continue
                 # Add Prices to the 4 pricelists
                 self.pricelist(product, "cadSale", "CAD SALE", i, columns)
-                self.pricelist(product, "cadRental", "CAN RENTAL", i, columns)
+                self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
                 self.pricelist(product, "usdSale", "USD SALE", i, columns)
                 self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
 
