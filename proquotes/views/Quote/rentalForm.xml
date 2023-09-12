@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_order_form_view" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                    <attribute name="widget">options</attribute>
+                    <attribute name="options">{'no_create': True}</attribute>
+                    <attribute name="on_change">onchange_pricelist_id(pricelist_id)</attribute>
+                    <attribute name="context">{'default_type': 'sale'}</attribute>
+                    <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+<!--
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="quote_table_align" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="18">
+
+		<xpath expr="//field[@name='pricelist_id']" position="attributes">
+            <attribute name="widget">options</attribute>
+            <attribute name="options">{'no_create': True}</attribute>
+            <attribute name="on_change">onchange_pricelist_id(pricelist_id)</attribute>
+            <attribute name="context">{'default_type': 'sale'}</attribute>
+            <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
+        </xpath>
+	</template>
+</odoo>
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template ???????????>
+        
+		<xpath expr="//field[@name='pricelist_id']" position="attributes">
+            <attribute name="widget">options</attribute>
+            <attribute name="options">{'no_create': True}</attribute>
+            <attribute name="on_change">onchange_pricelist_id(pricelist_id)</attribute>
+            <attribute name="context">{'default_type': 'sale'}</attribute>
+            <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
+        </xpath>
+	</template>
+</odoo>
+
+-->
