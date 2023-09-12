@@ -7,6 +7,13 @@
 		<field name="inherit_id" ref="sale.view_order_form" />
 		<field name="arch" type="xml">
 
+			<xpath expr="//field[@name='some_field']" position="after">
+				<label for="hello_world" string="Hello World" />
+				<div name="hello_world" class="oe_inline">
+					Hello World
+				</div>
+			</xpath>
+			
 			<xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
 				<attribute name="string">Business</attribute>
 			</xpath>
