@@ -2,10 +2,10 @@
 <odoo>
     <data>
         <record id="rental_order_form_view" model="ir.ui.view">
-            <field name="name">rental.order.form</field>
-            <field name="model">rental.order</field>
+            <field name="name">rental.order.form.inherit.view</field>
+            <field name="model">rental.order.form</field>
             <!-- Update inherit_id with the actual module and view ID -->
-            <field name="inherit_id" ref="module_name.view_inherited_from" />
+            <field name="inherit_id" ref="rental.order.form" />
             <field name="arch" type="xml">
                 <!-- Adjust the XPath expression to target the correct location -->
                 <xpath expr="//field[@name='some_field']" position="after">
