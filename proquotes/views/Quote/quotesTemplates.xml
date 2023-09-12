@@ -7,11 +7,11 @@
         <field name="inherit_id" ref="sale_management.sale_order_template_view_form" />
         <field name="arch" type="xml">
 
-            <xpath expr="//field[@name='pricelist_id']" position="replace">
-                <attribute name="widget">options</attribute>
+            <xpath expr="//field[@name='pricelist_id']" position="after">
+                <!-- <attribute name="widget">options</attribute>
                 <attribute name="options">{'no_create': True}</attribute>
                 <attribute name="on_change">onchange_pricelist_id(pricelist_id)</attribute>
-                <attribute name="context">{'default_type': 'sale'}</attribute>
+                <attribute name="context">{'default_type': 'sale'}</attribute> -->
                 <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
             </xpath>
 
