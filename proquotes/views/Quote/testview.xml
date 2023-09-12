@@ -7,10 +7,17 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
-                <!-- <attribute name="widget">options</attribute>
-                <attribute name="options">{'no_create': True}</attribute>
-                <attribute name="on_change">onchange_pricelist_id(pricelist_id)</attribute>
-                <attribute name="context">{'default_type': 'sale'}</attribute> -->
+                <attribute name="domain">[('name', 'ilike', 'sale')]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="rental_order_form_view" model="ir.ui.view">
+        <field name="name">Rental_Backend_Form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_renting.rental_order_primary_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
             </xpath>
         </field>
