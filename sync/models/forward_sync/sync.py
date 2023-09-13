@@ -835,6 +835,6 @@ class sync(models.Model):
     # Method to manualy correct on company
     def tt_oli(self):
         _logger.info("tt_oli: test to add  ALIGNOPTECH")
-        ext = self.env["ir.model.data"].create({"name":"ALIGNOPTECH", "model":"res.partner"})[0]   
+        ext = self.env["ir.model.data"].create({"name":"DIGITALPRECISIO", "model":"res.partner"})[0]   
         company = self.env["res.partner"].search([("name", "=", "Align-O-Ptech inc")])[0] 
         ext.res_id = company.id
