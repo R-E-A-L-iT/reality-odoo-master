@@ -45,7 +45,7 @@
         ]
     },
 
-    "version": "1.0.2140",
+    "version": "1.0.2151",
 
     # always loaded
     "data": [
@@ -59,6 +59,7 @@
         "views/Quote/renewalText.xml",
         "views/Quote/quoteRentalAddress.xml",
         "views/Quote/table-align.xml",
+        "views/Quote/pricelistFilter.xml",
         "views/Other/tax.xml",
         "views/Other/mail.xml",
         "views/Other/deliverPDF.xml",
