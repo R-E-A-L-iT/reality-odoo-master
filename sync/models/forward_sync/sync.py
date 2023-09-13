@@ -833,8 +833,10 @@ class sync(models.Model):
 
     ###################################################################
     # Method to manualy correct on company
-    def tt_oli(self):
-        _logger.info("tt_oli: test to add  ALIGNOPTECH")
-        ext = self.env["ir.model.data"].create({"name":"DIGITALPRECISIO", "model":"res.partner"})[0]   
+    # Input
+    #       p_contact: the name of the contacted added in GS.  Ex DIGITALPRECISIO
+    def addContact(self, p_contact):
+        _logger.info("tt_oli: test to add :" + str(p_contact))
+        ext = self.env["ir.model.data"].create({"name":str(p_contact), "model":"res.partner"})[0]   
         company = self.env["res.partner"].search([("name", "=", "Align-O-Ptech inc")])[0] 
         ext.res_id = company.id
