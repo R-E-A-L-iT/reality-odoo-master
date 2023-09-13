@@ -844,14 +844,14 @@ class sync(models.Model):
 
         #Check if OwnerID exist
         ownersID = self.env["ir.model.data"].search([("name", "=",str(p_OwnerID))])
-        if (len(ownersID) < 0):
+        if (len(ownersID) > 0):
             ext = ownersID[0]
         else:
             ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]  
 
         #Check if contac name exist 
         company = self.env["res.partner"].search([("name", "=", str(p_Name))])
-        if (len(company) < 0):
+        if (len(company) > 0):
             company = company[0]
         else:
              raise Exception("Contact name does not exist")
