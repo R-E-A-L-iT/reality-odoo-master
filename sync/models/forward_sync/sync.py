@@ -831,10 +831,14 @@ class sync(models.Model):
         _logger.info(
             "--------------- END cleanProductByName ---------------------------------------------")
 
+
     ###################################################################
     # Method to manualy correct on company
-    def tt_oli(self):
-        _logger.info("tt_oli: test to add  ALIGNOPTECH")
-        ext = self.env["ir.model.data"].create({"name":"ALIGNOPTECH", "model":"res.partner"})[0]   
-        company = self.env["res.partner"].search([("name", "=", "Align-O-Ptech inc")])[0] 
+    # Input
+    #       p_OwnerID: The short name of the contacted added in GS.  Ex "DIGITALPRECISIO"
+    #       p_Name: The name of the contact in Odoo.  Ex "Digital Precision Metrology Inc"
+    def addContact(self, p_OwnerID, p_Name):
+        _logger.info("addContact: " + str(p_OwnerID) + ", " + str(p_Name))
+        ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]   
+        company = self.env["res.partner"].search([("name", "=", str(p_Name))])[0] 
         ext.res_id = company.id

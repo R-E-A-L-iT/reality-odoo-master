@@ -278,3 +278,6 @@ class sync_contacts:
         )[0]
         ext.res_id = contact.id
         self.updateContacts(contact, i, columns)
+
+    
+
