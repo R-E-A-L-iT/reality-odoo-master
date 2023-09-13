@@ -535,7 +535,7 @@ class sync(models.Model):
         template_id_exception_list.append(18103)  # services on Timesheet
         template_id_exception_list.append(561657)
         template_id_exception_list.append(561658)
-        561657
+        #561657
         for e in template_id_exception_list:
             _logger.info(
                 "---------------- Exeption list: product.template.id: " + str(e))
@@ -837,8 +837,24 @@ class sync(models.Model):
     # Input
     #       p_OwnerID: The short name of the contacted added in GS.  Ex "DIGITALPRECISIO"
     #       p_Name: The name of the contact in Odoo.  Ex "Digital Precision Metrology Inc"
+    # Error
+    #       Raise an error if contact name does not exist
     def addContact(self, p_OwnerID, p_Name):
         _logger.info("addContact: " + str(p_OwnerID) + ", " + str(p_Name))
-        ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]   
-        company = self.env["res.partner"].search([("name", "=", str(p_Name))])[0] 
+
+        #Check if OwnerID exist
+        ownersID = self.env["ir.model.data"].search([("name", "=",str(p_OwnerID))])
+        if (ownersID < 0):
+            ext = ownersID[0]
+        else:
+            ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]  
+
+        #Check if contac name exist 
+        company = self.env["res.partner"].search([("name", "=", str(p_Name))])
+        if (len(company) < 0):
+            company = company[0]
+        else:
+             raise Exception("Contact name does not exist")
+        
+        #Assigning the company id
         ext.res_id = company.id
