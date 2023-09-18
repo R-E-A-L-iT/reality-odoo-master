@@ -82,26 +82,26 @@ class sync_pricelist:
             columnsMissing = True
 
         if "Price CAD" in self.sheet[0]:
-            columns["canPrice"] = self.sheet[0].index("Price CAD")
+            columns["cadSale"] = self.sheet[0].index("Price CAD")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
             columnsMissing = True
 
         if "Price USD" in self.sheet[0]:
-            columns["usPrice"] = self.sheet[0].index("Price USD")
+            columns["usdSale"] = self.sheet[0].index("Price USD")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Price USD Missing")
             columnsMissing = True
 
         if "Can Rental" in self.sheet[0]:
-            columns["canRental"] = self.sheet[0].index("Can Rental")
+            columns["cadRental"] = self.sheet[0].index("Can Rental")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "Can Rental Missing")
             _logger.info(msg)
             columnsMissing = True
 
         if "US Rental" in self.sheet[0]:
-            columns["usRental"] = self.sheet[0].index("US Rental")
+            columns["usdRental"] = self.sheet[0].index("US Rental")
         else:
             msg = utilities.buildMSG(msg, self.name, "Header", "US Rental Missing")
             columnsMissing = True
@@ -133,11 +133,12 @@ class sync_pricelist:
                 msg, self.name, "Header", "E-Commerce_Website_Code Missing"
             )
             columnsMissing = True
-        if "CAN PL SEL" in self.sheet[0]:
-            columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL SEL Missing")
-            columnsMissing = True
+
+        # if "CAN PL SEL" in self.sheet[0]:
+        #     columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
+        # else:
+        #     msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL SEL Missing")
+        #     columnsMissing = True
 
         if "CAN PL ID" in self.sheet[0]:
             columns["canPLID"] = self.sheet[0].index("CAN PL ID")
@@ -145,11 +146,11 @@ class sync_pricelist:
             msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL ID Missing")
             columnsMissing = True
 
-        if "USD PL SEL" in self.sheet[0]:
-            columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
-            columnsMissing = True
+        # if "USD PL SEL" in self.sheet[0]:
+        #     columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
+        # else:
+        #     msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
+        #     columnsMissing = True
 
         if "US PL ID" in self.sheet[0]:
             columns["usPLID"] = self.sheet[0].index("US PL ID")
@@ -252,12 +253,12 @@ class sync_pricelist:
                 i = i + 1
                 continue
 
-            if not utilities.check_price(self.sheet[i][columns["canPrice"]]):
+            if not utilities.check_price(self.sheet[i][columns["cadSale"]]):
                 msg = utilities.buildMSG(msg, self.name, key, "Canada Price Invalid")
                 i = i + 1
                 continue
 
-            if not utilities.check_price(self.sheet[i][columns["usPrice"]]):
+            if not utilities.check_price(self.sheet[i][columns["usdSale"]]):
                 msg = utilities.buildMSG(msg, self.name, key, "US Price Invalid")
                 i = i + 1
                 continue
@@ -271,10 +272,10 @@ class sync_pricelist:
                     continue
 
                 # Add Prices to the 4 pricelists
-                self.pricelist(product, "canPrice", "CAN Pricelist", i, columns)
-                self.pricelist(product, "canRental", "CAN RENTAL", i, columns)
-                self.pricelist(product, "usPrice", "USD Pricelist", i, columns)
-                self.pricelist(product, "usRental", "USD RENTAL", i, columns)
+                self.pricelist(product, "cadSale", "CAD SALE", i, columns)
+                self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
+                self.pricelist(product, "usdSale", "USD SALE", i, columns)
+                self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
 
                 if new:
                     product.stringRep = ""
@@ -357,17 +358,17 @@ class sync_pricelist:
             product.is_software = False
 
         if (
-            str(self.sheet[i][columns["canPrice"]]) != " "
-            and str(self.sheet[i][columns["canPrice"]]) != ""
+            str(self.sheet[i][columns["cadSale"]]) != " "
+            and str(self.sheet[i][columns["cadSale"]]) != ""
         ):
-            product.price = self.sheet[i][columns["canPrice"]]
-            product.cadVal = self.sheet[i][columns["canPrice"]]
+            product.price = self.sheet[i][columns["cadSale"]]
+            product.cadVal = self.sheet[i][columns["cadSale"]]
 
         if (
-            str(self.sheet[i][columns["usPrice"]]) != " "
-            and str(self.sheet[i][columns["usPrice"]]) != ""
+            str(self.sheet[i][columns["usdSale"]]) != " "
+            and str(self.sheet[i][columns["usdSale"]]) != ""
         ):
-            product.usdVal = self.sheet[i][columns["usPrice"]]
+            product.usdVal = self.sheet[i][columns["usdSale"]]
 
         if str(self.sheet[i][columns["canPublish"]]) == "TRUE":
             product.is_published = True

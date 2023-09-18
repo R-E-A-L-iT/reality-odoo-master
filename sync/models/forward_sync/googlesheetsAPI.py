@@ -9,9 +9,9 @@ import logging
 
 _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
-dev1_prefix = "dev-ty-"
-dev2_prefix = "dev-oli-"
-dev3_prefix = "dev-asif-"
+dev_oli = "dev-oli-"
+dev_zek = "dev-zek-"
+
 
 
 class sheetsAPI(models.Model):
@@ -29,34 +29,23 @@ class sheetsAPI(models.Model):
         _db_name_prod = "https://www.r-e-a-l.it"
 
         # R-E-A-L.iT Master Database
-        _master_database_template_id_prod = (
-            "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-        )
+        _master_database_template_id_prod = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
+        
+        
+        _master_database_template_id_dev_oli = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
+        _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")                
 
-        # Dev Numbers Set Based on When Developer Joined
-        _master_database_template_id_dev1 = (
-            "1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8"
-        )
-        _master_database_template_id_dev2 = (
-            "1KQ8-Avjlx-G6JHziwDuT1VAhysxz4XYkqMg7ASm0IjA"
-        )
-        _master_database_template_id_dev3 = (
-            "1xeLEapDAWwCh3COsKCQEcaPdYab_HA9FAiMF0FRvA1k"
-        )#test out data with master datasheet with google sheet
 
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
             _logger.info("Production")
             return _master_database_template_id_prod
-        elif dev1_prefix in _db_name:
-            _logger.info("Dev 1")
-            return _master_database_template_id_dev1
-        elif dev2_prefix in _db_name:
-            _logger.info("Dev 2")
-            return _master_database_template_id_dev2
-        elif dev3_prefix in _db_name:
-            _logger.info("Dev 3")
-            return _master_database_template_id_dev3
+        elif dev_oli in _db_name:
+            _logger.info("Dev Oli")
+            return _master_database_template_id_dev_oli
+        elif dev_zek in _db_name:
+            _logger.info("Dev Zek")
+            return _master_database_template_id_dev_zek
         else:
             _logger.info("Default Dev GS")
             return _master_database_template_id_prod
