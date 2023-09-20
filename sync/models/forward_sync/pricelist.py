@@ -216,6 +216,7 @@ class sync_pricelist:
 
         # loop through all the rows
         while True:
+            _logger.info("SKU: " + self.sheet[i][columns["sku"]])
             # validation checks
             if str(self.sheet[i][columns["valid"]]) != "TRUE":
                 i = i + 1
