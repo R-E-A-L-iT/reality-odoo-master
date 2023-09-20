@@ -271,16 +271,15 @@ class sync_pricelist:
                 _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
-            
-            i = i + 1
+                        
             # check if should continue
             if (
                 i == len(self.sheet)
                 or str(self.sheet[i][columns["continue"]]) != "TRUE"
             ):
                 break
-            
-            
+
+            i = i + 1           
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
