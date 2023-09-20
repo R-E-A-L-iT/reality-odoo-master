@@ -216,15 +216,15 @@ class sync_pricelist:
 
         # loop through all the rows
         while True:
-            _logger.info("SKU: " + self.sheet[i][columns["sku"]])
-
             # check if should continue
             if (
                 i == len(self.sheet)
                 or str(self.sheet[i][columns["continue"]]) != "TRUE"
             ):
                 break
-            
+
+            _logger.info("SKU: " + self.sheet[i][columns["sku"]])
+
             # validation checks
             if str(self.sheet[i][columns["valid"]]) != "TRUE":
                 i = i + 1
