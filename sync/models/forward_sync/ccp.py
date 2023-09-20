@@ -131,10 +131,10 @@ class sync_ccp:
             try:
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
-
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "stock.production.lot")]
                 )
+
                 if len(ccp_ids) > 0:
                     self.updateCCP(
                         self.database.env["stock.production.lot"].browse(

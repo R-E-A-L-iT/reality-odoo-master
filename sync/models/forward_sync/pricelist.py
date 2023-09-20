@@ -276,9 +276,9 @@ class sync_pricelist:
             except Exception as e:
                 _logger.error(e)
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
-                return True, msg
+                return True, msg                   
 
-            i = i + 1
+            i = i + 1           
         return False, msg
 
     def pricelistProduct(self, sheetWidth, i, columns):
