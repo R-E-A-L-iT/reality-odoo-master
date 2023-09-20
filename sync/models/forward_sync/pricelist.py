@@ -223,8 +223,6 @@ class sync_pricelist:
             ):
                 break
 
-            _logger.info("SKU: " + self.sheet[i][columns["sku"]])
-
             # validation checks
             if str(self.sheet[i][columns["valid"]]) != "TRUE":
                 i = i + 1

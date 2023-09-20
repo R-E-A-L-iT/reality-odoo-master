@@ -131,12 +131,9 @@ class sync_ccp:
             try:
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
-                _logger.info("external_id: " + str(external_id))
-
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "stock.production.lot")]
                 )
-                _logger.info("len(ccp_ids): " + str(len(ccp_ids)))
 
                 if len(ccp_ids) > 0:
                     self.updateCCP(
