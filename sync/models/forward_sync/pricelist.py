@@ -24,26 +24,6 @@ class sync_pricelist:
 
 
     ##################################################
-    # Check the header of a sheet to import data
-    # Input
-    #   pHeaderDict: a dictionary that hold the name of the google sheet row, and
-    #                the name in the internal dictionnary
-    def checkSheetHeader(self, pHeaderDict):
-        msg = ""
-        columnsMissing = False
-        columns = dict()
-
-        for row in pHeaderDict:
-            if row in self.sheet[0]:
-                columns[pHeaderDict[row]] = self.sheet[0].index(row)
-            else:
-                msg = utilities.buildMSG(msg, self.name, "Header", str(row) + " Missing")
-                columnsMissing = True
-
-        return columns, msg, columnsMissing
-
-
-    ##################################################
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
         sheetWidth = 33
@@ -82,7 +62,8 @@ class sync_pricelist:
         pricelistHeaderDict["Valid"]            = "valid"
        
 
-        columns, msg, columnsMissing = self.checkSheetHeader(pricelistHeaderDict)       
+        columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict)  
+             
         # for row in pricelistHeaderDict:
         #     if row in self.sheet[0]:
         #         columns[pricelistHeaderDict[row]] = self.sheet[0].index(row)
