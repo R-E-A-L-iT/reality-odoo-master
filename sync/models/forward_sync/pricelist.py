@@ -24,180 +24,215 @@ class sync_pricelist:
 
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
-        sheetWidth = 32
+        sheetWidth = 33
         i = 1
 
         columns = dict()
         columnsMissing = False
         msg = ""
 
-        # Calculate Indexes
-        if "SKU" in self.sheet[0]:
-            columns["sku"] = self.sheet[0].index("SKU")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "SKU Missing")
-            columnsMissing = True
+        pricelistHeaderDict = dict()
+        pricelistHeaderDict["SKU"]              = "sku"
+        pricelistHeaderDict["EN-Name"]          = "eName"
+        pricelistHeaderDict["EN-Description"]   = "eDisc"
+        pricelistHeaderDict["FR-Name"]          = "fName"
+        pricelistHeaderDict["FR-Description"]   = "fDisc"
+        pricelistHeaderDict["isSoftware"]       = "isSoftware"
+        pricelistHeaderDict["Type"]             = "type"
+        pricelistHeaderDict["Price CAD"]        = "cadSale"
+        pricelistHeaderDict["Price USD"]        = "usdSale"
+        pricelistHeaderDict["Can Rental"]       = "cadRental"
+        pricelistHeaderDict["US Rental"]        = "usdRental"
+        pricelistHeaderDict["Publish_CA"]       = "canPublish"
+        pricelistHeaderDict["Publish_USA"]      = "usPublish"
+        pricelistHeaderDict["Can_Be_Sold"]      = "canBeSold"
+        pricelistHeaderDict["Can_Be_Rented"]    = "canBeRented"
+        pricelistHeaderDict["E-Commerce_Website_Code"] = "ecommerceWebsiteCode"
+        pricelistHeaderDict["CAN PL ID"]        = "canPLID"
+        pricelistHeaderDict["US PL ID"]         = "usPLID"
+        pricelistHeaderDict["CAN R SEL"]        = "canrPricelist"
+        pricelistHeaderDict["CAN R ID"]         = "canRID"
+        pricelistHeaderDict["US R SEL"]         = "usrPricelist"
+        pricelistHeaderDict["US R ID"]          = "usRID"
+        pricelistHeaderDict["ECOM-FOLDER"]      = "folder"
+        pricelistHeaderDict["ECOM-MEDIA"]       = "media"
+        pricelistHeaderDict["Continue"]         = "continue"
+        pricelistHeaderDict["Valid"]            = "valid"
+       
+        for row in pricelistHeaderDict:
+             if row in self.sheet[0]:
+                columns[pricelistHeaderDict[row]] = self.sheet[0].index(row)
+            else:
+                msg = utilities.buildMSG(msg, self.name, "Header", str(row) + " Missing")
+                columnsMissing = True
 
-        if "EN-Name" in self.sheet[0]:
-            columns["eName"] = self.sheet[0].index("EN-Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "EN-Name Missing")
-            columnsMissing = True
-
-        if "EN-Description" in self.sheet[0]:
-            columns["eDisc"] = self.sheet[0].index("EN-Description")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "EN-Description Missing")
-            columnsMissing = True
-
-        if "FR-Name" in self.sheet[0]:
-            columns["fName"] = self.sheet[0].index("FR-Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "FR-Name Missing")
-            columnsMissing = True
-
-        if "FR-Description" in self.sheet[0]:
-            columns["fDisc"] = self.sheet[0].index("FR-Description")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "FR-Description Missing")
-            columnsMissing = True
-
-        if "isSoftware" in self.sheet[0]:
-            columns["isSoftware"] = self.sheet[0].index("isSoftware")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "isSoftware Missing")
-            columnsMissing = True
-
-        if "Type" in self.sheet[0]:
-            columns["type"] = self.sheet[0].index("Type")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Type Missing")
-            columnsMissing = True
-
-        if "Price CAD" in self.sheet[0]:
-            columns["cadSale"] = self.sheet[0].index("Price CAD")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
-            columnsMissing = True
-
-        if "Price USD" in self.sheet[0]:
-            columns["usdSale"] = self.sheet[0].index("Price USD")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Price USD Missing")
-            columnsMissing = True
-
-        if "Can Rental" in self.sheet[0]:
-            columns["cadRental"] = self.sheet[0].index("Can Rental")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Can Rental Missing")
-            _logger.info(msg)
-            columnsMissing = True
-
-        if "US Rental" in self.sheet[0]:
-            columns["usdRental"] = self.sheet[0].index("US Rental")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "US Rental Missing")
-            columnsMissing = True
-
-        if "Publish_CA" in self.sheet[0]:
-            columns["canPublish"] = self.sheet[0].index("Publish_CA")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Publish_CA Missing")
-            columnsMissing = True
-
-        if "Publish_USA" in self.sheet[0]:
-            columns["usPublish"] = self.sheet[0].index("Publish_USA")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Publish_USA Missing")
-            columnsMissing = True
-
-        if "Can_Be_Sold" in self.sheet[0]:
-            columns["canBeSold"] = self.sheet[0].index("Can_Be_Sold")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Can_Be_Sold Missing")
-            columnsMissing = True
-
-        if "E-Commerce_Website_Code" in self.sheet[0]:
-            columns["ecommerceWebsiteCode"] = self.sheet[0].index(
-                "E-Commerce_Website_Code"
-            )
-        else:
-            msg = utilities.buildMSG(
-                msg, self.name, "Header", "E-Commerce_Website_Code Missing"
-            )
-            columnsMissing = True
-
-        # if "CAN PL SEL" in self.sheet[0]:
-        #     columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL SEL Missing")
-        #     columnsMissing = True
-
-        if "CAN PL ID" in self.sheet[0]:
-            columns["canPLID"] = self.sheet[0].index("CAN PL ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL ID Missing")
-            columnsMissing = True
-
-        # if "USD PL SEL" in self.sheet[0]:
-        #     columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
-        #     columnsMissing = True
-
-        if "US PL ID" in self.sheet[0]:
-            columns["usPLID"] = self.sheet[0].index("US PL ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "USD PL ID Missing")
-            columnsMissing = True
-
-        if "CAN R SEL" in self.sheet[0]:
-            columns["canrPricelist"] = self.sheet[0].index("CAN R SEL")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
-            columnsMissing = True
-
-        if "CAN R ID" in self.sheet[0]:
-            columns["canRID"] = self.sheet[0].index("CAN R ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "CAN R ID Missing")
-            columnsMissing = True
-
-        if "US R SEL" in self.sheet[0]:
-            columns["usrPricelist"] = self.sheet[0].index("US R SEL")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "US R SEL Missing")
-            columnsMissing = True
-
-        if "US R ID" in self.sheet[0]:
-            columns["usRID"] = self.sheet[0].index("US R ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "USD R ID Missing")
-            columnsMissing = True
-
-        if "ECOM-FOLDER" in self.sheet[0]:
-            columns["folder"] = self.sheet[0].index("ECOM-FOLDER")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "ECOM-FOLDER Missing")
-            columnsMissing = True
-
-        if "ECOM-MEDIA" in self.sheet[0]:
-            columns["media"] = self.sheet[0].index("ECOM-MEDIA")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "ECOM-MEDIA Missing")
-            columnsMissing = True
-
-        if "Continue" in self.sheet[0]:
-            columns["continue"] = self.sheet[0].index("Continue")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Continue Missing")
-            columnsMissing = True
-
-        if "Valid" in self.sheet[0]:
-            columns["valid"] = self.sheet[0].index("Valid")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
-            columnsMissing = True
+        ## Calculate Indexes
+        #if "SKU" in self.sheet[0]:
+        #    columns["sku"] = self.sheet[0].index("SKU")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "SKU Missing")
+        #    columnsMissing = True
+        #
+        #if "EN-Name" in self.sheet[0]:
+        #    columns["eName"] = self.sheet[0].index("EN-Name")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "EN-Name Missing")
+        #    columnsMissing = True
+        #
+        #if "EN-Description" in self.sheet[0]:
+        #    columns["eDisc"] = self.sheet[0].index("EN-Description")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "EN-Description Missing")
+        #    columnsMissing = True
+        #
+        #if "FR-Name" in self.sheet[0]:
+        #    columns["fName"] = self.sheet[0].index("FR-Name")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "FR-Name Missing")
+        #    columnsMissing = True
+        #
+        #if "FR-Description" in self.sheet[0]:
+        #    columns["fDisc"] = self.sheet[0].index("FR-Description")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "FR-Description Missing")
+        #    columnsMissing = True
+        #
+        #if "isSoftware" in self.sheet[0]:
+        #    columns["isSoftware"] = self.sheet[0].index("isSoftware")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "isSoftware Missing")
+        #    columnsMissing = True
+        #
+        #if "Type" in self.sheet[0]:
+        #    columns["type"] = self.sheet[0].index("Type")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Type Missing")
+        #    columnsMissing = True
+        #
+        #if "Price CAD" in self.sheet[0]:
+        #    columns["cadSale"] = self.sheet[0].index("Price CAD")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
+        #    columnsMissing = True
+        #   
+        #if "Price USD" in self.sheet[0]:
+        #    columns["usdSale"] = self.sheet[0].index("Price USD")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Price USD Missing")
+        #    columnsMissing = True
+        #
+        #if "Can Rental" in self.sheet[0]:
+        #    columns["cadRental"] = self.sheet[0].index("Can Rental")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Can Rental Missing")
+        #    _logger.info(msg)
+        #    columnsMissing = True
+        #
+        #if "US Rental" in self.sheet[0]:
+        #    columns["usdRental"] = self.sheet[0].index("US Rental")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "US Rental Missing")
+        #    columnsMissing = True
+        #
+        #if "Publish_CA" in self.sheet[0]:
+        #    columns["canPublish"] = self.sheet[0].index("Publish_CA")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Publish_CA Missing")
+        #    columnsMissing = True
+        #
+        #if "Publish_USA" in self.sheet[0]:
+        #    columns["usPublish"] = self.sheet[0].index("Publish_USA")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Publish_USA Missing")
+        #    columnsMissing = True
+        #
+        #if "Can_Be_Sold" in self.sheet[0]:
+        #    columns["canBeSold"] = self.sheet[0].index("Can_Be_Sold")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Can_Be_Sold Missing")
+        #    columnsMissing = True
+        #
+        #if "E-Commerce_Website_Code" in self.sheet[0]:
+        #    columns["ecommerceWebsiteCode"] = self.sheet[0].index(
+        #        "E-Commerce_Website_Code"
+        #    )
+        #else:
+        #    msg = utilities.buildMSG(
+        #        msg, self.name, "Header", "E-Commerce_Website_Code Missing"
+        #    )
+        #    columnsMissing = True
+        #
+        ## if "CAN PL SEL" in self.sheet[0]:
+        ##     columns["canPricelist"] = self.sheet[0].index("CAN PL SEL")
+        ## else:
+        ##     msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL SEL Missing")
+        ##     columnsMissing = True
+        #
+        #if "CAN PL ID" in self.sheet[0]:
+        #    columns["canPLID"] = self.sheet[0].index("CAN PL ID")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "CAN PL ID Missing")
+        #    columnsMissing = True
+        #
+        ## if "USD PL SEL" in self.sheet[0]:
+        ##     columns["usPricelist"] = self.sheet[0].index("USD PL SEL")
+        ## else:
+        ##     msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
+        ##     columnsMissing = True
+        #
+        #if "US PL ID" in self.sheet[0]:
+        #    columns["usPLID"] = self.sheet[0].index("US PL ID")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "USD PL ID Missing")
+        #    columnsMissing = True
+        #
+        #if "CAN R SEL" in self.sheet[0]:
+        #    columns["canrPricelist"] = self.sheet[0].index("CAN R SEL")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "USD PL SEL Missing")
+        #    columnsMissing = True
+        #
+        #if "CAN R ID" in self.sheet[0]:
+        #    columns["canRID"] = self.sheet[0].index("CAN R ID")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "CAN R ID Missing")
+        #    columnsMissing = True
+        #
+        #if "US R SEL" in self.sheet[0]:
+        #    columns["usrPricelist"] = self.sheet[0].index("US R SEL")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "US R SEL Missing")
+        #    columnsMissing = True
+        #
+        #if "US R ID" in self.sheet[0]:
+        #    columns["usRID"] = self.sheet[0].index("US R ID")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "USD R ID Missing")
+        #    columnsMissing = True
+        #
+        #if "ECOM-FOLDER" in self.sheet[0]:
+        #    columns["folder"] = self.sheet[0].index("ECOM-FOLDER")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "ECOM-FOLDER Missing")
+        #    columnsMissing = True
+        #
+        #if "ECOM-MEDIA" in self.sheet[0]:
+        #    columns["media"] = self.sheet[0].index("ECOM-MEDIA")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "ECOM-MEDIA Missing")
+        #    columnsMissing = True
+        #
+        #if "Continue" in self.sheet[0]:
+        #    columns["continue"] = self.sheet[0].index("Continue")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Continue Missing")
+        #    columnsMissing = True
+        #
+        #if "Valid" in self.sheet[0]:
+        #    columns["valid"] = self.sheet[0].index("Valid")
+        #else:
+        #    msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
+        #    columnsMissing = True
 
         if len(self.sheet[i]) != sheetWidth or columnsMissing:
             msg = (
