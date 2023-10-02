@@ -60,7 +60,7 @@ class sync_pricelist:
         pricelistHeaderDict["Valid"]            = "valid"
        
         for row in pricelistHeaderDict:
-             if row in self.sheet[0]:
+            if row in self.sheet[0]:
                 columns[pricelistHeaderDict[row]] = self.sheet[0].index(row)
             else:
                 msg = utilities.buildMSG(msg, self.name, "Header", str(row) + " Missing")
