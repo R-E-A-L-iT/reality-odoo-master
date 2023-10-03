@@ -133,10 +133,10 @@ class sync_pricelist:
                     continue
 
                 # Add Prices to the 4 pricelists
-                self.pricelist(product, "cadSale", "CAD SALE", i, columns)
-                self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
-                self.pricelist(product, "usdSale", "USD SALE", i, columns)
-                self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
+                self.pricelist(product, "cadSale",      "CAD SALE",     i, columns)
+                self.pricelist(product, "cadRental",    "CAD RENTAL",   i, columns)
+                self.pricelist(product, "usdSale",      "USD SALE",     i, columns)
+                self.pricelist(product, "usdRental",    "USD RENTAL",   i, columns)
 
                 if new:
                     product.stringRep = ""
@@ -182,13 +182,14 @@ class sync_pricelist:
         price = self.sheet[i][columns[priceName]]
         pricelist_id = self.getPricelistId(pricelistName)
 
-        #Add the price to the rental module
-        rentalPricelists = ['CAN RENTAL', 'USD RENTAL']
-        if (pricelistName in rentalPricelists):
-            self.insert_all_rental_price(
-                product_template_id=product.id, 
-                pricelist_id=pricelist_id, 
-                dayPrice=price)
+        #To be removed since this is done in pricelistProduct()
+        # #Add the price to the rental module
+        # rentalPricelists = ['CAD RENTAL', 'USD RENTAL']
+        # if (pricelistName in rentalPricelists):            
+        #     self.insert_all_rental_price(
+        #         product_template_id=product.id, 
+        #         pricelist_id=pricelist_id, 
+        #         dayPrice=price)
                     
         # Adds price to given pricelist        
         product_sync_common.addProductToPricelist(
@@ -231,6 +232,26 @@ class sync_pricelist:
         ):
             product.usdVal = self.sheet[i][columns["usdSale"]]
 
+
+        #deleted old price
+        p.rental_pricing_ids = ()
+        
+        #CAD rental price
+        if (
+            str(self.sheet[i][columns["cadRental"]]) != " "
+            and str(self.sheet[i][columns["cadRental"]]) != ""
+        ):    
+            cadRentalPriclistID = self.getPricelistId('CAD RENTAL')                  
+            insert_all_rental_price(self, product.id, cadRentalPriclistID, str(self.sheet[i][columns["cadRental"]])):
+
+        #USD rental price
+        if (
+            str(self.sheet[i][columns["usdRental"]]) != " "
+            and str(self.sheet[i][columns["usdRental"]]) != ""
+        ):    
+            usdRentalPriclistID = self.getPricelistId('USD RENTAL')                  
+            insert_all_rental_price(self, product.id, usdRentalPriclistID, str(self.sheet[i][columns["usdRental"]])):            
+
         if str(self.sheet[i][columns["canPublish"]]) == "TRUE":
             product.is_published = True
         else:
@@ -248,6 +269,11 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
+
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+            product.rent_ok = True
+        else:
+            product.rent_ok = False            
 
         product.active = True
 
