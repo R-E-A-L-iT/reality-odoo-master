@@ -112,7 +112,7 @@ class sync_products:
 
         columns, msg, columnsMissing = utilities.checkSheetHeader(productHeaderDict, self.sheet, self.name)
 
-        if sheetWidth != len(sheet[i]) or columnsMissing != "":
+        if sheetWidth != len(sheet[i]) or columnsMissing:
             msg = (
                 "<h1>Product page Invalid</h1>\n<p>"
                 + str(self.name)
