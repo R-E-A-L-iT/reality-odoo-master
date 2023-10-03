@@ -250,7 +250,7 @@ class sync_pricelist:
             and str(self.sheet[i][columns["usdRental"]]) != ""
         ):    
             usdRentalPriclistID = self.getPricelistId('USD RENTAL')                  
-            insert_all_rental_price(self, product.id, usdRentalPriclistID, str(self.sheet[i][columns["usdRental"]])):            
+            insert_all_rental_price(self, product.id, usdRentalPriclistID, str(self.sheet[i][columns["usdRental"]]))
 
         if str(self.sheet[i][columns["canPublish"]]) == "TRUE":
             product.is_published = True
