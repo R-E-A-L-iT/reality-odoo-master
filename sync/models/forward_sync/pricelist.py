@@ -27,8 +27,6 @@ class sync_pricelist:
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
         sheetWidth = 33
-        i = 1
-
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -61,15 +59,7 @@ class sync_pricelist:
         pricelistHeaderDict["Continue"]         = "continue"
         pricelistHeaderDict["Valid"]            = "valid"
        
-
         columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict, self.sheet, self.name)  
-
-        # for row in pricelistHeaderDict:
-        #     if row in self.sheet[0]:
-        #         columns[pricelistHeaderDict[row]] = self.sheet[0].index(row)
-        #     else:
-        #         msg = utilities.buildMSG(msg, self.name, "Header", str(row) + " Missing")
-        #         columnsMissing = True
 
         if len(self.sheet[i]) != sheetWidth or columnsMissing:
             msg = (
@@ -87,6 +77,7 @@ class sync_pricelist:
             return True, msg
 
         # loop through all the rows
+        i = 1
         while True:
             # check if should continue
             if (
