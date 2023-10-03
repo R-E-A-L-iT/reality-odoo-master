@@ -234,7 +234,7 @@ class sync_pricelist:
 
 
         #deleted old price
-        p.rental_pricing_ids = ()
+        product.rental_pricing_ids = ()
 
         #CAD rental price
         if (
