@@ -831,6 +831,35 @@ class sync(models.Model):
         _logger.info(
             "--------------- END cleanProductByName ---------------------------------------------")
 
+        
+
+    ###################################################################
+
+    # def getProductTemplateId(self, name):
+    #     product_template = self.env["product.template"].search(
+    #         [
+    #             ("name", "=", name)
+    #         ]
+    #     )
+
+    #     if (product_template.id < 0):        
+    #         _logger.info("--------------- getProductTemplateId BAD")
+    #         _logger.info("--------------- getProductTemplateId: " + str(product_template.id))
+    #         return -1
+
+    #     return product_template.id
+
+    def remove_all_rental_pricing(self):
+        _logger.info("--------------- remove_all_rental_pricing")
+        # Get the product template record you want to update
+        products_template = self.env['product.template'].search([]) 
+
+        for p in products_template:
+            _logger.info("--------------- remove_all_rental_pricing. p:" + str(p.name))
+            # Remove all rental pricing records from the product template
+            p.rental_pricing_ids = ()
+
+
 
     ###################################################################
     # Method to manualy correct on company
@@ -858,3 +887,4 @@ class sync(models.Model):
         
         #Assigning the company id
         ext.res_id = company.id
+

@@ -17,6 +17,9 @@ SKIP_NO_CHANGE = False
 
 
 class sync_pricelist:
+
+
+    ###################################################################
     def __init__(self, name, sheet, database):
         self.name = name
         self.sheet = sheet
@@ -25,6 +28,8 @@ class sync_pricelist:
 
     ##################################################
     def syncPricelist(self):
+
+        _logger.info("--------------- syncPricelist")
         # Confirm GS Tab is in the correct Format
         sheetWidth = 33
         columns = dict()
@@ -126,11 +131,12 @@ class sync_pricelist:
                 if product.stringRep == str(self.sheet[i][:]) and SKIP_NO_CHANGE:
                     i = i + 1
                     continue
+
                 # Add Prices to the 4 pricelists
-                self.pricelist(product, "cadSale", "CAD SALE", i, columns)
-                self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
-                self.pricelist(product, "usdSale", "USD SALE", i, columns)
-                self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
+                self.pricelist(product, "cadSale",      "CAD SALE",     i, columns)
+                self.pricelist(product, "cadRental",    "CAD RENTAL",   i, columns)
+                self.pricelist(product, "usdSale",      "USD SALE",     i, columns)
+                self.pricelist(product, "usdRental",    "USD RENTAL",   i, columns)
 
                 if new:
                     product.stringRep = ""
@@ -144,6 +150,8 @@ class sync_pricelist:
             i = i + 1           
         return False, msg
 
+
+    ###################################################################
     def pricelistProduct(self, sheetWidth, i, columns):
         # attempts to access existing item (item/row)
         external_id = str(self.sheet[i][columns["sku"]])
@@ -168,13 +176,28 @@ class sync_pricelist:
             product = self.updatePricelistProducts(product, i, columns)
             return product, True
 
+
+    ###################################################################
     def pricelist(self, product, priceName, pricelistName, i, columns):
-        # Adds price to given pricelist
         price = self.sheet[i][columns[priceName]]
+        pricelist_id = self.getPricelistId(pricelistName)
+
+        #To be removed since this is done in pricelistProduct()
+        # #Add the price to the rental module
+        # rentalPricelists = ['CAD RENTAL', 'USD RENTAL']
+        # if (pricelistName in rentalPricelists):            
+        #     self.insert_all_rental_price(
+        #         product_template_id=product.id, 
+        #         pricelist_id=pricelist_id, 
+        #         dayPrice=price)
+                    
+        # Adds price to given pricelist        
         product_sync_common.addProductToPricelist(
             self.database, product, pricelistName, price
         )
 
+
+    ###################################################################
     def updatePricelistProducts(self, product, i, columns):
         # check if any update to item is needed and skips if there is none
         if (
@@ -209,6 +232,26 @@ class sync_pricelist:
         ):
             product.usdVal = self.sheet[i][columns["usdSale"]]
 
+
+        #deleted old price
+        product.rental_pricing_ids = ()
+
+        #CAD rental price
+        if (
+            str(self.sheet[i][columns["cadRental"]]) != " "
+            and str(self.sheet[i][columns["cadRental"]]) != ""
+        ):    
+            cadRentalPriclistID = self.getPricelistId('CAD RENTAL')                  
+            self.insert_all_rental_price(product.id, cadRentalPriclistID, str(self.sheet[i][columns["cadRental"]]))
+
+        #USD rental price
+        if (
+            str(self.sheet[i][columns["usdRental"]]) != " "
+            and str(self.sheet[i][columns["usdRental"]]) != ""
+        ):    
+            usdRentalPriclistID = self.getPricelistId('USD RENTAL')                  
+            self.insert_all_rental_price(product.id, usdRentalPriclistID, str(self.sheet[i][columns["usdRental"]]))
+
         if str(self.sheet[i][columns["canPublish"]]) == "TRUE":
             product.is_published = True
         else:
@@ -226,6 +269,11 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
+
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+            product.rent_ok = True
+        else:
+            product.rent_ok = False            
 
         product.active = True
 
@@ -257,16 +305,100 @@ class sync_pricelist:
             product.type_selection = False
         return product
 
+
+    ###################################################################
     # creates record and updates it
     def createPricelistProducts(self, external_id, product_name):
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}
         )[0]
-        product = self.database.env["product.template"].create({"name": product_name})[
-            0
-        ]
-        ext.res_id = product.id
 
+        product = self.database.env["product.template"].create({"name": product_name})[0]
+        ext.res_id = product.id
         product.tracking = "serial"
 
         return product
+
+
+    ###################################################################
+    def getPricelistId(self, name):
+        pricelist = self.database.env["product.pricelist"].search(
+            [("name", "=", name)])
+
+        if (pricelist.id < 0):        
+            _logger.info("--------------- getPricelistId BAD")
+            _logger.info("--------------- getPricelistId: " + str(pricelist.id))
+            return -1
+
+        return pricelist.id   
+    
+
+    ###################################################################
+    def insert_rental_pricing(self, product_template_id, pricelist_id, duration, price, unit):                                                                                                                                                                                                                                               
+        #Validation
+        if (product_template_id < 0):
+            raise Exception(
+                'BadProductTemplateId', ("The following product_template_id is invalid: " + str(product_template_id)))
+
+        if (pricelist_id < 0):
+            raise Exception(
+                'BadPricelistId', ("The following pricelist_id is invalid: " + str(pricelist_id)))        
+        
+        if (duration < 0):
+            raise Exception(
+                'BadDuration', ("The following duration is invalid: " + str(duration)))
+
+        try:    
+            if (float(price) < 0):
+                raise Exception(
+                    'BadPrice', ("The following price is invalid: " + str(price)))  
+        except:
+            raise Exception(
+                'BadPrice', ("The following price is invalid: " + str(price)))     
+
+        units = ['hour', 'day', 'week', 'month']
+        if (unit not in units):
+            raise Exception(
+                'BadUnit', ("The following unit is invalid: " + str(unit)))                 
+                
+        
+        # Get the product template record you want to update
+        product_template = self.database.env['product.template'].browse(product_template_id)
+        if (len(product_template) <= 0):
+            raise Exception(
+                'BadId', ("The following product_template_id does not exist: " + str(product_template_id)))            
+        
+        # Get the priclist record you want
+        pricelist = self.database.env['product.pricelist'].browse(pricelist_id)   
+        if (len(pricelist) <= 0):
+            raise Exception(
+                'BadPricelist', ("The following pricelist_id does not exist: " + str(pricelist_id))) 
+
+        # Create a new rental pricing line
+        rental_pricing = self.database.env['rental.pricing'].create(
+            {
+                'duration': duration,
+                'price': price,
+                'unit': unit,
+                'pricelist_id': pricelist.id
+            }
+        )
+
+        # Link the rental pricing line to the product template
+        product_template.rental_pricing_ids = [(4, rental_pricing.id)]    
+
+
+    ###################################################################        
+    def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):
+        if (str(dayPrice) == ""):
+            return
+        
+        try:
+            dayPrice = float(dayPrice)
+        except:
+            raise Exception(
+                'BadPrice', ("The following price is invalid: " + str(dayPrice)))   
+        finally:
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, dayPrice, 'day')  
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, (4 * dayPrice), 'week')  
+            self.insert_rental_pricing(product_template_id, pricelist_id, 1, (12 * dayPrice), 'month')          
