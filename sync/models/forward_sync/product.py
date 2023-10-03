@@ -30,6 +30,7 @@ class sync_products:
         msg = ""
         i = 1
 
+        # Check if the header match the appropriate format
         productHeaderDict = dict()
         productHeaderDict["SKU"]              = "sku"
         productHeaderDict["EN-Name"]          = "english_name"
@@ -42,74 +43,6 @@ class sync_products:
         productHeaderDict["Tracking"]         = "tracking"
         productHeaderDict["Valid"]            = "valid"
         productHeaderDict["Continue"]         = "continue"                                                
-
-        # Calculate Indexes
-        # if "SKU" in sheet[0]:
-        #     columns["sku"] = sheet[0].index("SKU")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "SKU Missing")
-        #     columnsMissing = "SKU"
-
-        # if "EN-Name" in sheet[0]:
-        #     columns["english_name"] = sheet[0].index("EN-Name")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "EN-Name Missing")
-        #     columnsMissing = "EN-Name"
-
-        # if "FR-Name" in sheet[0]:
-        #     columns["french_name"] = sheet[0].index("FR-Name")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "FR-Name Missing")
-        #     columnsMissing = "FR-Name"
-
-        # if "EN-Description" in sheet[0]:
-        #     columns["english_description"] = sheet[0].index("EN-Description")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Description Missing")
-        #     columnsMissing = "Description"
-
-        # if "FR-Description" in sheet[0]:
-        #     columns["french_description"] = sheet[0].index("FR-Description")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Description Missing")
-        #     columnsMissing = "Description"
-
-        # if "Price CAD" in sheet[0]:
-        #     columns["priceCAD"] = sheet[0].index("Price CAD")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
-        #     columnsMissing = "Price CAD"
-
-        # if "Price USD" in sheet[0]:
-        #     columns["priceUSD"] = sheet[0].index("Price USD")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Price USD")
-        #     columnsMissing = "Price USD"
-
-        # if "Product Type" in sheet[0]:
-        #     columns["type"] = sheet[0].index("Product Type")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Product Type")
-        #     columnsMissing = "Product Type"
-
-        # if "Tracking" in sheet[0]:
-        #     columns["tracking"] = sheet[0].index("Tracking")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Tracking Missing")
-        #     columnsMissing = "Tracking"
-
-        # if "Valid" in sheet[0]:
-        #     columns["valid"] = sheet[0].index("Valid")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
-        #     columnsMissing = "Valid"
-
-        # if "Continue" in sheet[0]:
-        #     columns["continue"] = sheet[0].index("Continue")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Header Missing")
-        #     columnsMissing = "Continue"
-
         columns, msg, columnsMissing = utilities.checkSheetHeader(productHeaderDict, self.sheet, self.name)
 
         if sheetWidth != len(sheet[i]) or columnsMissing:

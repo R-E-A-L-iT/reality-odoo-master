@@ -28,6 +28,7 @@ class sync_ccp:
         msg = ""
         i = 1
 
+        # Check if the header match the appropriate format
         ccpHeaderDict = dict()
         ccpHeaderDict["Owner ID"]           = "ownerId"
         ccpHeaderDict["EID/SN"]             = "eidsn"
@@ -38,63 +39,6 @@ class sync_ccp:
         ccpHeaderDict["Expiration Date"]    = "date"
         ccpHeaderDict["Valid"]              = "valid"
         ccpHeaderDict["Continue"]           = "continue"
-
-        # if "Owner ID" in self.sheet[0]:
-        #     columns["ownerId"] = self.sheet[0].index("Owner ID")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Owner Id Missing")
-        #     columnsMissing = True
-
-        # if "EID/SN" in self.sheet[0]:
-        #     columns["eidsn"] = self.sheet[0].index("EID/SN")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "EID/SN Missing")
-        #     columnsMissing = True
-
-        # if "External ID" in self.sheet[0]:
-        #     columns["externalId"] = self.sheet[0].index("External ID")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "External ID Missing")
-        #     columnsMissing = True
-
-        # if "Product Code" in self.sheet[0]:
-        #     columns["code"] = self.sheet[0].index("Product Code")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Product Code Missing")
-        #     columnsMissing = True
-
-        # if "Product Name" in self.sheet[0]:
-        #     columns["name"] = self.sheet[0].index("Product Name")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Product Name Missing")
-        #     columnsMissing = True
-
-        # if "Publish" in self.sheet[0]:
-        #     columns["publish"] = self.sheet[0].index("Product Name")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Publish Missing")
-        #     columnsMissing = True
-
-        # if "Expiration Date" in self.sheet[0]:
-        #     columns["date"] = self.sheet[0].index("Expiration Date")
-        # else:
-        #     msg = utilities.buildMSG(
-        #         msg, self.name, "Header", "Expiration Date Missing"
-        #     )
-        #     columnsMissing = True
-
-        # if "Valid" in self.sheet[0]:
-        #     columns["valid"] = self.sheet[0].index("Valid")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
-        #     columnsMissing = True
-
-        # if "Continue" in self.sheet[0]:
-        #     columns["continue"] = self.sheet[0].index("Continue")
-        # else:
-        #     msg = utilities.buildMSG(msg, self.name, "Header", "Continue Missing")
-        #     columnsMissing = True
-
         columns, msg, columnsMissing = utilities.checkSheetHeader(ccpHeaderDict, self.sheet, self.name)
 
         

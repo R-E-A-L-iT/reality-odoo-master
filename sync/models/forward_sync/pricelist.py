@@ -32,6 +32,7 @@ class sync_pricelist:
         msg = ""
         i = 1
 
+        # Check if the header match the appropriate format
         pricelistHeaderDict = dict()
         pricelistHeaderDict["SKU"]              = "sku"
         pricelistHeaderDict["EN-Name"]          = "eName"
@@ -58,8 +59,7 @@ class sync_pricelist:
         pricelistHeaderDict["ECOM-FOLDER"]      = "folder"
         pricelistHeaderDict["ECOM-MEDIA"]       = "media"
         pricelistHeaderDict["Continue"]         = "continue"
-        pricelistHeaderDict["Valid"]            = "valid"
-       
+        pricelistHeaderDict["Valid"]            = "valid"       
         columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict, self.sheet, self.name)  
 
         if len(self.sheet[i]) != sheetWidth or columnsMissing:
