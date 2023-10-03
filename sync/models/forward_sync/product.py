@@ -28,6 +28,7 @@ class sync_products:
         columns = dict()
         columnsMissing = False
         msg = ""
+        i = 1
 
         productHeaderDict = dict()
         productHeaderDict["SKU"]              = "sku"
@@ -126,8 +127,7 @@ class sync_products:
             _logger.info(msg)
             return True, msg
 
-        # loop through all the rows
-        i = 1
+        # loop through all the rows        
         while True:
             # check if should continue
             if str(sheet[i][columns["continue"]]).upper() != "TRUE":

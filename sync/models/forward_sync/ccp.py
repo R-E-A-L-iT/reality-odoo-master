@@ -26,6 +26,7 @@ class sync_ccp:
         columns = dict()
         columnsMissing = False
         msg = ""
+        i = 1
 
         ccpHeaderDict = dict()
         ccpHeaderDict["Owner ID"]           = "ownerId"
@@ -112,8 +113,7 @@ class sync_ccp:
             _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
             return True, msg
 
-        # Loop through Rows in Google Sheets
-        i = 1
+        # Loop through Rows in Google Sheets        
         while True:
             # Check if final row was completed
             if (

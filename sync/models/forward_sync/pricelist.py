@@ -30,6 +30,7 @@ class sync_pricelist:
         columns = dict()
         columnsMissing = False
         msg = ""
+        i = 1
 
         pricelistHeaderDict = dict()
         pricelistHeaderDict["SKU"]              = "sku"
@@ -77,7 +78,6 @@ class sync_pricelist:
             return True, msg
 
         # loop through all the rows
-        i = 1
         while True:
             # check if should continue
             if (

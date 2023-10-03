@@ -28,6 +28,7 @@ class sync_companies:
         columns = dict()
         missingColumn = False
         msg = ""
+        i = 1
 
         companyHeaderDict = dict()
         companyHeaderDict["Company Name"]   = "companyName"
@@ -159,8 +160,7 @@ class sync_companies:
             self.database.sendSyncReport(msg)
             return True, msg
 
-        # loop through all the rows
-        i = 1
+        # loop through all the rows        
         while True:
             # check if should continue
             if str(self.sheet[i][columns["continue"]]).upper() != "TRUE":
