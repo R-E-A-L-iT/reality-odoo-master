@@ -62,8 +62,8 @@ class sync_pricelist:
         pricelistHeaderDict["Valid"]            = "valid"
        
 
-        columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict)  
-             
+        columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict, self.sheet, self.name)  
+
         # for row in pricelistHeaderDict:
         #     if row in self.sheet[0]:
         #         columns[pricelistHeaderDict[row]] = self.sheet[0].index(row)
