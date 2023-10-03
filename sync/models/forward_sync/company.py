@@ -28,105 +28,27 @@ class sync_companies:
         columns = dict()
         missingColumn = False
         msg = ""
-
-        # Calculate Indexes
-        if "Company Name" in self.sheet[0]:
-            columns["companyName"] = self.sheet[0].index("Company Name")
-        else:
-            msg = utilities.buildMSG(
-                msg, self.sheetName, "Header", "Company Name Missing"
-            )
-            missingColumn = True
-
-        if "Phone" in self.sheet[0]:
-            columns["phone"] = self.sheet[0].index("Phone")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Phone Missing")
-            missingColumn = True
-
-        if "Website" in self.sheet[0]:
-            columns["website"] = self.sheet[0].index("Website")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Phone Missing")
-            missingColumn = True
-
-        if "Street" in self.sheet[0]:
-            columns["street"] = self.sheet[0].index("Street")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Street Missing")
-            missingColumn = True
-
-        if "City" in self.sheet[0]:
-            columns["city"] = self.sheet[0].index("City")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "City Missing")
-            missingColumn = True
-
-        if "State" in self.sheet[0]:
-            columns["state"] = self.sheet[0].index("State")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "State Missing")
-            missingColumn = True
-
-        if "Country Code" in self.sheet[0]:
-            columns["country"] = self.sheet[0].index("Country Code")
-        else:
-            msg = utilities.buildMSG(
-                msg, self.sheetName, "Header", "Country Code Missing"
-            )
-            missingColumn = True
-
-        if "Postal Code" in self.sheet[0]:
-            columns["postalCode"] = self.sheet[0].index("Postal Code")
-        else:
-            msg = utilities.buildMSG(
-                msg, self.sheetName, "Header", "Postal Code Missing"
-            )
-            missingColumn = True
-
-        if "Language" in self.sheet[0]:
-            columns["language"] = self.sheet[0].index("Language")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Language Missing")
-            missingColumn = True
-
-        if "Email" in self.sheet[0]:
-            columns["email"] = self.sheet[0].index("Email")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Email Missing")
-            missingColumn = True
-
-        if "Pricelist" in self.sheet[0]:
-            columns["pricelist"] = self.sheet[0].index("Pricelist")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Pricelist Missing")
-            missingColumn = True
-
-        if "Industry" in self.sheet[0]:
-            columns["industry"] = self.sheet[0].index("Industry")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Industry Missing")
-            missingColumn = True
-
-        if "OCOMID" in self.sheet[0]:
-            columns["id"] = self.sheet[0].index("OCOMID")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "OCOMID Missing")
-            missingColumn = True
-
-        if "Valid" in self.sheet[0]:
-            columns["valid"] = self.sheet[0].index("Valid")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Valid Missing")
-            missingColumn = True
-
-        if "Continue" in self.sheet[0]:
-            columns["continue"] = self.sheet[0].index("Continue")
-        else:
-            msg = utilities.buildMSG(msg, self.sheetName, "Header", "Continue Missing")
-            missingColumn = True
-
         i = 1
+
+        # Check if the header match the appropriate format
+        companyHeaderDict = dict()
+        companyHeaderDict["Company Name"]   = "companyName"
+        companyHeaderDict["Phone"]          = "phone"
+        companyHeaderDict["Website"]        = "website"
+        companyHeaderDict["Street"]         = "street"
+        companyHeaderDict["City"]           = "city"
+        companyHeaderDict["State"]          = "state"
+        companyHeaderDict["Country Code"]   = "country"
+        companyHeaderDict["Postal Code"]    = "postalCode"
+        companyHeaderDict["Language"]       = "language"
+        companyHeaderDict["Email"]          = "email"
+        companyHeaderDict["Pricelist"]      = "pricelist"
+        companyHeaderDict["Industry"]       = "industry"
+        companyHeaderDict["OCOMID"]         = "id"
+        companyHeaderDict["Valid"]          = "valid"
+        companyHeaderDict["Continue"]       = "continue"   
+        columns, msg, columnsMissing = utilities.checkSheetHeader(companyHeaderDict, self.sheet, self.name)
+        
         if len(self.sheet[i]) != sheetWidth or missingColumn:
             msg = (
                 "<h1>Company page Invalid</h1>\n<p>"
@@ -141,7 +63,7 @@ class sync_companies:
             self.database.sendSyncReport(msg)
             return True, msg
 
-        # loop through all the rows
+        # loop through all the rows        
         while True:
             # check if should continue
             if str(self.sheet[i][columns["continue"]]).upper() != "TRUE":

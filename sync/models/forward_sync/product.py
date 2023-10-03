@@ -25,80 +25,27 @@ class sync_products:
     def syncProducts(self, sheet):
         # Confirm GS Tab is in the correct Format
         sheetWidth = 11
-        i = 1
-        msg = ""
-
         columns = dict()
-        columnsMissing = ""
+        columnsMissing = False
+        msg = ""
+        i = 1
 
-        # Calculate Indexes
-        if "SKU" in sheet[0]:
-            columns["sku"] = sheet[0].index("SKU")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "SKU Missing")
-            columnsMissing = "SKU"
+        # Check if the header match the appropriate format
+        productHeaderDict = dict()
+        productHeaderDict["SKU"]              = "sku"
+        productHeaderDict["EN-Name"]          = "english_name"
+        productHeaderDict["FR-Name"]          = "french_name"
+        productHeaderDict["EN-Description"]   = "english_description"
+        productHeaderDict["FR-Description"]   = "french_description"
+        productHeaderDict["Price CAD"]        = "priceCAD"
+        productHeaderDict["Price USD"]        = "priceUSD"
+        productHeaderDict["Product Type"]     = "type"
+        productHeaderDict["Tracking"]         = "tracking"
+        productHeaderDict["Valid"]            = "valid"
+        productHeaderDict["Continue"]         = "continue"                                                
+        columns, msg, columnsMissing = utilities.checkSheetHeader(productHeaderDict, self.sheet, self.name)
 
-        if "EN-Name" in sheet[0]:
-            columns["english_name"] = sheet[0].index("EN-Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "EN-Name Missing")
-            columnsMissing = "EN-Name"
-
-        if "FR-Name" in sheet[0]:
-            columns["french_name"] = sheet[0].index("FR-Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "FR-Name Missing")
-            columnsMissing = "FR-Name"
-
-        if "EN-Description" in sheet[0]:
-            columns["english_description"] = sheet[0].index("EN-Description")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Description Missing")
-            columnsMissing = "Description"
-
-        if "FR-Description" in sheet[0]:
-            columns["french_description"] = sheet[0].index("FR-Description")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Description Missing")
-            columnsMissing = "Description"
-
-        if "Price CAD" in sheet[0]:
-            columns["priceCAD"] = sheet[0].index("Price CAD")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Price CAD Missing")
-            columnsMissing = "Price CAD"
-
-        if "Price USD" in sheet[0]:
-            columns["priceUSD"] = sheet[0].index("Price USD")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Price USD")
-            columnsMissing = "Price USD"
-
-        if "Product Type" in sheet[0]:
-            columns["type"] = sheet[0].index("Product Type")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Product Type")
-            columnsMissing = "Product Type"
-
-        if "Tracking" in sheet[0]:
-            columns["tracking"] = sheet[0].index("Tracking")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Tracking Missing")
-            columnsMissing = "Tracking"
-
-        if "Valid" in sheet[0]:
-            columns["valid"] = sheet[0].index("Valid")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
-            columnsMissing = "Valid"
-
-        if "Continue" in sheet[0]:
-            columns["continue"] = sheet[0].index("Continue")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Header Missing")
-            columnsMissing = "Continue"
-
-        if sheetWidth != len(sheet[i]) or columnsMissing != "":
+        if sheetWidth != len(sheet[i]) or columnsMissing:
             msg = (
                 "<h1>Product page Invalid</h1>\n<p>"
                 + str(self.name)
@@ -113,9 +60,7 @@ class sync_products:
             _logger.info(msg)
             return True, msg
 
-        msg = ""
-
-        # loop through all the rows
+        # loop through all the rows        
         while True:
             # check if should continue
             if str(sheet[i][columns["continue"]]).upper() != "TRUE":
