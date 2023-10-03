@@ -34,3 +34,27 @@ class utilities:
         msg = msg + "<p>ERROR -> " + "Sheet: " + str(sheetName) + \
             " | Item: " + str(key) + " | " + str(problem) + "</p>\n"
         return msg
+
+    
+    ##################################################
+    # Check the header of a sheet to import data
+    # Input
+    #   pHeaderDict: a dictionary that hold the name of the google sheet row, and
+    #                the name in the internal dictionnary
+    #   p_sheet: the array of the GS sheet
+    #   p_sheetName: the name of the sheet
+    @staticmethod
+    def checkSheetHeader(p_HeaderDict, p_sheet, p_sheetName):
+        o_columns = dict()
+        o_msg = ""
+        o_columnsMissing = False        
+
+        for row in p_HeaderDict:
+            if row in p_sheet[0]:
+                o_columns[p_HeaderDict[row]] = p_sheet[0].index(row)
+            else:
+                o_msg = utilities.buildMSG(o_msg, p_sheetName, "Header", str(row) + " Missing")
+                o_columnsMissing = True
+
+        return o_columns, o_msg, o_columnsMissing
+

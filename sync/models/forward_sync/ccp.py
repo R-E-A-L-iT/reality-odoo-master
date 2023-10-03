@@ -26,64 +26,22 @@ class sync_ccp:
         columns = dict()
         columnsMissing = False
         msg = ""
-
-        if "Owner ID" in self.sheet[0]:
-            columns["ownerId"] = self.sheet[0].index("Owner ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Owner Id Missing")
-            columnsMissing = True
-
-        if "EID/SN" in self.sheet[0]:
-            columns["eidsn"] = self.sheet[0].index("EID/SN")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "EID/SN Missing")
-            columnsMissing = True
-
-        if "External ID" in self.sheet[0]:
-            columns["externalId"] = self.sheet[0].index("External ID")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "External ID Missing")
-            columnsMissing = True
-
-        if "Product Code" in self.sheet[0]:
-            columns["code"] = self.sheet[0].index("Product Code")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Product Code Missing")
-            columnsMissing = True
-
-        if "Product Name" in self.sheet[0]:
-            columns["name"] = self.sheet[0].index("Product Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Product Name Missing")
-            columnsMissing = True
-
-        if "Publish" in self.sheet[0]:
-            columns["publish"] = self.sheet[0].index("Product Name")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Publish Missing")
-            columnsMissing = True
-
-        if "Expiration Date" in self.sheet[0]:
-            columns["date"] = self.sheet[0].index("Expiration Date")
-        else:
-            msg = utilities.buildMSG(
-                msg, self.name, "Header", "Expiration Date Missing"
-            )
-            columnsMissing = True
-
-        if "Valid" in self.sheet[0]:
-            columns["valid"] = self.sheet[0].index("Valid")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Valid Missing")
-            columnsMissing = True
-
-        if "Continue" in self.sheet[0]:
-            columns["continue"] = self.sheet[0].index("Continue")
-        else:
-            msg = utilities.buildMSG(msg, self.name, "Header", "Continue Missing")
-            columnsMissing = True
-
         i = 1
+
+        # Check if the header match the appropriate format
+        ccpHeaderDict = dict()
+        ccpHeaderDict["Owner ID"]           = "ownerId"
+        ccpHeaderDict["EID/SN"]             = "eidsn"
+        ccpHeaderDict["External ID"]        = "externalId"
+        ccpHeaderDict["Product Code"]       = "code"
+        ccpHeaderDict["Product Name"]       = "name"
+        ccpHeaderDict["Publish"]            = "publish"
+        ccpHeaderDict["Expiration Date"]    = "date"
+        ccpHeaderDict["Valid"]              = "valid"
+        ccpHeaderDict["Continue"]           = "continue"
+        columns, msg, columnsMissing = utilities.checkSheetHeader(ccpHeaderDict, self.sheet, self.name)
+
+        
         if len(self.sheet[i]) != sheetWidth or columnsMissing:
             msg = (
                 "<h1>CCP page Invalid</h1>\n<p>"
@@ -98,8 +56,8 @@ class sync_ccp:
             self.database.sendSyncReport(msg)
             _logger.info("self.sheet Width: " + str(len(self.sheet[i])))
             return True, msg
-        msg = ""
-        # Loop through Rows in Google Sheets
+
+        # Loop through Rows in Google Sheets        
         while True:
             # Check if final row was completed
             if (
@@ -131,10 +89,10 @@ class sync_ccp:
             try:
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
-
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "stock.production.lot")]
                 )
+
                 if len(ccp_ids) > 0:
                     self.updateCCP(
                         self.database.env["stock.production.lot"].browse(
