@@ -235,14 +235,14 @@ class sync_pricelist:
 
         #deleted old price
         p.rental_pricing_ids = ()
-        
+
         #CAD rental price
         if (
             str(self.sheet[i][columns["cadRental"]]) != " "
             and str(self.sheet[i][columns["cadRental"]]) != ""
         ):    
             cadRentalPriclistID = self.getPricelistId('CAD RENTAL')                  
-            insert_all_rental_price(self, product.id, cadRentalPriclistID, str(self.sheet[i][columns["cadRental"]])):
+            insert_all_rental_price(self, product.id, cadRentalPriclistID, str(self.sheet[i][columns["cadRental"]]))
 
         #USD rental price
         if (
