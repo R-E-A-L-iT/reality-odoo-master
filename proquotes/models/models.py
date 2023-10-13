@@ -338,7 +338,7 @@ class order(models.Model):
     header_id = fields.Many2one("header.footer", default=_default_header, required=True)
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
-    is_rental = fields.Boolean(string="Rental Quote", default=False)
+    #is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
 
     rental_diff_add = fields.Boolean(string="Rental Address", default=False)
