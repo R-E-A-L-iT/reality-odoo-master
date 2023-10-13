@@ -26,9 +26,9 @@
 
 				<!-- Rental Info -->
 				<group name="custom_quote_details">
-				<!-- <field name="is_rental" attrs="{'invisible': False}" />  -->
-				<field name="rental_diff_add" attrs="{'invisible': False}" />
-				<!--
+				<!-- <field name="is_rental" attrs="{'invisible': False}" />  
+				<field name="rental_diff_add" attrs="{'invisible': False}" />-->
+				<!---->
 					<field name="is_rental" invisible="0" />
 					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="rental_street" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
@@ -38,7 +38,7 @@
 					<field name="rental_country" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
 					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-				-->
+				<!---->
 					<field name="customer_po_number" invisible="0" />
 					<field name="header_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 					<field name="header" invisible="1" />
