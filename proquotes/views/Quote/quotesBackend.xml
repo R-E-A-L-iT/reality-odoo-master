@@ -28,8 +28,11 @@
 				<group name="custom_quote_details">		
 
 					
-				<t t-if="is_rental">
+				<t t-if="is_rental==true">
 					<field name="rental_diff_add" invisible="0" />
+				</t>
+				<t t-else="">
+					<field name="rental_diff_add" invisible="1" />
 				</t>
 				
 					
