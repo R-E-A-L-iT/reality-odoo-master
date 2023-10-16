@@ -47,7 +47,7 @@
 
 
 
-    "version": "1.0.2154",
+    "version": "1.0.2155",
 
 
     # always loaded
