@@ -363,8 +363,11 @@ class order(models.Model):
         # Set a flag if quotes is a rental quote
         if self.sale_order_template_id.name == "Rental":
             self.is_rental = True
+            _logger.error("is_rental TRUE")
+            
         else:
             self.is_rental = False
+            _logger.error("is_rental FALSE")
             
         if (
             self.sale_order_template_id.name != False
