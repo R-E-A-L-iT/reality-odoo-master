@@ -399,11 +399,17 @@ class order(models.Model):
         else:
             self.is_renewal = False
 
-
+    #Company dans le context (RealIT, Solution,  US, ...)
     @api.onchange("company_id")
     def printTest(self):
         _logger.error("company_id: " + str(self.company_id))
         _logger.error("company_name: " + str(self.company_name))
+
+    @api.onchange("partner_id")
+    def printTest(self):
+        _logger.error("partner_id: " + str(self.partner_id))
+        
+        
 
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
