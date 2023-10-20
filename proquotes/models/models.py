@@ -405,6 +405,8 @@ class order(models.Model):
         _logger.error("company_id: " + str(self.company_id))
         _logger.error("company_name: " + str(self.company_name))
 
+
+    #Business (compagnie à qui on fait la location)
     @api.onchange("partner_id")
     def printTest(self):
         _logger.error("partner_id: " + str(self.partner_id))
