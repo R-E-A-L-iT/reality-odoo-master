@@ -372,10 +372,12 @@ class order(models.Model):
                     if ("RENTAL KIT" in line.name):
                         _logger.error("activateDiscount = True")     
                         activateDiscount = True
+                        continue
                     else:
                         _logger.error("activateDiscount = False")     
                         activateDiscount = False
                         firstItem = True
+                        continue
 
                 if(activateDiscount):
                     _logger.error("line name discounted: " + str(line.name))  
