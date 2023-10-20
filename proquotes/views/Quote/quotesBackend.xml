@@ -26,7 +26,7 @@
 
 				<!-- Rental Info -->
 				<group name="custom_quote_details">		
-					<field name="is_rental" invisible="0" options="{'no_create': True, 'no_open': True, 'no_create_edit': True}" />
+					<field name="is_rental" invisible="0" attrs="{'readonly': True]}"/>
 					<field name="rental_diff_add" attrs="{'invisible': is_rental != True}" />	
 
 					<field name="rental_street"   attrs="{'invisible': [('rental_diff_add', '!=', True)]}" />
