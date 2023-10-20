@@ -369,7 +369,7 @@ class order(models.Model):
             for line in self.order_line:
                 _logger.error("line name: " + str(line.name))    
                 if ("#" in line.name):
-                    if ("RENTAL KIT" in line):
+                    if ("RENTAL KIT" in line.name):
                         _logger.error("activateDiscount = True")     
                         activateDiscount = True
                     else:
