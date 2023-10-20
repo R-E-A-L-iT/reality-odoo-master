@@ -378,7 +378,7 @@ class order(models.Model):
 
                 if(activateDiscount):
                     _logger.error("line name discounted: " + str(line.name))     
-                    line.discount = 1
+                    line.discount = 100
                     
         else:
             self.is_rental = False
