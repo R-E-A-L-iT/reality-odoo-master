@@ -365,20 +365,20 @@ class order(models.Model):
             self.is_rental = True
             activateDiscount = False
             firstItem = True
-            #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
+            _logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
-                #_logger.error("line name: " + str(line.name))    
+                _logger.error("line name: " + str(line.name))    
                 if ("#" in line.name):
                     if ("RENTAL KIT" in line.name):
-                        #_logger.error("activateDiscount = True")     
+                        _logger.error("activateDiscount = True")     
                         activateDiscount = True
                     else:
-                        #_logger.error("activateDiscount = False")     
+                        _logger.error("activateDiscount = False")     
                         activateDiscount = False
                         firstItem = True
 
                 if(activateDiscount):
-                    #_logger.error("line name discounted: " + str(line.name))  
+                    _logger.error("line name discounted: " + str(line.name))  
                     if (firstItem):
                         firstItem = False
                     else:
