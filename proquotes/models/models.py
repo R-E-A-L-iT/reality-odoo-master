@@ -363,9 +363,19 @@ class order(models.Model):
         # Set a flag if quotes is a rental quote
         if "rental" in str(self.sale_order_template_id.name).lower():
             self.is_rental = True
+
+            activateDiscount = False
             _logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
-            for l in self.order_line:
-                _logger.error("Order line: " + str(l.name))    
+            for line in self.order_line:
+                if ("#" == line):
+                    if ("#rental_equipment" == line):
+                            activateDiscount = True
+                    else:
+                        activateDiscount = False
+
+                if(activateDiscount):
+                    line.discount = 1
+                    
         else:
             self.is_rental = False
             _logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
