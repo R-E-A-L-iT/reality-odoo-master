@@ -361,6 +361,7 @@ class order(models.Model):
     @api.onchange("sale_order_template_id")
     def set_is_rental(self):
         # Set a flag if quotes is a rental quote
+        
         if "rental" in str(self.sale_order_template_id.name).lower():
             self.is_rental = True
             activateDiscount = False
@@ -397,6 +398,12 @@ class order(models.Model):
             self.is_renewal = True
         else:
             self.is_renewal = False
+
+
+    @api.onchange("company_id")
+    def printTest(self):
+        _logger.error("company_id: " + str(company_id))
+        _logger.error("company_name: " + str(company_name))
 
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
