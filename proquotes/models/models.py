@@ -402,8 +402,8 @@ class order(models.Model):
 
     @api.onchange("company_id")
     def printTest(self):
-        _logger.error("company_id: " + str(company_id))
-        _logger.error("company_name: " + str(company_name))
+        _logger.error("company_id: " + str(self.company_id))
+        _logger.error("company_name: " + str(self.company_name))
 
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
