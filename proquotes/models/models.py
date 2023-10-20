@@ -367,7 +367,7 @@ class order(models.Model):
             activateDiscount = False
             _logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
-                if ("#" in line):
+                if ("#" in line.name):
                     if ("RENTAL KIT" in line):
                         _logger.error("activateDiscount = True")     
                         activateDiscount = True
