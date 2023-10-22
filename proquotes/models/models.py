@@ -422,13 +422,13 @@ class order(models.Model):
             currency = self.env["res.currency"].search([("id", "=", currency_id)])
             #_logger.error("currency.id: " + str(currency.id))
             #_logger.error("currency.name: " + str(currency.name))
-            
+
             if (self.is_rental):
-                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", 4), ("name", "ilike", "RENTAL")])
+                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                 if (len(pricelist_array) == 0):
                     self.pricelist = pricelist_array[0]
             else:
-                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", 4), ("name", "ilike", "SALE")])
+                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                 if (len(pricelist_array) == 0):
                     self.pricelist = pricelist_array[0]
                     
