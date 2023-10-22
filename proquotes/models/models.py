@@ -420,18 +420,20 @@ class order(models.Model):
         currency_id = int(country.currency_id)
         if (currency_id >= 0):
             currency = self.env["res.currency"].search([("id", "=", currency_id)])
-            #_logger.error("currency.id: " + str(currency.id))
-            #_logger.error("currency.name: " + str(currency.name))
+            _logger.error("currency.id: " + str(currency.id))
+            _logger.error("currency.name: " + str(currency.name))
 
             if (self.is_rental):
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                 if (len(pricelist_array) == 1):
                     self.pricelist_id = pricelist_array[0]
+                    _logger.error("self.pricelist_id: " + str(self.pricelist_id))
                     #would be nice to update the price list but I can't find the method "update prices"
             else:
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                 if (len(pricelist_array) == 1):
                     self.pricelist_id = pricelist_array[0]
+                    _logger.error("self.pricelist_id: " + str(self.pricelist_id))
                     #would be nice to update the price list but I can't find the method "update prices"
 
                     
