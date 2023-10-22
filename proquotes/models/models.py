@@ -382,7 +382,7 @@ class order(models.Model):
 
                 if(activateDiscount):
                     #_logger.error("line name discounted: " + str(line.name))  
-                    if (firstItem and self.line.name != "$block+"):
+                    if (firstItem and line.name != "$block+"):
                         firstItem = False
                     else:
                         line.discount = 100                    
