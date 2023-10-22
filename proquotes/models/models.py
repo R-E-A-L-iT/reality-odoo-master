@@ -385,19 +385,17 @@ class order(models.Model):
                     if (firstItem):
                         firstItem = False
                     else:
-                        line.discount = 100
-                    
+                        line.discount = 100                    
         else:
             self.is_rental = False
             #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
             
-        if (
-            self.sale_order_template_id.name != False
-            and "Renewal" in self.sale_order_template_id.name
-        ):
+        if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
             self.is_renewal = True
         else:
             self.is_renewal = False
+        
+        self.setPricelist()
 
     #Company dans le context (RealIT, Solution,  US, ...)
     @api.onchange("company_id")
@@ -408,37 +406,34 @@ class order(models.Model):
 
     #Business (compagnie à qui on fait la location)
     @api.onchange("partner_id")
-    def printTest(self):
-        #_logger.error("partner_id: " + str(self.partner_id))              
-        #_logger.error("country_id: " + str(self.partner_id.country_id))
+    def printTest(self):       
+        self.setPricelist()
 
+    # Methot do update the pricelist base on the current partner_id of the sale_order.
+    def setPricelist(self):
         country_id = int(self.partner_id.country_id)
         if (country_id >= 0):
             country = self.env["res.country"].search([("id", "=", country_id)])
             #_logger.error("country.name: " + str(country.name))
-        
-        currency_id = int(country.currency_id)
-        if (currency_id >= 0):
-            currency = self.env["res.currency"].search([("id", "=", currency_id)])
-            _logger.error("currency.id: " + str(currency.id))
-            _logger.error("currency.name: " + str(currency.name))
 
-            if (self.is_rental):
-                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
-                if (len(pricelist_array) == 1):
-                    self.pricelist_id = pricelist_array[0]
-                    _logger.error("self.pricelist_id: " + str(self.pricelist_id))
-                    #would be nice to update the price list but I can't find the method "update prices"
-            else:
-                pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
-                if (len(pricelist_array) == 1):
-                    self.pricelist_id = pricelist_array[0]
-                    _logger.error("self.pricelist_id: " + str(self.pricelist_id))
-                    #would be nice to update the price list but I can't find the method "update prices"
+            currency_id = int(country.currency_id)
+            if (currency_id >= 0):
+                currency = self.env["res.currency"].search([("id", "=", currency_id)])
+                # _logger.error("currency.id: " + str(currency.id))
+                # _logger.error("currency.name: " + str(currency.name))
 
-                    
-
-
+                if (self.is_rental):
+                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
+                    if (len(pricelist_array) == 1):
+                        self.pricelist_id = pricelist_array[0]
+                        _logger.error("self.pricelist_id: " + str(self.pricelist_id))
+                        #would be nice to update the price list but I can't find the method "update prices"
+                else:
+                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
+                    if (len(pricelist_array) == 1):
+                        self.pricelist_id = pricelist_array[0]
+                        _logger.error("self.pricelist_id: " + str(self.pricelist_id))
+                        #would be nice to update the price list but I can't find the method "update prices"
         
 
     def test_action(self, *args):
