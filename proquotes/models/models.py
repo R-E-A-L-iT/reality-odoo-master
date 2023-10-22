@@ -417,10 +417,11 @@ class order(models.Model):
             country = self.env["res.country"].search([("id", "=", country_id)])
             _logger.error("country.name: " + str(country.name))
         
-
-        # currency = self.env["res.currency"].search([("id", "=", country.currency_id)])
-        # _logger.error("currency.id: " + str(currency.id))
-        # _logger.error("currency.name: " + str(currency.name))
+        currency_id = int(country.currency_id)
+        if (currency_id >= 0):
+            currency = self.env["res.currency"].search([("id", "=", currency_id)])
+            _logger.error("currency.id: " + str(currency.id))
+            _logger.error("currency.name: " + str(currency.name))
 
         
         
