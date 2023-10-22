@@ -429,13 +429,13 @@ class order(models.Model):
                     self.pricelist_id = pricelist_array[0]
 
                     quotation = self.env["sale.order"].browse(self.env.context.get("active_id"))
-                    quotation.action_update_prices()
+                    quotation.action_compute()
             else:
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                 if (len(pricelist_array) == 1):
                     self.pricelist_id = pricelist_array[0]
                     quotation = self.env["sale.order"].browse(self.env.context.get("active_id"))
-                    quotation.action_update_prices()
+                    quotation.action_compute()
                     
 
 
