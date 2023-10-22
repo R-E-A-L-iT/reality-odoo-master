@@ -427,15 +427,13 @@ class order(models.Model):
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                 if (len(pricelist_array) == 1):
                     self.pricelist_id = pricelist_array[0]
-
-                    quotation = self.env["sale.order"].browse(self.env.context.get("active_id"))
-                    quotation.action_compute()
+                    #would be nice to update the price list but I can't find the method "update prices"
             else:
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                 if (len(pricelist_array) == 1):
                     self.pricelist_id = pricelist_array[0]
-                    quotation = self.env["sale.order"].browse(self.env.context.get("active_id"))
-                    quotation.action_compute()
+                    #would be nice to update the price list but I can't find the method "update prices"
+
                     
 
 
