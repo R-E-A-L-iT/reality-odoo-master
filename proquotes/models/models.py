@@ -426,11 +426,11 @@ class order(models.Model):
             if (self.is_rental):
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                 if (len(pricelist_array) == 1):
-                    self.pricelist = pricelist_array[0]
+                    self.pricelist_id = pricelist_array[0]
             else:
                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                 if (len(pricelist_array) == 1):
-                    self.pricelist = pricelist_array[0]
+                    self.pricelist_id = pricelist_array[0]
                     
 
 
