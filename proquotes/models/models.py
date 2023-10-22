@@ -369,6 +369,9 @@ class order(models.Model):
             #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
                 _logger.error("line name: " + str(line.name))    
+                if (line.name != "$block+"):
+                    continue
+                
                 if ("#" in line.name):
                     if ("RENTAL KIT" in line.name):
                         #_logger.error("activateDiscount = True")     
@@ -382,7 +385,7 @@ class order(models.Model):
 
                 if(activateDiscount):
                     #_logger.error("line name discounted: " + str(line.name))  
-                    if (firstItem and line.name != "$block+"):
+                    if (firstItem):
                         firstItem = False
                     else:
                         line.discount = 100                    
