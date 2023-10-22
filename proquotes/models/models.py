@@ -409,21 +409,34 @@ class order(models.Model):
     #Business (compagnie à qui on fait la location)
     @api.onchange("partner_id")
     def printTest(self):
-        _logger.error("partner_id: " + str(self.partner_id))              
-        _logger.error("country_id: " + str(self.partner_id.country_id))
+        #_logger.error("partner_id: " + str(self.partner_id))              
+        #_logger.error("country_id: " + str(self.partner_id.country_id))
 
         country_id = int(self.partner_id.country_id)
         if (country_id >= 0):
             country = self.env["res.country"].search([("id", "=", country_id)])
-            _logger.error("country.name: " + str(country.name))
+            #_logger.error("country.name: " + str(country.name))
         
         currency_id = int(country.currency_id)
         if (currency_id >= 0):
             currency = self.env["res.currency"].search([("id", "=", currency_id)])
-            _logger.error("currency.id: " + str(currency.id))
-            _logger.error("currency.name: " + str(currency.name))
+            #_logger.error("currency.id: " + str(currency.id))
+            #_logger.error("currency.name: " + str(currency.name))
 
-        
+            pricelist_id = int(self.env["product.pricelist"].search([("currency_id", "=", currency_id)]).id)
+            if (pricelist_id >= 0):
+
+                if (self.is_rental):
+                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", 4), ("name", "ilike", "RENTAL")])
+                    if (len(pricelist_array) == 0):
+                        self.pricelist = pricelist_array[0]
+                else:
+                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", 4), ("name", "ilike", "SALE")])
+                    if (len(pricelist_array) == 0):
+                        self.pricelist = pricelist_array[0]
+                    
+
+
         
 
     def test_action(self, *args):
