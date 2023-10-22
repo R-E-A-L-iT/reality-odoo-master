@@ -412,8 +412,8 @@ class order(models.Model):
         _logger.error("partner_id: " + str(self.partner_id))
         
         #_logger.error("country_id: " + str(self.partner_id.country_id))
-        country = self.env["res.country"].search([("id", "=", self.partner_id.country_id)])
-        _logger.error("country.name: " + str(country.name))
+        #country = self.env["res.country"].search([("id", "=", self.partner_id.country_id)])
+        #_logger.error("country.name: " + str(country.name))
         
 
         # currency = self.env["res.currency"].search([("id", "=", country.currency_id)])
