@@ -415,9 +415,9 @@ class order(models.Model):
         _logger.error("country.name: " + str(country.name))
         
 
-        currency = self.env["res.currency"].search([("id", "=", country.currency_id)])
-        _logger.error("currency.id: " + str(currency.id))
-        _logger.error("currency.name: " + str(currency.name))
+        # currency = self.env["res.currency"].search([("id", "=", country.currency_id)])
+        # _logger.error("currency.id: " + str(currency.id))
+        # _logger.error("currency.name: " + str(currency.name))
 
         
         
