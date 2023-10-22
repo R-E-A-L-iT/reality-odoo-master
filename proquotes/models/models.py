@@ -409,11 +409,12 @@ class order(models.Model):
     #Business (compagnie à qui on fait la location)
     @api.onchange("partner_id")
     def printTest(self):
-        _logger.error("partner_id: " + str(self.partner_id))
-        
+        _logger.error("partner_id: " + str(self.partner_id))              
         _logger.error("country_id: " + str(self.partner_id.country_id))
-        if (self.partner_id.country_id >= 0):
-            country = self.env["res.country"].search([("id", "=", self.partner_id.country_id)])
+
+        country_id = self.partner_id.country_id
+        if (country_id >= 0):
+            country = self.env["res.country"].search([("id", "=", country_id)])
             _logger.error("country.name: " + str(country.name))
         
 
