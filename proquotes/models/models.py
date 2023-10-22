@@ -366,23 +366,23 @@ class order(models.Model):
             self.is_rental = True
             activateDiscount = False
             firstItem = True
-            _logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
+            #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
                 _logger.error("line name: " + str(line.name))    
                 if ("#" in line.name):
                     if ("RENTAL KIT" in line.name):
-                        _logger.error("activateDiscount = True")     
+                        #_logger.error("activateDiscount = True")     
                         activateDiscount = True
                         continue
                     else:
-                        _logger.error("activateDiscount = False")     
+                        #_logger.error("activateDiscount = False")     
                         activateDiscount = False
                         firstItem = True
                         continue
 
                 if(activateDiscount):
-                    _logger.error("line name discounted: " + str(line.name))  
-                    if (firstItem):
+                    #_logger.error("line name discounted: " + str(line.name))  
+                    if (firstItem and self.order_line != "$block+"):
                         firstItem = False
                     else:
                         line.discount = 100                    
@@ -426,13 +426,13 @@ class order(models.Model):
                     pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                     if (len(pricelist_array) == 1):
                         self.pricelist_id = pricelist_array[0]
-                        _logger.error("self.pricelist_id: " + str(self.pricelist_id))
+                        #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
                         #would be nice to update the price list but I can't find the method "update prices"
                 else:
                     pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
                     if (len(pricelist_array) == 1):
                         self.pricelist_id = pricelist_array[0]
-                        _logger.error("self.pricelist_id: " + str(self.pricelist_id))
+                        #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
                         #would be nice to update the price list but I can't find the method "update prices"
         
 
