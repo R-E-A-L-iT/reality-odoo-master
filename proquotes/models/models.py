@@ -368,7 +368,7 @@ class order(models.Model):
             firstItem = True
             #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
-                _logger.error("line name: " + str(line.name))    
+                   
                 if (line.name == "$block+"):
                     continue
 
@@ -387,10 +387,13 @@ class order(models.Model):
                     #_logger.error("line name discounted: " + str(line.name))  
                     if (firstItem):
                         firstItem = False
-                        _logger.error("firstItem or the #--------")  
+                        _logger.error("activateDiscount----- firstItem not discounted: " + str(line.name))
                     else:
                         line.discount = 100   
-                        line.rental_updatable = True          
+                        line.rental_updatable = True 
+                        _logger.error("activateDiscount----- discounted: " + str(line.name))
+                else:
+                    _logger.error("line name: " + str(line.name))         
         else:
             self.is_rental = False
             #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
