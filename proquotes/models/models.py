@@ -388,7 +388,8 @@ class order(models.Model):
                     if (firstItem):
                         firstItem = False
                     else:
-                        line.discount = 100                    
+                        line.discount = 100   
+                        line.rental_updatable = True          
         else:
             self.is_rental = False
             #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
@@ -642,13 +643,6 @@ class order(models.Model):
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
                 if line.selected == "true" and line.sectionSelected == "true":
-                    #if order.is_rental == False or line.product_id.is_software:
-                    #    amount_untaxed += line.price_subtotal
-                    #    amount_tax += line.price_tax
-                    #elif order.is_rental and line.product_id.is_software == False:
-                    #    price = self.calc_rental_price(line.price_subtotal)
-                    #    amount_untaxed += price
-                    #    amount_tax += self.calc_rental_price(line.price_tax)
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
 
