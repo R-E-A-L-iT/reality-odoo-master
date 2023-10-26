@@ -386,6 +386,7 @@ class order(models.Model):
                 if(activateDiscount):
                     #_logger.error("line name discounted: " + str(line.name))  
                     if (firstItem):
+                        line.reservation_begin  = datetime(2023, 10, 28, 16, 0) 
                         firstItem = False
                         _logger.error("activateDiscount----- firstItem not discounted: " + str(line.name))
                     else:
