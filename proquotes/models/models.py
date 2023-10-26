@@ -387,6 +387,7 @@ class order(models.Model):
                     #_logger.error("line name discounted: " + str(line.name))  
                     if (firstItem):
                         firstItem = False
+                        _logger.error("firstItem or the #--------")  
                     else:
                         line.discount = 100   
                         line.rental_updatable = True          
