@@ -372,11 +372,6 @@ class order(models.Model):
         _logger.error("company_name: " + str(self.company_name))
 
     
-    @api.onchange("amount_total")
-    def amount_totalChanged(self):
-        _logger.error("amount_totalChanged")
-        self.setRentalDiscount()
-
     @api.onchange("pricelist_id")
     def pricelistChanged(self):
         self.setRentalDiscount()
@@ -771,6 +766,12 @@ class orderLineProquotes(models.Model):
         required=True,
         help="Field to Lock Quantity on Products",
     )
+
+    
+    @api.onchange("price_total")
+    def price_totalChanged(self):
+        _logger.error("price_totalChanged")
+
 
     def get_applied_name(self):
         n = name_translation(self)
