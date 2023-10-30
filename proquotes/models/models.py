@@ -225,9 +225,6 @@ class order(models.Model):
         help="Header selection field",
     )
 
-    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
-    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
-
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
 
@@ -240,7 +237,6 @@ class order(models.Model):
     rental_start = fields.Date(string="Rental Start Date", default=False)
     rental_end = fields.Date(string="Rental End Date", default=False)
     renewal_product_items = fields.Many2many(string="Renewal Items", comodel_name="stock.production.lot")
-    # rental_insurance = fields.Binary(string="Insurance")
 
     def _default_footer(self):
         # Get Company
@@ -346,6 +342,11 @@ class order(models.Model):
         else:
             return False
             raise UserError("No Default Header Available")
+
+    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
+    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
+
+
 
     @api.onchange("sale_order_template_id")
     def set_sale_order_flags(self):
