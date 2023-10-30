@@ -371,6 +371,10 @@ class order(models.Model):
         _logger.error("company_id: " + str(self.company_id))
         _logger.error("company_name: " + str(self.company_name))
 
+    
+    @api.onchange("amount_total")
+    def amount_totalChanged(self):
+        self.setRentalDiscount()
 
     @api.onchange("pricelist_id")
     def pricelistChanged(self):
