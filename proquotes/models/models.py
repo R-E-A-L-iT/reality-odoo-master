@@ -182,18 +182,13 @@ class invoice(models.Model):
     )
 
 
-class order(models.Model):
+class order(models.Model):    
     _inherit = "sale.order"
 
     partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
-
     products = fields.One2many(related="partner_id.products", readonly=True)
-
     customer_po_number = fields.Char(string="PO Number")
-
-    company_name = fields.Char(
-        related="company_id.name", string="company_name", required=True
-    )
+    company_name = fields.Char(related="company_id.name", string="company_name", required=True)
 
     footer = fields.Selection(
         [
@@ -229,6 +224,23 @@ class order(models.Model):
         string="Header OLD",
         help="Header selection field",
     )
+
+    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
+    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
+
+    is_rental = fields.Boolean(string="Rental Quote", default=False)
+    is_renewal = fields.Boolean(string="Renewal Quote", default=False)
+
+    rental_diff_add = fields.Boolean(string="Rental Address", default=False)
+    rental_street = fields.Char(string="Street Address")
+    rental_city = fields.Char(string="City")
+    rental_zip = fields.Char(string="ZIP/Postal Code")
+    rental_state = fields.Many2one("res.country.state", string="State/Province", store="true")
+    rental_country = fields.Many2one("res.country", string="Country", store="true")
+    rental_start = fields.Date(string="Rental Start Date", default=False)
+    rental_end = fields.Date(string="Rental End Date", default=False)
+    renewal_product_items = fields.Many2many(string="Renewal Items", comodel_name="stock.production.lot")
+    # rental_insurance = fields.Binary(string="Insurance")
 
     def _default_footer(self):
         # Get Company
@@ -335,40 +347,49 @@ class order(models.Model):
             return False
             raise UserError("No Default Header Available")
 
-    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
-    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
-
-    is_rental = fields.Boolean(string="Rental Quote", default=False)
-    is_renewal = fields.Boolean(string="Renewal Quote", default=False)
-
-    rental_diff_add = fields.Boolean(string="Rental Address", default=False)
-    rental_street = fields.Char(string="Street Address")
-    rental_city = fields.Char(string="City")
-    rental_zip = fields.Char(string="ZIP/Postal Code")
-    rental_state = fields.Many2one(
-        "res.country.state", string="State/Province", store="true"
-    )
-    rental_country = fields.Many2one("res.country", string="Country", store="true")
-
-    rental_start = fields.Date(string="Rental Start Date", default=False)
-    rental_end = fields.Date(string="Rental End Date", default=False)
-
-    renewal_product_items = fields.Many2many(
-        string="Renewal Items", comodel_name="stock.production.lot"
-    )
-    # rental_insurance = fields.Binary(string="Insurance")
-
     @api.onchange("sale_order_template_id")
-    def set_is_rental(self):
-        # Set a flag if quotes is a rental quote
-        
+    def set_sale_order_flags(self):
+        # Set a flag if quotes is a rental quote        
         if "rental" in str(self.sale_order_template_id.name).lower():
             self.is_rental = True
+            self.setRentalDiscount()                 
+        else:
+            self.is_rental = False
+            #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
+            
+        if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
+            self.is_renewal = True
+        else:
+            self.is_renewal = False
+        
+        self.setPricelist()
+
+    #Company dans le context (RealIT, Solution,  US, ...)
+    @api.onchange("company_id")
+    def printTest(self):
+        _logger.error("company_id: " + str(self.company_id))
+        _logger.error("company_name: " + str(self.company_name))
+
+
+    @api.onchange("pricelist_id")
+    def pricelistChanged(self):
+        self.setRentalDiscount()
+
+
+    #Business (compagnie à qui on fait la location)
+    @api.onchange("partner_id")
+    def printTest2(self):       
+        self.setPricelist()
+
+
+    #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
+    def setRentalDiscount(self):
+        if(self.is_rental):
             activateDiscount = False
             firstItem = True
             #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
             for line in self.order_line:
-                   
+                    
                 if (line.name == "$block+"):
                     continue
 
@@ -394,29 +415,8 @@ class order(models.Model):
                         line.rental_updatable = True 
                         _logger.error("activateDiscount----- discounted: " + str(line.name))
                 else:
-                    _logger.error("line name: " + str(line.name))         
-        else:
-            self.is_rental = False
-            #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
-            
-        if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
-            self.is_renewal = True
-        else:
-            self.is_renewal = False
-        
-        self.setPricelist()
+                    _logger.error("line name: " + str(line.name))    
 
-    #Company dans le context (RealIT, Solution,  US, ...)
-    @api.onchange("company_id")
-    def printTest(self):
-        _logger.error("company_id: " + str(self.company_id))
-        _logger.error("company_name: " + str(self.company_name))
-
-
-    #Business (compagnie à qui on fait la location)
-    @api.onchange("partner_id")
-    def printTest(self):       
-        self.setPricelist()
 
     # Methot do update the pricelist base on the current partner_id of the sale_order.
     def setPricelist(self):
@@ -431,6 +431,7 @@ class order(models.Model):
                 # _logger.error("currency.id: " + str(currency.id))
                 # _logger.error("currency.name: " + str(currency.name))
 
+                #not a good management, create more user problem since when updating price, the discount does aways.
                 if (self.is_rental):
                     pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
                     if (len(pricelist_array) == 1):
@@ -774,6 +775,8 @@ class orderLineProquotes(models.Model):
             return product.description_sale
         else:
             return "<span></span>"
+    
+
 
 
 class proquotesMail(models.TransientModel):
