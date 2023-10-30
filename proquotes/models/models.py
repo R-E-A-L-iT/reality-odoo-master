@@ -768,9 +768,14 @@ class orderLineProquotes(models.Model):
     )
 
     
-    @api.onchange("price_total")
+    @api.onchange("price_total") 
     def price_totalChanged(self):
         _logger.error("price_totalChanged")
+
+    @api.onchange("price_subtotal") 
+    def price_subtotalChanged(self):
+        _logger.error("price_subtotalChanged")
+        
 
 
     def get_applied_name(self):
