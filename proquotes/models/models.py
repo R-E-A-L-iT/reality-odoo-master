@@ -356,14 +356,13 @@ class order(models.Model):
             self.setRentalDiscount()                 
         else:
             self.is_rental = False
-            #_logger.error("is_rental FALSE, " + str(self.sale_order_template_id.name))
             
         if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
             self.is_renewal = True
         else:
             self.is_renewal = False
         
-        self.setPricelist()
+        #self.setPricelist()
 
     #Company dans le context (RealIT, Solution,  US, ...)
     @api.onchange("company_id")
@@ -377,10 +376,10 @@ class order(models.Model):
         self.setRentalDiscount()
 
 
-    #Business (compagnie à qui on fait la location)
-    @api.onchange("partner_id")
-    def printTest2(self):       
-        self.setPricelist()
+    ##Business (compagnie à qui on fait la location)
+    # @api.onchange("partner_id")
+    # def printTest2(self):       
+    #     self.setPricelist()
 
 
     #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
@@ -765,22 +764,13 @@ class orderLineProquotes(models.Model):
         default="yes",
         required=True,
         help="Field to Lock Quantity on Products",
-    )
-
-    
-    @api.onchange("price_total") 
-    def price_totalChanged(self):
-        _logger.error("price_totalChanged")
-
-    @api.onchange("price_subtotal") 
-    def price_subtotalChanged(self):
-        _logger.error("price_subtotalChanged")
-        
+    )      
 
 
     def get_applied_name(self):
         n = name_translation(self)
         n.get_applied_name()
+
 
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
