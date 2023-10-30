@@ -347,7 +347,6 @@ class order(models.Model):
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
 
-
     @api.onchange("sale_order_template_id")
     def set_sale_order_flags(self):
         # Set a flag if quotes is a rental quote        
@@ -363,24 +362,10 @@ class order(models.Model):
         else:
             self.is_renewal = False
         
-        #self.setPricelist()
-
-    #Company dans le context (RealIT, Solution,  US, ...)
-    @api.onchange("company_id")
-    def printTest(self):
-        _logger.error("company_id: " + str(self.company_id))
-        _logger.error("company_name: " + str(self.company_name))
-
     
     @api.onchange("pricelist_id")
     def pricelistChanged(self):
         self.setRentalDiscount()
-
-
-    ##Business (compagnie à qui on fait la location)
-    # @api.onchange("partner_id")
-    # def printTest2(self):       
-    #     self.setPricelist()
 
 
     #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
@@ -396,11 +381,11 @@ class order(models.Model):
 
                 if ("#" in line.name):
                     if ("RENTAL KIT" in line.name):
-                        _logger.error("activateDiscount = True")     
+                        #_logger.error("activateDiscount = True")     
                         activateDiscount = True
                         continue
                     else:
-                        _logger.error("activateDiscount = False")     
+                        #_logger.error("activateDiscount = False")     
                         activateDiscount = False
                         firstItem = True
                         continue
@@ -410,13 +395,13 @@ class order(models.Model):
                     if (firstItem):
                         line.reservation_begin  = datetime(2023, 10, 28, 16, 0) 
                         firstItem = False
-                        _logger.error("activateDiscount----- firstItem not discounted: " + str(line.name))
+                        #_logger.error("activateDiscount----- firstItem not discounted: " + str(line.name))
                     else:
                         line.discount = 100   
                         line.rental_updatable = True 
-                        _logger.error("activateDiscount----- discounted: " + str(line.name))
-                else:
-                    _logger.error("line name: " + str(line.name))    
+                        #_logger.error("activateDiscount----- discounted: " + str(line.name))
+                #else:
+                    #_logger.error("line name: " + str(line.name))    
 
 
     # # Methot do update the pricelist base on the current partner_id of the sale_order.
@@ -446,10 +431,6 @@ class order(models.Model):
     #                     #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
     #                     #would be nice to update the price list but I can't find the method "update prices"
         
-
-    # def test_action(self, *args):
-    #     _logger.error("HELLO THERE" + str(args[0]))
-
     def generate_section_line(self, name, *, special="regular", selected="true"):
         section = self.env["sale.order.line"].new(
             {
@@ -779,8 +760,6 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
     
-
-
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
