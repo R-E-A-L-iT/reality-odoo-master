@@ -356,6 +356,7 @@ class order(models.Model):
             self.setRentalDiscount()                 
         else:
             self.is_rental = False
+
             
         if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
             self.is_renewal = True
@@ -418,36 +419,36 @@ class order(models.Model):
                     _logger.error("line name: " + str(line.name))    
 
 
-    # Methot do update the pricelist base on the current partner_id of the sale_order.
-    def setPricelist(self):
-        country_id = int(self.partner_id.country_id)
-        if (country_id >= 0):
-            country = self.env["res.country"].search([("id", "=", country_id)])
-            #_logger.error("country.name: " + str(country.name))
+    # # Methot do update the pricelist base on the current partner_id of the sale_order.
+    # def setPricelist(self):
+    #     country_id = int(self.partner_id.country_id)
+    #     if (country_id >= 0):
+    #         country = self.env["res.country"].search([("id", "=", country_id)])
+    #         #_logger.error("country.name: " + str(country.name))
 
-            currency_id = int(country.currency_id)
-            if (currency_id >= 0):
-                currency = self.env["res.currency"].search([("id", "=", currency_id)])
-                # _logger.error("currency.id: " + str(currency.id))
-                # _logger.error("currency.name: " + str(currency.name))
+    #         currency_id = int(country.currency_id)
+    #         if (currency_id >= 0):
+    #             currency = self.env["res.currency"].search([("id", "=", currency_id)])
+    #             # _logger.error("currency.id: " + str(currency.id))
+    #             # _logger.error("currency.name: " + str(currency.name))
 
-                #not a good management, create more user problem since when updating price, the discount does aways.
-                if (self.is_rental):
-                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
-                    if (len(pricelist_array) == 1):
-                        self.pricelist_id = pricelist_array[0]
-                        #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
-                        #would be nice to update the price list but I can't find the method "update prices"
-                else:
-                    pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
-                    if (len(pricelist_array) == 1):
-                        self.pricelist_id = pricelist_array[0]
-                        #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
-                        #would be nice to update the price list but I can't find the method "update prices"
+    #             #not a good management, create more user problem since when updating price, the discount does aways.
+    #             if (self.is_rental):
+    #                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
+    #                 if (len(pricelist_array) == 1):
+    #                     self.pricelist_id = pricelist_array[0]
+    #                     #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
+    #                     #would be nice to update the price list but I can't find the method "update prices"
+    #             else:
+    #                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
+    #                 if (len(pricelist_array) == 1):
+    #                     self.pricelist_id = pricelist_array[0]
+    #                     #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
+    #                     #would be nice to update the price list but I can't find the method "update prices"
         
 
-    def test_action(self, *args):
-        _logger.error("HELLO THERE" + str(args[0]))
+    # def test_action(self, *args):
+    #     _logger.error("HELLO THERE" + str(args[0]))
 
     def generate_section_line(self, name, *, special="regular", selected="true"):
         section = self.env["sale.order.line"].new(
