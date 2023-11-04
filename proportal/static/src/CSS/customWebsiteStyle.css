@@ -432,7 +432,15 @@ p {
 	display: none;
 }
 
-/*Feature Section*/
+/*
+
+
+
+Feature Section
+
+
+
+*/
 
 #custom-webpage-root .v-div {
 	position: absolute;
@@ -473,7 +481,7 @@ p {
 	order: 1;
 }
 
-/* #custom-webpage-root .feature-text-outer {
+#custom-webpage-root .feature-text-outer {
 	margin: 50px;
 }
 
@@ -484,7 +492,7 @@ p {
 
 #custom-webpage-root .feature-image-outer>img {
 	max-width: 100%;
-} */
+}
 
 /*Statisics Section*/
 #custom-webpage-root li {
