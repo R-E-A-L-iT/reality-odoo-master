@@ -193,9 +193,8 @@
 
 		flex: none;
 		float: none;
-		order: none;
-		padding-left: calc(12.5vw-50px);
-		padding-right: calc(12.5vw-50px);
+		padding-left: calc(12.5vw - 50px);
+		padding-right: calc(12.5vw - 50px);
 		max-width: 90vw;
 		margin: 0 auto;
 
