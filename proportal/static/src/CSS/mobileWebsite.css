@@ -221,6 +221,7 @@
 	#custom-webpage-root .feature-image-outer {
 		padding: 0;
 		margin: 0 auto;
+		margin-bottom: 20px;
 		max-width: 70vw;
 	}
 /* 	end changes */
