@@ -501,6 +501,18 @@ Feature Section
 	max-width: 100%;
 }
 
+@media (max-width: 636px) {
+
+	#custom-webpage-root .feature-text-section, .feature-image-section {
+
+		padding-left: calc(12.5vw-50px);
+		padding-right: calc(12.5vw-50px);
+		max-width: 90vw;
+
+	}
+	
+}
+
 
 
 
