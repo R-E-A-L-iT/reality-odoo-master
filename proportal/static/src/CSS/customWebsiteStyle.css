@@ -455,6 +455,7 @@ Feature Section
 #custom-webpage-root .feature-text-section {
 	flex: 1 1;
 	float: left;
+	padding-left: calc(12.5vw - 50px);
 /* 	width: 40vw; */
 	max-width: 50vw;
 }
