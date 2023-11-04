@@ -483,17 +483,16 @@ Feature Section
 
 #custom-webpage-root .feature-text-outer {
 	margin: 50px;
-	max-width: 700px;
+	max-width: 40vw;
 }
 
 #custom-webpage-root .feature-image-outer {
 	margin: 50px;
-	max-width: 100%;
+	max-width: 40vw;
 }
 
 #custom-webpage-root .feature-image-outer>img {
 	max-width: 100%;
-	max-width: 700px;
 }
 
 /*Statisics Section*/
