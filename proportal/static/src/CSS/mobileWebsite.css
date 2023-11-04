@@ -223,6 +223,11 @@
 		margin-bottom: 20px;
 		max-width: 70vw;
 	}
+
+	#custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-image-section, #custom-webpage-root .feature-section .feature-tiling:nth-child(odd)>.feature-text-section, #custom-webpage-root .feature-section .feature-tiling:nth-child(even)>.feature-image-section, #custom-webpage-root .feature-section .feature-tiling:nth-child(even)>.feature-text-section {
+		float: none;
+	}
+	
 /* 	end changes */
 
 	.vidwrap {
