@@ -470,7 +470,7 @@ Feature Section
 #custom-webpage-root .feature-section .feature-tiling:nth-child(even)>.feature-image-section {
 	padding-right: calc(12.5vw - 50px);
 }
-#custom-webpage-root .feature-section .feature-tiling:nth-child(even)>.feature-image-section {
+#custom-webpage-root .feature-section .feature-tiling:nth-child(even)>.feature-text-section {
 	padding-left: calc(12.5vw - 50px);
 }
 
@@ -500,6 +500,16 @@ Feature Section
 #custom-webpage-root .feature-image-outer>img {
 	max-width: 100%;
 }
+
+
+
+
+
+
+
+
+
+
 
 /*Statisics Section*/
 #custom-webpage-root li {
