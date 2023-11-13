@@ -888,3 +888,4 @@ class sync(models.Model):
         #Assigning the company id
         ext.res_id = company.id
 
+
