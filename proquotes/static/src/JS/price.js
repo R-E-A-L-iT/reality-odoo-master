@@ -425,7 +425,10 @@ odoo.define("proquotes.price", function (require) {
 			var rpc = require('web.rpc');		
 			rpc.query({		
 				model: 'sale.order',		
-				method: 'odoo_test_comm'
+				method: 'odoo_test_comm',
+				args: [{
+					'arg1': this.orderDetail.orderId,
+				}]
 	
 			}).then(function (data) {		
 				console.log(data);		
