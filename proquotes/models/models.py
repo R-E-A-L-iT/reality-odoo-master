@@ -411,7 +411,7 @@ class order(models.Model):
         
             for line in sale_order_lines_to_be_discounted:
                line.discount = 100
-               
+
         except Exception as e:
             _logger.error(str(e))
             
@@ -461,8 +461,7 @@ class order(models.Model):
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
 
-        for line in self.order_line:      
-            _logger.error("line.name: " + str(line.name))              
+        for line in self.order_line:                   
             if (line.name == "$block+"):
                 continue
 
@@ -478,9 +477,9 @@ class order(models.Model):
             if(activateDiscount):
                 if (firstItem):
                     firstItem = False
-                    sale_order_lines_head_item.append(line.id)
+                    sale_order_lines_head_item.append(line)
                 else:
-                    sale_order_lines_to_be_discounted.append(line.id)   
+                    sale_order_lines_to_be_discounted.append(line)   
 
         return sale_order_lines_head_item, sale_order_lines_to_be_discounted
 
