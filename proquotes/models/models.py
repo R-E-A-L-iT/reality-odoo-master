@@ -401,8 +401,11 @@ class order(models.Model):
 
 
     ######################################################################
-    def setRentalDiscount(self):       
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+    def setRentalDiscount(self):      
+        try:        
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        except Exception as e:
+            _logger.error(str(e))             
 
         try:        
             for line in sale_order_lines_head_item:
