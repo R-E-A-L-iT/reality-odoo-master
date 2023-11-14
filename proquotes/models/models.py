@@ -371,11 +371,11 @@ class order(models.Model):
 
 
     @api.model
-    def odoo_test_comm(self, orderId, startDateDate, endDateDate):
+    def odoo_test_comm(self, orderId, p_startDateDate, p_endDateDate):
         _logger.error("----------------odoo_test_comm ----------------------")
         _logger.error("----------------" + str(orderId))
-        _logger.error("----------------" + str(startDateDate))
-        _logger.error("----------------" + str(endDateDate))
+        _logger.error("----------------" + str(p_startDateDate))
+        _logger.error("----------------" + str(p_endDateDate))
         return {
             'name': 'testing name'
         }
