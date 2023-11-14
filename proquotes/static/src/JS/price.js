@@ -422,18 +422,15 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_testCommOdoo: function() {
-			odoo.define("sale.order", function (require) {
-
-				var rpc = require('web.rpc');		
-				rpc.query({		
-					model: 'sale.order',		
-					method: 'odoo_test_comm'
-		
-				}); //).then(function (data) {		
-				//	console.log(data);		
-				//}
-		
+			var rpc = require('web.rpc');		
+			rpc.query({		
+				model: 'sale.order',		
+				method: 'odoo_test_comm'
+	
+			}).then(function (data) {		
+				console.log(data);		
 			});
+
 		},
 	});
 });

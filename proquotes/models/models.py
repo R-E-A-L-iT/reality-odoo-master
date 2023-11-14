@@ -370,9 +370,12 @@ class order(models.Model):
         self.setRentalDiscount()
 
 
+    @api.model
     def odoo_test_comm(self):
         _logger.error("----------------odoo_test_comm ----------------------")
-
+        return {
+            'name': 'testing name'
+        }
 
     ######################################################################
     @api.onchange("rental_start")
