@@ -370,6 +370,10 @@ class order(models.Model):
         self.setRentalDiscount()
 
 
+    def odoo_test_comm(self):
+        _logger.error("----------------odoo_test_comm ----------------------")
+
+
     ######################################################################
     @api.onchange("rental_start")
     def rental_start_onchange(self):
@@ -419,33 +423,6 @@ class order(models.Model):
         except Exception as e:
             _logger.error(str(e))            
             
-        #self.get_rental_headItem_and_kitItems()
-
-
-
-        # if(self.is_rental):
-        #     activateDiscount = False
-        #     firstItem = True  
-
-        #     for line in self.order_line:                    
-        #         if (line.name == "$block+"):
-        #             continue
-
-        #         if ("#" in line.name):
-        #             if ("RENTAL KIT" in line.name):
-        #                 activateDiscount = True
-        #                 continue
-        #             else:   
-        #                 activateDiscount = False
-        #                 firstItem = True
-        #                 continue
-
-        #         if(activateDiscount):
-        #             if (firstItem):
-        #                 firstItem = False
-        #             else:
-        #                 line.discount = 100   
-
 
     ###########################################################################
     #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte

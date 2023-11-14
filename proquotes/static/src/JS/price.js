@@ -158,6 +158,9 @@ odoo.define("proquotes.price", function (require) {
 			console.log("Days: " + days);
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
+
+			this._testCommOdoo();
+
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
 				while (node.classList.contains("quoteLineRow") == false) {
@@ -416,6 +419,21 @@ odoo.define("proquotes.price", function (require) {
 			this._updateFoldDisplay();
 			this._rentalValueTotal();
 			this._updateTotal(total);
+		},
+
+		_testCommOdoo: function() {
+			odoo.define("sale.order", function (require) {
+
+				var rpc = require('web.rpc');		
+				rpc.query({		
+					model: 'sale.order',		
+					method: 'odoo_test_comm'
+		
+				}).then(function (data) {		
+					console.log(data);		
+				});
+		
+			});
 		},
 	});
 });
