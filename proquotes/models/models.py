@@ -402,7 +402,7 @@ class order(models.Model):
 
     ######################################################################
     def setRentalDiscount(self):
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_headItem_and_kitItems()
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
 
         for line in sale_order_lines_head_item:
             line.discount = 0
@@ -440,7 +440,13 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_headItem_and_kitItems(self):
+    def get_rental_headItem_and_kitItems(self):
+
+        if(not self.is_rental):
+            return
+            
+        activateDiscount = False
+        firstItem = True  
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
 
