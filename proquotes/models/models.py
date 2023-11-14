@@ -403,16 +403,21 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):       
         
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        try:
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+           
+            for line in sale_order_lines_head_item:
+                line.discount = 0
+        
+            for line in sale_order_lines_to_be_discounted:
+               line.discount = 100
+               
+        except Exception as e:
+            _logger.error(str(e))
+            
         #self.get_rental_headItem_and_kitItems()
 
-        #if (sale_order_lines_head_item != None):
-        #    for line in sale_order_lines_head_item:
-        #        line.discount = 0
-        
-        #if (sale_order_lines_to_be_discounted != None):
-        #    for line in sale_order_lines_to_be_discounted:
-        #        line.discount = 100
+
 
         # if(self.is_rental):
         #     activateDiscount = False
