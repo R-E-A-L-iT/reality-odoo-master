@@ -428,8 +428,8 @@ odoo.define("proquotes.price", function (require) {
 				method: 'odoo_test_comm',
 				args: [{
 					'orderId': orderId,
-					'p_startDateDate': startDateValue,
-					'p_endDateDate': endDateValue
+					//'p_startDateDate': startDateValue,
+					//'p_endDateDate': endDateValue
 				}]
 	
 			}).then(function (data) {		
