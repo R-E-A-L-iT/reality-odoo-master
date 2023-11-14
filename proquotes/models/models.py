@@ -347,6 +347,7 @@ class order(models.Model):
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
 
+    ######################################################################
     @api.onchange("sale_order_template_id")
     def set_sale_order_flags(self):
         # Set a flag if quotes is a rental quote        
@@ -363,45 +364,107 @@ class order(models.Model):
             self.is_renewal = False
         
     
+    ######################################################################
     @api.onchange("pricelist_id")
     def pricelistChanged(self):
         self.setRentalDiscount()
 
 
-    #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
+    ######################################################################
+    @api.onchange("rental_start")
+    def rental_start_onchange(self):
+        _logger.error("rental_start_onchange")
+
+        if (not self.is_rental):
+            return
+        
+        self.adjust_rental_date()
+        
+
+    ######################################################################
+    @api.onchange("rental_end")
+    def rental_end_onchange(self):
+        _logger.error("rental_end_onchange")
+
+        if (not self.is_rental):
+            return
+        
+        self.adjust_rental_date()
+        
+
+    ######################################################################
+    def adjust_rental_date(self):
+        _logger.error("adjust_rental_date")
+
+        if (not self.is_rental):
+            return
+
+
+    ######################################################################
     def setRentalDiscount(self):
-        if(self.is_rental):
-            activateDiscount = False
-            firstItem = True
-            #_logger.error("is_rental TRUE, " + str(self.sale_order_template_id.name))     
-            for line in self.order_line:
-                    
-                if (line.name == "$block+"):
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_headItem_and_kitItems()
+
+        for line in sale_order_lines_head_item:
+            line.discount = 0
+        
+        for line in sale_order_lines_to_be_discounted:
+            line.discount = 100
+        # if(self.is_rental):
+        #     activateDiscount = False
+        #     firstItem = True  
+
+        #     for line in self.order_line:                    
+        #         if (line.name == "$block+"):
+        #             continue
+
+        #         if ("#" in line.name):
+        #             if ("RENTAL KIT" in line.name):
+        #                 activateDiscount = True
+        #                 continue
+        #             else:   
+        #                 activateDiscount = False
+        #                 firstItem = True
+        #                 continue
+
+        #         if(activateDiscount):
+        #             if (firstItem):
+        #                 firstItem = False
+        #             else:
+        #                 line.discount = 100   
+
+
+    ###########################################################################
+    #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
+    # The method will iterate all the order_line
+    # if it's a $block+ it will skip.
+    # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
+    # it will put the first item in a list
+    # and all the folowing item in another.
+    def get_headItem_and_kitItems(self):
+        sale_order_lines_head_item = []
+        sale_order_lines_to_be_discounted = []
+
+        for line in self.order_line:                    
+            if (line.name == "$block+"):
+                continue
+
+            if ("#" in line.name):
+                if ("RENTAL KIT" in line.name):
+                    activateDiscount = True
+                    continue
+                else:   
+                    activateDiscount = False
+                    firstItem = True
                     continue
 
-                if ("#" in line.name):
-                    if ("RENTAL KIT" in line.name):
-                        #_logger.error("activateDiscount = True")     
-                        activateDiscount = True
-                        continue
-                    else:
-                        #_logger.error("activateDiscount = False")     
-                        activateDiscount = False
-                        firstItem = True
-                        continue
+            if(activateDiscount):
+                if (firstItem):
+                    firstItem = False
+                    sale_order_lines_head_item.append(line)
+                else:
+                    sale_order_lines_to_be_discounted.append(line)   
 
-                if(activateDiscount):
-                    #_logger.error("line name discounted: " + str(line.name))  
-                    if (firstItem):
-                        line.reservation_begin  = datetime(2023, 10, 28, 16, 0) 
-                        firstItem = False
-                        #_logger.error("activateDiscount----- firstItem not discounted: " + str(line.name))
-                    else:
-                        line.discount = 100   
-                        line.rental_updatable = True 
-                        #_logger.error("activateDiscount----- discounted: " + str(line.name))
-                #else:
-                    #_logger.error("line name: " + str(line.name))    
+        return sale_order_lines_head_item, sale_order_lines_to_be_discounted
 
 
     # # Methot do update the pricelist base on the current partner_id of the sale_order.
@@ -410,13 +473,13 @@ class order(models.Model):
     #     if (country_id >= 0):
     #         country = self.env["res.country"].search([("id", "=", country_id)])
     #         #_logger.error("country.name: " + str(country.name))
-
+    #
     #         currency_id = int(country.currency_id)
     #         if (currency_id >= 0):
     #             currency = self.env["res.currency"].search([("id", "=", currency_id)])
     #             # _logger.error("currency.id: " + str(currency.id))
     #             # _logger.error("currency.name: " + str(currency.name))
-
+    #
     #             #not a good management, create more user problem since when updating price, the discount does aways.
     #             if (self.is_rental):
     #                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
@@ -759,6 +822,8 @@ class orderLineProquotes(models.Model):
             return product.description_sale
         else:
             return "<span></span>"
+
+    
     
 
 class proquotesMail(models.TransientModel):
