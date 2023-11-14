@@ -403,8 +403,8 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):       
         
-        #sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
-        self.get_rental_headItem_and_kitItems()
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        #self.get_rental_headItem_and_kitItems()
 
         #if (sale_order_lines_head_item != None):
         #    for line in sale_order_lines_head_item:
