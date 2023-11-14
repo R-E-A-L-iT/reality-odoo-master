@@ -431,7 +431,7 @@ odoo.define("proquotes.price", function (require) {
 		
 				}); //).then(function (data) {		
 				//	console.log(data);		
-				}
+				//}
 		
 			});
 		},
