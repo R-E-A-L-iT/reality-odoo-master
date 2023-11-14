@@ -159,7 +159,7 @@ odoo.define("proquotes.price", function (require) {
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
-			this._testCommOdoo();
+			//this._testCommOdoo();
 
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
