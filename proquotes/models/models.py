@@ -403,12 +403,12 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):       
         
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
-        #self.get_rental_headItem_and_kitItems()
+        #sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        self.get_rental_headItem_and_kitItems()
 
-        if (sale_order_lines_head_item != None):
-            for line in sale_order_lines_head_item:
-                line.discount = 0
+        #if (sale_order_lines_head_item != None):
+        #    for line in sale_order_lines_head_item:
+        #        line.discount = 0
         
         #if (sale_order_lines_to_be_discounted != None):
         #    for line in sale_order_lines_to_be_discounted:
@@ -446,6 +446,7 @@ class order(models.Model):
     # it will put the first item in a list
     # and all the folowing item in another.
     def get_rental_headItem_and_kitItems(self):
+        _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
 
         if(not self.is_rental):
             return
@@ -455,7 +456,8 @@ class order(models.Model):
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
 
-        for line in self.order_line:                    
+        for line in self.order_line:      
+            _logger.error("line.name: " + str(line.name))              
             if (line.name == "$block+"):
                 continue
 
