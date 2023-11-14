@@ -159,7 +159,7 @@ odoo.define("proquotes.price", function (require) {
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
-			this._testCommOdoo();
+			this._testCommOdoo(this.orderDetail.orderId);
 
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
@@ -421,13 +421,13 @@ odoo.define("proquotes.price", function (require) {
 			this._updateTotal(total);
 		},
 
-		_testCommOdoo: function() {
+		_testCommOdoo: function(anArg) {
 			var rpc = require('web.rpc');		
 			rpc.query({		
 				model: 'sale.order',		
 				method: 'odoo_test_comm',
 				args: [{
-					'arg1': this.orderDetail.orderId,
+					'arg1': anArg
 				}]
 	
 			}).then(function (data) {		
