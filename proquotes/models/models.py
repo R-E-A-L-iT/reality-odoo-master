@@ -389,6 +389,7 @@ class order(models.Model):
 
         so = self.env["sale.order"]
         so1 = so.search([("id", "=", args['orderId'])])
+        from datetime import datetime
         so1.rental_start = datetime.fromisoformat(args['p_startDateValue'])
         so1.rental_end = datetime.fromisoformat(args['p_endDateValue'])
 
