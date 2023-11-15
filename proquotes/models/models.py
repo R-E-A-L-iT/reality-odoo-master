@@ -439,7 +439,7 @@ class order(models.Model):
     def setRentalDiscount(self):    
         _logger.error("-----------------setRentalDiscount: " + str(self.id))  
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.id)
         except Exception as e:
             _logger.error(str(e))             
 
@@ -463,7 +463,7 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_rental_headItem_and_kitItems(self):
+    def get_rental_headItem_and_kitItems(self, sale_order_id):
         #_logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(sale_order_id))
 
         if(not self.is_rental):
@@ -471,7 +471,7 @@ class order(models.Model):
 
         so = self.env["sale.order"]
         #so1 = so.search([("id", "=", int(sale_order_id))])
-        so1 = so.search([("id", "=", self.id)])
+        so1 = so.search([("id", "=", sale_order_id)])
 
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
