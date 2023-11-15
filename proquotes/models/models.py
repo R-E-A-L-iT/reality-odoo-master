@@ -390,10 +390,19 @@ class order(models.Model):
         so = self.env["sale.order"]
         so1 = so.search([("id", "=", args['orderId'])])
 
+        _logger.error("-!-!------------Avant: " + str(so1.rental_start))
+        _logger.error("-!-!------------Avant: " + str(so1.rental_end))
+
+
         sdate = str(args['p_startDateValue']).split("-")
         edate = str(args['p_endDateValue']).split("-")
         so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
         so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
+
+        so2 = so.search([("id", "=", args['orderId'])])
+
+        _logger.error("-!-!------------Après: " + str(so2.rental_start))
+        _logger.error("-!-!------------Après: " + str(so2.rental_end))
 
 
         return {
