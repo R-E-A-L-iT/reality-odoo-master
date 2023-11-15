@@ -373,10 +373,17 @@ class order(models.Model):
     @api.model
     def odoo_test_comm(self, args):#, p_startDateValue):#, p_endDateDate):
         _logger.error("----------------odoo_test_comm ----------------------")
-        _logger.error("-!-!---------------" + str(args))
+        if (not 'orderId' in args or
+            not 'p_startDateValue' in args or
+            not 'p_endDateValue' in args
+        ):
+            _logger.error("-!-!--------------- missing arguments in the args.")
+            return
+
         _logger.error("-!-!---------------" + str(args['orderId']))
         _logger.error("-!-!---------------" + str(args['p_startDateValue']))
         _logger.error("-!-!---------------" + str(args['p_endDateValue']))
+
 
         #import datetime
         #datetime.datetime.strptime('p_startDateValue', '%d%m%Y').date()
