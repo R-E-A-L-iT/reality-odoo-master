@@ -382,9 +382,17 @@ class order(models.Model):
 
         _logger.error("-!-!---------------" + str(args['orderId']))
         _logger.error("-!-!---------------" + str(args['p_startDateValue']))
-        _logger.error("-!-!---------------" + str(args['p_endDateValue']))
-   
+        _logger.error("-!-!---------------" + str(args['p_endDateValue']))        
 
+
+        so = self.env["sale.order"]
+        so1 = so.search([("id", "=", args['orderId'])])
+
+        sdate = str(args['p_startDateValue']).split("-")
+        edate = str(args['p_endDateValue']).split("-")
+        so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+        so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
+        
         # sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_ kitItems(int(args['orderId']))
 
         # for line in sale_order_lines_head_item:
@@ -398,7 +406,6 @@ class order(models.Model):
 
         #     _logger.error("-!-!---------------" + str(line.reservation_begin))
         #     _logger.error("-!-!---------------" + str(line.scheduled_date))
-        
 
 
         return {
@@ -436,10 +443,9 @@ class order(models.Model):
 
 
     ######################################################################
-    def setRentalDiscount(self):    
-        _logger.error("-----------------setRentalDiscount: " + str(self.id))  
+    def setRentalDiscount(self):      
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.id)
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
         except Exception as e:
             _logger.error(str(e))             
 
@@ -463,24 +469,23 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_rental_headItem_and_kitItems(self, sale_order_id):
-        #_logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(sale_order_id))
+    def get_rental_headItem_and_kitItems(self):
+        _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
 
         if(not self.is_rental):
             return
-
-        so = self.env["sale.order"]
+        
+        #so = self.env["sale.order"]
         #so1 = so.search([("id", "=", int(sale_order_id))])
-        so1 = so.search([("id", "=", sale_order_id)])
-
-        _logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
+        #so1 = so.search([("id", "=", sale_order_id)])
+        #_logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
         activateDiscount = False
         firstItem = True  
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
 
-        for line in so1.order_line:                   
+        for line in self.order_line:                   
             if (line.name == "$block+"):
                 continue
 
