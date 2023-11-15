@@ -375,9 +375,12 @@ class order(models.Model):
         _logger.error("----------------odoo_test_comm ----------------------")
         _logger.error("-!-!---------------" + str(args))
         _logger.error("-!-!---------------" + str(args['orderId']))
-        _logger.error("-!-!---------------" + str(args['p_startDate']))
-        #_logger.error("----------------" + str(p_startDateValue))
-        #_logger.error("----------------" + str(p_endDateDate))
+        _logger.error("-!-!---------------" + str(args['p_startDateValue']))
+        _logger.error("-!-!---------------" + str(args['p_endDateValue']))
+
+        #import datetime
+        #datetime.datetime.strptime('p_startDateValue', '%d%m%Y').date()
+
         return {
             'name': 'testing name'
         }
