@@ -384,9 +384,14 @@ class order(models.Model):
         _logger.error("-!-!---------------" + str(args['p_startDateValue']))
         _logger.error("-!-!---------------" + str(args['p_endDateValue']))
 
+        import datetime
+        datetime.fromisoformat(args['p_startDateValue'])
 
-        #import datetime
-        #datetime.datetime.strptime('p_startDateValue', '%d%m%Y').date()
+        so = self.env["sale.order"]
+        so1 = so.search([("id", "=", args['orderId'])])
+        so1.rental_start = datetime.fromisoformat(args['p_startDateValue'])
+        so1.rental_end = datetime.fromisoformat(args['p_endDateValue'])
+
 
         return {
             'name': 'testing name'
