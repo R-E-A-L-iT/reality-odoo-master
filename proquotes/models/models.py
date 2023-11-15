@@ -383,21 +383,21 @@ class order(models.Model):
         _logger.error("-!-!---------------" + str(args['orderId']))
         _logger.error("-!-!---------------" + str(args['p_startDateValue']))
         _logger.error("-!-!---------------" + str(args['p_endDateValue']))
-
-        
-        datetime.fromisoformat(args['p_startDateValue'])
+   
 
         so = self.env["sale.order"]
-        so1 = so.search([("id", "=", args['orderId'])])
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
 
-        _logger.error("-!-!------------Avant: " + str(so1.rental_start))
-        _logger.error("-!-!------------Avant: " + str(so1.rental_end))
+        #for line in sale_order_lines_head_item:
 
 
-        sdate = str(args['p_startDateValue']).split("-")
-        edate = str(args['p_endDateValue']).split("-")
-        so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
-        so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
+        #so1 = so.search([("id", "=", args['orderId'])])
+        # _logger.error("-!-!------------Avant: " + str(so1.rental_start))
+        # _logger.error("-!-!------------Avant: " + str(so1.rental_end))
+        # sdate = str(args['p_startDateValue']).split("-")
+        # edate = str(args['p_endDateValue']).split("-")
+        # so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+        # so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
 
         so2 = so.search([("id", "=", args['orderId'])])
 
@@ -442,7 +442,7 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):      
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.id)
         except Exception as e:
             _logger.error(str(e))             
 
@@ -466,18 +466,22 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_rental_headItem_and_kitItems(self):
+    def get_rental_headItem_and_kitItems(self, sale_order_id):
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
 
         if(not self.is_rental):
             return
+
+        so = self.env["sale.order"]
+        so1 = so.search([("id", "=", sale_order_id)])
+
             
         activateDiscount = False
         firstItem = True  
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
 
-        for line in self.order_line:                   
+        for line in so1.order_line:                   
             if (line.name == "$block+"):
                 continue
 
