@@ -393,7 +393,7 @@ class order(models.Model):
         so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
         so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
         
-        # sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_ kitItems(int(args['orderId']))
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
 
         # for line in sale_order_lines_head_item:
         #     _logger.error("-!-!---------------" + str(line.reservation_begin))
@@ -445,7 +445,7 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):      
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.id)
         except Exception as e:
             _logger.error(str(e))             
 
@@ -469,16 +469,15 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_rental_headItem_and_kitItems(self):
+    def get_rental_headItem_and_kitItems(self, sale_order_id):
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
 
         if(not self.is_rental):
             return
         
-        #so = self.env["sale.order"]
-        #so1 = so.search([("id", "=", int(sale_order_id))])
-        #so1 = so.search([("id", "=", sale_order_id)])
-        #_logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
+        so = self.env["sale.order"]        
+        so1 = so.search([("id", "=", sale_order_id)])
+        _logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
         activateDiscount = False
         firstItem = True  
