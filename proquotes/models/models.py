@@ -393,7 +393,7 @@ class order(models.Model):
         so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
         so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
         
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
+        #sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
 
         # for line in sale_order_lines_head_item:
         #     _logger.error("-!-!---------------" + str(line.reservation_begin))
