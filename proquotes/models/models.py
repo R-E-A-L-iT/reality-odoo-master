@@ -385,24 +385,20 @@ class order(models.Model):
         _logger.error("-!-!---------------" + str(args['p_endDateValue']))
    
 
-        so = self.env["sale.order"]
         sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
+        
+        for line in sale_order_lines_head_item:
+            _logger.error("-!-!---------------" + str(line.reservation_begin))
+            _logger.error("-!-!---------------" + str(line.scheduled_date))
+            
+            sdate = str(args['p_startDateValue']).split("-")
+            edate = str(args['p_endDateValue']).split("-")      
+            line.reservation_begin = date(int(sdate[0]), int(sdate[1]), int(sdate[2]))            
+            line.scheduled_date = date(int(edate[0]), int(edate[1]), int(edate[2]))
 
-        #for line in sale_order_lines_head_item:
-
-
-        #so1 = so.search([("id", "=", args['orderId'])])
-        # _logger.error("-!-!------------Avant: " + str(so1.rental_start))
-        # _logger.error("-!-!------------Avant: " + str(so1.rental_end))
-        # sdate = str(args['p_startDateValue']).split("-")
-        # edate = str(args['p_endDateValue']).split("-")
-        # so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
-        # so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
-
-        so2 = so.search([("id", "=", args['orderId'])])
-
-        _logger.error("-!-!------------Après: " + str(so2.rental_start))
-        _logger.error("-!-!------------Après: " + str(so2.rental_end))
+            _logger.error("-!-!---------------" + str(line.reservation_begin))
+            _logger.error("-!-!---------------" + str(line.scheduled_date))
+        
 
 
         return {
