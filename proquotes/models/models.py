@@ -469,7 +469,7 @@ class order(models.Model):
             return
 
         so = self.env["sale.order"]
-        so1 = so.search([("id", "=", sale_order_id)])
+        so1 = so.search([("id", "=", int(sale_order_id))])
 
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
