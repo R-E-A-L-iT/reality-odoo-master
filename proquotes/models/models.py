@@ -385,19 +385,19 @@ class order(models.Model):
         _logger.error("-!-!---------------" + str(args['p_endDateValue']))
    
 
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
+        # sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_ kitItems(int(args['orderId']))
 
-        for line in sale_order_lines_head_item:
-            _logger.error("-!-!---------------" + str(line.reservation_begin))
-            _logger.error("-!-!---------------" + str(line.scheduled_date))
+        # for line in sale_order_lines_head_item:
+        #     _logger.error("-!-!---------------" + str(line.reservation_begin))
+        #     _logger.error("-!-!---------------" + str(line.scheduled_date))
             
-            sdate = str(args['p_startDateValue']).split("-")
-            edate = str(args['p_endDateValue']).split("-")      
-            line.reservation_begin = date(int(sdate[0]), int(sdate[1]), int(sdate[2]))            
-            line.scheduled_date = date(int(edate[0]), int(edate[1]), int(edate[2]))
+        #     sdate = str(args['p_startDateValue']).split("-")
+        #     edate = str(args['p_endDateValue']).split("-")      
+        #     line.reservation_begin = date(int(sdate[0]), int(sdate[1]), int(sdate[2]))            
+        #     line.scheduled_date = date(int(edate[0]), int(edate[1]), int(edate[2]))
 
-            _logger.error("-!-!---------------" + str(line.reservation_begin))
-            _logger.error("-!-!---------------" + str(line.scheduled_date))
+        #     _logger.error("-!-!---------------" + str(line.reservation_begin))
+        #     _logger.error("-!-!---------------" + str(line.scheduled_date))
         
 
 
@@ -436,7 +436,8 @@ class order(models.Model):
 
 
     ######################################################################
-    def setRentalDiscount(self):      
+    def setRentalDiscount(self):    
+        _logger.error("-----------------setRentalDiscount: " + str(self.id))  
         try:        
             sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.id)
         except Exception as e:
