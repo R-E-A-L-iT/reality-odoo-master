@@ -471,6 +471,7 @@ class order(models.Model):
         so = self.env["sale.order"]
         so1 = so.search([("id", "=", sale_order_id)])
 
+        _logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
         activateDiscount = False
         firstItem = True  
