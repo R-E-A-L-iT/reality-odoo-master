@@ -390,8 +390,10 @@ class order(models.Model):
         so = self.env["sale.order"]
         so1 = so.search([("id", "=", args['orderId'])])
 
-        so1.rental_start =  datetime.datetime.strptime(args['p_startDateValue'], '%Y%m%d').date()
-        so1.rental_end = datetime.datetime.strptime(args['p_endDateValue'], '%Y%m%d').date()
+        sdate = str(args['p_startDateValue']).split("-")
+        edate = str(args['p_endDateValue']).split("-")
+        so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+        so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
 
 
         return {
