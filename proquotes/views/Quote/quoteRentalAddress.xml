@@ -11,7 +11,6 @@
 					<label for="rental-start">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-						<p>{{source.rental_start}}</p>
 					</label>
 					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
 					
@@ -20,9 +19,8 @@
 					<label for="rental-end">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-						<p>{{source.rental_end}}</p>
 					</label>
-					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}"/>
+					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
 					
 				</div>
 				<!-- Rental Hardware Estimate -->
