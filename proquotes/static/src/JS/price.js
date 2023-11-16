@@ -159,7 +159,7 @@ odoo.define("proquotes.price", function (require) {
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
-			this._testCommOdoo(this.orderDetail.orderId, startDate.value, endDate.value);
+			//this._testCommOdoo(this.orderDetail.orderId, startDate.value, endDate.value);
 
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
@@ -421,21 +421,21 @@ odoo.define("proquotes.price", function (require) {
 			this._updateTotal(total);
 		},
 
-		_testCommOdoo: function(orderId, startDate, endDate) {
-			var rpc = require('web.rpc');		
-			rpc.query({		
-				model: 'sale.order',		
-				method: 'odoo_test_comm',
-				args: [{
-					'orderId': orderId,
-					'p_startDateValue': startDate,
-					'p_endDateValue': endDate
-				}]
-	
-			}).then(function (data) {		
-				console.log(data);		
-			});
-
-		},
+		// _testCommOdoo: function(orderId, startDate, endDate) {
+		// 	var rpc = require('web.rpc');		
+		// 	rpc.query({		
+		// 		model: 'sale.order',		
+		// 		method: 'odoo_test_comm',
+		// 		args: [{
+		// 			'orderId': orderId,
+		// 			'p_startDateValue': startDate,
+		// 			'p_endDateValue': endDate
+		// 		}]
+		//
+		// 	}).then(function (data) {		
+		// 		console.log(data);		
+		// 	});
+		//
+		// }		
 	});
 });

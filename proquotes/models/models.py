@@ -867,18 +867,18 @@ class orderLineProquotes(models.Model):
 
     @api.onchange("scheduled_date")
     def scheduled_date_change(self):
-        _logger.error("-!-!---------------scheduled_date_change: " + str(self.id))
-        _logger.error("-!-!---------------scheduled_date_change: " + str(self.scheduled_date))
-
-    @api.onchange("reservation_begin")
-    def reservation_begin_change(self):
-        _logger.error("-!-!---------------reservation_begin_change: " + str(self.id))
-        _logger.error("-!-!---------------reservation_begin_change: " + str(self.reservation_begin))      
+        _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
+        _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
+        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+        
+    
 
     @api.onchange("return_date")
     def return_date_change(self):
-        _logger.error("-!-!---------------return_date_change: " + str(self.id))
-        _logger.error("-!-!---------------return_date_change: " + str(self.return_date))                
+        _logger.error("-!-!---------------return_date_change id: " + str(self.id))
+        _logger.error("-!-!---------------return_date: " + str(self.return_date))  
+        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+
         
 
     
