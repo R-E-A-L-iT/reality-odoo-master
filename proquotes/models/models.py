@@ -471,13 +471,6 @@ class order(models.Model):
     # and all the folowing item in another.
     def get_rental_headItem_and_kitItems(self, order_line):
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
-
-        # if(not self.is_rental):
-        #     return
-        
-        #so = self.env["sale.order"]        
-        #so1 = so.search([("id", "=", sale_order_id)])
-        #_logger.error("---------------------------------- get_rental_headItem_and_kitItems: "+ str(so1.id))
             
         activateDiscount = False
         firstItem = True  
@@ -800,6 +793,9 @@ class order(models.Model):
                 )
                 for l in res
             ]
+    @api.onchange("order_line")
+    def order_line_changed(self):
+        _logger.error("---------------------------------- order_line_changed")
 
 
 class orderLineProquotes(models.Model):
@@ -865,25 +861,25 @@ class orderLineProquotes(models.Model):
             return "<span></span>"
 
 
-    @api.onchange("scheduled_date")
-    def scheduled_date_change(self):
-        _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
-        _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
-        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
-        so = self.env["sale.order"]
-        so1 = so.search([("id", "=", self.order_id)])
-        so1.rental_start = self.scheduled_date
+    # @api.onchange("scheduled_date")
+    # def scheduled_date_change(self):
+    #     _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
+    #     _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
+    #     _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+    #     so = self.env["sale.order"]
+    #     so1 = so.search([("id", "=", self.order_id)])
+    #     so1.rental_start = self.scheduled_date
         
     
 
-    @api.onchange("return_date")
-    def return_date_change(self):
-        _logger.error("-!-!---------------return_date_change id: " + str(self.id))
-        _logger.error("-!-!---------------return_date: " + str(self.return_date))  
-        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
-        so = self.env["sale.order"]
-        so1 = so.search([("id", "=", self.order_id)])
-        so1.rental_end = self.return_date
+    # @api.onchange("return_date")
+    # def return_date_change(self):
+    #     _logger.error("-!-!---------------return_date_change id: " + str(self.id))
+    #     _logger.error("-!-!---------------return_date: " + str(self.return_date))  
+    #     _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+    #     so = self.env["sale.order"]
+    #     so1 = so.search([("id", "=", self.order_id)])
+    #     so1.rental_end = self.return_date
         
 
     
