@@ -445,7 +445,7 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):      
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(self.order_line)
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
         except Exception as e:
             _logger.error(str(e))             
 
@@ -469,7 +469,7 @@ class order(models.Model):
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
     # it will put the first item in a list
     # and all the folowing item in another.
-    def get_rental_headItem_and_kitItems(self, order_line):
+    def get_rental_headItem_and_kitItems(self):
         _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
             
         activateDiscount = False
@@ -478,7 +478,7 @@ class order(models.Model):
         sale_order_lines_to_be_discounted = []
 
         #for line in self.order_line:
-        for line in order_line:
+        for line in self.order_line:
             if (line.name == "$block+"):
                 continue
 
@@ -793,9 +793,19 @@ class order(models.Model):
                 )
                 for l in res
             ]
+
+    ########################################################
+    ## !!!  This function will update the current sale.order based on the first head item.
     @api.onchange("order_line")
     def order_line_changed(self):
         _logger.error("---------------------------------- order_line_changed")
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        for line in sale_order_lines_head_item:
+            self.rental_start = line.scheduled_date
+            self.rental_end = line.return_date
+            break
+
+
 
 
 class orderLineProquotes(models.Model):
@@ -861,25 +871,20 @@ class orderLineProquotes(models.Model):
             return "<span></span>"
 
 
-    # @api.onchange("scheduled_date")
-    # def scheduled_date_change(self):
-    #     _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
-    #     _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
-    #     _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
-    #     so = self.env["sale.order"]
-    #     so1 = so.search([("id", "=", self.order_id)])
-    #     so1.rental_start = self.scheduled_date
-        
+    @api.onchange("scheduled_date")
+    def scheduled_date_change(self):
+        _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
+        _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
+        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+
     
 
-    # @api.onchange("return_date")
-    # def return_date_change(self):
-    #     _logger.error("-!-!---------------return_date_change id: " + str(self.id))
-    #     _logger.error("-!-!---------------return_date: " + str(self.return_date))  
-    #     _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
-    #     so = self.env["sale.order"]
-    #     so1 = so.search([("id", "=", self.order_id)])
-    #     so1.rental_end = self.return_date
+    @api.onchange("return_date")
+    def return_date_change(self):
+        _logger.error("-!-!---------------return_date_change id: " + str(self.id))
+        _logger.error("-!-!---------------return_date: " + str(self.return_date))  
+        _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+
         
 
     
