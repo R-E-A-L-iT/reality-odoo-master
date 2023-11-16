@@ -128,34 +128,31 @@ odoo.define("proquotes.price", function (require) {
 				return;
 			}
 
-			var startDateDate = new Date(startDate.value);
-			var endDateDate = new Date(endDate.value);
+			// var startDateDate = new Date(startDate.value);
+			// var endDateDate = new Date(endDate.value);
+			//
+			// let milliInSeconds = 1000
+			// let secondsInMinute = 60
+			// let minuteInHour = 60
+			// let hourInDay = 24
+			// var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
+			// var months = 0;
+			// var weeks = 0;
+			// var days = 0;
+			//
+			// while (rentalLength >= 30) {
+			// 	months += 1
+			// 	rentalLength -= 30;
+			// }
+			// while (rentalLength >= 7) {
+			// 	weeks += 1
+			// 	rentalLength -= 7
+			// }
+			// while (rentalLength >= 1) {
+			// 	days += 1;
+			// 	rentalLength -= 1;
+			// }
 
-			let milliInSeconds = 1000
-			let secondsInMinute = 60
-			let minuteInHour = 60
-			let hourInDay = 24
-			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
-			var months = 0;
-			var weeks = 0;
-			var days = 0;
-
-			while (rentalLength >= 30) {
-				months += 1
-				rentalLength -= 30;
-			}
-			while (rentalLength >= 7) {
-				weeks += 1
-				rentalLength -= 7
-			}
-			while (rentalLength >= 1) {
-				days += 1;
-				rentalLength -= 1;
-			}
-
-			console.log("Months: " + months);
-			console.log("Weeks: " + weeks);
-			console.log("Days: " + days);
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
