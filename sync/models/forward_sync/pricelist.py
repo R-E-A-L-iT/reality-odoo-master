@@ -13,6 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
+
 SKIP_NO_CHANGE = False
 
 
@@ -207,8 +208,6 @@ class sync_pricelist:
         ):
             return product
 
-        _logger.info("--------------- updatePricelistProducts: " + str(columns) + ", " + str(i))
-
         # reads values and puts them in appropriate fields
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
@@ -391,8 +390,7 @@ class sync_pricelist:
 
 
     ###################################################################        
-    def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):
-        _logger.info("--------------- insert_all_rental_price")
+    def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):        
         if (str(dayPrice) == ""):
             return
         

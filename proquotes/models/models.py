@@ -370,47 +370,12 @@ class order(models.Model):
         self.setRentalDiscount()
 
 
-    @api.model
-    def odoo_test_comm(self, args):#, p_startDateValue):#, p_endDateDate):
-        _logger.error("----------------odoo_test_comm ----------------------")
-        if (not 'orderId' in args or
-            not 'p_startDateValue' in args or
-            not 'p_endDateValue' in args
-        ):
-            _logger.error("-!-!--------------- missing arguments in the args.")
-            return
-
-        _logger.error("-!-!---------------" + str(args['orderId']))
-        _logger.error("-!-!---------------" + str(args['p_startDateValue']))
-        _logger.error("-!-!---------------" + str(args['p_endDateValue']))        
-
-
-        so = self.env["sale.order"]
-        so1 = so.search([("id", "=", args['orderId'])])
-
-        sdate = str(args['p_startDateValue']).split("-")
-        edate = str(args['p_endDateValue']).split("-")
-        so1.rental_start =  date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
-        so1.rental_end = date(int(edate[0]), int(edate[1]), int(edate[2]))
-        
-        #sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems(int(args['orderId']))
-
-        # for line in sale_order_lines_head_item:
-        #     _logger.error("-!-!---------------" + str(line.reservation_begin))
-        #     _logger.error("-!-!---------------" + str(line.scheduled_date))
-            
-        #     sdate = str(args['p_startDateValue']).split("-")
-        #     edate = str(args['p_endDateValue']).split("-")      
-        #     line.reservation_begin = date(int(sdate[0]), int(sdate[1]), int(sdate[2]))            
-        #     line.scheduled_date = date(int(edate[0]), int(edate[1]), int(edate[2]))
-
-        #     _logger.error("-!-!---------------" + str(line.reservation_begin))
-        #     _logger.error("-!-!---------------" + str(line.scheduled_date))
-
-
-        return {
-            'name': 'testing name'
-        }
+    # @api.model
+    # def odoo_test_comm(self, args):#, p_startDateValue):#, p_endDateDate):
+    #     _logger.error("----------------odoo_test_comm ----------------------")
+    #     return {
+    #         'name': 'testing name'
+    #     }
 
     ######################################################################
     @api.onchange("rental_start")
@@ -445,7 +410,7 @@ class order(models.Model):
     ######################################################################
     def setRentalDiscount(self):      
         try:        
-            sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+            sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories = self.get_rental_headItem_and_kitItems()
         except Exception as e:
             _logger.error(str(e))             
 
@@ -470,12 +435,15 @@ class order(models.Model):
     # it will put the first item in a list
     # and all the folowing item in another.
     def get_rental_headItem_and_kitItems(self):
-        _logger.error("---------------------------------- get_rental_headItem_and_kitItems")
+        _logger.error("---------------------------------- get rental headItem and kitItems")
             
-        activateDiscount = False
+        rentalKitSection = False
+        rentalAccesoriesSection = False
         firstItem = True  
         sale_order_lines_head_item = []
         sale_order_lines_to_be_discounted = []
+        sale_order_rentalaccesories = []
+
 
         #for line in self.order_line:
         for line in self.order_line:
@@ -484,21 +452,26 @@ class order(models.Model):
 
             if ("#" in line.name):
                 if ("RENTAL KIT" in line.name):
-                    activateDiscount = True
-                    continue
+                    rentalKitSection = True
+                    rentalAccesoriesSection = False                    
+                elif ("rental_accessories" in line.name):
+                    rentalKitSection = False
+                    rentalAccesoriesSection = True                
                 else:   
-                    activateDiscount = False
+                    rentalKitSection = False
                     firstItem = True
-                    continue
+                continue
 
-            if(activateDiscount):
+            if(rentalKitSection):
                 if (firstItem):
                     firstItem = False
                     sale_order_lines_head_item.append(line)
                 else:
-                    sale_order_lines_to_be_discounted.append(line)   
+                    sale_order_lines_to_be_discounted.append(line) 
+            elif(rentalAccesoriesSection):
+                sale_order_rentalaccesories.append(line)
 
-        return sale_order_lines_head_item, sale_order_lines_to_be_discounted
+        return sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories
 
 
     # # Methot do update the pricelist base on the current partner_id of the sale_order.
@@ -800,13 +773,51 @@ class order(models.Model):
     def order_line_changed(self):
         if not self.is_rental:
             return
-            
+
         _logger.error("---------------------------------- order_line_changed")
-        sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
+        sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories = self.get_rental_headItem_and_kitItems()
         for line in sale_order_lines_head_item:
             self.rental_start = line.scheduled_date
             self.rental_end = line.return_date
             break
+
+        #Calculate the number of day / week / mouth in the rental
+        milliInSeconds = 1000
+        secondsInMinute = 60
+        minuteInHour = 60
+        hourInDay = 24
+
+        rentalLength = (self.rental_end - self.rental_start) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay)
+        months = 0
+        weeks = 0
+        days = 0
+
+        while (rentalLength >= 30):
+            months += 1
+            rentalLength -= 30
+        
+        while (rentalLength >= 7):
+            weeks += 1
+            rentalLength -= 7
+        
+        while (rentalLength >= 1):
+            days += 1
+            rentalLength -= 1
+
+		# for each rental accessories, adjust the unit price
+        line.return_date - line.scheduled_date
+        for line in sale_order_rentalaccesories: 
+            price = line.price_unit
+            rentalEstimateSubTotal = 0
+
+            rentalEstimateSubTotal += 1 * days * price                        
+            rentalEstimateSubTotal += 4 * weeks * price
+            rentalEstimateSubTotal += 12 * months * price
+
+            line.price_unit = rentalEstimateSubTotal
+            
+            
+
 
 
 
