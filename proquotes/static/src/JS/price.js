@@ -159,8 +159,6 @@ odoo.define("proquotes.price", function (require) {
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
-			//this._testCommOdoo(this.orderDetail.orderId, startDate.value, endDate.value);
-
 			for (var i = 0; i < productPrices.length; i++) {
 				var node = productPrices[i]
 				while (node.classList.contains("quoteLineRow") == false) {
@@ -174,24 +172,25 @@ odoo.define("proquotes.price", function (require) {
 						}
 					}
 				}
-				console.log(productPrices[i])
-				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				console.log("Rental Estimate Total" + rentalEstimateTotal)
-				var rentalEstimateSubTotal = 0;
-				rentalEstimateSubTotal += 1 * days * price;
-				if(rentalEstimateSubTotal > 4 * price) {
-					console.log(rentalEstimateSubTotal)
-					console.log(price * 4)
-					rentalEstimateSubTotal = 4 * price
-				}
-				rentalEstimateSubTotal += 4 * weeks * price;
-				if(rentalEstimateSubTotal > 12 * price) {
-					console.log(rentalEstimateSubTotal)
-					console.log(price * 12)
-					rentalEstimateSubTotal = 12 * price
-				}
-				rentalEstimateSubTotal += 12 * months * price;
-				rentalEstimateTotal += rentalEstimateSubTotal
+				//console.log(productPrices[i])
+				// var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
+				// console.log("Rental Estimate Total" + rentalEstimateTotal)
+				// var rentalEstimateSubTotal = 0;
+				// rentalEstimateSubTotal += 1 * days * price;
+				// if(rentalEstimateSubTotal > 4 * price) {
+				// 	console.log(rentalEstimateSubTotal)
+				// 	console.log(price * 4)
+				// 	rentalEstimateSubTotal = 4 * price
+				// }
+				// rentalEstimateSubTotal += 4 * weeks * price;
+				// if(rentalEstimateSubTotal > 12 * price) {
+				// 	console.log(rentalEstimateSubTotal)
+				// 	console.log(price * 12)
+				// 	rentalEstimateSubTotal = 12 * price
+				// }
+				// rentalEstimateSubTotal += 12 * months * price;
+				//rentalEstimateTotal += rentalEstimateSubTotal
+				rentalEstimateTotal = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "")
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
