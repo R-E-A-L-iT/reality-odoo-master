@@ -13,7 +13,7 @@
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
 						<p>{{source.rental_start}}</p>
 					</label>
-					<!-- <input id="rental-start" type="date" t-attf-value="{{source.rental_start}}"/> -->
+					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}"/>
 					
 					<br />
 
@@ -22,7 +22,7 @@
 						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 						<p>{{source.rental_end}}</p>
 					</label>
-					<!--<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}"/>-->
+					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}"/>
 					
 				</div>
 				<!-- Rental Hardware Estimate -->
