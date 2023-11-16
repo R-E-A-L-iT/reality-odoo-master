@@ -207,6 +207,8 @@ class sync_pricelist:
         ):
             return product
 
+        _logger.info("--------------- updatePricelistProducts: " + str(columns) + ", " + str(i))
+
         # reads values and puts them in appropriate fields
         product.name = self.sheet[i][columns["eName"]]
         product.description_sale = self.sheet[i][columns["eDisc"]]
@@ -390,6 +392,7 @@ class sync_pricelist:
 
     ###################################################################        
     def insert_all_rental_price(self, product_template_id, pricelist_id, dayPrice):
+        _logger.info("--------------- insert_all_rental_price")
         if (str(dayPrice) == ""):
             return
         
