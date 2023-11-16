@@ -782,17 +782,12 @@ class order(models.Model):
             break
 
         #Calculate the number of day / week / mouth in the rental
-        milliInSeconds = 1000
-        secondsInMinute = 60
-        minuteInHour = 60
-        hourInDay = 24
-
-        rentalLength = (self.rental_end - self.rental_start) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay)
+        rentalLength = (self.rental_end - self.rental_start).days
         months = 0
         weeks = 0
         days = 0
 
-        while (rentalLength >= 30):
+        while (rentalLength.day >= 30):
             months += 1
             rentalLength -= 30
         
