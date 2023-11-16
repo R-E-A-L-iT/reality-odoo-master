@@ -870,6 +870,9 @@ class orderLineProquotes(models.Model):
         _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
         _logger.error("-!-!---------------scheduled_date: " + str(self.scheduled_date))
         _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
+        so = self.env["sale.order"]
+        so1 = so.search([("id", "=", self.order_id)])
+        so1.rental_start = self.scheduled_date
         
     
 
@@ -878,7 +881,9 @@ class orderLineProquotes(models.Model):
         _logger.error("-!-!---------------return_date_change id: " + str(self.id))
         _logger.error("-!-!---------------return_date: " + str(self.return_date))  
         _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
-
+        so = self.env["sale.order"]
+        so1 = so.search([("id", "=", self.order_id)])
+        so1.rental_end = self.return_date
         
 
     
