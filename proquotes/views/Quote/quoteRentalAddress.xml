@@ -13,7 +13,7 @@
 						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
 						<p>{{source.rental_start}}</p>
 					</label>
-					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}"/>
+					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
 					
 					<br />
 
