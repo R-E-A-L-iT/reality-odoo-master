@@ -777,13 +777,13 @@ class order(models.Model):
         _logger.error("---------------------------------- order_line_changed")
         sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories = self.get_rental_headItem_and_kitItems()
         for line in sale_order_lines_head_item:
+            #exit if the date are not set
+            if (not line.scheduled_date or not line.return_date):
+                return
             self.rental_start = line.scheduled_date
             self.rental_end = line.return_date
             break
 
-        _logger.error("---------------------------------- self.rental_start: " + str(self.rental_start))
-        _logger.error("---------------------------------- self.rental_end: " + str(self.rental_end))
-        
         #Calculate the number of day / week / mouth in the rental
         rentalLength = (self.rental_end - self.rental_start).days
         months = 0
