@@ -871,22 +871,21 @@ class sync(models.Model):
     def addContact(self, p_OwnerID, p_Name):
         _logger.info("addContact: " + str(p_OwnerID) + ", " + str(p_Name))
 
+        #Check if contact name exist 
+        company = self.env["res.partner"].search([("name", "=", str(p_Name))])
+        if (len(company) > 0):
+            company = company[0]
+        else:
+             raise Exception("Contact name does not exist")
+
         #Check if OwnerID exist
         ownersID = self.env["ir.model.data"].search([("name", "=",str(p_OwnerID))])
         if (len(ownersID) > 0):
             ext = ownersID[0]
         else:
             ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]  
-
-        #Check if contac name exist 
-        company = self.env["res.partner"].search([("name", "=", str(p_Name))])
-        if (len(company) > 0):
-            company = company[0]
-        else:
-             raise Exception("Contact name does not exist")
         
         #Assigning the company id
         ext.res_id = company.id
-        
+        _logger.info("-------------Contact added.")
 
-###################################################################
