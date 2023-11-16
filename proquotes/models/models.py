@@ -787,7 +787,7 @@ class order(models.Model):
         weeks = 0
         days = 0
 
-        while (rentalLength.day >= 30):
+        while (rentalLength >= 30):
             months += 1
             rentalLength -= 30
         
