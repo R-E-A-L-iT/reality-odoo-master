@@ -864,6 +864,23 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
 
+
+    @api.onchange("scheduled_date")
+    def scheduled_date_change(self):
+        _logger.error("-!-!---------------scheduled_date_change: " + str(self.id))
+        _logger.error("-!-!---------------scheduled_date_change: " + str(self.scheduled_date))
+
+    @api.onchange("reservation_begin")
+    def reservation_begin_change(self):
+        _logger.error("-!-!---------------reservation_begin_change: " + str(self.id))
+        _logger.error("-!-!---------------reservation_begin_change: " + str(self.reservation_begin))      
+
+    @api.onchange("return_date")
+    def return_date_change(self):
+        _logger.error("-!-!---------------return_date_change: " + str(self.id))
+        _logger.error("-!-!---------------return_date_change: " + str(self.return_date))                
+        
+
     
     
 
