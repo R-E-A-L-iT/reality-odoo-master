@@ -781,6 +781,9 @@ class order(models.Model):
             self.rental_end = line.return_date
             break
 
+        _logger.error("---------------------------------- self.rental_start: " + str(self.rental_start))
+        _logger.error("---------------------------------- self.rental_end: " + str(self.rental_end))
+        
         #Calculate the number of day / week / mouth in the rental
         rentalLength = (self.rental_end - self.rental_start).days
         months = 0
