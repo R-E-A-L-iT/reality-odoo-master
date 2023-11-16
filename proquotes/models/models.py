@@ -798,6 +798,9 @@ class order(models.Model):
     ## !!!  This function will update the current sale.order based on the first head item.
     @api.onchange("order_line")
     def order_line_changed(self):
+        if not self.is_rental:
+            return
+            
         _logger.error("---------------------------------- order_line_changed")
         sale_order_lines_head_item, sale_order_lines_to_be_discounted = self.get_rental_headItem_and_kitItems()
         for line in sale_order_lines_head_item:
