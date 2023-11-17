@@ -818,12 +818,21 @@ class order(models.Model):
 
             _logger.error("---------------------------------- self.pricelist_id: " + str(self.pricelist_id))
             _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
+            _logger.error("---------------------------------- line.product_tmpl_id: " + str(line.product_tmpl_id))
 
-            item_price = self.env["product.pricelist.item"].search([
-                        ("pricelist_id", "=", self.pricelist_id), 
-                        ("product_id", "=", line.product_id)]).price
+            # line.product_tmpl_id
+            
+            
+            # item_price = self.env["rental.pricing"].search([
+            #             ("pricelist_id", "=", self.pricelist_id), 
+            #             ("product_template_id", "=", line.product_tmpl_id)]).price
+
+
+            # item_price = self.env["product.pricelist.item"].search([
+            #             ("pricelist_id", "=", self.pricelist_id), 
+            #             ("product_id", "=", line.product_id)]).price
                     
-            _logger.error("---------------------------------- product.pricelist.item: " + str(item_price))
+            #_logger.error("---------------------------------- product.pricelist.item: " + str(item_price))
 
             price = line.price_unit
             rentalEstimateSubTotal = 0
