@@ -805,15 +805,25 @@ class order(models.Model):
 		# for each rental accessories, adjust the unit price
         for line in sale_order_rentalaccesories: 
             
-            item_prices = self.env["rental.pricing"].search([
+            day_price = self.env["rental.pricing"].search([
                         ("pricelist_id", "=", self.pricelist_id.id), 
-                        ("product_template_id", "=", line.product_id.product_tmpl_id.id)])
+                        ("product_template_id", "=", line.product_id.product_tmpl_id.id),
+                        ("unit", "=", "day")]).price
 
-            price = line.price_unit
+            week_price = self.env["rental.pricing"].search([
+                        ("pricelist_id", "=", self.pricelist_id.id), 
+                        ("product_template_id", "=", line.product_id.product_tmpl_id.id),
+                        ("unit", "=", "week")]).price
+
+            month_price = self.env["rental.pricing"].search([
+                        ("pricelist_id", "=", self.pricelist_id.id), 
+                        ("product_template_id", "=", line.product_id.product_tmpl_id.id),
+                        ("unit", "=", "month")]).price                        
+            
             rentalEstimateSubTotal = 0
-            rentalEstimateSubTotal += days * item_prices.search([("unit", "=", "day")]).price                        
-            rentalEstimateSubTotal += weeks * item_prices.search([("unit", "=", "week")]).price
-            rentalEstimateSubTotal += months * item_prices.search([("unit", "=", "month")]).price    
+            rentalEstimateSubTotal += days * day_price                       
+            rentalEstimateSubTotal += weeks * week_price
+            rentalEstimateSubTotal += months * month_price   
             line.price_unit = rentalEstimateSubTotal
 
 
