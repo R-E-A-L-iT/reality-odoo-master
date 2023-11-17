@@ -804,6 +804,10 @@ class order(models.Model):
 
 		# for each rental accessories, adjust the unit price
         for line in sale_order_rentalaccesories: 
+
+            _logger.error("---------------------------------- self.pricelist_id.id: " + str(self.pricelist_id.id))
+            _logger.error("---------------------------------- line.product_id.product_tmpl_id.id: " + str(line.product_id.product_tmpl_id.id))
+
             
             day_price = self.env["rental.pricing"].search([
                         ("pricelist_id", "=", self.pricelist_id.id), 
@@ -820,6 +824,7 @@ class order(models.Model):
                         ("product_template_id", "=", line.product_id.product_tmpl_id.id),
                         ("unit", "=", "month")]).price                        
             
+
             rentalEstimateSubTotal = 0
             rentalEstimateSubTotal += days * day_price                       
             rentalEstimateSubTotal += weeks * week_price
