@@ -807,7 +807,7 @@ class order(models.Model):
             
             item_prices = self.env["rental.pricing"].search([
                         ("pricelist_id", "=", self.pricelist_id), 
-                        ("product_template_id", "=", line.product_id.product_tmpl_id)])
+                        ("product_template_id", "=", line.product_id.product_tmpl_id.id)])
 
             price = line.price_unit
             rentalEstimateSubTotal = 0
