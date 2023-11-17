@@ -356,7 +356,6 @@ class order(models.Model):
             self.setRentalDiscount()                 
         else:
             self.is_rental = False
-
             
         if (self.sale_order_template_id.name != False and "Renewal" in self.sale_order_template_id.name):
             self.is_renewal = True
@@ -376,35 +375,6 @@ class order(models.Model):
     #     return {
     #         'name': 'testing name'
     #     }
-
-    ######################################################################
-    @api.onchange("rental_start")
-    def rental_start_onchange(self):
-        _logger.error("rental_start_onchange")
-
-        if (not self.is_rental):
-            return
-        
-        self.adjust_rental_date()
-        
-
-    ######################################################################
-    @api.onchange("rental_end")
-    def rental_end_onchange(self):
-        _logger.error("rental_end_onchange")
-
-        if (not self.is_rental):
-            return
-        
-        self.adjust_rental_date()
-        
-
-    ######################################################################
-    def adjust_rental_date(self):
-        _logger.error("adjust_rental_date")
-
-        if (not self.is_rental):
-            return
 
 
     ######################################################################
@@ -473,34 +443,6 @@ class order(models.Model):
                 sale_order_rentalaccesories.append(line)
 
         return sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories
-
-
-    # # Methot do update the pricelist base on the current partner_id of the sale_order.
-    # def setPricelist(self):
-    #     country_id = int(self.partner_id.country_id)
-    #     if (country_id >= 0):
-    #         country = self.env["res.country"].search([("id", "=", country_id)])
-    #         #_logger.error("country.name: " + str(country.name))
-    #
-    #         currency_id = int(country.currency_id)
-    #         if (currency_id >= 0):
-    #             currency = self.env["res.currency"].search([("id", "=", currency_id)])
-    #             # _logger.error("currency.id: " + str(currency.id))
-    #             # _logger.error("currency.name: " + str(currency.name))
-    #
-    #             #not a good management, create more user problem since when updating price, the discount does aways.
-    #             if (self.is_rental):
-    #                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "RENTAL")])
-    #                 if (len(pricelist_array) == 1):
-    #                     self.pricelist_id = pricelist_array[0]
-    #                     #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
-    #                     #would be nice to update the price list but I can't find the method "update prices"
-    #             else:
-    #                 pricelist_array = self.env["product.pricelist"].search([("currency_id", "=", currency_id), ("name", "ilike", "SALE")])
-    #                 if (len(pricelist_array) == 1):
-    #                     self.pricelist_id = pricelist_array[0]
-    #                     #_logger.error("self.pricelist_id: " + str(self.pricelist_id))
-    #                     #would be nice to update the price list but I can't find the method "update prices"
         
     def generate_section_line(self, name, *, special="regular", selected="true"):
         section = self.env["sale.order.line"].new(
@@ -772,15 +714,18 @@ class order(models.Model):
     ## !!!  This function will update the current sale.order based on the first head item.
     @api.onchange("order_line")
     def order_line_changed(self):
+        #only valide for rental sale order
         if not self.is_rental:
             return
 
-        _logger.error("---------------------------------- order_line_changed")
+        #get the list of the different section
         sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories = self.get_rental_headItem_and_kitItems()
+
         for line in sale_order_lines_head_item:
             #exit if the date are not set
             if (not line.scheduled_date or not line.return_date):
                 return
+
             self.rental_start = line.scheduled_date
             self.rental_end = line.return_date
             break
@@ -806,11 +751,9 @@ class order(models.Model):
 		# for each rental accessories, adjust the unit price
         for line in sale_order_rentalaccesories: 
 
-            _logger.error("---------------------------------- self.pricelist_id.id: " + str(self.pricelist_id.id))
-            _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
-            _logger.error("---------------------------------- line.product_id.product_tmpl_id.id: " + str(line.product_id.product_tmpl_id.id))
-
-            if (line.product_id == False or
+            #check for validity of the needed value for the search
+            if (self.pricelist_id.id == False or
+                line.product_id == False or
                 line.product_id.product_tmpl_id.id == False):
                 continue
             
@@ -827,9 +770,9 @@ class order(models.Model):
             month_price = self.env["rental.pricing"].search([
                         ("pricelist_id", "=", self.pricelist_id.id), 
                         ("product_template_id", "=", line.product_id.product_tmpl_id.id),
-                        ("unit", "=", "month")]).price                        
-            
+                        ("unit", "=", "month")]).price                                    
 
+            #building the line price based on the rental price
             rentalEstimateSubTotal = 0
             rentalEstimateSubTotal += days * day_price                       
             rentalEstimateSubTotal += weeks * week_price
