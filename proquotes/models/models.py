@@ -803,40 +803,17 @@ class order(models.Model):
             rentalLength -= 1
 
 		# for each rental accessories, adjust the unit price
-        line.return_date - line.scheduled_date
-
-
-
         for line in sale_order_rentalaccesories: 
-
-            # pricelist = self.env["product.pricelist.item"].search([
-            # ("pricelist_id", "=", self.pricelist_id), 
-            # ("product_id", "=", line.product_id)]).price
-
-
-            _logger.error("---------------------------------- self.pricelist_id: " + str(self.pricelist_id))
-            _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
-            _logger.error("---------------------------------- line.product_id.product_tmpl_id: " + str(line.product_id.product_tmpl_id))
-
-            # line.product_tmpl_id
             
-            
-            # item_price = self.env["rental.pricing"].search([
-            #             ("pricelist_id", "=", self.pricelist_id), 
-            #             ("product_template_id", "=", line.product_tmpl_id)]).price
-
-
-            # item_price = self.env["product.pricelist.item"].search([
-            #             ("pricelist_id", "=", self.pricelist_id), 
-            #             ("product_id", "=", line.product_id)]).price
-                    
-            #_logger.error("---------------------------------- product.pricelist.item: " + str(item_price))
+            item_prices = self.env["rental.pricing"].search([
+                        ("pricelist_id", "=", self.pricelist_id), 
+                        ("product_template_id", "=", line.product_tmpl_id)])
 
             price = line.price_unit
             rentalEstimateSubTotal = 0
-            rentalEstimateSubTotal += 1 * days * price                        
-            rentalEstimateSubTotal += 4 * weeks * price
-            rentalEstimateSubTotal += 12 * months * price    
+            rentalEstimateSubTotal += days * item_prices.search([("unit", "=", "day")])                        
+            rentalEstimateSubTotal += weeks * item_prices.search([("unit", "=", "week")])
+            rentalEstimateSubTotal += months * item_prices.search([("unit", "=", "month")])    
             line.price_unit = rentalEstimateSubTotal
 
 
