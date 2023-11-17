@@ -808,8 +808,8 @@ class order(models.Model):
 
 
         for line in sale_order_rentalaccesories: 
-            p = self.env["product.product"]
-            p.search([("id", "=", line.product_id)])
+            #p = self.env["product.product"]
+            #p.search([("id", "=", line.product_id)])
 
             # pricelist = self.env["product.pricelist.item"].search([
             # ("pricelist_id", "=", self.pricelist_id), 
