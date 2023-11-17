@@ -806,7 +806,7 @@ class order(models.Model):
         for line in sale_order_rentalaccesories: 
             
             item_prices = self.env["rental.pricing"].search([
-                        ("pricelist_id", "=", self.pricelist_id), 
+                        ("pricelist_id", "=", self.pricelist_id.id), 
                         ("product_template_id", "=", line.product_id.product_tmpl_id.id)])
 
             price = line.price_unit
