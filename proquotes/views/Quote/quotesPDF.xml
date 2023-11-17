@@ -150,7 +150,7 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
-			<!-- Keep for Backwards Compatibiliy -->
+			<!-- If Backwards Compatibiliy is needed...
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
@@ -169,7 +169,7 @@
 						<span t-field="doc.rental_zip" />
 					</t>
 				</td>
-			</t>
+			</t>-->
 			<!-- Keep For Backwards Compatibility -->
 			<t t-if="line.name == '$rental_pricenote'">
 				<td style="border-style: none;" colspan="100">
@@ -222,12 +222,29 @@
 			<t t-if="line.name == '$rental_info'">
 				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+						<table>
+							<tr>
+								<td style="border: none;">Start of the Rental</td>
+								<td style="border: none;"></td>
+								<p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" />
+							</tr>
+							<tr>
+								<td style="border: none;">End of the Rental</td>
+								<td style="border: none;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
+							</tr>
+						</table>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+						<table>
+							<tr>
+								<td style="border: none;">Début de la Location</td>
+								<td style="border: none;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
+							</tr>
+							<tr>
+								<td style="border: none;">Fin estimée de la Location</td>
+								<td style="border: none;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
+							</tr>
+						</table>						
 					</t>
 					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
 						* The final rental cost will be calculated once the equipement is returned.
