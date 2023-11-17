@@ -222,24 +222,24 @@
 			<t t-if="line.name == '$rental_info'">
 				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important border: 0rem solid !important;">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<table>
-							<tr>
+						<table style="border: 0rem solid;">
+							<tr style="border: 0rem solid;">
 								<td style="border: 0rem solid;">Start of the Rental</td>
 								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
 							</tr>
-							<tr>
+							<tr style="border: 0rem solid;">
 								<td style="border: 0rem solid;">End of the Rental</td>
 								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
 							</tr>
 						</table>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<table>
-							<tr>
+						<table style="border: 0rem solid;">
+							<tr style="border: 0rem solid;">
 								<td style="border: 0rem solid;">Début de la Location</td>
 								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
 							</tr>
-							<tr>
+							<tr style="border: 0rem solid;">
 								<td style="border: 0rem solid;">Fin estimée de la Location</td>
 								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
 							</tr>
