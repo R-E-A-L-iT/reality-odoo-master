@@ -806,6 +806,7 @@ class order(models.Model):
         for line in sale_order_rentalaccesories: 
 
             _logger.error("---------------------------------- self.pricelist_id.id: " + str(self.pricelist_id.id))
+            _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
             _logger.error("---------------------------------- line.product_id.product_tmpl_id.id: " + str(line.product_id.product_tmpl_id.id))
 
             
