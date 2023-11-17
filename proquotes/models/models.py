@@ -22,6 +22,8 @@ from .translation import name_translation
 _logger = logging.getLogger(__name__)
 
 
+
+####################################################################################################################################
 class purchase_order(models.Model):
     _inherit = "purchase.order"
     footer = fields.Selection(
@@ -50,6 +52,7 @@ class purchase_order(models.Model):
         help="Footer selection field",
     )
 
+    ###########################################################################
     def _get_default_footer(self):
         # Get Company
         company = None
@@ -96,6 +99,8 @@ class purchase_order(models.Model):
     )
 
 
+
+####################################################################################################################################
 class invoice(models.Model):
     _inherit = "account.move"
     footer = fields.Selection(
@@ -124,6 +129,8 @@ class invoice(models.Model):
         help="Footer selection field",
     )
 
+
+    ###########################################################################
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
@@ -182,6 +189,8 @@ class invoice(models.Model):
     )
 
 
+
+####################################################################################################################################
 class order(models.Model):    
     _inherit = "sale.order"
 
@@ -238,6 +247,8 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
     renewal_product_items = fields.Many2many(string="Renewal Items", comodel_name="stock.production.lot")
 
+
+    ###########################################################################
     def _default_footer(self):
         # Get Company
         company = None
@@ -291,6 +302,8 @@ class order(models.Model):
             return False
             raise UserError("No Default Footer Available")
 
+
+    ###########################################################################
     def _default_header(self):
         # Get Company
         company = None
@@ -347,7 +360,7 @@ class order(models.Model):
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
 
 
-    ######################################################################
+    ###########################################################################
     @api.onchange("sale_order_template_id")
     def set_sale_order_flags(self):
         # Set a flag if quotes is a rental quote        
@@ -363,21 +376,14 @@ class order(models.Model):
             self.is_renewal = False
         
     
-    ######################################################################
+    ###########################################################################
     @api.onchange("pricelist_id")
     def pricelistChanged(self):
         self.setRentalDiscount()
 
 
-    # @api.model
-    # def odoo_test_comm(self, args):#, p_startDateValue):#, p_endDateDate):
-    #     _logger.error("----------------odoo_test_comm ----------------------")
-    #     return {
-    #         'name': 'testing name'
-    #     }
-
-
-    ######################################################################
+    ###########################################################################
+    # Method to set the first item of a Rental kit section to 0% discount, and all the rest to 100% discount
     def setRentalDiscount(self):      
         try:        
             sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories = self.get_rental_headItem_and_kitItems()
@@ -400,10 +406,10 @@ class order(models.Model):
     ###########################################################################
     #Methode to set the first item of a rental kit to 0% discount, and all the reste of the kit at 100% discounte
     # The method will iterate all the order_line
-    # if it's a $block+ it will skip.
     # If it encounteur a line that start with # and that inclunde "RENTAL KIT", 
-    # it will put the first item in a list
-    # and all the folowing item in another.
+    #   it will put the first item in a list and all the folowing item in another.
+    # If it encounteur a line that start with # and that inclunde "rental_accessories",
+    #   it will get all the items ot that bloc into one list.
     def get_rental_headItem_and_kitItems(self):
         _logger.error("---------------------------------- get rental headItem and kitItems")
             
@@ -443,7 +449,9 @@ class order(models.Model):
                 sale_order_rentalaccesories.append(line)
 
         return sale_order_lines_head_item, sale_order_lines_to_be_discounted, sale_order_rentalaccesories
-        
+
+
+    ###########################################################################        
     def generate_section_line(self, name, *, special="regular", selected="true"):
         section = self.env["sale.order.line"].new(
             {
@@ -456,6 +464,8 @@ class order(models.Model):
         )
         return section
 
+    
+    ###########################################################################    
     def generate_product_line(
         self,
         product_id,
@@ -501,6 +511,7 @@ class order(models.Model):
         )
         return line
 
+    ###########################################################################
     def hardwareCCP(self, hardware_lines, product):
         # Generate lines based on renewal_map entries specifing what to offer
 
@@ -527,6 +538,7 @@ class order(models.Model):
             section_lines.append(line.id)
         hardware_lines.extend(section_lines)
 
+    ###########################################################################
     def softwareCCP(self, software_lines, product):
         # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
@@ -546,6 +558,7 @@ class order(models.Model):
             return line
         software_lines.append(line.id)
 
+    ###########################################################################
     def softwareSubCCP(self, software_sub_lines, product):
         # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
@@ -565,6 +578,7 @@ class order(models.Model):
             return line
         software_sub_lines.append(line.id)
 
+    ###########################################################################
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
         # Verify Correct Template
@@ -610,6 +624,7 @@ class order(models.Model):
         if error_msg != "":
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
+    ###########################################################################
     def calc_rental_price(self, price):
         # Take into account length of rental
         if self.rental_start == False or self.rental_end == False:
@@ -638,6 +653,7 @@ class order(models.Model):
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
+    ###########################################################################
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
         for order in self:
@@ -655,6 +671,7 @@ class order(models.Model):
                 }
             )
 
+    ###########################################################################
     def _compute_amount_undiscounted(self):
         # Ensure sale order lines are selected to included in calculation
         for order in self:
@@ -670,6 +687,7 @@ class order(models.Model):
                     )
             order.amount_undiscounted = total
 
+    ###########################################################################
     def _amount_by_group(self):
         #  Overden Method to Ensure sale order lines are selected to included in calculation
         for order in self:
@@ -710,8 +728,9 @@ class order(models.Model):
                 for l in res
             ]
 
-    ########################################################
+    ###########################################################################
     ## !!!  This function will update the current sale.order based on the first head item.
+    ## !!!  It does not support multiple rental date for a single sale.order.
     @api.onchange("order_line")
     def order_line_changed(self):
         #only valide for rental sale order
@@ -731,22 +750,10 @@ class order(models.Model):
             break
 
         #Calculate the number of day / week / mouth in the rental
-        rentalLength = (self.rental_end - self.rental_start).days
-        months = 0
-        weeks = 0
-        days = 0
-
-        while (rentalLength >= 30):
-            months += 1
-            rentalLength -= 30
-        
-        while (rentalLength >= 7):
-            weeks += 1
-            rentalLength -= 7
-        
-        while (rentalLength >= 1):
-            days += 1
-            rentalLength -= 1
+        rental_days_length = (self.rental_end - self.rental_start).days
+        months = rental_days_length // 30
+        weeks = (rental_days_length - (months * 30)) // 7
+        days = (rental_days_length - (months * 30 + weeks * 7))
 
 		# for each rental accessories, adjust the unit price
         for line in sale_order_rentalaccesories: 
@@ -781,7 +788,7 @@ class order(models.Model):
 
 
             
-#########################################################################
+####################################################################################################################################
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
 
@@ -832,19 +839,19 @@ class orderLineProquotes(models.Model):
         help="Field to Lock Quantity on Products",
     )      
 
-
+    ###########################################################################
     def get_applied_name(self):
         n = name_translation(self)
         n.get_applied_name()
 
-
+    ###########################################################################
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
             return product.description_sale
         else:
             return "<span></span>"
 
-
+    ###########################################################################
     @api.onchange("scheduled_date")
     def scheduled_date_change(self):
         _logger.error("-!-!---------------scheduled_date_change id : " + str(self.id))
@@ -852,21 +859,20 @@ class orderLineProquotes(models.Model):
         _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
 
     
-
+    ###########################################################################
     @api.onchange("return_date")
     def return_date_change(self):
         _logger.error("-!-!---------------return_date_change id: " + str(self.id))
         _logger.error("-!-!---------------return_date: " + str(self.return_date))  
         _logger.error("-!-!---------------scheduled_date_change order_id: " + str(self.order_id))
 
-        
-
+         
     
-    
-
+####################################################################################################################################
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
 
+    ###########################################################################
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
@@ -902,6 +908,8 @@ class proquotesMail(models.TransientModel):
         return multi_mode and values or values[res_ids[0]]
 
 
+
+####################################################################################################################################
 class variant(models.Model):
     _name = "proquotes.variant"
     _description = "Model that Represents Variants for Customer Multi-Level Choices"
@@ -913,25 +921,29 @@ class variant(models.Model):
     rule = fields.Char(string="Variant Rule", required=True, default="None")
 
 
+
+####################################################################################################################################
 class person(models.Model):
     _inherit = "res.partner"
 
     products = fields.One2many("stock.production.lot", "owner", string="Products")
 
 
+
+####################################################################################################################################
 class owner(models.Model):
     _inherit = "stock.production.lot"
 
     owner = fields.Many2one("res.partner", string="Owner")
 
+    ###########################################################################
     def copy_label(self):
         # Form Button Needs a Python Target Function
         return
 
 
+####################################################################################################################################
 # pdf footer
-
-
 class pdf_quote(models.Model):
     _inherit = "sale.report"
 
