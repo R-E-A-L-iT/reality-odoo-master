@@ -459,6 +459,7 @@ class order(models.Model):
                     rentalAccesoriesSection = True                
                 else:   
                     rentalKitSection = False
+                    rentalAccesoriesSection = False 
                     firstItem = True
                 continue
 
