@@ -815,6 +815,10 @@ class order(models.Model):
             # ("pricelist_id", "=", self.pricelist_id), 
             # ("product_id", "=", line.product_id)]).price
 
+
+            _logger.error("---------------------------------- self.pricelist_id: " + str(self.pricelist_id))
+            _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
+
             item_price = self.env["product.pricelist.item"].search([
                         ("pricelist_id", "=", self.pricelist_id), 
                         ("product_id", "=", line.product_id)]).price
