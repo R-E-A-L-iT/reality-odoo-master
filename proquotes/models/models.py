@@ -811,9 +811,9 @@ class order(models.Model):
 
             price = line.price_unit
             rentalEstimateSubTotal = 0
-            rentalEstimateSubTotal += days * item_prices.search([("unit", "=", "day")])                        
-            rentalEstimateSubTotal += weeks * item_prices.search([("unit", "=", "week")])
-            rentalEstimateSubTotal += months * item_prices.search([("unit", "=", "month")])    
+            rentalEstimateSubTotal += days * item_prices.search([("unit", "=", "day")]).price                        
+            rentalEstimateSubTotal += weeks * item_prices.search([("unit", "=", "week")]).price
+            rentalEstimateSubTotal += months * item_prices.search([("unit", "=", "month")]).price    
             line.price_unit = rentalEstimateSubTotal
 
 
