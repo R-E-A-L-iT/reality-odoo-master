@@ -809,7 +809,8 @@ class order(models.Model):
             _logger.error("---------------------------------- line.product_id: " + str(line.product_id))
             _logger.error("---------------------------------- line.product_id.product_tmpl_id.id: " + str(line.product_id.product_tmpl_id.id))
 
-            if (line.product_id == False):
+            if (line.product_id == False or
+                line.product_id.product_tmpl_id.id == False):
                 continue
             
             day_price = self.env["rental.pricing"].search([
