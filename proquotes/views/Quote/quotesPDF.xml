@@ -234,12 +234,12 @@
 						</table>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<table>
-							<tr>
+						<table style="border-style: none;">
+							<tr style="border-style: none;">
 								<td style="border-style: none;">Début de la Location</td>
 								<td style="border-style: none;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
 							</tr>
-							<tr>
+							<tr style="border-style: none;">
 								<td style="border-style: none;">Fin estimée de la Location</td>
 								<td style="border-style: none;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
 							</tr>
