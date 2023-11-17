@@ -804,22 +804,33 @@ class order(models.Model):
 
 		# for each rental accessories, adjust the unit price
         line.return_date - line.scheduled_date
+
+
+
         for line in sale_order_rentalaccesories: 
+            p = self.env["product.product"]
+            p.search([("id", "=", line.product_id)])
+
+            # pricelist = self.env["product.pricelist.item"].search([
+            # ("pricelist_id", "=", self.pricelist_id), 
+            # ("product_id", "=", line.product_id)]).price
+
+            item_price = self.env["product.pricelist.item"].search([
+                        ("pricelist_id", "=", self.pricelist_id), 
+                        ("product_id", "=", line.product_id)]).price
+                    
+            _logger.error("---------------------------------- product.pricelist.item: " + str(item_price))
+
             price = line.price_unit
             rentalEstimateSubTotal = 0
-
             rentalEstimateSubTotal += 1 * days * price                        
             rentalEstimateSubTotal += 4 * weeks * price
-            rentalEstimateSubTotal += 12 * months * price
-
+            rentalEstimateSubTotal += 12 * months * price    
             line.price_unit = rentalEstimateSubTotal
+
+
             
-            
-
-
-
-
-
+#########################################################################
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
 
