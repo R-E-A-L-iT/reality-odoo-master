@@ -10,22 +10,26 @@
 				<div>
 					<table>
 						<tr>
-							<td>
+							<td style="border: none;">
 								<label for="rental-start">
 									<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
 									<span t-if="clang == 'fr_CA'">Début de la Location:</span>
 								</label>
 							</td>
-							<td><input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/></td>
+							<td style="border: none;">
+								<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
+							</td>
 						</tr>					
 						<tr>
-							<td>
+							<td style="border: none;">
 								<label for="rental-end">
 									<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
 									<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
 								</label>
 							</td>
-							<td><input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/></td>
+							<td style="border: none;">
+								<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
+							</td>
 						</tr>
 					</table>
 					
