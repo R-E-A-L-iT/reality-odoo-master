@@ -224,24 +224,24 @@
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<table>
 							<tr>
-								<td style="border-style: none;">Start of the Rental</td>
-								<td style="border-style: none;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
+								<td style="border: 0rem solid;">Start of the Rental</td>
+								<td style="border: 0rem solid;;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
 							</tr>
 							<tr>
-								<td style="border-style: none;">End of the Rental</td>
-								<td style="border-style: none;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
+								<td style="border: 0rem solid;">End of the Rental</td>
+								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
 							</tr>
 						</table>
 					</t>
 					<t t-elif="clang == 'fr_CA'">
-						<table style="border-style: none;">
-							<tr style="border-style: none;">
-								<td style="border-style: none;">Début de la Location</td>
-								<td style="border-style: none;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
+						<table>
+							<tr>
+								<td style="border: 0rem solid;">Début de la Location</td>
+								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
 							</tr>
-							<tr style="border-style: none;">
-								<td style="border-style: none;">Fin estimée de la Location</td>
-								<td style="border-style: none;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
+							<tr>
+								<td style="border: 0rem solid;">Fin estimée de la Location</td>
+								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
 							</tr>
 						</table>						
 					</t>
