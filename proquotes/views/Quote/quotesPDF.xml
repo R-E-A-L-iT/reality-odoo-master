@@ -220,12 +220,12 @@
 			</t>
 			<!-- Rental Quote Info -->
 			<t t-if="line.name == '$rental_info'">
-				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
+				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important border: 0rem solid !important;">
 					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<table>
 							<tr>
 								<td style="border: 0rem solid;">Start of the Rental</td>
-								<td style="border: 0rem solid;;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
+								<td style="border: 0rem solid;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
 							</tr>
 							<tr>
 								<td style="border: 0rem solid;">End of the Rental</td>
