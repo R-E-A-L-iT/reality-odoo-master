@@ -16,6 +16,9 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+_logger = logging.getLogger(__name__)
+
+
 
 class productType(models.Model):
     _inherit = "product.template"
@@ -56,6 +59,7 @@ class productInstance(models.Model):
     # Automate formated_label
     def _label(self):
         for i in self:
+            _logger.info("***************  _label: i: " + str(i))
             parsedLabel = i.product_id.name.split(" - ")
             if len(parsedLabel) > 1:
                 result = parsedLabel[1]
