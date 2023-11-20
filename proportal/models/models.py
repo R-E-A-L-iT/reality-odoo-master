@@ -80,7 +80,7 @@ class productInstance(models.Model):
             _logger.info("***************  _label: r2: " + str(r))  
             i.formated_label = r
             _logger.info("***************  _label:i.formated_label = r: ")  
-            return
+            #return
 
 
 class PurchaseOrder(models.Model):
