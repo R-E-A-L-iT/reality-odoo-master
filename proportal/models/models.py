@@ -62,6 +62,8 @@ class productInstance(models.Model):
         for i in self:
             _logger.info("***************  _label: i: " + str(i))
             parsedLabel = i.product_id.name.split(" - ")
+            _logger.info("***************  _label: parsedLabel: " + str(parsedLabel))
+            _logger.info("***************  _label: len(parsedLabel): " + str(len(parsedLabel)))
             if len(parsedLabel) > 1:
                 result = parsedLabel[1]
                 for section in parsedLabel[2:]:
@@ -70,9 +72,12 @@ class productInstance(models.Model):
             else:
                 parsedLabel = parsedLabel[0]
 
+            _logger.info("***************  _label: if done")
             r = "#ccplabel+" + str(i.name) + "+" + str(parsedLabel)
+            _logger.info("***************  _label: r: " + str(r))  
             if i.expire != False:
                 r = r + "+" + str(i.expire)
+            _logger.info("***************  _label: r2: " + str(r))  
             i.formated_label = r
             return
 
