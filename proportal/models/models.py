@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from urllib import request
+import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
