@@ -94,7 +94,7 @@ odoo.define("proquotes.price", function (require) {
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
 
 					console.log("qty: " + input[1].type.toString());
-					console.log("qty:: " + input[1].quantityChange.toString());
+					console.log("qty:: " + input[1].value.toString());
 					var quantity = 1;
 
 					total += (unitValue * quantity);
