@@ -83,48 +83,15 @@ odoo.define("proquotes.price", function (require) {
 			for (var i = 0; i < items.length; i++) {
 				var input = items[i].getElementsByTagName("input");
 
-				for (let i = 0; i < input.length; i++) {
-					const element = input[i];
-				
-					console.log(`Element ${i + 1}:`);
-					
-					for (const key in element) {
-						const value = element[key];
-						console.log(`  ${key}: ${value}`);
-					}
-				
-					console.log("\n");
-				}
+				if ((input.length > 0) &&
+					(input[0].checked == true) &&
+					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
+					(items[i].getElementsByClassName("itemValue").length > 0)) {
 
-				var include = true;
-				if (input.length > 0) {
-					console.log("Input type : ");
-					console.log(input[0].type);
-
-					if (input[0].type == "radio") {
-						if (input[0].checked != true) {
-							include = false;
-						}
-					}
-					else if (input[0].type == "checkbox") {
-						if (input[0].checked != true) {
-							include = false;
-						}
-					}					
-				}
-
-				console.log("include: " + include.toString());
-				if (include) {
-					console.log("included: items[i].getElementsByClassName('itemValue').length: " + items[i].getElementsByClassName("itemValue").length.toString());
-
-					if (items[i].getElementsByClassName("itemValue").length > 0) {
-						var value = parseInt(items[i].getElementsByClassName("itemValue")[0]
-							.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
-						console.log("value: " + value.toString());
-
-						total += value;
-					}
-				}
+					var value = parseInt(items[i].getElementsByClassName("itemValue")[0]
+						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
+					total += value;
+				}					
 			}
 			if (totalLandingEnglish != undefined) {
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
@@ -151,32 +118,6 @@ odoo.define("proquotes.price", function (require) {
 				}
 				return;
 			}
-
-			// var startDateDate = new Date(startDate.value);
-			// var endDateDate = new Date(endDate.value);
-			//
-			// let milliInSeconds = 1000
-			// let secondsInMinute = 60
-			// let minuteInHour = 60
-			// let hourInDay = 24
-			// var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
-			// var months = 0;
-			// var weeks = 0;
-			// var days = 0;
-			//
-			// while (rentalLength >= 30) {
-			// 	months += 1
-			// 	rentalLength -= 30;
-			// }
-			// while (rentalLength >= 7) {
-			// 	weeks += 1
-			// 	rentalLength -= 7
-			// }
-			// while (rentalLength >= 1) {
-			// 	days += 1;
-			// 	rentalLength -= 1;
-			// }
-
 			var rentalEstimateTotal = 0
 			var productPrices = document.getElementsByClassName("rental_rate_calc")
 
@@ -193,24 +134,6 @@ odoo.define("proquotes.price", function (require) {
 						}
 					}
 				}
-				//console.log(productPrices[i])
-				// var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-				// console.log("Rental Estimate Total" + rentalEstimateTotal)
-				// var rentalEstimateSubTotal = 0;
-				// rentalEstimateSubTotal += 1 * days * price;
-				// if(rentalEstimateSubTotal > 4 * price) {
-				// 	console.log(rentalEstimateSubTotal)
-				// 	console.log(price * 4)
-				// 	rentalEstimateSubTotal = 4 * price
-				// }
-				// rentalEstimateSubTotal += 4 * weeks * price;
-				// if(rentalEstimateSubTotal > 12 * price) {
-				// 	console.log(rentalEstimateSubTotal)
-				// 	console.log(price * 12)
-				// 	rentalEstimateSubTotal = 12 * price
-				// }
-				// rentalEstimateSubTotal += 12 * months * price;
-				//rentalEstimateTotal += rentalEstimateSubTotal
 				rentalEstimateTotal = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "")
 			}
 			if (rentalEstimateEnglish != undefined) {
