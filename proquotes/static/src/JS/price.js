@@ -86,7 +86,13 @@ odoo.define("proquotes.price", function (require) {
 				if (input.length > 0) {
 					console.log("Input type : ");
 					console.log(input[0].type);
-					if (input[0].type == "checkbox") {
+
+					if (input[0].type == "radio") {
+						if (input[0].checked != true) {
+							include = false;
+						}
+					}
+					else if (input[0].type == "checkbox") {
 						if (input[0].checked != true) {
 							include = false;
 						}
