@@ -88,9 +88,13 @@ odoo.define("proquotes.price", function (require) {
 					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
 					(items[i].getElementsByClassName("itemValue").length > 0)) {
 
-					var value = parseInt(items[i].getElementsByClassName("itemValue")[0]
+					var unitValue = parseInt(items[i].getElementsByClassName("itemValue")[0]
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
-					total += value;
+
+					console.log("qty: " + items[i].getElementsByClassName("quantityChange").toString());
+					var quantity = 1;
+
+					total += (unitValue * quantity);
 				}					
 			}
 			if (totalLandingEnglish != undefined) {
