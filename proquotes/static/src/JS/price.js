@@ -82,6 +82,7 @@ odoo.define("proquotes.price", function (require) {
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
 				var input = items[i].getElementsByTagName("input");
+				console.log("input: " + input.toString());
 				var include = true;
 				if (input.length > 0) {
 					console.log("Input type : ");
