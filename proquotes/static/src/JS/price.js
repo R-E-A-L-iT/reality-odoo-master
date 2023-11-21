@@ -99,7 +99,7 @@ odoo.define("proquotes.price", function (require) {
 					}
 					
 				}
-
+				console.log("include: " + include.toString());
 				if (include) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
