@@ -183,7 +183,7 @@
 						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
-					<!-- Format Estimated Rental Rate Number -->
+					<!-- Format Estimated Rental Rate Number
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
 					<t t-if=" clang== 'en_CA' or clang == 'en_US'">
@@ -193,7 +193,7 @@
 						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
 					</t>
 					<br />
-					<br />
+					<br /> -->
 
 					<!-- Format Remtal Value Number -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
