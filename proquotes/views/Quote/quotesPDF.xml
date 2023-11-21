@@ -313,7 +313,7 @@
 				<!-- Following line puts a landing point for future upgrades that is not stuck within an if statement Do Not Delete-->
 				<t t-set="current_subtotal" t-value="current_subtotal" />
 				<!-- Calculate Section Subtotal for Rental Hardware Section -->
-				<t t-if="doc.is_rental == False or line.product_id.is_software or doc.rental_start == False or doc.rental_end == False">				
+				<t t-if="doc.is_rental == False or line.product_id.is_software or doc.rental_start == False or doc.rental_end == False">
 					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
 				</t>
 				<t t-elif="doc.rental_start != False and doc.rental_end != False">
