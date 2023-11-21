@@ -88,6 +88,7 @@ odoo.define("proquotes.price", function (require) {
 					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
 					(items[i].getElementsByClassName("itemValue").length > 0)) {
 
+					console.log("input len: " + input.length.toString());
 					var unitValue = parseInt(items[i].getElementsByClassName("itemValue")[0]
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
 
