@@ -54,25 +54,6 @@
 			<attribute name="t-if">section_empty</attribute>
 		</xpath>
 
-		<t t-function="renderRentalValueSection" t-if="clang == 'en_CA' or clang == 'en_US'">
-			<div class="rental_product_value">
-				<span>Total Rental Value:&#160; <span t-out="formatRentalValue" /></span>
-				<br />
-				<br />
-				<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
-				<br />
-			</div>
-		</t>		
-		<t t-elif="clang == 'fr_CA' or true" t-function="renderRentalValueSection">
-			<div class="rental_product_value">
-				<span>Valeur locative totale: &#160;<span t-out="formatRentalValue" /></span>
-				<br />
-				<br />
-				<span>Merci de fournir votre attestation d'assurance :</span>
-				<br />
-			</div>
-		</t>
-
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
@@ -98,7 +79,7 @@
 				}
 			</style>
 
-			<!-- <t t-function="renderRentalValueSection" t-if="clang == 'en_CA' or clang == 'en_US'">
+			<t t-function="renderRentalValueSection" t-if="clang == 'en_CA' or clang == 'en_US'">
 				<div class="rental_product_value">
 					<span>Total Rental Value:&#160; <span t-out="formatRentalValue" /></span>
 					<br />
@@ -106,8 +87,7 @@
 					<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
 					<br />
 				</div>
-			</t>
-			
+			</t>			
 			<t t-elif="clang == 'fr_CA' or true" t-function="renderRentalValueSection">
 				<div class="rental_product_value">
 					<span>Valeur locative totale: &#160;<span t-out="formatRentalValue" /></span>
@@ -116,7 +96,7 @@
 					<span>Merci de fournir votre attestation d'assurance :</span>
 					<br />
 				</div>
-			</t> -->
+			</t>
 			
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
