@@ -82,12 +82,12 @@ odoo.define("proquotes.price", function (require) {
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
 				var input = items[i].getElementsByTagName("input");
-				var inputValue = 1;
+				var inputValue = 0;
 
 				for (var j = 0; j < items.length; j++) {
 					// Access the current "quoteLineRow" element
 				 	var currentQuoteLineRow = items[j];
-				 	console.log(currentQuoteLineRow);
+				 	//console.log(currentQuoteLineRow);
 					if (currentQuoteLineRow != undefined)
 					{
 						// Get the "quantityChange" element within the current "quoteLineRow"
@@ -99,9 +99,8 @@ odoo.define("proquotes.price", function (require) {
 							inputValue = quantityInput.value;
 					
 							// Log the value to the console (you can perform other actions with the value as needed)
-							console.log("Value of quantityChange in quoteLineRow at index " + i + ": " + inputValue);
-						} else {
-							console.log("No quantityChange element found in quoteLineRow at index " + i);
+							//console.log("Value of quantityChange in quoteLineRow at index " + i + ": " + inputValue);
+							break;
 						}
 					}				
 				}			
@@ -110,14 +109,12 @@ odoo.define("proquotes.price", function (require) {
 					(input[0].checked == true) &&
 					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
 					(items[i].getElementsByClassName("itemValue").length > 0)) {
-
-					console.log("input len: " + input.length.toString());
-
+					
 					var unitValue = parseInt(items[i].getElementsByClassName("itemValue")[0]
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
 
-					console.log("qty: " + input[1].type.toString());
-					console.log("qty:: " + input[1].value.toString());
+					console.log("unitValue: " + unitValue.toString());
+					console.log("inputValue: " + inputValue.toString());
 
 					total += (unitValue * inputValue);
 				}					
