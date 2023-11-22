@@ -82,33 +82,32 @@ odoo.define("proquotes.price", function (require) {
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
 				var currentQuoteLineRow = items[i];				
-				var inputValue = 0;
+				var qtyValue = 0;
+				var unitValue = 0;
 
 				var quantityChange = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];											
 				var qtySpan = currentQuoteLineRow.getElementsByClassName("qtySpan")[0];
+				var input = currentQuoteLineRow.getElementsByTagName("input")[0];
 
+				//Get the quantity of item per line
 				if (quantityChange) {
-					inputValue = parseInt(quantityChange.value, 10);
+					qtyValue = parseInt(quantityChange.value, 10);
 				} else if (qtySpan) {
-					inputValue = parseInt(qtySpan.textContent, 10);
-				}							
-							
-				var input = currentQuoteLineRow.getElementsByTagName("input");
-				
-				if ((input.length > 0) &&
-					(input[0].checked == true) &&
-					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
+					qtyValue = parseInt(qtySpan.textContent, 10);
+				}		
+
+				//Get the value of the item
+				if ( input && 
+					(input.checked == true) &&
+					((input.type == "radio") || (input.type == "checkbox")) &&
 					(currentQuoteLineRow.getElementsByClassName("itemValue").length > 0)) {
 					
-					var unitValue = parseInt(currentQuoteLineRow.getElementsByClassName("itemValue")[0]
-						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
+					unitValue = parseInt(currentQuoteLineRow.getElementsByClassName("itemValue")[0]
+						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));					
+				}	
 
-					total += (unitValue * inputValue);
-
-					console.log("unitValue: " + unitValue.toString());
-					console.log("inputValue: " + inputValue.toString());
-					console.log("total: " + total.toString());
-				}					
+				//Calculating the total
+				total += (unitValue * qtyValue);				
 			}
 			if (totalLandingEnglish != undefined) {
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
