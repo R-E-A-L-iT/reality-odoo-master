@@ -80,6 +80,7 @@ odoo.define("proquotes.price", function (require) {
 			}
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
+			console.log("############################################################");
 			for (var i = 0; i < items.length; i++) {
 				var currentQuoteLineRow = items[i];				
 				var qtyValue = 0;
