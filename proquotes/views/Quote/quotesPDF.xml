@@ -78,6 +78,27 @@
 				list-style: lower-alpha;
 				}
 			</style>
+
+			<t t-function="renderRentalValueSection" t-if="clang == 'en_CA' or clang == 'en_US'">
+				<div class="rental_product_value">
+					<span>Total Rental Value:&#160; <span t-out="formatRentalValue" /></span>
+					<br />
+					<br />
+					<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
+					<br />
+				</div>
+			</t>
+			
+			<t t-elif="clang == 'fr_CA' or true" t-function="renderRentalValueSection">
+				<div class="rental_product_value">
+					<span>Valeur locative totale: &#160;<span t-out="formatRentalValue" /></span>
+					<br />
+					<br />
+					<span>Merci de fournir votre attestation d'assurance :</span>
+					<br />
+				</div>
+			</t>
+			
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="current_line_empty" t-value="line" />
@@ -198,7 +219,8 @@
 					<!-- Format Remtal Value Number -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-call="renderRentalValueSection"/>
+					<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
@@ -215,7 +237,7 @@
 							Merci de fournir votre attestation d'assurance :
 						</span>
 						<br />
-					</div>
+					</div> -->
 				</td>
 			</t>
 			<!-- Rental Quote Info -->
@@ -270,7 +292,8 @@
 					<!-- Format Rental Value Number -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-call="renderRentalValueSection"/>
+					<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
@@ -287,7 +310,7 @@
 							Merci de fournir votre attestation d'assurance :
 						</span>
 						<br />
-					</div>
+					</div> -->
 
 					<t t-if="doc.rental_diff_add == True">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">
