@@ -493,21 +493,10 @@
 			<t t-set="section_empty" t-value="False" />
 		</xpath>
 
-		<!-- For rental quotes calculate relevant sums
-		<xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		 <!-- For rental quotes calculate relevant sums -->
+		<xpath expr="//tbody/t[@t-set='current_subtotal']" position="after">
 			<t t-set="rentalValue" t-value="0" />
-			<t t-set="rentalRate" t-value="0" />
-
-			<t t-if="doc.rental_start != False and doc.rental_end != False">
-				<t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
-				<t t-set="edate" t-value="str(doc.rental_end).split('-')" />
-				<t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
-				<t t-set="rentalMonths" t-value="rentalDays // 30" />
-				<t t-set="rentalDays" t-value="rentalDays % 30" />
-				<t t-set="rentalWeeks" t-value="rentalDays // 7" />
-				<t t-set="rentalDays" t-value="rentalDays % 7" />
-			</t>
-		</xpath> -->
+		</xpath> 
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
