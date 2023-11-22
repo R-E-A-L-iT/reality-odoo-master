@@ -35,17 +35,26 @@
 					</table> 
 				</div>
 				-->
+
+				
 					
 				<!-- Rental Hardware Estimate -->
-				<t t-if="rental_estimate_display == True">
+				<!-- <t t-if="rental_estimate_display == True"> -->
 					
 					<!-- Display rental price explanation -->
-					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
+					<!-- <t t-call="proquotes.custom_sale_order_rental_price_explain"/> -->
 					
 					<!-- Display the rental value -->
-					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
+					<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
 					
-				</t>
+				<!-- </t> -->
+				
+				<!-- Display rental price explanation -->
+				<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
+
+				<!-- Display the rental value -->
+				<t t-call="proquotes.custom_sale_order_rental_value_template"/>
+
 				<br />
 				<!-- New Address Prompt -->
 				<div>
