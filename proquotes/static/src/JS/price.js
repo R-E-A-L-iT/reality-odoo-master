@@ -113,10 +113,11 @@ odoo.define("proquotes.price", function (require) {
 					var unitValue = parseInt(items[i].getElementsByClassName("itemValue")[0]
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
 
+					total += (unitValue * inputValue);
+
 					console.log("unitValue: " + unitValue.toString());
 					console.log("inputValue: " + inputValue.toString());
-
-					total += (unitValue * inputValue);
+					console.log("total: " + total.toString());
 				}					
 			}
 			if (totalLandingEnglish != undefined) {
