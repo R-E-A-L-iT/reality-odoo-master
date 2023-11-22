@@ -8,14 +8,14 @@
             <t t-elif="clang == 'fr_CA'" t-set="formatRentalValue" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 
             <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-                <span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
+                <span>Total Rental Valuee:&#160; <span id="total-rental-value-english" /></span>
                 <br />
                 <br />
                 <span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
                 <br />
             </div>
             <div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
-                <span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+                <span>Valeur locative totale: &#160; <span id="total-rental-value-french" /></span>
                 <br />
                 <br />
                 <span>Merci de fournir votre attestation d'assurance :</span>

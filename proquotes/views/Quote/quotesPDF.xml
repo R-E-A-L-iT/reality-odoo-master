@@ -77,27 +77,7 @@
 				ol ol{
 				list-style: lower-alpha;
 				}
-			</style>
-
-			<!-- <t t-function="renderRent alValueSection" t-if="clang == 'en_CA' or clang == 'en_US'">
-				<div class="rental_product_value">
-					<span>Total Rental Value:&#160; <span t-out="formatRentalValue" /></span>
-					<br />
-					<br />
-					<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
-					<br />
-				</div>
-			</t>			
-			<t t-elif="clang == 'fr_CA' or true" t-function="renderRent lValueSection">
-				<div class="rental_product_value">
-					<span>Valeur locative totale: &#160;<span t-out="formatRentalValue" /></span>
-					<br />
-					<br />
-					<span>Merci de fournir votre attestation d'assurance :</span>
-					<br />
-				</div>
-			</t> -->
-			
+			</style>			
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="current_line_empty" t-value="line" />
