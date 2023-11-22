@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_sale_order_rental_value_template" name="Sales Order Rental Value Content" inherit_id="sale.report_saleorder_document" priority="17">
+        <!-- Your template content here -->
+
+        <t t-set="formatRentalValue" t-value="'$ {value:,.2f}'.format(value= rentalValue)" t-if="clang == 'en_CA' or clang == 'en_US'" />
+        <t t-elif="clang == 'fr_CA'" t-set="formatRentalValue" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+
+        <t t-javascript="">
+            // Define the renderRentalValueSection function
+            function renderRentalValueSection() {
+                if (clang == 'en_CA' || clang == 'en_US') {
+                    return `
+                        <div class="rental_product_value">
+                            <span>Total Rental Value:&#160; ${formatRentalValue}</span>
+                            <br />
+                            <br />
+                            <span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
+                            <br />
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="rental_product_value">
+                            <span>Valeur locative totale: &#160;${formatRentalValue}</span>
+                            <br />
+                            <br />
+                            <span>Merci de fournir votre attestation d'assurance :</span>
+                            <br />
+                        </div>
+                    `;
+                }
+            }
+        </t>
+
+        <!-- Call the function to render the section -->
+        <t t-raw="renderRentalValueSection()"/>
+
+        <!-- End of your template content -->
+    </template>
+</odoo>
