@@ -8,11 +8,8 @@
 			<form autocomplete="on">
 				<!-- Dates -->
 				<div>
-
-					
-					<t t-call="proquotes.custom_sale_order_rental_date"/>
-					
-					<!-- <table>
+									
+					<table>
 						<tr>
 							<td style="border: none;">
 								<label for="rental-start">
@@ -35,7 +32,7 @@
 								<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
 							</td>
 						</tr>
-					</table> -->
+					</table>
 					
 				</div>
 				<!-- Rental Hardware Estimate -->

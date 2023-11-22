@@ -32,13 +32,7 @@
 				</div>
 			</div>
 		</xpath>
-
-		<!-- Hide Total On Rental Quotes -->
-		<xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
-			<!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
-		</xpath>
-
-		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> -->
+		
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
@@ -47,7 +41,6 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
 		</xpath>
-
 
 		<!-- Remove Original Table Header-->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace" />
@@ -77,23 +70,19 @@
 					</td>
 				</tr>
 			</t>
+
 			<!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
-			<t t-if="line.name == '$rental_pricenote'">
+			<!-- <t t-if="line.name == '$rental_pricenote'">
 				<tr>
-					<td style="border-style: none;" colspan="100">
-
-						<!-- <t t-call="proquotes.custom_sale_order_rental_date"/> -->
-
-						<!-- Display rental price explanation -->
-						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
-
-						<!-- Display the rental value -->
+					<td style="border-style: none;" colspan="100">						
+						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>						
 						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					</td>
 				</tr>
-			</t>
+			</t> -->
+
 			<!--  Keep for Backwards Compatibility-->
-			<t t-if="line.name == '$rental_address'">
+			<!-- <t t-if="line.name == '$rental_address'">
 				<t t-set="rental_estimate_display" t-value="False" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
@@ -109,7 +98,7 @@
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
-			</t>
+			</t> -->
 
 			<!-- New Table Header Rows-->
 			<t t-if="line.name == '$block' or line.name == '$block+'">
@@ -372,7 +361,7 @@
 				<span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
 				<span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label" />. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.</span>
 			</div>
-			<div t-if="'abtech' in sale_order.company_id.name.lower()">
+			<!-- <div t-if="'abtech' in sale_order.company_id.name.lower()">
 				<br />
 				<t t-if="clang == 'en_CA' or clang == 'en_US'">
 					<span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and therefore some or all of the quoted products may be invoiced and delivered by one of our partners.</span>
@@ -380,21 +369,8 @@
 				<t t-elif="clang == 'fr_CA'">
 					<span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés par l'un de nos partenaires.</span>
 				</t>
-			</div>
-			<!--
-			<t t-if="sale_order.is_rental == True">
-				<input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true" />
-				<label for="rental-terms-checkbox">
-					<h1>
-						<strong class="white-text" id="terms_hidden">+</strong>
-						<strong class="white-text" id="terms_open">×</strong>
-						<strong class="white-text" t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
-						<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
-					</h1>
-				</label>
-				<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
-			</t>
-			-->
+			</div> -->
+
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>

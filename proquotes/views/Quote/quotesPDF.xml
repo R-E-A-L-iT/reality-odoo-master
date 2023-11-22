@@ -150,9 +150,7 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
-
-			<t t-call="proquotes.custom_sale_order_rental_date"/>
-
+						
 			<!-- If Backwards Compatibiliy is needed...
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
@@ -174,19 +172,14 @@
 				</td>
 			</t>-->
 
-			<!-- Keep For Backwards Compatibility -->
+			<!-- Keep For Backwards Compatibility
 			<t t-if="line.name == '$rental_pricenote'">
-				<td style="border-style: none;" colspan="100">
-
-					<!-- <t t-call="proquotes.custom_sale_order_rental_date"/> -->
-
-					<!-- Display rental price explanation -->
-					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
-					
-					<!-- Display the rental value -->
+				<td style="border-style: none;" colspan="100">										
+					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>					
 					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 				</td>
-			</t>
+			</t> -->
+
 			<!-- Rental Quote Info -->
 			<t t-if="line.name == '$rental_info'">
 				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
