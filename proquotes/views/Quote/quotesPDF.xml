@@ -62,8 +62,7 @@
 				<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
 				<br />
 			</div>
-		</t>
-		
+		</t>		
 		<t t-elif="clang == 'fr_CA' or true" t-function="renderRentalValueSection">
 			<div class="rental_product_value">
 				<span>Valeur locative totale: &#160;<span t-out="formatRentalValue" /></span>
