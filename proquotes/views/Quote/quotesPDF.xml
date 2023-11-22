@@ -216,7 +216,7 @@
 					<br /> -->
 
 					<!-- Format Remtal Value Number -->
-					<t t-call="proquotes.Quote.custom_sale_order_rental_value_template"/>
+					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<t t-call="renderRentalValueSection"/> -->
@@ -288,7 +288,7 @@
 					</t>
 					<br />
 					<br />  -->
-					<t t-call="proquotes.Quote.custom_sale_order_rental_value_template"/>
+					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					<!-- Format Rental Value Number -->
 					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
