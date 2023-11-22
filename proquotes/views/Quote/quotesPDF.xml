@@ -178,7 +178,7 @@
 			<t t-if="line.name == '$rental_pricenote'">
 				<td style="border-style: none;" colspan="100">
 
-					<t t-call="proquotes.custom_sale_order_rental_date"/>
+					<!-- <t t-call="proquotes.custom_sale_order_rental_date"/> -->
 
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
