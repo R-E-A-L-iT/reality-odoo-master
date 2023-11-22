@@ -37,14 +37,11 @@
 							
 				<!-- Display rental price explanation -->
 				<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
-
-
-				<script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
-
+			
 				<t t-javascript="">
 					$(document).ready(function() {
 						// Call the JavaScript function from price.js
-						calculateTotalPrice();
+						_rentalValueTotal();
 					});
 				</t>
 				j
