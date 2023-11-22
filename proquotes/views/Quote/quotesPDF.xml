@@ -77,7 +77,7 @@
 				ol ol{
 				list-style: lower-alpha;
 				}
-			</style>			
+			</style>
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="current_line_empty" t-value="line" />
@@ -150,35 +150,6 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
-
-			<!-- If Backwards Compatibiliy is needed...
-			<t t-if="line.name == '$rental_address'">
-				<td colspan="99">
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-						<p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
-					</t>
-					<t t-if="doc.rental_diff_add == True">
-						<span t-field="doc.rental_street" />
-						<br />
-						<span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
-						<span t-esc="doc.rental_state.code" />
-						<span t-field="doc.rental_zip" />
-					</t>
-				</td>
-			</t>-->
-
-			<!-- Keep For Backwards Compatibility
-			<t t-if="line.name == '$rental_pricenote'">
-				<td style="border-style: none;" colspan="100">										
-					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>					
-					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
-				</td>
-			</t> -->
 
 			<!-- Rental Quote Info -->
 			<t t-if="line.name == '$rental_info'">
