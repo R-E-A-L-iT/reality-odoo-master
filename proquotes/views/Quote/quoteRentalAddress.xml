@@ -34,21 +34,20 @@
 						</tr>
 					</table> 
 				</div>
-					
-				<!-- Rental Hardware Estimate -->
-				<!-- <t t-if="rental_estimate_display == True"> -->
-					
-					<!-- Display rental price explanation -->
-					<!-- <t t-call="proquotes.custom_sale_order_rental_price_explain"/> -->
-					
-					<!-- Display the rental value -->
-					<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
-					
-				<!-- </t> -->
-				
+							
 				<!-- Display rental price explanation -->
 				<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 
+
+				<script type="text/javascript" src="/proquotes/static/src/JS/price.js"></script>
+
+				<t t-javascript="">
+					$(document).ready(function() {
+						// Call the JavaScript function from price.js
+						calculateTotalPrice();
+					});
+				</t>
+				
 				<!-- Display the rental value -->
 				<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 

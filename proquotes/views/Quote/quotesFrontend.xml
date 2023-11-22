@@ -81,16 +81,6 @@
 				</tr>
 			</t>
 
-			<!--  Keep for Backwards Compatibility-->
-			<!-- <t t-if="line.name == '$rental_address'">
-				<t t-set="rental_estimate_display" t-value="False" />
-				<tr>
-					<td style="border-style: none;" colspan="100">
-						<t t-call="proquotes.rental_address_form" />
-					</td>
-				</tr>
-			</t> -->
-
 			<t t-if="line.name == '$rental_info'">
 				<t t-set="rental_estimate_display" t-value="True" />
 				<tr>
