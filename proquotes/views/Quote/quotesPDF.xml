@@ -150,7 +150,7 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
-						
+
 			<!-- If Backwards Compatibiliy is needed...
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
@@ -184,9 +184,9 @@
 			<t t-if="line.name == '$rental_info'">
 				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
 
-					<t t-call="proquotes.custom_sale_order_rental_date"/>
+					<!-- <t t-call="proquotes.custom_sale_order_rental_date"/> -->
 
-					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<table>
 							<tr style = "border:none !important;">
 								<td style = "border:none !important;">Start of the Rental</td>
@@ -209,7 +209,7 @@
 								<td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
 							</tr>
 						</table>						
-					</t> -->
+					</t>
 
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
