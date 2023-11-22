@@ -87,14 +87,14 @@ odoo.define("proquotes.price", function (require) {
 				var quantityChange = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];											
 				var qtySpan = currentQuoteLineRow.getElementsByClassName("qtySpan")[0];
 
-				if (quantityChange) {							
-					inputValue = quantityInput.value;											
-				}				
-				else if (qtySpan) {
-					inputValue = parseInt(qtySpanElement.textContent, 10);			
+				if (quantityChange) {
+					inputValue = parseInt(quantityChange.value, 10);
+				} else if (qtySpan) {
+					inputValue = parseInt(qtySpan.textContent, 10);
 				}							
 							
 				var input = currentQuoteLineRow.getElementsByTagName("input");
+				
 				if ((input.length > 0) &&
 					(input[0].checked == true) &&
 					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
