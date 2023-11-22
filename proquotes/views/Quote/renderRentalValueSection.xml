@@ -32,4 +32,31 @@
             Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier.
         </p>
     </template>
+
+    <template id="custom_sale_order_rental_date" name="Sales Order Rental Value Content">
+        <t t-if="clang == 'en_CA' or clang == 'en_US'">
+            <table>
+                <tr style = "border:none !important;">
+                    <td style = "border:none !important;">Start of the Rental</td>
+                    <td style = "border:none !important;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
+                </tr>
+                <tr style = "border:none !important;">
+                    <td style = "border:none !important;">End of the Rental</td>
+                    <td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
+                </tr>
+            </table>
+        </t>
+        <t t-elif="clang == 'fr_CA'">
+            <table>
+                <tr style = "border:none !important;">
+                    <td style = "border:none !important;">Début de la Location</td>
+                    <td style = "border:none !important;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
+                </tr>
+                <tr style = "border:none !important;">
+                    <td style = "border:none !important; ">Fin estimée de la Location</td>
+                    <td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
+                </tr>
+            </table>						
+        </t>
+    </template>
 </odoo>

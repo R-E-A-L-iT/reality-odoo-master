@@ -150,6 +150,9 @@
 					<t t-call="proquotes.renewal-subscription" />
 				</td>
 			</t>
+
+			<t t-call="proquotes.custom_sale_order_rental_date"/>
+
 			<!-- If Backwards Compatibiliy is needed...
 			<t t-if="line.name == '$rental_address'">
 				<td colspan="99">
@@ -170,19 +173,12 @@
 					</t>
 				</td>
 			</t>-->
+
 			<!-- Keep For Backwards Compatibility -->
 			<t t-if="line.name == '$rental_pricenote'">
 				<td style="border-style: none;" colspan="100">
-					<!-- <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
-						* The final rental cost will be calculated once the equipement is returned.
-						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
-					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
-						* Le coût final sera calculé lorsque l'équipement sera retourné.
-						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-					</p> -->
+
+					<t t-call="proquotes.custom_sale_order_rental_date"/>
 
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
@@ -194,7 +190,10 @@
 			<!-- Rental Quote Info -->
 			<t t-if="line.name == '$rental_info'">
 				<td colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+
+					<t t-call="proquotes.custom_sale_order_rental_date"/>
+
+					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'">
 						<table>
 							<tr style = "border:none !important;">
 								<td style = "border:none !important;">Start of the Rental</td>
@@ -217,17 +216,7 @@
 								<td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
 							</tr>
 						</table>						
-					</t>
-					<!-- <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
-						* The final rental cost will be calculated once the equipement is returned.
-						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
-					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
-						* Le coût final sera calculé lorsque l'équipement sera retourné.
-						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-					</p> -->
+					</t> -->
 
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>

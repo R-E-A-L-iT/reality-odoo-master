@@ -8,7 +8,11 @@
 			<form autocomplete="on">
 				<!-- Dates -->
 				<div>
-					<table>
+
+					
+					<t t-call="proquotes.custom_sale_order_rental_date"/>
+					
+					<!-- <table>
 						<tr>
 							<td style="border: none;">
 								<label for="rental-start">
@@ -31,24 +35,12 @@
 								<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
 							</td>
 						</tr>
-					</table>
+					</table> -->
 					
 				</div>
 				<!-- Rental Hardware Estimate -->
 				<t t-if="rental_estimate_display == True">
-					<br />
-					<!-- <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
-						* The final rental cost will be calculated once the equipement is returned.
-						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
-					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
-						* Le coût final sera calculé lorsque l'équipement sera retourné.
-						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-					</p>
-
-					<br /> -->
+					
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 					
