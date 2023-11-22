@@ -37,7 +37,7 @@
 				<!-- Rental Hardware Estimate -->
 				<t t-if="rental_estimate_display == True">
 					<br />
-					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<!-- <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
 						* The final rental cost will be calculated once the equipement is returned.
 						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
 						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
@@ -48,35 +48,13 @@
 						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
 
-					<br />
-					<!--
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-english" /></span>
-					</t>
-					<br />
-					<br />-->
+					<br /> -->
+					<!-- Display rental price explanation -->
+					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 					
+					<!-- Display the rental value -->
 					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
-					<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
-						<br />
-						<span>
-							Please upload your proof of insurance for the total amount in the comments below:
-						</span>
-						<br />
-					</div>
-					<div class=" rental_product_value" t-if=" clang== 'fr_CA'">
-						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
-						</span>
-						<br />
-						<span>
-							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
-						</span>
-						<br />
-					</div> -->
+					
 				</t>
 				<br />
 				<!-- New Address Prompt -->
