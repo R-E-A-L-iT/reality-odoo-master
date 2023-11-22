@@ -84,10 +84,10 @@ odoo.define("proquotes.price", function (require) {
 				var input = items[i].getElementsByTagName("input");
 				var inputValue = 1;
 
-				// for (var i = 0; i < items.length; i++) {
-				// 	// Access the current "quoteLineRow" element
-				// 	var currentQuoteLineRow = items[i];
-				// 	console.log(currentQuoteLineRow);
+				for (var i = 0; i < items.length; i++) {
+					// Access the current "quoteLineRow" element
+				 	var currentQuoteLineRow = items[i];
+				 	console.log(currentQuoteLineRow);
 				// 	// if (currentQuoteLineRow != undefined)
 				// 	// {
 				// 	// 	// Get the "quantityChange" element within the current "quoteLineRow"
@@ -104,7 +104,7 @@ odoo.define("proquotes.price", function (require) {
 				// 	// 		console.log("No quantityChange element found in quoteLineRow at index " + i);
 				// 	// 	}
 				// 	// }				
-				// }			
+				}			
 
 				if ((input.length > 0) &&
 					(input[0].checked == true) &&
