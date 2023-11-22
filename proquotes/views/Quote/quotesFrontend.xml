@@ -72,17 +72,17 @@
 			</t>
 
 			<!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
-			<!-- <t t-if="line.name == '$rental_pricenote'">
+			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
 					<td style="border-style: none;" colspan="100">						
 						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>						
 						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					</td>
 				</tr>
-			</t> -->
+			</t>
 
 			<!--  Keep for Backwards Compatibility-->
-			<!-- <t t-if="line.name == '$rental_address'">
+			<t t-if="line.name == '$rental_address'">
 				<t t-set="rental_estimate_display" t-value="False" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
@@ -98,7 +98,7 @@
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
-			</t> -->
+			</t>
 
 			<!-- New Table Header Rows-->
 			<t t-if="line.name == '$block' or line.name == '$block+'">
