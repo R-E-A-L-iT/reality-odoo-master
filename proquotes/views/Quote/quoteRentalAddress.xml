@@ -7,8 +7,9 @@
 		<section id="user-info">
 			<form autocomplete="on">
 				<!-- Dates -->
+				<!-- 
 				<div>				
-					<!-- <table>
+					<table>
 						<tr>
 							<td style="border: none;">
 								<label for="rental-start">
@@ -31,9 +32,10 @@
 								<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
 							</td>
 						</tr>
-					</table> -->
-					
+					</table> 
 				</div>
+				-->
+					
 				<!-- Rental Hardware Estimate -->
 				<t t-if="rental_estimate_display == True">
 					
