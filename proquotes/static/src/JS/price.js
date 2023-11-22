@@ -82,26 +82,28 @@ odoo.define("proquotes.price", function (require) {
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
 				var input = items[i].getElementsByTagName("input");
-				
-				for (var i = 0; i < items.length; i++) {
-					// Access the current "quoteLineRow" element
-					var currentQuoteLineRow = items[i];
-				
-					// Get the "quantityChange" element within the current "quoteLineRow"
-					var quantityInput = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];
-				
-					// Check if the "quantityChange" element is found
-					if (quantityInput) {
-						// Get the value of the "value" attribute
-						var inputValue = quantityInput.value;
-				
-						// Log the value to the console (you can perform other actions with the value as needed)
-						console.log("Value of quantityChange in quoteLineRow at index " + i + ": " + inputValue);
-					} else {
-						console.log("No quantityChange element found in quoteLineRow at index " + i);
+				var inputValue = 0;
+				if (items[i] != undefined)
+				{
+					for (var i = 0; i < items.length; i++) {
+						// Access the current "quoteLineRow" element
+						var currentQuoteLineRow = items[i];
+					
+						// Get the "quantityChange" element within the current "quoteLineRow"
+						var quantityInput = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];
+					
+						// Check if the "quantityChange" element is found
+						if (quantityInput) {
+							// Get the value of the "value" attribute
+							inputValue = quantityInput.value;
+					
+							// Log the value to the console (you can perform other actions with the value as needed)
+							console.log("Value of quantityChange in quoteLineRow at index " + i + ": " + inputValue);
+						} else {
+							console.log("No quantityChange element found in quoteLineRow at index " + i);
+						}
 					}
-				}
-				
+				}				
 
 				if ((input.length > 0) &&
 					(input[0].checked == true) &&
