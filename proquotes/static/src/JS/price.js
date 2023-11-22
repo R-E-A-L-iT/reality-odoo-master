@@ -81,36 +81,26 @@ odoo.define("proquotes.price", function (require) {
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
-				var input = items[i].getElementsByTagName("input");
+				var currentQuoteLineRow = items[i];				
 				var inputValue = 0;
 
-				for (var j = 0; j < items.length; j++) {
-					// Access the current "quoteLineRow" element
-				 	var currentQuoteLineRow = items[j];
-				 	//console.log(currentQuoteLineRow);
-					if (currentQuoteLineRow != undefined)
-					{
-						// Get the "quantityChange" element within the current "quoteLineRow"
-						var quantityInput = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];
-					
-						// Check if the "quantityChange" element is found
-						if (quantityInput) {
-							// Get the value of the "value" attribute
-							inputValue = quantityInput.value;
-					
-							// Log the value to the console (you can perform other actions with the value as needed)
-							//console.log("Value of quantityChange in quoteLineRow at index " + i + ": " + inputValue);
-							break;
-						}
-					}				
-				}			
+				var quantityChange = currentQuoteLineRow.getElementsByClassName("quantityChange")[0];											
+				var qtySpan = currentQuoteLineRow.getElementsByClassName("qtySpan")[0];
 
+				if (quantityChange) {							
+					inputValue = quantityInput.value;											
+				}				
+				else if (qtySpan) {
+					inputValue = parseInt(qtySpanElement.textContent, 10);			
+				}							
+							
+				var input = currentQuoteLineRow.getElementsByTagName("input");
 				if ((input.length > 0) &&
 					(input[0].checked == true) &&
 					((input[0].type == "radio") || (input[0].type == "checkbox")) &&
-					(items[i].getElementsByClassName("itemValue").length > 0)) {
+					(currentQuoteLineRow.getElementsByClassName("itemValue").length > 0)) {
 					
-					var unitValue = parseInt(items[i].getElementsByClassName("itemValue")[0]
+					var unitValue = parseInt(currentQuoteLineRow.getElementsByClassName("itemValue")[0]
 						.innerHTML.replace(",", "").replace("$", "").replace(" ", ""));
 
 					total += (unitValue * inputValue);
