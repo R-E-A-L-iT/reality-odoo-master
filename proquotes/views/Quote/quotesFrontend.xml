@@ -96,6 +96,7 @@
 						<!-- Display the rental value -->
 						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 
+						<!-- New Address Prompt -->
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
@@ -321,7 +322,6 @@
 			</t>
 			<t t-if="line.quantityLocked =='no'">
 				<t t-set="qty" t-value="round(line.product_uom_qty)" />
-				<!-- <span t-out="qty" /> -->
 				<input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}" style="display: inline; width: 60px;"></input>
 			</t>
 		</xpath>

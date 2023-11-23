@@ -5,12 +5,7 @@
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
-			<form autocomplete="on">
-													
-				<!-- Display the rental value -->
-				<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
-
-				<br />
+			<form autocomplete="on">				
 				<!-- New Address Prompt -->
 				<div>
 					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
