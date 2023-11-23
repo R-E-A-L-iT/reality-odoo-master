@@ -38,7 +38,7 @@
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
         <section id="user-info">
                 <table>
-                    <tr style = "border:none !important;">
+                    <tr style = "border:none !important; height:10px !important">
                         <td style = "border:none !important;">
                             <label for="rental-start">
                                 <span t-if="clang == 'en_CA' or clang == 'en_US'"><p>Start of the rental:</p></span>
@@ -49,7 +49,7 @@
                             <p t-out="str(str(source.rental_start) if source.rental_start != False else '')" />
                         </td>
                     </tr>					
-                    <tr style = "border:none !important;">
+                    <tr style = "border:none !important; height:10px !important">
                         <td style = "border:none !important;">   
                             <label for="rental-end">
                                 <span t-if="clang == 'en_CA' or clang == 'en_US'"><p>Estimated end of the rental:</p></span>
