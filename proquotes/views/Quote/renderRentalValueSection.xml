@@ -33,6 +33,8 @@
         </p>
     </template>
 
+
+    <!-- Display rental start and end dates of a sale order -->
     <template id="custom_sale_order_rental_date" name="Sales Order Rental Value Content">
         <t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
@@ -40,39 +42,15 @@
 
         <section id="user-info">
             <t t-if="clang == 'en_CA' or clang == 'en_US'">
-                <!-- <table>
-                    <tr style = "border:none !important;">
-                        <td style = "border:none !important;">Start of the Rental</td>
-                        <td style = "border:none !important;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>								
-                    </tr>
-                    <tr style = "border:none !important;">
-                        <td style = "border:none !important;">End of the Rental</td>
-                        <td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>								
-                    </tr>
-                </table>
-            </t>
-            <t t-elif="clang == 'fr_CA'">
-                <table>
-                    <tr style = "border:none !important;">
-                        <td style = "border:none !important;">Début de la Location</td>
-                        <td style = "border:none !important;"><p t-out="str(str(doc.rental_start) if doc.rental_start != False else '')" /></td>
-                    </tr>
-                    <tr style = "border:none !important;">
-                        <td style = "border:none !important; ">Fin estimée de la Location</td>
-                        <td style = "border:none !important;"><p t-out="str(str(doc.rental_end) if doc.rental_end != False else '')" /></td>
-                    </tr>
-                </table>						 -->
                 <table>
                     <tr style = "border:none !important;">
                         <td style = "border:none !important;">
                             <label for="rental-start">
-                                <p></p>
                                 <span t-if="clang == 'en_CA' or clang == 'en_US'"><p>Start of the rental:</p></span>
                                 <span t-if="clang == 'fr_CA'"><p>Début de la Location:</p></span>
                             </label>
                         </td>
                         <td style = "border:none !important;">
-                            <!-- <input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/> -->
                             <p t-out="str(str(source.rental_start) if source.rental_start != False else '')" />
                         </td>
                     </tr>					
@@ -83,8 +61,7 @@
                                 <span t-if="clang == 'fr_CA'"><p>Fin estimée de la Location:</p></span>
                             </label>                        
                         </td>
-                        <td style = "border:none !important;">
-                            <!-- <input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/> -->
+                        <td style = "border:none !important;">                            
                             <p t-out="str(str(source.rental_end) if source.rental_end != False else '')" />
                         </td>
                     </tr>

@@ -6,37 +6,9 @@
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
-
-				<!-- Dates -->				
-				<!-- <div>				
-					<table>
-						<tr>
-							<td style="border: none;">
-								<label for="rental-start">
-									<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
-									<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-								</label>
-							</td>
-							<td style="border: none;">
-								<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
-							</td>
-						</tr>					
-						<tr>
-							<td style="border: none;">
-								<label for="rental-end">
-									<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
-									<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-								</label>
-							</td>
-							<td style="border: none;">
-								<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
-							</td>
-						</tr>
-					</table> 
-				</div> -->
 							
 				<!-- Display rental price explanation -->
-				<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
+				<!-- <t t-call="proquotes.custom_sale_order_rental_price_explain"/> -->
 						
 				<!-- Display the rental value -->
 				<t t-call="proquotes.custom_sale_order_rental_value_template"/>
