@@ -33,6 +33,7 @@
 			<strong t-elif="clang == 'fr_CA'">Echéance:</strong>
 		</xpath>
 
+		<!---->
 		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
@@ -51,6 +52,7 @@
 			<attribute name="t-if">section_empty</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//table/tbody//tr[1]" position="before">
 			<style>
 				.quote-head * {
@@ -158,12 +160,20 @@
 					<!-- Display rental dates -->					
 					<t t-call="proquotes.custom_sale_order_rental_date"/>
 
-					<!-- Display rental price explanation -->
-					<!-- <t t-call="proquotes.custom_sale_order_rental_price_explain"/> -->
-
 					<!-- Display the rental value an Xpath is applied to use rentalValueFormated in a t-out -->
-					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
-
+					<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
+					<div id="rental_value_section">
+						<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+							<span>Total Rental Value:&#160; <span t-out="rentalValueFormated"/></span>
+							<br />
+							<span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
+						</div>
+						<div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
+							<span>Valeur locative totale: &#160; <span t-out="rentalValueFormated"/></span>
+							<br />
+							<span>Merci de fournir votre attestation d'assurance :</span>
+						</div>
+					</div>
 
 					<t t-if="doc.rental_diff_add == True">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">
@@ -196,6 +206,7 @@
 			</xpath>
 		</span>
 
+		<!---->
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
 				<!-- Following line puts a landing point for future upgrades that is not stuck within an if statement Do Not Delete-->
@@ -216,6 +227,7 @@
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//div[@id=&quot;informations&quot;]" position="after">
 			<style>
 				table {
@@ -279,12 +291,15 @@
 			</style>
 		</xpath>
 
+		<!---->
 		<xpath expr="//t[@t-set=&quot;address&quot;]/div[1]" position="attributes">
 			<attribute name="id">partner_address</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 
+		<!---->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
 			<attribute name="style">margin-bottom: 20vh;</attribute>
 		</xpath>
@@ -309,11 +324,13 @@
 			<attribute name="t-if">(not line.display_type) and line.selected == 'true' and line.sectionSelected == 'true'</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//td[@name=&quot;td_section_subtotal&quot;]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang== 'en_US'" class="mr16">Subtotal</strong>
 			<strong t-if="clang == 'fr_CA'" class="mr16">Sous-Total</strong>
 		</xpath>
 
+		<!---->
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
 			<span t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)" />
 			<span t-else="" t-field="line.product_uom_qty" />
@@ -421,8 +438,10 @@
 			<t t-call="proquotes.proquotes_total_pdf" />
 		</xpath>
 
+		<!---->
 		<xpath expr="//h2" position="replace" />
 
+		<!---->
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<div style="position: relative; bottom: 50px; margin-bottom: -25px;">
@@ -457,20 +476,25 @@
 			</div>
 		</xpath>
 
+		<!---->
 		<xpath expr="//h2/t/span[1]" position="attributes">
 			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//h2/t/span[2]" position="attributes">
 			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//h2/span" position="attributes">
 			<attribute name="style">color: #db0d0d !important;</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
 
+		<!---->
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
 			<t t-set="section_empty" t-value="False" />
@@ -481,6 +505,7 @@
 			<t t-set="rentalValue" t-value="0" />
 		</xpath> 
 
+		<!---->
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + (line.product_id.cadVal * line.product_qty)" />
@@ -496,10 +521,13 @@
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-out="line_price" />
 		</xpath>
+
+		<!---->
 		<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
 			<span t-out="'{value:,.2f}'.format(value= line.price_unit)" />
 		</xpath>
 
+		<!---->
 		<xpath expr="//td[@name=&quot;td_quantity&quot;]" position="before">
 			<td t-if="doc.is_rental == True and line.product_id.is_software == False">
 				<t t-if="line.product_id.is_software == False">
@@ -525,10 +553,12 @@
 			<attribute name="class">text-left</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//td[@name=&quot;td_priceunit&quot;]" position="attributes">
 			<attribute name="class">text-left</attribute>
 		</xpath>
 
+		<!---->
 		<xpath expr="//td[@name=&quot;td_subtotal&quot;]" position="attributes">
 			<attribute name="class">text-left</attribute>
 		</xpath>
