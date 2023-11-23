@@ -86,31 +86,35 @@
 				<t t-set="rental_estimate_display" t-value="True" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
-						<table>
-							<tr>
-								<td style="border: none;">
-									<label for="rental-start">
-										<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
-										<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-									</label>
-								</td>
-								<td style="border: none;">
-									<input id="rental-start" type="date" t-attf-value="{{
-										sale_order.rental_start}}" readonly="true"/>
-								</td>
-							</tr>					
-							<tr>
-								<td style="border: none;">
-									<label for="rental-end">
-										<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
-										<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-									</label>
-								</td>
-								<td style="border: none;">
-									<input t-if="sale_order.rental_start != False" id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" readonly="true"/>
-								</td>
-							</tr>
-						</table> 
+
+						<t t-call="proquotes.custom_sale_order_rental_date"/>
+						<!-- <section id="user-info">
+							<table>
+								<tr>
+									<td style="border: none;">
+										<label for="rental-start">
+											<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
+											<span t-if="clang == 'fr_CA'">Début de la Location:</span>
+										</label>
+									</td>
+									<td style="border: none;">
+										<input id="rental-start" type="date" t-attf-value="{{
+											sale_order.rental_start}}" readonly="true"/>
+									</td>
+								</tr>					
+								<tr>
+									<td style="border: none;">
+										<label for="rental-end">
+											<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
+											<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
+										</label>
+									</td>
+									<td style="border: none;">
+										<input t-if="sale_order.rental_start != False" id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" readonly="true"/>
+									</td>
+								</tr>
+							</table> 
+						</section> -->
 
 						<t t-call="proquotes.rental_address_form" />
 					</td>
