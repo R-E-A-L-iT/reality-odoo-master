@@ -95,7 +95,7 @@
 									</label>
 								</td>
 								<td style="border: none;">
-									<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
+									<input id="rental-start" type="date" t-attf-value="{{doc.rental_start}}" readonly="true"/>
 								</td>
 							</tr>					
 							<tr>
@@ -106,10 +106,11 @@
 									</label>
 								</td>
 								<td style="border: none;">
-									<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
+									<input t-if="sdoc.rental_start != False" id="rental-end" type="date" t-attf-value="{{doc.rental_end}}" readonly="true"/>
 								</td>
 							</tr>
 						</table> 
+
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
