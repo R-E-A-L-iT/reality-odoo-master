@@ -6,12 +6,9 @@
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
-							
-				<!-- Display rental price explanation -->
-				<!-- <t t-call="proquotes.custom_sale_order_rental_price_explain"/> -->
-						
+													
 				<!-- Display the rental value -->
-				<t t-call="proquotes.custom_sale_order_rental_value_template"/>
+				<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
 
 				<br />
 				<!-- New Address Prompt -->

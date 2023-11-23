@@ -93,6 +93,9 @@
 						<!-- Display rental price explanation -->
 						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 
+						<!-- Display the rental value -->
+						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
+
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
