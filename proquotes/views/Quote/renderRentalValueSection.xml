@@ -41,7 +41,6 @@
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 
         <section id="user-info">
-            <t t-if="clang == 'en_CA' or clang == 'en_US'">
                 <table>
                     <tr style = "border:none !important;">
                         <td style = "border:none !important;">
@@ -66,7 +65,6 @@
                         </td>
                     </tr>
                 </table> 
-            </t>
         </section>
     </template>
 
