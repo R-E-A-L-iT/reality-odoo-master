@@ -162,7 +162,6 @@
 
 					<!-- Display the rental value an Xpath is applied to use rentalValueFormated in a t-out -->
 
-					<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<div id="rental_value_section">
@@ -196,18 +195,6 @@
 				</td>
 			</t>
 		</xpath>
-
-		<!-- Changing the id attribut for a t-out to display proper rental value calculation -->
-		<span t-if="clang == 'en_CA' or clang == 'en_US'">
-			<xpath expr="//span[@id='total-rental-value-english']/@t-out" position="replace">
-				<attribute name="t-out">rentalValueFormated</attribute>
-			</xpath>
-		</span>
-		<span t-elif="clang == 'fr_CA'">
-			<xpath expr="//span[@id='total-rental-value-french']/@t-out" position="replace">
-				<attribute name="t-out">rentalValueFormated</attribute>
-			</xpath>
-		</span>
 
 		<!---->
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
