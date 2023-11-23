@@ -161,12 +161,12 @@
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 
-					kkkkkkkkkkkkkkkkkkkkkkk
-
 					<!-- Format Remtal Value Number -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
 					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
+
+					<!-- <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
 						<br />
 						<br />
@@ -183,7 +183,7 @@
 							Merci de fournir votre attestation d'assurance :
 						</span>
 						<br />
-					</div>
+					</div> -->
 
 
 					<t t-if="doc.rental_diff_add == True">
@@ -300,11 +300,9 @@
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<!-- <t t-set="name" t-value="line.applied_name"/> -->
 			<span t-raw="line.product_id.name"></span>
 			<br />
 
-			<!-- <t t-set="description" t-value="line.name"/> -->
 			<style>
 				description-root, .description-root *{
 				font-size: .75rem;
