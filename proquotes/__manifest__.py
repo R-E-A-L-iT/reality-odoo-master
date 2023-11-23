@@ -46,7 +46,7 @@
     },
 
 
-    "version": "1.0.2248",
+    "version": "1.0.2249",
 
 
     # always loaded
