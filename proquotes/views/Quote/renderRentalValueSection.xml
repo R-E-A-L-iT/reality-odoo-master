@@ -72,20 +72,20 @@
                             </label>
                         </td>
                         <td style = "border:none !important;">
-                            <input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
+                            <!-- <input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/> -->
+                            <p t-out="str(str(source.rental_start) if source.rental_start != False else '')" />
                         </td>
                     </tr>					
                     <tr style = "border:none !important;">
-                        <td style = "border:none !important;">
-                        <p>
+                        <td style = "border:none !important;">   
                             <label for="rental-end">
-                                <span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
-                                <span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-                            </label>
-                        </p>
+                                <span t-if="clang == 'en_CA' or clang == 'en_US'"><p>Estimated end of the rental:</p></span>
+                                <span t-if="clang == 'fr_CA'"><p>Fin estimée de la Location:</p></span>
+                            </label>                        
                         </td>
                         <td style = "border:none !important;">
-                            <input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
+                            <!-- <input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/> -->
+                            <p t-out="str(str(source.rental_end) if source.rental_end != False else '')" />
                         </td>
                     </tr>
                 </table> 
