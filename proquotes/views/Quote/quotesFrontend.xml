@@ -95,7 +95,8 @@
 									</label>
 								</td>
 								<td style="border: none;">
-									<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" readonly="true"/>
+									<input id="rental-start" type="date" t-attf-value="{{
+										j1.rental_start}}" readonly="true"/>
 								</td>
 							</tr>					
 							<tr>
