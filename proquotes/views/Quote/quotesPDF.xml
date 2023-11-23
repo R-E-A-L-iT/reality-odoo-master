@@ -163,7 +163,7 @@
 
 					<!-- Format Remtal Value Number -->
 					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="total-rental-value-english" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="total-rental-value-english" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="total-rental-value-french" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 
 					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 

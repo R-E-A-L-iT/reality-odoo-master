@@ -78,9 +78,9 @@ odoo.define("proquotes.price", function (require) {
 			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
 				return;
 			}
+
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
-			console.log("############################################################");
 			for (var i = 0; i < items.length; i++) {
 				var currentQuoteLineRow = items[i];				
 				var qtyValue = 0;
@@ -110,6 +110,9 @@ odoo.define("proquotes.price", function (require) {
 				//Calculating the total
 				total += (unitValue * qtyValue);				
 			}
+
+			total += 100000
+
 			if (totalLandingEnglish != undefined) {
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
 			}
@@ -118,14 +121,14 @@ odoo.define("proquotes.price", function (require) {
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
-			var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
-			var startDate = document.getElementById("rental-start");
-			var endDate = document.getElementById("rental-end");
+			// var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
+			// var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
+			// var startDate = document.getElementById("rental-start");
+			// var endDate = document.getElementById("rental-end");
 
-			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
-				return;
-			}
+			// if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
+			// 	return;
+			// }
 
 			// if (startDate.value == "" || endDate.value == "") {
 			// 	if (rentalEstimateEnglish != undefined) {
