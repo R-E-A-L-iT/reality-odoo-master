@@ -161,7 +161,10 @@
 					<t t-call="proquotes.custom_sale_order_rental_date"/>
 
 					<!-- Display the rental value an Xpath is applied to use rentalValueFormated in a t-out -->
+
 					<!-- <t t-call="proquotes.custom_sale_order_rental_value_template"/> -->
+					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
 					<div id="rental_value_section">
 						<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 							<span>Total Rental Value:&#160; <span t-out="rentalValueFormated"/></span>
