@@ -79,8 +79,9 @@ odoo.define("proquotes.price", function (require) {
 				return;
 			}
 
-			var total = 0;
+			//Iterating all the line of the quote
 			var items = document.getElementsByClassName("quoteLineRow");
+			var total = 0;
 			for (var i = 0; i < items.length; i++) {
 				var currentQuoteLineRow = items[i];				
 				var qtyValue = 0;
@@ -111,8 +112,6 @@ odoo.define("proquotes.price", function (require) {
 				total += (unitValue * qtyValue);				
 			}
 
-			total += 100000
-
 			if (totalLandingEnglish != undefined) {
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
 			}
@@ -120,48 +119,6 @@ odoo.define("proquotes.price", function (require) {
 			if (totalLandingFrench != undefined) {
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
-
-			// var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
-			// var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
-			// var startDate = document.getElementById("rental-start");
-			// var endDate = document.getElementById("rental-end");
-
-			// if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
-			// 	return;
-			// }
-
-			// if (startDate.value == "" || endDate.value == "") {
-			// 	if (rentalEstimateEnglish != undefined) {
-			// 		rentalEstimateEnglish.innerHTML = "$ 0.00"
-			// 	} else if (rentalEstimateFrench != undefined) {
-			// 		rentalEstimateFrench.innerHTML = "0.00 $"
-			// 	}
-			// 	return;
-			// }
-			// var rentalEstimateTotal = 0
-			// var productPrices = document.getElementsByClassName("rental_rate_calc")
-
-			// for (var i = 0; i < productPrices.length; i++) {
-			// 	var node = productPrices[i]
-			// 	while (node.classList.contains("quoteLineRow") == false) {
-			// 		node = node.parentNode;
-			// 	}
-			// 	var inputs = node.getElementsByTagName("input");
-			// 	if (inputs.length > 0) {
-			// 		if (inputs[0].type == "checkbox") {
-			// 			if (inputs[0].checked != true) {
-			// 				continue;
-			// 			}
-			// 		}
-			// 	}
-			// 	//rentalEstimateTotal = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "")
-			// 	rentalEstimateTotal = 1234321
-			// }
-			// if (rentalEstimateEnglish != undefined) {
-			// 	rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
-			// } else if (rentalEstimateFrench != undefined) {
-			// 	rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
-			// }
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
