@@ -151,7 +151,8 @@ odoo.define("proquotes.price", function (require) {
 						}
 					}
 				}
-				rentalEstimateTotal = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "")
+				//rentalEstimateTotal = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "")
+				rentalEstimateTotal = 1234321
 			}
 			if (rentalEstimateEnglish != undefined) {
 				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
