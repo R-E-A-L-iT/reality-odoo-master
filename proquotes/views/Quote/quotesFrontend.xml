@@ -95,7 +95,7 @@
 									</label>
 								</td>
 								<td style="border: none;">
-									<input id="rental-start" type="date" t-attf-value="{{doc.rental_start}}" readonly="true"/>
+									<input id="rental-start" type="date" t-attf-value="{{sale_order.rental_start}}" readonly="true"/>
 								</td>
 							</tr>					
 							<tr>
@@ -106,7 +106,7 @@
 									</label>
 								</td>
 								<td style="border: none;">
-									<input t-if="sdoc.rental_start != False" id="rental-end" type="date" t-attf-value="{{doc.rental_end}}" readonly="true"/>
+									<input t-if="sale_order.rental_start != False" id="rental-end" type="date" t-attf-value="{{sale_order.rental_end}}" readonly="true"/>
 								</td>
 							</tr>
 						</table> 
