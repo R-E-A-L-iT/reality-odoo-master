@@ -505,10 +505,10 @@
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
-				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + (line.product_id.cadVal * line.product_qty)" />
 			</t>
 			<t t-elif="'USD' in doc.currency_id.name">
-				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usdVal" />
+				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + (line.product_id.usdVal * line.product_qty)" />
 			</t>
 		</xpath>
 
