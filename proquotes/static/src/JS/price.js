@@ -383,23 +383,6 @@ odoo.define("proquotes.price", function (require) {
 			this._updateFoldDisplay();
 			this._rentalValueTotal();
 			this._updateTotal(total);
-		},
-
-		// _testCommOdoo: function(orderId, startDate, endDate) {
-		// 	var rpc = require('web.rpc');		
-		// 	rpc.query({		
-		// 		model: 'sale.order',		
-		// 		method: 'odoo_test_comm',
-		// 		args: [{
-		// 			'orderId': orderId,
-		// 			'p_startDateValue': startDate,
-		// 			'p_endDateValue': endDate
-		// 		}]
-		//
-		// 	}).then(function (data) {		
-		// 		console.log(data);		
-		// 	});
-		//
-		// }		
+		},	
 	});
 });

@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <!--Display the rental value-->
     <template id="custom_sale_order_rental_value_template" name="Sales Order Rental Value Content">
         <div id="rental_value_section">
             <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
                 <span>Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
                 <br />
-                <br />
                 <span>Please upload your proof of insurance in the comments section below or send a copy by email.</span>
-                <br />
             </div>
             <div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
                 <span>Valeur locative totale: &#160; <span id="total-rental-value-french" /></span>
                 <br />
-                <br />
                 <span>Merci de fournir votre attestation d'assurance :</span>
-                <br />
             </div>
         </div>
     </template>
 
+    <!--Price explanation if rent is returned late-->
     <template id="custom_sale_order_rental_price_explain" name="Sales Order Rental Value Content">
         <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
             * The final rental cost will be calculated once the equipement is returned.
@@ -33,13 +31,11 @@
         </p>
     </template>
 
-
     <!-- Display rental start and end dates of a sale order -->
     <template id="custom_sale_order_rental_date" name="Sales Order Rental Value Content">
         <t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
-
         <section id="user-info">
                 <table>
                     <tr style = "border:none !important;">
@@ -67,5 +63,4 @@
                 </table> 
         </section>
     </template>
-
 </odoo>

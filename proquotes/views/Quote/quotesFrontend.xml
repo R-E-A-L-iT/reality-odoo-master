@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+	<!---->
 	<template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
-
+		<!---->
 		<xpath expr="//div" position="attributes">
 			<!-- ID For Easier CSS statements -->
 			<attribute name="id">portalTotal</attribute>
 		</xpath>
-
 	</template>
 
+	<!---->
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
 		<!-- Address -->
 		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="replace">
@@ -33,6 +33,7 @@
 			</div>
 		</xpath>
 		
+		<!---->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</xpath>
@@ -74,9 +75,12 @@
 			<!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
 			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
-					<td style="border-style: none;" colspan="100">						
+					<td style="border-style: none;" colspan="100">	
+
+						<!-- Display rental price explanation -->					
 						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>	
 
+						<!-- Display the rental value -->
 						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					</td>
 				</tr>
@@ -201,6 +205,7 @@
 			</div>
 		</xpath>
 
+		<!---->
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
 			<span class="line_id" t-attf-id="{{line}}" />
 		</xpath>
@@ -209,10 +214,13 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>
 		</xpath>
+
 		<!-- Hide Default Subtotal-->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">
 			<attribute name="style">display: none;</attribute>
 		</xpath>
+
+		<!---->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">
 			<attribute name="style">display: none;</attribute>
 		</xpath>
@@ -221,7 +229,6 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
 			<attribute name="class">subtotal-source</attribute>
 		</xpath>
-
 
 		<!-- Rental Item Value -->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
@@ -271,6 +278,7 @@
 			</t>
 		</xpath>
 
+		<!---->
 		<xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
 			<t t-set="current_section_ended" t-value="false" />
 		</xpath>
@@ -306,10 +314,10 @@
 			<t   t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
 			<t t-elif="clang == 'fr_CA'"                     t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-if="line.product_id.is_software == True" class="proquotesLineTotal oe_order_line_price_subtotal pr-0"                  t-out="line_price" />
-			<span t-else=""                                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price" />
-			
+			<span t-else=""                                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price" />			
 		</xpath>
 
+		<!---->
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
 			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>
 		</xpath>
@@ -368,25 +376,28 @@
 
 	<!--Sign Page-->
 	<template id="sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
-
+		<!---->
 		<xpath expr="//div[@t-if=&quot;sale_order.has_to_be_signed(True) or sale_order.has_to_be_paid(True)&quot;]" position="before">
 			<h1 class="white-text">Customer Acceptance</h1>
-
 			<p class="white-text">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
 		</xpath>
 
+		<!---->
 		<xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
 			<span>
 				<strong t-field="sale_order.partner_id.name" />
 			</span>
 		</xpath>
 
+		<!---->
 		<xpath expr="//t[@t-call=&quot;portal.signature_form&quot;]/t[2]" position="replace">
 			<t t-set="default_name" t-value="env.user.name" />
 		</xpath>
 
+		<!---->
 		<xpath expr="//a[@t-att-href=&quot;sale_order.get_portal_url(report_type='pdf', download=True)&quot;]" position="replace"></xpath>
 
+		<!---->
 		<xpath expr="//div[@t-elif=&quot;sale_order.has_to_be_paid(True)&quot;]" position="after">
 			<t t-set="clang" t-value="lang" />
 			<div class="col-sm-auto mt8">
@@ -401,12 +412,14 @@
 		</xpath>
 	</template>
 
+	<!---->
 	<template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
 
+	<!---->
 	<template name="portal_footer" id="portal_footer" inherit_id="portal.portal_layout">
+		<!---->
 		<xpath expr="//div[@id=&quot;wrap&quot;]" position="after">
 			<t t-call="custom.custom-footer" />
 		</xpath>
 	</template>
-
 </odoo>

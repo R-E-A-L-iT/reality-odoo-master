@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
-
-
+	<!---->
 	<template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
-
 		<!-- Initilize Context -->
 		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
 			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
@@ -78,6 +75,7 @@
 				list-style: lower-alpha;
 				}
 			</style>
+
 			<!-- Test for empty section -->
 			<t t-if="line.display_type == 'line_section'">
 				<t t-set="current_line_empty" t-value="line" />
@@ -95,6 +93,7 @@
 				<t t-if="len(selected_list) == 0" t-set="section_empty" t-value="True" />
 				<t t-else="" t-set="section_empty" t-value="False" />
 			</t>
+
 			<!-- Custom Table Head -->
 			<tr class="quote-head" t-if="line.display_type == 'line_section' and (not section_empty)">
 				<!-- Is there a discount on atleast on line? -->
@@ -128,6 +127,7 @@
 					</t>
 				</t>
 			</tr>
+
 			<!-- Special Info Sections -->
 			<t t-if=" line.name== '$hardware'">
 				<tr>
@@ -161,33 +161,8 @@
 					<!-- Display rental price explanation -->
 					<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
 
-					<!-- Format Remtal Value Number -->
-					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="total-rental-value-english" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="total-rental-value-french" t-value="'{value:,.2f} $'.format(value= rentalValue)" /> -->
+					<!-- Display the rental value an Xpath is applied to use rentalValueFormated in a t-out -->
 					<t t-call="proquotes.custom_sale_order_rental_value_template"/>
-
-					
-					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Total Rental Value:&#160;<span t-out="rentalValueFormated" /></span>
-						<br />
-						<br />
-						<span>
-							Please upload your proof of insurance in the comments section below or send a copy by email.
-						</span>
-						<br />
-					</div>
-					<div class="rental_product_value" t-elif="clang == 'fr_ca' or true">						
-						<span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
-						<br />
-						<br />
-						<span>
-							Merci de fournir votre attestation d'assurance :
-						</span>
-						<br />
-					</div> -->
-
 
 
 					<t t-if="doc.rental_diff_add == True">
@@ -209,6 +184,7 @@
 			</t>
 		</xpath>
 
+		<!-- Changing the id attribut for a t-out to display proper rental value calculation -->
 		<span t-if="clang == 'en_CA' or clang == 'en_US'">
 			<xpath expr="//span[@id='total-rental-value-english']/@t-out" position="replace">
 				<attribute name="t-out">rentalValueFormated</attribute>
@@ -219,7 +195,6 @@
 				<attribute name="t-out">rentalValueFormated</attribute>
 			</xpath>
 		</span>
-
 
 		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
@@ -346,8 +321,6 @@
 
 		<!-- Remove Unit From PDF-->
 		<xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace" />
-
-		<!--Remove Tax Calculation-->
 
 		<!--Add Signature-->
 		<xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
@@ -566,7 +539,5 @@
 		<xpath expr="//td[@name=&quot;td_subtotal&quot;]" position="attributes">
 			<attribute name="class">text-left</attribute>
 		</xpath>
-
 	</template>
-
 </odoo>

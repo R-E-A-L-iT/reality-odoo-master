@@ -46,7 +46,7 @@
     },
 
 
-    "version": "1.0.2261",
+    "version": "1.0.2262",
 
 
     # always loaded
@@ -60,7 +60,7 @@
         "views/Quote/quoteLogo.xml",
         "views/Quote/renewalText.xml",
         "views/Quote/quoteRentalAddress.xml",
-        "views/Quote/renderRentalValueSection.xml",        
+        "views/Quote/renderRentalSection.xml",
         "views/Quote/table-align.xml",
         "views/Quote/pricelistFilter.xml",
         "views/Other/tax.xml",
