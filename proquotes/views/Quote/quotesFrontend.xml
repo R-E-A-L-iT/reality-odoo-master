@@ -75,7 +75,8 @@
 			<t t-if="line.name == '$rental_pricenote'">
 				<tr>
 					<td style="border-style: none;" colspan="100">						
-						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>						
+						<t t-call="proquotes.custom_sale_order_rental_price_explain"/>	
+
 						<t t-call="proquotes.custom_sale_order_rental_value_template"/>
 					</td>
 				</tr>
@@ -85,6 +86,30 @@
 				<t t-set="rental_estimate_display" t-value="True" />
 				<tr>
 					<td style="border-style: none;" colspan="100">
+						<table>
+							<tr>
+								<td style="border: none;">
+									<label for="rental-start">
+										<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
+										<span t-if="clang == 'fr_CA'">Début de la Location:</span>
+									</label>
+								</td>
+								<td style="border: none;">
+									<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" readonly="true"/>
+								</td>
+							</tr>					
+							<tr>
+								<td style="border: none;">
+									<label for="rental-end">
+										<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
+										<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
+									</label>
+								</td>
+								<td style="border: none;">
+									<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" readonly="true"/>
+								</td>
+							</tr>
+						</table> 
 						<t t-call="proquotes.rental_address_form" />
 					</td>
 				</tr>
@@ -347,7 +372,7 @@
 				<span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label" /> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.</span>
 				<span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label" />. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.</span>
 			</div>
-			
+
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>

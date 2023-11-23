@@ -8,7 +8,7 @@
 			<form autocomplete="on">
 
 				<!-- Dates -->				
-				<div>				
+				<!-- <div>				
 					<table>
 						<tr>
 							<td style="border: none;">
@@ -33,7 +33,7 @@
 							</td>
 						</tr>
 					</table> 
-				</div>
+				</div> -->
 							
 				<!-- Display rental price explanation -->
 				<t t-call="proquotes.custom_sale_order_rental_price_explain"/>
