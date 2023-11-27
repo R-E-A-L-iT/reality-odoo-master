@@ -197,8 +197,11 @@
 						<strong t-if="clang == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
 							Sous-total
 						</strong>
-					</span>
-					<span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-left" style="font-weight: 400 !important;" />
+					</span>					
+					<span t-if="(clang == 'en_CA' or clang == 'en_US') and (line.special != 'optional' or line.selected == 'true')" class="subtotal-destination text-left" style="font-weight: 400 !important;">${'{:,.2f}'.format(line.price_subtotal)}</span>
+					<span t-elif="clang == 'fr_CA' and line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-left" style="font-weight: 400 !important;">{'{:,.2f}'.format(line.price_subtotal)} $</span>
+
+					<!-- <span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-left" style="font-weight: 400 !important;" /> -->					
 					<span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left" style="font-weight: 400 !important;">0.00 $</span>
 					<span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
 				</label>
