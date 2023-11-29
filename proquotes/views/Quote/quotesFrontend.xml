@@ -227,8 +227,18 @@
 		</xpath>
 
 		<!--Mark Original Subtotal locations-->
+		<!-- 
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
 			<attribute name="class">subtotal-source</attribute>
+		</xpath>
+		-->
+		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'" class="source">${}</span>
+			<span t-elif="clang == 'fr_CA'" class="cHead">{}$</span>
+		</xpath> -->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="replace">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'" class="source">${}</span>
+			<span t-elif="clang == 'fr_CA'" class="cHead">{}$</span>
 		</xpath>
 
 		<!-- Rental Item Value -->
