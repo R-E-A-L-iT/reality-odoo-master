@@ -321,7 +321,7 @@ odoo.define("proquotes.price", function (require) {
 					inner_html = subtotal_source[i].innerHTML;
 				}
 
-				subTotalList[i].innerHTML = inner_html + " Test";
+				subTotalList[i].innerHTML = inner_html;
 			}
 		},
 
