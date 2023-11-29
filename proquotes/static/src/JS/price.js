@@ -311,51 +311,17 @@ odoo.define("proquotes.price", function (require) {
 					y = y.nextElementSibling;
 				}
 			}
-			var subTotalList = document.getElementsByClassName(
-				"subtotal-destination"
-			);
-			// // var subTotalList_en = document.getElementsByClassName(
-			// // 	"subtotal-destination-english"
-			// // );
-			// // var subTotalList_fr = document.getElementsByClassName(
-			// // 	"subtotal-destination-french"
-			// // );
-
-			// // if (subTotalList_en != undefined && subTotalList_fr == undefined) {
-			// // 	return;
-			// // }
-
-			// // if (subTotalList_en == undefined) {
-			// // 	for (var i = 0; i < subTotalList_en.length; i++) {
-			// // 		var subTotal = subTotalList_en[i];
-			// // 		var inner_html = ""
-			// // 		var subtotal_source = document.getElementsByClassName("subtotal-source")
-			// // 		if(subtotal_source.length > i){
-			// // 			inner_html = subtotal_source[i].innerHTML;
-			// // 		}
-			// // 		subTotal.innerHTML = inner_html.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
-			// // 	}
-			// // }
-			// // else if (subTotalList_fr == undefined) {
-			// // 	for (var i = 0; i < subTotalList_fr.length; i++) {
-			// // 		var subTotal = subTotalList_fr[i];
-			// // 		var inner_html = ""
-			// // 		var subtotal_source = document.getElementsByClassName("subtotal-source")
-			// // 		if(subtotal_source.length > i){
-			// // 			inner_html = subtotal_source[i].innerHTML;
-			// // 		}
-			// // 		subTotal.innerHTML = '$ ' + inner_html.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
-			// // 	}
-			// // }
+			var subTotalList = document.getElementsByClassName("subtotal-destination");
 
 			for (var i = 0; i < subTotalList.length; i++) {
-				var subTotal = subTotalList[i];
 				var inner_html = ""
 				var subtotal_source = document.getElementsByClassName("subtotal-source")
+
 				if(subtotal_source.length > i){
 					inner_html = subtotal_source[i].innerHTML;
 				}
-				subTotal.innerHTML = inner_html;
+
+				subTotalList[i].innerHTML = inner_html + " Test";
 			}
 		},
 
