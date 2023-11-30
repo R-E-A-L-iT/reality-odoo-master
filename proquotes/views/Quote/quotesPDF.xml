@@ -162,8 +162,8 @@
 
 					<!-- Display the rental value an Xpath is applied to use rentalValueFormated in a t-out -->
 
-					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" /> -->
 					<div id="rental_value_section">
 						<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
 							<span>Total Rental Value:&#160; <span t-out="rentalValueFormated"/></span>
@@ -506,11 +506,11 @@
 		</xpath>
 
 		<!-- Price Format Update -->
-		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
+		<!-- <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
 			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
 			<t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-out="line_price" />
-		</xpath>
+		</xpath> -->
 
 		<!---->
 		<xpath expr="//span[@t-field=&quot;line.price_unit&quot;]" position="replace">
@@ -523,8 +523,8 @@
 				<t t-if="line.product_id.is_software == False">
 					<t t-if="'CAD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.cadVal" />
 					<t t-elif="'USD' in doc.currency_id.name" t-set="singleProductValue" t-value="line.product_id.usdVal" />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="singleProductValueFormated" t-value="'$ {value:,.2f}'.format(value= singleProductValue)" />
-					<t t-elif="clang == 'fr_CA'" t-set="singleProductValueFormated" t-value="'{value:,.2f} $'.format(value= singleProductValue)" />
+					<!-- <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="singleProductValueFormated" t-value="'$ {value:,.2f}'.format(value= singleProductValue)" />
+					<t t-elif="clang == 'fr_CA'" t-set="singleProductValueFormated" t-value="'{value:,.2f} $'.format(value= singleProductValue)" /> -->
 					<span t-out="singleProductValueFormated" />
 				</t>
 			</td>
