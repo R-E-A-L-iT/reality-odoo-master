@@ -48,15 +48,15 @@ odoo.define('proquotes.fold', function (require) {
 					y = y.nextElementSibling;
 				}
 			}
+			
 			var subTotalList = document.getElementsByClassName("subtotal-destination");
+			var subTotalSourceList = document.getElementsByClassName("subtotal-source");
+
 			for (var i = 0; i < subTotalList.length; i++) {
-				var subTotal = subTotalList[i];
-				var source = document.getElementsByClassName("subtotal-source")[i]
-				if(source != undefined){
-					subTotal.innerHTML = source.innerHTML;
-				} else {
-					subTotal.innerHTML = '';
-				}
+				subTotalList[i].innerHTML = '';
+				if(subTotalSourceList[i] != undefined){
+					subTotalList[i].innerHTML = subTotalSourceList[i].innerHTML;
+				} 
 			}
 		},
 		_onChange: function (cb) {
