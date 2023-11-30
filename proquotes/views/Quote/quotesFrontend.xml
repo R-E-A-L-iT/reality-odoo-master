@@ -232,7 +232,7 @@
 		</xpath>
 		
 		<!-- Rental Item Value -->
-		<!-- <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
+		<xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
 			<t t-if="sale_order.is_rental == True">
 				<td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
 					<span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-left itemValue test" />
@@ -244,7 +244,7 @@
 				</td>
 			</t>
 			<td t-else="" />
-		</xpath> -->
+		</xpath>
 
 		<!--Apply HTML tags to description and Names And Add User Control Elements-->
 		<xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
@@ -311,12 +311,12 @@
 		</xpath>
 
 		<!-- Format Price Dispaly -->
-		<!-- <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
+		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
 			<t   t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
 			<t t-elif="clang == 'fr_CA'"                     t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
 			<span t-if="line.product_id.is_software == True" class="proquotesLineTotal oe_order_line_price_subtotal pr-0"                  t-out="line_price" />
 			<span t-else=""                                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price" />			
-		</xpath> -->
+		</xpath>
 
 		<!---->
 		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">
