@@ -859,3 +859,276 @@ class sync(models.Model):
         #Assigning the company id
         ext.res_id = company.id
         _logger.info("-------------Contact added.")
+
+ 
+    ###################################################################
+    # Method to convert the sku of all CCP template
+    def convertCCPsku(self):
+        
+        p = self.env["product.product"]
+        pt = self.env["product.template"]
+        spl = self.env["stock.production.lot"]
+        imd = self.env["ir.model.data"]
+        
+        cleanIrModelData = false
+
+
+        if (cleanIrModelData):
+            imd_list = imd.search([("model", "=", "product.template")])
+
+            for item in imd_list:
+                pt1 = pt.search([("sku", "=", item.name)])
+                if (len(pt1) <= 0):
+                    _logger.info("-------------ir.model.data unlink: " + str(item.id) + ", " + str(item.name)) 
+                    item.unlink()
+
+        
+
+        #######################################  
+        # _logger.info("!!!!!!!!!!!!!Converting sku not TRUESITE-00106-63637-00030-48914-C8CCA")     
+        # p1 = p_tmpl.search([("sku", "=", "TRUESITE-00106-63637-00030-48914-C8CCA-3")])
+        # p1.sku = "TRUESITE-00106-63637-00030-48914-C8CCA"
+
+        # p2 = p_tmpl.search([("sku", "=", "TRUESITE-00106-63637-00030-48914-C8CCA")])
+        # _logger.info("!!!!!!!!!!!!!Converting new product name:  " + str(p2.name))
+        # _logger.info("!!!!!!!!!!!!!Converting new product  sku:  " + str(p2.sku))
+        #######################################
+
+
+        #######################################
+        # _logger.info("!!!!!!!!!!!!!Converting sku not TRUESITE-00106-63637-00030-48914-C8CCA")     
+        # p1 = p_tmpl.search([("sku", "=", "TRUESITE-00106-63637-00030-48914-C8CCA-3")])
+        # imd1 = imd.search([("id", "=", p1.skuhidden.id)])
+        # imd1.name = "TRUESITE-00106-63637-00030-48914-C8CCA"
+
+        # p2 = p_tmpl.search([("sku", "ilike", "00106-63637-00030-48914-C8CCA")])
+        # _logger.info("!!!!!!!!!!!!!Converting new product name:  " + str(p2.name))
+        # _logger.info("!!!!!!!!!!!!!Converting new product  sku:  " + str(p2.sku))
+        #######################################
+        #  00106-63637-00030-48914-C8CCA  ('TRUESITE-00106-63637-00030-48914-C8CCA-3' , 'TRUESITE-00106-63637-00030-48914-C8CCA'),
+        #####################################
+        # p = self.env["product.product"]
+        # p_tmpl = self.env["product.template"]
+        # spl = self.env["stock.production.lot"]
+        # imd = self.env["ir.model.data"]
+        # p1 = p_tmpl.search([("sku", "=", "TRUESITE-00106-63637-00030-48914-C8CCA")])
+        # imd1 = imd.search([("id", "=", p1.skuhidden.id)])
+        # # imd2 = imd.search([("name", "=", "TRUESITE-00106-63637-00030-48914-C8CCA")])
+        # for key, value in tuple_list:       
+        #     p1 = p_tmpl.search([("sku", "=", key)])
+
+        #     if (p1.name):
+        #         imd1 = imd.search([("id", "=", p1.skuhidden.id)])
+        #         imd1.name = value
+                
+        #         p2 = p.search([("sku", "ilike", value)])
+        #         _logger.info("!!!!!!!!!!!!!Converting new product  old sku:  " + str(p1.sku) +  ", new sku: " + str(p2.sku))   
+        #     else:
+        #         _logger.info("!!!!!!!!!!!!!Converting product not existing: " + str(key))   
+        # #####################################
+
+
+        ######################################
+
+            
+        # #####################################
+        # _logger.info("###############################################################################")
+        # _logger.info("###############################################################################")
+        # ######################################        
+        # for key, value in tuple_list:      
+        #     p1 = p.search([("sku", "ilike", key)])
+        #     old = p1.sku
+        #     p1.sku = value
+        #     # if (p1.name):
+        #     #     _logger.info(".............Converting sku: oldSku: " + str(old) + ", new: " + str(p1.sku))
+        #     # else:
+        #     #     _logger.info("!!!!!!!!!!!!!Converting sku not existindg: " + str(key))
+        #     if (not p1.name):
+        #         _logger.info("!!!!!!!!!!!!!Converting sku not existindg: " + str(key))            
+        ######################################
+        # _logger.info("###############################################################################")
+        # _logger.info("###############################################################################")
+        #######################################
+        # for key, value in tuple_list:       
+        #     spl1 = spl.search([("sku", "ilike", key)])
+        #     old = spl1.sku
+        #     spl1.sku = value
+        #     if (spl1.name):
+        #         _logger.info("_____________Converting sku: oldSku: " + str(old) + ", new: " + str(spl1.sku))
+        #     else:
+        #         _logger.info("!!!!!!!!!!!!!Converting sku not existindg: " + str(key))
+        #######################################
+
+    
+    #######################################
+    def cleanIrModel(self):
+        pt = self.env["product.template"]    
+        imd = self.env["ir.model.data"]
+        
+        imd_list = imd.search([("model", "=", "product.template")])
+
+        for item in imd_list:
+            pt1 = pt.search([("sku", "=", item.name)])
+            if (len(pt1) <= 0):
+                _logger.info("-------------ir.model.data unlink: " + str(item.id) + ", " + str(item.name)) 
+                item.unlink()
+
+
+    #######################################
+    def cleanStockProductionLot(self):
+        spl = self.env["stock.production.lot"]
+        spl_toDel = spl.search([("stringRep", "=", "")])
+
+        spl_log = []
+        sq_log = []
+
+        for item in spl_toDel: 
+            spl_log.append("------------ stock.production.lot unlink: " + str(item.id) + ", " + str(item.name))
+            if (item.stringRep == ""): 
+                for quant_id in item.quant_ids:
+                    sq_log.append("------------ stock.production.lot id: " + str(item.id) + ", " + str(item.name) + ",  ------------ stock.quant unlink: " + str(item.id) + ", " + str(item.name)) 
+                    quant_id.unlink()
+                item.unlink() 
+
+        for log in spl_log:
+            _logger.info(log)
+
+        for log in sq_log:
+            _logger.info(log)     
+
+    
+    #######################################
+    def cleanStringRep(self, psw=None):
+        spl = self.env["stock.production.lot"]
+        pt = self.env["product.template"]
+        aml = self.env["account.move.line"]
+
+        masterDB_CCP_stringRep = []
+        masterDB_Product_stringRep = []
+        masterDB_Pricelist_sku = []
+
+        #Accesing the MasterDB
+        db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        template_id = sheetsAPI.get_master_database_template_id(db_name)
+
+        sync_data = self.getMasterDatabaseSheet(
+            template_id, 
+            psw, 
+            self._odoo_sync_data_index
+        )
+
+        #Looping throw the type of syncing model
+        line_index = 1
+        msg = ""
+        while (True):
+            msg_temp = ""
+            sheetName = str(sync_data[line_index][0])
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
+            msg += msg_temp
+            modelType = str(sync_data[line_index][2])
+            valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+
+            if (not valid):
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
+                                str(sync_data[line_index][3]) + ".  Ending sync process!")
+                break
+
+            if (sheetIndex < 0):
+                break
+
+            _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
+
+            msg = ""
+            i = 1
+            sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
+            _logger.info(str(len(sheet)))
+
+            #CCP is the model we are looking for
+            if (modelType == "CCP"):
+                #looping all the line of the CCP
+                while True:  
+                    # Check if final row was completed
+                    if (i == len(sheet) or str(sheet[i][10]) != "TRUE"):
+                        break
+                                     
+                    masterDB_CCP_stringRep.append(str(sheet[i][:]))
+                    _logger.info("CCP_stringRep: " + str(sheet[i][:])) 
+
+                    i = i + 1                   
+                ##########################
+            elif(modelType == "Products"):
+                while True:  
+                    # Check if final row was completed
+                    if (i == len(sheet) or str(sheet[i][10]) != "TRUE"):
+                        break
+                                     
+                    masterDB_Product_stringRep.append(str(sheet[i][:]))
+                    _logger.info("Product_stringRep: " + str(sheet[i][:])) 
+                    i = i + 1 
+            elif(modelType == "Pricelist"):
+                while(True):
+                    # Check if final row was completed
+                    if (i == len(sheet) or str(sheet[i][10]) != "TRUE"):
+                        break
+                                     
+                    masterDB_Pricelist_sku.append(str(sheet[i][0]))
+                    _logger.info("Pricelist_sku: " + str(sheet[i][0])) 
+                    i = i + 1 
+
+
+
+            line_index += 1
+                      
+        #Listing all the stringRep in the "product.template"    
+        pt_stringRep = []
+        _logger.info("Listing all the stringRep in the product.template")
+        for item in pt.search([]):
+            if (str(item.stringRep) == ""):
+                continue
+            pt_stringRep.append(item.stringRep)
+        #Checking if the product.template.stringRep exists in the MasterDB Products tab
+        for item in pt_stringRep:
+            _logger.info("-----------: " + str(item))
+            if (item not in masterDB_Product_stringRep):
+                pt_to_delete = pt.search([("stringRep", "=", item)])
+
+                
+                for pt_ in pt_to_delete:
+                    _logger.info("-----------: " + str(pt_.id))
+
+                spl1 = spl.search([("product_id", "=", pt_to_delete.id)])
+
+                if (len(spl1) <= 0):
+                    continue
+                if (len(spl1) > 1):
+                    _logger.error("len(spl1): " + str(len(spl1)))
+                    raise Exception("Should not have more then one Stock.Production.Lot id related to the product.template.sku")
+                else:
+                    _logger.info("------------ product.template unlink: " + str(pt_to_delete.id) + ", " + str(pt_to_delete.name))
+                    pt_to_delete.unlink()
+
+              
+        #Listing all the stringRep in the "stock.production.lot"  
+        spl_stringRep = []  
+        _logger.info("Listing all the stringRep in the stock.production.lot")
+        for item in spl.search([]):
+            if (len(str(item.stringRep)) == 0):
+                continue
+            spl_stringRep.append(item.stringRep)
+        #Checking if the stock.production.lot.stringRep exists in the MasterDB CCP tab
+        for item in spl.search([]):
+            _logger.info("#!#!#!#!#!#!#!#----------: " + item.stringRep)
+            if (item.stringRep not in masterDB_CCP_stringRep):
+                spl_to_delete = spl.search([("stringRep", "=", item.stringRep)])
+                _logger.info("------------ stock.production.lot unlink: " + str(spl_to_delete.id) + ", " + str(spl_to_delete.name))
+                related_lines = aml.search([("product_id", "=", spl_to_delete.id)])
+
+                # If there are related records, handle them first
+                if related_lines:
+                    _logger.warning(f"Cannot delete product.template {spl_to_delete.id} due to related account_move_line records.")
+                    # Handle the related records, e.g., update or delete them
+                else:
+                    # If no related records or related records are handled, then unlink
+                    spl_to_delete.unlink()
+
+        _logger.info("------------- END OF cleanStringRep")
