@@ -487,6 +487,8 @@ class order(models.Model):
         product_list = self.env["product.product"].search(
             [("sku", "like", eid), ("active", "=", True)]
         )
+        _logger.error("product.id: " + str(product.id))
+        _logger.error("product.name: " + str(product.name))
         if len(product_list) != 1:
             return "Invalid Match Count for EID: " + str(eid)
 
