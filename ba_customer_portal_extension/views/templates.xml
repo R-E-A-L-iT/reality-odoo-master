@@ -163,6 +163,265 @@
     <template id="portal_my_rental_products" name="My Rental Products">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <![CDATA[
+                <style>
+
+                    /* import */
+
+                        @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Roboto&family=Source+Sans+Pro:wght@200&display=swap');
+
+                            /*
+                                header - font-family: 'Bakbak One', cursive;
+                                normal - font-family: 'Roboto', sans-serif;
+                                small  - font-family: 'Source Sans Pro', sans-serif;
+                            */
+
+                    /* global */
+
+                        h1, b, strong {
+
+                            font-family: 'Bakbak One', cursive;
+
+                        }
+
+                        p {
+
+                            font-family: 'Roboto', sans-serif;
+
+                        }
+
+                        small {
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        #wrap, main {
+
+                            background-color: #1E2023 !important;
+
+                        }
+
+                    /* header */
+
+                        #top > nav {
+
+                            height: 100px;
+
+                            background-color: #1E2023;
+
+                        }
+
+                        #top > nav.navbar, nav.navbar-light {
+
+                            border-bottom: 1px solid #333 !important;
+
+                        }
+
+                        #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar {
+
+                            background-color: rgb(0, 0, 0, 0.1) !important;
+
+                        }
+
+                        /* account */
+                        #top_menu_container > ul > li > a > i {
+
+                            color: white;
+
+                        }
+
+                        /* sign in */
+                        #top_menu_container > ul > li > a {
+
+                            color: white !important;
+
+                        }
+
+                        /* hamburger */
+                        #top_menu_container > button > span {
+
+                            display: none;
+
+                        }
+
+                        /* contact button */
+                        #top_menu_container > div.oe_structure.oe_structure_solo.ml-3 > section > div > a {
+
+                            display: none;
+
+                            /*border: 1px solid #333 !important;
+                            border-radius: 10px;
+
+                            background-color: rgba(0, 0, 0, 0.1) !important;*/
+
+                        }
+
+                    /* navigate */
+
+                        /* navigator */
+                        #wrap > div > nav {
+
+                            border: 2px solid #333 !important;
+
+                            background-color: #2D2F32 !important;
+
+                        }
+
+                        /* home icon */
+                        #wrap > div > nav > ol > li.breadcrumb-item.ml-1 > a > i {
+
+                            color: #db0d0d;
+
+                        }
+
+                        /* navigate header */
+                        #wrap > div > nav > ol > li.breadcrumb-item.active {
+
+                            color: #888;
+
+                        }
+
+                        /* filter titles */
+                        #o_portal_navbar_content > div > div:nth-child(1) > span, #o_portal_navbar_content > div > div:nth-child(2) > span, #o_portal_navbar_content > div > div:nth-child(3) > span {
+
+                            color: white;
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        /* filter menus */
+                        #portal_searchbar_sortby, #portal_searchbar_filters, #portal_searchbar_groupby {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border: 1px solid #333;
+                            border-radius: 5px;
+
+                        }
+
+                        /* search menu */
+                        #o_portal_navbar_content > form > div > div > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: 1px solid #333;
+                            border-right: none;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-left-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search enter */
+                        #o_portal_navbar_content > form > div > span > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: none;
+                            border-right: 1px solid #333;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-right-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search input */
+                        #o_portal_navbar_content > form > div > input {
+
+                            color: black !important;
+                            background-color: #888;
+
+                            border: 1px solid #333;
+
+                            text-shadow: 1px solid #000;
+                            font-family border: 1px solid #333;
+
+                        }
+
+                    /* table */
+
+                        .table {
+
+                            background-color: #333 !important;
+
+                        }
+
+                        #wrap > div > div.table-responsive.border.rounded.border-top-0 {
+
+                            background-color: #333 !important;
+                            border: 1px solid #333 !important;
+
+                        }
+
+                        /* header */
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead {
+
+                                color: #888;
+                                background-color: #24272A;
+
+                                padding: 20px !important;
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead > tr {
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                        /* content */
+
+                            td {
+
+                                color: #888;
+                                background-color: #2D2F32;
+
+                                border: 2px solid #333;
+
+                            }
+
+                            tr > td > a {
+
+                                color: white;
+
+                                font-family: 'Bakbak One', cursive;
+
+                            }
+
+                        /* footer */
+
+                            #wrap > div > p {
+
+                                color: #fff;
+
+                                font-family: 'Source Sans Pro', sans-serif;
+
+                            }
+
+                    /* footer */
+
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+
+                            background-color: #24272A;
+
+                        }
+
+                </style>
+            ]]>
 
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Rental Products</t>
@@ -205,6 +464,276 @@
             <li t-if="page_name == 'rental_product'" class="breadcrumb-item active">
                 Rental Products
             </li>
+        </xpath>
+    </template>
+
+    <template id="portal_helpdesk_ticket_inherit_realit" inherit_id="helpdesk.portal_helpdesk_ticket">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="before">
+            <![CDATA[
+                <style>
+
+                    /* import */
+
+                        @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Roboto&family=Source+Sans+Pro:wght@200&display=swap');
+
+                            /*
+                                header - font-family: 'Bakbak One', cursive;
+                                normal - font-family: 'Roboto', sans-serif;
+                                small  - font-family: 'Source Sans Pro', sans-serif;
+                            */
+
+                    /* global */
+
+                        h1, b, strong {
+
+                            font-family: 'Bakbak One', cursive;
+
+                        }
+
+                        p {
+
+                            font-family: 'Roboto', sans-serif;
+
+                        }
+
+                        small {
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        #wrap, main {
+
+                            background-color: #1E2023 !important;
+
+                        }
+
+                    /* header */
+
+                        #top > nav {
+
+                            height: 100px;
+
+                            background-color: #1E2023;
+
+                        }
+
+                        #top > nav.navbar, nav.navbar-light {
+
+                            border-bottom: 1px solid #333 !important;
+
+                        }
+
+                        #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar {
+
+                            background-color: rgb(0, 0, 0, 0.1) !important;
+
+                        }
+
+                        /* account */
+                        #top_menu_container > ul > li > a > i {
+
+                            color: white;
+
+                        }
+
+                        /* sign in */
+                        #top_menu_container > ul > li > a {
+
+                            color: white !important;
+
+                        }
+
+                        /* hamburger */
+                        #top_menu_container > button > span {
+
+                            display: none;
+
+                        }
+
+                        /* contact button */
+                        #top_menu_container > div.oe_structure.oe_structure_solo.ml-3 > section > div > a {
+
+                            display: none;
+
+                            /*border: 1px solid #333 !important;
+                            border-radius: 10px;
+
+                            background-color: rgba(0, 0, 0, 0.1) !important;*/
+
+                        }
+
+                    /* navigate */
+
+                        /* navigator */
+                        #wrap > div > nav {
+
+                            border: 2px solid #333 !important;
+
+                            background-color: #2D2F32 !important;
+
+                        }
+
+                        /* home icon */
+                        #wrap > div > nav > ol > li.breadcrumb-item.ml-1 > a > i {
+
+                            color: #db0d0d;
+
+                        }
+
+                        /* navigate header */
+                        #wrap > div > nav > ol > li.breadcrumb-item.active {
+
+                            color: #888;
+
+                        }
+
+                        /* filter titles */
+                        #o_portal_navbar_content > div > div:nth-child(1) > span, #o_portal_navbar_content > div > div:nth-child(2) > span, #o_portal_navbar_content > div > div:nth-child(3) > span {
+
+                            color: white;
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        /* filter menus */
+                        #portal_searchbar_sortby, #portal_searchbar_filters, #portal_searchbar_groupby {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border: 1px solid #333;
+                            border-radius: 5px;
+
+                        }
+
+                        /* search menu */
+                        #o_portal_navbar_content > form > div > div > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: 1px solid #333;
+                            border-right: none;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-left-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search enter */
+                        #o_portal_navbar_content > form > div > span > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: none;
+                            border-right: 1px solid #333;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-right-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search input */
+                        #o_portal_navbar_content > form > div > input {
+
+                            color: black !important;
+                            background-color: #888;
+
+                            border: 1px solid #333;
+
+                            text-shadow: 1px solid #000;
+                            font-family border: 1px solid #333;
+
+                        }
+
+                    /* table */
+
+                        .table {
+
+                            background-color: #333 !important;
+
+                        }
+
+                        #wrap > div > div.table-responsive.border.rounded.border-top-0 {
+
+                            background-color: #333 !important;
+                            border: 1px solid #333 !important;
+
+                        }
+
+                        /* header */
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead {
+
+                                color: #888;
+                                background-color: #24272A;
+
+                                padding: 20px !important;
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead > tr {
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                        /* content */
+
+                            td {
+
+                                color: #888;
+                                background-color: #2D2F32;
+
+                                border: 2px solid #333;
+
+                            }
+
+                            tr > td > a {
+
+                                color: white;
+
+                                font-family: 'Bakbak One', cursive;
+
+                            }
+
+                        /* footer */
+
+                            #wrap > div > p {
+
+                                color: #fff;
+
+                                font-family: 'Source Sans Pro', sans-serif;
+
+                            }
+
+                    /* footer */
+
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+
+                            background-color: #24272A;
+
+                        }
+
+                </style>
+            ]]>
+        </xpath>
+    </template>
+
+    <template id="portal_searchbar_realit" inherit_id="portal.portal_searchbar">
+        <xpath expr="//div[hasclass('input-group-sm')]" position="attributes">
+            <attribute name="class">input-group input-group-sm w-100 mt-3</attribute>
         </xpath>
     </template>
 
