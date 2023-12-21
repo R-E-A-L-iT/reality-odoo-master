@@ -145,7 +145,7 @@
                 <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
                 <h3>my.R-E-A-L.iT</h3>
                 <t t-if="companies" t-foreach="companies" t-as="comp">
-                    <h4 class="mt-4" t-esc="comp['company_name']"/>
+                    <h4 class="mt-4 text-primary" t-esc="comp['company_name']"/>
                     <div class="o_portal_docs_companywise list-group">
                         <t t-if="comp['company_data']" t-foreach="comp['company_data']" t-as="comp_data">
                             <a t-att-href="comp_data['url']" t-att-title="comp_data['title']" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">

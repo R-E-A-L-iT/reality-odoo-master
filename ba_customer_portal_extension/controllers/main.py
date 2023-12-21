@@ -475,14 +475,14 @@ class CustomerPortalReal(CustomerPortal):
 
     def _prepare_quotations_domain_companywise(self, partner, company):
         return [
-            ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
+            # ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sent', 'cancel']),
             ('partner_id', '=', company.id),
         ]
 
     def _prepare_orders_domain_companywise(self, partner, company):
         return [
-            ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
+            # ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sale', 'done']),
             ('partner_id', '=', company.id)
         ]
