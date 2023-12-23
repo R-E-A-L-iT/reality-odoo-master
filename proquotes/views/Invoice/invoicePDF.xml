@@ -22,9 +22,9 @@
 
 			<!-- Setup Translations -->
 			<div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
-				<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />
-				<h3 t-field="o.partner_id.name" />
-				<br />
+<!--				<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />-->
+<!--				<h3 t-field="o.partner_id.name" />-->
+<!--				<br />-->
 
 				<style>
 					#addressTable {
@@ -38,7 +38,7 @@
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 						<h5 t-if="(clang == 'en_CA' or clang == 'en_US')" style="color: #db0d0d">Bill To</h5>
 						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d">Facturé à</h5>
-						<span t-field="o.partner_id.name" />
+						<strong style="font-size:17px;" t-field="o.partner_id.name" />
 						<br />
 						<span t-field="o.partner_id.street" />
 						<br />
@@ -53,7 +53,7 @@
 					<td style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
 						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
 						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Envoyez à</h5>
-						<span t-field="o.partner_shipping_id.name" />
+						<strong style="font-size:17px;" t-field="o.partner_shipping_id.name" />
 						<br />
 						<span t-field="o.partner_shipping_id.street" />
 						<br />
