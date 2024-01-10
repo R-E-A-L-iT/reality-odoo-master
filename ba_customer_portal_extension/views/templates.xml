@@ -442,7 +442,7 @@
                 <t t-foreach="quotations" t-as="quotation">
                     <t t-if="quotation.order_line" t-foreach="quotation.order_line" t-as="rental">
                         <tr>
-                            <td><a t-att-href="rental.order_id.get_portal_url()"><t t-esc="rental.order_id.name"/></a></td>
+                            <td><a t-attf-href="/my/orders/company/#{rental.order_id.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="rental.order_id.name"/></a></td>
                             <td class="text-right"><span t-field="rental.order_id.date_order"/></td>
                             <td class="text-right"><span t-field="rental.product_id"/></td>
                             <td class="text-center">
@@ -729,12 +729,99 @@
                 </style>
             ]]>
         </xpath>
+        <t t-foreach="tickets" position="replace">
+            <t t-foreach="tickets" t-as="ticket">
+                <tr>
+                    <td class="text-left"><a t-attf-href="/helpdesk/ticket/#{ticket.id}/#{partner_company_id}"><small>#</small><t t-esc="ticket.id"/></a></td>
+                    <td><a t-attf-href="/helpdesk/ticket/#{ticket.id}/#{partner_company_id}"><span t-field="ticket.name"/></a></td><td/>
+                    <td t-if="groupby != 'stage'" class="text-center"><span class="badge badge-pill badge-info" t-field="ticket.stage_id.name"/></td>
+                </tr>
+            </t>
+        </t>
     </template>
 
     <template id="portal_searchbar_realit" inherit_id="portal.portal_searchbar">
         <xpath expr="//div[hasclass('input-group-sm')]" position="attributes">
             <attribute name="class">input-group input-group-sm w-100 mt-3</attribute>
         </xpath>
+    </template>
+
+    <template id="portal_my_orders_inherit" inherit_id="sale.portal_my_orders">
+        <a t-att-href="order.get_portal_url()" position="replace">
+            <a t-attf-href="/my/orders/company/#{order.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="order.name"/></a>
+        </a>
+    </template>
+
+    <template id="portal_my_quotations_inherit" inherit_id="sale.portal_my_quotations">
+        <a t-att-href="quotation.get_portal_url()" position="replace">
+            <a t-attf-href="/my/orders/company/#{quotation.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="quotation.name"/></a>
+        </a>
+    </template>
+
+    <template id="portal_my_invoices_inherit" inherit_id="account.portal_my_invoices">
+        <a t-att-href="invoice.get_portal_url()" position="replace">
+            <a t-attf-href="/my/invoices/company/#{invoice.id}/#{partner_company_id}?{{ keep_query() }}" t-att-title="invoice.name">
+                <t t-esc="invoice.name" t-if="invoice.name != '/'"/>
+                <em t-else="">Draft Invoice</em>
+            </a>
+        </a>
+    </template>
+
+    <template id="portal_my_home_menu_sale_inherit" inherit_id="sale.portal_my_home_menu_sale">
+        <li t-if="page_name == 'quote' or sale_order and sale_order.state in ('sent', 'cancel')" position="replace">
+            <li t-if="page_name == 'quote' or sale_order and sale_order.state in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="sale_order" t-attf-href="/my/quotes/company/#{partner_company_id}?{{ keep_query() }}">Quotations</a>
+                    <t t-else="">Quotations</t>
+                </t>
+                <t t-else="">
+                    <a t-if="sale_order" t-attf-href="/my/quotes?{{ keep_query() }}">Quotations</a>
+                    <t t-else="">Quotations</t>
+                </t>
+            </li>
+        </li>
+        <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" position="replace">
+            <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="sale_order" t-attf-href="/my/orders/company/#{partner_company_id}?{{ keep_query() }}">Sales Orders</a>
+                    <t t-else="">Sales Orders</t>
+                </t>
+                <t t-else="">
+                    <a t-if="sale_order" t-attf-href="/my/orders?{{ keep_query() }}">Sales Orders</a>
+                    <t t-else="">Sales Orders</t>
+                </t>
+            </li>
+        </li>
+    </template>
+
+    <template id="portal_my_home_menu_invoice_inherit" inherit_id="account.portal_my_home_menu_invoice">
+        <li t-if="page_name == 'invoice'" position="replace">
+            <li t-if="page_name == 'invoice'" t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="invoice" t-attf-href="/my/invoices/company/#{partner_company_id}?{{ keep_query() }}">Invoices &amp; Bills</a>
+                    <t t-else="">Invoices &amp; Bills</t>
+                </t>
+                <t t-else="">
+                    <a t-if="invoice" t-attf-href="/my/invoices?{{ keep_query() }}">Invoices &amp; Bills</a>
+                    <t t-else="">Invoices &amp; Bills</t>
+                </t>
+            </li>
+        </li>
+    </template>
+
+    <template id="portal_my_home_menu_helpdesk_inherit" inherit_id="helpdesk.portal_my_home_menu_helpdesk">
+        <li t-if="page_name == 'ticket' or ticket or rating_page" position="replace">
+            <li t-if="page_name == 'ticket' or ticket or rating_page" t-attf-class="breadcrumb-item #{'active ' if not ticket else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="ticket or rating_page" t-attf-href="/my/tickets/company/#{partner_company_id}?{{ keep_query() }}">Tickets</a>
+                    <t t-else="">Tickets</t>
+                </t>
+                <t t-else="">
+                    <a t-if="ticket or rating_page" t-attf-href="/my/tickets?{{ keep_query() }}">Tickets</a>
+                    <t t-else="">Tickets</t>
+                </t>
+            </li>
+        </li>
     </template>
 
 </odoo>

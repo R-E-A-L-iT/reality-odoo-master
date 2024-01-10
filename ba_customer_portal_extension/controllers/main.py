@@ -36,6 +36,7 @@ from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 from odoo.http import content_disposition, Controller, request, route
+from odoo.addons.payment.controllers import portal as payment_portal
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers import portal
@@ -131,9 +132,11 @@ class CustomerPortalReal(CustomerPortal):
             company = request.env['res.partner'].sudo().browse(int(partner_company_id))
             domain = self._prepare_quotations_domain_companywise(partner=partner, company=company)
             quote_url = _("/my/quotes/company/%s") % str(company.id)
+            values['partner_company_id'] = int(partner_company_id)
         else:
             domain = self._prepare_quotations_domain(partner)
             quote_url = "/my/quotes"
+            values['partner_company_id'] = False
 
         searchbar_sortings = self._get_sale_searchbar_sortings()
 
@@ -180,9 +183,11 @@ class CustomerPortalReal(CustomerPortal):
             company = request.env['res.partner'].sudo().browse(int(partner_company_id))
             domain = self._prepare_orders_domain_companywise(partner=partner, company=company)
             order_url = _("/my/orders/company/%s") % str(company.id)
+            values['partner_company_id'] = int(partner_company_id)
         else:
             domain = self._prepare_orders_domain(partner=partner)
             order_url = "/my/orders"
+            values['partner_company_id'] = False
 
         searchbar_sortings = self._get_sale_searchbar_sortings()
 
@@ -219,6 +224,124 @@ class CustomerPortalReal(CustomerPortal):
         })
         return request.render("sale.portal_my_orders", values)
 
+    @http.route(['/my/orders/<int:order_id>','/my/orders/company/<int:order_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
+    def portal_order_company_page(self, order_id, partner_company_id=None, report_type=None, access_token=None, message=False, download=False, **kw):
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        if report_type in ('html', 'pdf', 'text'):
+            return self._show_report(model=order_sudo, report_type=report_type,
+                                     report_ref='sale.action_report_saleorder', download=download)
+
+        # use sudo to allow accessing/viewing orders for public user
+        # only if he knows the private token
+        # Log only once a day
+        if order_sudo:
+            # store the date as a string in the session to allow serialization
+            now = fields.Date.today().isoformat()
+            session_obj_date = request.session.get('view_quote_%s' % order_sudo.id)
+            if session_obj_date != now and request.env.user.share and access_token:
+                request.session['view_quote_%s' % order_sudo.id] = now
+                body = _('Quotation viewed by customer %s',
+                         order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
+                _message_post_helper(
+                    "sale.order",
+                    order_sudo.id,
+                    body,
+                    token=order_sudo.access_token,
+                    message_type="notification",
+                    subtype_xmlid="mail.mt_note",
+                    partner_ids=order_sudo.user_id.sudo().partner_id.ids,
+                )
+
+        values = {
+            'sale_order': order_sudo,
+            'message': message,
+            'token': access_token,
+            'landing_route': '/shop/payment/validate',
+            'bootstrap_formatting': True,
+            'partner_id': order_sudo.partner_id.id,
+            'report_type': 'html',
+            'action': order_sudo._get_portal_return_action(),
+        }
+        if order_sudo.company_id:
+            values['res_company'] = order_sudo.company_id
+
+        values['partner_company_id'] = partner_company_id or False
+
+        # Payment values
+        if order_sudo.has_to_be_paid():
+            logged_in = not request.env.user._is_public()
+
+            acquirers_sudo = request.env['payment.acquirer'].sudo()._get_compatible_acquirers(
+                order_sudo.company_id.id,
+                order_sudo.partner_id.id,
+                currency_id=order_sudo.currency_id.id,
+                sale_order_id=order_sudo.id,
+            )  # In sudo mode to read the fields of acquirers and partner (if not logged in)
+            tokens = request.env['payment.token'].search([
+                ('acquirer_id', 'in', acquirers_sudo.ids),
+                ('partner_id', '=', order_sudo.partner_id.id)
+            ]) if logged_in else request.env['payment.token']
+
+            # Make sure that the partner's company matches the order's company.
+            if not payment_portal.PaymentPortal._can_partner_pay_in_company(
+                    order_sudo.partner_id, order_sudo.company_id
+            ):
+                acquirers_sudo = request.env['payment.acquirer'].sudo()
+                tokens = request.env['payment.token']
+
+            fees_by_acquirer = {
+                acquirer: acquirer._compute_fees(
+                    order_sudo.amount_total,
+                    order_sudo.currency_id,
+                    order_sudo.partner_id.country_id,
+                ) for acquirer in acquirers_sudo.filtered('fees_active')
+            }
+            # Prevent public partner from saving payment methods but force it for logged in partners
+            # buying subscription products
+            show_tokenize_input = logged_in \
+                                  and not request.env['payment.acquirer'].sudo()._is_tokenization_required(
+                sale_order_id=order_sudo.id
+            )
+            values.update({
+                'acquirers': acquirers_sudo,
+                'tokens': tokens,
+                'fees_by_acquirer': fees_by_acquirer,
+                'show_tokenize_input': show_tokenize_input,
+                'amount': order_sudo.amount_total,
+                'currency': order_sudo.pricelist_id.currency_id,
+                'partner_id': order_sudo.partner_id.id,
+                'access_token': order_sudo.access_token,
+                'transaction_route': order_sudo.get_portal_url(suffix='/transaction'),
+                'landing_route': order_sudo.get_portal_url(),
+            })
+
+        if order_sudo.state in ('draft', 'sent', 'cancel'):
+            history = request.session.get('my_quotations_history', [])
+        else:
+            history = request.session.get('my_orders_history', [])
+        values.update(get_records_pager(history, order_sudo))
+
+        return request.render('sale.sale_order_portal_template', values)
+
+    @http.route(['/my/invoices/<int:invoice_id>','/my/invoices/company/<int:invoice_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
+    def portal_my_invoice_detail(self, invoice_id, partner_company_id=None, access_token=None, report_type=None, download=False, **kw):
+        try:
+            invoice_sudo = self._document_check_access('account.move', invoice_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        if report_type in ('html', 'pdf', 'text'):
+            return self._show_report(model=invoice_sudo, report_type=report_type, report_ref='account.account_invoices',
+                                     download=download)
+
+        values = self._invoice_get_page_view_values(invoice_sudo, access_token, **kw)
+        values['partner_company_id'] = partner_company_id or False
+        return request.render("account.portal_invoice_page", values)
+
     @http.route(['/my/invoices', '/my/invoices/company/<int:partner_company_id>', '/my/invoices/company/<int:partner_company_id>/page/<int:page>', '/my/invoices/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_invoices(self, partner_company_id=None, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
         values = self._prepare_portal_layout_values()
@@ -229,9 +352,11 @@ class CustomerPortalReal(CustomerPortal):
             company = request.env['res.partner'].sudo().browse(int(partner_company_id))
             domain = self._get_invoices_domain_companywise(company=company)
             order_url = _("/my/invoices/company/%s") % str(company.id)
+            values['partner_company_id'] = int(partner_company_id)
         else:
             domain = self._get_invoices_domain()
             order_url = "/my/invoices"
+            values['partner_company_id'] = False
 
         searchbar_sortings = {
             'date': {'label': _('Date'), 'order': 'invoice_date desc'},
@@ -293,9 +418,11 @@ class CustomerPortalReal(CustomerPortal):
             company = request.env['res.partner'].sudo().browse(int(partner_company_id))
             domain = self._prepare_helpdesk_tickets_domain_companywise(partner=company)
             ticket_url = _("/my/tickets/company/%s") % str(company.id)
+            values['partner_company_id'] = int(partner_company_id)
         else:
             domain = self._prepare_helpdesk_tickets_domain()
             ticket_url = "/my/tickets"
+            values['partner_company_id'] = False
 
         searchbar_sortings = {
             'date': {'label': _('Newest'), 'order': 'create_date desc'},
@@ -422,6 +549,24 @@ class CustomerPortalReal(CustomerPortal):
         })
         return request.render("helpdesk.portal_helpdesk_ticket", values)
 
+    @http.route([
+        "/helpdesk/ticket/<int:ticket_id>",
+        "/helpdesk/ticket/<int:ticket_id>/<int:partner_company_id>/",
+        "/helpdesk/ticket/<int:ticket_id>/<access_token>",
+        '/my/ticket/<int:ticket_id>',
+        "/my/ticket/<int:ticket_id>/<int:partner_company_id>/",
+        '/my/ticket/<int:ticket_id>/<access_token>'
+    ], type='http', auth="public", website=True)
+    def tickets_followup(self, ticket_id=None, partner_company_id=None, access_token=None, **kw):
+        try:
+            ticket_sudo = self._document_check_access('helpdesk.ticket', ticket_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        values = self._ticket_get_page_view_values(ticket_sudo, access_token, **kw)
+        values['partner_company_id'] = partner_company_id or False
+        return request.render("helpdesk.tickets_followup", values)
+
     @http.route(['/my/rental/products/company/<int:partner_company_id>',
                  '/my/rental/products/company/<int:partner_company_id>/page/<int:page>'],
                 type='http', auth="user", website=True)
@@ -434,9 +579,11 @@ class CustomerPortalReal(CustomerPortal):
             company = request.env['res.partner'].sudo().browse(int(partner_company_id))
             domain = self._prepare_rental_orders_domain_companywise(partner=partner, company=company)
             quote_url = _("/my/rental/products/company/%s") % str(company.id)
+            values['partner_company_id'] = partner_company_id
         else:
             domain = self._prepare_quotations_domain(partner)
             quote_url = "/my/rental/products/"
+            values['partner_company_id'] = False
 
         searchbar_sortings = self._get_sale_searchbar_sortings()
 
