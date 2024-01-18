@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
 dev_oli = "dev-oli-"
 dev_zek = "dev-zek-"
+dev_braincrew = "dev-bc-"
 
 
 
@@ -35,7 +36,8 @@ class sheetsAPI(models.Model):
 
         # Dev Numbers Set Based on When Developer Joined
         _master_database_template_id_dev_oli = ("12ZZZuSX0IemfPp8lCr3SYsbHfRzAfMoeo-WcD12Gapc")
-        _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")                
+        _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")   
+        _master_database_template_id_dev_bc = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")              
         
 
         # Return the proper GoogleSheet Template ID base on the environement
@@ -48,6 +50,9 @@ class sheetsAPI(models.Model):
         elif dev_zek in _db_name:
             _logger.info("Dev Zek")
             return _master_database_template_id_dev_zek
+        elif dev_braincrew in _db_name:
+            _logger.info("Dev BrainCrew")
+            return _master_database_template_id_dev_bc            
         else:
             _logger.info("Default Dev GS")
             return _master_database_template_id_prod
