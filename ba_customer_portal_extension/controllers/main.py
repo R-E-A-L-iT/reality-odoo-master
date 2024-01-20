@@ -226,10 +226,12 @@ class CustomerPortalReal(CustomerPortal):
 
     @http.route(['/my/orders/<int:order_id>','/my/orders/company/<int:order_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
     def portal_order_company_page(self, order_id, partner_company_id=None, report_type=None, access_token=None, message=False, download=False, **kw):
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
+
+        order_sudo = request.env['sale.order'].sudo().browse(int(order_id))
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=order_sudo, report_type=report_type,
@@ -329,10 +331,12 @@ class CustomerPortalReal(CustomerPortal):
 
     @http.route(['/my/invoices/<int:invoice_id>','/my/invoices/company/<int:invoice_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
     def portal_my_invoice_detail(self, invoice_id, partner_company_id=None, access_token=None, report_type=None, download=False, **kw):
-        try:
-            invoice_sudo = self._document_check_access('account.move', invoice_id, access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     invoice_sudo = self._document_check_access('account.move', invoice_id, access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
+
+        invoice_sudo = request.env['account.move'].sudo().browse(int(invoice_id))
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=invoice_sudo, report_type=report_type, report_ref='account.account_invoices',
@@ -558,10 +562,12 @@ class CustomerPortalReal(CustomerPortal):
         '/my/ticket/<int:ticket_id>/<access_token>'
     ], type='http', auth="public", website=True)
     def tickets_followup(self, ticket_id=None, partner_company_id=None, access_token=None, **kw):
-        try:
-            ticket_sudo = self._document_check_access('helpdesk.ticket', ticket_id, access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        # try:
+        #     ticket_sudo = self._document_check_access('helpdesk.ticket', ticket_id, access_token)
+        # except (AccessError, MissingError):
+        #     return request.redirect('/my')
+
+        ticket_sudo = request.env['helpdesk.ticket'].sudo().browse(int(ticket_id))
 
         values = self._ticket_get_page_view_values(ticket_sudo, access_token, **kw)
         values['partner_company_id'] = partner_company_id or False
