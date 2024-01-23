@@ -99,17 +99,17 @@ class CustomerPortalReal(CustomerPortal):
                 })
 
                 # Rental Products
-                rental_orders = request.env['sale.order'].sudo().search(self._prepare_rental_orders_domain_companywise(partner, company))
-                    # if request.env['sale.order'].check_access_rights('read', raise_exception=False) else 0
-                if rental_orders:
-                    rental_product_count = len(rental_orders.mapped('order_line').mapped('product_id').ids)
-                else:
-                    rental_product_count = 0
-                company_data.append({
-                    'title': 'Rental Products',
-                    'url': _('/my/rental/products/company/%s') % int(company.id),
-                    'placeholder_count': rental_product_count,
-                })
+                # rental_orders = request.env['sale.order'].sudo().search(self._prepare_rental_orders_domain_companywise(partner, company))
+                #     # if request.env['sale.order'].check_access_rights('read', raise_exception=False) else 0
+                # if rental_orders:
+                #     rental_product_count = len(rental_orders.mapped('order_line').mapped('product_id').ids)
+                # else:
+                #     rental_product_count = 0
+                # company_data.append({
+                #     'title': 'Rental Products',
+                #     'url': _('/my/rental/products/company/%s') % int(company.id),
+                #     'placeholder_count': rental_product_count,
+                # })
 
                 # Pass all blocks to list of that company
                 companies_all_data.append({
