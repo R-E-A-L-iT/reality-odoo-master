@@ -629,15 +629,15 @@ class CustomerPortalReal(CustomerPortal):
     def _prepare_quotations_domain_companywise(self, partner, company):
         return [
             # ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
-            ('state', 'in', ['sent', 'cancel']),
-            ('partner_id', '=', company.id),
+            ('state', 'in', ['draft', 'sent']),
+            '|', ('partner_id', '=', company.id), ('partner_id.parent_id', '=', company.id)
         ]
 
     def _prepare_orders_domain_companywise(self, partner, company):
         return [
             # ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['sale', 'done']),
-            ('partner_id', '=', company.id)
+            '|', ('partner_id', '=', company.id), ('partner_id.parent_id', '=', company.id)
         ]
 
     def _prepare_rental_orders_domain_companywise(self, partner, company):
@@ -647,7 +647,10 @@ class CustomerPortalReal(CustomerPortal):
         ]
 
     def _get_invoices_domain_companywise(self, company):
-        return [('state', 'not in', ('cancel', 'draft')), ('is_move_sent', '=', True), ('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')), ('partner_id', '=', company.id)]
+        return [
+            ('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')),
+            '|', ('partner_id', '=', company.id), ('partner_id.parent_id', '=', company.id)
+        ]
 
     def _prepare_helpdesk_tickets_domain_companywise(self, partner):
         return [('partner_id', '=', partner.id)]

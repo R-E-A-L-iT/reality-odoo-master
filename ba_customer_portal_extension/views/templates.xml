@@ -759,12 +759,48 @@
     </template>
 
     <template id="portal_my_invoices_inherit" inherit_id="account.portal_my_invoices">
-        <a t-att-href="invoice.get_portal_url()" position="replace">
-            <a t-attf-href="/my/invoices/company/#{invoice.id}/#{partner_company_id}?{{ keep_query() }}" t-att-title="invoice.name">
-                <t t-esc="invoice.name" t-if="invoice.name != '/'"/>
-                <em t-else="">Draft Invoice</em>
-            </a>
-        </a>
+        <t t-if="invoices" position="replace">
+            <t t-if="invoices" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Invoice #</th>
+                        <th>Invoice Date</th>
+                        <th class='d-none d-md-table-cell'>Due Date</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-right">Amount Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="invoices" t-as="invoice">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/invoices/company/#{invoice.id}/#{partner_company_id}?{{ keep_query() }}" t-att-title="invoice.name">
+                                    <t t-esc="invoice.name" t-if="invoice.name != '/'"/>
+                                    <em t-else="">Draft Invoice</em>
+                                </a>
+                            </td>
+                            <td><span t-field="invoice.invoice_date"/></td>
+                            <td class='d-none d-md-table-cell'><span t-field="invoice.invoice_date_due"/></td>
+                            <td class="tx_status text-center">
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state not in ('in_payment', 'paid', 'reversed')">
+                                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i><span class="d-none d-md-inline"> Waiting for Payment</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state in ('paid', 'in_payment')">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i><span class="d-none d-md-inline"> Paid</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state == 'reversed'">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Reversed" title="Reversed" role="img"></i><span class="d-none d-md-inline"> Reversed</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'cancel'">
+                                    <span class="badge badge-pill badge-warning"><i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled" role="img"></i><span class="d-none d-md-inline"> Cancelled</span></span>
+                                </t>
+                            </td>
+                            <td class="text-right"><span t-esc="-invoice.amount_residual if invoice.move_type == 'out_refund' else invoice.amount_residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
     </template>
 
     <template id="portal_my_home_menu_sale_inherit" inherit_id="sale.portal_my_home_menu_sale">
