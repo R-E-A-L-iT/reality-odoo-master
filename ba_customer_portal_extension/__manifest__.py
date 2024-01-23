@@ -33,7 +33,7 @@
 ##############################################################################
 {
     'name': 'R.E.A.L Customer Portal Extension',
-    'version': "14.0.3",
+    'version': "14.0.4",
     'author': "Braincrew Apps",
     'license': "AGPL-3",
     'summary': 'R.E.A.L Customer Portal Extension',
