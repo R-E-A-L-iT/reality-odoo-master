@@ -29,3 +29,20 @@ class mail(models.TransientModel):
             result[key]["reply_to"] = result[key]["email_from"]
             result[key]["reply_to_force_new"] = True
         return result
+
+class MailMessage(models.Model):
+    _inherit = 'mail.message'
+
+    @api.model_create_multi
+    def create(self, values_list):
+        messages = super(MailMessage, self).create(values_list)
+        for message in messages:
+            if message.model=='sale.order' and message.res_id and message.body:
+                order = self.env['sale.order'].sudo().browse(int(message.res_id))
+                if order:
+                    body = message.body
+                    portal_url = order.sudo().get_portal_url()
+                    bottom_footer = _("<div class='row' style='margin-top: 10px;'><a href='%s' style='color:#db0d0d;'>%s</a></div>") % (portal_url, order.sudo().name)
+                    body = body + bottom_footer
+                    message.body = body
+        return messages
