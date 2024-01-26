@@ -648,7 +648,7 @@ class CustomerPortalReal(CustomerPortal):
 
     def _get_invoices_domain_companywise(self, company):
         return [
-            ('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')),
+            ('move_type', 'in', ('out_invoice', 'in_invoice')), ('state', 'not in', ['draft', 'cancel']),
             '|', ('partner_id', '=', company.id), ('partner_id.parent_id', '=', company.id)
         ]
 
