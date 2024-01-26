@@ -41,8 +41,7 @@ class MailMessage(models.Model):
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
                     body = message.body
-                    portal_url = order.sudo().get_portal_url()
-                    bottom_footer = _("<div class='row' style='margin-top: 10px;'><a href='%s' style='color:#db0d0d;'>%s</a></div>") % (portal_url, order.sudo().name)
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
                     body = body + bottom_footer
                     message.body = body
         return messages
