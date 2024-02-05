@@ -1,0 +1,863 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_my_home_company_wise" name="My Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="my_details" t-value="True"/>
+            <style>
+                    /* import */
+                        @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
+                            /*
+                                header - font-family: 'Bakbak One', cursive;
+                                normal - font-family: 'Roboto', sans-serif;
+                                small  - font-family: 'Source Sans Pro', sans-serif;
+                            */
+                    /* global */
+                        h1, b, strong {
+                            font-family: 'Bakbak One', cursive;
+                        }
+                        p {
+                            font-family: 'Roboto', sans-serif;
+                        }
+                        small {
+                            font-family: 'Source Sans Pro', sans-serif;
+                        }
+                        #wrap, main {
+                            background-color: #1E2023 !important;
+                        }
+                        /* odoo menu */
+                        #oe_main_menu_navbar {
+                            background-image: url("https://media.istockphoto.com/vectors/vector-grunge-textured-background-beautiful-abstract-decorative-red-vector-id1225740014?k=20&amp;m=1225740014&amp;s=170667a&amp;w=0&amp;h=lMwbDlylYbUyU-T6IFMY7956PNhLwcPPxZB0OKkhXWw=");
+                            background-position: 1 1;
+                            background-size: cover;
+                            border-bottom: 1px solid #333;
+                        }
+                        #oe_main_menu_navbar > div.o_menu_brand {
+                            font-family: 'Bakbak One', cursive;
+                        }
+                    /* header */
+                        #top > nav {
+                            height: 100px;
+                            background-color: #1E2023;
+                        }
+                        #top > nav.navbar, nav.navbar-light {
+                            border-bottom: 1px solid #333 !important;
+                        }
+                        #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar {
+                            background-color: rgb(0, 0, 0, 0.1) !important;
+                        }
+                        /* account */
+                        #top_menu_container > ul > li > a > i {
+                            color: white;
+                        }
+                        /* sign in */
+                        #top_menu_container > ul > li > a {
+                            color: white !important;
+                        }
+                        /* hamburger */
+                        #top_menu_container > button > span {
+                            display: none;
+                        }
+                        /* contact button */
+                        #top_menu_container > div.oe_structure.oe_structure_solo.ml-3 > section > div > a {
+                            display: none;
+                            /*border: 1px solid #333 !important;
+                            border-radius: 10px;
+                            background-color: rgba(0, 0, 0, 0.1) !important;*/
+                        }
+                    /* content */
+                        /* documents header */
+                        #wrap > div > div > div.col-12.col-md.col-lg-6 > div.o_portal_my_home > h3 {
+                            color: white;
+                            font-family: 'Bakbak One', cursive;
+                        }
+                        /* documents list */
+                        #wrap > div > div > div.col-12.col-md.col-lg-6 > div.o_portal_my_home > div.o_portal_docs.list-group {
+                            border-radius: 10px !important;
+                        }
+                        /* documents list items */
+                        .list-group-item {
+                            color: #fff;
+                            background-color: #24272A;
+                            font-family: 'Roboto', sans-serif;
+                        }
+                        /* documents list items hover */
+                        .list-group-item:hover {
+                            color: #fff;
+                            background-color: #2D2F32;
+                        }
+                        /* items number */
+                        .badge-pill {
+                            color: #333;
+                            background-color: #db0d0d;
+                        }
+                    /* details */
+                        /* sidebar */
+                        #o_my_sidebar {
+                            color: white;
+                            background-color: #2D2F32;
+                            padding: 25px;
+                            border: 2px solid #333;
+                            border-radius: 10px;
+                            font-family: 'Source Sans Pro', sans-serif;
+                        }
+                        /* address */
+                        #o_my_sidebar > div.o_portal_my_details > div:nth-child(3) {
+                            margin-top: 10px;
+                        }
+                        /* details headers */
+                        #o_my_sidebar > div.o_portal_my_details > h4, #o_my_sidebar > div.o_portal_my_security.mt-3 > h4 {
+                            color: white;
+                            margin-top: 25px;
+                            font-family: 'Bakbak One', cursive;
+                        }
+                        /* header underlines */
+                        #o_my_sidebar > div.o_portal_my_details > hr, #o_my_sidebar > div.o_portal_my_security.mt-3 > hr {
+                            height: 1px;
+                            border-bottom: 1px solid #db0d0d;
+                        }
+                        /* edit buttons */
+                        #o_my_sidebar > div.o_portal_my_details > h4 > a, #o_my_sidebar > div.o_portal_my_details > div.manage_payment_method.mt16 > a, #o_my_sidebar > div.o_portal_my_security.mt-3 > a {
+                            color: #888;
+                            font-family: 'Source Sans Pro', sans-serif;
+                        }
+                        /* header edit hover */
+                        #o_my_sidebar > div.o_portal_my_details > h4 > a:hover, #o_my_sidebar > div.o_portal_my_details > div.manage_payment_method.mt16 > a:hover, #o_my_sidebar > div.o_portal_my_security.mt-3 > a:hover {
+                            text-decoration: none;
+                        }
+                        /* address icons */
+                        #o_my_sidebar > div.o_portal_my_details > div:nth-child(3) > address > div:nth-child(2) > div.d-flex.align-items-baseline > i, #o_my_sidebar > div.o_portal_my_details > div:nth-child(3) > address > div:nth-child(2) > div:nth-child(2) > i, #o_my_sidebar > div.o_portal_my_details > div:nth-child(3) > address > div:nth-child(2) > div:nth-child(3) > i {
+                            color: #888;
+                        }
+                    /* chatbot */
+                        body > div.openerp.o_livechat_button.d-print-none.o_bottom_fixed_element {
+                            color: white;
+                        }
+                    /* footer */
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+                            background-color: #24272A;
+                        }
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc > div > div > div.col-sm.text-center.text-sm-right.o_not_editable > div {
+                            display: none;
+                        }
+            </style>
+            <div class="o_portal_my_home">
+                <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
+                <h3>my.R-E-A-L.iT</h3>
+                <t t-if="companies" t-foreach="companies" t-as="comp">
+                    <h4 class="mt-4 text-primary" t-esc="comp['company_name']"/>
+                    <div class="o_portal_docs_companywise list-group">
+                        <t t-if="comp['company_data']" t-foreach="comp['company_data']" t-as="comp_data">
+                            <a t-att-href="comp_data['url']" t-att-title="comp_data['title']" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                                <t t-esc="comp_data['title']"/>
+                                <span class="badge badge-secondary badge-pill" t-esc="comp_data['placeholder_count']" t-att-data-placeholder_count="comp_data['placeholder_count']"/>
+                            </a>
+                        </t>
+                    </div>
+                </t>
+            </div>
+            <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
+        </t>
+    </template>
+
+    <template id="portal_my_rental_products" name="My Rental Products">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <![CDATA[
+                <style>
+
+                    /* import */
+
+                        @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Roboto&family=Source+Sans+Pro:wght@200&display=swap');
+
+                            /*
+                                header - font-family: 'Bakbak One', cursive;
+                                normal - font-family: 'Roboto', sans-serif;
+                                small  - font-family: 'Source Sans Pro', sans-serif;
+                            */
+
+                    /* global */
+
+                        h1, b, strong {
+
+                            font-family: 'Bakbak One', cursive;
+
+                        }
+
+                        p {
+
+                            font-family: 'Roboto', sans-serif;
+
+                        }
+
+                        small {
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        #wrap, main {
+
+                            background-color: #1E2023 !important;
+
+                        }
+
+                    /* header */
+
+                        #top > nav {
+
+                            height: 100px;
+
+                            background-color: #1E2023;
+
+                        }
+
+                        #top > nav.navbar, nav.navbar-light {
+
+                            border-bottom: 1px solid #333 !important;
+
+                        }
+
+                        #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar {
+
+                            background-color: rgb(0, 0, 0, 0.1) !important;
+
+                        }
+
+                        /* account */
+                        #top_menu_container > ul > li > a > i {
+
+                            color: white;
+
+                        }
+
+                        /* sign in */
+                        #top_menu_container > ul > li > a {
+
+                            color: white !important;
+
+                        }
+
+                        /* hamburger */
+                        #top_menu_container > button > span {
+
+                            display: none;
+
+                        }
+
+                        /* contact button */
+                        #top_menu_container > div.oe_structure.oe_structure_solo.ml-3 > section > div > a {
+
+                            display: none;
+
+                            /*border: 1px solid #333 !important;
+                            border-radius: 10px;
+
+                            background-color: rgba(0, 0, 0, 0.1) !important;*/
+
+                        }
+
+                    /* navigate */
+
+                        /* navigator */
+                        #wrap > div > nav {
+
+                            border: 2px solid #333 !important;
+
+                            background-color: #2D2F32 !important;
+
+                        }
+
+                        /* home icon */
+                        #wrap > div > nav > ol > li.breadcrumb-item.ml-1 > a > i {
+
+                            color: #db0d0d;
+
+                        }
+
+                        /* navigate header */
+                        #wrap > div > nav > ol > li.breadcrumb-item.active {
+
+                            color: #888;
+
+                        }
+
+                        /* filter titles */
+                        #o_portal_navbar_content > div > div:nth-child(1) > span, #o_portal_navbar_content > div > div:nth-child(2) > span, #o_portal_navbar_content > div > div:nth-child(3) > span {
+
+                            color: white;
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        /* filter menus */
+                        #portal_searchbar_sortby, #portal_searchbar_filters, #portal_searchbar_groupby {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border: 1px solid #333;
+                            border-radius: 5px;
+
+                        }
+
+                        /* search menu */
+                        #o_portal_navbar_content > form > div > div > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: 1px solid #333;
+                            border-right: none;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-left-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search enter */
+                        #o_portal_navbar_content > form > div > span > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: none;
+                            border-right: 1px solid #333;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-right-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search input */
+                        #o_portal_navbar_content > form > div > input {
+
+                            color: black !important;
+                            background-color: #888;
+
+                            border: 1px solid #333;
+
+                            text-shadow: 1px solid #000;
+                            font-family border: 1px solid #333;
+
+                        }
+
+                    /* table */
+
+                        .table {
+
+                            background-color: #333 !important;
+
+                        }
+
+                        #wrap > div > div.table-responsive.border.rounded.border-top-0 {
+
+                            background-color: #333 !important;
+                            border: 1px solid #333 !important;
+
+                        }
+
+                        /* header */
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead {
+
+                                color: #888;
+                                background-color: #24272A;
+
+                                padding: 20px !important;
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead > tr {
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                        /* content */
+
+                            td {
+
+                                color: #888;
+                                background-color: #2D2F32;
+
+                                border: 2px solid #333;
+
+                            }
+
+                            tr > td > a {
+
+                                color: white;
+
+                                font-family: 'Bakbak One', cursive;
+
+                            }
+
+                        /* footer */
+
+                            #wrap > div > p {
+
+                                color: #fff;
+
+                                font-family: 'Source Sans Pro', sans-serif;
+
+                            }
+
+                    /* footer */
+
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+
+                            background-color: #24272A;
+
+                        }
+
+                </style>
+            ]]>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Rental Products</t>
+            </t>
+            <t t-if="not quotations">
+                <p>There are currently no rental products for your account.</p>
+            </t>
+            <t t-if="quotations" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Order #</th>
+                        <th class="text-right">Order Date</th>
+                        <th class="text-right">Product</th>
+                        <th class="text-center"/>
+<!--                        <th class="text-right">Subtotal</th>-->
+                    </tr>
+                </thead>
+                <t t-foreach="quotations" t-as="quotation">
+                    <t t-if="quotation.order_line" t-foreach="quotation.order_line" t-as="rental">
+                        <tr>
+                            <td><a t-attf-href="/my/orders/company/#{rental.order_id.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="rental.order_id.name"/></a></td>
+                            <td class="text-right"><span t-field="rental.order_id.date_order"/></td>
+                            <td class="text-right"><span t-field="rental.product_id"/></td>
+                            <td class="text-center">
+                                <span t-if="quotation.state == 'cancel'" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-remove"/> Cancelled</span>
+                                <span t-if="quotation.is_expired" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-clock-o"/> Expired</span>
+                            </td>
+<!--                            <td class="text-right">-->
+<!--                                <span t-field="quotation.amount_total"/>-->
+<!--                            </td>-->
+                        </tr>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_home_menu_rental_product" name="Portal layout : rental product menu entries" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'rental_product'" class="breadcrumb-item active">
+                Rental Products
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_helpdesk_ticket_inherit_realit" inherit_id="helpdesk.portal_helpdesk_ticket">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="before">
+            <![CDATA[
+                <style>
+
+                    /* import */
+
+                        @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Roboto&family=Source+Sans+Pro:wght@200&display=swap');
+
+                            /*
+                                header - font-family: 'Bakbak One', cursive;
+                                normal - font-family: 'Roboto', sans-serif;
+                                small  - font-family: 'Source Sans Pro', sans-serif;
+                            */
+
+                    /* global */
+
+                        h1, b, strong {
+
+                            font-family: 'Bakbak One', cursive;
+
+                        }
+
+                        p {
+
+                            font-family: 'Roboto', sans-serif;
+
+                        }
+
+                        small {
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        #wrap, main {
+
+                            background-color: #1E2023 !important;
+
+                        }
+
+                    /* header */
+
+                        #top > nav {
+
+                            height: 100px;
+
+                            background-color: #1E2023;
+
+                        }
+
+                        #top > nav.navbar, nav.navbar-light {
+
+                            border-bottom: 1px solid #333 !important;
+
+                        }
+
+                        #wrapwrap.o_header_overlay > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) > .navbar {
+
+                            background-color: rgb(0, 0, 0, 0.1) !important;
+
+                        }
+
+                        /* account */
+                        #top_menu_container > ul > li > a > i {
+
+                            color: white;
+
+                        }
+
+                        /* sign in */
+                        #top_menu_container > ul > li > a {
+
+                            color: white !important;
+
+                        }
+
+                        /* hamburger */
+                        #top_menu_container > button > span {
+
+                            display: none;
+
+                        }
+
+                        /* contact button */
+                        #top_menu_container > div.oe_structure.oe_structure_solo.ml-3 > section > div > a {
+
+                            display: none;
+
+                            /*border: 1px solid #333 !important;
+                            border-radius: 10px;
+
+                            background-color: rgba(0, 0, 0, 0.1) !important;*/
+
+                        }
+
+                    /* navigate */
+
+                        /* navigator */
+                        #wrap > div > nav {
+
+                            border: 2px solid #333 !important;
+
+                            background-color: #2D2F32 !important;
+
+                        }
+
+                        /* home icon */
+                        #wrap > div > nav > ol > li.breadcrumb-item.ml-1 > a > i {
+
+                            color: #db0d0d;
+
+                        }
+
+                        /* navigate header */
+                        #wrap > div > nav > ol > li.breadcrumb-item.active {
+
+                            color: #888;
+
+                        }
+
+                        /* filter titles */
+                        #o_portal_navbar_content > div > div:nth-child(1) > span, #o_portal_navbar_content > div > div:nth-child(2) > span, #o_portal_navbar_content > div > div:nth-child(3) > span {
+
+                            color: white;
+
+                            font-family: 'Source Sans Pro', sans-serif;
+
+                        }
+
+                        /* filter menus */
+                        #portal_searchbar_sortby, #portal_searchbar_filters, #portal_searchbar_groupby {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border: 1px solid #333;
+                            border-radius: 5px;
+
+                        }
+
+                        /* search menu */
+                        #o_portal_navbar_content > form > div > div > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: 1px solid #333;
+                            border-right: none;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-left-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search enter */
+                        #o_portal_navbar_content > form > div > span > button {
+
+                            color: #fff;
+                            background-color: #24272A !important;
+
+                            border-top: 1px solid #333;
+                            border-left: none;
+                            border-right: 1px solid #333;
+                            border-bottom: 1px solid #333;
+
+                            border-top-radius: 5px;
+                            border-right-radius: 5px;
+                            border-bottom-radius: 5px;
+
+                        }
+
+                        /* search input */
+                        #o_portal_navbar_content > form > div > input {
+
+                            color: black !important;
+                            background-color: #888;
+
+                            border: 1px solid #333;
+
+                            text-shadow: 1px solid #000;
+                            font-family border: 1px solid #333;
+
+                        }
+
+                    /* table */
+
+                        .table {
+
+                            background-color: #333 !important;
+
+                        }
+
+                        #wrap > div > div.table-responsive.border.rounded.border-top-0 {
+
+                            background-color: #333 !important;
+                            border: 1px solid #333 !important;
+
+                        }
+
+                        /* header */
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead {
+
+                                color: #888;
+                                background-color: #24272A;
+
+                                padding: 20px !important;
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                            #wrap > div > div.table-responsive.border.rounded.border-top-0 > table > thead > tr {
+
+                                border: 1px solid #333 !important;
+
+                            }
+
+                        /* content */
+
+                            td {
+
+                                color: #888;
+                                background-color: #2D2F32;
+
+                                border: 2px solid #333;
+
+                            }
+
+                            tr > td > a {
+
+                                color: white;
+
+                                font-family: 'Bakbak One', cursive;
+
+                            }
+
+                        /* footer */
+
+                            #wrap > div > p {
+
+                                color: #fff;
+
+                                font-family: 'Source Sans Pro', sans-serif;
+
+                            }
+
+                    /* footer */
+
+                        #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+
+                            background-color: #24272A;
+
+                        }
+
+                </style>
+            ]]>
+        </xpath>
+        <t t-foreach="tickets" position="replace">
+            <t t-foreach="tickets" t-as="ticket">
+                <tr>
+                    <td class="text-left"><a t-attf-href="/helpdesk/ticket/#{ticket.id}/#{partner_company_id}"><small>#</small><t t-esc="ticket.id"/></a></td>
+                    <td><a t-attf-href="/helpdesk/ticket/#{ticket.id}/#{partner_company_id}"><span t-field="ticket.name"/></a></td><td/>
+                    <td t-if="groupby != 'stage'" class="text-center"><span class="badge badge-pill badge-info" t-field="ticket.stage_id.name"/></td>
+                </tr>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_searchbar_realit" inherit_id="portal.portal_searchbar">
+        <xpath expr="//div[hasclass('input-group-sm')]" position="attributes">
+            <attribute name="class">input-group input-group-sm w-100 mt-3</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_my_orders_inherit" inherit_id="sale.portal_my_orders">
+        <a t-att-href="order.get_portal_url()" position="replace">
+            <a t-attf-href="/my/orders/company/#{order.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="order.name"/></a>
+        </a>
+    </template>
+
+    <template id="portal_my_quotations_inherit" inherit_id="sale.portal_my_quotations">
+        <a t-att-href="quotation.get_portal_url()" position="replace">
+            <a t-attf-href="/my/orders/company/#{quotation.id}/#{partner_company_id}?{{ keep_query() }}"><t t-esc="quotation.name"/></a>
+        </a>
+    </template>
+
+    <template id="portal_my_invoices_inherit" inherit_id="account.portal_my_invoices">
+        <t t-if="invoices" position="replace">
+            <t t-if="invoices" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Invoice #</th>
+                        <th>Invoice Date</th>
+                        <th class='d-none d-md-table-cell'>Due Date</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="invoices" t-as="invoice">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/invoices/company/#{invoice.id}/#{partner_company_id}?{{ keep_query() }}" t-att-title="invoice.name">
+                                    <t t-esc="invoice.name" t-if="invoice.name != '/'"/>
+                                    <em t-else="">Draft Invoice</em>
+                                </a>
+                            </td>
+                            <td><span t-field="invoice.invoice_date"/></td>
+                            <td class='d-none d-md-table-cell'><span t-field="invoice.invoice_date_due"/></td>
+                            <td class="tx_status text-center">
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state not in ('in_payment', 'paid', 'reversed')">
+                                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i><span class="d-none d-md-inline"> Waiting for Payment</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state in ('paid', 'in_payment')">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i><span class="d-none d-md-inline"> Paid</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'posted' and invoice.payment_state == 'reversed'">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Reversed" title="Reversed" role="img"></i><span class="d-none d-md-inline"> Reversed</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'cancel'">
+                                    <span class="badge badge-pill badge-warning"><i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled" role="img"></i><span class="d-none d-md-inline"> Cancelled</span></span>
+                                </t>
+                            </td>
+                            <td class="text-right"><span t-esc="invoice.amount_total" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_home_menu_sale_inherit" inherit_id="sale.portal_my_home_menu_sale">
+        <li t-if="page_name == 'quote' or sale_order and sale_order.state in ('sent', 'cancel')" position="replace">
+            <li t-if="page_name == 'quote' or sale_order and sale_order.state in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="sale_order" t-attf-href="/my/quotes/company/#{partner_company_id}?{{ keep_query() }}">Quotations</a>
+                    <t t-else="">Quotations</t>
+                </t>
+                <t t-else="">
+                    <a t-if="sale_order" t-attf-href="/my/quotes?{{ keep_query() }}">Quotations</a>
+                    <t t-else="">Quotations</t>
+                </t>
+            </li>
+        </li>
+        <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" position="replace">
+            <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="sale_order" t-attf-href="/my/orders/company/#{partner_company_id}?{{ keep_query() }}">Sales Orders</a>
+                    <t t-else="">Sales Orders</t>
+                </t>
+                <t t-else="">
+                    <a t-if="sale_order" t-attf-href="/my/orders?{{ keep_query() }}">Sales Orders</a>
+                    <t t-else="">Sales Orders</t>
+                </t>
+            </li>
+        </li>
+    </template>
+
+    <template id="portal_my_home_menu_invoice_inherit" inherit_id="account.portal_my_home_menu_invoice">
+        <li t-if="page_name == 'invoice'" position="replace">
+            <li t-if="page_name == 'invoice'" t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="invoice" t-attf-href="/my/invoices/company/#{partner_company_id}?{{ keep_query() }}">Invoices &amp; Bills</a>
+                    <t t-else="">Invoices &amp; Bills</t>
+                </t>
+                <t t-else="">
+                    <a t-if="invoice" t-attf-href="/my/invoices?{{ keep_query() }}">Invoices &amp; Bills</a>
+                    <t t-else="">Invoices &amp; Bills</t>
+                </t>
+            </li>
+        </li>
+    </template>
+
+    <template id="portal_my_home_menu_helpdesk_inherit" inherit_id="helpdesk.portal_my_home_menu_helpdesk">
+        <li t-if="page_name == 'ticket' or ticket or rating_page" position="replace">
+            <li t-if="page_name == 'ticket' or ticket or rating_page" t-attf-class="breadcrumb-item #{'active ' if not ticket else ''}">
+                <t t-if="partner_company_id">
+                    <a t-if="ticket or rating_page" t-attf-href="/my/tickets/company/#{partner_company_id}?{{ keep_query() }}">Tickets</a>
+                    <t t-else="">Tickets</t>
+                </t>
+                <t t-else="">
+                    <a t-if="ticket or rating_page" t-attf-href="/my/tickets?{{ keep_query() }}">Tickets</a>
+                    <t t-else="">Tickets</t>
+                </t>
+            </li>
+        </li>
+    </template>
+
+</odoo>

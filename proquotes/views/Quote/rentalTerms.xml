@@ -6,6 +6,10 @@
         <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Quebec'" />
         <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="country" t-value="'Canada'" />
 
+        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="city" t-value="'Montreal'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="country" t-value="'Canada'" />
+
         <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="city" t-value="'Dover'" />
         <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="state" t-value="'Delaware'" />
         <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="country" t-value="'United States'" />
