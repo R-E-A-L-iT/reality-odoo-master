@@ -19,9 +19,14 @@
 				<img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img" t-attf-src="{{sale_order.header_id.url}}" />
 				<video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="{{sale_order.header_id.url}}" />
 				<div class="quote-address-block">
-					<h1 class="title" t-field="sale_order.partner_id.name" />
+					<t t-if="sale_order.partner_id.parent_id">
+						<h1 class="title" t-field="sale_order.partner_id.parent_id.name" />
+					</t>
+					<t t-else="">
+						<h1 class="title" t-field="sale_order.partner_id.name" />
+					</t>
 					<div class="hr"></div>
-					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />
+<!--					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />-->
 					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
 					<h2 class="subtitle">
 						<span t-if="sale_order.partner_id.city != False" t-raw="sale_order.partner_id.city + ','"></span>
