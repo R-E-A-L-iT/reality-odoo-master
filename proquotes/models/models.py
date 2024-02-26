@@ -434,17 +434,20 @@ class order(models.Model):
         return line
 
     def hardwareCCP(self, hardware_lines, product):
-        # Generate lines based on renewal_map entries specifing what to offer
+        eid = product.name
 
+        # Generate lines based on renewal_map entries specifing what to offer
         # Initilize Hardware Line Section if Needed
         if len(hardware_lines) == 0:
             hardware_lines.append(self.generate_section_line("$hardware").id)
             hardware_lines.append(self.generate_section_line("$block").id)
+
         renewal_maps = self.env["renewal.map"].search(
-            [("product_id", "=", product.product_id.id)]
-        )
-        if len(renewal_maps) != 1:
-            return "No Mapping for: " + str(product.product_id.name)
+            [("product_id", "=", product.product_id.id)])
+
+        if len(renewal_maps) != 1:            
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
+
         renewal_map = renewal_maps[0]
         hardware_lines.append(
             self.generate_section_line(product.formated_label, special="multiple").id
@@ -460,16 +463,19 @@ class order(models.Model):
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
+        eid = product.name
+
         # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
             software_lines.append(self.generate_section_line("$software").id)
             software_lines.append(self.generate_section_line("$block").id)
-        eid = product.name
+        
         product_list = self.env["product.product"].search(
-            [("sku", "like", eid), ("active", "=", True)]
-        )
+            [("sku", "like", eid), 
+            ("active", "=", True)])
+
         if len(product_list) != 1:
-            return "Invalid Match Count for EID: " + str(eid)
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -479,16 +485,20 @@ class order(models.Model):
         software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
+        eid = product.name
+
         # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
             software_sub_lines.append(self.generate_section_line("$subscription").id)
             software_sub_lines.append(self.generate_section_line("$block").id)
-        eid = product.name
+        
         product_list = self.env["product.product"].search(
-            [("sku", "like", eid), ("active", "=", True)]
-        )
+            [("sku", "like", eid), 
+            ("active", "=", True)])
+        
         if len(product_list) != 1:
-            return "Invalid Match Count for EID: " + str(eid)
+            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
+
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
