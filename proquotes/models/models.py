@@ -538,6 +538,7 @@ class order(models.Model):
                     + ' has unknown type "'
                     + str(product.product_id.type_selection)
                     + '"'
+                    + "\n"
                 )
             if msg != None:
                 error_msg += msg + "\n"
