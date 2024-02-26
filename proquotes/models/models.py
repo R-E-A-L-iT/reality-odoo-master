@@ -446,7 +446,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:            
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -475,7 +475,7 @@ class order(models.Model):
             ("active", "=", True)])
 
         if len(product_list) != 1:
-            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -497,7 +497,7 @@ class order(models.Model):
             ("active", "=", True)])
         
         if len(product_list) != 1:
-            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for [stock.production.lot].name: " + str(eid) + " ---- [product.product].name: " + str(product.product_id.name)
+            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
 
         line = self.generate_product_line(
