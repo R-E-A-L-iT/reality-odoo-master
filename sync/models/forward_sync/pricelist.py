@@ -34,30 +34,30 @@ class sync_pricelist:
 
         # Check if the header match the appropriate format
         pricelistHeaderDict = dict()
-        pricelistHeaderDict["SKU"]              = "sku"
-        pricelistHeaderDict["EN-Name"]          = "eName"
-        pricelistHeaderDict["EN-Description"]   = "eDisc"
-        pricelistHeaderDict["FR-Name"]          = "fName"
-        pricelistHeaderDict["FR-Description"]   = "fDisc"
-        pricelistHeaderDict["isSoftware"]       = "isSoftware"
-        pricelistHeaderDict["Type"]             = "type"
-        pricelistHeaderDict["Price CAD"]        = "cadSale"
-        pricelistHeaderDict["Price USD"]        = "usdSale"
-        pricelistHeaderDict["Can Rental"]       = "cadRental"
-        pricelistHeaderDict["US Rental"]        = "usdRental"
-        pricelistHeaderDict["Publish_CA"]       = "canPublish"
-        pricelistHeaderDict["Publish_USA"]      = "usPublish"
-        pricelistHeaderDict["Can_Be_Sold"]      = "canBeSold"
-        pricelistHeaderDict["Can_Be_Rented"]    = "canBeRented"
-        pricelistHeaderDict["E-Commerce_Website_Code"] = "ecommerceWebsiteCode"
-        pricelistHeaderDict["CAN PL ID"]        = "canPLID"
-        pricelistHeaderDict["US PL ID"]         = "usPLID"
-        pricelistHeaderDict["CAN R SEL"]        = "canrPricelist"
-        pricelistHeaderDict["CAN R ID"]         = "canRID"
-        pricelistHeaderDict["US R SEL"]         = "usrPricelist"
-        pricelistHeaderDict["US R ID"]          = "usRID"
-        pricelistHeaderDict["ECOM-FOLDER"]      = "folder"
-        pricelistHeaderDict["ECOM-MEDIA"]       = "media"
+        pricelistHeaderDict["SKU"]              = "sku"         
+        pricelistHeaderDict["EN-Name"]          = "eName"       
+        pricelistHeaderDict["EN-Description"]   = "eDisc"           # Optionnal     
+        pricelistHeaderDict["FR-Name"]          = "fName"       
+        pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
+        pricelistHeaderDict["isSoftware"]       = "isSoftware"  
+        pricelistHeaderDict["Type"]             = "type"        
+        pricelistHeaderDict["Price CAD"]        = "cadSale"     
+        pricelistHeaderDict["Price USD"]        = "usdSale"     
+        pricelistHeaderDict["Can Rental"]       = "cadRental"   
+        pricelistHeaderDict["US Rental"]        = "usdRental"   
+        pricelistHeaderDict["Publish_CA"]       = "canPublish"  
+        pricelistHeaderDict["Publish_USA"]      = "usPublish"   
+        pricelistHeaderDict["Can_Be_Sold"]      = "canBeSold"   
+        pricelistHeaderDict["Can_Be_Rented"]    = "canBeRented" 
+        pricelistHeaderDict["E-Commerce_Website_Code"] = "ecommerceWebsiteCode" # E-Commerce
+        pricelistHeaderDict["CAN PL ID"]        = "canPLID"         # E-Commerce
+        pricelistHeaderDict["US PL ID"]         = "usPLID"          # E-Commerce
+        pricelistHeaderDict["CAN R SEL"]        = "canrPricelist"   # E-Commerce
+        pricelistHeaderDict["CAN R ID"]         = "canRID"          # E-Commerce
+        pricelistHeaderDict["US R SEL"]         = "usrPricelist"    # E-Commerce
+        pricelistHeaderDict["US R ID"]          = "usRID"           # E-Commerce
+        pricelistHeaderDict["ECOM-FOLDER"]      = "folder"          # E-Commerce
+        pricelistHeaderDict["ECOM-MEDIA"]       = "media"           # E-Commerce
         pricelistHeaderDict["Continue"]         = "continue"
         pricelistHeaderDict["Valid"]            = "valid"       
         columns, msg, columnsMissing = utilities.checkSheetHeader(pricelistHeaderDict, self.sheet, self.name)  
@@ -213,10 +213,12 @@ class sync_pricelist:
             product.is_published = True
         else:
             product.is_published = False
+            
         if str(self.sheet[i][columns["canPublish"]]) == "TRUE":
             product.is_ca = True
         else:
             product.is_ca = False
+
         if str(self.sheet[i][columns["usPublish"]]) == "TRUE":
             product.is_us = True
         else:
