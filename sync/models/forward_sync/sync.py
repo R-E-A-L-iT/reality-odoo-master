@@ -931,8 +931,8 @@ class sync(models.Model):
                         p1.active = False       
 
                     if (archived):
-                        formatted_id = str(p1.id).ljust(10)
-                        formatted_sku = str(p1.sku).ljust(50)
+                        formatted_id = str(p1.id).ljust(20)
+                        formatted_sku = str(p1.sku).ljust(60)
                         archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))     
 
                     if ((len(sol1) <= 0) and (len(aml1) <= 0) and (len(spl1) <= 0) and (len(ssl1) <= 0)):
@@ -943,12 +943,12 @@ class sync(models.Model):
                         #_logger.info("------------------------: Product DELETE (name): " + str(p1.name))
                         #_logger.info("------------------------: Product DELETE (id  ): " + str(p1.id))
 
-                        formatted_id = str(p1.id).ljust(10)
-                        formatted_sku = str(p1.sku).ljust(50)
+                        formatted_id = str(p1.id).ljust(20)
+                        formatted_sku = str(p1.sku).ljust(60)
                         deletedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))
 
-                        formatted_id = str(pt1.id).ljust(10)
-                        formatted_sku = str(pt1.sku).ljust(50)
+                        formatted_id = str(pt1.id).ljust(20)
+                        formatted_sku = str(pt1.sku).ljust(60)
                         deletedPT.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: "+ str(pt1.name))         
                          
                         p1.unlink()   
