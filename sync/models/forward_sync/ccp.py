@@ -83,15 +83,13 @@ class sync_ccp:
                 i = i + 1
                 continue
 
-            try:
-                _logger.error(i)
+            try:                
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), 
-                     ("model", "=", "stock.production.lot")])
+                     ("model", "=", "stock.production.lot")])                
                 
-                _logger.error(str(len(ccp_ids)))
                 if len(ccp_ids) > 0:
                     self.updateCCP(
                         self.database.env["stock.production.lot"].browse(ccp_ids[-1].res_id),
@@ -144,18 +142,23 @@ class sync_ccp:
 
     # follows same pattern
     def createCCP(self, external_id, i, columns):
+        _logger.error(str("createCCP_0"))
         # Create new record
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "stock.production.lot"}
         )[0]
+        _logger.error(str("createCCP_1"))
 
         product_ids = self.database.env["product.product"].search(
             [("name", "=", self.sheet[i][columns["name"]])]
         )
+        _logger.error(str("createCCP_2"))
 
         product_id = product_ids[len(product_ids) - 1].id
+        _logger.error(str("createCCP_3"))
 
         company_id = self.database.env["res.company"].search([("id", "=", 1)]).id
+        _logger.error(str("createCCP_4"))
 
         ccp_item = self.database.env["stock.production.lot"].create(
             {
@@ -164,5 +167,10 @@ class sync_ccp:
                 "company_id": company_id,
             }
         )[0]
+        _logger.error(str("createCCP_5"))
+
         ext.res_id = ccp_item.id
+        _logger.error(str("createCCP_6"))
+        
         self.updateCCP(ccp_item, i, columns)
+        _logger.error(str("createCCP_7"))
