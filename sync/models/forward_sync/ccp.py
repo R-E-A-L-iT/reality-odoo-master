@@ -79,8 +79,7 @@ class sync_ccp:
                     msg,
                     self.name,
                     str(self.sheet[i][columns["externalId"]]),
-                    "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]]),
-                )
+                    "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]]))
                 i = i + 1
                 continue
 
@@ -91,15 +90,16 @@ class sync_ccp:
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), 
                      ("model", "=", "stock.production.lot")])
-
+                
+                _logger.error(str(len(ccp_ids)))
                 if len(ccp_ids) > 0:
                     self.updateCCP(
                         self.database.env["stock.production.lot"].browse(ccp_ids[-1].res_id),
                         i,
-                        columns,
-                    )
+                        columns)
                 else:
                     self.createCCP(external_id, i, columns)
+
             except Exception as e:
                 _logger.info("CCP")
                 _logger.error(e)
@@ -107,8 +107,8 @@ class sync_ccp:
                 msg = utilities.buildMSG(msg, self.name, str(external_id), str(e))
                 msg = msg + str(e)
                 return True, msg
-            i = i + 1
 
+            i = i + 1
         return False, msg
 
     def updateCCP(self, ccp_item, i, columns):
