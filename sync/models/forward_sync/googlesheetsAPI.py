@@ -26,22 +26,19 @@ class sheetsAPI(models.Model):
     #              to get it: self.env['ir.config_parameter'].sudo().get_param('web.base.url')
     @staticmethod
     def get_master_database_template_id(_db_name):
+        _logger.info(_db_name)
+        
         # Production DB name
         _db_name_prod = "https://www.r-e-a-l.it"
 
         # R-E-A-L.iT Master Database
         _master_database_template_id_prod = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
         
-        
-
         # Dev Numbers Set Based on When Developer Joined
-        _master_database_template_id_dev_oli = ("1fC-gZ8c4dVarw4qiSmo0cbEG7rwMEa1duM3rssaDnz4")
+        _master_database_template_id_dev_oli = ("1kEkPNU-2hbG32jUSP6PNAmHdr_hKDcDZGhmQ_zFimBk")
         _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")   
-        _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")
-             
-
+        _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")            
         
-
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
             _logger.info("Production")
