@@ -171,6 +171,7 @@ class sync_ccp:
 
         ext.res_id = ccp_item.id
         _logger.error(str("createCCP_6"))
-        
+
         self.updateCCP(ccp_item, i, columns)
         _logger.error(str("createCCP_7"))
+        
