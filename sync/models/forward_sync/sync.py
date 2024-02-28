@@ -1008,7 +1008,7 @@ class sync(models.Model):
         #
         for spl1 in spl_:
             ownerNick = spl1.owner.company_nickname
-            toSearch = ownerNick + "-" + spl1.name        
+            toSearch = str(ownerNick) + "-" + str(spl1.name)
             p1 = p.search([("name", "ilike", toSearch)])
             if (len(p1) <= 0):
                 formatted_id   = str(spl1.id).ljust(20)
