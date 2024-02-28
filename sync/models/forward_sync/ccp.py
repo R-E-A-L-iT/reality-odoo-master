@@ -60,10 +60,8 @@ class sync_ccp:
         # Loop through Rows in Google Sheets        
         while True:
             # Check if final row was completed
-            if (
-                i == len(self.sheet)
-                or str(self.sheet[i][columns["continue"]]) != "TRUE"
-            ):
+            if (i == len(self.sheet) or 
+                str(self.sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
             # Verify The validity of certain fields
@@ -87,17 +85,16 @@ class sync_ccp:
                 continue
 
             try:
+                _logger.error(i)
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
                 ccp_ids = self.database.env["ir.model.data"].search(
-                    [("name", "=", external_id), ("model", "=", "stock.production.lot")]
-                )
+                    [("name", "=", external_id), 
+                     ("model", "=", "stock.production.lot")])
 
                 if len(ccp_ids) > 0:
                     self.updateCCP(
-                        self.database.env["stock.production.lot"].browse(
-                            ccp_ids[-1].res_id
-                        ),
+                        self.database.env["stock.production.lot"].browse(ccp_ids[-1].res_id),
                         i,
                         columns,
                     )
@@ -106,7 +103,7 @@ class sync_ccp:
             except Exception as e:
                 _logger.info("CCP")
                 _logger.error(e)
-                _logger.info(i)
+                _logger.info(str(self.sheet[i]))
                 msg = utilities.buildMSG(msg, self.name, str(external_id), str(e))
                 msg = msg + str(e)
                 return True, msg
@@ -122,8 +119,7 @@ class sync_ccp:
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
         product_ids = self.database.env["product.product"].search(
-            [("sku", "=", self.sheet[i][columns["code"]])]
-        )
+            [("sku", "=", self.sheet[i][columns["code"]])])
 
         ccp_item.product_id = product_ids[-1].id
 
