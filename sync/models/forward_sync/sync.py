@@ -1009,7 +1009,7 @@ class sync(models.Model):
 
         #
         for spl1 in spl_:
-            toSearch = str(spl1.owner.company_nickname + "-" + spl1.name)
+            toSearch = str(str(spl1.owner.company_nickname) + "-" + str(spl1.name))    
             p1 = p.search([("sku", "ilike", toSearch)])
             sq1 = sq.search([('lot_id', '=', spl1.id)])
 
