@@ -1009,10 +1009,9 @@ class sync(models.Model):
 
         #
         for spl1 in spl_:
-            ownerNick = spl1.owner.company_nickname
-            toSearch = str(ownerNick) + "-" + str(spl1.name)
-            p1 = p.search([("name", "ilike", toSearch)])
-            sq1 =sq.search([('lot_id', '=',spl1.id)])  
+            toSearch = str(spl1.owner.company_nickname + "-" + spl1.name)
+            p1 = p.search([("sku", "ilike", toSearch)])
+            sq1 = sq.search([('lot_id', '=', spl1.id)])
 
             if (len(sq1) > 0):
                 pass
