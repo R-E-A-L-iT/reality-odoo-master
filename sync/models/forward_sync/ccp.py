@@ -113,6 +113,7 @@ class sync_ccp:
         # Check if data in GS is the same as in Odoo
         if ccp_item.stringRep == str(self.sheet[i][:]):
             return
+            
         # Update fields in Record
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
@@ -121,12 +122,9 @@ class sync_ccp:
 
         ccp_item.product_id = product_ids[-1].id
 
-        owner_ids = self.database.env["ir.model.data"].search(
-            [
+        owner_ids = self.database.env["ir.model.data"].search([
                 ("name", "=", self.sheet[i][columns["ownerId"]]),
-                ("model", "=", "res.partner"),
-            ]
-        )
+                ("model", "=", "res.partner")])
         if len(owner_ids) == 0:
             _logger.info("No owner")
 
@@ -142,32 +140,18 @@ class sync_ccp:
 
     # follows same pattern
     def createCCP(self, external_id, i, columns):
-        _logger.error(str("createCCP_0"))
-
         # Create new record
         ext = self.database.env["ir.model.data"].create({"name": external_id, "model": "stock.production.lot"})[0]
-        _logger.error(str("createCCP_1"))
-
         product_ids = self.database.env["product.product"].search([("sku", "=", self.sheet[i][columns["code"]])])
-        _logger.error(str("createCCP_2"))
-        _logger.error(str(len(product_ids)))
-
         product_id = product_ids[len(product_ids) - 1].id        
-        _logger.error(str("createCCP_3"))
-
         company_id = self.database.env["res.company"].search([("id", "=", 1)]).id
-        _logger.error(str("createCCP_4"))
 
         ccp_item = self.database.env["stock.production.lot"].create({
                 "name": self.sheet[i][columns["eidsn"]],
                 "product_id": product_id,
                 "company_id": company_id,
             })[0]
-        _logger.error(str("createCCP_5"))
-
         ext.res_id = ccp_item.id
-        _logger.error(str("createCCP_6"))
 
         self.updateCCP(ccp_item, i, columns)
-        _logger.error(str("createCCP_7"))
 
