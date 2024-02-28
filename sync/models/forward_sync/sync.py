@@ -1018,10 +1018,11 @@ class sync(models.Model):
 
             elif (len(p1) <= 0):
                 formatted_id   = str(spl1.id).ljust(20)
-                formatted_name = str(spl1.name).ljust(60)
+                formatted_name = str(spl1.name).ljust(40)
+                formatted_owner = str(spl1.owner.company_nickname).ljust(30)
                 formatted_sku  = str(spl1.sku).ljust(60)
 
-                splDeleted.append("ID: " + formatted_id + ", Name: " + formatted_name + ", Sku: " + formatted_sku)
+                splDeleted.append("ID: " + formatted_id + ", Name: " + formatted_name + ", Nick" + formatted_owner +", Sku: " + formatted_sku)
                 
                 
                 spl1.unlink()
