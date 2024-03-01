@@ -996,3 +996,43 @@ class sync(models.Model):
 
 
         _logger.info("-------------- FINISH")
+
+
+    #Delete all the unsued SPL
+    def cleanSPLUnsed(self):
+        p = self.env["product.product"]
+        spl = self.env["stock.production.lot"]
+        sq = self.env["stock.quant"]
+
+        spl_ = spl.search([])
+        splDeleted = []
+
+        #
+        for spl1 in spl_:
+            toSearch = str(str(spl1.owner.company_nickname) + "-" + str(spl1.name))    
+            p1 = p.search([("sku", "ilike", toSearch)])
+            sq1 = sq.search([('lot_id', '=', spl1.id)])
+
+            if (len(sq1) > 0):
+                pass
+
+            elif (len(p1) <= 0):
+                formatted_id   = str(spl1.id).ljust(20)
+                formatted_name = str(spl1.name).ljust(40)
+                formatted_owner = str(spl1.owner.company_nickname).ljust(30)
+                formatted_sku  = str(spl1.sku).ljust(60)
+
+                splDeleted.append("ID: " + formatted_id + ", Name: " + formatted_name + ", Nick" + formatted_owner +", Sku: " + formatted_sku)
+                
+                
+                spl1.unlink()
+        
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("-------------- cleanSPLUnsed")
+        for s in splDeleted:
+            _logger.info("-------------- " + s)
+
+        _logger.info("-------------- FINISH")
+
+
