@@ -1037,9 +1037,13 @@ class sync(models.Model):
 
     #Migrate CCP Sku
     def migrateCCP(self, ccpSku):
+        _logger.info("-------------- migrateCCP")
         p = self.env["product.product"]
-        
+
         for l in ccpSku:
+            _logger.info("-------------- " + str(l[0]))
             p1 = p.search([("sku", "=", l[0])])
             p1.sku = l[1]
+
+        _logger.info("-------------- FINISH")
 
