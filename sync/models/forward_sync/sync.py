@@ -1036,7 +1036,7 @@ class sync(models.Model):
         _logger.info("-------------- FINISH")
 
     #Migrate CCP Sku
-    def migrateCCP(self, ccpSku):
+    def migrateCCP(self, ccpSkus):
         _logger.info("-------------- migrateCCP")
         p = self.env["product.product"]
 
@@ -1046,4 +1046,26 @@ class sync(models.Model):
             p1.sku = l[1]
 
         _logger.info("-------------- FINISH")
+
+    def cleanIMD(self, ccpSkus):
+        p = self.env["product.product"]
+        pt = self.env["product.template"]
+        spl = self.env["stock.production.lot"]
+        imd = self.env["ir.model.data"]
+
+        for l in  ccpSkus:
+            imd1 = imd.search([("name", "ilike", l[1])])  
+            for imd_ in imd1: 
+                print (imd_.id) 
+                print(imd_.res_id) 
+                print(imd_.name) 
+                pt1 = pt.search([("id", "=", imd_.res_id)]) 
+                if (pt1.name == False): 
+                    print("----pas the PT") 
+                    imd_.unlink() 
+                else: 
+                    print ("----" + str(pt1.id)) 
+                    print ("----" + str(pt1.name)) 
+                print ("----") 
+        
 
