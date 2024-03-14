@@ -873,6 +873,7 @@ class sync(models.Model):
         sol = self.env["sale.order.line"]
         aml = self.env["account.move.line"]
         ssl = self.env["sale.subscription.line"]
+        sm = self.env["stock.move"]
 
         deletedPP = []
         deletedPT = []
@@ -900,48 +901,26 @@ class sync(models.Model):
                     aml1 = aml.search([("product_id", "=", p1.id)])
                     spl1 = spl.search([("product_id", "=", p1.id)]) 
                     ssl1 = ssl.search([("product_id", "=", p1.id)]) 
-
-                    archived = False
+                    sm1 = sm.search([("product_id", "=", p1.id)]) 
+                    
                     #Check if the product is on a sale.order.line
-                    if (len(sol1) > 0):
-                        #if so, keep it
-                        #_logger.info("------------------------: Product ARCHIVED.  Product is on a sale.order.line")    
-                        archived = True
-                        p1.active = False         
-
-                    #Check if the product is on an account.move.line                              
-                    if (len(aml1) > 0):
-                        #if so, keep it
-                        #_logger.info("------------------------: Product ARCHIVED.  Product is on a acocunt.move.line")
-                        archived = True
-                        p1.active = False 
-
+                    #Check if the product is on an account.move.line 
                     #Check if the product is on an stock.production.lot
-                    if (len(spl1) > 0):
-                        #if so, keep it
-                        #_logger.info("------------------------: Product ARCHIVED.  Product is on a stock.production.lot")    
-                        archived = True
-                        p1.active = False 
-
                     #Check if the product is on an stock.production.lot
-                    if (len(ssl1) > 0):
-                        #if so, keep it
-                        #_logger.info("------------------------: Product ARCHIVED.  Product is on a sals.subscription.line")       
-                        archived = True
-                        p1.active = False       
-
-                    if (archived):
-                        formatted_id = str(p1.id).ljust(20)
-                        formatted_sku = str(p1.sku).ljust(60)
-                        archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))     
-
-                    if ((len(sol1) <= 0) and (len(aml1) <= 0) and (len(spl1) <= 0) and (len(ssl1) <= 0)):
+                    #Check if the product is on an stock.move
+                    if ((len(sol1) > 0) or
+                        (len(aml1) > 0) or
+                        (len(spl1) > 0) or
+                        (len(ssl1) > 0) or
+                        (len(sm1)  > 0)):
+                            #if so, keep it archive it
+                            p1.active = False  
+                            formatted_id = str(p1.id).ljust(20)
+                            formatted_sku = str(p1.sku).ljust(60)
+                            archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))  
+                    else:
                         #else delete it
                         pt1 = pt.search([("id", "=", p1.product_tmpl_id.id)])
-
-                        #_logger.info("------------------------: Product DELETE (name): " + str(p1.name))
-                        #_logger.info("------------------------: Product DELETE (name): " + str(p1.name))
-                        #_logger.info("------------------------: Product DELETE (id  ): " + str(p1.id))
 
                         formatted_id = str(p1.id).ljust(20)
                         formatted_sku = str(p1.sku).ljust(60)
@@ -953,22 +932,8 @@ class sync(models.Model):
                          
                         p1.unlink()   
                         pt1.unlink()
-                #else:
-                    #_logger.info("------------------:  Product is NOT found in the CCP list")
-            #_logger.info("--------------")
 
         _logger.info("------: CLEANING [stock.production.lot]")
-        # spl_ = spl.search([])
-        # #For each founded
-        # for spl1 in spl_:
-        #     #Checking if no product use this EID, delete the stock.production.lot
-        #     p1 = p.search([("sku", "like", spl1.name), ("active", "=", True)])
-        #     if (len(p1) <= 0):
-        #         _logger.info("------------------------: stock.production.lot DELETE (name): " + str(spl1.name))
-        #         _logger.info("------------------------: stock.production.lot DELETE (sku): "  + str(spl1.sku))
-        #         _logger.info("------------------------: stock.production.lot DELETE (id  ): " + str(spl1.id))                    
-        #         spl1.unlink()
-
 
         _logger.info("------: archivedPP")
         for i in archivedPP: 
