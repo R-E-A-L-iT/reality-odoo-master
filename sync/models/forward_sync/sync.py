@@ -1040,32 +1040,34 @@ class sync(models.Model):
         _logger.info("-------------- migrateCCP")
         p = self.env["product.product"]
 
-        for l in ccpSku:
+        for l in ccpSkus:
             _logger.info("-------------- " + str(l[0]))
             p1 = p.search([("sku", "=", l[0])])
             p1.sku = l[1]
 
         _logger.info("-------------- FINISH")
 
+
+    #Delete ir.model.data key that are invalide
     def cleanIMD(self, ccpSkus):
-        p = self.env["product.product"]
         pt = self.env["product.template"]
-        spl = self.env["stock.production.lot"]
         imd = self.env["ir.model.data"]
+        deletedIMD = []
 
         for l in  ccpSkus:
             imd1 = imd.search([("name", "ilike", l[1])])  
             for imd_ in imd1: 
-                print (imd_.id) 
-                print(imd_.res_id) 
-                print(imd_.name) 
                 pt1 = pt.search([("id", "=", imd_.res_id)]) 
                 if (pt1.name == False): 
-                    print("----pas the PT") 
+                    formatted_id = str(imd_.id).ljust(20)
+                    formatted_resid = str(imd_.res_id).ljust(20)
+                    deletedIMD.append("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))
                     imd_.unlink() 
-                else: 
-                    print ("----" + str(pt1.id)) 
-                    print ("----" + str(pt1.name)) 
-                print ("----") 
+
+        _logger.info("------: deleted ir.model.data")
+        for i in deletedIMD: 
+            _logger.info(i)
+
+        _logger.info("-------------- FINISH")
         
 
