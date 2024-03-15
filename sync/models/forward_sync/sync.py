@@ -1017,24 +1017,23 @@ class sync(models.Model):
     def cleanIMD(self, ccpSkus):
         pt = self.env["product.template"]
         imd = self.env["ir.model.data"]
-        #deletedIMD = []
+        deletedIMD = []
 
         for l in  ccpSkus:
             _logger.info("Looking for: " + str(l[1]))
 
-            #imd1 = imd.search([("name", "ilike", l[1])])  
-            #for imd_ in imd1: 
-            #    pt1 = pt.search([("id", "=", imd_.res_id)]) 
-            #    if (pt1.name == False): 
-            #        formatted_id = str(imd_.id).ljust(20)
-            #        formatted_resid = str(imd_.res_id).ljust(20)
-            #        _logger.info("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))
-                    #deletedIMD.append("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))                    
+            imd1 = imd.search([("name", "ilike", l[1])])  
+            for imd_ in imd1: 
+                pt1 = pt.search([("id", "=", imd_.res_id)]) 
+                if (pt1.name == False): 
+                    formatted_id = str(imd_.id).ljust(20)
+                    formatted_resid = str(imd_.res_id).ljust(20)                    
+                    deletedIMD.append("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))                    
                     #imd_.unlink() 
 
-        #_logger.info("------: deleted ir.model.data")
-        # for i in deletedIMD: 
-        #     _logger.info(i)
+        _logger.info("------: deleted ir.model.data")
+        for i in deletedIMD: 
+            _logger.info(i)
 
         _logger.info("-------------- FINISH")
         
