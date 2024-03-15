@@ -1029,7 +1029,7 @@ class sync(models.Model):
                     formatted_id = str(imd_.id).ljust(20)
                     formatted_resid = str(imd_.res_id).ljust(20)                    
                     deletedIMD.append("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))                    
-                    #imd_.unlink() 
+                    imd_.unlink() 
 
         _logger.info("------: deleted ir.model.data")
         for i in deletedIMD: 
