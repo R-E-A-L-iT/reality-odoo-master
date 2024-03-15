@@ -1006,9 +1006,9 @@ class sync(models.Model):
         imd = self.env["ir.model.data"]
 
         for l in ccpSkus:
-            _logger.info("-------------- " + str(l[0]))
-            imd1 = imd.search([("name", "=", l[0])])
-            imd1.name = l[1]
+            _logger.info("-------------- " + str(l[1]))
+            imd1 = imd.search([("name", "=", l[1])])
+            imd1.name = l[0]
 
         _logger.info("-------------- FINISH")
 
