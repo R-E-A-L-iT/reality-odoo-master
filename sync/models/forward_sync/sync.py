@@ -1020,9 +1020,9 @@ class sync(models.Model):
         deletedIMD = []
 
         for l in  ccpSkus:
-            _logger.info("Looking for: " + str(l[1]))
+            _logger.info("Looking for: " + str(l[0]))
 
-            imd1 = imd.search([("name", "ilike", l[1])])  
+            imd1 = imd.search([("name", "ilike", l[0])])  
             for imd_ in imd1: 
                 pt1 = pt.search([("id", "=", imd_.res_id)]) 
                 if (pt1.name == False): 
