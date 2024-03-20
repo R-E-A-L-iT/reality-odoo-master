@@ -52,6 +52,14 @@ class sync(models.Model):
         super(sync, self).__init__(pool, cr)
         self.cleanSync = cleanSyncData(self)
 
+    @property
+    def cleanSync(self):
+        return self._clean_sync
+    
+    @cleanSync.setter
+    def cleanSync(self, value):
+        self._clean_sync = value        
+
 
     ###################################################################
     # STARTING POINT
