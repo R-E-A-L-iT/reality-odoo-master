@@ -48,9 +48,10 @@ class sync(models.Model):
 
     
     def __init__(self, pool, cr):
+        super(sync, self).__init__(pool, cr)
         self.cleanSync = cleanSyncData(self)
 
-        
+
     ###################################################################
     # STARTING POINT
     def start_sync(self, psw=None):
