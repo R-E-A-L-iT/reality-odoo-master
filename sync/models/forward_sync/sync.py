@@ -45,7 +45,7 @@ class sync(models.Model):
 
     _odoo_sync_data_index = 0
 
-    def __init__(self):
+    def __init__():
     #     #self.cleanSyncData = cleanSyncData()
         _logger.info("sync.__init__")
 
