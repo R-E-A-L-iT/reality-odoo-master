@@ -697,4 +697,4 @@ class cleanSyncData:
         _logger.info("number of sales with archived product: " +
                      str(sales_with_archived_product))
         _logger.info(
-            "--------------- END cleanSku ---------------------------------------------")
+            "--------------- END cleanSku --------------------------------------------")
