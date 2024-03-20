@@ -30,6 +30,7 @@ from .website import syncWeb
 from .product import sync_products
 from .company import sync_companies
 from .contact import sync_contacts
+from .cleanSyncData import cleanSyncData
 
 _logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ class sync(models.Model):
     _odoo_sync_data_index = 0
     
     def __init__(self, pool, cr):
-    #     #self.cleanSyncData = cleanSyncData()
+        self.cleanSyncData = cleanSyncData()
         _logger.info("sync.__init__")
 
 
