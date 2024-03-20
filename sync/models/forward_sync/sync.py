@@ -48,6 +48,7 @@ class sync(models.Model):
     
     def __init__(self, pool, cr):
         self.innercleanSyncData = cleanSyncData()
+        
     #     self.cleanSyncData = cleanSyncData()
     #     _logger.info("sync.__init__")
 
