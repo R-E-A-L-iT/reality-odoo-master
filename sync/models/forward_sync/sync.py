@@ -48,6 +48,7 @@ class sync(models.Model):
     def __init__(self, a, b):
     #     #self.cleanSyncData = cleanSyncData()
         _logger.info("sync.__init__")
+        
 
     ###################################################################
     # STARTING POINT
