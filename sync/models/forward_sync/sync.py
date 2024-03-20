@@ -30,6 +30,7 @@ from .website import syncWeb
 from .product import sync_products
 from .company import sync_companies
 from .contact import sync_contacts
+from .cleanSyncData import cleanSyncData
 
 _logger = logging.getLogger(__name__)
 
@@ -44,6 +45,9 @@ class sync(models.Model):
     _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"
 
     _odoo_sync_data_index = 0
+
+    def __init__(self):
+        self.cleanSyncData = cleanSyncData()
 
     ###################################################################
     # STARTING POINT
