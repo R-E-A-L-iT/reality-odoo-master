@@ -4,15 +4,16 @@ _logger = logging.getLogger(__name__)
 
 
 class cleanSyncData:
-    def __init__(self):
+    def __init__(self, database):
         _logger.info("cleanSyncData.__init__")
+        self.database = database
 
 
     #methot to clean SPL with no owner
     def cleanSPLNoOwner(self):
         _logger.info("clean SPL------------------------------------------")
-        sq = self.env["stock.quant"]  
-        spl = self.env["stock.production.lot"]
+        sq = self.env.database["stock.quant"]  
+        spl = self.env.database["stock.production.lot"]
         spls = spl.search([])
 
         for spl_ in spls: 
