@@ -44,11 +44,11 @@ class sync(models.Model):
     _sync_fail_reason = "<h1>The Following Rows of The Google Sheet Table are invalid and were not Updated to Odoo</h1>"
 
     _odoo_sync_data_index = 0
-
-    def __init__(self, a, b):
+    
+    def __init__(self, pool, cr):
     #     #self.cleanSyncData = cleanSyncData()
         _logger.info("sync.__init__")
-        
+
 
     ###################################################################
     # STARTING POINT
