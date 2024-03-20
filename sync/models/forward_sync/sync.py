@@ -30,7 +30,7 @@ from .website import syncWeb
 from .product import sync_products
 from .company import sync_companies
 from .contact import sync_contacts
-from  .cleaningData import cleanSyncData
+from .cleaningData import cleanSyncData
 
 _logger = logging.getLogger(__name__)
 
@@ -204,133 +204,6 @@ class sync(models.Model):
 
 
     ###################################################################
-    # Method to get the ODOO_SYNC_DATA column index
-    # Exception
-    #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
-    # Input
-    #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
-    # Output
-    #   result: A dictionnary:  Key: named of the column
-    #                           Value: the index number of that column.
-    def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
-        odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Sheet Name")
-        odoo_sync_data_sheet_index_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Sheet Index")
-        odoo_sync_data_model_type_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Model Type")
-        odoo_sync_data_valid_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Valid")
-        odoo_sync_data_continue_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Continue")
-
-        if (odoo_sync_data_sheet_name_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_sheet_index_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_model_type_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_valid_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_continue_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        result = dict()
-
-        result['odoo_sync_data_sheet_name_column_index'] = odoo_sync_data_sheet_name_column_index
-        result['odoo_sync_data_sheet_index_column_index'] = odoo_sync_data_sheet_index_column_index
-        result['odoo_sync_data_model_type_column_index'] = odoo_sync_data_model_type_column_index
-        result['odoo_sync_data_valid_column_index'] = odoo_sync_data_valid_column_index
-        result['odoo_sync_data_continue_column_index'] = odoo_sync_data_continue_column_index
-
-        return result
-
-
-
-
-    ###################################################################
-    # Return the column index of the columnName
-    # Input
-    #   sheet:      The sheet to find the Valid column index
-    #   columnName: The name of the column to find
-    # Output
-    #   columnIndex: -1 if could not find it
-    #                > 0 if a column name exist
-    def getColumnIndex(self, sheet, columnName):
-        header = sheet[0]
-        columnIndex = 0
-
-        for column in header:
-            if (column == columnName):
-                return columnIndex
-
-            columnIndex += 1
-
-        return -1
-
-
-    ###################################################################
-    # Method to clean all sku that are pulled on the GoogleSheet DB
-    def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanSku(psw, p_archive, p_optNoSku, p_optInOdooNotGs)
-
-
-    ###################################################################
-    # Method to log all product id, sku, skuhidden and name
-    # Input
-    #   sale_name: the name of the sale order
-    def log_product_from_sale(self, sale_name, p_log=True):
-        _logger.info("Listing all product from: " + str(sale_name))
-        order_object_ids = self.env['sale.order'].search(
-            [('name', '=', sale_name)])
-        for order in order_object_ids:
-            sale_order_lines = self.env['sale.order.line'].search(
-                [('order_id', '=', order.id)])
-
-            for line in sale_order_lines:
-                product = self.env['product.product'].search(
-                    [('id', '=', line.product_id.id)])
-                if p_log:
-                    _logger.info("---------------")
-                    _logger.info("orders name: " + str(order.name))
-                    _logger.info("id in a sale order: " + str(product.id))
-                    _logger.info("sku in a sale order: " + str(product.sku))
-                    _logger.info("skuhidden name in a sale order: " +
-                                 str(product.skuhidden.name))
-                    _logger.info("name in a sale order: " + str(product.name))
-                    _logger.info("---------------")
-
-        if p_log:
-            _logger.info(
-                "--------------- END log_product_from_sale ---------------------------------------------")
-
-
-
-    ###################################################################
-    def getProductIdBySku(self, p_sku, p_log=True):
-        product = self.env['product.product'].search([
-            ('sku', '=', p_sku)])
-        if p_log:
-            _logger.info("--------------- p_sku: " +
-                         str(p_sku) + ", id: " + str(product.id))
-
-
-    ###################################################################
     # Method to manualy correct on company
     # Input
     #       p_OwnerID: The short name of the contacted added in GS.  Ex "DIGITALPRECISIO"
@@ -359,45 +232,53 @@ class sync(models.Model):
         _logger.info("-------------Contact added.")
         
 
-    ###################################################################
-    #
-    def cleanProductByName(self):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanProductByName()
+
+    # ###################################################################
+    # # Method to clean all sku that are pulled on the GoogleSheet DB
+    # def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanSku(psw, p_archive, p_optNoSku, p_optInOdooNotGs)
 
 
-    ###################################################################
-    #
-    def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanCCPUnsed(p_eid_list, p_ccp_sku_list)
+    # ###################################################################
+    # #
+    # def cleanProductByName(self):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanProductByName()
 
 
-    ###################################################################
-    #Delete all the unsued SPL
-    def cleanSPLUnsed(self):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanSPLUnsed()
+    # ###################################################################
+    # #Clean unsued CCP
+    # def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanCCPUnsed(p_eid_list, p_ccp_sku_list)
 
 
-    ###################################################################
-    #Migrate CCP Sku
-    def migrateCCP(self, ccpSkus):
-        cleanner = cleanSyncData(self)
-        cleanner.migrateCCP(ccpSkus)
+    # ###################################################################
+    # #Delete all the unsued SPL
+    # def cleanSPLUnsed(self):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanSPLUnsed()
 
 
-    ###################################################################
-    #Delete ir.model.data key that are invalide
-    def cleanIMD(self, ccpSkus):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanIMD(ccpSkus)
+    # ###################################################################
+    # #Migrate CCP Sku
+    # def migrateCCP(self, ccpSkus):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.migrateCCP(ccpSkus)
 
 
-    ###################################################################
-    #Clean SPL with no owner
-    def cleanSPLNoOwner(self):
-        cleanner = cleanSyncData(self)
-        cleanner.cleanSPLNoOwner()
+    # ###################################################################
+    # #Delete ir.model.data key that are invalide
+    # def cleanIMD(self, ccpSkus):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanIMD(ccpSkus)
+
+
+    # ###################################################################
+    # #Clean SPL with no owner
+    # def cleanSPLNoOwner(self):
+    #     cleanner = cleanSyncData(self)
+    #     cleanner.cleanSPLNoOwner()
         
 

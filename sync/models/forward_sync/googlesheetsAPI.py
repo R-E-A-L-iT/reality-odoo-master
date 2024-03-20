@@ -126,3 +126,24 @@ class sheetsAPI(models.Model):
             # test to push
 
         return sheetIndex, msg
+
+
+    ###################################################################
+    # Return the column index of the columnName
+    # Input
+    #   sheet:      The sheet to find the Valid column index
+    #   columnName: The name of the column to find
+    # Output
+    #   columnIndex: -1 if could not find it
+    #                > 0 if a column name exist
+    def getColumnIndex(self, sheet, columnName):
+        header = sheet[0]
+        columnIndex = 0
+
+        for column in header:
+            if (column == columnName):
+                return columnIndex
+
+            columnIndex += 1
+
+        return -1

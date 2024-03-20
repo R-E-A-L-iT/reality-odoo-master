@@ -6,9 +6,67 @@ _logger = logging.getLogger(__name__)
 class cleanSyncData:
     def __init__(self, database):
         _logger.info("cleanSyncData.__init__")
-        self.database = database
+        #self.database = database
 
     ### GET SECTION ###
+
+    
+    ###################################################################
+    # Method to get the ODOO_SYNC_DATA column index
+    # Exception
+    #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
+    # Input
+    #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
+    # Output
+    #   result: A dictionnary:  Key: named of the column
+    #                           Value: the index number of that column.
+    def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
+        odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
+            odoo_sync_data_sheet, "Sheet Name")
+        odoo_sync_data_sheet_index_column_index = self.getColumnIndex(
+            odoo_sync_data_sheet, "Sheet Index")
+        odoo_sync_data_model_type_column_index = self.getColumnIndex(
+            odoo_sync_data_sheet, "Model Type")
+        odoo_sync_data_valid_column_index = self.getColumnIndex(
+            odoo_sync_data_sheet, "Valid")
+        odoo_sync_data_continue_column_index = self.getColumnIndex(
+            odoo_sync_data_sheet, "Continue")
+
+        if (odoo_sync_data_sheet_name_column_index < 0):
+            error_msg = (
+                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_sheet_index_column_index < 0):
+            error_msg = (
+                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_model_type_column_index < 0):
+            error_msg = (
+                "Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_valid_column_index < 0):
+            error_msg = (
+                "Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        if (odoo_sync_data_continue_column_index < 0):
+            error_msg = (
+                "Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
+            raise Exception('MissingTabError', error_msg)
+
+        result = dict()
+
+        result['odoo_sync_data_sheet_name_column_index'] = odoo_sync_data_sheet_name_column_index
+        result['odoo_sync_data_sheet_index_column_index'] = odoo_sync_data_sheet_index_column_index
+        result['odoo_sync_data_model_type_column_index'] = odoo_sync_data_model_type_column_index
+        result['odoo_sync_data_valid_column_index'] = odoo_sync_data_valid_column_index
+        result['odoo_sync_data_continue_column_index'] = odoo_sync_data_continue_column_index
+
+        return result
+
 
     ###################################################################
     # Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
@@ -32,15 +90,18 @@ class cleanSyncData:
 
         if (columnIndex < 0):
             raise Exception(
-                'MissingColumnError', ("The following column name is missing: " + str(column_name)))
+                'MissingColumnError', 
+                ("The following column name is missing: " + str(column_name)))
 
         if (sheet_valid_column_index < 0):
-            raise Exception('MissingColumnError',
-                            ("The following column name is missing: Valid"))
+            raise Exception(
+                'MissingColumnError',
+                ("The following column name is missing: Valid"))
 
         if (sheet_continue_column_index < 0):
-            raise Exception('MissingColumnError',
-                            ("The following column name is missing: Continue"))
+            raise Exception(
+                'MissingColumnError',
+                ("The following column name is missing: Continue"))
 
         sheet_sku_column_index = self.getColumnIndex(sheet, column_name)
 
@@ -74,8 +135,7 @@ class cleanSyncData:
         msg = ""
 
         # Get the ODOO_SYNC_DATA tab
-        sync_data = self.getMasterDatabaseSheet(
-            template_id, psw, self._odoo_sync_data_index)
+        sync_data = self.getMasterDatabaseSheet(template_id, psw, self._odoo_sync_data_index)
 
         # check ODOO_SYNC_DATA tab
         result_dict = self.checkOdooSyncDataTab(sync_data)
@@ -97,16 +157,12 @@ class cleanSyncData:
             refered_sheet_valid_column_index = -1
             refered_sheet_sku_column_index = -1
 
-            sheet_name = str(
-                sync_data[i][odoo_sync_data_sheet_name_column_index])
+            sheet_name = str(sync_data[i][odoo_sync_data_sheet_name_column_index])
             refered_sheet_index, msg_temp = self.getSheetIndex(sync_data, i)
             msg += msg_temp
-            modelType = str(
-                sync_data[i][odoo_sync_data_model_type_column_index])
-            valid_value = (
-                str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
-            continue_value = (
-                str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
+            modelType = str(sync_data[i][odoo_sync_data_model_type_column_index])
+            valid_value = (str(sync_data[i][odoo_sync_data_valid_column_index]).upper() == "TRUE")
+            continue_value = (str(sync_data[i][odoo_sync_data_continue_column_index]).upper() == "TRUE")
 
             # Validation for the current loop
             if (not continue_value):
@@ -129,38 +185,28 @@ class cleanSyncData:
                 raise Exception('MissingSheetError', error_msg)
 
             # Get the reffered sheet
-            refered_sheet = self.getMasterDatabaseSheet(
-                template_id, psw, refered_sheet_index)
-            refered_sheet_valid_column_index = self.getColumnIndex(
-                refered_sheet, "Valid")
-            refered_sheet_sku_column_index = self.getColumnIndex(
-                refered_sheet, "SKU")
+            refered_sheet = self.getMasterDatabaseSheet(template_id, psw, refered_sheet_index)
+            refered_sheet_valid_column_index = self.getColumnIndex(refered_sheet, "Valid")
+            refered_sheet_sku_column_index = self.getColumnIndex(refered_sheet, "SKU")
 
             # Validation
             if (refered_sheet_valid_column_index < 0):
-                error_msg = ("Sheet: " + sheet_name +
-                             " does not have a 'Valid' column. The Sku Cleaning task could not be executed!")
-                _logger.info(
-                    "------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'Valid' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('MissingTabError', error_msg)
 
             if (refered_sheet_sku_column_index < 0):
-                error_msg = ("Sheet: " + sheet_name +
-                             " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
-                _logger.info(
-                    "------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                error_msg = ("Sheet: " + sheet_name + " does not have a 'SKU' column. The Sku Cleaning task could not be executed!")
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('MissingTabError', error_msg)
 
             # main purpose
             sku_dict = self.getAllValueFromColumn(refered_sheet, "SKU")
-            result, sku_in_double = self.checkIfKeyExistInTwoDict(
-                sku_dict, sku_catalog_gs)
+            result, sku_in_double = self.checkIfKeyExistInTwoDict(sku_dict, sku_catalog_gs)
 
             if (result):
-                error_msg = (
-                    "The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
-                _logger.info(
-                    "------------------------------------------- raise while i: " + str(i) + " " + error_msg)
+                error_msg = ("The folowing SKU appear twice in the Master Database: " + str(sku_in_double))
+                _logger.info("------------------------------------------- raise while i: " + str(i) + " " + error_msg)
                 raise Exception('SkuUnicityError', error_msg)
 
             for sku in sku_dict:
@@ -175,17 +221,16 @@ class cleanSyncData:
         try:
             product_template_id = int(p_product_template_id)
         except Exception as e:
-            _logger.info(
-                "--------------- Could not convert to int product_template_id: " + str(product_template_id))
+            _logger.info("--------------- Could not convert to int product_template_id: " + str(product_template_id))
             _logger.info("--------------- " + str(e))
             return
 
         # gatter product templte
-        product_template = self.database.env['product.template'].search([
+        product_template = self.env['product.template'].search([
             ('id', '=', product_template_id)])
 
         # gatter all lines of all sales
-        lines = self.database.env['sale.order.line'].search([])
+        lines = self.env['sale.order.line'].search([])
 
         product_sold_counter = 0
 
@@ -194,7 +239,7 @@ class cleanSyncData:
             for line_product_template in line.product_template_id:
                 if (line_product_template.id == product_template.id):
                     for line_order in line.order_id:
-                        sale = self.database.env['sale.order'].search([
+                        sale = self.env['sale.order'].search([
                             ('id', '=', line_order.id)])
                         if p_log:
                             _logger.info("---------------" +
@@ -205,10 +250,8 @@ class cleanSyncData:
                                          ", sale.name: " + str(sale.name))
                         product_sold_counter += 1
         if p_log:
-            _logger.info("--------------- product_sold_counter: " +
-                         str(product_sold_counter))
-            _logger.info(
-                "--------------- END getSaleOrderByProductId ---------------------------------------------")
+            _logger.info("--------------- product_sold_counter: " + str(product_sold_counter))
+            _logger.info("--------------- END getSaleOrderByProductId ---------------------------------------------")
 
         return product_sold_counter
 
@@ -220,14 +263,12 @@ class cleanSyncData:
     #   values: list of product_template.id that have the same name
     def getProductsWithSameName(self, p_log=True):
         dup_product_template_name = dict()
-        products_tmpl = self.database.env['product.template'].search([])
+        products_tmpl = self.env['product.template'].search([])
         count = 0
         if p_log:
-            _logger.info(
-                "------------------------------------------------------------------")
+            _logger.info("------------------------------------------------------------------")
             _logger.info("---------------  getProductsWithSameName")
-            _logger.info(
-                "---------------  Number of product template to check: " + str(len(products_tmpl)))
+            _logger.info("---------------  Number of product template to check: " + str(len(products_tmpl)))
 
         # For each product,
         for product in products_tmpl:
@@ -239,8 +280,7 @@ class cleanSyncData:
                 continue
 
             # checking if their is other products with the same name.
-            doubled_names = self.database.env['product.template'].search(
-                [('name', '=', product.name)])
+            doubled_names = self.env['product.template'].search([('name', '=', product.name)])
 
             if (len(doubled_names) > 1):
                 count += 1
@@ -255,10 +295,8 @@ class cleanSyncData:
                         doubled_name.id)
 
         if p_log:
-            _logger.info("--------------- Count of the dict: " +
-                         str(len(dup_product_template_name)))
-            _logger.info(
-                "--------------- END getProductsWithSameName ---------------------------------------------")
+            _logger.info("--------------- Count of the dict: " + str(len(dup_product_template_name)))
+            _logger.info("--------------- END getProductsWithSameName ---------------------------------------------")
 
         return dup_product_template_name
 
@@ -274,8 +312,7 @@ class cleanSyncData:
     # Output
     #   to_archive: a list of product.id
     def getSkuToArchive(self, psw=None, p_optNoSku=True, p_optInOdooNotGs=True):
-        _logger.info(
-            "------------------------------------------- BEGIN  getSkuToArchive")
+        _logger.info("------------------------------------------- BEGIN  getSkuToArchive")
         catalog_odoo = dict()
         catalog_gs = dict()
         to_archive = []
@@ -291,12 +328,11 @@ class cleanSyncData:
         template_id_exception_list.append(561658)
         #561657
         for e in template_id_exception_list:
-            _logger.info(
-                "---------------- Exeption list: product.template.id: " + str(e))
+            _logger.info("---------------- Exeption list: product.template.id: " + str(e))
 
         #################################
         # Odoo Section
-        products = self.database.env['product.template'].search([])
+        products = self.env['product.template'].search([])
         _logger.info("products length before clean up: " + str(len(products)))
 
         for product in products:
@@ -317,35 +353,31 @@ class cleanSyncData:
             if (p_optInOdooNotGs and (str(product.sku) not in catalog_odoo)):
                 catalog_odoo[str(product.sku)] = 1
             else:
-                catalog_odoo[str(product.sku)
-                             ] = catalog_odoo[str(product.sku)] + 1
+                catalog_odoo[str(product.sku)] = catalog_odoo[str(product.sku)] + 1
 
         #######################################
         # GoogleSheet Section
         try:
-            db_name = self.database.env['ir.config_parameter'].sudo(
-            ).get_param('web.base.url')
+            db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             template_id = sheetsAPI.get_master_database_template_id(db_name)
             catalog_gs = self.getListSkuGS(psw, template_id)
 
         except Exception as e:
-            _logger.info(
-                "Cleaning Sku job is interrupted with the following error : \n" + str(e))
+            _logger.info("Cleaning Sku job is interrupted with the following error : \n" + str(e))
             return
 
         #######################################
         # listing product in Odoo and not in GS
         for item in catalog_odoo:
             if (not item in catalog_gs):
-                product = self.database.env['product.template'].search(
-                    [('sku', '=', item)])
+                product = self.env['product.template'].search([('sku', '=', item)])
                 _logger.info("---------------- To archived: In Odoo, NOT in GS: Product id:  " + str(
                     product.id).ljust(10) + "sku: " + str(product.sku).ljust(55) + "name: " + str(product.name))
+
                 if (str(product.id) == "False"):
-                    _logger.info(
-                        "listing product in Odoo and not in GS, str(product.id) was False.")
+                    _logger.info("listing product in Odoo and not in GS, str(product.id) was False.")
                 elif (str(product.sku) == "time_product_product_template"):
-                    _logger.info("Can not archive Service on Timesheet.")
+                    _logger.info("Can not archive Service on Timesheet.")                    
                 # Check if the ID is in the exception list
                 elif (item in template_id_exception_list):
                     continue
@@ -355,17 +387,14 @@ class cleanSyncData:
         _logger.info("catalog_gs length: " + str(len(catalog_gs)))
         _logger.info("catalog_odoo length: " + str(len(catalog_odoo)))
         _logger.info("to_archive length: " + str(len(to_archive)))
-        _logger.info(
-            "--------------- END getSkuToArchive ---------------------------------------------")
+        _logger.info("--------------- END getSkuToArchive ---------------------------------------------")
 
         return to_archive
 
 
-
-
     ###################################################################
     def archive_product(self, product_id):
-        product = self.database.env['product.template'].search(
+        product = self.env['product.template'].search(
             [('id', '=', product_id)])
         product.active = False
 
@@ -383,8 +412,7 @@ class cleanSyncData:
         for sku in dict_small.keys():
             if sku in dict_big.keys():
                 errorMsg = str(sku)
-                _logger.info(
-                    "------------------------------------------- errorMsg = str(sku): " + str(sku))
+                _logger.info("------------------------------------------- errorMsg = str(sku): " + str(sku))
                 return True, errorMsg
         return False, ""        
 
@@ -393,8 +421,8 @@ class cleanSyncData:
     #Methode to clean SPL with no owner
     def cleanSPLNoOwner(self):
         _logger.info("clean SPL------------------------------------------")
-        sq = self.database.env["stock.quant"]  
-        spl = self.database.env["stock.production.lot"]
+        sq = self.env["stock.quant"]  
+        spl = self.env["stock.production.lot"]
         spls = spl.search([])
 
         for spl_ in spls: 
@@ -413,12 +441,11 @@ class cleanSyncData:
                 spl_.unlink() 
 
 
-
     #########################################################################
     #Delete ir.model.data key that are invalide
     def cleanIMD(self, ccpSkus):
-        pt = self.database.env["product.template"]
-        imd = self.database.env["ir.model.data"]
+        pt = self.env["product.template"]
+        imd = self.env["ir.model.data"]
         deletedIMD = []
 
         for l in  ccpSkus:
@@ -444,7 +471,7 @@ class cleanSyncData:
     #Migrate CCP Sku
     def migrateCCP(self, ccpSkus):
         _logger.info("-------------- migrateCCP")
-        imd = self.database.env["ir.model.data"]
+        imd = self.env["ir.model.data"]
 
         for l in ccpSkus:
             _logger.info("-------------- " + str(l[1]))
@@ -457,9 +484,9 @@ class cleanSyncData:
     #########################################################################
     #Delete all the unsued SPL
     def cleanSPLUnsed(self):
-        p = self.database.env["product.product"]
-        spl = self.database.env["stock.production.lot"]
-        sq = self.database.env["stock.quant"]
+        p = self.env["product.product"]
+        spl = self.env["stock.production.lot"]
+        sq = self.env["stock.quant"]
 
         spl_ = spl.search([])
         splDeleted = []
@@ -499,13 +526,13 @@ class cleanSyncData:
     #   p_eid_list:         The list of EID/SN in the CCP_ODOO tab
     #   p_ccp_sku_list:     The list of SKU in the CCP_CSV_ODOO
     def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
-        p = self.database.env["product.product"]
-        pt = self.database.env["product.template"]
-        spl = self.database.env["stock.production.lot"]
-        sol = self.database.env["sale.order.line"]
-        aml = self.database.env["account.move.line"]
-        ssl = self.database.env["sale.subscription.line"]
-        sm = self.database.env["stock.move"]
+        p = self.env["product.product"]
+        pt = self.env["product.template"]
+        spl = self.env["stock.production.lot"]
+        sol = self.env["sale.order.line"]
+        aml = self.env["account.move.line"]
+        ssl = self.env["sale.subscription.line"]
+        sm = self.env["stock.move"]
 
         deletedPP = []
         deletedPT = []
@@ -647,13 +674,13 @@ class cleanSyncData:
             to_archive_dict[to_archive_list[i]] = 'sku'
 
         # Listing all sale.order that contain archhived product.id
-        order_object_ids = self.database.env['sale.order'].search([('id', '>', 0)])
+        order_object_ids = self.env['sale.order'].search([('id', '>', 0)])
         for order in order_object_ids:
-            sale_order_lines = self.database.env['sale.order.line'].search(
+            sale_order_lines = self.env['sale.order.line'].search(
                 [('order_id', '=', order.id)])
 
             for line in sale_order_lines:
-                product = self.database.env['product.product'].search(
+                product = self.env['product.product'].search(
                     [('id', '=', line.product_id.id)])
                 if (str(product.id) in to_archive_dict):
                     if ((str(product.id) != "False")):
