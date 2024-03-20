@@ -12,8 +12,8 @@ class cleanSyncData:
     #methot to clean SPL with no owner
     def cleanSPLNoOwner(self):
         _logger.info("clean SPL------------------------------------------")
-        sq = self.env.database["stock.quant"]  
-        spl = self.env.database["stock.production.lot"]
+        sq = self.database.env["stock.quant"]  
+        spl = self.database.env["stock.production.lot"]
         spls = spl.search([])
 
         for spl_ in spls: 
