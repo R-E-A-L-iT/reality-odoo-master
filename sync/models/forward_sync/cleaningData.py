@@ -4,6 +4,7 @@ _logger = logging.getLogger(__name__)
 
 
 class cleanSyncData:
+    
     def __init__(self, database):
         _logger.info("cleanSyncData.__init__")
         #self.database = database
