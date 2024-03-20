@@ -1042,6 +1042,6 @@ class sync(models.Model):
     
     def cleanSPLNoOwner(self):
         cleanner = cleanSyncData()
-        cleanner.cleanSPL()
+        cleanner.cleanSPLNoOwner()
         
 
