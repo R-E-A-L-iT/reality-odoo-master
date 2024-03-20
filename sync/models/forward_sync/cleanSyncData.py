@@ -1,14 +1,7 @@
-# -*- coding: utf-8 -*-
-
-from .utilities import utilities
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
 import logging
 
 from odoo.tools.translate import _
 from odoo import models
-
 
 _logger = logging.getLogger(__name__)
 
