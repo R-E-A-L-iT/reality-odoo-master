@@ -11,4 +11,4 @@ from . import company
 from . import contact
 from . import product_common
 from . import partner_model
-from . import cleanSyncData
+#from . import cleanSyncData

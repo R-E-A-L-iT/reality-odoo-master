@@ -1,14 +1,14 @@
-import logging
+# import logging
 
-from odoo.tools.translate import _
-from odoo import models
+# from odoo.tools.translate import _
+# from odoo import models
 
-_logger = logging.getLogger(__name__)
+# _logger = logging.getLogger(__name__)
 
 
-class cleanSyncData:
-    def __init__(self):
-        _logger.info("cleanSync ")
+# class cleanSyncData:
+#     def __init__(self):
+#         _logger.info("cleanSync ")
 
     # #Methode to clean spl with no owner
     # def cleanSPL(self): 
