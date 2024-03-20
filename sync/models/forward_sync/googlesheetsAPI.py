@@ -70,3 +70,59 @@ class sheetsAPI(models.Model):
 
         doc = client.open_by_key(spreadsheetID)
         return doc.get_worksheet(sheet_num).get_all_values()
+
+
+    ###################################################################
+    # Get a tab in the GoogleSheet Master Database
+    # Input
+    #   template_id:    The GoogleSheet Template ID to acces the master database
+    #   psw:            The password to acces the DB
+    #   index:          The index of the tab to pull
+    # Output
+    #   data:           A tab in the GoogleSheet Master Database
+    def getMasterDatabaseSheet(self, template_id, psw, index):
+        # get the database data; reading in the sheet
+
+        try:
+            return (self.getDoc(psw, template_id, index))
+        except Exception as e:
+            _logger.info(e)
+            msg = "<h1>Failed To Retrieve Master Database Document</h1><p>Sync Fail</p><p>" + \
+                str(e) + "</p>"
+            self.syncFail(msg, self._sync_fail_reason)
+            quit
+
+
+    ###################################################################
+    # Get the Sheet Index of the Odoo Sync Data tab, column B
+    # Input
+    #   sync_data:  The GS ODOO_SYNC_DATA tab
+    #   lineIndex:  The index of the line to get the SheetIndex
+    # Output
+    #   sheetIndex: The Sheet Index for a given Abc_ODOO tab to read
+    #   msg:        Message to append to the repport
+    def getSheetIndex(self, sync_data, lineIndex):
+        sheetIndex = -1
+        i = -1
+        msg = ""
+
+        if (lineIndex < 1):
+            return -1
+
+        i = self.getColumnIndex(sync_data, "Sheet Index")
+        if (i < 0):
+            return -1
+
+        try:
+            sheetIndex = int(sync_data[lineIndex][i])
+        except ValueError:
+            sheetIndex = -1
+            msg = "BREAK: check the tab ODOO_SYNC_DATA, there must have a non numeric value in column number " + \
+                str(i) + " called 'Sheet Index', line " + \
+                str(lineIndex) + ": " + str(sync_data[lineIndex][1]) + "."
+            _logger.info(sync_data)
+
+            _logger.info(msg)
+            # test to push
+
+        return sheetIndex, msg
