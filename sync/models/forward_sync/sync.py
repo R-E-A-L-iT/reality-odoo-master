@@ -30,7 +30,6 @@ from .website import syncWeb
 from .product import sync_products
 from .company import sync_companies
 from .contact import sync_contacts
-from .cleanSyncData import cleanSyncData
 
 _logger = logging.getLogger(__name__)
 
