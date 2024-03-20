@@ -27,7 +27,7 @@ class cleanSyncData:
                 sq_ = sq.search([("lot_id.id", "=", spl_.id)])
                 
                 for sq1 in sq_:
-                    _logger.info("deleting sq: " + str(sq1.name))
+                    _logger.info("deleting sq: " + str(sq1.display_name))
                     sq1.unlink()
                 spl_.unlink() 
 
