@@ -1007,8 +1007,8 @@ class sync(models.Model):
 
         for l in ccpSkus:
             _logger.info("-------------- " + str(l[0]))
-            imd1 = imd.search([("name", "=", l[0])])
-            imd1.name = l[1]
+            imd1 = imd.search([("name", "=", l[1])])
+            imd1.name = l[0]
 
         _logger.info("-------------- FINISH")
 
