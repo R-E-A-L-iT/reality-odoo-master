@@ -907,6 +907,8 @@ class sync(models.Model):
                     spl1 = spl.search([("product_id", "=", p1.id)]) 
                     ssl1 = ssl.search([("product_id", "=", p1.id)]) 
                     sm1 = sm.search([("product_id", "=", p1.id)]) 
+
+                    sku_str = str(p1.sku)
                     
                     #Check if the product is on a sale.order.line
                     #Check if the product is on an account.move.line 
@@ -917,7 +919,8 @@ class sync(models.Model):
                         (len(aml1) > 0) or
                         (len(spl1) > 0) or
                         (len(ssl1) > 0) or
-                        (len(sm1)  > 0)):
+                        (len(sm1)  > 0) or
+                        (sku_str[:3] != "CCP")):
                             #if so, keep it archive it
                             p1.active = False  
                             formatted_id = str(p1.id).ljust(20)
