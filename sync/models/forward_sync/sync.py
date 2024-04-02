@@ -884,6 +884,11 @@ class sync(models.Model):
         for eid in p_eid_list:
             _logger.info("------: cleanCCPUnsed EID: " + str(eid))
 
+            #Safety check to prevent too large research in product.product.
+            if (len(str(eid) < 5)):
+                _logger.info("------: cleanCCPUnsed EID too short, skipped.")
+                continue
+
             #search all product that have the EID in the name            
             p_ = p.search([("sku", "like", eid)]) 
 
