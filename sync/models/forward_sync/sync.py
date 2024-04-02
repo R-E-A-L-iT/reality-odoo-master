@@ -891,12 +891,7 @@ class sync(models.Model):
 
             #search all product that have the EID in the name            
             p_ = p.search([("sku", "like", eid)]) 
-
-            if (eid == "00106-37310-00030-02218-919B4"):
-                _logger.info("------------------------- START   00106-37310-00030-02218-919B4")
-                for p1 in p_:
-                    _logger.info("------------------------- " + str(p1.sku))
-                _logger.info("------------------------- END     00106-37310-00030-02218-919B4")
+            pt_ = pt.search([("sku", "like", eid)]) 
 
             #For all prodcut with an EID in his SKU DELETING or ARCHIVING some product.procduct
             _logger.info("------: CLEANING [product.product]")
@@ -946,6 +941,52 @@ class sync(models.Model):
                          
                         p1.unlink()   
                         pt1.unlink()
+
+            for pt1 in pt_: 
+                #_logger.info("------------: Product SKU: " + str(p1.sku))
+                
+                #Check if the product BELONG to the CCP list in GSdatabas
+                if (pt1.sku not in p_ccp_sku_list):                    
+                    #_logger.info("------------------: Product is found in the CCP list")
+
+                    sol1 = sol.search([("product_id", "=", pt1.id)]) 
+                    aml1 = aml.search([("product_id", "=", pt1.id)])
+                    spl1 = spl.search([("product_id", "=", pt1.id)]) 
+                    ssl1 = ssl.search([("product_id", "=", pt1.id)]) 
+                    sm1 = sm.search([("product_id", "=", pt1.id)]) 
+
+                    sku_str = str(pt1.sku)
+                    
+                    #Check if the product is on a sale.order.line
+                    #Check if the product is on an account.move.line 
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.move
+                    if ((len(sol1) > 0) or
+                        (len(aml1) > 0) or
+                        (len(spl1) > 0) or
+                        (len(ssl1) > 0) or
+                        (len(sm1)  > 0) or
+                        (sku_str[:3] != "CCP")):
+                            #if so, keep it archive it
+                            pt1.active = False  
+                            formatted_id = str(pt1.id).ljust(20)
+                            formatted_sku = str(pt1.sku).ljust(60)
+                            archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(pt1.name))  
+                    else:
+                        #else delete it
+                        p1 = p.search([("product_tmpl_id", "=", pt1.id)])
+
+                        formatted_id = str(p1.id).ljust(20)
+                        formatted_sku = str(p1.sku).ljust(60)
+                        deletedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))
+
+                        formatted_id = str(pt1.id).ljust(20)
+                        formatted_sku = str(pt1.sku).ljust(60)
+                        deletedPT.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: "+ str(pt1.name))         
+                         
+                        p1.unlink()   
+                        pt1.unlink()                        
 
         _logger.info("------: CLEANING [stock.production.lot]")
 
