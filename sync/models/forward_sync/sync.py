@@ -885,7 +885,7 @@ class sync(models.Model):
             _logger.info("------: cleanCCPUnsed EID: " + str(eid))
 
             #Safety check to prevent too large research in product.product.
-            if (len(str(eid) < 5)):
+            if (len(str(eid)) < 5):
                 _logger.info("------: cleanCCPUnsed EID too short, skipped.")
                 continue
 
