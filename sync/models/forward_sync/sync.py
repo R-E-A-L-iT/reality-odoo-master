@@ -892,6 +892,12 @@ class sync(models.Model):
             #search all product that have the EID in the name            
             p_ = p.search([("sku", "like", eid)]) 
 
+            if (eid == "00106-37310-00030-02218-919B4"):
+                _logger.info("------------------------- START   00106-37310-00030-02218-919B4")
+                for p1 in p_:
+                    _logger.info("------------------------- " + str(p1.sku))
+                _logger.info("------------------------- END     00106-37310-00030-02218-919B4")
+
             #For all prodcut with an EID in his SKU DELETING or ARCHIVING some product.procduct
             _logger.info("------: CLEANING [product.product]")
             
