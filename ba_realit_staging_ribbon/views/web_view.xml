@@ -17,5 +17,3 @@
     </template>
 
 </odoo>
-
-('https://www.r-e-a-l.it' not in base_url)
