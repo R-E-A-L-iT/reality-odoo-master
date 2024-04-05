@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="realit_staggin_database_custom_layout" inherit_id="web.layout" name="Test Database Ribbon">
+        <xpath expr="//body" position="inside">
+            <t t-set="base_url" t-value="request.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+            <div t-if="('www.r-e-a-l.it' not in base_url) or ('lezejde-reality.odoo.com' not in base_url)"> <!-- t-if="('www.r-e-a-l.it','lezejde-reality.odoo.com') not in " -->
+            <span style="width: 400px;top: 55px;left: -100px;font-size: 40px;
+                             text-align: center;padding: 10px;line-height: 30px;
+                             color: #f0f0f0; transform: rotate(-45deg); position: fixed;
+                             box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); background: #D0442C;
+                             opacity: 0.6; pointer-events: none; text-transform: uppercase;
+                             z-index:9999">
+                    TESTING</span>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

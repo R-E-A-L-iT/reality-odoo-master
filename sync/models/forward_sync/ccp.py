@@ -60,10 +60,8 @@ class sync_ccp:
         # Loop through Rows in Google Sheets        
         while True:
             # Check if final row was completed
-            if (
-                i == len(self.sheet)
-                or str(self.sheet[i][columns["continue"]]) != "TRUE"
-            ):
+            if (i == len(self.sheet) or 
+                str(self.sheet[i][columns["continue"]]) != "TRUE"):
                 break
 
             # Verify The validity of certain fields
@@ -81,58 +79,52 @@ class sync_ccp:
                     msg,
                     self.name,
                     str(self.sheet[i][columns["externalId"]]),
-                    "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]]),
-                )
+                    "Invalid Expiration Date: " + str(self.sheet[i][columns["date"]]))
                 i = i + 1
                 continue
 
-            try:
+            try:                
                 # Create or Update record as needed
                 external_id = str(self.sheet[i][columns["externalId"]])
                 ccp_ids = self.database.env["ir.model.data"].search(
-                    [("name", "=", external_id), ("model", "=", "stock.production.lot")]
-                )
-
+                    [("name", "=", external_id), 
+                     ("model", "=", "stock.production.lot")])                
+                
                 if len(ccp_ids) > 0:
                     self.updateCCP(
-                        self.database.env["stock.production.lot"].browse(
-                            ccp_ids[-1].res_id
-                        ),
+                        self.database.env["stock.production.lot"].browse(ccp_ids[-1].res_id),
                         i,
-                        columns,
-                    )
+                        columns)
                 else:
                     self.createCCP(external_id, i, columns)
+
             except Exception as e:
                 _logger.info("CCP")
                 _logger.error(e)
-                _logger.info(i)
+                _logger.info(str(self.sheet[i]))
                 msg = utilities.buildMSG(msg, self.name, str(external_id), str(e))
                 msg = msg + str(e)
                 return True, msg
-            i = i + 1
 
+            i = i + 1
         return False, msg
 
     def updateCCP(self, ccp_item, i, columns):
         # Check if data in GS is the same as in Odoo
         if ccp_item.stringRep == str(self.sheet[i][:]):
             return
+            
         # Update fields in Record
         ccp_item.name = self.sheet[i][columns["eidsn"]]
 
         product_ids = self.database.env["product.product"].search(
-            [("sku", "=", self.sheet[i][columns["code"]])]
-        )
+            [("sku", "=", self.sheet[i][columns["code"]])])
 
         ccp_item.product_id = product_ids[-1].id
 
-        owner_ids = self.database.env["ir.model.data"].search(
-            [
+        owner_ids = self.database.env["ir.model.data"].search([
                 ("name", "=", self.sheet[i][columns["ownerId"]]),
-                ("model", "=", "res.partner"),
-            ]
-        )
+                ("model", "=", "res.partner")])
         if len(owner_ids) == 0:
             _logger.info("No owner")
 
@@ -149,24 +141,17 @@ class sync_ccp:
     # follows same pattern
     def createCCP(self, external_id, i, columns):
         # Create new record
-        ext = self.database.env["ir.model.data"].create(
-            {"name": external_id, "model": "stock.production.lot"}
-        )[0]
-
-        product_ids = self.database.env["product.product"].search(
-            [("name", "=", self.sheet[i][columns["name"]])]
-        )
-
-        product_id = product_ids[len(product_ids) - 1].id
-
+        ext = self.database.env["ir.model.data"].create({"name": external_id, "model": "stock.production.lot"})[0]
+        product_ids = self.database.env["product.product"].search([("sku", "=", self.sheet[i][columns["code"]])])
+        product_id = product_ids[len(product_ids) - 1].id        
         company_id = self.database.env["res.company"].search([("id", "=", 1)]).id
 
-        ccp_item = self.database.env["stock.production.lot"].create(
-            {
+        ccp_item = self.database.env["stock.production.lot"].create({
                 "name": self.sheet[i][columns["eidsn"]],
                 "product_id": product_id,
                 "company_id": company_id,
-            }
-        )[0]
+            })[0]
         ext.res_id = ccp_item.id
+
         self.updateCCP(ccp_item, i, columns)
+

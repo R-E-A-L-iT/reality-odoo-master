@@ -859,3 +859,236 @@ class sync(models.Model):
         #Assigning the company id
         ext.res_id = company.id
         _logger.info("-------------Contact added.")
+        
+
+    ###################################################################
+    # Method to remove product that are result of duplication with the GS CCP sequence number
+    # Input
+    #   p_eid_list:         The list of EID/SN in the CCP_ODOO tab
+    #   p_ccp_sku_list:     The list of SKU in the CCP_CSV_ODOO
+    def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
+        p = self.env["product.product"]
+        pt = self.env["product.template"]
+        spl = self.env["stock.production.lot"]
+        sol = self.env["sale.order.line"]
+        aml = self.env["account.move.line"]
+        ssl = self.env["sale.subscription.line"]
+        sm = self.env["stock.move"]
+
+        deletedPP = []
+        deletedPT = []
+        archivedPP = []
+
+
+        #for all EID in GSdatabase
+        for eid in p_eid_list:
+            _logger.info("------: cleanCCPUnsed EID: " + str(eid))
+
+            #Safety check to prevent too large research in product.product.
+            if (len(str(eid)) < 5):
+                _logger.info("------: cleanCCPUnsed EID too short, skipped.")
+                continue
+
+            #search all product that have the EID in the name            
+            p_ = p.search([("sku", "like", eid)]) 
+            pt_ = pt.search([("sku", "like", eid)]) 
+
+            #For all prodcut with an EID in his SKU DELETING or ARCHIVING some product.procduct
+            _logger.info("------: CLEANING [product.product]")
+            
+            for p1 in p_: 
+                #_logger.info("------------: Product SKU: " + str(p1.sku))
+                
+                #Check if the product BELONG to the CCP list in GSdatabas
+                if (p1.sku not in p_ccp_sku_list):                    
+                    #_logger.info("------------------: Product is found in the CCP list")
+
+                    sol1 = sol.search([("product_id", "=", p1.id)]) 
+                    aml1 = aml.search([("product_id", "=", p1.id)])
+                    spl1 = spl.search([("product_id", "=", p1.id)]) 
+                    ssl1 = ssl.search([("product_id", "=", p1.id)]) 
+                    sm1 = sm.search([("product_id", "=", p1.id)]) 
+
+                    sku_str = str(p1.sku)
+                    
+                    #Check if the product is on a sale.order.line
+                    #Check if the product is on an account.move.line 
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.move
+                    if ((len(sol1) > 0) or
+                        (len(aml1) > 0) or
+                        (len(spl1) > 0) or
+                        (len(ssl1) > 0) or
+                        (len(sm1)  > 0) or
+                        (sku_str[:3] != "CCP")):
+                            #if so, keep it archive it
+                            p1.active = False  
+                            formatted_id = str(p1.id).ljust(20)
+                            formatted_sku = str(p1.sku).ljust(60)
+                            archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))  
+                    else:
+                        #else delete it
+                        pt1 = pt.search([("id", "=", p1.product_tmpl_id.id)])
+
+                        formatted_id = str(p1.id).ljust(20)
+                        formatted_sku = str(p1.sku).ljust(60)
+                        deletedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))
+
+                        formatted_id = str(pt1.id).ljust(20)
+                        formatted_sku = str(pt1.sku).ljust(60)
+                        deletedPT.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: "+ str(pt1.name))         
+                         
+                        p1.unlink()   
+                        pt1.unlink()
+
+            for pt1 in pt_: 
+                #_logger.info("------------: Product SKU: " + str(p1.sku))
+                
+                #Check if the product BELONG to the CCP list in GSdatabas
+                if (pt1.sku not in p_ccp_sku_list):                    
+                    #_logger.info("------------------: Product is found in the CCP list")
+
+                    sol1 = sol.search([("product_id", "=", pt1.id)]) 
+                    aml1 = aml.search([("product_id", "=", pt1.id)])
+                    spl1 = spl.search([("product_id", "=", pt1.id)]) 
+                    ssl1 = ssl.search([("product_id", "=", pt1.id)]) 
+                    sm1 = sm.search([("product_id", "=", pt1.id)]) 
+
+                    sku_str = str(pt1.sku)
+                    
+                    #Check if the product is on a sale.order.line
+                    #Check if the product is on an account.move.line 
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.move
+                    if ((len(sol1) > 0) or
+                        (len(aml1) > 0) or
+                        (len(spl1) > 0) or
+                        (len(ssl1) > 0) or
+                        (len(sm1)  > 0) or
+                        (sku_str[:3] != "CCP")):
+                            #if so, keep it archive it
+                            pt1.active = False  
+                            formatted_id = str(pt1.id).ljust(20)
+                            formatted_sku = str(pt1.sku).ljust(60)
+                            archivedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(pt1.name))  
+                    else:
+                        #else delete it
+                        p1 = p.search([("product_tmpl_id", "=", pt1.id)])
+
+                        formatted_id = str(p1.id).ljust(20)
+                        formatted_sku = str(p1.sku).ljust(60)
+                        deletedPP.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: " + str(p1.name))
+
+                        formatted_id = str(pt1.id).ljust(20)
+                        formatted_sku = str(pt1.sku).ljust(60)
+                        deletedPT.append("ID: " + formatted_id + ", SKU: " + formatted_sku + ", NAME: "+ str(pt1.name))         
+                         
+                        p1.unlink()   
+                        pt1.unlink()                        
+
+        _logger.info("------: CLEANING [stock.production.lot]")
+
+        _logger.info("------: archivedPP")
+        for i in archivedPP: 
+            _logger.info(i)
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+
+        _logger.info("------: deletedPP")
+        for i in deletedPP: 
+            _logger.info(i)
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+
+        _logger.info("------: deletedPT")
+        for i in deletedPT: 
+            _logger.info(i)
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("--------------")
+
+
+        _logger.info("-------------- FINISH")
+
+
+    #Delete all the unsued SPL
+    def cleanSPLUnsed(self):
+        p = self.env["product.product"]
+        spl = self.env["stock.production.lot"]
+        sq = self.env["stock.quant"]
+
+        spl_ = spl.search([])
+        splDeleted = []
+
+        #
+        for spl1 in spl_:
+            toSearch = str(str(spl1.owner.company_nickname) + "-" + str(spl1.name))    
+            p1 = p.search([("sku", "ilike", toSearch)])
+            sq1 = sq.search([('lot_id', '=', spl1.id)])
+
+            if (len(sq1) > 0):
+                pass
+
+            elif (len(p1) <= 0):
+                formatted_id   = str(spl1.id).ljust(20)
+                formatted_name = str(spl1.name).ljust(40)
+                formatted_owner = str(spl1.owner.company_nickname).ljust(30)
+                formatted_sku  = str(spl1.sku).ljust(60)
+
+                splDeleted.append("ID: " + formatted_id + ", Name: " + formatted_name + ", Nick" + formatted_owner +", Sku: " + formatted_sku)
+                
+                
+                spl1.unlink()
+        
+        _logger.info("--------------")
+        _logger.info("--------------")
+        _logger.info("-------------- cleanSPLUnsed")
+        for s in splDeleted:
+            _logger.info("-------------- " + s)
+
+        _logger.info("-------------- FINISH")
+
+    #Migrate CCP Sku
+    def migrateCCP(self, ccpSkus):
+        _logger.info("-------------- migrateCCP")
+        imd = self.env["ir.model.data"]
+
+        for l in ccpSkus:
+            _logger.info("-------------- " + str(l[0]))
+            imd1 = imd.search([("name", "=", l[1])])
+            imd1.name = l[0]
+
+        _logger.info("-------------- FINISH")
+
+
+    #Delete ir.model.data key that are invalide
+    def cleanIMD(self, ccpSkus):
+        pt = self.env["product.template"]
+        imd = self.env["ir.model.data"]
+        deletedIMD = []
+
+        for l in  ccpSkus:
+            _logger.info("Looking for: " + str(l[1]))
+
+            imd1 = imd.search([("name", "ilike", l[1])])  
+            for imd_ in imd1: 
+                pt1 = pt.search([("id", "=", imd_.res_id)]) 
+                if (pt1.name == False): 
+                    formatted_id = str(imd_.id).ljust(20)
+                    formatted_resid = str(imd_.res_id).ljust(20)                    
+                    deletedIMD.append("ID: " + formatted_id + ", RES_ID: " + formatted_resid + ", NAME: " + str(imd_.name))                    
+                    imd_.unlink() 
+
+        _logger.info("------: deleted ir.model.data")
+        for i in deletedIMD: 
+            _logger.info(i)
+
+        _logger.info("-------------- FINISH")
+        
