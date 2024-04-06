@@ -4,14 +4,12 @@
     <template id="realit_stagging_database_custom_layout" inherit_id="web.layout" name="Test Database Ribbon">
         <xpath expr="//body" position="inside">
             <t t-set="base_url" t-value="request.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
-            <t t-if="'lezejde-reality.odoo.com' not in base_url">
+            <t t-set="hide_ribbon_div" t-value="False"/>
+            <t t-if="'lezejde-reality.odoo.com' in base_url">
               <t t-set="hide_ribbon_div" t-value="True"/>
             </t>
-            <t t-elif="'www.r-e-a-l.it' not in base_url">
+            <t t-if="'www.r-e-a-l.it' in base_url">
               <t t-set="hide_ribbon_div" t-value="True"/>
-            </t>
-            <t t-else="">
-              <t t-set="hide_ribbon_div" t-value="False"/>
             </t>
             <div t-if="not hide_ribbon_div"> <!-- t-if="('www.r-e-a-l.it','lezejde-reality.odoo.com') not in " -->
               <span style="width: 400px;top: 55px;left: -100px;font-size: 40px;text-align: center;padding: 10px;line-height: 30px;color: #f0f0f0; transform: rotate(-45deg); position: fixed;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); background: #D0442C;opacity: 0.6; pointer-events: none; text-transform: uppercase;z-index:9999">
