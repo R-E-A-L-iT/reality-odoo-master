@@ -41,8 +41,8 @@ class sync_pricelist:
         pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
         pricelistHeaderDict["isSoftware"]       = "isSoftware"  
         pricelistHeaderDict["Type"]             = "type"        
-        pricelistHeaderDict["Price CAD"]        = "cadSale"     
-        pricelistHeaderDict["Price USD"]        = "usdSale"     
+        pricelistHeaderDict["PriceCAD"]        = "cadSale"     
+        pricelistHeaderDict["PriceUSD"]        = "usdSale"     
         pricelistHeaderDict["Can Rental"]       = "cadRental"   
         pricelistHeaderDict["US Rental"]        = "usdRental"   
         pricelistHeaderDict["Publish_CA"]       = "canPublish"  
