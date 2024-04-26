@@ -523,6 +523,10 @@ class order(models.Model):
         # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
 
+            _logger.error("------product display_name: " + str(product.display_name))
+            _logger.error("------product product_id.name: " + str(product.product_id.name))
+            _logger.error("------product product_id.sale_ok: " + str(product.product_id.sale_ok))
+
             #only add product that can be sold
             if (product.product_id.sale_ok):
                 if product.product_id.type_selection == "H":
@@ -544,6 +548,8 @@ class order(models.Model):
                     )
                 if msg != None:
                     error_msg += msg + "\n"
+            else:
+                _logger.error("------product product_id.sale_ok is fale, should not add product: ")
 
         # Combine Sections and add to quote
         lines = []
