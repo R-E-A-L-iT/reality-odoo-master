@@ -525,7 +525,7 @@ class order(models.Model):
 
             _logger.error("------product display_name: " + str(product.display_name))
             _logger.error("------product product_id.name: " + str(product.product_id.name))
-            _logger.error("------product product_id.sale_ok: " + str(product.product_id.sale_ok))
+            _logger.error("------product.sku: " + str(product.sku))
 
             #only add product that can be sold
             if (product.product_id.sale_ok):
