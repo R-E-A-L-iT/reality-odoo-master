@@ -457,7 +457,7 @@ class order(models.Model):
         )
         section_lines = []
         for map_product in renewal_map.product_offers:
-            if (product_id.sale_ok):
+            if (map_product.product_id.sale_ok):
                 line = self.generate_product_line(
                     map_product.product_id, selected=map_product.selected
                 )
@@ -512,7 +512,7 @@ class order(models.Model):
         )
         if str(type(line)) == "<class 'str'>":
             return line
-            
+
         software_sub_lines.append(line.id)
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
