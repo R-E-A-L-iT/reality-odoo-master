@@ -401,9 +401,10 @@ class order(models.Model):
             selected = "true"
         elif selected == False:
             selected = "false"
+
         product = self.env["product.product"].search([
-            ("id", "=", product_id.id),
-            ("sale_ok", "=", True)])
+            ("id", "=", product_id.id)])
+
         # Get Price
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env["product.pricelist.item"].search(
@@ -456,12 +457,13 @@ class order(models.Model):
         )
         section_lines = []
         for map_product in renewal_map.product_offers:
-            line = self.generate_product_line(
-                map_product.product_id, selected=map_product.selected
-            )
-            if str(type(line)) == "<class 'str'>":
-                return line
-            section_lines.append(line.id)
+            if (product_id.sale_ok):
+                line = self.generate_product_line(
+                    map_product.product_id, selected=map_product.selected
+                )
+                if str(type(line)) == "<class 'str'>":
+                    return line
+                section_lines.append(line.id)
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
@@ -485,6 +487,7 @@ class order(models.Model):
         )
         if str(type(line)) == "<class 'str'>":
             return line
+
         software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
@@ -509,6 +512,7 @@ class order(models.Model):
         )
         if str(type(line)) == "<class 'str'>":
             return line
+            
         software_sub_lines.append(line.id)
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
