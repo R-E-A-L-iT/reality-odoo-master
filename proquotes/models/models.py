@@ -523,9 +523,15 @@ class order(models.Model):
         # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
 
+            _logger.error("------product display_name" + str(product.display_name))
+            _logger.error("------product product_id.name" + str(product.product_id.name))
+
             #only add product that can be sold
             if (not product.product_id.sale_ok):
+                _logger.error("------product product_id.sale_ok true")
                 continue
+            else:
+                _logger.error("------product product_id.sale_ok false")
 
             if product.product_id.type_selection == "H":
                 _logger.info("Hardware")
