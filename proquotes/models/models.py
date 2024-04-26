@@ -522,6 +522,11 @@ class order(models.Model):
         error_msg = ""
         # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
+
+            #only add product that can be sold
+            if (not product.product_id.sale_ok):
+                continue
+
             if product.product_id.type_selection == "H":
                 _logger.info("Hardware")
                 msg = self.hardwareCCP(hardware_lines, product)
