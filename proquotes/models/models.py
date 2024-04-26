@@ -443,7 +443,8 @@ class order(models.Model):
             hardware_lines.append(self.generate_section_line("$block").id)
 
         renewal_maps = self.env["renewal.map"].search(
-            [("product_id", "=", product.product_id.id)])
+            [("product_id", "=", product.product_id.id),
+            ("product_id.sale_ok", "=", True)])
 
         if len(renewal_maps) != 1:            
             return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
