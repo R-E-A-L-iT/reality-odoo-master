@@ -443,13 +443,23 @@ class order(models.Model):
             hardware_lines.append(self.generate_section_line("$block").id)
 
         renewal_maps = self.env["renewal.map"].search(
-            [("product_id", "=", product.product_id.id),
-            ("product_id.sale_ok", "=", True)])
+            [("product_id", "=", product.product_id.id)])
 
-        if len(renewal_maps) != 1:            
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+        valid_product = []
+        for r in renewal_maps:
+            
+            _logger.error("r.product_id.name: " + str(r.product_id.name))
+            _logger.error("r.product_id.sale_ok: " + str(r.product_id.sale_ok))
+            if r.product_id.sale_ok:                
+                valid_product.append(r)
 
-        renewal_map = renewal_maps[0]
+        #if len(renewal_maps) != 1:            
+        if len(valid_product) != 1:            
+            #return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Hardware CCP: Invalid Match Count (" + str(len(valid_product)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+
+        #renewal_map = renewal_maps[0]
+        renewal_map = valid_product[0]
         hardware_lines.append(
             self.generate_section_line(product.formated_label, special="multiple").id
         )
