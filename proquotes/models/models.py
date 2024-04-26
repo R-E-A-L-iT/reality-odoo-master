@@ -523,35 +523,27 @@ class order(models.Model):
         # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
 
-            _logger.error("------product display_name" + str(product.display_name))
-            _logger.error("------product product_id.name" + str(product.product_id.name))
-
             #only add product that can be sold
-            if (not product.product_id.sale_ok):
-                _logger.error("------product product_id.sale_ok true")
-                continue
-            else:
-                _logger.error("------product product_id.sale_ok false")
-
-            if product.product_id.type_selection == "H":
-                _logger.info("Hardware")
-                msg = self.hardwareCCP(hardware_lines, product)
-            elif product.product_id.type_selection == "S":
-                msg = self.softwareCCP(software_lines, product)
-                _logger.info("Softare")
-            elif product.product_id.type_selection == "SS":
-                msg = self.softwareSubCCP(software_sub_lines, product)
-                _logger.info("Software Subscription")
-            else:
-                msg = (
-                    "Product: "
-                    + str(product.product_id.name)
-                    + ' has unknown type "'
-                    + str(product.product_id.type_selection)
-                    + '"\n'
-                )
-            if msg != None:
-                error_msg += msg + "\n"
+            if (product.product_id.sale_ok):
+                if product.product_id.type_selection == "H":
+                    _logger.info("Hardware")
+                    msg = self.hardwareCCP(hardware_lines, product)
+                elif product.product_id.type_selection == "S":
+                    msg = self.softwareCCP(software_lines, product)
+                    _logger.info("Softare")
+                elif product.product_id.type_selection == "SS":
+                    msg = self.softwareSubCCP(software_sub_lines, product)
+                    _logger.info("Software Subscription")
+                else:
+                    msg = (
+                        "Product: "
+                        + str(product.product_id.name)
+                        + ' has unknown type "'
+                        + str(product.product_id.type_selection)
+                        + '"\n'
+                    )
+                if msg != None:
+                    error_msg += msg + "\n"
 
         # Combine Sections and add to quote
         lines = []
