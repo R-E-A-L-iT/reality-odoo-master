@@ -236,6 +236,10 @@ class sync_products:
 
         product.sale_ok = can_be_sold
 
+        if (str(product.sku) == "CCP-00108-49440-00034-16345-DEF7C"):
+            _logger.info('CCP-00108-49440-00034-16345-DEF7C')
+            _logger.info('product.sale_ok: ' + str(product.sale_ok))
+
 
     # Method to create and update a product
     # Input
