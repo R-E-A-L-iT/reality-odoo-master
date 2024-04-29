@@ -244,8 +244,8 @@ class sync_products:
             _logger.info('can_be_sold: ' + str(can_be_sold))
            
 
-            p = self.env["product.product"]
-            pt = self.env["product.template"]
+            p = self.database.env["product.product"]
+            pt = self.database.env["product.template"]
             p1 =    p.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
             pt1 =  pt.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
             _logger.info('p1.can_be_sold: ' + str(p1.can_be_sold))
