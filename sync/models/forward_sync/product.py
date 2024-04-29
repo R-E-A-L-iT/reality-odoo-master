@@ -118,7 +118,7 @@ class sync_products:
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
                         "product",
-                        sheet[i][columns["CanBeSold"]]
+                        sheet[i][columns["can_be_sold"]]
                     )  # product_type
                 else:
                     self.createAndUpdateProducts(
@@ -132,7 +132,7 @@ class sync_products:
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
                         "product",
-                        sheet[i][columns["CanBeSold"]]
+                        sheet[i][columns["can_be_sold"]]
                     )  # product_type
 
             except Exception as e:
