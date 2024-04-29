@@ -242,7 +242,18 @@ class sync_products:
             _logger.info('CCP-00108-49440-00034-16345-DEF7C')
             _logger.info('product.sale_ok: ' + str(product.sale_ok))
             _logger.info('can_be_sold: ' + str(can_be_sold))
+           
+
+            p = self.env["product.product"]
+            pt = self.env["product.template"]
+            p1 =    p.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
+            pt1 =  pt.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
+            _logger.info('p1.can_be_sold: ' + str(p1.can_be_sold))
+            _logger.info('pt1.can_be_sold: ' + str(pt1.can_be_sold))
+            
             _logger.info('Done')
+
+
 
 
     # Method to create and update a product
