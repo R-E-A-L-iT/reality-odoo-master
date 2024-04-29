@@ -235,25 +235,11 @@ class sync_products:
         product.price = product_price_cad
 
         product.sale_ok = can_be_sold
-                              
-        if (str(product.sku) == "CCP-00108-49440-00034-16345-DEF7C"):
-            _logger.info('CCP-00108-49440-00034-16345-DEF7C')
-            _logger.info('product.sku: ' + str(product.sku))
-            _logger.info('product.sale_ok: ' + str(product.sale_ok))
-            _logger.info('can_be_sold: ' + str(can_be_sold))
-           
 
-            p = self.database.env["product.product"]
-            pt = self.database.env["product.template"]
-            p1 =    p.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
-            pt1 =  pt.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
-            _logger.info('p1.sale_ok: ' + str(p1.sale_ok))
-            _logger.info('pt1.sale_ok: ' + str(pt1.sale_ok))
-
-            pt1.sale_ok = False
-            
-            _logger.info('Done')
-
+        if str(can_be_sold).upper() == "TRUE":
+            product.sale_ok = True
+        else:
+            product.sale_ok = False                              
 
 
 
