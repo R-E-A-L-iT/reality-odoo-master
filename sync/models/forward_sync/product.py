@@ -93,17 +93,11 @@ class sync_products:
                 product_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
-                
-                if (str(external_id) == "CCP-00108-49440-00034-16345-DEF7C"):
-                    _logger.info('external_id: ' + str(external_id) + ', len(product_ids): ' + str(len(product_ids)))
 
                 if len(product_ids) > 0:
                     product = self.database.env["product.template"].browse(
                         product_ids[len(product_ids) - 1].res_id
                     )
-
-                    if (str(external_id) == "CCP-00108-49440-00034-16345-DEF7C"):
-                        _logger.info('len(product): ' + str(len(product)))
                     
                     if len(product) != 1:
                         msg = utilities.buildMSG(
@@ -114,9 +108,6 @@ class sync_products:
                         )
                         i = i + 1
                         continue
-
-                    if (str(external_id) == "CCP-00108-49440-00034-16345-DEF7C"):
-                        _logger.info('product,sku: ' + str(product.sku))
 
                     self.updateProducts(
                         product,
@@ -246,11 +237,12 @@ class sync_products:
         product.price = product_price_cad
 
         product.sale_ok = can_be_sold
-
-        _logger.info('product.sku: ' + str(product.sku))                               
+                              
         if (str(product.sku) == "CCP-00108-49440-00034-16345-DEF7C"):
             _logger.info('CCP-00108-49440-00034-16345-DEF7C')
             _logger.info('product.sale_ok: ' + str(product.sale_ok))
+            _logger.info('can_be_sold: ' + str(can_be_sold))
+            _logger.info('Done')
 
 
     # Method to create and update a product
