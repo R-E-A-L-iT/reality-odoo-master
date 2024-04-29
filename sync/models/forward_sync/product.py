@@ -93,6 +93,8 @@ class sync_products:
                 product_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
+                
+                _logger.info('external_id: ' + str(external_id) + ', len(product_ids): ' + str(len(product_ids)))
 
                 if len(product_ids) > 0:
                     product = self.database.env["product.template"].browse(
@@ -107,6 +109,7 @@ class sync_products:
                         )
                         i = i + 1
                         continue
+
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
