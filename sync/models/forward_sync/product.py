@@ -160,9 +160,7 @@ class sync_products:
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}
         )[0]
-        product = self.database.env["product.template"].create({"name": product_name})[
-            0
-        ]
+        product = self.database.env["product.template"].create({"name": product_name})[0]
 
         product.tracking = "serial"
         product.type = "product"
@@ -240,6 +238,7 @@ class sync_products:
                               
         if (str(product.sku) == "CCP-00108-49440-00034-16345-DEF7C"):
             _logger.info('CCP-00108-49440-00034-16345-DEF7C')
+            _logger.info('product.sku: ' + str(product.sku))
             _logger.info('product.sale_ok: ' + str(product.sale_ok))
             _logger.info('can_be_sold: ' + str(can_be_sold))
            
@@ -250,6 +249,8 @@ class sync_products:
             pt1 =  pt.search([("sku", "ilike", "CCP-00108-49440-00034-16345-DEF7C")]) 
             _logger.info('p1.sale_ok: ' + str(p1.sale_ok))
             _logger.info('pt1.sale_ok: ' + str(pt1.sale_ok))
+
+            pt1.sale_ok = False
             
             _logger.info('Done')
 
