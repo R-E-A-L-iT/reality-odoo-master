@@ -208,7 +208,7 @@ class sync_products:
         can_be_sold
     ):
         # check if any update to item is needed and skips if there is none
-        if product.stringRep == product_stringRep:
+        if product.stringRep == product_stringRep and SKIP_NO_CHANGE:
             return
 
         # reads values and puts them in appropriate fields
