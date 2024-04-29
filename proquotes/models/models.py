@@ -401,7 +401,10 @@ class order(models.Model):
             selected = "true"
         elif selected == False:
             selected = "false"
-        product = self.env["product.product"].search([("id", "=", product_id.id)])
+
+        product = self.env["product.product"].search([
+            ("id", "=", product_id.id)])
+
         # Get Price
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env["product.pricelist.item"].search(
@@ -445,8 +448,8 @@ class order(models.Model):
         renewal_maps = self.env["renewal.map"].search(
             [("product_id", "=", product.product_id.id)])
 
-        if len(renewal_maps) != 1:            
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+        if len(renewal_maps) != 1:                       
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"           
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -454,12 +457,13 @@ class order(models.Model):
         )
         section_lines = []
         for map_product in renewal_map.product_offers:
-            line = self.generate_product_line(
-                map_product.product_id, selected=map_product.selected
-            )
-            if str(type(line)) == "<class 'str'>":
-                return line
-            section_lines.append(line.id)
+            if (map_product.product_id.sale_ok):
+                line = self.generate_product_line(
+                    map_product.product_id, selected=map_product.selected
+                )
+                if str(type(line)) == "<class 'str'>":
+                    return line
+                section_lines.append(line.id)
         hardware_lines.extend(section_lines)
 
     def softwareCCP(self, software_lines, product):
@@ -472,7 +476,8 @@ class order(models.Model):
         
         product_list = self.env["product.product"].search(
             [("sku", "like", eid), 
-            ("active", "=", True)])
+            ("active", "=", True),
+            ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
             return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
@@ -482,6 +487,7 @@ class order(models.Model):
         )
         if str(type(line)) == "<class 'str'>":
             return line
+
         software_lines.append(line.id)
 
     def softwareSubCCP(self, software_sub_lines, product):
@@ -494,7 +500,8 @@ class order(models.Model):
         
         product_list = self.env["product.product"].search(
             [("sku", "like", eid), 
-            ("active", "=", True)])
+            ("active", "=", True),
+            ("sale_ok", "=", True)])
         
         if len(product_list) != 1:
             return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
@@ -505,6 +512,7 @@ class order(models.Model):
         )
         if str(type(line)) == "<class 'str'>":
             return line
+
         software_sub_lines.append(line.id)
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
@@ -522,25 +530,34 @@ class order(models.Model):
         error_msg = ""
         # For every product added to the quote add it to the correct section
         for product in self.renewal_product_items:
-            if product.product_id.type_selection == "H":
-                _logger.info("Hardware")
-                msg = self.hardwareCCP(hardware_lines, product)
-            elif product.product_id.type_selection == "S":
-                msg = self.softwareCCP(software_lines, product)
-                _logger.info("Softare")
-            elif product.product_id.type_selection == "SS":
-                msg = self.softwareSubCCP(software_sub_lines, product)
-                _logger.info("Software Subscription")
+
+            _logger.error("------product display_name: " + str(product.display_name))
+            _logger.error("------product product_id.name: " + str(product.product_id.name))
+            _logger.error("------product.sku: " + str(product.sku))
+
+            #only add product that can be sold
+            if (product.product_id.sale_ok):
+                if product.product_id.type_selection == "H":
+                    _logger.info("Hardware")
+                    msg = self.hardwareCCP(hardware_lines, product)
+                elif product.product_id.type_selection == "S":
+                    msg = self.softwareCCP(software_lines, product)
+                    _logger.info("Softare")
+                elif product.product_id.type_selection == "SS":
+                    msg = self.softwareSubCCP(software_sub_lines, product)
+                    _logger.info("Software Subscription")
+                else:
+                    msg = (
+                        "Product: "
+                        + str(product.product_id.name)
+                        + ' has unknown type "'
+                        + str(product.product_id.type_selection)
+                        + '"\n'
+                    )
+                if msg != None:
+                    error_msg += msg + "\n"
             else:
-                msg = (
-                    "Product: "
-                    + str(product.product_id.name)
-                    + ' has unknown type "'
-                    + str(product.product_id.type_selection)
-                    + '"\n'
-                )
-            if msg != None:
-                error_msg += msg + "\n"
+                _logger.error("------product product_id.sale_ok is fale, should not add product: ")
 
         # Combine Sections and add to quote
         lines = []

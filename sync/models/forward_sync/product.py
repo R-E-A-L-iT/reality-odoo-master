@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = True
+SKIP_NO_CHANGE = False
 
 
 class sync_products:
@@ -24,7 +24,7 @@ class sync_products:
 
     def syncProducts(self, sheet):
         # Confirm GS Tab is in the correct Format
-        sheetWidth = 11
+       
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -41,8 +41,10 @@ class sync_products:
         productHeaderDict["PriceUSD"]        = "priceUSD"
         productHeaderDict["Product Type"]     = "type"
         productHeaderDict["Tracking"]         = "tracking"
+        productHeaderDict["CanBeSold"]        = "can_be_sold"
         productHeaderDict["Valid"]            = "valid"
-        productHeaderDict["Continue"]         = "continue"                                                
+        productHeaderDict["Continue"]         = "continue"    
+        sheetWidth = len(productHeaderDict)                                            
         columns, msg, columnsMissing = utilities.checkSheetHeader(productHeaderDict, self.sheet, self.name)
 
         if sheetWidth != len(sheet[i]) or columnsMissing:
@@ -96,6 +98,7 @@ class sync_products:
                     product = self.database.env["product.template"].browse(
                         product_ids[len(product_ids) - 1].res_id
                     )
+                    
                     if len(product) != 1:
                         msg = utilities.buildMSG(
                             msg,
@@ -105,6 +108,7 @@ class sync_products:
                         )
                         i = i + 1
                         continue
+
                     self.updateProducts(
                         product,
                         str(sheet[i][:]),  # product_stringRep
@@ -116,6 +120,7 @@ class sync_products:
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
                         "product",
+                        sheet[i][columns["can_be_sold"]]
                     )  # product_type
                 else:
                     self.createAndUpdateProducts(
@@ -129,6 +134,7 @@ class sync_products:
                         sheet[i][columns["priceUSD"]],  # product_price_usd
                         "serial",  # product_tracking
                         "product",
+                        sheet[i][columns["can_be_sold"]]
                     )  # product_type
 
             except Exception as e:
@@ -154,9 +160,7 @@ class sync_products:
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}
         )[0]
-        product = self.database.env["product.template"].create({"name": product_name})[
-            0
-        ]
+        product = self.database.env["product.template"].create({"name": product_name})[0]
 
         product.tracking = "serial"
         product.type = "product"
@@ -176,6 +180,7 @@ class sync_products:
     #   product_price_usd:          Price in USD
     #   product_tracking:           Tracking
     #   product_type:               Type
+    #   product.sale_ok             can_be_sold if the product can be sold or not
 
     def updateProducts(
         self,
@@ -189,9 +194,10 @@ class sync_products:
         product_price_usd,
         product_tracking,
         product_type,
+        can_be_sold
     ):
         # check if any update to item is needed and skips if there is none
-        if product.stringRep == product_stringRep:
+        if product.stringRep == product_stringRep and SKIP_NO_CHANGE:
             return
 
         # reads values and puts them in appropriate fields
@@ -228,6 +234,15 @@ class sync_products:
         )
         product.price = product_price_cad
 
+        product.sale_ok = can_be_sold
+
+        if str(can_be_sold).upper() == "TRUE":
+            product.sale_ok = True
+        else:
+            product.sale_ok = False                              
+
+
+
     # Method to create and update a product
     # Input
     #   external_id:                The SKU in GoogleSheet
@@ -238,6 +253,7 @@ class sync_products:
     #   product_price_usd:          Price in USD
     #   product_tracking:           Tracking
     #   product_type:               Type
+    #   product.sale_ok             can_be_sold if the product can be sold or not    
     # Output
     #   product:                    The product created
 
@@ -253,6 +269,7 @@ class sync_products:
         product_price_usd,
         product_tracking,
         product_type,
+        can_be_sold
     ):
         # creates record and updates it
         product = self.createProducts(external_id, product_name_english)
@@ -267,6 +284,7 @@ class sync_products:
             product_price_usd,
             product_tracking,
             product_type,
+            can_be_sold
         )
 
         product_created = self.database.env["product.template"].search(
