@@ -24,13 +24,13 @@ class opportunity(models.Model):
         string="Opportunity SN"
     )
 
-    opportunity_custom_status = fields.Selection(
-        [
-            ("pending", "Pending"), 
-            ("accepted", "Accepted"), 
-            ("rejected", "Rejected")
-        ], 
-        string="Opportunity Status", 
-        default=False
-    )
+    # opportunity_custom_status = fields.Selection(
+    #     [
+    #         ("pending", "Pending"), 
+    #         ("accepted", "Accepted"), 
+    #         ("rejected", "Rejected")
+    #     ], 
+    #     string="Opportunity Status", 
+    #     default=False
+    # )
 
