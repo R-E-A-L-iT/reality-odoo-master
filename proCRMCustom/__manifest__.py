@@ -7,7 +7,7 @@
     """,
     "author": "Olivier Cote",
     "license": "LGPL-3",
-    "version": "0.001",
+    "version": "0.002",
     "depends": ["base", "crm"],
     "data": [
         "views/crm_opportinuity_custom.xml"
