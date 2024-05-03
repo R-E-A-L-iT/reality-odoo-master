@@ -1,5 +1,5 @@
 {
-    "name": "ProContact",
+    "name": "ProCRMCustom",
     "summary": "Modifying CRM to support custom need.",
     "description": """Module that support 
         -Opportunity Status
