@@ -23,9 +23,3 @@ class opportunity(models.Model):
     opportunity_sn = fields.Char(
         string="Opportunity SN"
     )
-    
-    opportunity_status = fields.Selection(
-        [('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
-        string="Opportunity Status",
-        default='pending'
-    )
