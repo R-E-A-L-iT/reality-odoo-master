@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="opportunity_sn" />
+                <field name="opportunity_custom_status" />
             </xpath>
         </field>
     </record>
