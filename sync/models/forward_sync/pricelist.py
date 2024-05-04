@@ -229,7 +229,11 @@ class sync_pricelist:
         else:
             product.sale_ok = False
         
-        product.categ_id = self.getProductCategoryId(self.sheet[i][columns["productType"]])
+        catStr = str(self.sheet[i][columns["productType"]])
+        catId = self.getProductCategoryId(catStr)
+        product.categ_id = catId
+
+        _logger.warning("product.name: " + str(product.name) + ", productType: " + catStr + ", id: " + str(catId))
 
         product.active = True
 
