@@ -41,7 +41,7 @@ class sync_pricelist:
         pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
         pricelistHeaderDict["isSoftware"]       = "isSoftware"  
         pricelistHeaderDict["Type"]             = "type"        
-        pricelistHeaderDict["Product Type"]     = "productType"        
+        pricelistHeaderDict["ProductCategory"]  = "productCategory"        
         pricelistHeaderDict["PriceCAD"]         = "cadSale"     
         pricelistHeaderDict["PriceUSD"]         = "usdSale"     
         pricelistHeaderDict["Can Rental"]       = "cadRental"   
@@ -228,12 +228,11 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
-        catCol =  columns["productType"]
-        catStr = str(self.sheet[i][columns["productType"]])
-        catId = self.getProductCategoryId(catStr)
+            
+        #Product Category
+        catId = self.getProductCategoryId(str(self.sheet[i][columns["productCategory"]]))
         product.categ_id = catId
-
-        _logger.warning("product.name: " + str(product.name) + ", catCol: " + str(catCol) + ", productType: " + catStr + ", id: " + str(catId))
+       
 
         product.active = True
 
