@@ -154,9 +154,7 @@ class sync_pricelist:
         if len(product_ids) > 0:
             return (
                 self.updatePricelistProducts(
-                    self.database.env["product.template"].browse(
-                        product_ids[len(product_ids) - 1].res_id
-                    ),
+                    self.database.env["product.template"].browse(product_ids[len(product_ids) - 1].res_id),
                     i,
                     columns,
                 ),
@@ -164,7 +162,8 @@ class sync_pricelist:
             )
         else:
             product = self.createPricelistProducts(
-                external_id, self.sheet[i][columns["eName"]]
+                external_id, 
+                self.sheet[i][columns["eName"]]
             )
             product = self.updatePricelistProducts(product, i, columns)
             return product, True
@@ -229,6 +228,8 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
+        
+        product.categ_id = self.getProductCategoryId(self.sheet[i][columns["productType"]])
 
         product.active = True
 
@@ -260,14 +261,22 @@ class sync_pricelist:
             product.type_selection = False
         return product
 
+    ####################
+
+    def getProductCategoryId(self, category):
+        categoryID = self.database.env["product.category"].search([("name", "=", category)])
+
+        if (len(categoryID) == 1):
+             return categoryID.id
+        else:
+            return self.database.env["product.category"].search([("name", "=", "All")]).id   
+
     # creates record and updates it
     def createPricelistProducts(self, external_id, product_name):
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}
         )[0]
-        product = self.database.env["product.template"].create({"name": product_name})[
-            0
-        ]
+        product = self.database.env["product.template"].create({"name": product_name})[0]
         ext.res_id = product.id
 
         product.tracking = "serial"
