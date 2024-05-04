@@ -26,7 +26,7 @@ class sync_pricelist:
     ##################################################
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
-        sheetWidth = 33
+        sheetWidth = 34
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -41,8 +41,9 @@ class sync_pricelist:
         pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
         pricelistHeaderDict["isSoftware"]       = "isSoftware"  
         pricelistHeaderDict["Type"]             = "type"        
-        pricelistHeaderDict["PriceCAD"]        = "cadSale"     
-        pricelistHeaderDict["PriceUSD"]        = "usdSale"     
+        pricelistHeaderDict["Product Type"]     = "productType"        
+        pricelistHeaderDict["PriceCAD"]         = "cadSale"     
+        pricelistHeaderDict["PriceUSD"]         = "usdSale"     
         pricelistHeaderDict["Can Rental"]       = "cadRental"   
         pricelistHeaderDict["US Rental"]        = "usdRental"   
         pricelistHeaderDict["Publish_CA"]       = "canPublish"  
