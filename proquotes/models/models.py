@@ -677,7 +677,8 @@ class order(models.Model):
 
     @api.onchange("state")
     def cleanUnselectedLine(self):
-        _logger.info(str(self.state))
+        _logger.info(str(self.state) + ", id: " + str(self.id))
+        
 
         for line in self.order_line:
             _logger.info("line: " + str(line.display_name) + ", slected: " + str(line.selected))
