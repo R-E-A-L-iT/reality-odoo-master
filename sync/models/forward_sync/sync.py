@@ -1126,7 +1126,8 @@ class sync(models.Model):
                 859,
                 747,
                 628,
-                1974)):
+                1974,
+                1959)):
                 continue
 
 
