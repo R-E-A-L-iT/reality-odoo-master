@@ -1096,7 +1096,8 @@ class sync(models.Model):
     def cleanSaleOrder(self):
         so = self.env["sale.order"]
         sol = self.env["sale.order.line"]
-        all_so = so.search([("state", "=", "sale")])
+        #all_so = so.search([("state", "=", "sale")])
+        all_so = so.search([])
         _logger.info("all_so len: " + str(len(all_so)))
         
         i = 0        
@@ -1108,23 +1109,15 @@ class sync(models.Model):
 
             if (str(sale.state) == "done"):                
                 sale.state = "sale"
-                for line in sale.order_line:           
-                    try: 
-                        if (str(line.selected) == "false"):                        
-                            line.product_uom_qty = 0                                                        
-                    except Exception as e:
-                        _logger.info("error: " + str(e))     
+                self.clenSoleOrderLines(sale.order_line)
                 sale.state = "done"
             ###
             elif (str(sale.state) == "sale"):
-                j = 0
-                for line in sale.order_line:          
-                    try:
-                        #if (str(line.selected) == "false"):                               
-                        if not line.selected:
-                            line.product_uom_qty = 0    
-                    except Exception as e:
-                            _logger.info("error: " + str(e)) 
+                self.clenSoleOrderLines(sale.order_line)
 
+    def clenSoleOrderLines(self, lines):
+        for line in lines:   
+                if not line.selected:
+                    line.product_uom_qty = 0    
 
 
