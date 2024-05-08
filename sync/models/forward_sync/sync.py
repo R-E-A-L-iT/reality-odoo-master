@@ -1111,8 +1111,13 @@ class sync(models.Model):
                 for line in sale.order_line:            
                     if (str(line.selected) == "false"):
                         line.product_qty = 0  
-                        line.product_uom_qty = 0                    
-                
+                        line.product_uom_qty = 0     
                 sale.state = "done"
+            ###
+            elif (str(sale.state) == "sale"):
+                for line in sale.order_line:            
+                    if (str(line.selected) == "false"):
+                        line.product_qty = 0  
+                        line.product_uom_qty = 0     
 
 
