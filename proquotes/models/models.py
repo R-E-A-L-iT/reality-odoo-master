@@ -675,7 +675,7 @@ class order(models.Model):
             ]
 
 
-    @api.onchange("state")
+    @api.onchange("state", "invoice_status")
     def cleanUnselectedLine(self):
         _logger.info(str(self.state) + ", id: " + str(self.id))
         
