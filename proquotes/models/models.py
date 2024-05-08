@@ -680,7 +680,7 @@ class order(models.Model):
         _logger.info(str(self.state))
 
         for line in self.order_line:
-            _logger.info("line: " + ", slected: " + str(line.selected))
+            _logger.info("line: " + str(line.display_name) + ", slected: " + str(line.selected))
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
