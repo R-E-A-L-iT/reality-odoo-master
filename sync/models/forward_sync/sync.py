@@ -1100,21 +1100,19 @@ class sync(models.Model):
         
         i = 0        
         for sale in all_so:
-            try:
-                i+=1
-                _logger.info(str(i) + ", " + str(sale.name + ", lines number: " + str(len(sale.order_line))))
+
+            i+=1
+            _logger.info(str(i) + ", " + str(sale.name + ", lines number: " + str(len(sale.order_line))))
 
 
-                if (str(sale.state) == "done"):
-                    
-                    sale.state = "sale"
-                    for line in sale.order_line:            
-                        if (str(line.selected) == "false"):
-                            line.product_uom_qty = 0                    
-                    
-                    sale.state = "done"
-            except Exception as e:                
-                _logger.error(f"An error occurred: {e}")
-
+            if (str(sale.state) == "done"):
+                
+                sale.state = "sale"
+                for line in sale.order_line:            
+                    if (str(line.selected) == "false"):
+                        line.product_qty = 0  
+                        line.product_uom_qty = 0                    
+                
+                sale.state = "done"
 
 
