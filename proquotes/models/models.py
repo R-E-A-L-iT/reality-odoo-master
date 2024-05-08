@@ -675,9 +675,10 @@ class order(models.Model):
             ]
 
 
-    @api.onchange("state", "invoice_status")
+    @api.onchange("state", "invoice_status", "rental_status")
     def cleanUnselectedLine(self):
-        _logger.info(str(self.state) + ", id: " + str(self.id))
+        _logger.info("************************************************")
+        _logger.info("id: " + str(self.id) + ", state: " + str(self.state) + ", invoice_status: " + str(self.invoice_status) + ", rental_status: " + str(self.rental_status) )
         
 
         for line in self.order_line:
