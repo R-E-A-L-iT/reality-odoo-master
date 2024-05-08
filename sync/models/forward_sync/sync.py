@@ -1109,7 +1109,10 @@ class sync(models.Model):
                 sale.state = "sale"
                 for line in sale.order_line:            
                     if (str(line.selected) == "false"):
-                        line.product_uom_qty = 0     
+                        try:
+                            line.product_uom_qty = 0    
+                        except Exception as e:
+                             _logger.info("error: " + str(e))     
                 sale.state = "done"
             ###
             elif (str(sale.state) == "sale"):
