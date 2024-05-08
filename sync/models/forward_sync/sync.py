@@ -1118,7 +1118,10 @@ class sync(models.Model):
                     _logger.info("len line: " + str(len(line)))            
                     if (str(line.selected) == "false"):
                         j += 1
-                        line.product_uom_qty = 0    
+                        try:
+                            line.product_uom_qty = 0    
+                        except Exception as e:
+                             _logger.info("error: " + str(e)) 
                 _logger.info("j: " + str(j)) 
 
 
