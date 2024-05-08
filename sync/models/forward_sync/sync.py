@@ -1103,7 +1103,7 @@ class sync(models.Model):
         i = 0        
         for sale in all_so:            
             i+=1
-            _logger.info(str(i)) # + ", " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
+            _logger.info(str(i) + ", id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
             if (str(sale.state) == "done"):                
                 sale.state = "sale"
