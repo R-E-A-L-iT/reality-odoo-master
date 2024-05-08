@@ -1127,6 +1127,7 @@ class sync(models.Model):
                 #_logger.info(str(line.selected))
                 sol1 = sol.search([("id", "=", line.id)])
                 if (str(sol1.selected).upper() == "FALSE"):
-                    sol1.product_uom_qty = 0    
+                    if (sol1.qty_delivered <= 0):
+                        sol1.product_uom_qty = 0    
 
 
