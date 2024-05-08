@@ -1116,7 +1116,7 @@ class sync(models.Model):
     def clenSoleOrderLines(self, lines):
         sol = self.env["sale.order.line"]
         for line in lines:   
-                _logger.info(str(line.selected))
+                #_logger.info(str(line.selected))
                 sol1 = sol.search([("id", "=", line.id)])
                 if (str(sol1.selected).upper() == "FALSE"):
                     sol1.product_uom_qty = 0    
