@@ -677,8 +677,7 @@ class order(models.Model):
         
     def action_confirm(self):
         _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        _logger.info("on order state change: %s", self.state)      
-        super().action_confirm()
+        _logger.info("on order state change: %s", self.state)             
 
         for line in self.order_line:            
             if (str(line.selected) == "false"):
@@ -686,6 +685,8 @@ class order(models.Model):
                 line.product_uom_qty = 0
 
             _logger.info("slected: " + str(line.selected) + ", product_qty: " + str(line.product_qty) + ", product_uom_qty: " + str(line.product_uom_qty) + ", line: " + str(line.display_name))
+
+        super().action_confirm()
 
         
 
