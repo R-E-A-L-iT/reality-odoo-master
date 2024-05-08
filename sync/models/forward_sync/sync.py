@@ -1105,8 +1105,7 @@ class sync(models.Model):
             _logger.info(str(i) + ", " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
 
-            if (str(sale.state) == "done"):
-                
+            if (str(sale.state) == "done"):                
                 sale.state = "sale"
                 for line in sale.order_line:            
                     if (str(line.selected) == "false"):
@@ -1115,9 +1114,12 @@ class sync(models.Model):
                 sale.state = "done"
             ###
             elif (str(sale.state) == "sale"):
+                j = 0
                 for line in sale.order_line:            
                     if (str(line.selected) == "false"):
-                        line.product_qty = 0  
-                        line.product_uom_qty = 0     
+                        j += 1
+                        #line.product_qty = 0  
+                        #line.product_uom_qty = 0    
+                _logger.info("j: " + str(j)) 
 
 
