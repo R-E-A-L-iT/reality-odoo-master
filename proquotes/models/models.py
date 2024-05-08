@@ -674,26 +674,18 @@ class order(models.Model):
                 for l in res
             ]
 
-
-    @api.onchange("state", "invoice_status", "rental_status")
-    def cleanUnselectedLine(self):
-        _logger.info("************************************************")
-        _logger.info("id: " + str(self.id) + ", state: " + str(self.state) + ", invoice_status: " + str(self.invoice_status) + ", rental_status: " + str(self.rental_status) )
         
+    def action_confirm(self):
+        _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        _logger.info("on order state change: %s", self.state)      
 
         for line in self.order_line:            
             if (not line.selected):
                 line.product_qty = 0
 
             _logger.info("slected: " + str(line.selected) + ", product_qty: " + str(line.product_qty) + ", line: " + str(line.display_name))
-        
-    def action_confirm(self):
-        _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        _logger.info("on order state change: %s", self.state)
-        super().action_confirm()
 
-        for line in self.order_line:
-            _logger.info("line: " + str(line.display_name) + ", slected: " + str(line.selected))
+        super().action_confirm()
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
