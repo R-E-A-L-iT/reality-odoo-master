@@ -1104,59 +1104,61 @@ class sync(models.Model):
         for sale in all_so:            
             i+=1
 
-            if (sale.id in 
-            (
-                2043, 
-                2038, 
-                2000, 
-                1990,
-                1905,
-                1763,
-                1722,
-                1588,
-                1417,
-                1512,
-                1502,
-                1382,
-                837,
-                1257,
-                1218,
-                1125,
-                1082,
-                1044,
-                859,
-                747,
-                628,
-                1974,
-                1959,
-                1914,
-                1686,
-                1684,
-                1473,
-                1549,
-                1527,
-                1379,
-                1365,
-                1244,
-                713,
-                654,
-                589,
-                25,
-                31,
-                32
-            )):
-                continue
+            # if (sale.id in 
+            # (
+            #     2043, 
+            #     2038, 
+            #     2000, 
+            #     1990,
+            #     1905,
+            #     1763,
+            #     1722,
+            #     1588,
+            #     1417,
+            #     1512,
+            #     1502,
+            #     1382,
+            #     837,
+            #     1257,
+            #     1218,
+            #     1125,
+            #     1082,
+            #     1044,
+            #     859,
+            #     747,
+            #     628,
+            #     1974,
+            #     1959,
+            #     1914,
+            #     1686,
+            #     1684,
+            #     1473,
+            #     1549,
+            #     1527,
+            #     1379,
+            #     1365,
+            #     1244,
+            #     713,
+            #     654,
+            #     589,
+            #     25,
+            #     31,
+            #     32
+            # )):
+            #     continue
 
+            try:
+                _logger.info(str(i) + ", id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
-            _logger.info(str(i) + ", id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
+                if (str(sale.state) == "done"):                
+                    sale.state = "sale"
+                    self.clenSoleOrderLines(sale.order_line)
+                    sale.state = "done"
 
-            if (str(sale.state) == "done"):                
-                sale.state = "sale"
-                self.clenSoleOrderLines(sale.order_line)
-                sale.state = "done"
-
-            elif (str(sale.state) == "sale"):
-                self.clenSoleOrderLines(sale.order_line)
+                elif (str(sale.state) == "sale"):
+                    self.clenSoleOrderLines(sale.order_line)
+            except Exception as e:
+                _logger.info(str(e))
 
     def clenSoleOrderLines(self, lines):
         sol = self.env["sale.order.line"]
