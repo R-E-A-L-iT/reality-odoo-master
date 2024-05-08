@@ -681,8 +681,11 @@ class order(models.Model):
         _logger.info("id: " + str(self.id) + ", state: " + str(self.state) + ", invoice_status: " + str(self.invoice_status) + ", rental_status: " + str(self.rental_status) )
         
 
-        for line in self.order_line:
-            _logger.info("line: " + str(line.display_name) + ", slected: " + str(line.selected))
+        for line in self.order_line:            
+            if (not line.selected):
+                line.product_qty = 0
+
+            _logger.info("slected: " + str(line.selected) + ", product_qty: " + str(line.product_qty) + ", line: " + str(line.display_name))
         
     def action_confirm(self):
         _logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
