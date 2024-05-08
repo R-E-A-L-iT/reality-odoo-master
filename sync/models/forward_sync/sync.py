@@ -1104,17 +1104,14 @@ class sync(models.Model):
                 i+=1
                 _logger.info(str(i) + ", " + str(sale.name + ", lines number: " + str(len(sale.order_line))))
 
-                wasLocked = False
+
                 if (str(sale.state) == "done"):
-                    wasLocked = True
+                    
                     sale.state = "sale"
-
-                for line in sale.order_line:            
-                    if (str(line.selected) == "false"):
-                        line.product_uom_qty = 0
-                
-
-                if (wasLocked):
+                    for line in sale.order_line:            
+                        if (str(line.selected) == "false"):
+                            line.product_uom_qty = 0                    
+                    
                     sale.state = "done"
             except Exception as e:                
                 _logger.error(f"An error occurred: {e}")
