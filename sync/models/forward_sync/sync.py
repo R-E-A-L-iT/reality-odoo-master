@@ -1101,17 +1101,15 @@ class sync(models.Model):
         _logger.info("all_so len: " + str(len(all_so)))
         
         i = 0        
-        for sale_t in all_so:
-            sale = sale_t.browse(sale_t.id)
+        for sale in all_so:            
             i+=1
-            _logger.info(str(i) + ", " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
-
+            _logger.info(str(i)) # + ", " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
             if (str(sale.state) == "done"):                
                 sale.state = "sale"
                 self.clenSoleOrderLines(sale.order_line)
                 sale.state = "done"
-            ###
+
             elif (str(sale.state) == "sale"):
                 self.clenSoleOrderLines(sale.order_line)
 
