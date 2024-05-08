@@ -675,7 +675,7 @@ class order(models.Model):
             ]
 
 
-    @api.onchange("sate")
+    @api.onchange("state")
     def cleanUnselectedLine(self):
         _logger.info(str(self.state))
 
