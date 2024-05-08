@@ -1107,7 +1107,12 @@ class sync(models.Model):
             if (i < 93):
                 continue
 
-            if (sale.id in (2043, 2038, 2000, 1990)):
+            if (sale.id in (
+                2043, 
+                2038, 
+                2000, 
+                1990,
+                1905)):
                 continue
 
 
