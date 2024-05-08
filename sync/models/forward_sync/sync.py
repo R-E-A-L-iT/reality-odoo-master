@@ -1095,7 +1095,7 @@ class sync(models.Model):
 
     def cleanSaleOrder(self):
         so = self.env["sale.order"]
-        sol = self.env["sale.order.line"]
+        
         #all_so = so.search([("state", "=", "sale")])
         all_so = so.search([])
         _logger.info("all_so len: " + str(len(all_so)))
@@ -1116,9 +1116,11 @@ class sync(models.Model):
                 self.clenSoleOrderLines(sale.order_line)
 
     def clenSoleOrderLines(self, lines):
+        sol = self.env["sale.order.line"]
         for line in lines:   
                 _logger.info(str(line.selected))
-                # if (str(line.selected).upper() == "FALSE"):
-                #     line.product_uom_qty = 0    
+                sol1 = sol.search([("id", "=", line.id)])
+                if (str(sol1.selected).upper() == "FALSE"):
+                    sol1.product_uom_qty = 0    
 
 
