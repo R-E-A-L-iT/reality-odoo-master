@@ -1119,7 +1119,7 @@ class sync(models.Model):
                     if (str(line.selected) == "false"):
                         j += 1
                         #line.product_qty = 0  
-                        #line.product_uom_qty = 0    
+                        line.product_uom_qty = 0    
                 _logger.info("j: " + str(j)) 
 
 
