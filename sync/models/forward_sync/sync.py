@@ -1104,7 +1104,7 @@ class sync(models.Model):
         for sale in all_so:            
             i+=1
 
-            if (i < 419):
+            if (i < 487):
                 continue
 
             if (sale.id in (
@@ -1115,7 +1115,8 @@ class sync(models.Model):
                 1905,
                 1763,
                 1722,
-                1588)):
+                1588,
+                1417)):
                 continue
 
 
