@@ -1141,7 +1141,8 @@ class sync(models.Model):
                 713,
                 654,
                 589,
-                25
+                25,
+                31
             )):
                 continue
 
