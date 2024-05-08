@@ -1095,10 +1095,14 @@ class sync(models.Model):
 
     def cleanSaleOrder(self):
         so = self.env["sale.order"]
-
-        for sale in so.search([]):
+        all_so = so.search([])
+        _logger.info("all_so len: " + str(len(all_so)))
+        i = 0
+        for sale in all_so:
+            _logger.info(str(i) + ", " + str(sale.name))
             for line in sale.order_line:            
                 if (str(line.selected) == "false"):
                     line.product_uom_qty = 0
+            i+=1
 
 
