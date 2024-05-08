@@ -634,7 +634,7 @@ class order(models.Model):
                     )
             order.amount_undiscounted = total
 
-    def _amount_by_group(self):
+    def _amount_by_group(self):        
         #  Overden Method to Ensure sale order lines are selected to included in calculation
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
@@ -674,6 +674,13 @@ class order(models.Model):
                 for l in res
             ]
 
+
+    @api.onchange("sate")
+    def cleanUnselectedLine(self):
+        _logger.info(str(self.state))
+
+        for line in self.order_line:
+            _logger.info("line: " + str(line.name) + ", slected: " + str(line.selected))
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
