@@ -683,6 +683,10 @@ class order(models.Model):
 
         for line in self.order_line:
             _logger.info("line: " + str(line.display_name) + ", slected: " + str(line.selected))
+        
+    def action_confirm(self):
+        _logger.info("on order state change: %s", self.state)
+        super().action_confirm()
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
