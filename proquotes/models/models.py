@@ -682,8 +682,9 @@ class order(models.Model):
         for line in self.order_line:            
             if (not line.selected):
                 line.product_qty = 0
+                line.product_uom_qty = 0
 
-            _logger.info("slected: " + str(line.selected) + ", product_qty: " + str(line.product_qty) + ", line: " + str(line.display_name))
+            _logger.info("slected: " + str(line.selected) + ", product_qty: " + str(line.product_qty) + ", product_uom_qty: " + str(line.product_uom_qty) + ", line: " + str(line.display_name))
 
         super().action_confirm()
 
