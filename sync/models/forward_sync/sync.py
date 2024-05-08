@@ -1117,7 +1117,7 @@ class sync(models.Model):
 
     def clenSoleOrderLines(self, lines):
         for line in lines:   
-                if not line.selected:
+                if (str(line.selected).upper() == "FALSE"):
                     line.product_uom_qty = 0    
 
 
