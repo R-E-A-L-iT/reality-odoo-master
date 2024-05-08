@@ -1100,9 +1100,19 @@ class sync(models.Model):
         i = 0
         for sale in all_so:
             _logger.info(str(i) + ", " + str(sale.name))
+
+            wasLocked = False
+            if (str(sale.state) == "done"):
+                wasLocked = True
+                sale.state = "sale"
+
             for line in sale.order_line:            
                 if (str(line.selected) == "false"):
                     line.product_uom_qty = 0
             i+=1
+
+            if (wasLocked):
+                sale.state = "done"
+
 
 
