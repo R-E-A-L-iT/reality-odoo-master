@@ -1097,22 +1097,27 @@ class sync(models.Model):
         so = self.env["sale.order"]
         all_so = so.search([])
         _logger.info("all_so len: " + str(len(all_so)))
-        i = 0
+        
+        i = 0        
         for sale in all_so:
-            _logger.info(str(i) + ", " + str(sale.name))
+            try:
+                i+=1
+                _logger.info(str(i) + ", " + str(sale.name + ", lines number: " + str(len(sale.order_line))))
 
-            wasLocked = False
-            if (str(sale.state) == "done"):
-                wasLocked = True
-                sale.state = "sale"
+                wasLocked = False
+                if (str(sale.state) == "done"):
+                    wasLocked = True
+                    sale.state = "sale"
 
-            for line in sale.order_line:            
-                if (str(line.selected) == "false"):
-                    line.product_uom_qty = 0
-            i+=1
+                for line in sale.order_line:            
+                    if (str(line.selected) == "false"):
+                        line.product_uom_qty = 0
+                
 
-            if (wasLocked):
-                sale.state = "done"
+                if (wasLocked):
+                    sale.state = "done"
+            except Exception as e:                
+                _logger.error(f"An error occurred: {e}")
 
 
 
