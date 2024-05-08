@@ -1095,7 +1095,7 @@ class sync(models.Model):
 
     def cleanSaleOrder(self):
         so = self.env["sale.order"]
-        all_so = so.search([])
+        all_so = so.search([("state", "=", "sale")])
         _logger.info("all_so len: " + str(len(all_so)))
         
         i = 0        
