@@ -1109,16 +1109,15 @@ class sync(models.Model):
                 sale.state = "sale"
                 for line in sale.order_line:            
                     if (str(line.selected) == "false"):
-                        line.product_qty = 0  
                         line.product_uom_qty = 0     
                 sale.state = "done"
             ###
             elif (str(sale.state) == "sale"):
                 j = 0
-                for line in sale.order_line:            
+                for line in sale.order_line: 
+                    _logger.info("len line: " + str(len(line)))            
                     if (str(line.selected) == "false"):
                         j += 1
-                        #line.product_qty = 0  
                         line.product_uom_qty = 0    
                 _logger.info("j: " + str(j)) 
 
