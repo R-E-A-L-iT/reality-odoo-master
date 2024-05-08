@@ -1101,8 +1101,8 @@ class sync(models.Model):
         _logger.info("all_so len: " + str(len(all_so)))
         
         i = 0        
-        for sale in all_so.browse():
-
+        for sale_t in all_so:
+            sale = sale_t.browse(sale_t.id)
             i+=1
             _logger.info(str(i) + ", " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
