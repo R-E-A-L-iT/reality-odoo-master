@@ -1093,11 +1093,16 @@ class sync(models.Model):
         _logger.info("-------------- FINISH")
         
 
-    def cleanSaleOrder(self):
+    ##################################################################################
+    def getSaleOrderIds(self):
         so = self.env["sale.order"]        
         all_so = so.search([])
+        list = []
+
         for sale in all_so:
-            self.cleanOneSaleOrder(sale.id)
+            list.append(sale.id)
+        
+        return list
 
     def cleanOneSaleOrder(self, id):
         so = self.env["sale.order"]        
