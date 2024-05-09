@@ -1117,9 +1117,10 @@ class sync(models.Model):
         cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
         cleaningIdSeq.number_next_actual = 0
 
-    def getCleaningId(self):
+    def getCleaningIdNextId(self):
         ir = self.env["ir.sequence"] 
         cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
+        _logger.info("-------------- cleaningIdSeq.number_next_actual: " + str(cleaningIdSeq.number_next_actual))
         return cleaningIdSeq.number_next_actual
 
     def incCleaningId(self):
