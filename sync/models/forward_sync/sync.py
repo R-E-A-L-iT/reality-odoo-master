@@ -1103,7 +1103,7 @@ class sync(models.Model):
         return self.cleaningId
 
     def incCleaningId(self):
-        self.cleaningId += 1
+        self.cleaningId = self.cleaningId + 1
         _logger.info("-------------- cleaningId: " + str(self.cleaningId))
         
 
