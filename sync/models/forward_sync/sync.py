@@ -1101,7 +1101,7 @@ class sync(models.Model):
 
     def cleanOneSaleOrder(self, id):
         so = self.env["sale.order"]        
-        sale = so.find_record_by_id(id)
+        sale = so.browse(id)
         
         try:
             _logger.info("id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
