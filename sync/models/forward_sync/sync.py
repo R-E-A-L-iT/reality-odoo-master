@@ -1119,10 +1119,8 @@ class sync(models.Model):
                 _logger.info(str(e))
 
     def cleanSoleOrderLines(self, lines):        
-        for line in lines:   
-                if (str(line.selected).upper() == "FALSE"):
-                    if (line.qty_delivered <= 0):
-                        #line.product_qty = 0    
-                        line.product_uom_qty = 0 
+        for line in self.order_line:            
+            if (str(line.selected) == "false"):
+                line.product_uom_qty = 0
 
 
