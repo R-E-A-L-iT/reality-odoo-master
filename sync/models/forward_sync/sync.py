@@ -1127,8 +1127,21 @@ class sync(models.Model):
 
     def incCleaningId(self):
         ir = self.env["ir.sequence"] 
-        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
-        cleaningIdSeq.number_next_actual = cleaningIdSeq.number_next_actual + 1
+        so = self.env["sale.order"]  
+
+        max = 100
+
+        while max >= 0:
+            # Code block to execute repeatedly
+            cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
+            cleaningIdSeq.number_next_actual += 1
+            sale = so.search([("id", "=", cleaningIdSeq.number_next_actual), ("state", "in", ("sale", "done"))])            
+
+            if len(sale) > 0:
+                break  # Exit the loop if sale is not empty
+            max -= 1
+
+
         _logger.info("-------------- cleaningId: " + str(cleaningIdSeq.number_next_actual))
         return cleaningIdSeq.number_next_actual
         
