@@ -1133,10 +1133,11 @@ class sync(models.Model):
 
     def cleanOneSaleOrder(self, id):
         so = self.env["sale.order"]        
-        sale = so.browse(id)
+        sale = so.search([("id", "=", id)])
         
         _logger.info("---- sale len: " + str(len(sale)))
-
+        if (len(sale) <= 0):
+            return
 
         try:
             _logger.info("id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
