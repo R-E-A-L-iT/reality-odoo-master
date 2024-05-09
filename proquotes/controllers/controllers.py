@@ -313,7 +313,7 @@ class QuoteCustomerPortal(cPortal):
         # Update Line
         select_sudo.product_uom_qty = quantity
         if quantity < 0:
-            raise UserError(_("Product Quantity Must Be 0 or more"))
+            raise UserError(_("Product Quantity Must Be  or Greater"))
 
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())

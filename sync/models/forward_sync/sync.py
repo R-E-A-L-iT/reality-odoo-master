@@ -47,6 +47,9 @@ class sync(models.Model):
 
     cleaningId = fields.Integer(string="cleaningId", required=True, default=0)
 
+    your_field = fields.Char(string="Your Field")
+    your_sequence = fields.Integer(string="Your Sequence", readonly=True, default=lambda self: self.env['ir.sequence'].next_by_code('your.sequence.code'))
+
     ###################################################################
     # STARTING POINT
     def start_sync(self, psw=None):
@@ -1096,27 +1099,33 @@ class sync(models.Model):
                 
 
     ##################################################################################
-    def resetCleaningId(self):
-        self.cleaningId = 0
+    def setSeq(self):
+        ir = self.env["ir.sequence"]  
+
+        check = ir.search([("name", "=", "cleaningId")])
+        if (len(check) <= 0):
+            ir.create({ 
+                'name': "cleaningId", 
+                'number_increment' : 1             
+            }) 
+            _logger.info("-------------- ir.sequence: " + str(self.cleaningIdSeq.number_next_actual))
+
+    def resetCleaningSeq(self):
+        ir = self.env["ir.sequence"]
+        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
+        cleaningIdSeq.number_next_actual = 0
 
     def getCleaningId(self):
-        return self.cleaningId
+        ir = self.env["ir.sequence"] 
+        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
+        return cleaningIdSeq.number_next_actual
 
     def incCleaningId(self):
-        self.cleaningId = self.cleaningId + 1
-        _logger.info("-------------- cleaningId: " + str(self.cleaningId))
+        ir = self.env["ir.sequence"] 
+        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
+        cleaningIdSeq.number_next_actual = cleaningIdSeq.number_next_actual + 1
+        _logger.info("-------------- cleaningId: " + str(self.cleaningIdSeq.number_next_actual))
         
-
-    def getSaleOrderIds(self):
-        so = self.env["sale.order"]        
-        all_so = so.search([])
-        list = []
-
-        for sale in all_so:
-            list.append(sale.id)
-            _logger.info("-------------- " + str(sale.id))
-        
-        return list
 
     def cleanOneSaleOrder(self, id):
         so = self.env["sale.order"]        
