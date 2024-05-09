@@ -1135,6 +1135,9 @@ class sync(models.Model):
         so = self.env["sale.order"]        
         sale = so.browse(id)
         
+        _logger.info("---- sale len: " + str(len(sale)))
+
+
         try:
             _logger.info("id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
