@@ -45,6 +45,8 @@ class sync(models.Model):
 
     _odoo_sync_data_index = 0
 
+    cleaningId = fields.Integer(string="cleaningId", required=True, default=0)
+
     ###################################################################
     # STARTING POINT
     def start_sync(self, psw=None):
@@ -1091,9 +1093,20 @@ class sync(models.Model):
             _logger.info(i)
 
         _logger.info("-------------- FINISH")
-        
+                
 
     ##################################################################################
+    def resetCleaningId(self):
+        self.cleaningId = 0
+
+    def getCleaningId(self):
+        return self.cleaningId
+
+    def incCleaningId(self):
+        self.cleaningId += 1
+        _logger.info("-------------- cleaningId: " + str(self.cleaningId))
+        
+
     def getSaleOrderIds(self):
         so = self.env["sale.order"]        
         all_so = so.search([])
