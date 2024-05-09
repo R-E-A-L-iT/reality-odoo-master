@@ -1108,7 +1108,9 @@ class sync(models.Model):
                 'name': "cleaningId", 
                 'number_increment' : 1             
             }) 
-            _logger.info("-------------- ir.sequence: " + str(self.cleaningIdSeq.number_next_actual))
+            _logger.info("-------------- Creation of sequence  cleaningId")
+        else:
+            _logger.info("-------------- Sequence  cleaningId existed")
 
     def resetCleaningSeq(self):
         ir = self.env["ir.sequence"]
