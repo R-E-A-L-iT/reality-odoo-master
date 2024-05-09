@@ -1099,6 +1099,7 @@ class sync(models.Model):
                 
 
     ##################################################################################
+    # creation of a sequence number to manange the sale.order cleaning
     def setSeq(self):
         ir = self.env["ir.sequence"]  
 
@@ -1130,7 +1131,8 @@ class sync(models.Model):
         cleaningIdSeq.number_next_actual = cleaningIdSeq.number_next_actual + 1
         _logger.info("-------------- cleaningId: " + str(cleaningIdSeq.number_next_actual))
         
-
+    #################################################    
+    #This method can not be call in a loop.
     def cleanOneSaleOrder(self, id):
         so = self.env["sale.order"]        
         sale = so.search([("id", "=", id)])
@@ -1153,9 +1155,11 @@ class sync(models.Model):
         except Exception as e:                
             _logger.info(str(e))
 
+    ############################
+    #Cleaning all the sale.order.line, if the selected is false, set the quantity to 0
     def cleanSoleOrderLines(self, lines):        
         for line in lines:            
-            if (str(line.selected) == "false"):
+            if ((str(line.selected) == "false") and line.qty_delivered <= 0):
                 line.product_uom_qty = 0
 
 
