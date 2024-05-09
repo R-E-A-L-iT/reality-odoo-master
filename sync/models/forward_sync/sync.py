@@ -1127,7 +1127,7 @@ class sync(models.Model):
         ir = self.env["ir.sequence"] 
         cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
         cleaningIdSeq.number_next_actual = cleaningIdSeq.number_next_actual + 1
-        _logger.info("-------------- cleaningId: " + str(self.cleaningIdSeq.number_next_actual))
+        _logger.info("-------------- cleaningId: " + str(cleaningIdSeq.number_next_actual))
         
 
     def cleanOneSaleOrder(self, id):
