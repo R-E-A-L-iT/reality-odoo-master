@@ -1130,6 +1130,7 @@ class sync(models.Model):
         cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
         cleaningIdSeq.number_next_actual = cleaningIdSeq.number_next_actual + 1
         _logger.info("-------------- cleaningId: " + str(cleaningIdSeq.number_next_actual))
+        return cleaningIdSeq.number_next_actual
         
     #################################################    
     #This method can not be call in a loop.
