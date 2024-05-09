@@ -1137,7 +1137,7 @@ class sync(models.Model):
         so = self.env["sale.order"]        
         sale = so.search([("id", "=", id)])
         
-        _logger.info("---- sale len: " + str(len(sale)))
+        _logger.info("---- sale id: " + str(id) + ", len: " + str(len(sale)))
         if (len(sale) <= 0):
             return
 
