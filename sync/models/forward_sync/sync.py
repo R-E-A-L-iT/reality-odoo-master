@@ -1093,30 +1093,29 @@ class sync(models.Model):
         _logger.info("-------------- FINISH")
         
 
-    def cleanSaleOrder(self, id):
-        so = self.env["sale.order"]
+    def cleanSaleOrder(self):
+        so = self.env["sale.order"]        
+        all_so = so.search([])
+        for sale in all_so:
+            self.cleanOneSaleOrder(sale.id)
+
+    def cleanOneSaleOrder(self, id):
+        so = self.env["sale.order"]        
+        sale = so.find_record_by_id(id)
         
-        #all_so = so.search([("state", "=", "sale")])
-        all_so = so.search([("id", "=", id)])
-        _logger.info("all_so len: " + str(len(all_so)))
-        
-        i = 0        
-        for sale in all_so:            
-            i+=1
+        try:
+            _logger.info("id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
 
-            try:
-                _logger.info(str(i) + ", id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
+            if (str(sale.state) == "done"):                
+                sale.state = "sale"
+                self.cleanSoleOrderLines(sale.order_line)
+                sale.state = "done"
 
-                if (str(sale.state) == "done"):                
-                    sale.state = "sale"
-                    self.cleanSoleOrderLines(sale.order_line)
-                    sale.state = "done"
+            elif (str(sale.state) == "sale"):
+                self.cleanSoleOrderLines(sale.order_line)
 
-                elif (str(sale.state) == "sale"):
-                    self.cleanSoleOrderLines(sale.order_line)
-
-            except Exception as e:                
-                _logger.info(str(e))
+        except Exception as e:                
+            _logger.info(str(e))
 
     def cleanSoleOrderLines(self, lines):        
         for line in lines:            
