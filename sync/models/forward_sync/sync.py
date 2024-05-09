@@ -1101,6 +1101,7 @@ class sync(models.Model):
 
         for sale in all_so:
             list.append(sale.id)
+            _logger.info("-------------- " + str(sale.id))
         
         return list
 
