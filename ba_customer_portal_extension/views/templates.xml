@@ -829,20 +829,6 @@
                 </t>
             </li>
         </xpath>
-
-<!--        <li t-elif="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" position="replace">-->
-<!--            <span>techzilla</span>-->
-<!--            <li t-elif="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">-->
-<!--                <t t-if="partner_company_id">-->
-<!--                    <a t-if="sale_order" t-attf-href="/my/orders/company/#{partner_company_id}?{{ keep_query() }}">Sales Orders</a>-->
-<!--                    <t t-else="">Sales Orders</t>-->
-<!--                </t>-->
-<!--                <t t-else="">-->
-<!--                    <a t-if="sale_order" t-attf-href="/my/orders?{{ keep_query() }}">Sales Orders</a>-->
-<!--                    <t t-else="">Sales Orders</t>-->
-<!--                </t>-->
-<!--            </li>-->
-<!--        </li>-->
     </template>
 
     <template id="portal_my_home_menu_invoice_inherit" inherit_id="account.portal_my_home_menu_invoice">
