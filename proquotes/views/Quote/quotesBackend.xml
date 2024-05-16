@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />
 				<!-- Renewal Quotes Added Products -->
-				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
+				<field name="renewal_product_items" invisible="'is_renewal', '!=', True" domain="[('owner', '=', partner_id)]">
 					<tree>
 						<field name="name"></field>
 						<field name="product_id"></field>
@@ -27,14 +27,14 @@
 				<!-- Rental Info -->
 				<group name="custom_quote_details">
 					<field name="is_rental" invisible="0" />
-					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="rental_street" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
-					<field name="rental_city" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
-					<field name="rental_zip" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_state" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_country" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
+					<field name="rental_diff_add" invisible="'is_rental', '!=', True" />
+					<field name="rental_street" invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]" />
+					<field name="rental_city" invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]" />
+					<field name="rental_zip" invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]" />
+					<field name="rental_state" invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]" />
+					<field name="rental_country" invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]" />
+					<field name="rental_start" invisible="[('is_rental', '!=', True)]" />
+					<field name="rental_end" invisible="[('is_rental', '!=', True)]" />
 					<field name="customer_po_number" invisible="0" />
 					<field name="header_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 					<field name="header" invisible="1" />
@@ -93,9 +93,10 @@
 				</page>
 			</xpath>
 
-			<xpath expr="//button[@name='update_prices']" position="attributes">
-				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>
-			</xpath>
+<!--			commented due to the undefine-->
+<!--			<xpath expr="//button[@name='update_prices']" position="attributes">-->
+<!--				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>-->
+<!--			</xpath>-->
 
 		</field>
 	</record>

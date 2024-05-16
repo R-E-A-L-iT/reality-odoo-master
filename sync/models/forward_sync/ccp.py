@@ -88,11 +88,11 @@ class sync_ccp:
                 external_id = str(self.sheet[i][columns["externalId"]])
                 ccp_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), 
-                     ("model", "=", "stock.production.lot")])                
+                     ("model", "=", "stock.lot")])
                 
                 if len(ccp_ids) > 0:
                     self.updateCCP(
-                        self.database.env["stock.production.lot"].browse(ccp_ids[-1].res_id),
+                        self.database.env["stock.lot"].browse(ccp_ids[-1].res_id),
                         i,
                         columns)
                 else:
@@ -141,12 +141,12 @@ class sync_ccp:
     # follows same pattern
     def createCCP(self, external_id, i, columns):
         # Create new record
-        ext = self.database.env["ir.model.data"].create({"name": external_id, "model": "stock.production.lot"})[0]
+        ext = self.database.env["ir.model.data"].create({"name": external_id, "model": "stock.lot"})[0]
         product_ids = self.database.env["product.product"].search([("sku", "=", self.sheet[i][columns["code"]])])
         product_id = product_ids[len(product_ids) - 1].id        
         company_id = self.database.env["res.company"].search([("id", "=", 1)]).id
 
-        ccp_item = self.database.env["stock.production.lot"].create({
+        ccp_item = self.database.env["stock.lot"].create({
                 "name": self.sheet[i][columns["eidsn"]],
                 "product_id": product_id,
                 "company_id": company_id,

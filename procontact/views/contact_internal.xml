@@ -4,7 +4,7 @@
     <record id="res_partner_form" model="ir.ui.view">
         <field name="name">Partner_Backend_Form</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='title']" position="after">
                 <field name="linkedin_link" />

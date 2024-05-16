@@ -354,7 +354,7 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
-        string="Renewal Items", comodel_name="stock.production.lot"
+        string="Renewal Items", comodel_name="stock.lot"
     )
     # rental_insurance = fields.Binary(string="Insurance")
 
@@ -449,7 +449,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:                       
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"           
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -480,7 +480,7 @@ class order(models.Model):
             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -504,7 +504,7 @@ class order(models.Model):
             ("sale_ok", "=", True)])
         
         if len(product_list) != 1:
-            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
 
         line = self.generate_product_line(
@@ -680,7 +680,8 @@ class orderLineProquotes(models.Model):
 
     variant = fields.Many2one("proquotes.variant", string="Variant Group")
 
-    applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    applied_name = fields.Char( string="Applied Name")
 
     selected = fields.Selection(
         [("true", "Yes"), ("false", "No")],
@@ -726,8 +727,9 @@ class orderLineProquotes(models.Model):
     )
 
     def get_applied_name(self):
-        n = name_translation(self)
-        n.get_applied_name()
+        return True
+        # n = name_translation(self)
+        # n.get_applied_name()
 
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
@@ -788,11 +790,11 @@ class variant(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
 
-    products = fields.One2many("stock.production.lot", "owner", string="Products")
+    products = fields.One2many("stock.lot", "owner", string="Products")
 
 
 class owner(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
 
     owner = fields.Many2one("res.partner", string="Owner")
 
@@ -807,4 +809,5 @@ class owner(models.Model):
 class pdf_quote(models.Model):
     _inherit = "sale.report"
 
-    footer_field = fields.Selection(related="order_id.footer")
+    footer_field = fields.Selection("")
+    # footer_field = fields.Selection(related="order_id.footer")

@@ -23,7 +23,8 @@
                             font-family: 'Source Sans Pro', sans-serif;
                         }
                         #wrap, main {
-                            background-color: #1E2023 !important;
+                                background-color: #3c4552 !important;
+<!--                            background-color: #1E2023 !important;-->
                         }
                         /* odoo menu */
                         #oe_main_menu_navbar {
@@ -141,7 +142,7 @@
                             display: none;
                         }
             </style>
-            <div class="o_portal_my_home">
+<!--            <div class="o_portal_my_home">-->
                 <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
                 <h3>my.R-E-A-L.iT</h3>
                 <t t-if="companies" t-foreach="companies" t-as="comp">
@@ -155,7 +156,7 @@
                         </t>
                     </div>
                 </t>
-            </div>
+<!--            </div>-->
             <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
         </t>
     </template>
@@ -740,11 +741,11 @@
         </t>
     </template>
 
-    <template id="portal_searchbar_realit" inherit_id="portal.portal_searchbar">
-        <xpath expr="//div[hasclass('input-group-sm')]" position="attributes">
-            <attribute name="class">input-group input-group-sm w-100 mt-3</attribute>
-        </xpath>
-    </template>
+<!--    <template id="portal_searchbar_realit" inherit_id="portal.portal_searchbar">-->
+<!--        <xpath expr="//div[hasclass('input-group')]" position="attributes">-->
+<!--            <attribute name="class">input-group input-group-sm w-100 mt-3</attribute>-->
+<!--        </xpath>-->
+<!--    </template>-->
 
     <template id="portal_my_orders_inherit" inherit_id="sale.portal_my_orders">
         <a t-att-href="order.get_portal_url()" position="replace">
@@ -816,8 +817,8 @@
                 </t>
             </li>
         </li>
-        <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" position="replace">
-            <li t-if="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+        <xpath expr="//li[@t-elif]" position="replace">
+            <li t-elif="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
                 <t t-if="partner_company_id">
                     <a t-if="sale_order" t-attf-href="/my/orders/company/#{partner_company_id}?{{ keep_query() }}">Sales Orders</a>
                     <t t-else="">Sales Orders</t>
@@ -827,7 +828,21 @@
                     <t t-else="">Sales Orders</t>
                 </t>
             </li>
-        </li>
+        </xpath>
+
+<!--        <li t-elif="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" position="replace">-->
+<!--            <span>techzilla</span>-->
+<!--            <li t-elif="page_name == 'order' or sale_order and sale_order.state not in ('sent', 'cancel')" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">-->
+<!--                <t t-if="partner_company_id">-->
+<!--                    <a t-if="sale_order" t-attf-href="/my/orders/company/#{partner_company_id}?{{ keep_query() }}">Sales Orders</a>-->
+<!--                    <t t-else="">Sales Orders</t>-->
+<!--                </t>-->
+<!--                <t t-else="">-->
+<!--                    <a t-if="sale_order" t-attf-href="/my/orders?{{ keep_query() }}">Sales Orders</a>-->
+<!--                    <t t-else="">Sales Orders</t>-->
+<!--                </t>-->
+<!--            </li>-->
+<!--        </li>-->
     </template>
 
     <template id="portal_my_home_menu_invoice_inherit" inherit_id="account.portal_my_home_menu_invoice">

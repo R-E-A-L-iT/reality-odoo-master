@@ -869,7 +869,7 @@ class sync(models.Model):
     def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
         p = self.env["product.product"]
         pt = self.env["product.template"]
-        spl = self.env["stock.production.lot"]
+        spl = self.env["stock.lot"]
         sol = self.env["sale.order.line"]
         aml = self.env["account.move.line"]
         ssl = self.env["sale.subscription.line"]
@@ -913,8 +913,8 @@ class sync(models.Model):
                     
                     #Check if the product is on a sale.order.line
                     #Check if the product is on an account.move.line 
-                    #Check if the product is on an stock.production.lot
-                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.lot
+                    #Check if the product is on an stock.lot
                     #Check if the product is on an stock.move
                     if ((len(sol1) > 0) or
                         (len(aml1) > 0) or
@@ -959,8 +959,8 @@ class sync(models.Model):
                     
                     #Check if the product is on a sale.order.line
                     #Check if the product is on an account.move.line 
-                    #Check if the product is on an stock.production.lot
-                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.lot
+                    #Check if the product is on an stock.lot
                     #Check if the product is on an stock.move
                     if ((len(sol1) > 0) or
                         (len(aml1) > 0) or
@@ -988,7 +988,7 @@ class sync(models.Model):
                         p1.unlink()   
                         pt1.unlink()                        
 
-        _logger.info("------: CLEANING [stock.production.lot]")
+        _logger.info("------: CLEANING [stock.lot]")
 
         _logger.info("------: archivedPP")
         for i in archivedPP: 
@@ -1021,7 +1021,7 @@ class sync(models.Model):
     #Delete all the unsued SPL
     def cleanSPLUnsed(self):
         p = self.env["product.product"]
-        spl = self.env["stock.production.lot"]
+        spl = self.env["stock.lot"]
         sq = self.env["stock.quant"]
 
         spl_ = spl.search([])

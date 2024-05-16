@@ -11,18 +11,18 @@
     </template>-->
 
 	<template id="logout" name="proportal_logout" inherit_id="portal.portal_layout" priority="17">
-		<xpath expr="//div[@id=&quot;o_my_sidebar&quot;]//div[3]" position="after">
+		<xpath expr="//div[hasclass('mt-3')]" position="after">
 			<div>
 				<a t-attf-href="/web/session/logout?redirect={{share_redirect_URL}}" role="menuitem">LOGOUT</a>
 			</div>
 		</xpath>
 	</template>
 
-
+<!--make inherite and replace h3 tag-->
 	<template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
-		<xpath expr="//t[@t-call='portal.portal_layout']/div[hasclass('o_portal_my_home')]/h3[1]" position="replace">
-			 <h3>my.R-E-A-L.iT</h3>
-		</xpath>
+<!--		<xpath expr="//t[@t-call='portal.portal_layout']/div[@id='wrap']/div[hasclass('container pt-3 pb-5')]/div[1]" position="replace">-->
+<!--			 <h3>my.R-E-A-L.iT</h3>-->
+<!--		</xpath>-->
 
 		<xpath expr="//div[hasclass('o_portal_docs')]" position="replace">
 			<t t-call="portal.portal_docs_entry">

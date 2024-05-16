@@ -3,12 +3,13 @@
 <odoo>
 
 	<template id="proquotes_total_style" name="Proquotes Total Style PDF" inherit_id="account.document_tax_totals" priority="17">
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="attributes">
-			<attribute name="style">background-color: #db0d0d; border-right-color: #db0d0d !important</attribute>
-		</xpath>
-		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">
-			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>
-		</xpath>
+<!--		commented due to testing-->
+<!--		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="attributes">-->
+<!--			<attribute name="style">background-color: #db0d0d; border-right-color: #db0d0d !important</attribute>-->
+<!--		</xpath>-->
+<!--		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">-->
+<!--			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>-->
+<!--		</xpath>-->
 	</template>
 
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
@@ -91,10 +92,11 @@
 		</xpath>
 
 		<!-- Translate Invoice Date Label -->
-		<xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
-			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Invoice Date:</strong>
-			<strong t-if="clang == 'fr_CA'">Date de la facture:</strong>
-		</xpath>
+<!--		commented due to temporary-->
+<!--		<xpath expr="//div[@t-if='o.invoice_date']/strong" position="replace">-->
+<!--			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Invoice Date:</strong>-->
+<!--			<strong t-if="clang == 'fr_CA'">Date de la facture:</strong>-->
+<!--		</xpath>-->
 
 
 		<!-- Translate Due Date Label -->
@@ -168,13 +170,14 @@
 		</xpath>
 
 		<!-- Section Name Handling -->
-		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-			<span t-if="line.name.strip()[0] != '#' and line.name.strip()[0] != '#'" t-field="line.name" />
-			<span t-elif="line.name.strip()[0] == '#'">
-				<t t-set="sname" t-value="line.name.strip()[1:]" />
-				<t t-call="proquotes.section_name_resolution" />
-			</span>
-		</xpath>
+<!--		it will deprecate for comment-->
+<!--		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">-->
+<!--			<span t-if="line.name.strip()[0] != '#' and line.name.strip()[0] != '#'" t-field="line.name" />-->
+<!--			<span t-elif="line.name.strip()[0] == '#'">-->
+<!--				<t t-set="sname" t-value="line.name.strip()[1:]" />-->
+<!--				<t t-call="proquotes.section_name_resolution" />-->
+<!--			</span>-->
+<!--		</xpath>-->
 
 		<!-- Header Image -->
 		<xpath expr="//img" position="after">
@@ -195,7 +198,8 @@
 			<attribute name="style">page-break-inside: auto !important;</attribute>
 		</xpath>
 		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace" />
+<!--		below line commented due to depricate-->
+<!--		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="replace" />-->
 
 		<!--Remove Subtotal-->
 		<!-- <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]" position="replace"/> -->

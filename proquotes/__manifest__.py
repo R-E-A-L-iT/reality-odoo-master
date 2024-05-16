@@ -21,13 +21,16 @@
         "account",
         "proportal",
         "stock",
-        "product",
+
         "website",
         "sale_management",
         "sale",
         "digest",
         "portal",
+        "contacts",
+        "stock_account"
     ],
+# "product",
     "assets": {
         "web.assets_common": [
             "proquotes/static/src/CSS/foldProducts.css",
@@ -45,7 +48,7 @@
         ]
     },
 
-    "version": "1.0.2151",
+    "version": "17.0",
 
     # always loaded
     "data": [
@@ -69,7 +72,7 @@
         "views/Other/internal_user_backend.xml",
         "views/Other/renewal.xml",
         "views/Other/header_footer.xml",
-        "views/Other/product_backend.xml",
+        # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoiceBackend.xml",
         "views/Invoice/invoice_lot.xml",
@@ -79,7 +82,7 @@
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
-    ],
+    # "demo": [
+    #     "demo/demo.xml",
+    # ],
 }

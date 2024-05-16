@@ -74,7 +74,7 @@
 		</xpath>
 
 		<!-- Add Detail Lines -->
-		<xpath expr="//div[@t-if=&quot;o.signature&quot;]" position="replace">
+		<xpath expr="//div[@t-else=&quot;&quot;]" position="replace">
 			<div>
 				<span style="height: 40px"> PO #:</span>
 				<span style="border-bottom: solid !important; width:500px !important;">

@@ -15,12 +15,12 @@
 		<xpath expr="//thead" position="replace" />
 
 		<!-- Ensure Subtotal Only Displays on Real Section -->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//tr" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block')) and (not section_empty)</attribute>
 		</xpath>
 
 		<!-- Ensure Section Is not Special Section -->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
@@ -36,7 +36,7 @@
 			<strong t-elif="clang == 'fr_CA'">Echéance:</strong>
 		</xpath>
 
-		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
+		<xpath expr="//t[@t-elif= &quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
 			<span t-if="line.name.strip()[0] != '#'" t-field="line.name" />
 			<span t-elif="line.name.strip()[0] == '#'">
 				<t t-set="sname" t-value="line.name.strip()[1:]" />
@@ -45,8 +45,8 @@
 		</xpath>
 
 		<!-- Ensure line is non empty section -->
-		<xpath expr="//t[@t-if= &quot;line.display_type == 'line_section'&quot;]" position="attributes">
-			<attribute name="t-if">line.display_type == 'line_section' and not section_empty</attribute>
+		<xpath expr="//t[@t-elif= &quot;line.display_type == 'line_section'&quot;]" position="attributes">
+			<attribute name="t-elif">line.display_type == 'line_section' and not section_empty</attribute>
 		</xpath>
 
 		<!-- Ensure Section Is Empty -->
@@ -292,13 +292,13 @@
 			</t>
 		</xpath>
 
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@groups=&quot;account.group_show_line_subtotals_tax_excluded&quot;]" position="replace">
+		<xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
 			<t t-if="line.selected == 'true' and not current_section_ended">
 				<!-- Following line puts a landing point for future upgrades that is not stuck within an if statement Do Not Delete-->
 				<t t-set="current_subtotal" t-value="current_subtotal" />
 				<!-- Calculate Section Subtotal for Rental Hardware Section -->
 				<t t-if="doc.is_rental == False or line.product_id.is_software or doc.rental_start == False or doc.rental_end == False">
-					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
+					<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" />
 				</t>
 				<t t-elif="doc.rental_start != False and doc.rental_end != False">
 					<t t-set="sub_sdate" t-value="str(doc.rental_start).split('-')" />
@@ -317,7 +317,7 @@
 					<t t-if="(sub_rentalWeekDayRate > line.price_subtotal * 12)" t-set="sub_rentalDayRate" t-value="line.price_subtotal * 12" />
 					<t t-set="sub_rentalMonthRate" t-value="12 * line.price_subtotal * sub_rentalMonths" />
 					<t t-set="sub_rentalRate" t-value="sub_rentalRate + sub_rentalMonthRate + sub_rentalWeekDayRate" />
-					<t t-set="current_subtotal" t-value="current_subtotal + sub_rentalRate" groups="account.group_show_line_subtotals_tax_excluded" />
+					<t t-set="current_subtotal" t-value="current_subtotal + sub_rentalRate" />
 				</t>
 			</t>
 		</xpath>
@@ -396,7 +396,7 @@
 
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')&quot;]//strong" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//strong" position="attributes">
 			<attribute name="style">margin-bottom: 20vh;</attribute>
 		</xpath>
 
@@ -550,7 +550,7 @@
 		</xpath>
 
 		<!-- Replace Tax Info with updated copy of Tax Info Form -->
-		<xpath expr="//t[@t-call=&quot;account.document_tax_totals&quot;]" position="replace">
+		<xpath expr="//t[@t-call=&quot;sale.document_tax_totals&quot;]" position="replace">
 			<t t-call="proquotes.proquotes_total_pdf" />
 		</xpath>
 
@@ -604,7 +604,7 @@
 
 		<xpath expr="//div[@t-if=&quot;doc.user_id.name&quot;]" position="replace" />
 
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]" position="before">
+		<xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]" position="before">
 			<t t-set="no_select" t-value="True" />
 			<t t-set="section_empty" t-value="False" />
 		</xpath>
@@ -625,7 +625,7 @@
 			</t>
 		</xpath>
 		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after"> -->
-		<xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>

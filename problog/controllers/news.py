@@ -27,6 +27,7 @@ class WebsiteNews(Blog):
         sitemap=True,
     )
     def news(self, blog=None, tag=None, page=1, search=None, **opt):
+        print('>>>>>>>>>>>>>>>>> news ????????????????????/')
         return self.blog(blog=blog, tag=tag, page=page, serach=search, opt=opt)
 
     @http.route(
@@ -39,6 +40,7 @@ class WebsiteNews(Blog):
         sitemap=True,
     )
     def news_post(self, blog_post, tag_id=None, page=1, enable_editor=None, **post):
+        print('>>>>>>>>>>>>>>>>> news_post ????????????????????/')
         blog_record = request.env["blog.blog"].search([("name", "=", "NEWS")])
         return self.blog_post(
             blog=blog_record,

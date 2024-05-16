@@ -13,9 +13,9 @@
     </record>
 
     <record id="rental_order_form_view" model="ir.ui.view">
-        <field name="name">Rental_Backend_Form</field>
+        <field name="name">Rental.Backend.Form</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_renting.rental_order_primary_form_view" />
+        <field name="inherit_id" ref="sale_renting.rental_order_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <attribute name="domain">[('name', 'ilike', 'rental')]</attribute>
