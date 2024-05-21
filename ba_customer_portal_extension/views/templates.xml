@@ -161,6 +161,8 @@
         </t>
     </template>
 
+
+    
     <template id="portal_my_rental_products" name="My Rental Products">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
