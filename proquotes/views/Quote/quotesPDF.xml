@@ -402,7 +402,6 @@
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-			<!-- <t t-set="name" t-value="line.applied_name"/> -->
 			<span t-raw="line.product_id.name"></span>
 			<br />
 
