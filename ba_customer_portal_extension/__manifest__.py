@@ -40,7 +40,7 @@
     'depends': ['base','portal', 'sale', 'account', 'helpdesk', 'website_helpdesk', 'sale_renting'],
     'data': [
         'views/customer_view.xml',
-        'views/templates.xml'
+        #'views/templates.xml'
     ],
     'demo': [],
     'installable': True,
