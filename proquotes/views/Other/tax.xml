@@ -67,8 +67,8 @@
 	</template>
 
 	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">
-		<xpath expr="//strong[@t-out=&quot;subtotal['name']&quot;]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
+<!--		<xpath expr="//strong[@t-out=&quot;subtotal['name']&quot;]" position="attributes">-->
+<!--			<attribute name="style">color: #db0d0d !important;</attribute>-->
+<!--		</xpath>-->
 	</template>
 </odoo>
