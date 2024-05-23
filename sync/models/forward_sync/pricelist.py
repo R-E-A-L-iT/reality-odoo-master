@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = False
+SKIP_NO_CHANGE = True
 
 
 class sync_pricelist:
@@ -229,7 +229,7 @@ class sync_pricelist:
         else:
             product.sale_ok = False  
 
-        _logger.info("Sku: " + str(self.sheet[i][columns["sku"]]))
+        #_logger.info("Sku: " + str(self.sheet[i][columns["sku"]]))
         if (str(self.sheet[i][columns["sku"]]) == "982289_"):
             _logger.info("------------------------- 982289_ canBeRented: " + str(self.sheet[i][columns["canBeRented"]]))
 
