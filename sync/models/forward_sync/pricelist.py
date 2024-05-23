@@ -229,6 +229,7 @@ class sync_pricelist:
         else:
             product.sale_ok = False  
 
+        _logger.info("Sku: " + str(self.sheet[i][columns["sku"]]))
         if (str(self.sheet[i][columns["sku"]]) == "982289_"):
             _logger.info("------------------------- 982289_ canBeRented: " + str(self.sheet[i][columns["canBeRented"]]))
 
