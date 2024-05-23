@@ -224,10 +224,13 @@ class sync_pricelist:
         else:
             product.is_us = False
 
-        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+        if str(self.sheet[i][columns["canBeSold"]]) == "TRUE":
             product.sale_ok = True
         else:
             product.sale_ok = False  
+
+        if (str(self.sheet[i][columns["sku"]]) == "982289_"):
+            _logger.info("------------------------- 982289_ canBeRented: " + str(self.sheet[i][columns["canBeRented"]]))
 
         if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
             product.rent_ok = True
