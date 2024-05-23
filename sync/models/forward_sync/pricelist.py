@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = False
+SKIP_NO_CHANGE = True
 
 
 class sync_pricelist:
@@ -228,6 +228,11 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False  
+
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+            product.rent_ok = True
+        else:
+            product.rent_ok = False              
             
         #Product Category
         catId = self.getProductCategoryId(str(self.sheet[i][columns["productCategory"]]))
