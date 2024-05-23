@@ -224,10 +224,15 @@ class sync_pricelist:
         else:
             product.is_us = False
 
-        if str(self.sheet[i][columns["canBeSold"]]) == "TRUE":
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
             product.sale_ok = True
         else:
             product.sale_ok = False  
+
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+            product.rent_ok = True
+        else:
+            product.rent_ok = False              
             
         #Product Category
         catId = self.getProductCategoryId(str(self.sheet[i][columns["productCategory"]]))
