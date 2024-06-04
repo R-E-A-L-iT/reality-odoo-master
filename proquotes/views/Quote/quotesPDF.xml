@@ -23,7 +23,6 @@
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>-->
-
 		<!-- Translate Quotation Date Label -->
 		<xpath expr="//div[@id=&quot;informations&quot;]/div[3]/strong" position="replace">
 			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Quotation Date:</strong>
