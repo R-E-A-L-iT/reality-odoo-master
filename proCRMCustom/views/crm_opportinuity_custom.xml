@@ -9,6 +9,7 @@
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="opportunity_custom_status" />
                 <field name="opportunity_sn" />
+                <field name="opportunity_notes" />
             </xpath>
         </field>
     </record>
