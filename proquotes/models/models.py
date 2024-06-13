@@ -22,6 +22,7 @@ from .translation import name_translation
 _logger = logging.getLogger(__name__)
 
 class invoice_address(models.Model):
+    _inherit = "sale.order"
 
     # INVOICE ADDRESS SELECTOR
 
