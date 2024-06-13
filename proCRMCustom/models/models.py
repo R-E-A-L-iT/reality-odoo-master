@@ -39,6 +39,6 @@ class opportunity(models.Model):
     )
 
     opportunity_log_with_leica = fields.Boolean(
-        string="Log lead with Leica"
+        string="Log lead with Leica",
     )
 

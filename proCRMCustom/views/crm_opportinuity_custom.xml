@@ -10,6 +10,7 @@
                 <field name="opportunity_custom_status" />
                 <field name="opportunity_sn" />
                 <field name="opportunity_notes" />
+                <field name="opportunity_log_with_leica" />
             </xpath>
         </field>
     </record>
