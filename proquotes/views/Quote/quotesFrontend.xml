@@ -38,6 +38,11 @@
 			</div>
 		</xpath>
 
+		<!-- Adding delivery and invoicing address dropdown -->
+		<xpath expr="//*[@id=&quot;details&quot;]/h1" position="after">
+			<t t-set="delivery_address" t-value="sale_order.partner_invoice_id" />
+		</xpath>
+
 		<!-- Hide Total On Rental Quotes -->
 		<xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
 			<!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
