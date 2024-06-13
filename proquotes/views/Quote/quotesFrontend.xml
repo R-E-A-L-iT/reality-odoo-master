@@ -42,7 +42,7 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<div>
 				<p>Do I exist?</p>
-				<t t-set="delivery_address" t-value="sale_order.partner_invoice_id" />
+				<field name="invoice_address" />
 			</div>
 		</xpath>
 

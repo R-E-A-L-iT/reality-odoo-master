@@ -21,7 +21,6 @@ from .translation import name_translation
 
 _logger = logging.getLogger(__name__)
 
-
 class purchase_order(models.Model):
     _inherit = "purchase.order"
     footer = fields.Selection(
@@ -190,6 +189,12 @@ class order(models.Model):
     products = fields.One2many(related="partner_id.products", readonly=True)
 
     customer_po_number = fields.Char(string="PO Number")
+
+
+    # INVOICE ADDRESS SELECTOR
+
+    invoice_address = fields.Selection([('selection_1', 'Test Selection #1'),('selection_2', 'Test Selection #2')], name="Invoicing Address",)
+
 
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True
