@@ -40,7 +40,10 @@
 
 		<!-- Adding delivery and invoicing address dropdown -->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
-			<t t-set="delivery_address" t-value="sale_order.partner_invoice_id" />
+			<div>
+				<p>Do I exist?</p>
+				<t t-set="delivery_address" t-value="sale_order.partner_invoice_id" />
+			</div>
 		</xpath>
 
 		<!-- Hide Total On Rental Quotes -->
