@@ -27,13 +27,13 @@
 					</t>
 					<div class="hr"></div>
 <!--					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />-->
-					<h2 class="subtitle" t-field="sale_order.partner_id.street" />
+					<!-- <h2 class="subtitle" t-field="sale_order.partner_id.street" />
 					<h2 class="subtitle">
 						<span t-if="sale_order.partner_id.city != False" t-raw="sale_order.partner_id.city + ','"></span>
 						<span t-field="sale_order.partner_id.state_id.code" />
 						<span t-field="sale_order.partner_id.zip" />
 						<span t-field="sale_order.partner_id.country_id.name" />
-					</h2>
+					</h2> -->
 				</div>
 			</div>
 		</xpath>
