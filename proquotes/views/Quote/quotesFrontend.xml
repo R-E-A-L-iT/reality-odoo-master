@@ -39,7 +39,7 @@
 		</xpath>
 
 		<!-- Adding delivery and invoicing address dropdown -->
-		<xpath expr="//section[@id=&quot;details&quot;]/h1" position="after">
+		<xpath expr="//section[@id=&quot;details&quot;]/h3" position="after">
 			<t t-set="delivery_address" t-value="sale_order.partner_invoice_id" />
 		</xpath>
 
