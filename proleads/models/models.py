@@ -20,21 +20,6 @@ from odoo import models, fields, api
 class opportunity(models.Model):
     _inherit = 'crm.lead'
 
-    opportunity_sn = fields.Char(
-        string="Opportunity SN"
+    opportunity_log_with_leica = fields.Text(
+        string="Log lead with Leica",
     )
-
-    opportunity_custom_status = fields.Selection(
-        [
-            ("pending", "Pending"), 
-            ("accepted", "Accepted"), 
-            ("rejected", "Rejected")
-        ], 
-        string="Opportunity Status", 
-        default=False
-    )
-
-    opportunity_notes = fields.Text(
-        string="Opportunity Notes",
-    )
-
