@@ -38,3 +38,7 @@ class opportunity(models.Model):
         string="Opportunity Notes",
     )
 
+    opportunity_log_with_leica = fields.Boolean(
+        string="Log lead with Leica"
+    )
+
