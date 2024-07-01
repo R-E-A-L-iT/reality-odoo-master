@@ -30,12 +30,21 @@ The headers and footers are both stored as links to images or videos in our CDN.
 
 2. FUNCTIONAL FRONTEND ADDITIONS
 
+Quotes can now be divided into sections (functional backend additions) and these sections can be minimized or maximized by the user by clicking a button. They can also have a default value. The folding section functionality is all found in /static/JS/fold.js.
+
+Quote sections come in two types. 
+  The first type is an information section, which uses the $ symbol at the beginning of it's shortcuts, and is not part of the product list in the quote but only provides more information. The section names are checked and then substituted with the appropriate content in views/quotesFrontend.xml. All the shortcuts for information sections (which must generate in the correct language) are: $hardware, $software, $subscription, $rental_pricenote, $rental_address, and $rental_info.
+  The second type is a product section, which can be multiple or single choice, the shortcuts for which do NOT use the $ symbol. These sections consist of two parts: a header, with a title some other info and the minimization button– and the product section, which contains the list of products. All of this is handled again in views/quotesFrontend.xml, after the information section code.
+
+French/English translations in quotation sections are managed by the views/Other/section_name.xml file. These use the section name shortcuts to generate a name once the page is loaded that corresponds with the users' selected language.
+
+
 3. FUNCTIONAL BACKEND ADDITIONS
 
 
 Quote sections can now be added as groupings of various products with their own title. These sections can be generated from scratch and populated with products or a shortcut can be used by naming the title of a new section a keyword like $hardware, which will automatically fill in data and products. Each section has the ability on the frontend to be minimized or maximized by the user (function frontend additions) and can be set to a multiple-choice or single-choice section, allowing the customer to select the products they would like.
 
-Section creation and section creation shortcuts are both necessary features. 
+Section creation and section creation shortcuts are both necessary features. [UNSURE WHERE BACKEND FIELDS ADDED FOR SECTION CREATION]
 
 
 
