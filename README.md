@@ -1,4 +1,4 @@
-# R-E-A-L.iT ODOO EXTENSIONS DOCUMENTATIOn
+# R-E-A-L.iT ODOO EXTENSIONS DOCUMENTATION
 
 ## Modules:
 
@@ -7,58 +7,116 @@
 - ba_realit_staging_ribbon | Adds a ribbon when in a staging branch to remind the developer that all actions are non-permanent
 - ba_website_product_country_wise
 
-- proCRMCustom
-- problog
-- procontact
-- proleads
+- proCRMCustom | [Jump](#procrm-documentation)
+- problog | [Jump](#problog-documentation)
+- procontact | [Jump](#procontact-documentation)
+- proleads  | [Jump](#proleads-documentation)
 - proportal | [Jump](#proportal-documentation)
-- proquotes
+- proquotes | [Jump](#proquotes-documentation)
 - sync
 
+## ProCRM Documentation
+
+Nothing here yet
+
+## ProBlog Documentation
+
+Nothing here yet
+
+## ProContact Documentation
+
+Nothing here yet
+
+## ProLeads Documentation
+
+Nothing here yet
 
 ## ProPortal Documentation
 
+Nothing here yet
+
+## ProQuotes Documentation
+
 ### FRONTEND VISUAL
 
-  1. Quotes
+1. Quotes
 
-  // general features
+All quotes now have a header and footer that can be changed depending on the region of the customer or salesperson. Employees can select each header and footer upon creation of the quote in a dropdown selection menu. 
 
-  2. Sales Orders
+The headers and footers are both stored as links to images or videos in our CDN. The fields for the selection menu are determined in models/footer_header.py, added to the backend quote creation menu in models/models.py (as well as default footer is determined), and their corresponding links are then fed into an image or video field in views/quotesFrontend.xml.
 
-  // general features for all sales orders
+    file: models/models.py
+
+    class order(models.Model):
+    
+    footer = fields.Selection(
+        [
+            ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
+            ...,
+            ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
+        ],
+        help="Footer selection field",
+        string="Footer OLD",
+    )
+
+    header = fields.Selection(
+        [
+            ("QH_REALiT+Abtech.mp4", "QH_REALiT+Abtech.mp4"),
+            ("ChurchXRAY.jpg", "ChurchXRAY.jpg"),
+            ("Architecture.jpg", "Architecture.jpg"),
+            ("Software.jpg", "Software.jpg"),
+        ],
+        string="Header OLD",
+        help="Header selection field",
+    )
+
+  - sales
+  - rental
+  - renewal
+
+2. Sales Orders
+
+// general features for all sales orders
   
-  3. Purchase Orders
+3. Purchase Orders
 
-  // general features for all purchase orders
+// general features for all purchase orders
 
 ### FRONTEND FUNCTIONAL
 
-  1. Quotes
+1. Quotes
   
-  // general features for all quotes: sections, maximize/minimize button, product selection
+// general features for all quotes: sections, maximize/minimize button, product selection
 
-  2. Sales Orders
+  - sales
+  - rental
+  - renewal
 
-  // general features for all sales orders
+2. Sales Orders
+
+// general features for all sales orders
   
-  3. Purchase Orders
+3. Purchase Orders
 
-  // general features for all purchase orders
+// general features for all purchase orders
 
 ### BACKEND FUNCTIONAL
 
-  1. Quotes
+1. Quotes
   
-  // general features for all quotes: section addition, section addition shortcuts, header/footer selection
-
-  2. Sales Orders
-
-  // general features for all sales orders
+// general features for all quotes: section addition, section addition shortcuts, header/footer selection
   
-  3. Purchase Orders
+  - sales
+  - rental
+  - renewal
 
-  // general features for all purchase orders
+2. Sales Orders
+
+// general features for all sales orders
+  
+3. Purchase Orders
+
+// general features for all purchase orders
 
 
 
