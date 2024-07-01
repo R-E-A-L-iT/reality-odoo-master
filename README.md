@@ -21,12 +21,8 @@
 # FRONTEND VISUAL
 
   1. Quotes
-  
-    Universal Features: Headers, Footers, Info sections
-  
-    - Sales
-    - Rental
-    - Renewal
+
+  // general features
 
   2. Sales Orders
 
@@ -38,13 +34,9 @@
 
 # FRONTEND FUNCTIONAL
 
-1. Quotes
+  1. Quotes
   
   // general features for all quotes: sections, maximize/minimize button, product selection
-  
-    - Sales
-    - Rental
-    - Renewal
 
   2. Sales Orders
 
@@ -56,13 +48,9 @@
 
 # BACKEND FUNCTIONAL
 
-1. Quotes
+  1. Quotes
   
   // general features for all quotes: section addition, section addition shortcuts, header/footer selection
-  
-    - Sales
-    - Rental
-    - Renewal
 
   2. Sales Orders
 
