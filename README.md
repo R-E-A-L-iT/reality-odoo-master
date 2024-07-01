@@ -18,6 +18,66 @@
 
 ## ProPortal Documentation
 
+# FRONTEND VISUAL
+
+  1. Quotes
+  
+    Universal Features: Headers, Footers, Info sections
+  
+    - Sales
+    - Rental
+    - Renewal
+
+  2. Sales Orders
+
+  // general features for all sales orders
+  
+  3. Purchase Orders
+
+  // general features for all purchase orders
+
+# FRONTEND FUNCTIONAL
+
+1. Quotes
+  
+  // general features for all quotes: sections, maximize/minimize button, product selection
+  
+    - Sales
+    - Rental
+    - Renewal
+
+  2. Sales Orders
+
+  // general features for all sales orders
+  
+  3. Purchase Orders
+
+  // general features for all purchase orders
+
+# BACKEND FUNCTIONAL
+
+1. Quotes
+  
+  // general features for all quotes: section addition, section addition shortcuts, header/footer selection
+  
+    - Sales
+    - Rental
+    - Renewal
+
+  2. Sales Orders
+
+  // general features for all sales orders
+  
+  3. Purchase Orders
+
+  // general features for all purchase orders
+
+
+
+
+
+
+
 The ProPortal module adds more functionality to quotes, invoices, and sales orders. I've divided these function into three main categories:
 
 1. VISUAL ADDITIONS
