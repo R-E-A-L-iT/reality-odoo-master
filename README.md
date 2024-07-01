@@ -13,27 +13,37 @@
 - proleads  | [Jump](#proleads-documentation)
 - proportal | [Jump](#proportal-documentation)
 - proquotes | [Jump](#proquotes-documentation)
-- sync
+- sync | [Jump](#sync-documentation)
 
 ## ProCRM Documentation
 
 Nothing here yet
 
+
+
 ## ProBlog Documentation
 
 Nothing here yet
+
+
 
 ## ProContact Documentation
 
 Nothing here yet
 
+
+
 ## ProLeads Documentation
 
 Nothing here yet
 
+
+
 ## ProPortal Documentation
 
 Nothing here yet
+
+
 
 ## ProQuotes Documentation
 
@@ -172,3 +182,100 @@ The frontend sections are minimizable and have products that can be selected or 
 ### BACKEND FUNCTIONAL
 
 All quotes, sales orders, and purchase orders have sections that can be built in the backend by a user. These sections can be generated and populated with products from scratch, or they can be named in the title as one of a specific set of keywords that will automatically populate them with products and information. The section also has the option to be single choice or multiple choice.
+
+
+
+## SYNC Documentation
+
+### Views
+
+### Models
+
+#### forward_sync/
+
+googlesheetsAPI.py 
+
+Different databases and google sheet IDs dependent on if the branch is the main one or a staging branch, and if it is a staging branch, depending on which developer is using it. New developers added manually. Different database IDs are also defined here.
+
+        _master_database_template_id_dev_oli = ("...")
+        _master_database_template_id_dev_zek = ("...")   
+        _master_database_template_id_dev_bc = ("...")            
+        
+        # Return the proper GoogleSheet Template ID base on the environement
+        if _db_name == _db_name_prod:
+            _logger.info("Production")
+            return _master_database_template_id_prod
+        elif dev_oli in _db_name:
+            _logger.info("Dev Oli")
+            return _master_database_template_id_dev_oli
+        elif dev_zek in _db_name:
+            _logger.info("Dev Zek")
+            return _master_database_template_id_dev_zek
+        elif dev_braincrew in _db_name:
+            _logger.info("Dev BrainCrew")
+            return _master_database_template_id_dev_bc            
+        else:
+            _logger.info("Default Dev GS")
+            return _master_database_template_id_prod
+
+The function to access the google sheet (readonly) requires a password, spreadsheet ID and sheet number (tab of the google sheet to read)
+
+	def getDoc(self, psw, spreadsheetID, sheet_num):
+		scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+	
+	        creds = sac.from_json_keyfile_dict(psw, scope)
+	        client = gspread.authorize(creds)
+	
+	        doc = client.open_by_key(spreadsheetID)
+	        return doc.get_worksheet(sheet_num).get_all_values()
+
+pricelist.py
+
+
+sync.py
+
+class sync includes the following functions:
+
+1. start_sync
+
+First checks the password for accessing the GS is valid.
+
+Second, puts all the data in the ODOO_SYNC_DATA tab of the google sheet into the variable sync_data.
+the ODOO_SYNC_DATA tab contains the names of all the spreadsheets that are to be synced with the odoo database. 
+
+a while loop goes through each line of data in the first google sheet listed in sync_data. Each line in this first GS has a valid term that if false stops the sync and moves to the next sheet.
+
+2. is_password_format_good
+3. getMasterDatabaseSheet (just pick a naming convention!!)
+4. getSheetIndex
+5. getSyncValues
+6. syncFail
+7. sendSyncReport
+8. archive_product
+9. getAllValueFromColumn
+10. checkIfKeyExistInTwoDict
+11. checkOdooSyncDataTab
+12. getListSkuGS
+13. getColumnIndex
+14. getSkuToArchive
+15. cleanSku
+16. log_product_from_sale
+17. searchQuotation
+18. getProductsWithSameName
+19. getSaleOrderByProductId
+20. getProductIdBySku
+21. cleanProductByName
+22. addContact
+23. cleanCCPUnsed
+24. cleanSPLUnsed
+25. migrateCCP
+26. cleanIMD
+27. setSeq
+28. resetCleaningSeq
+29. getCleaningIdNextId
+30. incCleaningId
+31. cleanOneSaleOrder
+32. cleanSoleOrderLines
+
+
+
