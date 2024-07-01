@@ -1,6 +1,6 @@
-### R-E-A-L.iT ODOO EXTENSIONS DOCUMENTATIOn
+# R-E-A-L.iT ODOO EXTENSIONS DOCUMENTATIOn
 
-### Modules:
+## Modules:
 
 - ba_customer_portal_extension
 - ba_odoo_debranding | Removes Odoo branding from various places where it was visible in the frontend
@@ -18,7 +18,7 @@
 
 ## ProPortal Documentation
 
-# FRONTEND VISUAL
+### FRONTEND VISUAL
 
   1. Quotes
 
@@ -32,7 +32,7 @@
 
   // general features for all purchase orders
 
-# FRONTEND FUNCTIONAL
+### FRONTEND FUNCTIONAL
 
   1. Quotes
   
@@ -46,7 +46,7 @@
 
   // general features for all purchase orders
 
-# BACKEND FUNCTIONAL
+### BACKEND FUNCTIONAL
 
   1. Quotes
   
