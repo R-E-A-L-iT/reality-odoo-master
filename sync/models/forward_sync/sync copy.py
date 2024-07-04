@@ -69,7 +69,7 @@ class sync(models.Model):
         msg = ""
 
         # Checks authentication values
-        if (not self.is_psw_format_good(psw)):
+        if (not self.isPasswordFormatGood(psw)):
             return
 
         # Get the ODOO_SYNC_DATA tab
@@ -112,14 +112,17 @@ class sync(models.Model):
 
         _logger.info("Ending Sync")
 
-    ###################################################################
-    # Check the password format
-    # Input
-    #   psw:   The password to open the googlesheet
-    # Output
-    #   True : Password format is good
-    #   False: Password format if bad
-    def is_psw_format_good(self, psw):
+    # ---------------------------------------------
+    #
+    #
+    #
+    #       Miscellaneous Functions
+    #
+    #
+    #
+    # ---------------------------------------------
+
+    def isPasswordFormatGood(self, psw):
 
         # Checks authentication values
         if ((psw == None) or (str(type(psw)) != "<class 'dict'>")):
@@ -130,6 +133,101 @@ class sync(models.Model):
 
         return True
 
+    def archiveProduct(self, product_id):
+        product = self.env['product.template'].search(
+            [('id', '=', product_id)])
+        product.active = False
+
+    ###################################################################
+    # Method to log all product id, sku, skuhidden and name
+    # Input
+    #   sale_name: the name of the sale order
+    def log_product_from_sale(self, sale_name, p_log=True):
+        _logger.info("Listing all product from: " + str(sale_name))
+        order_object_ids = self.env['sale.order'].search(
+            [('name', '=', sale_name)])
+        for order in order_object_ids:
+            sale_order_lines = self.env['sale.order.line'].search(
+                [('order_id', '=', order.id)])
+
+            for line in sale_order_lines:
+                product = self.env['product.product'].search(
+                    [('id', '=', line.product_id.id)])
+                if p_log:
+                    _logger.info("---------------")
+                    _logger.info("orders name: " + str(order.name))
+                    _logger.info("id in a sale order: " + str(product.id))
+                    _logger.info("sku in a sale order: " + str(product.sku))
+                    _logger.info("skuhidden name in a sale order: " +
+                                 str(product.skuhidden.name))
+                    _logger.info("name in a sale order: " + str(product.name))
+                    _logger.info("---------------")
+
+        if p_log:
+            _logger.info(
+                "--------------- END log_product_from_sale ---------------------------------------------")
+
+    ###################################################################
+    # query to find the QUOTATION-2023-01-05-007, id 552
+    def searchQuotation(self):
+        sale = self.env['sale.order'].search(
+            [('id', '=', 552)])
+        _logger.info("--------------- sale.order.")
+        _logger.info("sale.id: " + str(sale.id))
+        _logger.info("sale.name: " + str(sale.name))
+        _logger.info("---------------")
+
+    ###################################################################
+    # Method to manualy correct on company
+    # Input
+    #       p_OwnerID: The short name of the contacted added in GS.  Ex "DIGITALPRECISIO"
+    #       p_Name: The name of the contact in Odoo.  Ex "Digital Precision Metrology Inc"
+    # Error
+    #       Raise an error if contact name does not exist
+    def addContact(self, p_OwnerID, p_Name):
+        _logger.info("addContact: " + str(p_OwnerID) + ", " + str(p_Name))
+
+        #Check if contact name exist 
+        company = self.env["res.partner"].search([("name", "=", str(p_Name))])
+        if (len(company) > 0):
+            company = company[0]
+        else:
+             raise Exception("Contact name does not exist")
+
+        #Check if OwnerID exist
+        ownersID = self.env["ir.model.data"].search([("name", "=",str(p_OwnerID))])
+        if (len(ownersID) > 0):
+            ext = ownersID[0]
+        else:
+            ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]  
+        
+        #Assigning the company id
+        ext.res_id = company.id
+        _logger.info("-------------Contact added.")
+        
+    #Migrate CCP Sku
+    def migrateCCP(self, ccpSkus):
+        _logger.info("-------------- migrateCCP")
+        imd = self.env["ir.model.data"]
+
+        for l in ccpSkus:
+            _logger.info("-------------- " + str(l[0]))
+            imd1 = imd.search([("name", "=", l[1])])
+            imd1.name = l[0]
+
+        _logger.info("-------------- FINISH")
+
+    # ---------------------------------------------
+    #
+    #
+    #
+    #       Reading Data Functions
+    #
+    #
+    #
+    # ---------------------------------------------
+
+
     ###################################################################
     # Get a tab in the GoogleSheet Master Database
     # Input
@@ -139,15 +237,15 @@ class sync(models.Model):
     # Output
     #   data:           A tab in the GoogleSheet Master Database
     def getMasterDatabaseSheet(self, template_id, psw, index):
-        # get the database data; reading in the sheet
 
         try:
             return (self.getDoc(psw, template_id, index))
         except Exception as e:
             _logger.info(e)
-            msg = "<h1>Failed To Retrieve Master Database Document</h1><p>Sync Fail</p><p>" + \
+            msg = "<h1>Failed to retrieve master database document</h1><p>getMasterDatabaseSheet function" + \
                 str(e) + "</p>"
-            self.syncFail(msg, self._sync_fail_reason)
+            self.sendSyncLog(msg, self._sync_fail_reason)
+            self.sendSyncReport(msg, self._sync_fail_reason)
             quit
 
     ###################################################################
@@ -180,11 +278,12 @@ class sync(models.Model):
             _logger.info(sync_data)
 
             _logger.info(msg)
-            # test to push
 
         return sheetIndex, msg
 
     ###################################################################
+    # Get the type of sync and start a different sync process based on which sheet is being read
+    #
     def getSyncValues(self, sheetName, psw, template_id, sheetIndex, syncType):
 
         sheet = self.getMasterDatabaseSheet(template_id, psw, sheetIndex)
@@ -230,40 +329,8 @@ class sync(models.Model):
         return quit, msg
 
     ###################################################################
-    # Build the message when a sync fail occurs.  Once builded, it will display the message
-    # in the logger, and send a repport by email.
-    # Input
-    #   msg:    The msg that contain information on the failling issue
-    #   reason: The reason that lead to the faillur.
-    def syncFail(self, msg, reason):
-        link = "https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4"
-        msg = reason + \
-            msg + "<a href=\"" + link + "\">Manual Retry</a>"
-        _logger.info(msg)
-        self.sendSyncReport(msg)
-
-    ###################################################################
-    def sendSyncReport(self, msg):
-        values = {'subject': 'Sync Report'}
-        message = self.env['mail.message'].create(values)[0]
-
-        values = {'mail_message_id': message.id}
-
-        email = self.env['mail.mail'].create(values)[0]
-        email.body_html = msg
-        email.email_to = "sync@store.r-e-a-l.it"
-        email_id = {email.id}
-        email.process_email_queue(email_id)
-
-    ###################################################################
-    def archive_product(self, product_id):
-        product = self.env['product.template'].search(
-            [('id', '=', product_id)])
-        product.active = False
-
-    ###################################################################
     # Get all value in column of a sheet.  If column does not exist, it will return an empty dict().
-    # IMPORTANT:     Row must containt a Valid and Continue column.
+    # IMPORTANT:    Row must containt a Valid and Continue column.
     #               Row is skippd if valid is False
     #               Method is exit if the Continue is False
     #
@@ -275,6 +342,7 @@ class sync(models.Model):
     #   sheet: The sheet to look for all the SKU
     # Output
     #   sku_dict: A dictionnary that contain all the SKU as key, and the value is set to 'SKU'
+    #
     def getAllValueFromColumn(self, sheet, column_name):
         sku_dict = dict()
         columnIndex = self.getColumnIndex(sheet, column_name)
@@ -305,80 +373,6 @@ class sync(models.Model):
             sku_dict[sheet[i][sheet_sku_column_index]] = column_name
 
         return sku_dict
-
-    ###################################################################
-    # Check if a all key unique in two dictionnary
-    # Input
-    #   dict_small: the smallest dictionnary
-    #   dict_big:   The largest dictionnary
-    # Output
-    #   1st:    True: There is at least one key that exists in both dictionary
-    #           False: All key are unique
-    #   2nd:    The name of the duplicated Sku
-    def checkIfKeyExistInTwoDict(self, dict_small, dict_big):
-        for sku in dict_small.keys():
-            if sku in dict_big.keys():
-                errorMsg = str(sku)
-                _logger.info(
-                    "------------------------------------------- errorMsg = str(sku): " + str(sku))
-                return True, errorMsg
-        return False, ""
-
-    ###################################################################
-    # Method to get the ODOO_SYNC_DATA column index
-    # Exception
-    #   MissingTabError:  If thrown, there is a missing tab.  Further logic should not execute since the MasterDataBase does not have the right format.
-    # Input
-    #   odoo_sync_data_sheet:   The ODOO_SYNC_DATA tab pulled
-    # Output
-    #   result: A dictionnary:  Key: named of the column
-    #                           Value: the index number of that column.
-    def checkOdooSyncDataTab(self, odoo_sync_data_sheet):
-        odoo_sync_data_sheet_name_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Sheet Name")
-        odoo_sync_data_sheet_index_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Sheet Index")
-        odoo_sync_data_model_type_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Model Type")
-        odoo_sync_data_valid_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Valid")
-        odoo_sync_data_continue_column_index = self.getColumnIndex(
-            odoo_sync_data_sheet, "Continue")
-
-        if (odoo_sync_data_sheet_name_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Name' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_sheet_index_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Sheet Index' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_model_type_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Model Type' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_valid_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Valid' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        if (odoo_sync_data_continue_column_index < 0):
-            error_msg = (
-                "Sheet: ODOO_SYNC_DATA does not have a 'Continue' column.")
-            raise Exception('MissingTabError', error_msg)
-
-        result = dict()
-
-        result['odoo_sync_data_sheet_name_column_index'] = odoo_sync_data_sheet_name_column_index
-        result['odoo_sync_data_sheet_index_column_index'] = odoo_sync_data_sheet_index_column_index
-        result['odoo_sync_data_model_type_column_index'] = odoo_sync_data_model_type_column_index
-        result['odoo_sync_data_valid_column_index'] = odoo_sync_data_valid_column_index
-        result['odoo_sync_data_continue_column_index'] = odoo_sync_data_continue_column_index
-
-        return result
 
     # Get all SKU from the model type 'Products' and 'Pricelist'
     # Exception
@@ -532,7 +526,7 @@ class sync(models.Model):
         to_archive = []
 
         # Checks authentication values
-        if (not self.is_psw_format_good(psw)):
+        if (not self.isPasswordFormatGood(psw)):
             _logger.info("Password not valid")
             return
 
@@ -610,104 +604,6 @@ class sync(models.Model):
             "--------------- END getSkuToArchive ---------------------------------------------")
 
         return to_archive
-
-    ###################################################################
-    # Method to clean all sku that are pulled by self.getSkuToArchive
-    def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
-        _logger.info(
-            "--------------- BEGIN cleanSku ---------------------------------------------")
-        to_archive_list = self.getSkuToArchive(
-            psw, p_optNoSku, p_optInOdooNotGs)
-        to_archive_dict = dict()
-        sales_with_archived_product = 0
-
-        if p_archive:
-            # Archiving all unwanted products
-            _logger.info(
-                "------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
-            archiving_index = 0
-
-            for item in to_archive_list:
-                _logger.info(str(archiving_index).ljust(
-                    4) + " archving :" + str(item))
-                archiving_index += 1
-                self.archive_product(str(item))
-
-            if p_optNoSku:
-                _logger.info(
-                    "------------------------------------------- ALL products with no SKU or are archived.")
-            if p_optInOdooNotGs:
-                _logger.info(
-                    "------------------------------------------- ALL products with Sku in Odoo and not in GoogleSheet DB are archived.")
-
-        # Switch to dictionnary to optimise the rest of the querry
-        for i in range(len(to_archive_list)):
-            to_archive_dict[to_archive_list[i]] = 'sku'
-
-        # Listing all sale.order that contain archhived product.id
-        order_object_ids = self.env['sale.order'].search([('id', '>', 0)])
-        for order in order_object_ids:
-            sale_order_lines = self.env['sale.order.line'].search(
-                [('order_id', '=', order.id)])
-
-            for line in sale_order_lines:
-                product = self.env['product.product'].search(
-                    [('id', '=', line.product_id.id)])
-                if (str(product.id) in to_archive_dict):
-                    if ((str(product.id) != "False")):
-                        _logger.info("---------------")
-                        _logger.info("orders name: " + str(order.name))
-                        _logger.info("id in a sale order: " + str(product.id))
-                        _logger.info("sku in a sale order: " +
-                                     str(product.sku))
-                        _logger.info("name in a sale order: " +
-                                     str(product.name))
-                        _logger.info("---------------")
-                        sales_with_archived_product += 1
-
-        _logger.info("number of sales with archived product: " +
-                     str(sales_with_archived_product))
-        _logger.info(
-            "--------------- END cleanSku ---------------------------------------------")
-
-    ###################################################################
-    # Method to log all product id, sku, skuhidden and name
-    # Input
-    #   sale_name: the name of the sale order
-    def log_product_from_sale(self, sale_name, p_log=True):
-        _logger.info("Listing all product from: " + str(sale_name))
-        order_object_ids = self.env['sale.order'].search(
-            [('name', '=', sale_name)])
-        for order in order_object_ids:
-            sale_order_lines = self.env['sale.order.line'].search(
-                [('order_id', '=', order.id)])
-
-            for line in sale_order_lines:
-                product = self.env['product.product'].search(
-                    [('id', '=', line.product_id.id)])
-                if p_log:
-                    _logger.info("---------------")
-                    _logger.info("orders name: " + str(order.name))
-                    _logger.info("id in a sale order: " + str(product.id))
-                    _logger.info("sku in a sale order: " + str(product.sku))
-                    _logger.info("skuhidden name in a sale order: " +
-                                 str(product.skuhidden.name))
-                    _logger.info("name in a sale order: " + str(product.name))
-                    _logger.info("---------------")
-
-        if p_log:
-            _logger.info(
-                "--------------- END log_product_from_sale ---------------------------------------------")
-
-    ###################################################################
-    # query to find the QUOTATION-2023-01-05-007, id 552
-    def searchQuotation(self):
-        sale = self.env['sale.order'].search(
-            [('id', '=', 552)])
-        _logger.info("--------------- sale.order.")
-        _logger.info("sale.id: " + str(sale.id))
-        _logger.info("sale.name: " + str(sale.name))
-        _logger.info("---------------")
 
     ###################################################################
     # Method to identify all product with the same name
@@ -809,6 +705,75 @@ class sync(models.Model):
             _logger.info("--------------- p_sku: " +
                          str(p_sku) + ", id: " + str(product.id))
 
+    # ---------------------------------------------
+    #
+    #
+    #
+    #       Cleaning Functions
+    #
+    #
+    #
+    # ---------------------------------------------
+
+    ###################################################################
+    # Method to clean all sku that are pulled by self.getSkuToArchive
+    def cleanSku(self, psw=None, p_archive=False, p_optNoSku=True, p_optInOdooNotGs=True):
+        _logger.info(
+            "--------------- BEGIN cleanSku ---------------------------------------------")
+        to_archive_list = self.getSkuToArchive(
+            psw, p_optNoSku, p_optInOdooNotGs)
+        to_archive_dict = dict()
+        sales_with_archived_product = 0
+
+        if p_archive:
+            # Archiving all unwanted products
+            _logger.info(
+                "------------------------------------------- Number of products to archied: " + str(len(to_archive_list)))
+            archiving_index = 0
+
+            for item in to_archive_list:
+                _logger.info(str(archiving_index).ljust(
+                    4) + " archving :" + str(item))
+                archiving_index += 1
+                self.archiveProduct(str(item))
+
+            if p_optNoSku:
+                _logger.info(
+                    "------------------------------------------- ALL products with no SKU or are archived.")
+            if p_optInOdooNotGs:
+                _logger.info(
+                    "------------------------------------------- ALL products with Sku in Odoo and not in GoogleSheet DB are archived.")
+
+        # Switch to dictionnary to optimise the rest of the querry
+        for i in range(len(to_archive_list)):
+            to_archive_dict[to_archive_list[i]] = 'sku'
+
+        # Listing all sale.order that contain archhived product.id
+        order_object_ids = self.env['sale.order'].search([('id', '>', 0)])
+        for order in order_object_ids:
+            sale_order_lines = self.env['sale.order.line'].search(
+                [('order_id', '=', order.id)])
+
+            for line in sale_order_lines:
+                product = self.env['product.product'].search(
+                    [('id', '=', line.product_id.id)])
+                if (str(product.id) in to_archive_dict):
+                    if ((str(product.id) != "False")):
+                        _logger.info("---------------")
+                        _logger.info("orders name: " + str(order.name))
+                        _logger.info("id in a sale order: " + str(product.id))
+                        _logger.info("sku in a sale order: " +
+                                     str(product.sku))
+                        _logger.info("name in a sale order: " +
+                                     str(product.name))
+                        _logger.info("---------------")
+                        sales_with_archived_product += 1
+
+        _logger.info("number of sales with archived product: " +
+                     str(sales_with_archived_product))
+        _logger.info(
+            "--------------- END cleanSku ---------------------------------------------")
+
     ###################################################################
     def cleanProductByName(self):
         duplicate_names_dict = self.getProductsWithSameName(p_log=True)
@@ -835,36 +800,6 @@ class sync(models.Model):
 
         _logger.info(
             "--------------- END cleanProductByName ---------------------------------------------")
-
-
-    ###################################################################
-    # Method to manualy correct on company
-    # Input
-    #       p_OwnerID: The short name of the contacted added in GS.  Ex "DIGITALPRECISIO"
-    #       p_Name: The name of the contact in Odoo.  Ex "Digital Precision Metrology Inc"
-    # Error
-    #       Raise an error if contact name does not exist
-    def addContact(self, p_OwnerID, p_Name):
-        _logger.info("addContact: " + str(p_OwnerID) + ", " + str(p_Name))
-
-        #Check if contact name exist 
-        company = self.env["res.partner"].search([("name", "=", str(p_Name))])
-        if (len(company) > 0):
-            company = company[0]
-        else:
-             raise Exception("Contact name does not exist")
-
-        #Check if OwnerID exist
-        ownersID = self.env["ir.model.data"].search([("name", "=",str(p_OwnerID))])
-        if (len(ownersID) > 0):
-            ext = ownersID[0]
-        else:
-            ext = self.env["ir.model.data"].create({"name":str(p_OwnerID), "model":"res.partner"})[0]  
-        
-        #Assigning the company id
-        ext.res_id = company.id
-        _logger.info("-------------Contact added.")
-        
 
     ###################################################################
     # Method to remove product that are result of duplication with the GS CCP sequence number
@@ -1177,3 +1112,36 @@ class sync(models.Model):
                 line.product_uom_qty = 0
 
 
+
+
+    # ---------------------------------------------
+    #
+    #
+    #
+    #       Sync Failure Functions
+    #
+    #
+    #
+    # ---------------------------------------------
+
+    ###################################################################
+    # Send a sync failure message to the console
+    def sendSyncLog(self, msg, reason):
+        _logger.info("--------------------\nThe sync module encountered an error.")
+        _logger.info(msg + " | Odoo says the reason is: " + reason + " | Manual Retry: https://www.r-e-a-l.store/web?debug=assets#id=34&action=12&model=ir.cron&view_type=form&cids=1%2C3&menu_id=4")
+        _logger.info("--------------------")
+
+    ###################################################################
+    # Send a sync failure message to all relevant developers by email
+    def sendSyncReport(self, msg, reason):
+        values = {'subject': 'LOG: Sync Process Failure'}
+        message = self.env['mail.message'].create(values)[0]
+
+        values = {'mail_message_id': message.id}
+        email = self.env['mail.mail'].create(values)[0]
+
+        email.body_html = "Unfortunately, the sync process has failed. Here's why: \n" + msg + "\n Odoo says the technical reason for the failure is: " + reason + "\n I know you hate these emails, so I hope you have a good day! :)"
+
+        email.email_to = "sync@store.r-e-a-l.it"
+        email_id = {email.id}
+        email.process_email_queue(email_id)

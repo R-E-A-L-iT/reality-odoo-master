@@ -10,6 +10,7 @@ import logging
 _logger = logging.getLogger(__name__)
 # Prefixes Used in Branches To Differentiate Branches
 dev_oli = "dev-oli-"
+dev_eze = "dev-eze-"
 dev_zek = "dev-zek-"
 dev_braincrew = "dev-bc-"
 
@@ -24,6 +25,10 @@ class sheetsAPI(models.Model):
     # Input
     #   _db_name : The DB name of the environement that require the template ID
     #              to get it: self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    
+_logger.info("Template ID: " + self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
+
+    
     @staticmethod
     def get_master_database_template_id(_db_name):
         _logger.info(_db_name)
@@ -36,6 +41,8 @@ class sheetsAPI(models.Model):
         
         # Dev Numbers Set Based on When Developer Joined
         _master_database_template_id_dev_oli = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
+        _master_database_template_id_dev_eze =
+        ("AIzaSyBJOEwgPgivfLyodt_0HdAYAoVS76Nmpek")
         _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")   
         _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")            
         
@@ -46,6 +53,9 @@ class sheetsAPI(models.Model):
         elif dev_oli in _db_name:
             _logger.info("Dev Oli")
             return _master_database_template_id_dev_oli
+        elif dev_eze in _db_name:
+            _logger.info("Dev Eze")
+            return _master_database_template_id_dev_eze
         elif dev_zek in _db_name:
             _logger.info("Dev Zek")
             return _master_database_template_id_dev_zek

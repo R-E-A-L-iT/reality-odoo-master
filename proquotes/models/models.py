@@ -26,7 +26,14 @@ class invoice_address(models.Model):
 
     # INVOICE ADDRESS SELECTOR
 
-    invoice_address = fields.Selection([('selection_1', 'Test Selection #1'),('selection_2', 'Test Selection #2')], name="Invoicing Address",)
+    invoice_address = fields.Selection(
+        [
+            ('selection_1', 'Test Selection #1'),
+            ('selection_2', 'Test Selection #2'),
+        ], 
+        default="selection_1",
+        name="Invoicing Address",
+    )
 
 
 
