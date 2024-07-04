@@ -26,7 +26,7 @@ class sheetsAPI(models.Model):
     #   _db_name : The DB name of the environement that require the template ID
     #              to get it: self.env['ir.config_parameter'].sudo().get_param('web.base.url')
     
-_logger.info("Template ID: " + self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
+    _logger.info("Template ID: " + self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
 
     
     @staticmethod
