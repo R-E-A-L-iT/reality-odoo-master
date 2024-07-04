@@ -14,8 +14,6 @@ dev_eze = "dev-eze-"
 dev_zek = "dev-zek-"
 dev_braincrew = "dev-bc-"
 
-_logger.info("Template ID: " + self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
-
 class sheetsAPI(models.Model):
     _name = "sync.sheets"
     _inherit = "google.drive.config"
@@ -76,6 +74,8 @@ class sheetsAPI(models.Model):
 
         creds = sac.from_json_keyfile_dict(psw, scope)
         client = gspread.authorize(creds)
+
+        _logger.info("Template ID: " + self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
 
         doc = client.open_by_key(spreadsheetID)
         return doc.get_worksheet(sheet_num).get_all_values()
