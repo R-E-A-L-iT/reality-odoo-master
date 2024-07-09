@@ -39,3 +39,17 @@ class Contacts(models.Model):
     _inherit = 'res.partner'
 
     portal_companies = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
+
+    contact_relationship =  fields.Selection([
+        ('technical_buyer','Technical Buyer'),
+        ('economic_buyer','Economic Buyer'),
+        ('decision_maker','Decision Maker'),
+        ('champion','Champion'),
+        ('influencer','Influencer'),
+        ('end_user','End User'),
+        ('blocker','Blocker'),
+        ('executive_sponsor','Executive Sponsor'),
+        ('legal_compliance','Legal and Compliance'),
+        ('budget_holder','Budget Holder'),
+        ('other','Other'),
+        ])
