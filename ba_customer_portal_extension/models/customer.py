@@ -40,11 +40,11 @@ class Contacts(models.Model):
 
     portal_companies = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
 
-    contact_relationship = fields.Selection(
-        [("technical_buyer", "Technical Buyer"), ("economic_buyer", "Economic Buyer"), ("decision_maker", "Decision Maker")]
-    )
+    # contact_relationship = fields.Selection(
+    #     [("technical_buyer", "Technical Buyer"), ("economic_buyer", "Economic Buyer"), ("decision_maker", "Decision Maker")]
+    # )
 
-    # contact_relationship =  fields.Many2many('res.partner', ,string="Contact Relationship")
+    contact_relationship =  fields.Many2many('res.partner', string="Contact Relationship")
 
     # contact_relationship =  fields.Many2many('res.partner', [
     #     ('technical_buyer','Technical Buyer'),
