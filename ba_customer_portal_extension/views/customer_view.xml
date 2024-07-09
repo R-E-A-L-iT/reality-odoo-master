@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="portal_companies" widget="many2many_tags"/>
+                <field name="contact_relationship" widget="selection_radio"/>
             </xpath>
         </field>
     </record>
