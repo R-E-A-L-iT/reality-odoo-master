@@ -44,7 +44,7 @@ class Contacts(models.Model):
     #     [("technical_buyer", "Technical Buyer"), ("economic_buyer", "Economic Buyer"), ("decision_maker", "Decision Maker")]
     # )
 
-    contact_relationship =  fields.Selection([
+    contact_relationship =  fields.Many2many('res.partner',[
         ('technical_buyer','Technical Buyer'),
         ('economic_buyer','Economic Buyer'),
         ('decision_maker','Decision Maker'),

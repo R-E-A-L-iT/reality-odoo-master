@@ -9,7 +9,7 @@
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="portal_companies" widget="many2many_tags"/>
                 <!-- <field name="contact_relationship" widget="selection_radio"/> -->
-                <field name="contact_relationship" invisible="0" />
+                <field name="contact_relationship" widget="many2many_tags" />
             </xpath>
         </field>
     </record>
