@@ -52,4 +52,4 @@ class Contacts(models.Model):
         ('legal_compliance','Legal and Compliance'),
         ('budget_holder','Budget Holder'),
         ('other','Other'),
-        ])
+        ],string="Contact Relationship")
