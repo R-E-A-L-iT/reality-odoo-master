@@ -1084,3 +1084,18 @@ img.embed-responsive-item {
 #basic_page_info > div> label {
 	color: #000;
 }
+
+
+
+
+
+/* New consistent header changes */
+
+@media (min-width: 500px) {
+      #custom-navbar {
+        background-color: rgba(0, 0, 0, 0.65) !important;
+        position: absolute;
+        z-index: 10;
+		width: 100vw;
+      }
+    }
