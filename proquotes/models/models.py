@@ -195,6 +195,11 @@ class order(models.Model):
         related="company_id.name", string="company_name", required=True
     )
 
+    manual_invoice_status = fields.Selection(
+        [("fully_invoiced","Fully Invoiced"),("partially_invoiced","Partially Invoiced"),("not_invoiced","Not Invoiced"),],
+        string="Invoicing Status (Manual)"
+    )
+
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
