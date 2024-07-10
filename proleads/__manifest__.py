@@ -7,6 +7,9 @@
     'summary': 'Adds automation for lead registration',
     'description': ' ',
     'depends': ['base',],
+    "data": [
+        "views/leadsBackend.xml"
+    ],
     'installable': True,
     'application': True,
 }
