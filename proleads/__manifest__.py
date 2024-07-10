@@ -6,7 +6,7 @@
     "license": "LGPL-3",
     'summary': 'Adds automation for lead registration',
     'description': ' ',
-    'depends': ['base',],
+    'depends': ['base', 'crm'],
     "data": [
         "views/leadsBackend.xml"
     ],
