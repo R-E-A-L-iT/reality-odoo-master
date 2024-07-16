@@ -7,7 +7,11 @@
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//td[3]" position="replace" />
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
-			<h2>Ship to:</h2>
+			<t t-set="delivery_address">
+				<p>Delivery Address</p>
+				<div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+				<p t-if="o.company_id.vat"><t t-esc="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company_id.vat"/></p>
+			</t>
 		</xpath>
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer_id.url" />
