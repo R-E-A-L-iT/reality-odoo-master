@@ -21,9 +21,10 @@
 					<span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
 					<br />
 				</div>
-				<span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>
-				<span t-field="o.picking_type_id.warehouse_id.partner_id.state_id"/>
+				<span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>,
+				<span t-field="o.picking_type_id.warehouse_id.partner_id.state_id"/>,
 				<span t-field="o.picking_type_id.warehouse_id.partner_id.country_id"/>
+				<br />
 				<span t-field="o.picking_type_id.warehouse_id.partner_id.zip"/>
 			</p>
 			<!-- <div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
