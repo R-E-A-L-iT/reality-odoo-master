@@ -16,6 +16,7 @@
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
 
 			<!-- this overides the base odoo template's language var -->
+			<!-- this MUST be the first value defined before ulang and clang. I HAVE NO IDEA WHY DON'T ASK ME but the invoice doesn't translate properly if not. -->
 			<t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
 			<!-- <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" /> -->
 
@@ -32,7 +33,7 @@
 
 		<!-- debug -->
 
-		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
+		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
 			<p>
 				ULang
 				<t t-esc="ulang"/>
@@ -41,7 +42,7 @@
 				Odoo Lang
 				<t t-esc="o.env.context.get('lang')" />
 			</p>
-		</xpath>
+		</xpath> -->
 
 
 
