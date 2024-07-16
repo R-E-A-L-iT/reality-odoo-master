@@ -18,7 +18,7 @@
 			<!-- backend user lang -->
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
 
-			<!-- <t t-set="ulang" t-value="o." -->
+			<t t-set="ulang" t-value="o.partner_id.lang" />
 
 			<!-- client user lang -->
 			<t t-set="clang" t-value="lang" />
@@ -33,9 +33,9 @@
 
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
 			<p>
-				Lang
+				ULang
 				<br />
-				<t t-esc="lang"/>
+				<t t-esc="ulang"/>
 				<br />
 				Clang
 				<br />
