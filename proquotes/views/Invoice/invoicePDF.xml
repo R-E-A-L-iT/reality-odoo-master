@@ -18,6 +18,8 @@
 			<!-- backend user lang -->
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
 
+			<!-- <t t-set="ulang" t-value="o." -->
+
 			<!-- client user lang -->
 			<t t-set="clang" t-value="lang" />
 
@@ -33,11 +35,11 @@
 			<p>
 				Lang
 				<br />
-				<span t-field="lang"/>
+				<t t-esc="lang"/>
 				<br />
 				Clang
 				<br />
-				<span t-field="clang"/>
+				<t t-esc="clang"/>
 			</p>
 		</xpath>
 
