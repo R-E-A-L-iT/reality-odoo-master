@@ -14,10 +14,35 @@
 	<template id="invoice_pdf_content" name="Sales Order PDF Content" inherit_id="account.report_invoice_document" priority="17">
 		<!-- Setup Context -->
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
+
+			<!-- backend user lang -->
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
+
+			<!-- client user lang -->
 			<t t-set="clang" t-value="lang" />
+
+			<!-- backend user lang -->
 			<t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" />
+
 		</xpath>
+
+
+		<!-- test -->
+
+		<xpath expr="//t[@t-set=&quot;address&quot;" position="before">
+			<p>
+				Lang
+				<br />
+				<span t-field="lang"/>
+				<br />
+				Clang
+				<br />
+				<span t-field="clang"/>
+			</p>
+		</xpath>
+
+
+
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
 
 			<!-- Setup Translations -->
@@ -36,8 +61,8 @@
 				<!-- Display Address -->
 				<table id="addressTable" style="border-style: collapse !important;" border="0">
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 t-if="(lang == 'en_CA' or lang == 'en_US')" style="color: #db0d0d">Bill To</h5>
-						<h5 t-elif="lang == 'fr_CA'" style="color: #db0d0d">Facturé à</h5>
+						<h5 t-if="(clang == 'en_CA' or clang == 'en_US')" style="color: #db0d0d">Bill To</h5>
+						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d">Facturé à</h5>
 						<strong style="font-size:17px;" t-field="o.partner_id.name" />
 						<br />
 						<span t-field="o.partner_id.street" />
@@ -51,8 +76,8 @@
 						<br />
 					</td>
 					<td style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 t-if="lang == 'en_CA' or lang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
-						<h5 t-elif="lang == 'fr_CA'" style="color: #db0d0d;">Envoyez à</h5>
+						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
+						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Envoyez à</h5>
 						<strong style="font-size:17px;" t-field="o.partner_shipping_id.name" />
 						<br />
 						<span t-field="o.partner_shipping_id.street" />
@@ -70,7 +95,7 @@
 
 
 		<xpath expr="//div[hasclass('page')]/h2[1]" position="replace">
-				<h2 t-if="lang == 'en_CA' or lang == 'en_US'" style="color: #db0d0d;">
+				<h2 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">
 					<span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
@@ -79,7 +104,7 @@
 					<span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
 					<span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name" />
 				</h2>
-				<h2 t-if="lang == 'fr_CA'" style="color: #db0d0d;">
+				<h2 t-if="clang == 'fr_CA'" style="color: #db0d0d;">
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Facture</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Facture Provisoire</span>
 					<span style="color: #db0d0d;" t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Facture Annulée</span>
@@ -92,30 +117,30 @@
 
 		<!-- Translate Invoice Date Label -->
 		<xpath expr="//div[@name=&quot;invoice_date&quot;]/strong" position="replace">
-			<strong t-if="lang == 'en_CA' or lang == 'en_US'">Invoice Date:</strong>
-			<strong t-if="lang == 'fr_CA'">Date de la facture:</strong>
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Invoice Date:</strong>
+			<strong t-if="clang == 'fr_CA'">Date de la facture:</strong>
 		</xpath>
 
 
 		<!-- Translate Due Date Label -->
 		<xpath expr="//div[@name=&quot;due_date&quot;]/strong" position="replace">
-			<strong t-if="lang == 'en_CA' or lang == 'en_US'">Due Date:</strong>
-			<strong t-if="lang == 'fr_CA'">Date d'échéance</strong>
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Due Date:</strong>
+			<strong t-if="clang == 'fr_CA'">Date d'échéance</strong>
 		</xpath>
 
 		<!-- Translate Source Label -->
 		<xpath expr="//div[@name=&quot;origin&quot;]/strong" position="replace">
-			<strong t-if="lang == 'en_CA' or lang == 'en_US'">Source:</strong>
-			<strong t-if="lang == 'fr_CA'">Origine:</strong>
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Source:</strong>
+			<strong t-if="clang == 'fr_CA'">Origine:</strong>
 		</xpath>
 
 
 		<!-- Translate Description Label -->
 		<xpath expr="//th[@name=&quot;th_description&quot;]//span" position="replace">
-			<span t-if="lang == 'en_CA' or lang == 'en_US'">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Description
 			</span>
-			<span t-if="lang == 'fr_CA'">
+			<span t-if="clang == 'fr_CA'">
 				Description
 			</span>
 		</xpath>
@@ -123,43 +148,43 @@
 
 		<!-- Translate Quantity Label -->
 		<xpath expr="//th[@name=&quot;th_quantity&quot;]//span" position="replace">
-			<span t-if="lang == 'en_CA' or lang == 'en_US'">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				Quantity
 			</span>
-			<span t-if="lang == 'fr_CA'">
+			<span t-if="clang == 'fr_CA'">
 				QUANTITÉ
 			</span>
 		</xpath>
 
 		<!-- Translate Unit Price Label -->
 		<xpath expr="//th[@name=&quot;th_priceunit&quot;]//span" position="replace">
-			<span t-if="lang == 'en_CA' or lang == 'en_US'">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'">
 				UNIT PRICE
 			</span>
-			<span t-if="lang == 'fr_CA'">
+			<span t-if="clang == 'fr_CA'">
 				PRIX UNITAIRE
 			</span>
 		</xpath>
 
 		<!-- Translate Amount Label -->
 		<xpath expr="//th[@name=&quot;th_subtotal&quot;]//span" position="replace">
-			<span t-if="lang == 'en_CA' or lang == 'en_US'" groups="account.group_show_line_subtotals_tax_excluded">
+			<span t-if="clang == 'en_CA' or clang == 'en_US'" groups="account.group_show_line_subtotals_tax_excluded">
 				AMOUNT
 			</span>
-			<span t-if="lang == 'fr_CA'" groups="account.group_show_line_subtotals_tax_excluded">
+			<span t-if="clang == 'fr_CA'" groups="account.group_show_line_subtotals_tax_excluded">
 				MONTANT
 			</span>
 		</xpath>
 
 		<!-- Translate Payment Info Label -->
 		<xpath expr="//p[@name=&quot;payment_communication&quot;]" position="replace">
-			<t t-if="lang == 'en_CA' or lang == 'en_US'">
+			<t t-if="clang == 'en_CA' or clang == 'en_US'">
 				<p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication"> Please use the following communication for your payment: <b>
 						<span t-field="o.payment_reference" />
 					</b>
 				</p>
 			</t>
-			<t t-elif="lang ==  'fr_CA'">
+			<t t-elif="clang ==  'fr_CA'">
 				<p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication"> Merci d'utiliser la communication suivante pour votre paiement: <b>
 						<span t-field="o.payment_reference" />
 					</b>
@@ -228,14 +253,14 @@
 			<t t-if="o.company_id.id == 15">
 				<br />
 				<div id="bank-info">
-					<p t-if="lang == 'en_CA' or clang == 'en_US'">
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
 						<br />
 						<span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
 						<br />
 						<span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
 					</p>
-					<p t-elif="lang == 'fr_CA'">
+					<p t-elif="clang == 'fr_CA'">
 						<span>Infos bancaires pour Solutions R-E-A-L.iT</span>
 						<br />
 						<span>BMO Vaudreuil: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
@@ -248,14 +273,14 @@
 			<t t-if="o.company_id.id == 3">
 				<br />
 				<div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
-					<p t-if="lang == 'en_CA' or clang == 'en_US'">
+					<p t-if="clang == 'en_CA' or clang == 'en_US'">
 						<span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
 						<br />
 						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
 						<br />
 						<span>Routing No.: 071000288, Account No.: 3875473</span>
 					</p>
-					<p t-elif="lang == 'fr_CA'">
+					<p t-elif="clang == 'fr_CA'">
 						<span>Infos bancaires pour R-E-A-L.iT U.S. Inc.</span>
 						<br />
 						<span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
@@ -270,8 +295,8 @@
 
 		<!-- Subtotal Lang -->
 		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]//strong" position="replace">
-			<strong t-if="lang == 'en_CA' or clang == 'en_US'">Subtotal</strong>
-			<strong t-if="lang == 'fr_CA'">Sous-Total</strong>
+			<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>
+			<strong t-if="clang == 'fr_CA'">Sous-Total</strong>
 		</xpath>
 	</template>
 </odoo>
