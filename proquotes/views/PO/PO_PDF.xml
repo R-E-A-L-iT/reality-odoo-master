@@ -10,9 +10,9 @@
 			<br />
 			<p><strong>Delivery Address</strong></p>
 			<!-- contact name (if applicable) -->
-			<p t-if="o.picking_type_id"><span t-field="o.picking_type_id.company_id"/></p>
+			<p t-if="o.picking_type_id.warehouse_id.partner_id"><span t-field="o.picking_type_id.warehouse_id.partner_id"/></p>
 			<!-- company name (which r-e-a-l.it company) -->
-			<p></p>
+			<p t-if="o.picking_type_id"><span t-field="o.picking_type_id.company_id"/></p>
 			<!-- address line one -->
 			<p></p>
 			<!-- city, state, country -->
