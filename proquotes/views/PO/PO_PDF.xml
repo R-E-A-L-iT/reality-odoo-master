@@ -7,9 +7,20 @@
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//td[3]" position="replace" />
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 		<xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
-			<p>Delivery Address</p>
-			<div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-			<p t-if="o.company_id.vat"><t t-esc="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company_id.vat"/></p>
+			<br />
+			<p><strong>Delivery Address</strong></p>
+			<!-- contact name (if applicable) -->
+			<p t-if="o.picking_type_id"><span t-field="o.picking_type_id.company_id"/></p>
+			<!-- company name (which r-e-a-l.it company) -->
+			<p></p>
+			<!-- address line one -->
+			<p></p>
+			<!-- city, state, country -->
+			<p></p>
+			<!-- postal code?? -->
+			<p></p>
+			<!-- <div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+			<p t-if="o.company_id.vat"><t t-esc="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company_id.vat"/></p> -->
 		</xpath>
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer_id.url" />
