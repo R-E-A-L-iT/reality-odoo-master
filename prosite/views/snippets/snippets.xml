@@ -1,0 +1,11 @@
+<template id="snippets" inherit_id="website.snippets" name="custom snippets">
+    <xpath expr="//div[@id='snippet_effect']/div[@class='o_panel_body']" position="inside">
+        <t t-snippet="prosite.looper" t-thumbnail="..."/>
+    </xpath>
+</template>
+
+<template id="s_dynamic_snippet_options" inherit_id="website.snippet_options">
+    <xpath expr="." position="inside">
+        
+    </xpath>
+</template>

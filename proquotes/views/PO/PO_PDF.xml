@@ -6,6 +6,9 @@
 		<xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace" />
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//td[3]" position="replace" />
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="after">
+			<h2>Ship to:</h2>
+		</xpath>
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
