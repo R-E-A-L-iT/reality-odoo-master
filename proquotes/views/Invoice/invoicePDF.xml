@@ -29,7 +29,7 @@
 
 		<!-- test -->
 
-		<xpath expr="//t[@t-set=&quot;address&quot;" position="before">
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
 			<p>
 				Lang
 				<br />
