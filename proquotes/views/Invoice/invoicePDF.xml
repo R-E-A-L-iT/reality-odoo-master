@@ -39,7 +39,7 @@
 				Clang
 				<t t-esc="clang"/>
 				Odoo Lang
-				<t t-esc="o" />
+				<t t-esc="o.env.context.get('lang')" />
 			</p>
 		</xpath>
 
