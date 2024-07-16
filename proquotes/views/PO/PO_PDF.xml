@@ -17,7 +17,7 @@
 				<br />
 				<span t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
 				<br />
-				<div t-if="o.o.picking_type_id.warehouse_id.partner_id.street2">
+				<div t-if="o.picking_type_id.warehouse_id.partner_id.street2">
 					<span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
 					<br />
 				</div>

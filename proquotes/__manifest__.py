@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Proquotes",
+    "name": "ProQuotes",
     "summary": """
 		Quote upgrade module that adds multiple choice quotes, report enhancements and a better user-facing web interface.""",
     "description": """
