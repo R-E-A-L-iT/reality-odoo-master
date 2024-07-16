@@ -15,6 +15,10 @@
 		<!-- Setup Context -->
 		<xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
 
+			<!-- this overides the base odoo template's language var -->
+			<t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
+			<!-- <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" /> -->
+
 			<!-- backend user lang -->
 			<t t-set="ulang" t-value="o.partner_id.lang" />
 
@@ -23,26 +27,21 @@
 			<t t-set="lang" t-value="o.env.context.get('lang')" />
 			<t t-set="clang" t-value="lang" />
 
-			<!-- this overides the base odoo template's language var -->
-			<t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
-			<!-- <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))" /> -->
-
 		</xpath>
 
 
 		<!-- debug -->
 
-		<!-- <xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
+		<xpath expr="//t[@t-set=&quot;address&quot;]" position="before">
 			<p>
 				ULang
-				<br />
 				<t t-esc="ulang"/>
-				<br />
 				Clang
-				<br />
 				<t t-esc="clang"/>
+				Odoo Lang
+				<t t-esc="o" />
 			</p>
-		</xpath> -->
+		</xpath>
 
 
 
