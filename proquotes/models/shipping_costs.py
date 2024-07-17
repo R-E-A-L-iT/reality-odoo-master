@@ -12,6 +12,8 @@ from odoo import models, fields
 
 # https://github.com/python-fedex-devs/python-fedex examples
 
+_logger = logging.getLogger(__name__)
+
 class shipping_costs(models.Model):
     _name = "proquotes.shipping_costs"
     
@@ -27,8 +29,9 @@ class shipping_costs(models.Model):
     
     # debug
     
-    # print(sys.path)
     _logger.info("SYSTEM PATH: " + sys.path)
+    
+    # print(sys.path)
     
     # _logger.info(self.env["shipping_costs.items"])
     
