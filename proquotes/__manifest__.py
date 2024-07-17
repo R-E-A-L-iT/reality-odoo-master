@@ -28,6 +28,9 @@
         "digest",
         "portal",
     ],
+    'external_dependencies': {
+        'python': ['fedex-python'],
+    },
     "assets": {
         "web.assets_common": [
             "proquotes/static/src/CSS/foldProducts.css",
