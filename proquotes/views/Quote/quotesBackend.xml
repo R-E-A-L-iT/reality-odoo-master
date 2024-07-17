@@ -10,8 +10,8 @@
 			<xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
 				<attribute name="string">Business</attribute>
 			</xpath>
-			
-			<xpath expr="//button[@string=&quot;Add shipping&quot;]" position="replace">
+
+			<xpath expr="//button[@name=&quot;action_open_delivery_wizrd&quot;]" position="replace">
 				<field name="shipping_costs" invisible="0">
 					<tree>
 						<field name="package_name" widget="many2many_tags"/>
