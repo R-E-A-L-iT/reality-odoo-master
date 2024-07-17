@@ -29,7 +29,7 @@ class shipping_costs(models.Model):
     
     # debug
     
-    _logger.info("SYSTEM PATH: " + sys.path)
+    _logger.info("SYSTEM PATH: " + str(sys.path))
     
     # print(sys.path)
     
