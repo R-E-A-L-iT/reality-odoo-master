@@ -190,6 +190,8 @@ class order(models.Model):
     
     # shipping costs table
     shipping_costs = fields.Many2many("proquotes.shipping_costs", "package_name", string="Shipping Costs")
+    
+    
 
     products = fields.One2many(related="partner_id.products", readonly=True)
 
