@@ -11,16 +11,22 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
-			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
-				<field name="partner_ids" invisible="0" />
+			<!-- <button string="Add shipping" name="action_open_delivery_wizard" type="object" attrs="{'invisible': ['|', '|',('is_all_service', '=', True), ('order_line', '=', []), ('delivery_set', '=', True)]}" modifiers="{&quot;invisible&quot;: [&quot;|&quot;, &quot;|&quot;, [&quot;is_all_service&quot;, &quot;=&quot;, true], [&quot;order_line&quot;, &quot;=&quot;, []], [&quot;delivery_set&quot;, &quot;=&quot;, true]]}"/> -->
+
+			<xpath expr="//button[@string=&quot;Add shipping&quot;]" position="replace">
 				<field name="shipping_costs" invisible="0">
 					<tree>
 						<field name="package_name" widget="many2many_tags"/>
 						<field name="items"/>
 						<field name="warehouse_location"/>
 						<field name="delivery_location"/>
+						<button>
 					</tree>
 				</field>
+			</xpath>
+
+			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
+				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />
 				<!-- Renewal Quotes Added Products -->
 				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
