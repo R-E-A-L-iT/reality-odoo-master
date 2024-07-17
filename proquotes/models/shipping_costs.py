@@ -4,6 +4,8 @@ import datetime
 import sys
 from odoo import models, fields
 
+import fedex
+
 # from . import fedex_config
 # from fedex.services.ship_service import FedexProcessShipmentRequest
 # from fedex.tools.conversion import sobject_to_dict
@@ -26,7 +28,7 @@ class shipping_costs(models.Model):
     
     # debug
     
-    # _logger.info("")
+    _logger.info(fedex)
     
     # _logger.info(self.env["shipping_costs.items"])
     
