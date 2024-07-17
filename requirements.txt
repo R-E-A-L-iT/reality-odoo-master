@@ -1,0 +1,1 @@
+fedex-python==0.0.6 # latest version
