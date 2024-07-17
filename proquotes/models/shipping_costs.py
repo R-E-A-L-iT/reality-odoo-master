@@ -10,7 +10,6 @@ import fedex
 # from fedex.services.ship_service import FedexProcessShipmentRequest
 # from fedex.tools.conversion import sobject_to_dict
 
-
 # https://github.com/python-fedex-devs/python-fedex examples
 
 class shipping_costs(models.Model):
@@ -28,7 +27,8 @@ class shipping_costs(models.Model):
     
     # debug
     
-    _logger.info(fedex)
+    print(sys.path)
+    _logger.info("SYSTEM PATH" + sys.path)
     
     # _logger.info(self.env["shipping_costs.items"])
     
