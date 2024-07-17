@@ -15,7 +15,7 @@
 				<field name="partner_ids" invisible="0" />
 				<field name="shipping_costs" invisible="0">
 					<tree>
-						<field name="package_name"/>
+						<field name="package_name" widget="many2many_tags"/>
 						<field name="items"/>
 						<field name="warehouse_location"/>
 						<field name="delivery_location"/>
