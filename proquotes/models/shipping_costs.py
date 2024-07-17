@@ -4,7 +4,7 @@ import datetime
 import sys
 from odoo import models, fields
 
-import fedex
+# import fedex
 
 # from . import fedex_config
 # from fedex.services.ship_service import FedexProcessShipmentRequest
@@ -27,8 +27,8 @@ class shipping_costs(models.Model):
     
     # debug
     
-    print(sys.path)
-    _logger.info("SYSTEM PATH" + sys.path)
+    # print(sys.path)
+    _logger.info("SYSTEM PATH: " + sys.path)
     
     # _logger.info(self.env["shipping_costs.items"])
     
