@@ -2,7 +2,15 @@ import logging
 import binascii
 import datetime
 import sys
+import importlib.util
+
 from odoo import models, fields
+
+spec = importlib.util.spec_from_file_location("fedex-python", "/home/odoo/.local/lib/python3.8/site-packages/fedex-python")
+foo = importlib.util.module_from_spec(spec)
+sys.modules["fedex-python"] = foo
+spec.loader.exec_module(foo)
+# foo.MyClass()
 
 # import fedex
 
