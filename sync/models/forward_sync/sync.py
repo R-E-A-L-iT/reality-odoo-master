@@ -78,33 +78,52 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            msg_temp = ""
-            sheetName = str(sync_data[line_index][0])
-            sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
-            msg += msg_temp
-            modelType = str(sync_data[line_index][2])
-            valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+            
+            # wip feature: sync scheduling for specific sheets
 
-            if (not valid):
-                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
-                             str(sync_data[line_index][3]) + ".  Ending sync process!")
-                break
+            format_str = "%d/%m/%Y"
+            sync_date = str(sync_date[line_index][3])
+            format_sync_date = datetime.datetime.strptime(sync_date, format_str)
 
-            if (sheetIndex < 0):
-                break
+            # if sync date = current date or sync date = before current date
 
-            _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
-            quit, msgr = self.getSyncValues(sheetName,
-                                            psw,
-                                            template_id,
-                                            sheetIndex,
-                                            modelType)
-            msg = msg + msgr
-            line_index += 1
+            # if (format_sync_date = datetime.now().strftime(format_str)) or (format_sync_date = < datetime.now().strftime(format_str)):
 
-            if (quit):
-                self.syncFail(msg, self._sync_cancel_reason)
-                return
+                msg_temp = ""
+                sheetName = str(sync_data[line_index][0])
+
+                sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
+                msg += msg_temp
+                modelType = str(sync_data[line_index][2])
+                valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+
+                if (not valid):
+                    _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
+                                str(sync_data[line_index][3]) + ".  Ending sync process!")
+                    break
+
+                if (sheetIndex < 0):
+                    break
+
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
+                quit, msgr = self.getSyncValues(sheetName,
+                                                psw,
+                                                template_id,
+                                                sheetIndex,
+                                                modelType)
+                msg = msg + msgr
+                line_index += 1
+
+                if (quit):
+                    self.syncFail(msg, self._sync_cancel_reason)
+                    return
+                
+            # else:
+
+            #     _logger.info("Sheet with index " + str(line_index) + " was not synced into odoo because the scheduled date has not yet been reached.")
+
+            #     line_index += 1
+            #     return
 
         # error
         if (msg != ""):

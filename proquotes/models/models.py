@@ -186,6 +186,10 @@ class order(models.Model):
     _inherit = "sale.order"
 
     partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
+    
+    
+    # shipping costs table
+    shipping_costs = fields.Many2many("proquotes.shipping_costs", "package_name", string="Shipping Costs")
 
     products = fields.One2many(related="partner_id.products", readonly=True)
 

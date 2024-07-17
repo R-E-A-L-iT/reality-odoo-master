@@ -1,0 +1,22 @@
+<!-- HOW SHIPPING SHOULD WORK -->
+
+<!-- 
+
+
+preliminary
+- there should be a weight set for each product we might need to ship
+- all warehouse locations/contacts should have valid addresses
+- FedEx details should have a menu to input, not directly in code
+
+1. table that allows you to add a line for each package
+
+Package   Items                  Warehouse Location      Delivery Location      Rate
+
+Box #1    RTC360 Kit, Adapter    Toronto Office          Ellisdon Mississauga   $713.00 [Update]
+Box #2    BLK2GO Pulse           Gatineau Office         Ellisdon Calgary       $212.00 [Update]
+
+
+Should automatically populate shipping table with items as possible from quote
+
+
+ -->

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
+<!-- dont use this file or declare it in the manifest, outdated -->
+
 <odoo>
     <template name="ProForma PDF" id="proforma_pdf" inherit_id="sale.report_saleorder_pro_forma">
         <xpath expr="//t[@t-set=&quot;is_pro_forma&quot;]" position="after">

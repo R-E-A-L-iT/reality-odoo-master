@@ -11,3 +11,4 @@ from . import internal_user
 from . import mail
 from . import renewal_maps
 from . import footer_header
+from . import shipping_costs
