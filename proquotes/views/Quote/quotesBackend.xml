@@ -18,6 +18,7 @@
 						<field name="items" widget="many2many_tags"/>
 						<field name="warehouse_location"/>
 						<field name="delivery_location"/>
+						<field name="fedex price" readonly="1"/>
 						<!-- <button string="Add shipping" name="action_open_delivery_wizard" type="object" attrs="{'invisible': ['|', '|',('is_all_service', '=', True), ('order_line', '=', []), ('delivery_set', '=', True)]}" modifiers="{&quot;invisible&quot;: [&quot;|&quot;, &quot;|&quot;, [&quot;is_all_service&quot;, &quot;=&quot;, true], [&quot;order_line&quot;, &quot;=&quot;, []], [&quot;delivery_set&quot;, &quot;=&quot;, true]]}"/> -->
 					</tree>
 				</field>
