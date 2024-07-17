@@ -11,7 +11,7 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
-			<xpath expr="//button[@name=&quot;action_open_delivery_wizrd&quot;]" position="replace">
+			<xpath expr="//*[@id='notebook_page_4031']/div[3]/button[1]" position="replace">
 				<field name="shipping_costs" invisible="0">
 					<tree>
 						<field name="package_name" widget="many2many_tags"/>
