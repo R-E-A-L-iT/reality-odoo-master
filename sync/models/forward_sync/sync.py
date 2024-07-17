@@ -78,7 +78,7 @@ class sync(models.Model):
 
         # loop through entries in first sheet
         while (True):
-            
+
             # wip feature: sync scheduling for specific sheets
 
             format_str = "%d/%m/%Y"
@@ -89,34 +89,34 @@ class sync(models.Model):
 
             # if (format_sync_date = datetime.now().strftime(format_str)) or (format_sync_date = < datetime.now().strftime(format_str)):
 
-                msg_temp = ""
-                sheetName = str(sync_data[line_index][0])
+            msg_temp = ""
+            sheetName = str(sync_data[line_index][0])
 
-                sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
-                msg += msg_temp
-                modelType = str(sync_data[line_index][2])
-                valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+            sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
+            msg += msg_temp
+            modelType = str(sync_data[line_index][2])
+            valid = (str(sync_data[line_index][3]).upper() == "TRUE")
 
-                if (not valid):
-                    _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
-                                str(sync_data[line_index][3]) + ".  Ending sync process!")
-                    break
+            if (not valid):
+                _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
+                            str(sync_data[line_index][3]) + ".  Ending sync process!")
+                break
+            
+            if (sheetIndex < 0):
+                break
 
-                if (sheetIndex < 0):
-                    break
+            _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
+            quit, msgr = self.getSyncValues(sheetName,
+                                            psw,
+                                            template_id,
+                                            sheetIndex,
+                                            modelType)
+            msg = msg + msgr
+            line_index += 1
 
-                _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
-                quit, msgr = self.getSyncValues(sheetName,
-                                                psw,
-                                                template_id,
-                                                sheetIndex,
-                                                modelType)
-                msg = msg + msgr
-                line_index += 1
-
-                if (quit):
-                    self.syncFail(msg, self._sync_cancel_reason)
-                    return
+            if (quit):
+                self.syncFail(msg, self._sync_cancel_reason)
+                return
                 
             # else:
 
