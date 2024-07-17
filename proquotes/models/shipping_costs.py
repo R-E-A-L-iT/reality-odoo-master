@@ -4,7 +4,7 @@ import datetime
 import sys
 from odoo import models, fields
 
-from fedex_config import FEDEX_CREDENTIALS
+from . import fedex_config
 from fedex.services.ship_service import FedexProcessShipmentRequest
 from fedex.tools.conversion import sobject_to_dict
 
@@ -39,7 +39,7 @@ class shipping_costs(models.Model):
     #
     def getShipmentRate(items_in_package, start_address, finish_address, units):
         
-        rate_request = FedexRateServiceRequest(CONFIG_OBJ)
+        rate_request = FedexRateServiceRequest(fedex_config.FEDEX_CREDENTIALS)
         
         # settings
         rate_request.RequestedShipment.DropoffType = 'REGULAR_PICKUP'
