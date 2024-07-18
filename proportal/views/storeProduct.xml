@@ -2,7 +2,7 @@
 
 <odoo>
 	<template id="proportal.store_product" inherit_id="website_sale.product" priority="100">
-        <xpath expr="//div[@id='add_to_cart_wrap']" position="replace">
+        <xpath expr="//*[@id='add_to_cart_wrap']" position="replace">
             <div id="add_to_cart_wrap" class="d-inline">
                 <a role="button" id="contact_us_replacement" class="btn btn-primary btn-lg js_check_product a-submit my-1 mr-1 px-5 font-weight-bold flex-grow-1" href="mailto:experts@r-e-a-l.it"><i class="fa fa-shopping-cart mr-2"/>CONTACT US</a>
             </div>
