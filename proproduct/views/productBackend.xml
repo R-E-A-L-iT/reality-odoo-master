@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template id="proproduct.product_template" inherit_id="product.template">
+	<template id="proproduct.product_template" inherit_id="	product.template.product.form">
         <xpath expr="//page[@name='invoicing']" position="after"> 
             <page string="Specifications" name="specifications">
 
