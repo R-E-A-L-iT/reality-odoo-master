@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template id="store_product" name="proportal_store_product" inherit_id="website_sale.product">
+	<template id="store_product" name="proportal_store_product" inherit_id="website_sale.product" priority="17">
 
         <xpath expr="//div[@id=&quot;add_to_cart_wrap&quot;]" position="replace">
             <div id="add_to_cart_wrap" class="d-inline">
