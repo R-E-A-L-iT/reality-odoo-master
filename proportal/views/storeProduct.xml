@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template id="store_product" name="proportal_store_product" inherit_id="website_sale.product">
+	<data inherit_id="website_sale.product" active="True" customize_show="True" name="add to cart button -> contact us" >
         <xpath expr="//div[@id='add_to_cart_wrap']" position="replace">
             <div id="add_to_cart_wrap" class="d-inline">
                 <a role="button" id="contact_us_replacement" class="btn btn-primary btn-lg js_check_product a-submit my-1 mr-1 px-5 font-weight-bold flex-grow-1" href="mailto:experts@r-e-a-l.it"><i class="fa fa-shopping-cart mr-2"/>CONTACT US</a>
             </div>
         </xpath>
 
-    </template>
+    </data>
 </odoo>
