@@ -51,15 +51,8 @@
 			</table>
 		</xpath>
 
-		<!-- add product description -->
-		<!-- <xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
-			<t>
-				<div t-field="product.template.description_pickingout" />
-			</t>
-		</xpath> -->
-
 		<!-- Add Description -->
-		<!-- <xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
+		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<style>
 				td {
 				border-style: solid;
@@ -71,14 +64,14 @@
 				margin-bottom: 0px !important;
 				}
 			</style>
-			<t t-if="str(move.name) != str(move.product_id.description_sale)">
+			<t t-if="str(move.name) != str(move.product_id.description_pickingout)">
 				<span class="description-root">
 					<span t-raw="move.name" />
 				</span>
 			</t>
 			<br />
-			<span class="description-root" t-raw="move.product_id.description_sale" style="color: #777;" />
-		</xpath> -->
+			<span class="description-root" t-raw="move.product_id.description_pickingout" style="color: #777;" />
+		</xpath>
 
 		<!-- Add Detail Lines -->
 		<xpath expr="//div[@t-if=&quot;o.signature&quot;]" position="replace">
