@@ -64,13 +64,13 @@
 				margin-bottom: 0px !important;
 				}
 			</style>
-			<t t-if="str(move.name) != str(move.product_id.description_pickingout)">
+			<t t-if="str(move.name) != str(move.product_id.description_sale)">
 				<span class="description-root">
 					<span t-raw="move.name" />
 				</span>
 			</t>
 			<br />
-			<span class="description-root" t-raw="move.product_id.description_pickingout" style="color: #777;" />
+			<span class="description-root" t-raw="move.product_id.description_sale" style="color: #777;" />
 		</xpath>
 
 		<!-- Add Detail Lines -->
