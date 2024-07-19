@@ -199,6 +199,23 @@ class order(models.Model):
         [("fully_invoiced","Fully Invoiced"),("partially_invoiced","Partially Invoiced"),("not_invoiced","Not Invoiced"),],
         string="Invoicing Status (Manual)"
     )
+    
+    # invoicing address display
+    readonly_partner_invoice_id_street1 = fields.Char(related="partner_invoice_id.street" readonly=True)
+    readonly_partner_invoice_id_street2 = fields.Char(related="partner_invoice_id.street2" readonly=True)
+    readonly_partner_invoice_id_city = fields.Char(related="partner_invoice_id.city" readonly=True)
+    readonly_partner_invoice_id_state_id = fields.Char(related="partner_invoice_id.state_id" readonly=True)
+    readonly_partner_invoice_id_company_id = fields.Char(related="partner_invoice_id.company_id" readonly=True)
+    readonly_partner_invoice_id_zip = fields.Char(related="partner_invoice_id.zip" readonly=True)
+    
+    # delivery address display
+    readonly_partner_shipping_id_street1 = fields.Char(related="partner_invoice_id.street" readonly=True)
+    readonly_partner_shipping_id_street2 = fields.Char(related="partner_invoice_id.street2" readonly=True)
+    readonly_partner_shipping_id_city = fields.Char(related="partner_invoice_id.city" readonly=True)
+    readonly_partner_shipping_id_state_id = fields.Char(related="partner_invoice_id.state_id" readonly=True)
+    readonly_partner_shipping_id_company_id = fields.Char(related="partner_invoice_id.company_id" readonly=True)
+    readonly_partner_shipping_id_zip = fields.Char(related="partner_invoice_id.zip" readonly=True)
+    
 
     footer = fields.Selection(
         [
