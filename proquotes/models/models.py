@@ -204,16 +204,16 @@ class order(models.Model):
     readonly_partner_invoice_id_street1 = fields.Char(related="partner_invoice_id.street")
     readonly_partner_invoice_id_street2 = fields.Char(related="partner_invoice_id.street2")
     readonly_partner_invoice_id_city = fields.Char(related="partner_invoice_id.city")
-    readonly_partner_invoice_id_state_id = fields.Char(related="partner_invoice_id.state_id")
-    readonly_partner_invoice_id_company_id = fields.Char(related="partner_invoice_id.company_id")
+    readonly_partner_invoice_id_state_id = fields.Many2one(related="partner_invoice_id.state_id")
+    readonly_partner_invoice_id_country_id = fields.Many2one(related="partner_invoice_id.country_id")
     readonly_partner_invoice_id_zip = fields.Char(related="partner_invoice_id.zip")
     
     # delivery address display
     readonly_partner_shipping_id_street1 = fields.Char(related="partner_invoice_id.street")
     readonly_partner_shipping_id_street2 = fields.Char(related="partner_invoice_id.street2")
     readonly_partner_shipping_id_city = fields.Char(related="partner_invoice_id.city")
-    readonly_partner_shipping_id_state_id = fields.Char(related="partner_invoice_id.state_id")
-    readonly_partner_shipping_id_company_id = fields.Char(related="partner_invoice_id.company_id")
+    readonly_partner_shipping_id_state_id = fields.Many2one(related="partner_invoice_id.state_id")
+    readonly_partner_shipping_id_country_id = fields.Many2one(related="partner_invoice_id.country_id")
     readonly_partner_shipping_id_zip = fields.Char(related="partner_invoice_id.zip")
     
 
