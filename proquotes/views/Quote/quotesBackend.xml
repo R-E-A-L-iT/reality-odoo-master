@@ -11,6 +11,26 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
+			<!-- readonly display invoicing address -->
+			<xpath expr="//field[@name&quot;partner_invoice_id&quot;]" position="after">
+				<field name="readonly_partner_invoice_id_street1"/>
+				<field name="readonly_partner_invoice_id_street2"/>
+				<field name="readonly_partner_invoice_id_city"/>
+				<field name="readonly_partner_invoice_id_state_id"/>
+				<field name="readonly_partner_invoice_id_country_id"/>
+				<field name="readonly_partner_invoice_id_zip"/>
+			</xpath>
+
+			<!-- readonly display shipping address -->
+			<xpath expr="//field[@name&quot;partner_shipping_id&quot;]" position="after">
+				<field name="readonly_partner_shipping_id_street1"/>
+				<field name="readonly_partner_shipping_id_street2"/>
+				<field name="readonly_partner_shipping_id_city"/>
+				<field name="readonly_partner_shipping_id_state_id"/>
+				<field name="readonly_partner_shipping_id_country_id"/>
+				<field name="readonly_partner_shipping_id_zip"/>
+			</xpath>
+
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />

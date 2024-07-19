@@ -51,6 +51,8 @@
 			</table>
 		</xpath>
 
+		<!-- add product description -->
+
 		<!-- Add Description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<style>
