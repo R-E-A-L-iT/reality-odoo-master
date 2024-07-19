@@ -11,9 +11,13 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
+
+			<!-- NOTE: to make address appear under delivery address/invoice address, directly go to a quote in debug mode, go to the debug dropdown, select "edit view: form", and then scroll down to partner_invoice_id and partner_shipping_id and add 'show_address': 1 to the context. for some stupid reason odoo doesn't let you do this via xpath it seems. or i could just be stupid. idk. -->
+
 			<!-- readonly display invoicing address -->
-			<xpath expr="//field[@name&quot;partner_invoice_id&quot;]" position="attributes">
+			<!-- <xpath expr="//field[@name&quot;partner_invoice_id&quot;]" position="attributes">
 				<attribute name="context">{'default_type':'invoice', 'show_address': 1}</attribute>
+			</xpath> -->
 				<!-- <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice', 'show_address': 1}" options="{&quot;always_reload&quot;: True}"/> -->
 				<!-- <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/> -->
 				<!-- <field name="readonly_partner_invoice_id_street1"/>
@@ -22,7 +26,6 @@
 				<field name="readonly_partner_invoice_id_state_id"/>
 				<field name="readonly_partner_invoice_id_country_id"/>
 				<field name="readonly_partner_invoice_id_zip"/> -->
-			</xpath>
 
 			<!-- readonly display shipping address -->
 			<!-- <xpath expr="//field[@name&quot;partner_shipping_id&quot;]" position="after"> -->
