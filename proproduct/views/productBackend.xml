@@ -1,31 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-	<template id="proproduct.product_template" inherit_id="product.product_template_only_form_view">
-        <xpath expr="//page[@name='invoicing']" position="after"> 
-            <page string="Specifications" name="specifications">
+    <record id="proquotes_product_view" model="ir.ui.view">
+        <field name="name">Backend Product</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']" position="after"> 
+                <page string="Specifications" name="specifications">
 
-                <group name="physical">
-                    <group string="Design &amp; Physical">
-                        
-                        <!-- <field /> -->
+                    <group name="physical">
+                        <group string="Design &amp; Physical">
+                            
+                            <!-- <field /> -->
 
+                        </group>
+                        <group string="Environmental" name="environmental">
+
+                            <!-- <field /> -->
+
+                            <!-- <field name="property_account_expense_id" attrs="{'readonly': [('purchase_ok', '=', 0)]}" can_create="true" can_write="true" modifiers="{&quot;readonly&quot;: [[&quot;purchase_ok&quot;, &quot;=&quot;, 0]]}"/>
+
+                            <field name="property_account_creditor_price_difference" domain="[('deprecated','=',False)]" attrs="{'readonly':[('purchase_ok', '=', 0)]}" can_create="true" can_write="true" modifiers="{&quot;readonly&quot;: [[&quot;purchase_ok&quot;, &quot;=&quot;, 0]]}"/> -->
+                    
+                        </group>
                     </group>
-                    <group string="Environmental" name="environmental">
-
-                        <!-- <field /> -->
-
-                        <!-- <field name="property_account_expense_id" attrs="{'readonly': [('purchase_ok', '=', 0)]}" can_create="true" can_write="true" modifiers="{&quot;readonly&quot;: [[&quot;purchase_ok&quot;, &quot;=&quot;, 0]]}"/>
-
-                        <field name="property_account_creditor_price_difference" domain="[('deprecated','=',False)]" attrs="{'readonly':[('purchase_ok', '=', 0)]}" can_create="true" can_write="true" modifiers="{&quot;readonly&quot;: [[&quot;purchase_ok&quot;, &quot;=&quot;, 0]]}"/> -->
-                
+                    <group name="capabilities">
+                        <group string="Power">
+                        </group>
                     </group>
-                </group>
-                <group name="capabilities">
-                    <group string="Power">
-                    </group>
-                </group>
-            </page>
-        </xpath>
-    </template>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>
