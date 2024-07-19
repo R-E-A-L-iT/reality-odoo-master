@@ -52,6 +52,9 @@
 		</xpath>
 
 		<!-- add product description -->
+		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
+			<t t-field="description_picking" />
+		</xpath>
 
 		<!-- Add Description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
