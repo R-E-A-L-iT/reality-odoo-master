@@ -54,7 +54,7 @@
 		<!-- add product description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
 			<t>
-				<div t-field="description_picking" />
+				<div t-field="stock.picking.description_picking" />
 			</t>
 		</xpath>
 
