@@ -82,7 +82,7 @@
         #         'models/quoteNotify.py'
     ],
     'external_dependencies': {
-        'python': ['fedex-python'],
+        'python': ['fedex-python', 'fedex-python.services.ship_service', 'fedex-python.tools.conversion'],
     },
     # only loaded in demonstration mode
     "demo": [
