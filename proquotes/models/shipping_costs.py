@@ -6,7 +6,7 @@ import sys
 from odoo import models, fields
 
 import fedex_python as fedex
-# from fedex.config import FedexConfig
+from fedex_python import FedexConfig
 
 
 # import importlib  
