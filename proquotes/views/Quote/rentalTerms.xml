@@ -100,10 +100,15 @@
                         <li>
                             <h3>Insurance</h3>
                             <p> The Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it. </p>
+                            <p> For all rentals involving Remotely Piloted Aircraft Systems (RPAS), the Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, that also covers RPAS operations, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to R-E-A-L.iT Solutions should R-E-A-L.iT Solutions so request it.
+                            </p>
                         </li>
                         <li>
                             <h3>Standards, Policies and Others</h3>
                             <p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
+                        </li>
+                        <li>
+                            <p> For any rental involving Remotely Piloted Aircraft Systems (RPAS), the Customer must conduct all flight operations in compliance with Canadian Aviation Regulations (CARs) Part IX – Remotely Piloted Aircraft Systems. </p>
                         </li>
                     </ol>
                 </li>

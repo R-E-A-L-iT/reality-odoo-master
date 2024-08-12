@@ -81,6 +81,9 @@
         "views/PO/PO_PDF.xml",
         #         'models/quoteNotify.py'
     ],
+    'external_dependencies': {
+        'python': ['fedex'],
+    },
     # only loaded in demonstration mode
     "demo": [
         "demo/demo.xml",

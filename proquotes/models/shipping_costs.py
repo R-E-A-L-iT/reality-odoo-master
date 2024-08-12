@@ -5,11 +5,11 @@ import sys
 
 from odoo import models, fields
 
-# import fedex
+import fedex
 
 # from . import fedex_config
-# from fedex.services.ship_service import FedexProcessShipmentRequest
-# from fedex.tools.conversion import sobject_to_dict
+from fedex.services.ship_service import FedexProcessShipmentRequest
+from fedex.tools.conversion import sobject_to_dict
 
 # https://github.com/python-fedex-devs/python-fedex examples
 
@@ -17,6 +17,11 @@ _logger = logging.getLogger(__name__)
 
 class shipping_costs(models.Model):
     _name = "proquotes.shipping_costs"
+    
+    if (fedex):
+        _logger.info("fedex module loaded properly")
+    else:
+        _logger.error("no fedex module found")
     
     # name of package
     package_name = fields.Char("Package Name")
