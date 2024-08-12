@@ -10,8 +10,8 @@ import fedex_python as fedex
 # fedex = importlib.import_module("fedex_python")
 
 # from . import fedex_config
-from fedex_python.services.ship_service import FedexProcessShipmentRequest
-from fedex_python.tools.conversion import sobject_to_dict
+# from fedex.services.ship_service import FedexProcessShipmentRequest
+# from fedex.tools.conversion import sobject_to_dict
 
 # https://github.com/python-fedex-devs/python-fedex examples
 
