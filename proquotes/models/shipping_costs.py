@@ -5,7 +5,7 @@ import sys
 
 from odoo import models, fields
 
-import fedex
+import fedex-python as fedex
 
 # from . import fedex_config
 from fedex.services.ship_service import FedexProcessShipmentRequest
@@ -14,6 +14,18 @@ from fedex.tools.conversion import sobject_to_dict
 # https://github.com/python-fedex-devs/python-fedex examples
 
 _logger = logging.getLogger(__name__)
+
+
+# client = fedex.Client(
+#     key, password, account_number, meter_number,
+#     localization=(
+#         fedex.components.auth.Localization.get(
+#             fedex.components.auth.Localization.SPANISH_LATINOAMERICAN
+#         )
+#     ),
+#     test_mode=True
+# )
+
 
 class shipping_costs(models.Model):
     _name = "proquotes.shipping_costs"
