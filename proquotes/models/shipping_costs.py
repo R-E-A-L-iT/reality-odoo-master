@@ -6,12 +6,15 @@ import sys
 from odoo import models, fields
 
 import fedex_python as fedex
+# from fedex.config import FedexConfig
+
+
 # import importlib  
 # fedex = importlib.import_module("fedex_python")
 
 # from . import fedex_config
-from fedex_python.services.ship_service import FedexProcessShipmentRequest
-from fedex_python.tools.conversion import sobject_to_dict
+# from fedex.services.ship_service import FedexProcessShipmentRequest
+# from fedex.tools.conversion import sobject_to_dict
 
 # https://github.com/python-fedex-devs/python-fedex examples
 
@@ -55,12 +58,22 @@ class shipping_costs(models.Model):
     # _logger.info(self.env["shipping_costs.items"])
     
     
+    #   config builder
+    
+    FEDEX_CONFIG = FedexConfig(key='',
+                               password='',
+                               account_number='',
+                               meter_number='',
+                               freight_account_number='',
+                               use_test_server=True)
+    
     #
     #   items in package: list of odoo product objects
     #   start_address: odoo contact object of r-e-a-l.it address it's shipped from
     #   finish_address: odoo contact object of customer's address it's shipped to
     #   units: string "KG" or "LB" only
     #
+    
     def getShipmentRate(items_in_package, start_address, finish_address, units):
         
         rate_request = FedexRateServiceRequest(fedex_config.FEDEX_CREDENTIALS)
