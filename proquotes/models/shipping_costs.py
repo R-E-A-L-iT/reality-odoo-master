@@ -60,12 +60,12 @@ class shipping_costs(models.Model):
     
     #   config builder
     
-    FEDEX_CONFIG = FedexConfig(key='',
-                               password='',
-                               account_number='',
-                               meter_number='',
-                               freight_account_number='',
-                               use_test_server=True)
+    # FEDEX_CONFIG = FedexConfig(key='',
+                            #    password='',
+                            #    account_number='',
+                            #    meter_number='',
+                            #    freight_account_number='',
+                            #    use_test_server=True)
     
     #
     #   items in package: list of odoo product objects
