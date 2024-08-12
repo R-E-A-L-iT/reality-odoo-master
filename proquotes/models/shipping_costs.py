@@ -5,12 +5,12 @@ import sys
 
 from odoo import models, fields
 
-import fedex_python as fedex
-from fedex_python import FedexConfig
+# import fedex_python as fedex
+# from fedex_python import FedexConfig
 
 
-# import importlib  
-# fedex = importlib.import_module("fedex_python")
+import importlib  
+fedex = importlib.import_module("fedex_python")
 
 # from . import fedex_config
 # from fedex.services.ship_service import FedexProcessShipmentRequest
