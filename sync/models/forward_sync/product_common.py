@@ -66,15 +66,15 @@ class product_sync_common:
 
     @classmethod
     def addProductToPricelist(cls, database, product, pricelistName, price):
-        pricelist_id = (
-            database.env["product.pricelist"]
-            .search([("name", "=", pricelistName)])[0]
-            .id
-        )
         
-        if (not pricelist_id):
-            _logger.warning("pricelist_id not found")
-        
+        try:
+            pricelist_id = (
+                database.env["product.pricelist"]
+                .search([("name", "=", pricelistName)])[0]
+                .id
+            )
+        except Exception as e:
+            _logger.exception("e")
         
         pricelist_item_ids = database.env["product.pricelist.item"].search(
             [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
