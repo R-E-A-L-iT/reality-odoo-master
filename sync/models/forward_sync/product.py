@@ -111,6 +111,8 @@ class sync_products:
                     
                     _logger.info("Checkpoint #2")
                     
+                    # error occurs after checkpoint 2, chekpoint 3 4 and 5 not triggered
+                    
                     if len(product) != 1:
                         msg = utilities.buildMSG(
                             msg,
@@ -158,6 +160,7 @@ class sync_products:
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.error(e)
+                _logger.exception("Traceback to tuple index error:")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
