@@ -91,4 +91,4 @@ class product_sync_common:
                 pricelist_item.fixed_price = float(price)
 
         except Exception as e:
-            _logger.exception("e")
+            _logger.exception(e)
