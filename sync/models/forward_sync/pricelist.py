@@ -139,6 +139,7 @@ class sync_pricelist:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.error(e)
+                _logger.exception("Traceback:")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg                   
 
