@@ -254,7 +254,8 @@ class sync_products:
             self.database, product, "🇺🇸", product_price_usd
         )
         product.price = product_price_cad
-        # product.cadVal = product_price_cad
+        product.cadVal = product_price_cad
+        product.usdVal = product_price_usd
         # product.list_price = product_price_cad
 
         product.sale_ok = can_be_sold
