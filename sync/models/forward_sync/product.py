@@ -95,6 +95,9 @@ class sync_products:
             try:
                 # attempts to access existing item (item/row)
                 external_id = str(sheet[i][columns["sku"]])
+                
+                _logger.info("Checkpoint #0")
+                
                 product_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
