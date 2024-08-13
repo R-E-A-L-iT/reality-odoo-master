@@ -71,6 +71,11 @@ class product_sync_common:
             .search([("name", "=", pricelistName)])[0]
             .id
         )
+        
+        if (not pricelist_id):
+            _logger.warning("pricelist_id not found")
+        
+        
         pricelist_item_ids = database.env["product.pricelist.item"].search(
             [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
         )
