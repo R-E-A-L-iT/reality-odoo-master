@@ -254,6 +254,7 @@ class sync_products:
             self.database, product, "USD SALE", product_price_usd
         )
         product.price = product_price_cad
+        product.cadVal = product_price_cad
 
         product.sale_ok = can_be_sold
 
