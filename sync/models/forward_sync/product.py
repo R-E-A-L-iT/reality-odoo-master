@@ -87,17 +87,26 @@ class sync_products:
                 continue
 
             # if it gets here data should be valid
+            
+            #
+            # This is the source of tuple index out of range issue
+            #
+            
             try:
                 # attempts to access existing item (item/row)
                 external_id = str(sheet[i][columns["sku"]])
                 product_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
+                
+                _logger.info("Checkpoint #1")
 
                 if len(product_ids) > 0:
                     product = self.database.env["product.template"].browse(
                         product_ids[len(product_ids) - 1].res_id
                     )
+                    
+                    _logger.info("Checkpoint #2")
                     
                     if len(product) != 1:
                         msg = utilities.buildMSG(
@@ -107,6 +116,8 @@ class sync_products:
                             "Product ID Recognized But Product Count is Invalid",
                         )
                         i = i + 1
+                        
+                        _logger.info("Checkpoint #3")
                         continue
 
                     self.updateProducts(
@@ -122,6 +133,8 @@ class sync_products:
                         "product",
                         sheet[i][columns["can_be_sold"]]
                     )  # product_type
+                    
+                    _logger.info("Checkpoint #4")
                 else:
                     self.createAndUpdateProducts(
                         external_id,
@@ -136,6 +149,8 @@ class sync_products:
                         "product",
                         sheet[i][columns["can_be_sold"]]
                     )  # product_type
+                    
+                    _logger.info("Checkpoint #5")
 
             except Exception as e:
                 _logger.info("Products Exception")
