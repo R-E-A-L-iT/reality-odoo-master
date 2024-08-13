@@ -76,7 +76,6 @@ class product_sync_common:
         except Exception as e:
             _logger.exception("e")
         
-        
         pricelist_item_ids = database.env["product.pricelist.item"].search(
             [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
         )
