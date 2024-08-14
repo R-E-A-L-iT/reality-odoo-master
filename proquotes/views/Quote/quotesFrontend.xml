@@ -455,12 +455,12 @@
 						<strong class="white-text" id="terms_open">×</strong>
 						<strong class="white-text" t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions</strong>
 						<strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
-						<p t-if="clang == 'en_CA' or clang == 'en_US'">A 2% interest charge will be applied to all overdue payments. Any fees incurred in the collection of this invoice, including those related to bounced checks or refunded payments, will be charged to the customer.</p>
-						<p t-if="clang == 'fr_CA'">Des intérêts de 2 % seront appliqués à tous les paiements en souffrance. Tous les frais encourus pour le recouvrement de cette facture, y compris ceux liés aux chèques sans provision ou aux paiements remboursés, seront facturés au client.</p>
 					</h1>
 				</label>
 				<div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms" />
 			</t>
+			<p t-if="clang == 'en_CA' or clang == 'en_US'">A 2% interest charge will be applied to all overdue payments. Any fees incurred in the collection of this invoice, including those related to bounced checks or refunded payments, will be charged to the customer.</p>
+			<p t-if="clang == 'fr_CA'">Des intérêts de 2 % seront appliqués à tous les paiements en souffrance. Tous les frais encourus pour le recouvrement de cette facture, y compris ceux liés aux chèques sans provision ou aux paiements remboursés, seront facturés au client.</p>
 			<section class="quoteConfig">
 				<span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
 				<span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
