@@ -5,14 +5,14 @@
         <field name="name">Sale_Backend_Form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
-        <field name="arch" type="xml">
+        <!-- <field name="arch" type="xml"> -->
 
             <!-- the sale pricelists no longer have the word sale in them, instead they are flags, so this code makes it impossible to select a pricelist -->
 
             <!-- <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <attribute name="domain">[('name', 'ilike', 'sale')]</attribute>
             </xpath> -->
-        </field>
+        <!-- </field> -->
     </record>
 
     <record id="rental_order_form_view" model="ir.ui.view">
