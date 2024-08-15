@@ -122,9 +122,9 @@
 			</xpath>
 
 			<!-- undo pricelist readonly -->
-			<xpath expr="//field[@name='pricelist_id']" position="replace">
+			<!-- <xpath expr="//field[@name='pricelist_id']" position="replace">
 				<field string="Pricelist" name="pricelist_id" invisible="0" />
-			</xpath>
+			</xpath> -->
 
 			<xpath expr="//button[@name='update_prices']" position="attributes">
 				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>
