@@ -3,6 +3,11 @@
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
+		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
+			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
+			<t t-set="clang" t-value="doc.env.context.get('lang')" />
+		</xpath>
+
 		<!-- Translate Info Labels -->
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
 			<t t-set="src" t-value="o.sale_id" />
@@ -25,7 +30,8 @@
 				</tr>
 				<tr>
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturé a</h5>
 						<span t-field="src.partner_id.street" />
 						<br />
 						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
@@ -37,7 +43,8 @@
 						<br />
 					</td>
 					<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
+						<h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
+						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Expédié à</h5>
 						<span t-field="src.partner_shipping_id.street" />
 						<br />
 						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
