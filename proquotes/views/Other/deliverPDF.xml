@@ -91,8 +91,8 @@
 				<br />
 				<span style="height: 40px"> Signature:</span>
 				<span style="border-bottom: solid !important; width:500px !important;">
-					<t t-if="doc.signature">
-						<img t-att-src="image_data_uri(doc.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+					<t t-if="o.signature">
+						<img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
 					</t>
 					<t t-else="">
 						<span style="color: #fff;">____________________________________</span>
