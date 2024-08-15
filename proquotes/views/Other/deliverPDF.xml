@@ -3,11 +3,7 @@
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
-		<t t-call="report.html_container"> 
-			<t t-foreach="docs" t-as="doc"> 
-				<t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/> 
-			</t>  
-		</t> 
+		<!-- <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/> -->
 
 		<!-- Translate Info Labels -->
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
@@ -32,9 +28,9 @@
 				</tr>
 				<tr>
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
-						<!-- <h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
-						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturé a</h5> -->
+						<!-- <h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5> -->
+						<h5 t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<h5 t-elif="doc.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturé a</h5>
 						<span t-field="src.partner_id.street" />
 						<br />
 						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
@@ -46,9 +42,9 @@
 						<br />
 					</td>
 					<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
-						<!-- <h5 t-if="clang == 'en_CA' or clang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
-						<h5 t-elif="clang == 'fr_CA'" style="color: #db0d0d;">Expédié à</h5> -->
+						<!-- <h5 style="color: #db0d0d;">Ship To</h5> -->
+						<h5 t-if="doc.partner_id.lang == 'en_CA' or doc.partner_id.lang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
+						<h5 t-elif="doc.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Expédié à</h5>
 						<span t-field="src.partner_shipping_id.street" />
 						<br />
 						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
