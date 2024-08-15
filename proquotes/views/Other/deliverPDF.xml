@@ -3,13 +3,9 @@
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
-		<xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
-			<t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))" />
-			<t t-set="clang" t-value="doc.env.context.get('lang')" />
-		</xpath>
-
 		<!-- Translate Info Labels -->
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
+			<t t-set="clang" t-value="doc.env.context.get('lang')" />
 			<t t-set="src" t-value="o.sale_id" />
 			<style>
 				#addressTable, #addressTable * {
