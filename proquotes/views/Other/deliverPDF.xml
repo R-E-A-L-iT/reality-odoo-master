@@ -85,8 +85,8 @@
 			<div>
 				<span style="height: 40px"> PO #:</span>
 				<span style="border-bottom: solid !important; width:500px !important;">
-					<t t-if="src.po_number">
-						<span style="color: #fff;" t-field="src.po_number"/>
+					<t t-if="o.po_number">
+						<span style="color: #fff;" t-field="o.po_number"/>
 					</t>
 					<t t-else="">
 						<span style="color: #fff;">____________________________________</span>
