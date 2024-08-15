@@ -89,7 +89,7 @@ class productBackend(models.Model):
     ccp_status = fields.Selection(
         [
             ("good", "Good"),
-            ("overdue", "Overdue")
+            ("overdue", "Overdue"),
             ("expired", "Expired")
         ]
     )
