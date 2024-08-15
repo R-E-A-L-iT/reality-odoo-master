@@ -839,3 +839,8 @@ class pdf_quote(models.Model):
     _inherit = "sale.report"
 
     footer_field = fields.Selection(related="order_id.footer")
+    
+class delivery_slip(models.Model):
+    _inherit = "stock.picking"
+
+    po_number = fields.Char(string="PO Number")
