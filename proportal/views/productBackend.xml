@@ -5,13 +5,13 @@
         <field name="name">Backend Product</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view" />
-        <field name="arch" type="xml">
+        <!-- <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;categ_id&quot;]" position="after">
                 <t t-set="product_type" t-value="object.type_selection" data-oe-t-inline="true"/>
                 <t t-if="product == 'S'">
                     <field name="ccp_status" invisible="0" />
                 </t>
             </xpath>
-        </field>
+        </field> -->
     </record>
 </odoo>
