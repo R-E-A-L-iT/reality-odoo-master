@@ -75,6 +75,24 @@ class productInstance(models.Model):
 
             #return
 
+# class ccp_status(models.Model):
+#     _name = "product.ccp_status"
+#     _description = "Leica status of each CCP in it's renewal process"
+    
+#     record_type = fields.Selection(
+#         [("status_1", "Status 1"), ("status_2", "Status 2")], required=True, default="status_1"
+#     )
+
+class productBackend(models.Model):
+    _inherit = "product.template"
+    
+    ccp_status = fields.Selection(
+        [
+            ("good", "Good"),
+            ("overdue", "Overdue")
+            ("expired", "Expired")
+        ]
+    )
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
