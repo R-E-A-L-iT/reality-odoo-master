@@ -6,9 +6,9 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='pricelist_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <attribute name="domain">[('name', 'ilike', 'sale')]</attribute>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 
