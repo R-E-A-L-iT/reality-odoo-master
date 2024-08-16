@@ -12,7 +12,7 @@
 			</xpath>
 
 			<xpath expr="//field[@name='pricelist_id']" position="after">
-                <field name="financing_available"/>
+                <field name="financing_available"></field>
             </xpath>
 
 
