@@ -468,7 +468,7 @@
 				</t>
 				<t t-else="">
 					<!-- <t t-set="us_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01904)" /> -->
-					<t t-set="us_financing_lowest" t-value="sale_order.amount_untaxed" />
+					<t t-set="us_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01904)" />
 					<span style="color: #fff;">
 						Contact us to see if you are eligible for financing on this quote for as low as <span t-raw="us_financing_lowest"/> per month.
 					</span>
