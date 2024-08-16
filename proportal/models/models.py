@@ -87,11 +87,7 @@ class productBackend(models.Model):
     _inherit = "product.template"
     
     ccp_status = fields.Selection(
-        [
-            ("good", "Good"),
-            ("overdue", "Overdue"),
-            ("expired", "Expired")
-        ], string="CCP Status"
+        [("good", "Good"),("overdue", "Overdue"),("expired", "Expired")], string="CCP Status",
     )
 
 class PurchaseOrder(models.Model):
