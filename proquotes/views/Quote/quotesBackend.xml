@@ -11,6 +11,10 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
+			<xpath expr="//field[@name='pricelist_id']" position="after">
+                <field name="financing_available"/>
+            </xpath>
+
 
 			<!-- NOTE: to make address appear under delivery address/invoice address, directly go to a quote in debug mode, go to the debug dropdown, select "edit view: form", and then scroll down to partner_invoice_id and partner_shipping_id and add 'show_address': 1 to the context. for some stupid reason odoo doesn't let you do this via xpath it seems. or i could just be stupid. idk. -->
 
@@ -41,7 +45,6 @@
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />
-				<field name="financing_available"/>
 				<!-- Renewal Quotes Added Products -->
 				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
 					<tree>
