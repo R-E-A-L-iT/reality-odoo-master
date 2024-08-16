@@ -17,6 +17,7 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
+base_url = self.env['ir.config_parameter'].get_param('web.base.url')
 
 
 class mail(models.TransientModel):
@@ -42,7 +43,7 @@ class MailMessage(models.Model):
                 if order:
                     body = message.body
                     # bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://lezejde-reality-dev-eze-patch-14753738.dev.odoo.com/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(base_url) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     # bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://www.r-e-a-l.it/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     # #{base_url}/my/orders/#{object.id}?access_token=#{object.access_token}
                     body = body + bottom_footer
