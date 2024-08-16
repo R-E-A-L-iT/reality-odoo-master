@@ -17,7 +17,6 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
-base_url = self.env['ir.config_parameter'].get_param('web.base.url')
 
 
 class mail(models.TransientModel):
@@ -33,6 +32,8 @@ class mail(models.TransientModel):
 
 class MailMessage(models.Model):
     _inherit = 'mail.message'
+    
+    base_url = self.env['ir.config_parameter'].get_param('web.base.url')
 
     @api.model_create_multi
     def create(self, values_list):
