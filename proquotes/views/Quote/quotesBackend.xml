@@ -41,6 +41,7 @@
 			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
 				<field name="partner_ids" invisible="0" />
 				<field name="is_renewal" invisible="1" />
+				<field name="financing_available" invisible="0"/>
 				<!-- Renewal Quotes Added Products -->
 				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
 					<tree>

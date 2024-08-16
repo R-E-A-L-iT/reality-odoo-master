@@ -458,17 +458,17 @@
 		<!-- Quote Info -->
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
 
-			<div id="financing_options">
+			<div t-if="sale_order.financing_available == True" id="financing_options">
 				<t t-if="sale_order.is_rental != True">
 				<t t-if="'solutions' in sale_order.company_id.name.lower()">
-					<t t-set="ca_financing_lowest" t-value="sale_order.amount_untaxed * 0.01947" />
+					<t t-set="ca_financing_lowest" t-value="round(sale_order.amount_untaxed * 0.01947, 2)" />
 					<span style="color: #fff;">
 						Contact us to see if you are eligible for financing on this quote for as low as <span t-raw="ca_financing_lowest"/> per month.
 					</span>
 				</t>
 				<t t-else="">
 					<!-- <t t-set="us_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01904)" /> -->
-					<t t-set="us_financing_lowest" t-value="sale_order.amount_untaxed * 0.01904" />
+					<t t-set="us_financing_lowest" t-value="round(sale_order.amount_untaxed * 0.01904, 2)" />
 					<span style="color: #fff;">
 						Contact us to see if you are eligible for financing on this quote for as low as <span t-raw="us_financing_lowest"/> per month.
 					</span>
