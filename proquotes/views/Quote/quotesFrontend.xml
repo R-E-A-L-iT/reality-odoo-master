@@ -463,23 +463,23 @@
 				<t t-if="'solutions' in sale_order.company_id.name.lower()">
 					<t t-set="ca_financing_lowest" t-value="round(sale_order.amount_untaxed * 0.01947, 2)" />
 					<span t-if="clang == 'fr_CA'">
-						<span style="color: #fff; font-weight: bold;">
-							Renseignez-vous sur le financement de cet achat pour aussi peu que $<span style="background: url(https://cdn.r-e-a-l.it/images/header/FieryGIF.gif);
+						<span style="color: #fff; font-weight: bold; text-align: right;">
+							Renseignez-vous sur le financement de cet achat pour aussi peu que <span style="background: url(https://cdn.r-e-a-l.it/images/header/FieryGIF.gif);
 		background-size: cover;
 		background-clip: text;
 		text-fill-color: transparent;
 		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;" ><span t-raw="ca_financing_lowest"/>/mois</span>!
+		-webkit-text-fill-color: transparent;" >$<span t-raw="ca_financing_lowest"/>/mois!</span>
 						</span>
 					</span>
 					<span t-else="">
-						<span style="color: #fff; font-weight: bold;">
-							Ask us about financing for as low as $<span style="background: url(https://cdn.r-e-a-l.it/images/header/FieryGIF.gif);
+						<span style="color: #fff; font-weight: bold; text-align: right;">
+							Ask us about financing for as low as <span style="background: url(https://cdn.r-e-a-l.it/images/header/FieryGIF.gif);
 		background-size: cover;
 		background-clip: text;
 		text-fill-color: transparent;
 		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;" ><span t-raw="ca_financing_lowest"/>/month</span>!
+		-webkit-text-fill-color: transparent;" >$<span t-raw="ca_financing_lowest"/>/month!</span>
 						</span>
 					</span>
 				</t>

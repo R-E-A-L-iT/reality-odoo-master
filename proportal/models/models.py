@@ -91,7 +91,7 @@ class productBackend(models.Model):
             ("good", "Good"),
             ("overdue", "Overdue"),
             ("expired", "Expired")
-        ]
+        ], string="CCP Status"
     )
 
 class PurchaseOrder(models.Model):
