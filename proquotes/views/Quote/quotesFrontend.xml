@@ -480,6 +480,7 @@
 		text-fill-color: transparent;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;" ><span t-raw="ca_financing_lowest"/>/month</span>!
+						</span>
 					</span>
 				</t>
 				<t t-else="">
