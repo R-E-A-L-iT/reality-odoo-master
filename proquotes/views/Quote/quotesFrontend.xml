@@ -402,7 +402,7 @@
 				if company = r-e-a-l.it US
 					show us rates
 		-->
-		<xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="after">
+		<!-- <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="after">
 			<t t-if="sale_order.is_rental != True">
 				<t t-if="'solutions' in sale_order.company_id.name.lower()">
 					<t t-set="ca_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01947)" />
@@ -417,7 +417,7 @@
 					</span>
 				</t>
 			</t>
-		</xpath>
+		</xpath> -->
 
 		<!--Enable Variable Quantities-->
 		<xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
@@ -457,6 +457,24 @@
 
 		<!-- Quote Info -->
 		<xpath expr="//section[@id=&quot;terms&quot;]" position="before">
+
+			<div id="financing_options">
+				<t t-if="sale_order.is_rental != True">
+				<t t-if="'solutions' in sale_order.company_id.name.lower()">
+					<t t-set="ca_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01947)" />
+					<span>
+						Contact us to see if you are eligible for financing on this quote for as low as <span t-raw="ca_financing_lowest"/> per month.
+					</span>
+				</t>
+				<t t-else="">
+					<t t-set="us_financing_lowest" t-value="str(sale_order.amount_untaxed * 0.01904)" />
+					<span>
+						Contact us to see if you are eligible for financing on this quote for as low as <span t-raw="ca_financing_lowest"/> per month.
+					</span>
+				</t>
+			</t>
+			</div>
+
 			<div id="quote_disclaimer">
 				<t t-set="currency_label" t-if="clang == 'fr_CA' and sale_order.currency_id.name == 'CAD'" t-value="'canadiens'" />
 				<t t-set="currency_label" t-elif="clang == 'fr_CA' and sale_order.currency_id.name == 'USD'" t-value="'américains'" />
