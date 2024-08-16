@@ -46,7 +46,7 @@ class MailMessage(models.Model):
                 if order:
                     body = message.body
                     # bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     # bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://www.r-e-a-l.it/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     # #{base_url}/my/orders/#{object.id}?access_token=#{object.access_token}
                     body = body + bottom_footer
