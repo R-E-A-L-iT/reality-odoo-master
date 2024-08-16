@@ -41,7 +41,9 @@ class MailMessage(models.Model):
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
                     body = message.body
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
+                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://www.r-e-a-l.it/my/order/" + order.sudo().id + "?access_token=" + order.sudo().access_token)
+                    # #{base_url}/my/orders/#{object.id}?access_token=#{object.access_token}
                     body = body + bottom_footer
                     message.body = body
         return messages
