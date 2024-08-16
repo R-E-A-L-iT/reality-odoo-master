@@ -8,9 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name=&quot;default_code&quot;]" position="before">
                 <t t-set="product_type" t-value="object.type_selection" data-oe-t-inline="true"/>
-                <!-- <t t-if="product == 'S'"> -->
-                    <field name="ccp_status" invisible="0" />
-                <!-- </t> -->
+                <field t-if="product_type == 'S'" name="ccp_status" invisible="0" />
             </xpath>
         </field>
     </record>
