@@ -36,6 +36,19 @@ class MailMessage(models.Model):
     @api.model
     def get_base_url(self):
         return self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    
+    @api.model
+    def get_tracking_url(self, name, target_url):
+        
+        # target_url = "https://erp.gyeongcc.com" + record.get_portal_url()
+        link_tracker = env['link.tracker'].search([('url', '=', target_url)], limit=1)
+        if not link_tracker:
+        link_tracker = env['link.tracker'].create({
+        'title': name,
+        'url': target_url,
+        })
+        
+        return link_tracker
 
     @api.model_create_multi
     def create(self, values_list):
@@ -46,7 +59,9 @@ class MailMessage(models.Model):
                 if order:
                     body = message.body
                     
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url(self, "View Quotation", str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token)).short_url)
                     
                     # link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
