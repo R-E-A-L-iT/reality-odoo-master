@@ -769,7 +769,7 @@ class orderLineProquotes(models.Model):
             return "<span></span>"
 
 class frontendQuote(models.Model):
-    _inherit = "ir.ir_ui_view"
+    _inherit = "ir.ui.view.custom"
     
     invoicing_addresses = fields.Many2one("res.partner", string="Invoicing Address")
 
