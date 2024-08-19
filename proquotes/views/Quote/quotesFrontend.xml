@@ -51,12 +51,17 @@
 		<!-- Quote Label -->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
-			<br /><br />
+			<br />
 			<span>Invoicing Address</span>
 			<!-- <t t-call="sale_order.partner_invoice_id">
                 <t t-set="_classes" t-valuef="ml-3 mb-2"/>
             </t> -->
-			<field name="partner_invoice_id" invisible="0"/>
+			<!-- <field name="partner_invoice_id" invisible="0"/> -->
+			<select class="form-control" name="partner_invoice_id">
+				<t t-foreach="company_id" t-as="company">
+					<option t-attf-value="#{company.id}"><t t-esc="company.name"/></option>
+				</t>
+			</select>
 		</xpath>
 
 
