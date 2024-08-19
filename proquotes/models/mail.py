@@ -49,10 +49,8 @@ class MailMessage(models.Model):
                     # bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
                     bottom_footer = _("""
-                                      \r\n \r\n Quotation: %s <a style="color:red;" href=&quot;
-                                      """) % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token) + """
-                                              >View Quote</a>
-                                        """)
+                                      \r\n \r\n Quotation: <a style="color:red;" href=&quot;%s&quot;>View Quote</a>
+                                      """) % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
                     body = body + bottom_footer
                     message.body = body
