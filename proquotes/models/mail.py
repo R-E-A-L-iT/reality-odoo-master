@@ -46,13 +46,13 @@ class MailMessage(models.Model):
                 if order:
                     body = message.body
                     
-                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
-                    link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    # link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
-                    html_data = """<a style='color:red;' href='""" + link + """'>View Quote</a> """
+                    # html_data = """<a style='color:red;' href='""" + link + """'>View Quote</a> """
                     
-                    bottom_footer = _("\n Quotation: " + html_data)
+                    # bottom_footer = _("\n Quotation: " + html_data)
                     
                     body = body + bottom_footer
                     message.body = body
