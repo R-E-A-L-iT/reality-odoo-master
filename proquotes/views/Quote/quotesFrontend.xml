@@ -53,9 +53,10 @@
 			<h1>Quotation</h1>
 			<br /><br />
 			<span>Invoicing Address</span>
-			<t t-call="sale_order.partner_invoice_id">
+			<!-- <t t-call="sale_order.partner_invoice_id">
                 <t t-set="_classes" t-valuef="ml-3 mb-2"/>
-            </t>
+            </t> -->
+			<field name="partner_invoice_id" invisible="0"/>
 		</xpath>
 
 
