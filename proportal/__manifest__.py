@@ -55,7 +55,7 @@
         "views/companyBackend.xml",
         "views/partner_internal.xml",
         "views/notification_email.xml",
-        "views/store_product.xml",
+        # "views/store_product.xml",
         "views/productBackend.xml"
     ],
     # only loaded in demonstration mode

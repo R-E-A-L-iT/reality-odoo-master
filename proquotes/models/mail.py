@@ -35,7 +35,7 @@ class MailMessage(models.Model):
     
     @api.model
     def get_base_url(self):
-        return self.env['ir.config_parameter'].get_param('web.base.url')
+        return self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
     @api.model_create_multi
     def create(self, values_list):
