@@ -45,10 +45,15 @@ class MailMessage(models.Model):
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
                     body = message.body
-                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
-                    # bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://www.r-e-a-l.it/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
-                    # #{base_url}/my/orders/#{object.id}?access_token=#{object.access_token}
+                    
+                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    
+                    bottom_footer = _("""
+                                      \r\n \r\n Quotation: %s <a style="color:red;" href=&quot;
+                                      """) % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token) + """
+                                              >View Quote</a>
+                                        """)
+                    
                     body = body + bottom_footer
                     message.body = body
         return messages
