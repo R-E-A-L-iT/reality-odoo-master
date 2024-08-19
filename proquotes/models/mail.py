@@ -36,6 +36,19 @@ class MailMessage(models.Model):
     @api.model
     def get_base_url(self):
         return self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    
+    @api.model
+    def get_tracking_url(self, name, target_url):
+        
+        # target_url = "https://erp.gyeongcc.com" + record.get_portal_url()
+        link_tracker = self.env['link.tracker'].sudo().search([('url', '=', target_url)], limit=1)
+        if not link_tracker:
+            link_tracker = self.env['link.tracker'].sudo().create({
+                'title': name,
+                'url': target_url,
+            })
+        
+        return link_tracker
 
     @api.model_create_multi
     def create(self, values_list):
@@ -45,10 +58,19 @@ class MailMessage(models.Model):
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
                     body = message.body
-                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
-                    # bottom_footer = _("\r\n \r\n Quotation: %s") % ("https://www.r-e-a-l.it/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
-                    # #{base_url}/my/orders/#{object.id}?access_token=#{object.access_token}
+                    
+                    # bottom_footer = _("\r\n \r\n Quotation: %s") % (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    
+                    url = str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token)
+                    
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url("Quotation: " + str(order.sudo().name), url).short_url)
+                    
+                    # link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
+                    
+                    # html_data = """<a style='color:red;' href='""" + link + """'>View Quote</a> """
+                    
+                    # bottom_footer = _("\n Quotation: " + html_data)
+                    
                     body = body + bottom_footer
                     message.body = body
         return messages
