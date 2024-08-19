@@ -57,11 +57,34 @@
                 <t t-set="_classes" t-valuef="ml-3 mb-2"/>
             </t> -->
 			<!-- <field name="partner_invoice_id" invisible="0"/> -->
-			<select class="form-control" name="invoicing_addresses">
+
+			<!-- <select class="form-control" name="invoicing_addresses">
 				<t t-foreach="company_id" t-as="company">
-					<option t-attf-value="#{company.id}"><t t-esc="company.name"/></option>
+					<option t-attf-value="#{company.name}"><t t-esc="company.id"/></option>
 				</t>
-			</select>
+			</select> -->
+
+			<table>
+				<thead><th>name</th><th>email</th><th>name</th>picking type</thead>
+				<tbody>
+					<t t-foreach="[1,2,3]" t-as="i">
+						<tr>
+							<td>
+								<input type="text" t-att-value="" t-att-id="'name-'+str(i)" t-att-name="'name-'+str(i)" />
+							</td>
+							<td>
+								<input type="text" t-att-value="" t-att-id="'email-'+str(i)" t-att-name="'email-'+str(i)" />
+							</td>
+							<td>
+								<select t-att-id="'picking_type_id-'+str(i)" t-att-name="'picking_type_id-'+str(i)">
+									<option>...</option>
+								</select>
+							</td>
+					
+						</tr>
+					</t>
+				</tbody>
+			</table>
 		</xpath>
 
 
