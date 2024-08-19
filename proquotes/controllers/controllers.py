@@ -336,7 +336,7 @@ class QuoteCustomerPortal(cPortal):
 
        
 # A one inheriting the controller of an existing model
-class QuoteAddressSelection(SaleOrder):
+class QuoteAddressSelection(SalesOrder):
     
     @http.route(["/create/weboperation"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def create_webop(self, qcontext):
