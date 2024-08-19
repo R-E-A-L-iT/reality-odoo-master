@@ -50,7 +50,7 @@ class MailMessage(models.Model):
                     
                     link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
-                    html_data = """<a style='color:red;' href='""" + html_data + """'>View Quote</a> """
+                    html_data = """<a style='color:red;' href='""" + link + """'>View Quote</a> """
                     
                     bottom_footer = _("\n Quotation: " + html_data)
                     
