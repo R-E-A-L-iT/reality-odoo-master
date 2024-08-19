@@ -57,7 +57,7 @@
                 <t t-set="_classes" t-valuef="ml-3 mb-2"/>
             </t> -->
 			<!-- <field name="partner_invoice_id" invisible="0"/> -->
-			<select class="form-control" name="partner_invoice_id">
+			<select class="form-control" name="invoicing_addresses">
 				<t t-foreach="company_id" t-as="company">
 					<option t-attf-value="#{company.id}"><t t-esc="company.name"/></option>
 				</t>

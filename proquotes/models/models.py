@@ -768,6 +768,11 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
 
+class frontendQuote(models.Model):
+    _inherit = "portal.portal_sidebar"
+    
+    invoicing_addresses = fields.Many2one("res.partner", string="Invoicing Address")
+
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
