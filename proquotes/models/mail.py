@@ -63,7 +63,7 @@ class MailMessage(models.Model):
                     
                     url = str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token)
                     
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url("Quotation #" + str(order.sudo().id), url).short_url)
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url("Quotation: " + str(order.sudo().name), url).short_url)
                     
                     # link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
