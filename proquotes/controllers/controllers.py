@@ -344,6 +344,8 @@ class QuoteAddressSelection(http.Controller):
     # SaleOrder = request.env['sale.order']
     
     @http.route(['/quote/po-number'], type='http', auth="public", csrf=False, website=True)
+    
+    @api.model
     def update_ponumber(self, qcontext):
         
         # select_sudo = (
