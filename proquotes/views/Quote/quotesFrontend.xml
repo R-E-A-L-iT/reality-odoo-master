@@ -54,7 +54,7 @@
 
 			<form id="comment" t-attf-action="/quote/po-number" method="POST">
 
-				<input name="customer_po_number" t-att-value="sale.order.customer_po_number" type="hidden"/>
+				<input name="customer_po_number" t-att-value="customer_po_number" type="hidden"/>
 				<textarea rows="1" name="po_number" class="form-control" placeholder="Enter your PO Number if applicable"></textarea>
 				<button type="submit" class="btn btn-primary mt8">Updated</button>
 
