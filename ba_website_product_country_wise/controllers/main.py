@@ -109,7 +109,7 @@ class WebsiteSale(main.WebsiteSale):
                                                                                            post), options=options)
         search_product = details[0].get('results', request.env['product.template']).with_context(bin_size=True)
 
-        tst = requests.get("https://geolocation-db.com/json").json()
+        tst = requests.get("https://ipapi.co/json").json()
         if tst['country_code'] == 'US':
             search_product = search_product.filtered(lambda e: e.is_us == True)
             product_count = len(search_product)
