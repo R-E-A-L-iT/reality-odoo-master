@@ -55,7 +55,7 @@
 			<div id="customer-quote-settings">
 				<form>
 					<input type="text" name="po_number" />
-					<input type="submit" value="Update" ></input>
+					<input type="submit" value="Update" />
 				</form>
 			</div>
 			<!-- <form id="comment" t-attf-action="/quote/po-number" method="POST">
@@ -74,7 +74,7 @@
 						<button type="submit" class="btn btn-primary mt8">Post</button>
 					</div>
 				</div> -->
-			</form>
+			<!-- </form> -->
 			<!-- <span>PO #</span>
 			<field name="customer_po_number" invisible="0"/> -->
 
