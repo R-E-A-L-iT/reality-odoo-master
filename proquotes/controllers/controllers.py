@@ -339,7 +339,7 @@ class QuoteCustomerPortal(cPortal):
        
        
 # inheriting the controller of an existing model
-class QuoteAddressSelection(SalesOrder):
+class QuoteAddressSelection(odoo.http.Controller):
 
     # SaleOrder = request.env['sale.order']
     
@@ -350,7 +350,10 @@ class QuoteAddressSelection(SalesOrder):
         #     request.env["sale.order.line"].sudo().browse(int(line_id_formated))
         # )
         
-        po_number = self.env['sale.order'].sudo().browse('2283')
+        quote = self.env['sale.order'].sudo().browse(qcontext.get('id'))
+        po_number = quote.sudo().browse('customer_po_number')
+        quote.write({"customer_po_number": qcontext.get('customer_po_number')})
+        
         
         # values['customer_po_number'] = qcontext.get('customer_po_number')
         
