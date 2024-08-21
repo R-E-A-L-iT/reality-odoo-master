@@ -52,12 +52,23 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
 
-			<div id="customer-quote-settings">
+
+
+
+			<!-- latest -->
+			<!-- <div id="customer-quote-settings">
 				<form>
 					<input type="text" name="po_number" />
 					<input type="submit" value="Update" />
 				</form>
-			</div>
+			</div> -->
+
+
+
+
+
+
+
 			<!-- <form id="comment" t-attf-action="/quote/po-number" method="POST">
 
 				<input name="customer_po_number" t-att-value="customer_po_number" type="hidden"/>

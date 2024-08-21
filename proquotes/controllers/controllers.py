@@ -334,14 +334,23 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
-class CustomerQuoteSettings(http.Controller):
+# latest
+# class CustomerQuoteSettings(http.Controller):
     
-    @http.route('/quote/<self_id>', auth='user', website=True)
-    def quote(self, self_id, **kw):
-        print('.......... test 123 controller', kw)
-        # return http.request.render('test_workflow.test_form', {
-        #     'num_list':[1,2,3,4,5,6,7],
-        # })
+#     @http.route('/quote/<self_id>', auth='user', website=True)
+#     def quote(self, self_id, **kw):
+#         print('.......... test 123 controller', kw)
+#         # return http.request.render('test_workflow.test_form', {
+#         #     'num_list':[1,2,3,4,5,6,7],
+#         # })
+        
+        
+        
+        
+        
+        
+        
+        
 
 # https://stackoverflow.com/questions/71510579/add-one2many-field-to-a-website-form-odoo-13 
 # https://www.odoo.com/forum/help-1/how-to-submit-form-from-qweb-155243  
