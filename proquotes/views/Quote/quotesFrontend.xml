@@ -51,6 +51,9 @@
 		<!-- Quote Label -->
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
+
+			<field name="po_number" />
+
 			<!-- <br />
 			<span>Invoicing Address</span> -->
 

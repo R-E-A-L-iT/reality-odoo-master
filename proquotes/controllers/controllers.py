@@ -334,6 +334,8 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
+# https://stackoverflow.com/questions/71510579/add-one2many-field-to-a-website-form-odoo-13   
+       
        
 # inheriting the controller of an existing model
 # class QuoteAddressSelection(SalesOrder):
