@@ -334,20 +334,30 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
-# https://stackoverflow.com/questions/71510579/add-one2many-field-to-a-website-form-odoo-13   
+# https://stackoverflow.com/questions/71510579/add-one2many-field-to-a-website-form-odoo-13 
+# https://www.odoo.com/forum/help-1/how-to-submit-form-from-qweb-155243  
        
        
 # inheriting the controller of an existing model
-# class QuoteAddressSelection(SalesOrder):
+class QuoteAddressSelection(SalesOrder):
 
-#     SaleOrder = request.env['sale.order']
+    # SaleOrder = request.env['sale.order']
     
-#     @http.route(["/create/weboperation"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
-#     def create_webop(self, qcontext):
-#         values['partner_invoice_id'] = qcontext.get('partner_invoice_id')
-#         #update record in model
-#         your_record_id = qcontext.get('form_input_recordid')
-#         sale_record = self.env['sale.order'].browse(your_record_id)
-#         sale_record.write(values)
-#             # create record in model
-#             # my_new_record = self.env['sale'].create(values)
+    @http.route(['/quote/po-number'], type='http', auth="public", website=True)
+    def update_ponumber(self, qcontext):
+        
+        # select_sudo = (
+        #     request.env["sale.order.line"].sudo().browse(int(line_id_formated))
+        # )
+        
+        po_number = self.env['sale.order'].sudo().browse('2283')
+        
+        # values['customer_po_number'] = qcontext.get('customer_po_number')
+        
+        # values['partner_invoice_id'] = qcontext.get('partner_invoice_id')
+        # #update record in model
+        # your_record_id = qcontext.get('form_input_recordid')
+        # sale_record = self.env['sale.order'].browse(your_record_id)
+        # sale_record.write(values)
+            # create record in model
+            # my_new_record = self.env['sale'].create(values)

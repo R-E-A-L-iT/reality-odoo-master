@@ -52,7 +52,25 @@
 		<xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
 			<h1>Quotation</h1>
 
-			<field name="customer_po_number" invisible="0"/>
+			<form id="comment" t-attf-action="/quote/po-number" method="POST">
+
+				<input name="customer_po_number" t-att-value="sale.order.customer_po_number" type="hidden"/>
+				<textarea rows="1" name="po_number" class="form-control" placeholder="Enter your PO Number if applicable"></textarea>
+				<button type="submit" class="btn btn-primary mt8">Updated</button>
+
+				<!-- <div class="media">
+					<span class="pull-left">
+						<img class="img img-circle media-object" t-att-src="website.image_url(user_id.partner_id, 'image_small')" style="width: 30px"/>
+					</span>
+					<div class="media-body">
+						<input name="blog_post_id" t-att-value="blog_post.id" type="hidden"/>
+						<textarea rows="3" name="comment" class="form-control" placeholder="Write a comment..."></textarea>
+						<button type="submit" class="btn btn-primary mt8">Post</button>
+					</div>
+				</div> -->
+			</form>
+			<!-- <span>PO #</span>
+			<field name="customer_po_number" invisible="0"/> -->
 
 			<!-- <br />
 			<span>Invoicing Address</span> -->
