@@ -339,7 +339,7 @@ class QuoteCustomerPortal(cPortal):
        
        
 # inheriting the controller of an existing model
-class QuoteAddressSelection(odoo.http.Controller):
+class QuoteAddressSelection(http.Controller):
 
     # SaleOrder = request.env['sale.order']
     
