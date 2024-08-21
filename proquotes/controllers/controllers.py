@@ -334,27 +334,34 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
+class CustomerQuoteSettings(http.Controller):
+    
+    @http.route('/quote/<self_id>', auth='user', website=True)
+    def quote(self, self_id, **kw):
+        print('.......... test 123 controller', kw)
+        # return http.request.render('test_workflow.test_form', {
+        #     'num_list':[1,2,3,4,5,6,7],
+        # })
+
 # https://stackoverflow.com/questions/71510579/add-one2many-field-to-a-website-form-odoo-13 
 # https://www.odoo.com/forum/help-1/how-to-submit-form-from-qweb-155243  
        
        
 # inheriting the controller of an existing model
-class QuoteAddressSelection(http.Controller):
+# class QuoteAddressSelection(http.Controller):
 
-    # SaleOrder = request.env['sale.order']
+#     # SaleOrder = request.env['sale.order']
     
-    @http.route(['/quote/po-number'], type='http', auth="public", csrf=False, website=True)
-    
-    @api.model
-    def update_ponumber(self, qcontext):
+#     @http.route(['/quote/po-number'], type='http', auth="public", csrf=False, website=True)
+#     def update_ponumber(self, qcontext):
         
-        # select_sudo = (
-        #     request.env["sale.order.line"].sudo().browse(int(line_id_formated))
-        # )
+#         # select_sudo = (
+#         #     request.env["sale.order.line"].sudo().browse(int(line_id_formated))
+#         # )
         
-        quote = self.env['sale.order'].sudo().browse(qcontext.get('id'))
-        po_number = quote.sudo().browse('customer_po_number')
-        quote.write({"customer_po_number": qcontext.get('customer_po_number')})
+#         quote = self.env['sale.order'].sudo().browse(qcontext.get('id'))
+#         po_number = quote.sudo().browse('customer_po_number')
+#         quote.write({"customer_po_number": qcontext.get('customer_po_number')})
         
         
         # values['customer_po_number'] = qcontext.get('customer_po_number')
