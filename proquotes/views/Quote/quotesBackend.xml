@@ -66,7 +66,7 @@
 					<field name="rental_country" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
 					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="rental_status" attrs="{'invisible': [('is_rental', '!=', True)]}" widget="badges"/>
+					<field name="rental_status" attrs="{'invisible': [('is_rental', '!=', True)], 'readonly': False}" widget="badges"/>
 					<field name="customer_po_number" invisible="0" />
 					<field name="manual_invoice_status" widget="selection_radio" />
 					<field name="financing_available" />
