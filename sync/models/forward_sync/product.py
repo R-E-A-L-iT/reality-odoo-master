@@ -160,7 +160,7 @@ class sync_products:
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.error(e)
-                _logger.exception("Traceback to tuple index error:")
+                _logger.exception("Traceback: ")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
