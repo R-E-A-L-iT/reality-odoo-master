@@ -25,7 +25,7 @@ _logger = logging.getLogger(__name__)
 class purchase_order(models.Model):
     _inherit = "purchase.order"
     
-    quote_source = fields.Char(name="Source" related="sale.order.name")
+    quote_source = fields.Char(name="Source", related="sale.order.")
     
     footer = fields.Selection(
         [
