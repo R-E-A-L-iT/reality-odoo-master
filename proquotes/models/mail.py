@@ -79,7 +79,7 @@ class MailMessage(models.Model):
                 if course:
                     url = course.sudo().website_url
                     
-                    footer = _("\r\n \r\n Course: %s") % (get_tracking_url("Course: " + str(course.sudo().display_name), url).short_url)
+                    footer = _("\r\n \r\n Course: %s") % (self.get_tracking_url("Course: " + str(course.sudo().display_name), url).short_url)
                     
                     body = body + footer
                     message.body = body
