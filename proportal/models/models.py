@@ -191,8 +191,9 @@ class AppointmentView(models.Model):
                 return True
             else:
                 return False
-    
-    
+            
+    # How the heck do I actually trigger this function???
+    # maybe make an automated action instead?
     def removeConflictingTimes(self):
         for slot in self.slot_ids:
             for event in self.env['calendar.event'].sudo().search([]):
