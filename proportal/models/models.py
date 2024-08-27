@@ -192,7 +192,7 @@ class AppointmentView(models.Model):
             else:
                 return False
     
-    @api.depends('slot_ids')
+    @api.multi
     def removeConflictingTimes(self):
         for slot in self.slot_ids:
             for event in self.env['calendar.event'].sudo().search([]):
