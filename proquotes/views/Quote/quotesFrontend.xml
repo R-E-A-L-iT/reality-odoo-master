@@ -203,7 +203,7 @@
 						<span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
 						<span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
 					</td>
-					<td>
+					<td style="display: none;">
 						<span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
 						<span t-elif="clang == 'fr_CA'">Taxes</span>
 					</td>
