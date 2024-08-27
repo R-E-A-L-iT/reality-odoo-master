@@ -182,7 +182,7 @@ class PurchaseOrder(models.Model):
 class AppointmentView(models.Model):
     _inherit = "calendar.appointment.type"
     
-    slot_ids = fields.One2many(compute="removeConflictingTimes")
+    # slot_ids = fields.One2many(compute="removeConflictingTimes")
     
     def overlap(first_start, first_end, second_start, second_end):
         #will check both ways
@@ -200,9 +200,3 @@ class AppointmentView(models.Model):
                     _logger.info("CALENDAR EVENT OVERLAP: TRUE")
                 else:
                     _logger.info("CALENDAR EVENT OVERLAP: FALSE")
-            
-    @api.model
-    def fields_view_get(self, view_id="calendar_appointment_type_view_form", view_type='form', toolbar=False, submenu=False):
-        # res = super(TestProject, self).fields_view_get(view_id="calendar_appointment_type_view_form", view_type=view_type, toolbar=toolbar,submenu=submenu)
-        removeConflictingTimes()
-        return res
