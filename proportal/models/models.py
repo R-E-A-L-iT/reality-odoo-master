@@ -190,12 +190,11 @@ class AppointmentView(models.Model):
             else:
                 return False
     
-    # @api.depends('slot_ids')
-    # def removeConflictingTimes(self):
-    for slot in slot_ids:
-        for event in env['calendar.event'].sudo().search([]):
-            if overlap(slot.start_datetime, slot.end_datetime, event.start, event.stop):
-                _logger.info("CALENDAR EVENT OVERLAP: TRUE")
-            else:
-                _logger.info("CALENDAR EVENT OVERLAP: FALSE")
+    def init(self):
+        for slot in self.slot_ids:
+            for event in self.env['calendar.event'].sudo().search([]):
+                if overlap(slot.start_datetime, slot.end_datetime, event.start, event.stop):
+                    _logger.info("CALENDAR EVENT OVERLAP: TRUE")
+                else:
+                    _logger.info("CALENDAR EVENT OVERLAP: FALSE")
             
