@@ -198,5 +198,5 @@ class AppointmentView(models.Model):
                 else:
                     _logger.info("CALENDAR EVENT OVERLAP: FALSE")
                     
-    removeConflictingTimes()
+    removeConflictingTimes(self)
             
