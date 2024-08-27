@@ -182,6 +182,8 @@ class PurchaseOrder(models.Model):
 class AppointmentView(models.Model):
     _inherit = "calendar.appointment.type"
     
+    slot_ids = fields.One2many(compute="removeConflictingTimes")
+    
     def overlap(first_start, first_end, second_start, second_end):
         #will check both ways
         for time in (first_start, first_end):
@@ -190,7 +192,8 @@ class AppointmentView(models.Model):
             else:
                 return False
     
-    def init(self):
+    @api.depends('slot_ids')
+    def removeConflictingTimes(self):
         for slot in self.slot_ids:
             for event in self.env['calendar.event'].sudo().search([]):
                 if overlap(slot.start_datetime, slot.end_datetime, event.start, event.stop):
