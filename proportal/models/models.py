@@ -201,9 +201,8 @@ class AppointmentView(models.Model):
                 else:
                     _logger.info("CALENDAR EVENT OVERLAP: FALSE")
             
-    # @api.model
-    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
-    # submenu=False):
-    #     res = super(TestProject, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar,submenu=submenu)
-    #     removeConflictingTimes()
-    # return res
+    @api.model
+    def fields_view_get(self, view_id="calendar_appointment_type_view_form", view_type='form', toolbar=False, submenu=False):
+        # res = super(TestProject, self).fields_view_get(view_id="calendar_appointment_type_view_form", view_type=view_type, toolbar=toolbar,submenu=submenu)
+        removeConflictingTimes()
+        return res
