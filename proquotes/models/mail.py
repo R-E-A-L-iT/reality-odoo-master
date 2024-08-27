@@ -73,9 +73,9 @@ class MailMessage(models.Model):
                     
                     body = body + bottom_footer
                     message.body = body
-            if message.model=='slide.channel' and message.res_partner_id and message.body:
+            if message.model=='slide.channel' and message.res_id and message.body:
                 body = message.body
-                course = self.env['slide.channel'].sudo().browse(int(message.res_partner_id))
+                course = self.env['slide.channel'].sudo().browse(int(message.res_id))
                 if course:
                     url = course.sudo().website_url
                     
