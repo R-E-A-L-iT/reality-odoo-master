@@ -73,4 +73,14 @@ class MailMessage(models.Model):
                     
                     body = body + bottom_footer
                     message.body = body
+            if message.model=='slide.channel' and message.res_id and message.body:
+                body = message.body
+                course = self.env['slide.channel'].sudo().browse(int(message.res_id))
+                if course:
+                    url = course.sudo().website_url
+                    
+                    footer = _("\r\n \r\n Course: %s") % (self.get_tracking_url("Course: " + str(course.sudo().display_name), url).short_url)
+                    
+                    body = body + footer
+                    message.body = body
         return messages
