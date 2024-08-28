@@ -2,7 +2,7 @@
 
 <odoo>
 <!-- mail_channel_view_form -->
-    <template id="mail.mail_channel_view_form" name="Discuss Channel" inherit_id="mail.channel.form">
+    <template id="discuss_channel_id" name="Discuss Channel" inherit_id="mail.mail_channel_view_form">
         <xpath expr="//field[@name=&quot;description&quot;]" position="after">
             <field name="id" string="ID" />
         </xpath>
