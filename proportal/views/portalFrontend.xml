@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="r_portal_custom" name="Customized Portal Interface">
+    <template id="r_portal_custom" name="Customized Portal Interface" inherit_id="portal.portal_my_home">
         <t t-call="portal.portal_layout">
 
             <style>
