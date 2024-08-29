@@ -37,9 +37,13 @@
         <t t-call="portal.portal_layout">
             <div class="r_portal_container">
                 <!-- Documents -->
+                <div class="r_portal_inner"></div>
                 <!-- Products -->
+                <div class="r_portal_inner"></div>
                 <!-- Support -->
+                <div class="r_portal_inner"></div>
                 <!-- Info -->
+                <div class="r_portal_inner"></div>
             </div>
         </t>
     </template>
