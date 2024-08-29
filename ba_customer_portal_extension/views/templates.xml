@@ -142,7 +142,7 @@
                         }
             </style>
             <div class="o_portal_my_home">
-                <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
+                <!-- <div class="oe_structure" id="oe_structure_portal_my_home_1"/> -->
                 <h3>my.R-E-A-L.iT</h3>
                 <t t-if="companies" t-foreach="companies" t-as="comp">
                     <h4 class="mt-4 text-primary" t-esc="comp['company_name']"/>
@@ -156,7 +156,7 @@
                     </div>
                 </t>
             </div>
-            <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
+            <!-- <div class="oe_structure" id="oe_structure_portal_my_home_2"/> -->
 
             <style>
                 .r_portal_container {
