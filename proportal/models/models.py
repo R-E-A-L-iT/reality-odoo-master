@@ -171,33 +171,3 @@ class PurchaseOrder(models.Model):
                     "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
                 }
             )
-
-# remove available times that interfere with calendar events
-
-# 1. triggered on selection of a specific day and employee in appointment booking, get array of every available time slot for that day
-# 2. get list of all events for selected employee and selected day from calendar
-# 3. check if any of the time slots overlap with existing calendar events
-# 4. if so, remove them from view
-
-class AppointmentView(models.Model):
-    _inherit = "calendar.appointment.type"
-    
-    # slot_ids = fields.One2many(compute="removeConflictingTimes")
-    
-    def overlap(first_start, first_end, second_start, second_end):
-        #will check both ways
-        for time in (first_start, first_end):
-            if second_start < time < second_end:
-                return True
-            else:
-                return False
-            
-    # How the heck do I actually trigger this function???
-    # maybe make an automated action instead?
-    def removeConflictingTimes(self):
-        for slot in self.slot_ids:
-            for event in self.env['calendar.event'].sudo().search([]):
-                if overlap(slot.start_datetime, slot.end_datetime, event.start, event.stop):
-                    _logger.info("CALENDAR EVENT OVERLAP: TRUE")
-                else:
-                    _logger.info("CALENDAR EVENT OVERLAP: FALSE")
