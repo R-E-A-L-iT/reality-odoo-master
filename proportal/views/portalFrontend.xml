@@ -5,34 +5,34 @@
         <t t-call="portal.portal_layout">
 
             <style>
-            .r_portal_container {
-                display: flex;
-                flex-wrap: wrap;
-                width: 80vw;
-                margin: 0 auto;
-            }
+                .r_portal_container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 80vw;
+                    margin: 0 auto;
+                }
 
-            .r_portal_inner {
-                flex-basis: 50%;
-                flex-grow: 1;
-            }
+                .r_portal_inner {
+                    flex-basis: 50%;
+                    flex-grow: 1;
+                }
 
-            .r_portal_inner:nth-of-type(1) {
-                background: red;
-            }
+                .r_portal_inner:nth-of-type(1) {
+                    background: red;
+                }
 
-            .r_portal_inner:nth-of-type(2) {
-                background: gold;
-            }
+                .r_portal_inner:nth-of-type(2) {
+                    background: gold;
+                }
 
-            .r_portal_inner:nth-of-type(3) {
-                background: green;
-            }
+                .r_portal_inner:nth-of-type(3) {
+                    background: green;
+                }
 
-            .r_portal_inner:nth-of-type(4) {
-                background: blue;
-            }
-        </style>
+                .r_portal_inner:nth-of-type(4) {
+                    background: blue;
+                }
+            </style>
 
             <div class="r_portal_container">
                 <!-- Documents -->
@@ -46,6 +46,7 @@
                 <!-- Info -->
                 <div class="r_portal_inner"></div>
             </div>
+            
         </t>
     </template>
 </odoo>
