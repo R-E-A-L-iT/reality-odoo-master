@@ -142,7 +142,7 @@
                         }
             </style>
             <div class="o_portal_my_home">
-                <!-- <div class="oe_structure" id="oe_structure_portal_my_home_1"/> -->
+                <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
                 <h3>my.R-E-A-L.iT</h3>
                 <t t-if="companies" t-foreach="companies" t-as="comp">
                     <h4 class="mt-4 text-primary" t-esc="comp['company_name']"/>
@@ -156,50 +156,7 @@
                     </div>
                 </t>
             </div>
-            <!-- <div class="oe_structure" id="oe_structure_portal_my_home_2"/> -->
-
-            <style>
-                .r_portal_container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    width: 80vw;
-                    margin: 0 auto;
-                }
-
-                .r_portal_inner {
-                    flex-basis: 50%;
-                    flex-grow: 1;
-                }
-
-                .r_portal_inner:nth-of-type(1) {
-                    background: red;
-                }
-
-                .r_portal_inner:nth-of-type(2) {
-                    background: gold;
-                }
-
-                .r_portal_inner:nth-of-type(3) {
-                    background: green;
-                }
-
-                .r_portal_inner:nth-of-type(4) {
-                    background: blue;
-                }
-            </style>
-
-            <div class="r_portal_container">
-                <!-- Documents -->
-                <div class="r_portal_inner">
-                    <h1>Testing.</h1>
-                </div>
-                <!-- Products -->
-                <div class="r_portal_inner"></div>
-                <!-- Support -->
-                <div class="r_portal_inner"></div>
-                <!-- Info -->
-                <div class="r_portal_inner"></div>
-            </div>
+            <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
         </t>
     </template>
 
