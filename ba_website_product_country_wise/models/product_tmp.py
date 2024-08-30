@@ -52,4 +52,4 @@ class Website(models.Model):
     _inherit = 'website'
 
     def sale_product_domain(self):
-        return [("sale_ok", "=", True), ("active", "=", True)] + self.get_current_website().website_domain()
+        return [("sale_ok", "=", True), ('is_published', '=', True)] + self.get_current_website().website_domain()
