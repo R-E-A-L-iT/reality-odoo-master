@@ -171,3 +171,25 @@ class PurchaseOrder(models.Model):
                     "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
                 }
             )
+            
+class MailCatch(models.Model):
+    _inherit = "mail.message"
+    
+    def message_new(self, cr, uid, msg, custom_values=None, context=None):
+        """ Overrides mail_thread message_new that is called by the mailgateway
+            through message_process.
+            This override updates the document according to the email. """
+        _logger.info("Message received")
+
+    if custom_values is None:
+        custom_values = {}
+        val = msg.get('from').split('<')[0]
+        defaults = {
+            'name':  msg.get('subject') or _("No Subject"),
+            'partner_name': val,
+            'email_from': msg.get('from'),
+            'email_cc': msg.get('cc'),
+            'user_id': False,
+            'partner_id': msg.get('author_id', False), 
+        }
+        
