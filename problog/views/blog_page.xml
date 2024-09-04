@@ -10,8 +10,9 @@
             <t t-set="date_input" t-value="blog_post.post_date" />
             <t t-call="problog.blog_date" />
         </xpath>
-        <xpath expr="//section[@id=&quot;o_wblog_post_footer&quot;]/div" position="after">
-            <t t-call="custom.custom-footer" />
-        </xpath>
+<!--        testing commented-->
+<!--        <xpath expr="//section[@id=&quot;o_wblog_post_footer&quot;]/div" position="after">-->
+<!--            <t t-call="custom.custom-footer" />-->
+<!--        </xpath>-->
     </template>
 </odoo>

@@ -86,7 +86,8 @@ class InvoiceMain(models.Model):
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
 
-    applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    applied_name = fields.Char( string="Applied Name")
 
     price_override = fields.Boolean(default=False, string="Override Price")
 
@@ -112,5 +113,6 @@ class invoiceLine(models.Model):
         self.price_override = self.price_unit != self.get_price()
 
     def get_applied_name(self):
-        n = name_translation(self)
-        n.get_applied_name()
+        return True
+        # n = name_translation(self)
+        # n.get_applied_name()

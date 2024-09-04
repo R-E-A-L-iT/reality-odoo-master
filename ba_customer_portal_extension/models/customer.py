@@ -38,4 +38,4 @@ from odoo import fields, models, api, tools
 class Contacts(models.Model):
     _inherit = 'res.partner'
 
-    portal_companies = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
+    portal_companies_ids = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])

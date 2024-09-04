@@ -35,7 +35,7 @@ class person(models.Model):
 
     # Identify Owned Products
     products = fields.One2many(
-        "stock.production.lot", "owner", string="Products", readonly=True
+        "stock.lot", "owner", string="Products", readonly=True
     )
     parentProducts = fields.One2many(
         related="parent_id.products", string="Company Products", readonly=True
@@ -43,7 +43,7 @@ class person(models.Model):
 
 
 class productInstance(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
 
     # Store Data For CCP Tracking
     owner = fields.Many2one("res.partner", string="Owner")

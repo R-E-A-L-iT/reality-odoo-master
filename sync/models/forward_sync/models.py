@@ -33,5 +33,5 @@ class pricelist(models.Model):
 
 
 class ccp(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
     stringRep = fields.Char(default="")

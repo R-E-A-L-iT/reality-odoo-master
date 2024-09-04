@@ -13,14 +13,232 @@ import logging
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression
+from odoo.osv import expression as exp
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
+from odoo.models import BaseModel as BSM
+from collections import defaultdict
 
 from .translation import name_translation
+from odoo.tools import (
+    clean_context, config, CountingStream, date_utils, discardattr,
+    DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, frozendict,
+    get_lang, LastOrderedSet, lazy_classproperty, OrderedSet, ormcache,
+    partition, populate, Query, ReversedIterable, split_every, unique, SQL,
+)
+
+# Domain operators.
+NOT_OPERATOR = '!'
+OR_OPERATOR = '|'
+AND_OPERATOR = '&'
+DOMAIN_OPERATORS = (NOT_OPERATOR, OR_OPERATOR, AND_OPERATOR)
+
+# List of available term operators. It is also possible to use the '<>'
+# operator, which is strictly the same as '!='; the later should be preferred
+# for consistency. This list doesn't contain '<>' as it is simplified to '!='
+# by the normalize_operator() function (so later part of the code deals with
+# only one representation).
+# Internals (i.e. not available to the user) 'inselect' and 'not inselect'
+# operators are also used. In this case its right operand has the form (subselect, params).
+TERM_OPERATORS = ('=', '!=', '<=', '<', '>', '>=', '=?', '=like', '=ilike',
+                  'like', 'not like', 'ilike', 'not ilike', 'in', 'not in',
+                  'child_of', 'parent_of', 'any', 'not any')
+
+# A subset of the above operators, with a 'negative' semantic. When the
+# expressions 'in NEGATIVE_TERM_OPERATORS' or 'not in NEGATIVE_TERM_OPERATORS' are used in the code
+# below, this doesn't necessarily mean that any of those NEGATIVE_TERM_OPERATORS is
+# legal in the processed term.
+NEGATIVE_TERM_OPERATORS = ('!=', 'not like', 'not ilike', 'not in')
+
+# Negation of domain expressions
+DOMAIN_OPERATORS_NEGATION = {
+    AND_OPERATOR: OR_OPERATOR,
+    OR_OPERATOR: AND_OPERATOR,
+}
+TERM_OPERATORS_NEGATION = {
+    '<': '>=',
+    '>': '<=',
+    '<=': '>',
+    '>=': '<',
+    '=': '!=',
+    '!=': '=',
+    'in': 'not in',
+    'like': 'not like',
+    'ilike': 'not ilike',
+    'not in': 'in',
+    'not like': 'like',
+    'not ilike': 'ilike',
+    'any': 'not any',
+    'not any': 'any',
+}
+ANY_IN = {'any': 'in', 'not any': 'not in'}
+
+TRUE_LEAF = (1, '=', 1)
+FALSE_LEAF = (0, '=', 1)
+
+TRUE_DOMAIN = [TRUE_LEAF]
+FALSE_DOMAIN = [FALSE_LEAF]
+
+SQL_OPERATORS = {
+    '=': SQL('='),
+    '!=': SQL('!='),
+    '<=': SQL('<='),
+    '<': SQL('<'),
+    '>': SQL('>'),
+    '>=': SQL('>='),
+    'in': SQL('IN'),
+    'not in': SQL('NOT IN'),
+    '=like': SQL('LIKE'),
+    '=ilike': SQL('ILIKE'),
+    'like': SQL('LIKE'),
+    'ilike': SQL('ILIKE'),
+    'not like': SQL('NOT LIKE'),
+    'not ilike': SQL('NOT ILIKE'),
+}
 
 _logger = logging.getLogger(__name__)
 
+def is_operator(element):
+    """ Test whether an object is a valid domain operator. """
+    return isinstance(element, str) and element in DOMAIN_OPERATORS
+
+def is_boolean(element):
+    return element == TRUE_LEAF or element == FALSE_LEAF
+
+@api.model
+def _flush_search(self, domain, fields=None, order=None, seen=None):
+    """ Flush all the fields appearing in `domain`, `fields` and `order`.
+
+    Note that ``order=None`` actually means no order, so if you expect some
+    fallback order, you have to provide it yourself.
+    """
+    if seen is None:
+        seen = set()
+    elif self._name in seen:
+        return
+    seen.add(self._name)
+
+    to_flush = defaultdict(OrderedSet)             # {model_name: field_names}
+    if fields:
+        to_flush[self._name].update(fields)
+
+    def collect_from_domain(model, domain):
+        _logger.info('>>>>>>>>>>>>>>>>. model: %s, domain: %s', model, domain)
+        if not domain:
+            domain = []
+        for arg in domain:
+            if isinstance(arg, str):
+                continue
+            if not isinstance(arg[0], str):
+                continue
+            comodel = collect_from_path(model, arg[0])
+            if arg[1] in ('child_of', 'parent_of') and comodel._parent_store:
+                # hierarchy operators need the parent field
+                collect_from_path(comodel, comodel._parent_name)
+            if arg[1] in ('any', 'not any'):
+                collect_from_domain(comodel, arg[2])
+
+    def collect_from_path(model, path):
+        # path is a dot-separated sequence of field names
+        for fname in path.split('.'):
+            field = model._fields.get(fname)
+            if not field:
+                break
+            to_flush[model._name].add(fname)
+            if field.type == 'one2many' and field.inverse_name:
+                to_flush[field.comodel_name].add(field.inverse_name)
+                field_domain = field.get_domain_list(model)
+                if field_domain:
+                    collect_from_domain(self.env[field.comodel_name], field_domain)
+            # DLE P111: `test_message_process_email_partner_find`
+            # Search on res.users with email_normalized in domain
+            # must trigger the recompute and flush of res.partner.email_normalized
+            if field.related:
+                # DLE P129: `test_transit_multi_companies`
+                # `self.env['stock.picking'].search([('product_id', '=', product.id)])`
+                # Should flush `stock.move.picking_ids` as `product_id` on `stock.picking` is defined as:
+                # `product_id = fields.Many2one('product.product', 'Product', related='move_lines.product_id', readonly=False)`
+                collect_from_path(model, field.related)
+            if field.relational:
+                model = self.env[field.comodel_name]
+        # return the model found by traversing all fields (used in collect_from_domain)
+        return model
+
+    # flush the order fields
+    if order:
+        for order_part in order.split(','):
+            order_field = order_part.split()[0]
+            field = self._fields.get(order_field)
+            if field is not None:
+                to_flush[self._name].add(order_field)
+                if field.relational:
+                    comodel = self.env[field.comodel_name]
+                    comodel._flush_search([], order=comodel._order, seen=seen)
+
+    if self._active_name and self.env.context.get('active_test', True):
+        to_flush[self._name].add(self._active_name)
+
+    collect_from_domain(self, domain)
+
+    # Check access of fields with groups
+    for model_name, field_names in to_flush.items():
+        self.env[model_name].check_field_access_rights('read', field_names)
+
+    # also take into account the fields in the record rules
+    if ir_rule_domain := self.env['ir.rule']._compute_domain(self._name, 'read'):
+        collect_from_domain(self, ir_rule_domain)
+
+    # flush model dependencies (recursively)
+    if self._depends:
+        models = [self]
+        while models:
+            model = models.pop()
+            for model_name, field_names in model._depends.items():
+                to_flush[model_name].update(field_names)
+                models.append(self.env[model_name])
+
+    for model_name, field_names in to_flush.items():
+        self.env[model_name].flush_model(field_names)
+
+BSM._flush_search = _flush_search
+
+# --------------------------------------------------
+# Generic domain manipulation
+# --------------------------------------------------
+
+def _anyfy_leaves(domain, model):
+    """ Return the domain where all conditions on field sequences have been
+    transformed into 'any' conditions.
+    """
+    result = []
+    if not domain:
+        domain = []
+    for item in domain:
+        if is_operator(item):
+            result.append(item)
+            continue
+
+        left, operator, right = item = tuple(item)
+        if is_boolean(item):
+            result.append(item)
+            continue
+
+        path = left.split('.', 1)
+        field = model._fields.get(path[0])
+        if not field:
+            raise ValueError(f"Invalid field {model._name}.{path[0]} in leaf {item}")
+        if len(path) > 1 and field.relational:  # skip properties
+            subdomain = [(path[1], operator, right)]
+            comodel = model.env[field.comodel_name]
+            result.append((path[0], 'any', _anyfy_leaves(subdomain, comodel)))
+        elif operator in ('any', 'not any'):
+            comodel = model.env[field.comodel_name]
+            result.append((left, operator, _anyfy_leaves(right, comodel)))
+        else:
+            result.append(item)
+
+    return result
+exp._anyfy_leaves = _anyfy_leaves
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"
@@ -195,28 +413,6 @@ class order(models.Model):
         related="company_id.name", string="company_name", required=True
     )
 
-    manual_invoice_status = fields.Selection(
-        [("fully_invoiced","Fully Invoiced"),("partially_invoiced","Partially Invoiced"),("not_invoiced","Not Invoiced"),],
-        string="Invoicing Status (Manual)"
-    )
-    
-    # invoicing address display
-    # readonly_partner_invoice_id_street1 = fields.Char(related="partner_invoice_id.street")
-    # readonly_partner_invoice_id_street2 = fields.Char(related="partner_invoice_id.street2")
-    # readonly_partner_invoice_id_city = fields.Char(related="partner_invoice_id.city")
-    # readonly_partner_invoice_id_state_id = fields.Many2one(related="partner_invoice_id.state_id")
-    # readonly_partner_invoice_id_country_id = fields.Many2one(related="partner_invoice_id.country_id")
-    # readonly_partner_invoice_id_zip = fields.Char(related="partner_invoice_id.zip")
-    
-    # delivery address display
-    # readonly_partner_shipping_id_street1 = fields.Char(related="partner_invoice_id.street")
-    # readonly_partner_shipping_id_street2 = fields.Char(related="partner_invoice_id.street2")
-    # readonly_partner_shipping_id_city = fields.Char(related="partner_invoice_id.city")
-    # readonly_partner_shipping_id_state_id = fields.Many2one(related="partner_invoice_id.state_id")
-    # readonly_partner_shipping_id_country_id = fields.Many2one(related="partner_invoice_id.country_id")
-    # readonly_partner_shipping_id_zip = fields.Char(related="partner_invoice_id.zip")
-    
-
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -376,7 +572,7 @@ class order(models.Model):
     rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
-        string="Renewal Items", comodel_name="stock.production.lot"
+        string="Renewal Items", comodel_name="stock.lot"
     )
     # rental_insurance = fields.Binary(string="Insurance")
 
@@ -471,7 +667,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:                       
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"           
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -502,7 +698,7 @@ class order(models.Model):
             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -526,7 +722,7 @@ class order(models.Model):
             ("sale_ok", "=", True)])
         
         if len(product_list) != 1:
-            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.production.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
 
         line = self.generate_product_line(
@@ -656,7 +852,7 @@ class order(models.Model):
                     )
             order.amount_undiscounted = total
 
-    def _amount_by_group(self):        
+    def _amount_by_group(self):
         #  Overden Method to Ensure sale order lines are selected to included in calculation
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
@@ -696,22 +892,14 @@ class order(models.Model):
                 for l in res
             ]
 
-        
-    def action_confirm(self):
-        for line in self.order_line:            
-            if (str(line.selected) == "false"):
-                line.product_uom_qty = 0
-
-        super().action_confirm()
-
-        
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
 
     variant = fields.Many2one("proquotes.variant", string="Variant Group")
 
-    applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
+    applied_name = fields.Char( string="Applied Name")
 
     selected = fields.Selection(
         [("true", "Yes"), ("false", "No")],
@@ -757,8 +945,9 @@ class orderLineProquotes(models.Model):
     )
 
     def get_applied_name(self):
-        n = name_translation(self)
-        n.get_applied_name()
+        return True
+        # n = name_translation(self)
+        # n.get_applied_name()
 
     def get_sale_order_line_multiline_description_sale(self, product):
         if product.description_sale:
@@ -819,11 +1008,11 @@ class variant(models.Model):
 class person(models.Model):
     _inherit = "res.partner"
 
-    products = fields.One2many("stock.production.lot", "owner", string="Products")
+    products = fields.One2many("stock.lot", "owner", string="Products")
 
 
 class owner(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
 
     owner = fields.Many2one("res.partner", string="Owner")
 
@@ -838,4 +1027,5 @@ class owner(models.Model):
 class pdf_quote(models.Model):
     _inherit = "sale.report"
 
-    footer_field = fields.Selection(related="order_id.footer")
+    footer_field = fields.Selection("")
+    # footer_field = fields.Selection(related="order_id.footer")

@@ -8,19 +8,19 @@
         <field name="arch" type="xml">
             <field name="is_published" widget="website_redirect_button" position="after">
                 <button name="action_is_us_toggle" type="object" class="oe_stat_button">
-                    <i class="fa fa-upload o_button_icon fa-upload text-danger" attrs="{'invisible': [('is_us','=',True)]}" title="us_not_ok"/>
-                    <i class="fa fa-upload o_button_icon fa-upload text-success" attrs="{'invisible': [('is_us','!=',True)]}" title="us_ok"/>
+                    <i class="fa fa-upload o_button_icon fa-upload text-danger" invisible="is_us" title="us_not_ok"/>
+                    <i class="fa fa-upload o_button_icon fa-upload text-success" invisible="is_us != True" title="us_ok"/>
                     <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text text-danger" attrs="{'invisible': [('is_us','=',True)]}">Publish in <br/> US Website</span>
-                        <span class="o_stat_text text-success" attrs="{'invisible': [('is_us','!=',True)]}">Publish in <br/> US Website</span>
+                        <span class="o_stat_text text-danger" invisible="is_us">Publish in <br/> US Website</span>
+                        <span class="o_stat_text text-success" invisible="is_us != True">Publish in <br/> US Website</span>
                     </div>
                 </button>
                 <button name="action_is_ca_toggle" type="object" class="oe_stat_button">
-                    <i class="fa fa-upload o_button_icon fa-upload text-danger" attrs="{'invisible': [('is_ca','=',True)]}" title="can_not_ok"/>
-                    <i class="fa fa-upload o_button_icon fa-upload text-success" attrs="{'invisible': [('is_ca','!=',True)]}" title="can_ok"/>
+                    <i class="fa fa-upload o_button_icon fa-upload text-danger" invisible="is_ca" title="can_not_ok"/>
+                    <i class="fa fa-upload o_button_icon fa-upload text-success" invisible="is_ca != True" title="can_ok"/>
                     <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text text-danger" attrs="{'invisible': [('is_ca','=',True)]}">Publish in <br/> CA Website</span>
-                        <span class="o_stat_text text-success" attrs="{'invisible': [('is_ca','!=',True)]}">Publish in <br/> CA Website</span>
+                        <span class="o_stat_text text-danger"  invisible="is_ca" >Publish in <br/> CA Website</span>
+                        <span class="o_stat_text text-success" invisible="is_ca != True">Publish in <br/> CA Website</span>
                     </div>
                 </button>
                 <field name="is_us" invisible="1"/>

@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = True
+SKIP_NO_CHANGE = False
 
 
 class sync_products:
@@ -87,31 +87,17 @@ class sync_products:
                 continue
 
             # if it gets here data should be valid
-            
-            #
-            # This is the source of tuple index out of range issue
-            #
-            
             try:
                 # attempts to access existing item (item/row)
                 external_id = str(sheet[i][columns["sku"]])
-                
-                _logger.info("Checkpoint #0")
-                
                 product_ids = self.database.env["ir.model.data"].search(
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
-                
-                _logger.info("Checkpoint #1")
 
                 if len(product_ids) > 0:
                     product = self.database.env["product.template"].browse(
                         product_ids[len(product_ids) - 1].res_id
                     )
-                    
-                    _logger.info("Checkpoint #2")
-                    
-                    # error occurs after checkpoint 2, chekpoint 3 4 and 5 not triggered
                     
                     if len(product) != 1:
                         msg = utilities.buildMSG(
@@ -121,8 +107,6 @@ class sync_products:
                             "Product ID Recognized But Product Count is Invalid",
                         )
                         i = i + 1
-                        
-                        _logger.info("Checkpoint #3")
                         continue
 
                     self.updateProducts(
@@ -138,8 +122,6 @@ class sync_products:
                         "product",
                         sheet[i][columns["can_be_sold"]]
                     )  # product_type
-                    
-                    _logger.info("Checkpoint #4")
                 else:
                     self.createAndUpdateProducts(
                         external_id,
@@ -154,13 +136,10 @@ class sync_products:
                         "product",
                         sheet[i][columns["can_be_sold"]]
                     )  # product_type
-                    
-                    _logger.info("Checkpoint #5")
 
             except Exception as e:
                 _logger.info("Products Exception")
                 _logger.error(e)
-                _logger.exception("Traceback to tuple index error:")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg
 
@@ -248,15 +227,12 @@ class sync_products:
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
         product_sync_common.addProductToPricelist(
-            self.database, product, "🇨🇦", product_price_cad
+            self.database, product, "CAD SALE", product_price_cad
         )
         product_sync_common.addProductToPricelist(
-            self.database, product, "🇺🇸", product_price_usd
+            self.database, product, "USD SALE", product_price_usd
         )
         product.price = product_price_cad
-        product.cadVal = product_price_cad
-        product.usdVal = product_price_usd
-        # product.list_price = product_price_cad
 
         product.sale_ok = can_be_sold
 

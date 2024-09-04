@@ -32,7 +32,7 @@ class footer_header(models.Model):
     default = fields.Boolean(string="Default", default=False)
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
-
+    header_id = fields.Many2one('res.users')
     # Get Footer based on URL
     def _get_footer(self, url):
         complete_url = "https://cdn.r-e-a-l.it/images/footer/" + url + ".png"

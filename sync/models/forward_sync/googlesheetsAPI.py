@@ -17,7 +17,7 @@ dev_braincrew = "dev-bc-"
 
 class sheetsAPI(models.Model):
     _name = "sync.sheets"
-    _inherit = "google.drive.config"
+    # _inherit = "google.drive.config"
     _description = "Google Sheets API Handler"
 
     # Method that return the GoogleSheet Master DataBase TemplateID based on the DEV/PROD environnement
@@ -35,7 +35,7 @@ class sheetsAPI(models.Model):
         _master_database_template_id_prod = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
         
         # Dev Numbers Set Based on When Developer Joined
-        _master_database_template_id_dev_oli = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
+        _master_database_template_id_dev_oli = ("1ck-eRcczAvmyiFT-5EQOKwrSdb_fANIRcDqkJiKXK9w")
         _master_database_template_id_dev_zek = ("1PyiopFOHqamiM66tQYB8CFVJ9KN2GIxPHUGaF-33xnU")   
         _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")            
         

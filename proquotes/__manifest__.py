@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "ProQuotes",
+    "name": "Proquotes",
     "summary": """
-		Quote upgrade module that adds multiple choice quotes, report enhancements and a better user-facing web interface.""",
+		Quote Upgrade Module that adds Advanced Features""",
     "description": """
 		Module that allows advanced Quote features. Like Folding Sections, Improved Optional Products, and Multiple Choice Sections
 	""",
-    "author": "Ty Cyr & Ezekiel J. deBlois",
+    "author": "Ty Cyr",
     "license": "LGPL-3",
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -21,13 +21,17 @@
         "account",
         "proportal",
         "stock",
-        "product",
+
         "website",
         "sale_management",
         "sale",
         "digest",
         "portal",
+        "contacts",
+        "stock_account",
+        "sale_project"
     ],
+# "product",
     "assets": {
         "web.assets_common": [
             "proquotes/static/src/CSS/foldProducts.css",
@@ -45,7 +49,7 @@
         ]
     },
 
-    "version": "1.0.2152",
+    "version": "17.0",
 
     # always loaded
     "data": [
@@ -69,7 +73,7 @@
         "views/Other/internal_user_backend.xml",
         "views/Other/renewal.xml",
         "views/Other/header_footer.xml",
-        "views/Other/product_backend.xml",
+        # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoiceBackend.xml",
         "views/Invoice/invoice_lot.xml",
@@ -79,7 +83,7 @@
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
-    ],
+    # "demo": [
+    #     "demo/demo.xml",
+    # ],
 }

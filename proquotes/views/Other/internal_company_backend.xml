@@ -6,7 +6,7 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name=&quot;documents_spreadsheet_folder_id&quot;]" position="after">
+            <xpath expr="//field[@name=&quot;email&quot;]" position="after">
                 <field name="logo_url" invisible="0" />
             </xpath>
         </field>
