@@ -47,7 +47,7 @@ class MailMessage(models.Model):
                 link_tracker = self.env['link.tracker'].sudo().create({
                     'title': name,
                     'url': target_url,
-                })
+                }).short_url
             except Exception as e:
                 link_tracker = target_url
         
@@ -66,7 +66,7 @@ class MailMessage(models.Model):
                     
                     url = str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token)
                     
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url("Quotation: " + str(order.sudo().name), url).short_url)
+                    bottom_footer = _("\r\n \r\n Quotation: %s") % (self.get_tracking_url("Quotation: " + str(order.sudo().name), url))
                     
                     # link = (str(self.get_base_url()) + "/my/orders/" + str(order.sudo().id) + "?access_token=" + str(order.sudo().access_token))
                     
@@ -83,7 +83,7 @@ class MailMessage(models.Model):
                     
                     url = course.sudo().website_url
                     
-                    footer = _("\r\n \r\n Course: %s") % (self.get_tracking_url("Course: " + str(course.sudo().display_name), url).short_url)
+                    footer = _("\r\n \r\n Course: %s") % (self.get_tracking_url("Course: " + str(course.sudo().display_name), url))
                     
                     body = body + footer
                     message.body = body
@@ -98,7 +98,7 @@ class MailMessage(models.Model):
                     
                     url = task.sudo().access_url
                     
-                    footer = str("\r\n \r\n Task: " + self.get_tracking_url("Task: " + str(task.sudo().display_name), url).short_url)
+                    footer = str("\r\n \r\n Task: " + self.get_tracking_url("Task: " + str(task.sudo().display_name), url))
                     
                     signature = """
                     <p> Test </p>
