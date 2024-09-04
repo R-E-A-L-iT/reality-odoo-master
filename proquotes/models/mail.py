@@ -105,6 +105,8 @@ class MailMessage(models.Model):
                     """
                     
                     body = body + footer + signature
-                    message.body_html = body
+                    # message.body = body
+
+                    message.html = body
                     
         return messages
