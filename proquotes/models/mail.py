@@ -43,10 +43,13 @@ class MailMessage(models.Model):
         # target_url = "https://erp.gyeongcc.com" + record.get_portal_url()
         link_tracker = self.env['link.tracker'].sudo().search([('url', '=', target_url)], limit=1)
         if not link_tracker:
-            link_tracker = self.env['link.tracker'].sudo().create({
-                'title': name,
-                'url': target_url,
-            })
+            try:
+                link_tracker = self.env['link.tracker'].sudo().create({
+                    'title': name,
+                    'url': target_url,
+                })
+            except Exception as e:
+                link_tracker = target_url
         
         return link_tracker
 
