@@ -85,16 +85,16 @@ class MailMessage(models.Model):
                     body = body + footer
                     message.body = body
                     
-            elif message.model=='project.task' and message.res_id and message.body:
-                body = message.body
-                task = self.env['project.task'].sudo().browse(int(message.res_id))
-                if task:
+            # elif message.model=='project.task' and message.res_id and message.body:
+            #     body = message.body
+            #     task = self.env['project.task'].sudo().browse(int(message.res_id))
+            #     if task:
                     
-                    url = task.sudo().access_url
+            #         url = task.sudo().access_url
                     
-                    footer = _("\r\n \r\n Task: %s") % (self.get_tracking_url("Task: " + str(task.sudo().display_name), url).short_url)
+            #         footer = _("\r\n \r\n Task: %s") % (self.get_tracking_url("Task: " + str(task.sudo().display_name), url).short_url)
                     
-                    body = body + footer
-                    message.body = body
+            #         body = body + footer
+            #         message.body = body
                     
         return messages
