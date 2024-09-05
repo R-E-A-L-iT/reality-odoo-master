@@ -48,7 +48,7 @@ class MailMessage(models.Model):
                     'title': name,
                     'url': target_url,
                 }).short_url
-            except Exception as e:
+            except:
                 link_tracker = target_url
         
         return link_tracker
@@ -99,10 +99,6 @@ class MailMessage(models.Model):
                     url = task.sudo().access_url
                     
                     footer = str("\r\n \r\n Task: " + self.get_tracking_url("Task: " + str(task.sudo().display_name), url))
-                    
-                    signature = """
-                    <p> Test </p>
-                    """
                     
                     body = body + footer
                     # message.body = body
