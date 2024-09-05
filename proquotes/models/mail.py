@@ -99,7 +99,7 @@ class MailMessage(models.Model):
                     
                     url = self.get_base_url() + task.sudo().access_url
                     
-                    footer = str("\r\n \r\n Task: " + self.get_tracking_url("Task: " + str(task.sudo().display_name), url))
+                    footer = str("\r\n \r\n Task: " + str(self.get_tracking_url("Task: " + str(task.sudo().display_name), url)))
                     
                     body = body + footer
                     # message.body = body
