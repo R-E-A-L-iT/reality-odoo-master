@@ -104,9 +104,7 @@ class MailMessage(models.Model):
                     <p> Test </p>
                     """
                     
-                    body = body + footer + signature
+                    body = body + footer
                     # message.body = body
-
-                    message.html = body
                     
         return messages
