@@ -49,7 +49,7 @@ class MailMessage(models.Model):
                     'url': target_url,
                 }).short_url
             except:
-                link_tracker = target_url
+                link_tracker = str(target_url)
                 _logger.info("exception occured.")
         
         return link_tracker
