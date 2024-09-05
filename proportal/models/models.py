@@ -172,33 +172,33 @@ class PurchaseOrder(models.Model):
                 }
             )
             
-# class MailCatch(models.Model):
-#     _inherit = "mail.message"
+class MailCatch(models.Model):
+    _inherit = "mail.message"
     
-#     def message_new(self, cr, uid, msg, custom_values=None, context=None):
-#         """ Overrides mail_thread message_new that is called by the mailgateway
-#             through message_process.
-#             This override updates the document according to the email. """
-#         _logger.info("Message received")
+    def message_new(self, cr, uid, msg, custom_values=None, context=None):
+        """ Overrides mail_thread message_new that is called by the mailgateway
+            through message_process.
+            This override updates the document according to the email. """
+        _logger.info("Message received")
 
-#     if custom_values is None:
-#         custom_values = {}
-#         val = msg.get('from').split('<')[0]
-#         defaults = {
-#             'name':  msg.get('subject') or _("No Subject"),
-#             'partner_name': val,
-#             'email_from': msg.get('from'),
-#             'email_to': msg.get('to'),
-#             'email_cc': msg.get('cc'),
-#             'user_id': False,
-#             'partner_id': msg.get('author_id', False), 
-#         }
+    if custom_values is None:
+        custom_values = {}
+        val = msg.get('from').split('<')[0]
+        defaults = {
+            'name':  msg.get('subject') or _("No Subject"),
+            'partner_name': val,
+            'email_from': msg.get('from'),
+            'email_to': msg.get('to'),
+            'email_cc': msg.get('cc'),
+            'user_id': False,
+            'partner_id': msg.get('author_id', False), 
+        }
         
-#         if "support@r-e-a-l.it" in str(defaults['email_to']) or "it-support@r-e-a-l.it" in str(defaults['email_to']):
+        if "support@r-e-a-l.it" in str(defaults['email_to']) or "it-support@r-e-a-l.it" in str(defaults['email_to']):
             
-#             _logger.info("Message is going to helpdesk (to)")
+            _logger.info("Message is going to helpdesk (to)")
             
-#         elif "support@r-e-a-l.it" in str(defaults['email_cc']) or "it-support@r-e-a-l.it" in str(defaults['email_cc']):
+        elif "support@r-e-a-l.it" in str(defaults['email_cc']) or "it-support@r-e-a-l.it" in str(defaults['email_cc']):
             
-#             _logger.info("Message is going to helpdesk (cc)")
+            _logger.info("Message is going to helpdesk (cc)")
         
