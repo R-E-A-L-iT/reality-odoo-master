@@ -47,15 +47,15 @@ class MailMessage(models.Model):
                 link_tracker = self.env['link.tracker'].sudo().create({
                     'title': name,
                     'url': target_url,
-                }).short_url
+                })
                 
                 _logger.info("link tracker created successfully")
-                return link_tracker
+                return link_tracker.short_url
             except:
                 _logger.info("exception occured.")
                 return target_url
         else:
-            return link_tracker
+            return link_tracker.short_url
 
     @api.model_create_multi
     def create(self, values_list):
