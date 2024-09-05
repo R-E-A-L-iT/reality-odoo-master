@@ -96,7 +96,7 @@ class MailMessage(models.Model):
                 task = self.env['project.task'].sudo().browse(int(message.res_id))
                 if task:
                     
-                    url = task.sudo().access_url
+                    url = self.get_base_url() + task.sudo().access_url
                     
                     footer = str("\r\n \r\n Task: " + self.get_tracking_url("Task: " + str(task.sudo().display_name), url))
                     
