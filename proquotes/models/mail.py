@@ -49,6 +49,7 @@ class MailMessage(models.Model):
                     'url': target_url,
                 }).short_url
                 
+                _logger.info("link tracker created successfully")
                 return link_tracker
             except:
                 _logger.info("exception occured.")
@@ -97,7 +98,7 @@ class MailMessage(models.Model):
                 task = self.env['project.task'].sudo().browse(int(message.res_id))
                 if task:
                     
-                    url = self.get_base_url() + task.sudo().access_url
+                    url = str(self.get_base_url() + task.sudo().access_url)
                     
                     footer = str("\r\n \r\n Task: " + str(self.get_tracking_url("Task: " + str(task.sudo().display_name), url)))
                     
