@@ -54,6 +54,8 @@ class MailMessage(models.Model):
             except:
                 _logger.info("exception occured.")
                 return target_url
+        else:
+            return link_tracker
 
     @api.model_create_multi
     def create(self, values_list):
