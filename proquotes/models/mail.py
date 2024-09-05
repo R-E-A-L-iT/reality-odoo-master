@@ -91,7 +91,6 @@ class MailMessage(models.Model):
                     
                     body = body + footer
                     message.body = body
-                    
             
             # if message is for ticket, add link to bottom but also add signature that is the same html every time but swap out email address to be address of employee sending email.        
             
