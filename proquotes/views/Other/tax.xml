@@ -46,29 +46,29 @@
 		</td>
 	</template>
 
-	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" primary="True">
-<!--		commented due to changes-->
-<!--		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">-->
-<!--			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>-->
-<!--		</xpath>-->
-		<!-- Hide Subtotal on Rental Quotes -->
-<!--		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr" position="attributes">-->
-<!--			&lt;!&ndash; <attribute name="t-if">doc.is_rental != True</attribute> &ndash;&gt;-->
-<!--		</xpath>-->
-		<!-- Subtotal Language -->
-<!--		feature depricate-->
-<!--		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">-->
-<!--			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">-->
-<!--				<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>-->
-<!--				<strong t-if="clang == 'fr_CA'">Sous-Total</strong>-->
-<!--			</td>-->
-<!--		</xpath>-->
+<!--	<template id="proquotes_total_pdf" name="Proquotes Total PDF" inherit_id="account.document_tax_totals" priority="17" primary="True">-->
+<!--&lt;!&ndash;		commented due to changes&ndash;&gt;-->
+<!--&lt;!&ndash;		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td[2]" position="attributes">&ndash;&gt;-->
+<!--&lt;!&ndash;			<attribute name="style">background-color: #db0d0d; border-left-color: #db0d0d !important</attribute>&ndash;&gt;-->
+<!--&lt;!&ndash;		</xpath>&ndash;&gt;-->
+<!--		&lt;!&ndash; Hide Subtotal on Rental Quotes &ndash;&gt;-->
+<!--&lt;!&ndash;		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr" position="attributes">&ndash;&gt;-->
+<!--&lt;!&ndash;			&lt;!&ndash; <attribute name="t-if">doc.is_rental != True</attribute> &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;		</xpath>&ndash;&gt;-->
+<!--		&lt;!&ndash; Subtotal Language &ndash;&gt;-->
+<!--&lt;!&ndash;		feature depricate&ndash;&gt;-->
+<!--&lt;!&ndash;		<xpath expr="//t[@t-name=&quot;account.document_tax_totals&quot;]/tr/td" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;			<td style="background-color: #db0d0d; border-right-color: #db0d0d !important">&ndash;&gt;-->
+<!--&lt;!&ndash;				<strong t-if="clang == 'en_CA' or clang == 'en_US'">Subtotal</strong>&ndash;&gt;-->
+<!--&lt;!&ndash;				<strong t-if="clang == 'fr_CA'">Sous-Total</strong>&ndash;&gt;-->
+<!--&lt;!&ndash;			</td>&ndash;&gt;-->
+<!--&lt;!&ndash;		</xpath>&ndash;&gt;-->
 
-	</template>
+<!--	</template>-->
 
-	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">
-		<xpath expr="//strong[@t-out=&quot;subtotal['name']&quot;]" position="attributes">
-			<attribute name="style">color: #db0d0d !important;</attribute>
-		</xpath>
-	</template>
+<!--	<template name="Tax Colour" id="tax_colour" inherit_id="account.document_tax_totals">-->
+<!--		<xpath expr="//strong[@t-out=&quot;subtotal['name']&quot;]" position="attributes">-->
+<!--			<attribute name="style">color: #db0d0d !important;</attribute>-->
+<!--		</xpath>-->
+<!--	</template>-->
 </odoo>
