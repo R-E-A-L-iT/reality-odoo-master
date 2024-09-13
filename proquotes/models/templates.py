@@ -24,6 +24,10 @@ class SaleOrderTemplateHandler(models.Model):
             'name': line.name,
             'state': 'draft',
         }
+
+    @api.model
+    def _get_customer_lead(self, product_tmpl_id):
+        return False
     
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
