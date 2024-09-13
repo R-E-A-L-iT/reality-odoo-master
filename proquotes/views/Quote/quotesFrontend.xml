@@ -11,6 +11,7 @@
 	</template>
 
 	<template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
+		<!-- Address -->
 		<xpath expr="//section[@id='details']/h3" position="replace">
 			<t t-set="company_name" t-value="sale_order.company_id.name" />
 			<t t-set="clang" t-value="lang" />
