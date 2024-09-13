@@ -17,6 +17,13 @@ from odoo import models, fields, api
 
 class SaleOrderTemplateHandler(models.Model):
     _inherit = "sale.order"
+
+    def _compute_line_data_for_template_change(self, line):
+        return {
+            'display_type': line.display_type,
+            'name': line.name,
+            'state': 'draft',
+        }
     
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
