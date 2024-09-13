@@ -396,9 +396,9 @@
 
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//strong" position="attributes">
-			<attribute name="style">margin-bottom: 20vh;</attribute>
-		</xpath>
+<!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//strong" position="attributes">-->
+<!--			<attribute name="style">margin-bottom: 20vh;</attribute>-->
+<!--		</xpath>-->
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
