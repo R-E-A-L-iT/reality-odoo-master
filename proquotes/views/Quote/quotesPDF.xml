@@ -15,12 +15,12 @@
 		<xpath expr="//thead" position="replace" />
 
 		<!-- Ensure Subtotal Only Displays on Real Section -->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//tr" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//tr" position="attributes">
 			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(doc.order_line)) or (doc.order_line[line_index+1].name[:6] != '$block')) and (not section_empty)</attribute>
 		</xpath>
 
 		<!-- Ensure Section Is not Special Section -->
-		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//td" position="attributes">
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//td" position="attributes">
 			<attribute name="t-if">line.name[0] != '$'</attribute>
 		</xpath>
 
@@ -396,9 +396,9 @@
 
 		<xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace" />
 
-<!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//strong" position="attributes">-->
-<!--			<attribute name="style">margin-bottom: 20vh;</attribute>-->
-<!--		</xpath>-->
+		<xpath expr="//t[@t-if=&quot;current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//strong" position="attributes">
+			<attribute name="style">margin-bottom: 20vh;</attribute>
+		</xpath>
 
 		<!-- Apply HTML-->
 		<xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
