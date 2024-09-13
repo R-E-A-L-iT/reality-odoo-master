@@ -49,7 +49,7 @@ class SaleOrderTemplateHandler(models.Model):
                 discount = 0
 
                 if self.pricelist_id:
-                    pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
+                    pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id)._get_product_price(line.product_id, 1, False)
 
                     if self.pricelist_id.discount_policy == 'without_discount' and price:
                         discount = max(0, (price - pricelist_price) * 100 / price)
