@@ -21,10 +21,10 @@ class SaleOrderTemplateHandler(models.Model):
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
         
-        if not self.sale_order_template_id:
-            self.require_signature = self._get_default_require_signature()
-            self.require_payment = self._get_default_require_payment()
-            return
+        # if not self.sale_order_template_id:
+        #     self.require_signature = self._get_default_require_signature()
+        #     self.require_payment = self._get_default_require_payment()
+        #     return
 
         template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
 
