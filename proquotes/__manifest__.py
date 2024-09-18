@@ -21,7 +21,6 @@
         "account",
         "proportal",
         "stock",
-
         "website",
         "sale_management",
         "sale",
@@ -29,9 +28,11 @@
         "portal",
         "contacts",
         "stock_account",
-        "sale_project"
+        "sale_project",
+        "website_sale",
+        "sale_timesheet",
     ],
-# "product",
+    # "product",
     "assets": {
         "web.assets_common": [
             "proquotes/static/src/CSS/foldProducts.css",
@@ -54,6 +55,7 @@
     # always loaded
     "data": [
         "security/ir.model.access.csv",
+        "views/Other/tax.xml",
         "views/Quote/quotesBackend.xml",
         "views/Quote/quotesFrontend.xml",
         "views/Quote/quotesPDF.xml",
@@ -64,7 +66,6 @@
         "views/Quote/quoteRentalAddress.xml",
         "views/Quote/table-align.xml",
         "views/Quote/pricelistFilter.xml",
-        "views/Other/tax.xml",
         "views/Other/mail.xml",
         "views/Other/deliverPDF.xml",
         "views/Other/pdf_boxed.xml",

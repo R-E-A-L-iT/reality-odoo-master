@@ -17,14 +17,25 @@ from odoo import models, fields, api
 
 class SaleOrderTemplateHandler(models.Model):
     _inherit = "sale.order"
+
+    def _compute_line_data_for_template_change(self, line):
+        return {
+            'display_type': line.display_type,
+            'name': line.name,
+            'state': 'draft',
+        }
+
+    @api.model
+    def _get_customer_lead(self, product_tmpl_id):
+        return False
     
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
         
-        if not self.sale_order_template_id:
-            self.require_signature = self._get_default_require_signature()
-            self.require_payment = self._get_default_require_payment()
-            return
+        # if not self.sale_order_template_id:
+        #     self.require_signature = self._get_default_require_signature()
+        #     self.require_payment = self._get_default_require_payment()
+        #     return
 
         template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
 
@@ -42,7 +53,7 @@ class SaleOrderTemplateHandler(models.Model):
                 discount = 0
 
                 if self.pricelist_id:
-                    pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
+                    pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id)._get_product_price(line.product_id, 1, False)
 
                     if self.pricelist_id.discount_policy == 'without_discount' and price:
                         discount = max(0, (price - pricelist_price) * 100 / price)

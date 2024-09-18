@@ -123,7 +123,7 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
         to_flush[self._name].update(fields)
 
     def collect_from_domain(model, domain):
-        _logger.info('>>>>>>>>>>>>>>>>. model: %s, domain: %s', model, domain)
+        # _logger.info('>>>>>>>>>>>>>>>>. model: %s, domain: %s', model, domain)
         if not domain:
             domain = []
         for arg in domain:
@@ -760,7 +760,7 @@ class order(models.Model):
                     msg = self.hardwareCCP(hardware_lines, product)
                 elif product.product_id.type_selection == "S":
                     msg = self.softwareCCP(software_lines, product)
-                    _logger.info("Softare")
+                    _logger.info("Software")
                 elif product.product_id.type_selection == "SS":
                     msg = self.softwareSubCCP(software_sub_lines, product)
                     _logger.info("Software Subscription")
@@ -775,7 +775,7 @@ class order(models.Model):
                 if msg != None:
                     error_msg += msg + "\n"
             else:
-                _logger.error("------product product_id.sale_ok is fale, should not add product: ")
+                _logger.error("------product product_id.sale_ok is false, should not add product: ")
 
         # Combine Sections and add to quote
         lines = []
