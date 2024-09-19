@@ -204,7 +204,7 @@ class WebsiteSale(main.WebsiteSale):
         # No limit because attributes are obtained from complete product list
         fuzzy_search_term, product_count, search_product = self._shop_lookup_products(attrib_set, options, post, search, website)
 
-        tst = requests.get("https://geolocation-db.com/json").json()
+        tst = requests.get("https://ipapi.co/json").json()
         if tst['country_code'] == 'US':
             search_product = search_product.filtered(lambda e: e.is_us == True)
             product_count = len(search_product)
