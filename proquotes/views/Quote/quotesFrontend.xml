@@ -602,6 +602,10 @@
                 </a>
             </div>
             <br/>
+        </xpath>
+
+        <!-- <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/> -->
+        <xpath expr="//*[@id=&quot;quote_content&quot;]/div[6]" position="after">
             <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/>
         </xpath>
     </template>
