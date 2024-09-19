@@ -412,7 +412,12 @@ class order(models.Model):
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True
     )
-
+    manual_invoice_status = fields.Selection([
+            ("full_invoice", "Fully Invoiced"),
+            ("partially_invoiced", "Partially Invoiced"),
+            ("not_invoiced", "Not Invoiced"),
+        ],)
+    financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -666,7 +671,7 @@ class order(models.Model):
         renewal_maps = self.env["renewal.map"].search(
             [("product_id", "=", product.product_id.id)])
 
-        if len(renewal_maps) != 1:                       
+        if len(renewal_maps) != 1:
             return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
@@ -691,9 +696,9 @@ class order(models.Model):
         if len(software_lines) == 0:
             software_lines.append(self.generate_section_line("$software").id)
             software_lines.append(self.generate_section_line("$block").id)
-        
+
         product_list = self.env["product.product"].search(
-            [("sku", "like", eid), 
+            [("sku", "like", eid),
             ("active", "=", True),
             ("sale_ok", "=", True)])
 
@@ -715,12 +720,12 @@ class order(models.Model):
         if len(software_sub_lines) == 0:
             software_sub_lines.append(self.generate_section_line("$subscription").id)
             software_sub_lines.append(self.generate_section_line("$block").id)
-        
+
         product_list = self.env["product.product"].search(
-            [("sku", "like", eid), 
+            [("sku", "like", eid),
             ("active", "=", True),
             ("sale_ok", "=", True)])
-        
+
         if len(product_list) != 1:
             return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
