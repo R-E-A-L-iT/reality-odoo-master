@@ -3,11 +3,8 @@
 <odoo>
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
-		<!-- <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/> -->
-
 		<!-- Translate Info Labels -->
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
-			<!-- <t t-set="clang" t-value="doc.env.context.get('lang')" /> -->
 			<t t-set="src" t-value="o.sale_id" />
 			<style>
 				#addressTable, #addressTable * {
@@ -28,9 +25,7 @@
 				</tr>
 				<tr>
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<!-- <h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5> -->
-						<h5 t-if="o.partner_id.lang == 'en_CA' or o.partner_id.lang == 'en_US'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
-						<h5 t-elif="o.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturé a</h5>
+						<h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
 						<span t-field="src.partner_id.street" />
 						<br />
 						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
@@ -42,9 +37,7 @@
 						<br />
 					</td>
 					<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<!-- <h5 style="color: #db0d0d;">Ship To</h5> -->
-						<h5 t-if="o.partner_id.lang == 'en_CA' or o.partner_id.lang == 'en_US'" style="color: #db0d0d;">Ship To</h5>
-						<h5 t-elif="o.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Expédié à</h5>
+						<h5 style="color: #db0d0d;">Ship To</h5>
 						<span t-field="src.partner_shipping_id.street" />
 						<br />
 						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
@@ -81,27 +74,17 @@
 		</xpath>
 
 		<!-- Add Detail Lines -->
-		<xpath expr="//div[@t-if=&quot;o.signature&quot;]" position="replace">
+		<xpath expr="//div[@t-else=&quot;&quot;]" position="replace">
 			<div>
 				<span style="height: 40px"> PO #:</span>
 				<span style="border-bottom: solid !important; width:500px !important;">
-					<t t-if="o.po_number">
-						<span style="color: #000;" t-field="o.po_number"/>
-					</t>
-					<t t-else="">
-						<span style="color: #fff;">____________________________________</span>
-					</t>
+					<span style="color: #fff;">________________________________________</span>
 				</span>
 				<br />
 				<br />
 				<span style="height: 40px"> Signature:</span>
 				<span style="border-bottom: solid !important; width:500px !important;">
-					<t t-if="o.signature">
-						<img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
-					</t>
-					<t t-else="">
-						<span style="color: #fff;">____________________________________</span>
-					</t>
+					<span style="color: #fff;">____________________________________</span>
 				</span>
 				<br />
 				<br />

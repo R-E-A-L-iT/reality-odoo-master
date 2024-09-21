@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="sale_order_form_view" model="ir.ui.view">
+    <record id="sale_order_form_view_real_backend" model="ir.ui.view">
         <field name="name">Sale_Backend_Form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
-
-        <!-- the sale pricelists no longer have the word sale in them, instead they are flags, so this code makes it impossible to select a pricelist -->
-
         <field name="arch" type="xml">
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
-                <attribute name="domain">[('name', 'ilike', '')]</attribute>
+                <attribute name="domain">[('name', 'ilike', 'sale')]</attribute>
             </xpath>
         </field>
     </record>
 
-    <record id="rental_order_form_view" model="ir.ui.view">
-        <field name="name">Rental_Backend_Form</field>
+    <record id="rental_order_form_view_rental_backend" model="ir.ui.view">
+        <field name="name">Rental.Backend.Form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_renting.rental_order_primary_form_view" />
         <field name="arch" type="xml">

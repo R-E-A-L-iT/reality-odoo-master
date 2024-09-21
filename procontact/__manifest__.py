@@ -6,7 +6,7 @@
     """,
     "author": "Olivier Cote",
     "license": "LGPL-3",
-    "version": "0.005",
+    "version": "17.0",
     "depends": ["base"],
     "data": [
         "views/contact_internal.xml"

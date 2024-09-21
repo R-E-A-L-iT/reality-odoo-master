@@ -9,7 +9,7 @@
 						t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
 					</a>
 				</div>
-				<t t-call="custom.menu-links"/>
+<!--				<t t-call="custom.menu-links"/>-->
 			</nav>
 		</xpath>
 	</template>

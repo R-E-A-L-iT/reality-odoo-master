@@ -3,28 +3,29 @@
 <odoo>
 
     <template id="invoice_lot" name="invoice_item_id_style" inherit_id="stock_account.stock_account_report_invoice_document" priority="17">
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]" position="attributes">
-            <attribute name="style">width: 100%;</attribute>
-        </xpath>
+<!--        commented due to the changes-->
+        <!--        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]" position="attributes">-->
+<!--            <attribute name="style">width: 100%;</attribute>-->
+<!--        </xpath>-->
 
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[1]" position="before">
-            <th class="text-right">
-                <span>QTY</span>
-            </th>
-        </xpath>
+<!--        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[1]" position="before">-->
+<!--            <th class="text-right">-->
+<!--                <span>QTY</span>-->
+<!--            </th>-->
+<!--        </xpath>-->
 
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace" />
+<!--        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace" />-->
 
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace">
-            <th class="text-right">
-                <span>SN/EID</span>
-            </th>
-        </xpath>
+<!--        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//th[3]" position="replace">-->
+<!--            <th class="text-right">-->
+<!--                <span>SN/EID</span>-->
+<!--            </th>-->
+<!--        </xpath>-->
 
 
-        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="before">
-            <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[2]" position="move" />
-        </xpath>
+<!--        <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[1]" position="before">-->
+<!--            <xpath expr="//table[@groups=&quot;stock_account.group_lot_on_invoice&quot;]//td[2]" position="move" />-->
+<!--        </xpath>-->
 
         <xpath expr="//t[@t-esc=&quot;snln_line['quantity']&quot;]" position="replace">
             <t t-if="snln_line['quantity']" t-set="snln_line_quantity" t-value="str(snln_line['quantity']).replace(',','.')"/>

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_lines" priority="17">
-		<xpath expr="//td[hasclass(&quot;td-product_name&quot;)]" position="replace">
-			<td t-if="line.product_id.product_tmpl_id" class="td-product_name">
-				<strong class="cart-name" t-field="line.product_id.name" />
-				<br />
-				<div class="cart-description" t-raw="line.product_id.description_sale" />
-			</td>
-		</xpath>
-	</template>
+<!--	commented due to the depricate a code-->
+<!--	<template name="Cart Desciption" id="cart_description" inherit_id="website_sale.cart_lines" priority="17">-->
+<!--		<xpath expr="//td[hasclass(&quot;td-product_name&quot;)]" position="replace">-->
+<!--			<td t-if="line.product_id.product_tmpl_id" class="td-product_name">-->
+<!--				<strong class="cart-name" t-field="line.product_id.name" />-->
+<!--				<br />-->
+<!--				<div class="cart-description" t-raw="line.product_id.description_sale" />-->
+<!--			</td>-->
+<!--		</xpath>-->
+<!--	</template>-->
 </odoo>

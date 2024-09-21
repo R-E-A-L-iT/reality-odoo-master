@@ -17,11 +17,12 @@
     "depends": [
         "base",
         "proportal",
-        "proquotes",
+
         "product",
         "google_account",
-        "google_drive",
+        "proquotes",
     ],
+    ##   "proquotes",  #
     # always loaded
     "data": [
         "security/ir.model.access.csv",

@@ -6,10 +6,12 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[2]/div" position="before">
-                <div>
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="oe_title">
                     <label for="publish_type"/>
-                    <field name="publish_type" string="Product Publish Type"/>
+                        <div class="d-flex">
+                            <field name="publish_type" string="Product Publish Type"/>
+                        </div>
                 </div>
             </xpath>
         </field>

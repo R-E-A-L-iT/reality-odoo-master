@@ -13,7 +13,7 @@
     # for the full list
     "category": "Website",
     # Blog post content
-    "version": "0.208",
+    "version": "17.0",
     # any module necessary for this one to work correctly
     "depends": ["base", "website", "website_blog"],
     "assets": {
@@ -34,7 +34,7 @@
         "views/blog_teaser.xml",
     ],
     # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
-    ],
+    # "demo": [
+    #     "demo/demo.xml",
+    # ],
 }

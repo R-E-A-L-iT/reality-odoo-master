@@ -22,5 +22,5 @@ class individual(models.Model):
 
     linkedin_link = fields.Char(
         string="LinkedIn link"
-    )   
+    )
 
