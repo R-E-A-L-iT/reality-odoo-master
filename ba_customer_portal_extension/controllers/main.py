@@ -45,7 +45,9 @@ from collections import OrderedDict
 from odoo.osv.expression import OR, AND
 from markupsafe import Markup
 from odoo.tools import groupby as groupbyelem
+import logging
 
+_logger = logging.getLogger(__name__)
 
 class CustomerPortalReal(CustomerPortal):
     # @route(['/my', '/my/home'], type='http', auth="user", website=True)
