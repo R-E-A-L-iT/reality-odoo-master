@@ -49,6 +49,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class CustomerPortalReal(CustomerPortal):
     # @route(['/my', '/my/home'], type='http', auth="user", website=True)
     # def home(self, **kw):
