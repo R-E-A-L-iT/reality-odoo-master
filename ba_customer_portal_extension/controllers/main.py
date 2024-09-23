@@ -339,7 +339,6 @@ class CustomerPortalReal(CustomerPortal):
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
             session_obj_date = request.session.get('view_quote_%s' % order_sudo.id)
-            _logger.info('>>>>>>>>>>>>>>>>order_sudo: %s', )
             if session_obj_date != now and request.env.user.share and access_token:
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation viewed by customer %s',
