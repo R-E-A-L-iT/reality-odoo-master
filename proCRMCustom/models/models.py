@@ -34,3 +34,5 @@ class opportunity(models.Model):
         default=False
     )
 
+    opportunity_notes = fields.Text(string="Opportunity Notes")
+

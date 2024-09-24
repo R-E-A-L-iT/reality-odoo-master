@@ -343,15 +343,7 @@ class CustomerPortalReal(CustomerPortal):
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation viewed by customer %s',
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
-                _message_post_helper(
-                    "sale.order",
-                    order_sudo.id,
-                    body,
-                    token=order_sudo.access_token,
-                    message_type="notification",
-                    subtype_xmlid="mail.mt_note",
-                    partner_ids=order_sudo.user_id.sudo().partner_id.ids,
-                )
+                order_sudo.message_post(body=body)
 
         values = {
             'sale_order': order_sudo,
@@ -369,8 +361,6 @@ class CustomerPortalReal(CustomerPortal):
         values['partner_company_id'] = partner_company_id or False
 
         # Payment values
-        print('>>>>>>>>>>>>>>> df?????????????',order_sudo)
-        print('>>>>>>>>>>>>>>> ?????????????',order_sudo,order_sudo._has_to_be_paid())
         if order_sudo._has_to_be_paid():
             values.update(
                 self._get_payment_values(

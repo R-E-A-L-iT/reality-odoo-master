@@ -2,7 +2,7 @@
 
 <odoo>
 
-	<!--<template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
+    <!--<template id="assets_frontend" inherit_id="web.assets_frontend" priority="17">
         <xpath expr="." position="inside">
 
             <link rel="stylesheet" href="/proportal/static/src/CSS/products.css"></link>
@@ -10,81 +10,84 @@
         </xpath>
     </template>-->
 
-	<template id="logout" name="proportal_logout" inherit_id="portal.portal_layout" priority="17">
-		<xpath expr="//div[hasclass('mt-3')]" position="after">
-			<div>
-				<a t-attf-href="/web/session/logout?redirect={{share_redirect_URL}}" role="menuitem">LOGOUT</a>
-			</div>
-		</xpath>
-	</template>
+    <template id="logout" name="proportal_logout" inherit_id="portal.portal_layout" priority="17">
+        <xpath expr="//div[hasclass('mt-3')]" position="after">
+            <div>
+                <a t-attf-href="/web/session/logout?redirect={{share_redirect_URL}}" role="menuitem">LOGOUT</a>
+            </div>
+        </xpath>
+    </template>
 
-<!--make inherite and replace h3 tag-->
-	<template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home" priority="99">
-<!--		<xpath expr="//t[@t-call='portal.portal_layout']/div[@id='wrap']/div[hasclass('container pt-3 pb-5')]/div[1]" position="replace">-->
-<!--			 <h3>my.R-E-A-L.iT</h3>-->
-<!--		</xpath>-->
+    <!--make inherite and replace h3 tag-->
+    <template id="portal_my_home" name="Portal layout : invoice menu entries" inherit_id="portal.portal_my_home"
+              priority="99">
+        <!--		<xpath expr="//t[@t-call='portal.portal_layout']/div[@id='wrap']/div[hasclass('container pt-3 pb-5')]/div[1]" position="replace">-->
+        <!--			 <h3>my.R-E-A-L.iT</h3>-->
+        <!--		</xpath>-->
 
-		<xpath expr="//div[hasclass('o_portal_docs')]" position="replace">
-			<t t-call="portal.portal_docs_entry">
-                <t t-set="title">Quotations</t>
-                <t t-set="url" t-value="'/my/quotes'"/>
-                <t t-set="placeholder_count" t-value="'quotation_count'"/>
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="replace">
+            <div class="o_portal_docs row g-2">
+                <div class="o_portal_doc_spinner spinner-border text-o-color-2 align-self-center mt-5"/>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Quotations</t>
+                    <t t-set="url" t-value="'/my/quotes'"/>
+                    <t t-set="placeholder_count" t-value="'quotation_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Sales Orders</t>
+                    <t t-set="url" t-value="'/my/orders'"/>
+                    <t t-set="placeholder_count" t-value="'order_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Invoices</t>
+                    <t t-set="url" t-value="'/my/invoices'"/>
+                    <t t-set="placeholder_count" t-value="'invoice_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Tickets</t>
+                    <t t-set="url" t-value="'/my/tickets'"/>
+                    <t t-set="placeholder_count" t-value="'ticket_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Products</t>
+                    <t t-set="url" t-value="'/my/products'"/>
+                    <t t-set="placeholder_count" t-value="'product_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_products" name="Portal Customer Products Page">
+        <link rel="stylesheet" href="/proportal/static/src/CSS/products.css"></link>
+        <t t-call="portal.portal_layout">
+            <t t-if="company.products" t-call="portal.portal_table">
+                <thead class="productTable">
+                    <tr class="active">
+                        <th class="customerPortalProducts">Product</th>
+                        <th class="customerPortalProducts">SKU</th>
+                        <th class="customerPortalProducts">Serial Number/Eid</th>
+                        <th/>
+                        <th class="customerPortalProducts">Expiration Date</th>
+                    </tr>
+                </thead>
+                <t t-foreach="company.products" t-as="product">
+                    <tr t-if="product.publish != False" class="custom-product-table">
+                        <td class="customerPortalProducts">
+                            <t t-esc="product.product_id.name"/>
+                        </td>
+                        <td class="customerPortalProducts">
+                            <span t-field="product.sku"/>
+                        </td>
+                        <td class="customerPortalProducts">
+                            <span t-field="product.name"/>
+                        </td>
+                        <td class="customerPortalProducts"></td>
+                        <td class="customerPortalProducts">
+                            <span t-field="product.expire"/>
+                        </td>
+                    </tr>
+                </t>
             </t>
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Sales Orders</t>
-                <t t-set="url" t-value="'/my/orders'"/>
-                <t t-set="placeholder_count" t-value="'order_count'"/>
-            </t>
-			<t t-call="portal.portal_docs_entry">
-                <t t-set="title">Invoices</t>
-                <t t-set="url" t-value="'/my/invoices'"/>
-                <t t-set="placeholder_count" t-value="'invoice_count'"/>
-            </t>
-            <t  t-call="portal.portal_docs_entry">
-                <t t-set="title">Tickets</t>
-                <t t-set="url" t-value="'/my/tickets'"/>
-                <t t-set="placeholder_count" t-value="'ticket_count'"/>
-            </t>
-			<t t-call="portal.portal_docs_entry">
-            <t t-set="title">Products</t>
-            <t t-set="url" t-value="'/my/products'"/>
-            <t t-set="placeholder_count" t-value="'product_count'"/>
         </t>
-
-		</xpath>
-	</template>
-
-	<template id="portal_products" name="Portal Customer Products Page">
-		<link rel="stylesheet" href="/proportal/static/src/CSS/products.css"></link>
-		<t t-call="portal.portal_layout">
-			<t t-if="company.products" t-call="portal.portal_table">
-				<thead class="productTable">
-					<tr class="active">
-						<th class="customerPortalProducts">Product</th>
-						<th class="customerPortalProducts">SKU</th>
-						<th class="customerPortalProducts">Serial Number/Eid</th>
-						<th />
-						<th class="customerPortalProducts">Expiration Date</th>
-					</tr>
-				</thead>
-				<t t-foreach="company.products" t-as="product">
-					<tr t-if="product.publish != False" class="custom-product-table">
-						<td class="customerPortalProducts">
-							<t t-esc="product.product_id.name" />
-						</td>
-						<td class="customerPortalProducts">
-							<span t-field="product.sku" />
-						</td>
-						<td class="customerPortalProducts">
-							<span t-field="product.name" />
-						</td>
-						<td class="customerPortalProducts"></td>
-						<td class="customerPortalProducts">
-							<span t-field="product.expire" />
-						</td>
-					</tr>
-				</t>
-			</t>
-		</t>
-	</template>
+    </template>
 </odoo>
