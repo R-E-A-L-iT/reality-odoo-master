@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Odoo Debranding',
-    'version': '1.0.0.0',
+    'version': '1.0',
     'author': 'Braincrew Apps',
     'category': 'Productivity',
     'website': 'http://www.braincrewapps.com',
@@ -26,7 +26,7 @@
         'security/res_groups.xml',
         'security/ir.model.access.csv',
         'views/app_theme_config_settings_views.xml',
-        'views/res_config_settings_views.xml',
+        #'views/res_config_settings_views.xml',
         'views/ir_views.xml',
         'views/branding_templates.xml',
         # data

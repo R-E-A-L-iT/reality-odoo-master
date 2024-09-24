@@ -1,150 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-	<record id="view_order_form_quote" model="ir.ui.view">
-		<field name="name">sale.view_order_form</field>
-		<field name="model">sale.order</field>
-		<field name="inherit_id" ref="sale.view_order_form" />
-		<field name="arch" type="xml">
+    <record id="view_order_form_quote_real" model="ir.ui.view">
+        <field name="name">sale.view_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
 
-			<xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
-				<attribute name="string">Business</attribute>
-			</xpath>
+            <xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
+                <attribute name="string">Business</attribute>
+            </xpath>
 
-			<!-- <xpath expr="//field[@name='pricelist_id']" position="after">
-                <field name="financing_available"></field>
-            </xpath> -->
-
-
-			<!-- NOTE: to make address appear under delivery address/invoice address, directly go to a quote in debug mode, go to the debug dropdown, select "edit view: form", and then scroll down to partner_invoice_id and partner_shipping_id and add 'show_address': 1 to the context. for some stupid reason odoo doesn't let you do this via xpath it seems. or i could just be stupid. idk. -->
-
-			<!-- readonly display invoicing address -->
-			<!-- <xpath expr="//field[@name&quot;partner_invoice_id&quot;]" position="attributes">
-				<attribute name="context">{'default_type':'invoice', 'show_address': 1}</attribute>
-			</xpath> -->
-				<!-- <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice', 'show_address': 1}" options="{&quot;always_reload&quot;: True}"/> -->
-				<!-- <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/> -->
-				<!-- <field name="readonly_partner_invoice_id_street1"/>
-				<field name="readonly_partner_invoice_id_street2"/>
-				<field name="readonly_partner_invoice_id_city"/>
-				<field name="readonly_partner_invoice_id_state_id"/>
-				<field name="readonly_partner_invoice_id_country_id"/>
-				<field name="readonly_partner_invoice_id_zip"/> -->
-
-			<!-- readonly display shipping address -->
-			<!-- <xpath expr="//field[@name&quot;partner_shipping_id&quot;]" position="after"> -->
-				<!-- <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery', 'show_address': 1}" options="{&quot;always_reload&quot;: True}"/> -->
-				<!-- <field name="readonly_partner_shipping_id_street1"/>
-				<field name="readonly_partner_shipping_id_street2"/>
-				<field name="readonly_partner_shipping_id_city"/>
-				<field name="readonly_partner_shipping_id_state_id"/>
-				<field name="readonly_partner_shipping_id_country_id"/>
-				<field name="readonly_partner_shipping_id_zip"/>
-			</xpath> -->
-
-			<xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
-				<field name="partner_ids" invisible="0" />
-				<field name="is_renewal" invisible="1" />
-				<!-- Renewal Quotes Added Products -->
-				<field name="renewal_product_items" attrs="{'invisible': [('is_renewal', '!=', True)]}" domain="[('owner', '=', partner_id)]" invisible="0">
-					<tree>
-						<field name="name"></field>
-						<field name="product_id"></field>
-						<field name="expire" />
-						<field name="formated_label"></field>
-					</tree>
-				</field>
-
-				<!-- Rental Info -->
-				<group name="custom_quote_details">
-					<field name="is_rental" invisible="0" />
-					<field name="rental_diff_add" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="rental_street" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
-					<field name="rental_city" attrs="{'invisible': ['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]}" />
-					<field name="rental_zip" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_state" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_country" attrs="{'invisible': ['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]}" />
-					<field name="rental_start" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
-					<field name="customer_po_number" invisible="0" />
-					<field name="manual_invoice_status" widget="selection_radio" />
-					<field name="financing_available" />
-					<field name="header_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
-					<field name="header" invisible="1" />
-					<field name="footer" invisible="1" />
-					<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
-				</group>
-			</xpath>
-
-			<xpath expr="//create[1]" position="after">
-				<create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'false'}" />
-			</xpath>
-
-			<xpath expr="//control" position="after">
-				<field name="special" invisible="1" />
-			</xpath>
+            <xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
+                <field name="partner_ids" invisible="0"/>
+                <field name="is_renewal" invisible="1"/>
+                <!-- Renewal Quotes Added Products -->
+                <field name="renewal_product_items" invisible="not is_renewal" domain="[('owner', '=', partner_id)]">
+                    <tree>
+                        <field name="name"></field>
+                        <field name="product_id"></field>
+                        <field name="expire"/>
+                        <field name="formated_label"></field>
+                    </tree>
+                </field>
 
 
-			<!-- <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="before">
-				<field name="applied_name" invisible="0" />
-			</xpath> -->
+                <!-- Rental Info -->
+                <group name="custom_quote_details">
+                    <field name="is_rental" invisible="0"/>
+                    <field name="rental_diff_add" invisible="'is_rental', '!=', True"/>
+                    <field name="rental_street"
+                           invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]"/>
+                    <field name="rental_city"
+                           invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]"/>
+                    <field name="rental_zip"
+                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
+                    <field name="rental_state"
+                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
+                    <field name="rental_country"
+                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
+                    <field name="rental_start" invisible="[('is_rental', '!=', True)]"/>
+                    <field name="rental_end" invisible="[('is_rental', '!=', True)]"/>
+                    <field name="customer_po_number" invisible="0"/>
+                    <field name="manual_invoice_status"/>
+                    <field name="financing_available"/>
+                    <field name="header_id" invisible="0"
+                           domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
+                    <field name="header" invisible="1"/>
+                    <field name="footer" invisible="1"/>
+                    <field name="footer_id" invisible="0"
+                           domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
+                </group>
+            </xpath>
 
-			<!-- Custom Line Fields -->
-			<xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]" position="after">
-				<field name="optional" invisible="0" />
-				<field name="selected" invisible="0" />
-				<field name="sectionSelected" invisible="1" />
-				<field name="quantityLocked" invisible="0" />
-				<field name="variant" invisible="1" />
-				<field name="hiddenSection" invisible="1" />
-			</xpath>
+            <xpath expr="//create[1]" position="after">
+                <create name="optional_product" string="Add Optional Product"
+                        context="{'default_optional': 'yes', 'default_selected': 'false'}"/>
+            </xpath>
 
-			<xpath expr="//create[3]" position="after">
-				<create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}" />
-				<create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}" />
-			</xpath>
+            <xpath expr="//control" position="after">
+                <field name="special" invisible="1"/>
+            </xpath>
 
-			<!-- Line Display Default Limit -->
-			<xpath expr="//field[@name='order_line']/tree" position="attributes">
-				<attribute name="limit">150</attribute>
-			</xpath>
 
-			<!-- Products Owned By Customer -->
-			<xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
-				<page string="Customer Products" name="customer_products" invisible="0">
-					<group>
-						<field name="products" nolabel="1">
-							<tree>
-								<field name="name" />
-								<field name="sku" />
-								<field name="product_id" />
-								<field name="expire" />
-								<field name="formated_label" />
-							</tree>
-						</field>
-					</group>
-				</page>
-			</xpath>
+            <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
+                   position="before">
+                <field name="applied_name" invisible="0"/>
+            </xpath>
 
-			<!-- undo pricelist readonly -->
-			<!-- <xpath expr="//field[@name='pricelist_id']" position="replace">
-				<field string="Pricelist" name="pricelist_id" invisible="0" />
-			</xpath> -->
+            <!-- Custom Line Fields -->
+            <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
+                   position="after">
+                <field name="optional" invisible="0"/>
+                <field name="selected" invisible="0"/>
+                <field name="sectionSelected" invisible="1"/>
+                <field name="quantityLocked" invisible="0"/>
+                <field name="variant" invisible="1"/>
+                <field name="hiddenSection" invisible="1"/>
+            </xpath>
 
-			<xpath expr="//button[@name='update_prices']" position="attributes">
-				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>
-			</xpath>
+            <xpath expr="//create[3]" position="after">
+                <create name="multiple_choice" string="Add Multiple Choice Section"
+                        context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
+                <create name="optional_Section" string="Add an Optional Section"
+                        context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/>
+            </xpath>
 
-		</field>
-	</record>
+            <!-- Line Display Default Limit -->
+            <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                <attribute name="limit">150</attribute>
+            </xpath>
 
-	<record id="hide_view_order_form_proquotes" model="ir.ui.view">
-		<field name="name">sale.view_order_form</field>
-		<field name="model">sale.order</field>
-		<field name="inherit_id" ref="sale_management.sale_order_form_quote" />
-		<field name="arch" type="xml">
-			<!-- Hide Original Optional Products Implementation -->
-			<xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
-		</field>
-	</record>
+            <!-- Products Owned By Customer -->
+            <xpath expr="//page[@name=&quot;other_information&quot;]" position="before">
+                <page string="Customer Products" name="customer_products" invisible="0">
+                    <group>
+                        <field name="products" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="sku"/>
+                                <field name="product_id"/>
+                                <field name="expire"/>
+                                <field name="formated_label"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+
+            <!--			commented due to the undefine-->
+            <!--			<xpath expr="//button[@name='update_prices']" position="attributes">-->
+            <!--				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>-->
+            <!--			</xpath>-->
+
+        </field>
+    </record>
+
+    <record id="hide_view_order_form_proquotes" model="ir.ui.view">
+        <field name="name">sale.view_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="arch" type="xml">
+            <!-- Hide Original Optional Products Implementation -->
+            <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
+        </field>
+    </record>
 </odoo>

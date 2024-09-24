@@ -6,8 +6,8 @@
             <hr class="blog_divide" />
         </xpath>
 
-        <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">
-            <t t-call="custom.custom-footer" />
-        </xpath>
+<!--        <xpath expr="//section[@id=&quot;o_wblog_index_content&quot;]/div" position="after">-->
+<!--            <t t-call="custom.custom-footer" />-->
+<!--        </xpath>-->
     </template>
 </odoo>

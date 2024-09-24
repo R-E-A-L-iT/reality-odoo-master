@@ -45,11 +45,6 @@ class sync(models.Model):
 
     _odoo_sync_data_index = 0
 
-    cleaningId = fields.Integer(string="cleaningId", required=True, default=0)
-
-    your_field = fields.Char(string="Your Field")
-    your_sequence = fields.Integer(string="Your Sequence", readonly=True, default=lambda self: self.env['ir.sequence'].next_by_code('your.sequence.code'))
-
     ###################################################################
     # STARTING POINT
     def start_sync(self, psw=None):
@@ -874,7 +869,7 @@ class sync(models.Model):
     def cleanCCPUnsed(self, p_eid_list, p_ccp_sku_list):
         p = self.env["product.product"]
         pt = self.env["product.template"]
-        spl = self.env["stock.production.lot"]
+        spl = self.env["stock.lot"]
         sol = self.env["sale.order.line"]
         aml = self.env["account.move.line"]
         ssl = self.env["sale.subscription.line"]
@@ -918,8 +913,8 @@ class sync(models.Model):
                     
                     #Check if the product is on a sale.order.line
                     #Check if the product is on an account.move.line 
-                    #Check if the product is on an stock.production.lot
-                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.lot
+                    #Check if the product is on an stock.lot
                     #Check if the product is on an stock.move
                     if ((len(sol1) > 0) or
                         (len(aml1) > 0) or
@@ -964,8 +959,8 @@ class sync(models.Model):
                     
                     #Check if the product is on a sale.order.line
                     #Check if the product is on an account.move.line 
-                    #Check if the product is on an stock.production.lot
-                    #Check if the product is on an stock.production.lot
+                    #Check if the product is on an stock.lot
+                    #Check if the product is on an stock.lot
                     #Check if the product is on an stock.move
                     if ((len(sol1) > 0) or
                         (len(aml1) > 0) or
@@ -993,7 +988,7 @@ class sync(models.Model):
                         p1.unlink()   
                         pt1.unlink()                        
 
-        _logger.info("------: CLEANING [stock.production.lot]")
+        _logger.info("------: CLEANING [stock.lot]")
 
         _logger.info("------: archivedPP")
         for i in archivedPP: 
@@ -1026,7 +1021,7 @@ class sync(models.Model):
     #Delete all the unsued SPL
     def cleanSPLUnsed(self):
         p = self.env["product.product"]
-        spl = self.env["stock.production.lot"]
+        spl = self.env["stock.lot"]
         sq = self.env["stock.quant"]
 
         spl_ = spl.search([])
@@ -1096,84 +1091,4 @@ class sync(models.Model):
             _logger.info(i)
 
         _logger.info("-------------- FINISH")
-                
-
-    ##################################################################################
-    # creation of a sequence number to manange the sale.order cleaning
-    def setSeq(self):
-        ir = self.env["ir.sequence"]  
-
-        check = ir.search([("name", "=", "cleaningId")])
-        if (len(check) <= 0):
-            ir.create({ 
-                'name': "cleaningId", 
-                'number_increment' : 1             
-            }) 
-            _logger.info("-------------- Creation of sequence  cleaningId")
-        else:
-            _logger.info("-------------- Sequence  cleaningId existed")
-
-    def resetCleaningSeq(self):
-        ir = self.env["ir.sequence"]
-        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
-        cleaningIdSeq.number_next_actual = 0
-        _logger.info("-------------- cleaningIdSeq.number_next_actual: " + str(cleaningIdSeq.number_next_actual))
-
-    def getCleaningIdNextId(self):
-        ir = self.env["ir.sequence"] 
-        cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
-        _logger.info("-------------- cleaningIdSeq.number_next_actual: " + str(cleaningIdSeq.number_next_actual))
-        return cleaningIdSeq.number_next_actual
-
-    def incCleaningId(self):
-        ir = self.env["ir.sequence"] 
-        so = self.env["sale.order"]  
-
-        max = 100
-
-        while max >= 0:
-            # Code block to execute repeatedly
-            cleaningIdSeq = ir.search([("name", "=", "cleaningId")])
-            cleaningIdSeq.number_next_actual += 1
-            sale = so.search([("id", "=", cleaningIdSeq.number_next_actual), ("state", "in", ("sale", "done"))])            
-
-            if len(sale) > 0:
-                break  # Exit the loop if sale is not empty
-            max -= 1
-
-
-        _logger.info("-------------- cleaningId: " + str(cleaningIdSeq.number_next_actual))
-        return cleaningIdSeq.number_next_actual
         
-    #################################################    
-    #This method can not be call in a loop.
-    def cleanOneSaleOrder(self, id):
-        so = self.env["sale.order"]        
-        sale = so.search([("id", "=", id)])
-        
-        _logger.info("---- sale id: " + str(id) + ", len: " + str(len(sale)))
-        if (len(sale) <= 0):
-            return
-
-        try:
-            _logger.info("id: " + str(sale.id) + ", name: " + str(sale.name + ", state: " + str(sale.state) +  ", lines number: " + str(len(sale.order_line))))
-
-            if (str(sale.state) == "done"):                
-                sale.state = "sale"
-                self.cleanSoleOrderLines(sale.order_line)
-                sale.state = "done"
-
-            elif (str(sale.state) == "sale"):
-                self.cleanSoleOrderLines(sale.order_line)
-
-        except Exception as e:                
-            _logger.info(str(e))
-
-    ############################
-    #Cleaning all the sale.order.line, if the selected is false, set the quantity to 0
-    def cleanSoleOrderLines(self, lines):        
-        for line in lines:            
-            if ((str(line.selected) == "false") and line.qty_delivered <= 0):
-                line.product_uom_qty = 0
-
-

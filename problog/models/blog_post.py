@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, models, fields, _
+from datetime import datetime
 from odoo.addons.http_routing.models.ir_http import slug, unslug
 from odoo.addons.website.tools import text_from_html
 from odoo.tools.json import scriptsafe as json_scriptsafe

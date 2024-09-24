@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_sync_sync,access_sync_sync,model_sync_sync,base.group_user,1,1,1,1
-access_sync_sheets,access_sync_sheets,model_sync_sheets,base.group_user,1,1,1,1

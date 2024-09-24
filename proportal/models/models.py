@@ -35,7 +35,7 @@ class person(models.Model):
 
     # Identify Owned Products
     products = fields.One2many(
-        "stock.production.lot", "owner", string="Products", readonly=True
+        "stock.lot", "owner", string="Products", readonly=True
     )
     parentProducts = fields.One2many(
         related="parent_id.products", string="Company Products", readonly=True
@@ -43,7 +43,7 @@ class person(models.Model):
 
 
 class productInstance(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
 
     # Store Data For CCP Tracking
     owner = fields.Many2one("res.partner", string="Owner")
@@ -75,20 +75,6 @@ class productInstance(models.Model):
 
             #return
 
-# class ccp_status(models.Model):
-#     _name = "product.ccp_status"
-#     _description = "Leica status of each CCP in it's renewal process"
-    
-#     record_type = fields.Selection(
-#         [("status_1", "Status 1"), ("status_2", "Status 2")], required=True, default="status_1"
-#     )
-
-class productBackend(models.Model):
-    _inherit = "product.template"
-    
-    ccp_status = fields.Selection(
-        [("basic", "Basic"),("blue", "Blue"),("bronze", "Bronze"),("silver", "Silver"),("gold", "Gold"),("expired", "Expired"),("none", "None")], string="CCP Status", default="none"
-    )
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
@@ -171,34 +157,3 @@ class PurchaseOrder(models.Model):
                     "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
                 }
             )
-            
-# class MailCatch(models.Model):
-#     _inherit = "mail.message"
-    
-#     def message_new(self, cr, uid, msg, custom_values=None, context=None):
-#         """ Overrides mail_thread message_new that is called by the mailgateway
-#             through message_process.
-#             This override updates the document according to the email. """
-#         _logger.info("Message received")
-
-#     if custom_values is None:
-#         custom_values = {}
-#         val = msg.get('from').split('<')[0]
-#         defaults = {
-#             'name':  msg.get('subject') or _("No Subject"),
-#             'partner_name': val,
-#             'email_from': msg.get('from'),
-#             'email_to': msg.get('to'),
-#             'email_cc': msg.get('cc'),
-#             'user_id': False,
-#             'partner_id': msg.get('author_id', False), 
-#         }
-        
-#         if "support@r-e-a-l.it" in str(defaults['email_to']) or "it-support@r-e-a-l.it" in str(defaults['email_to']):
-            
-#             _logger.info("Message is going to helpdesk (to)")
-            
-#         elif "support@r-e-a-l.it" in str(defaults['email_cc']) or "it-support@r-e-a-l.it" in str(defaults['email_cc']):
-            
-#             _logger.info("Message is going to helpdesk (cc)")
-        
