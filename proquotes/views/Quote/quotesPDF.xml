@@ -575,6 +575,7 @@
                 <br/>
                 <br/>
                 <t t-set="footer" t-value="doc.footer_id.url"></t>
+                <img t-att-src="footer" style="width: 100%; height: 100px;" />
 
                 <footer>
                     <t t-if="doc.company_id.id == 15">
