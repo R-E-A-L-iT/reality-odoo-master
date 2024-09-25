@@ -90,11 +90,9 @@
                                 <th name="th_quantity" class="text-end" t-else="">Quantity</th>
                                 <th name="th_priceunit" class="text-end" t-if="clang == 'fr_CA'">Prix ​​unitaire</th>
                                 <th name="th_priceunit" class="text-end" t-else="">Unit Price</th>
-                                <th name="th_discount" t-if="display_discount" class="text-end" t-if="clang == 'fr_CA'">
-                                    <span>Rabais %</span>
-                                </th>
-                                <th name="th_discount" t-if="display_discount" class="text-end" t-else="">
-                                    <span>Disc.%</span>
+                                <th name="th_discount" t-if="display_discount" class="text-end">
+                                    <span t-if="clang == 'fr_CA'">Rabais %</span>
+                                    <span t-else="">Disc.%</span>
                                 </th>
                                 <th name="th_taxes" class="text-end" t-if="clang == 'fr_CA'">Impôts</th>
                                 <th name="th_taxes" class="text-end" t-else="">Taxes</th>
