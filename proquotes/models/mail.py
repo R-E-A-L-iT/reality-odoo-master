@@ -46,7 +46,7 @@ class MailMessage(models.Model):
                     message.body = body
         return messages
 
-class MailThread(models.Model):
+class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
