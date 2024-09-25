@@ -490,7 +490,7 @@
         <xpath expr="//div[@name='signature']" position="replace"/>
 
         <!--Add Signature-->
-        <xpath expr="//div[@name=&quot;so_total_summary&quot;]" position="after">
+        <xpath expr="//table/div[@name=&quot;so_total_summary&quot;]" position="after">
             <!--            &lt;!&ndash;			<t t-if="doc.sale_order_template_id.name == 'Rental'">&ndash;&gt;-->
             <!--            <t t-set="company_name" t-value="doc.company_id.name"/>-->
             <!--            <h1>-->
