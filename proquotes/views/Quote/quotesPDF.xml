@@ -13,7 +13,11 @@
         </xpath>
 
         <!-- Remove Original Table Header -->
+<<<<<<< Updated upstream
         <xpath expr="//thead" position="replace"/>
+=======
+        <xpath expr="//thead" position="replace" />
+>>>>>>> Stashed changes
 
         <!-- Ensure Subtotal Only Displays on Real Section -->
         <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment&quot;]//tr"
@@ -59,7 +63,8 @@
             <attribute name="t-if">section_empty</attribute>
         </xpath>
 
-        <xpath expr="//table/tbody//tr[1]" position="before">
+        <!-- original xpath: //table/tbody//tr[1] -->
+        <xpath expr="//table" position="before">
             <style>
                 .quote-head * {
                 color: #fff; background-color: #db0d0d;
