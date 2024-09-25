@@ -3,6 +3,11 @@
 <odoo>
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
+        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))"/>
+            <t t-set="clang" t-value="doc.partner_id.lang"/>
+        </xpath>
+
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="replace">
             
             <t t-call="web.external_layout">
@@ -48,8 +53,14 @@
                             <span class="m-0" t-field="doc.client_order_ref">SO0000</span>
                         </div>
                         <div t-if="doc.date_order" class="col-auto col-3 mw-100 mb-2" name="informations_date">
-                            <strong t-if="doc.state in ['draft', 'sent']">Quotation Date:</strong>
-                            <strong t-else="">Order Date:</strong><br/>
+                            <div t-if="doc.state in ['draft', 'sent']">
+                                <strong t-if="clang == 'fr_CA'">Date de Quotation:</strong>
+                                <strong t-else="">Quotation Date:</strong>
+                            </div>
+                            <div t-else="">
+                                <strong t-else="">Order Date:</strong>
+                            </div>
+                            <br/>
                             <span class="m-0" t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</span>
                         </div>
                         <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">
