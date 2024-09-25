@@ -641,7 +641,7 @@
                     </t>
                     <span style="color: #db0d0d;" t-field="doc.name"/>
                 </h2>
-                <span t-if="doc.partner_id.parent_id != False" t-field="doc.partner_id.parent_id.name"/>
+                <!-- <span t-if="doc.partner_id.parent_id != False" t-field="doc.partner_id.parent_id.name"/>
                 <br t-if="doc.partner_id.parent_id != False"/>
                 <span t-field="doc.partner_id.name"/>
                 <br/>
@@ -653,7 +653,7 @@
                 <span t-field="doc.partner_id.country_id.name"/>
                 <br/>
                 <span t-field="doc.partner_id.phone"/>
-                <br/>
+                <br/> -->
 
                 <!-- Calculation Values -->
                 <t t-set="line_indexes" t-value="list(enumerate(list(doc.order_line)))"/>
