@@ -58,6 +58,7 @@
                                 <strong t-else="">Quotation Date:</strong>
                             </div>
                             <div t-else="">
+                                <strong t-if="clang == 'fr_CA'">Date de Order:</strong>
                                 <strong t-else="">Order Date:</strong>
                             </div>
                             <br/>
