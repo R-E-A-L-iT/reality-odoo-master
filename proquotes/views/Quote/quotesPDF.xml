@@ -95,7 +95,7 @@
                                     <span t-if="clang == 'fr_CA'">Rabais %</span>
                                     <span t-else="">Disc.%</span>
                                 </th>
-                                <th name="th_taxes" class="text-end" t-if="clang == 'fr_CA'">Impôts</th>
+                                <th name="th_taxes" class="text-end" t-if="clang == 'fr_CA'">Taxes</th>
                                 <th name="th_taxes" class="text-end" t-else="">Taxes</th>
                                 <th name="th_subtotal" class="text-end" t-if="clang == 'fr_CA'">
                                     <span>Montant</span>
@@ -121,13 +121,7 @@
                                                 Rental Accessories
                                             </span>
                                             <span t-else="" t-field="line.name"></span>
-
-
-
-                                            <!-- formatting for html description -->
-
                                             <br/>
-
                                             <!-- <t t-set="description" t-value="line.name"/> -->
                                             <style>
                                                 description-root, .description-root *{
@@ -137,8 +131,6 @@
                                                 }
                                             </style>
                                             <div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
-
-
 
                                         </td>
                                         <td name="td_quantity" class="text-end">
@@ -165,8 +157,10 @@
                                     <t t-elif="line.display_type == 'line_section'">
 
                                         <!-- this is probably where to edit section titles -->
-
-                                        <td name="td_section_line" colspan="99">
+                                        <td t-if="line.name  == '#rental_accessories'" name="td_section_line">
+                                            <span t-field="line.name">Rental Accessories</span>
+                                        </td>
+                                        <td t-else="" name="td_section_line" colspan="99">
                                             <span t-field="line.name">A section title</span>
                                         </td>
                                         <t t-set="current_section" t-value="line"/>
