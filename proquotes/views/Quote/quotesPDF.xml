@@ -120,8 +120,26 @@
                                             <span t-if="line.name == '#rental_accessories'">
                                                 Rental Accessories
                                             </span>
-                                            <span t-else="" t-field="line.name">
-                                            </span>
+                                            <span t-else="" t-field="line.name"></span>
+
+
+
+                                            <!-- formatting for html description -->
+
+                                            <br/>
+
+                                            <!-- <t t-set="description" t-value="line.name"/> -->
+                                            <style>
+                                                description-root, .description-root *{
+                                                font-size: .75rem;
+                                                margin-top: 0px !important;
+                                                margin-bottom: 0px !important;
+                                                }
+                                            </style>
+                                            <div class="description-root" t-raw="line.description_sale" style="color: #777;"/>
+
+
+
                                         </td>
                                         <td name="td_quantity" class="text-end">
                                             <span t-field="line.product_uom_qty">3</span>
@@ -145,6 +163,9 @@
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
+
+                                        <!-- this is probably where to edit section titles -->
+
                                         <td name="td_section_line" colspan="99">
                                             <span t-field="line.name">A section title</span>
                                         </td>
