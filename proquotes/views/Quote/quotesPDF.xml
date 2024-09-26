@@ -3,15 +3,16 @@
 <odoo>
     <template id="sale_order_pdf_content" name="Sales Order PDF Content" inherit_id="sale.report_saleorder_document" priority="17">
 
-        <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
+        <!-- <xpath expr="//t[@t-value=&quot;doc.with_context(lang=doc.partner_id.lang)&quot;]" position="replace">
             <t t-set="doc" t-value="doc.with_context(lang=doc.env.context.get('lang'))"/>
             <t t-set="clang" t-value="doc.partner_id.lang"/>
-        </xpath>
+        </xpath> -->
 
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="replace">
             
             <t t-call="web.external_layout">
                 <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+                <t t-set="clang" t-value="doc.partner_id.lang"/>
                 <t t-set="forced_vat" t-value="doc.fiscal_position_id.foreign_vat"/> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
                 <t t-set="address">
                     <div t-field="doc.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
