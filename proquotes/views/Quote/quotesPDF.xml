@@ -136,7 +136,7 @@
                                                 margin-bottom: 0px !important;
                                                 }
                                             </style>
-                                            <div class="description-root" t-raw="line.description_sale" style="color: #777;"/>
+                                            <div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
 
 
 
