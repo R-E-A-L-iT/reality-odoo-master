@@ -147,16 +147,366 @@
                         <td class=" text-left" style=" border-top-style: none !important">Montant</td>
                     </t>
                 </t>
-            </tr>
-            <!-- Special Info Sections -->
-            <t t-if=" line.name== '$hardware'">
-                <tr>
-                    <td colspan="100" style="border-style: none !important;">
-                        <t t-set="isPDF" t-value="True"/>
-                        <t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
-                        <t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french"/>
-                    </td>
-                </tr>
+                <div class="page">
+                    <div class="oe_structure"/>
+
+                    <h2 class="mt-4">
+                        <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
+                        <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
+                        <span t-else="">Order # </span>
+                        <span t-field="doc.name">SO0000</span>
+                    </h2>
+
+                    <div class="row mt-4 mb-2" id="informations">
+                        <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2" name="informations_reference">
+                            <strong>Your Reference:</strong><br/>
+                            <span class="m-0" t-field="doc.client_order_ref">SO0000</span>
+                        </div>
+                        <div t-if="doc.date_order" class="col-auto col-3 mw-100 mb-2" name="informations_date">
+                            <div t-if="doc.state in ['draft', 'sent']">
+                                <strong t-if="clang == 'fr_CA'">Date de Quotation:</strong>
+                                <strong t-else="">Quotation Date:</strong>
+                            </div>
+                            <div t-else="">
+                                <strong t-if="clang == 'fr_CA'">Date de Order:</strong>
+                                <strong t-else="">Order Date:</strong>
+                            </div>
+                            <br/>
+                            <span class="m-0" t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</span>
+                        </div>
+                        <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">
+                            <strong t-if="clang == 'fr_CA'">Date D'expiration:</strong>
+                            <strong t-else="">Expiration</strong><br/>
+                            <span class="m-0" t-field="doc.validity_date">2023-12-31</span>
+                        </div>
+                        <div t-if="doc.user_id.name" class="col-auto col-3 mw-100 mb-2">
+                            <strong t-if="clang == 'fr_CA'">Vendeur:</strong>
+                            <strong t-else="">Salesperson:</strong><br/>
+                            <span class="m-0" t-field="doc.user_id">Mitchell Admin</span>
+                        </div>
+                    </div>
+
+                    <!-- Is there a discount on at least one line? -->
+                    <t t-set="lines_to_report" t-value="doc._get_order_lines_to_report()"/>
+                    <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report)"/>
+
+                    <div class="oe_structure"/>
+                    <table class="table table-sm o_main_table table-borderless mt-4">
+                        <!-- In case we want to repeat the header, remove "display: table-row-group" -->
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th name="th_description" class="text-start">Description</th>
+                                <th name="th_quantity" class="text-end" t-if="clang == 'fr_CA'">Quantité</th>
+                                <th name="th_quantity" class="text-end" t-else="">Quantity</th>
+                                <th name="th_priceunit" class="text-end" t-if="clang == 'fr_CA'">Prix ​​unitaire</th>
+                                <th name="th_priceunit" class="text-end" t-else="">Unit Price</th>
+                                <th name="th_discount" t-if="display_discount" class="text-end">
+                                    <span t-if="clang == 'fr_CA'">Rabais %</span>
+                                    <span t-else="">Disc.%</span>
+                                </th>
+                                <th name="th_taxes" class="text-end" t-if="clang == 'fr_CA'">Taxes</th>
+                                <th name="th_taxes" class="text-end" t-else="">Taxes</th>
+                                <th name="th_subtotal" class="text-end" t-if="clang == 'fr_CA'">
+                                    <span>Montant</span>
+                                </th>
+                                <th name="th_subtotal" class="text-end" t-else="">
+                                    <span>Amount</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+
+                            <t t-set="current_subtotal" t-value="0"/>
+
+                            <t t-foreach="lines_to_report" t-as="line">
+
+                                <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+
+                                <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                    <t t-if="not line.display_type">
+                                        <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
+                                        <td name="td_name">
+                                            <span t-if="line.name == '#rental_accessories'">
+                                                Rental Accessories
+                                            </span>
+                                            <span t-else="" t-field="line.name"></span>
+                                            <br/>
+                                            <!-- <t t-set="description" t-value="line.name"/> -->
+                                            <style>
+                                                description-root, .description-root *{
+                                                font-size: .75rem;
+                                                margin-top: 0px !important;
+                                                margin-bottom: 0px !important;
+                                                }
+                                            </style>
+                                            <div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
+
+                                        </td>
+                                        <td name="td_quantity" class="text-end">
+                                            <span t-field="line.product_uom_qty">3</span>
+                                            <span t-field="line.product_uom">units</span>
+                                            <span t-if="line.product_packaging_id">
+                                                (<span t-field="line.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="line.product_packaging_id"/>)
+                                            </span>
+                                        </td>
+                                        <td name="td_priceunit" class="text-end">
+                                            <span t-field="line.price_unit">3</span>
+                                        </td>
+                                        <td t-if="display_discount" class="text-end">
+                                            <span t-field="line.discount">-</span>
+                                        </td>
+                                        <t t-set="taxes" t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_id])"/>
+                                        <td name="td_taxes" t-attf-class="text-end {{ 'text-nowrap' if len(taxes) &lt; 10 else '' }}">
+                                            <span t-out="taxes">Tax 15%</span>
+                                        </td>
+                                        <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total">
+                                            <span t-field="line.price_subtotal">27.00</span>
+                                        </td>
+                                    </t>
+                                    <t t-elif="line.display_type == 'line_section'">
+
+                                        <!-- this is probably where to edit section titles -->
+                                        <td t-if="line.name  == '#rental_accessories'" name="td_section_line">
+                                            <span>Rental Accessories</span>
+                                        </td>
+                                        <td t-elif="line.name  == '$block+'" name="td_section_line">
+                                            <span></span>
+                                        </td>
+                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line">
+                                            <span>Rental Info</span>
+                                        </td>
+                                        <td t-elif="line.name  == '#rental_software'" name="td_section_line">
+                                            <span>Rental Software</span>
+                                        </td>
+                                        <td t-elif="line.name  == '$subscription'" name="td_section_line">
+                                            <span>Subscription</span>
+                                        </td>
+                                        <td t-elif="line.name  == '$hardware'" name="td_section_line">
+                                            <span>Hardware</span>
+                                        </td>
+                                        <td t-elif="line.name  == '$block'" name="td_section_line">
+                                            <span></span>
+                                        </td>
+
+                                        <!-- translate -->
+
+                                        <!-- 
+                                        
+                                        if line.name contains "translate":
+
+                                            terms =  line.name.split("+",2)
+
+                                            if terms[0] == "#translate":
+                                                english = terms[1]
+                                                french = terms[2]
+
+                                                if clang == 'fr_CA':
+                                                    return french
+                                                else:
+                                                    return english
+                                        
+                                         -->
+
+                                        <td t-elif="'#translate' in line.name" name="td_section_line">
+                                            <t t-set="title" t-value="o.get_translated_term(line.name, clang)" />
+                                            <span t-esc="title">Translated Title</span>
+                                        </td>
+
+                                        <!-- ccp label -->
+
+                                        <td t-elif="line.name  == '$subscription'" name="td_section_line">
+                                            <span>Subscription</span>
+                                        </td>
+
+                                        <td t-else="" name="td_section_line" colspan="99">
+                                            <span t-field="line.name">A section title</span>
+                                        </td>
+                                        <t t-set="current_section" t-value="line"/>
+                                        <t t-set="current_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="line.display_type == 'line_note'">
+                                        <td name="td_note_line" colspan="99">
+                                            <span t-field="line.name">A note, whose content usually applies to the section or product above.</span>
+                                        </td>
+                                    </t>
+                                </tr>
+
+                                <t t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment">
+                                    <tr class="is-subtotal text-end">
+                                        <td name="td_section_subtotal" colspan="99">
+                                            <strong class="mr16">Subtotal</strong>
+                                            <span t-out="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.currency_id}">31.05</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div class="clearfix" name="so_total_summary">
+                        <div id="total" class="row" name="total">
+                            <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                <table class="table table-sm table-borderless">
+                                    <!-- Tax totals -->
+                                    <t t-set="tax_totals" t-value="doc.tax_totals"/>
+                                    <t t-call="sale.document_tax_totals"/>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- custom footer stuff -->
+                    <div id="quote_disclaimer">
+                        <t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'"
+                        t-value="'canadiens'"/>
+                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'"
+                        t-value="'américains'"/>
+                        <t t-set="currency_label" t-else="" t-value="doc.currency_id.name"/>
+                        <p t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
+                            <t t-out="currency_label"/>
+                            dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
+                            showing). The quote is valid for 30 days after submittal date.
+                        </p>
+                        <p t-elif="clang == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes de
+                            vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
+                            affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                        </p>
+
+                        <t t-if="'abtech' in doc.company_id.name.lower()">
+                            <br/>
+                            <br/>
+                            <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                                <span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and
+                                    therefore some or all of the quoted products may be invoiced and delivered by one of our
+                                    partners.
+                                </span>
+                            </t>
+                            <t t-elif="clang == 'fr_CA'">
+                                <span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de
+                                    certains produits et par conséquent, certains ou tous les produits cités peuvent être
+                                    facturés et livrés par l'un de nos partenaires.
+                                </span>
+                            </t>
+                        </t>
+                    </div>
+                    <div t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <h1>Customer Acceptance</h1>
+                        <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you
+                            are authorized to do so.
+                        </p>
+                    </div>
+                    <div t-elif="clang == 'fr_CA'">
+                        <h1>Acceptation client</h1>
+                        <p>Par votre signature, vous acceptez cette offre au nom de votre compagnie et vous confirmez que vous
+                            en avez l'autorité de le faire.
+                        </p>
+                    </div>
+                    <div>
+                        <span style="height: 40px">PO #:</span>
+                        <span style="border-bottom: solid !important; width:500px !important;">
+                            <span style="color: #fff;">________________________________________</span>
+                        </span>
+                        <br/>
+                        <br/>
+                        <span style="height: 40px">Signature:</span>
+                        <span style="border-bottom: solid !important; width:500px !important;">
+                            <t t-if="doc.signature">
+                                <img t-att-src="image_data_uri(doc.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                            </t>
+                            <t t-else="">
+                                <span style="color: #fff;">____________________________________</span>
+                            </t>
+                        </span>
+                        <br/>
+                        <br/>
+                        <span style="height: 40px">Date:</span>
+                        <span style="border-bottom: solid !important; width:500px !important;">
+                            <t t-if="doc.signed_on">
+                                <span t-field="doc.signed_on"/>
+                            </t>
+                            <t t-else="">
+                                <span style="color: #fff;">____________________________________</span>
+                            </t>
+                        </span>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <t t-set="footer" t-value="doc.footer_id.url"></t>
+                        <img t-att-src="footer" style="width: 100%; height: 100px;" />
+
+                        <footer>
+                            <t t-if="doc.company_id.id == 15">
+                                <div id="bank-info" style="width: 100%; text-align: center;">
+                                    <p t-if="clang == 'en_CA' or clang == 'en_US'">
+                                        <span>Bank Info For Wire Transfers to R-E-A-L.iT Solutions</span>
+                                        <br/>
+                                        <span>BMO Vaudreuil Branch: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V 8H2</span>
+                                        <br/>
+                                        <span>Transit: 33201, Institution: 001, Account No.: 1986 858</span>
+                                    </p>
+                                    <p t-elif="clang == 'fr_CA'">
+                                        <span>Info pour transfert bancaire à Solutions R-E-A-L.iT</span>
+                                        <br/>
+                                        <span>BMO succursales de Vaudreuil: 580 Av. Saint-Charles, Vaudreuil-Dorion, QC J7V
+                                            8H2
+                                        </span>
+                                        <br/>
+                                        <span>Transit: 33201, Institution: 001, No. de compte: 1986 858</span>
+                                    </p>
+                                </div>
+                            </t>
+
+                            <t t-if="doc.company_id.id == 3">
+                                <br/>
+                                <div id="bank-info" style="width: 100%; !important; text-align: center !imporant;">
+                                    <p t-if="clang == 'en_CA' or clang == 'en_US'">
+                                        <span>Bank Info For Wire Transfers to R-E-A-L.iT U.S. Inc.</span>
+                                        <br/>
+                                        <span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
+                                        <br/>
+                                        <span>Routing No.: 071000288, Account No.: 3875473</span>
+                                    </p>
+                                    <p t-if="clang == 'fr_CA'">
+                                        <span>Info pour transfert bancaire à R-E-A-L.iT U.S. Inc.</span>
+                                        <br/>
+                                        <span>BMO Harris Bank N.A.: P.O. Box 755, Chicago, IL 60690</span>
+                                        <br/>
+                                        <span>Routing No.: 071000288, Account No.: 3875473</span>
+                                    </p>
+                                </div>
+                            </t>
+                        </footer>
+                    </div>
+
+
+
+                    <div class="oe_structure"/>
+
+                    <div t-if="not doc.signature" class="oe_structure"/>
+                    <div t-else="" class="mt-4 ml64 mr4" name="signature">
+                        <div class="offset-8">
+                            <strong>Signature</strong>
+                        </div>
+                        <div class="offset-8">
+                            <img t-att-src="image_data_uri(doc.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                        </div>
+                        <div class="offset-8 text-center">
+                            <span t-field="doc.signed_by">Oscar Morgan</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span t-field="doc.note" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if doc.company_id.terms_type != 'html' else ''}" name="order_note"/>
+                        <p t-if="not is_html_empty(doc.payment_term_id.note)">
+                            <span t-field="doc.payment_term_id.note">The payment should also be transmitted with love</span>
+                        </p>
+                        <div class="oe_structure"/>
+                        <p t-if="doc.fiscal_position_id and not is_html_empty(doc.fiscal_position_id.sudo().note)" id="fiscal_position_remark">
+                            <strong>Fiscal Position Remark:</strong>
+                            <span t-field="doc.fiscal_position_id.sudo().note">No further requirements for this payment</span>
+                        </p>
+                    </div>
+                    <div class="oe_structure"/>
+                </div>
             </t>
             <t t-if="line.name == '$software'">
                 <tr>

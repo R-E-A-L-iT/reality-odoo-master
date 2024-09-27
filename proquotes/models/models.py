@@ -1034,3 +1034,17 @@ class pdf_quote(models.Model):
 
     footer_field = fields.Selection("")
     # footer_field = fields.Selection(related="order_id.footer")
+    
+    def get_translated_term(title, lang):
+        if title contains "translate":
+
+            terms =  title.split("+",2)
+
+            if terms[0] == "#translate":
+                english = terms[1]
+                french = terms[2]
+
+                if lang == 'fr_CA':
+                    return french
+                else:
+                    return english
