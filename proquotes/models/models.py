@@ -1015,10 +1015,6 @@ class person(models.Model):
 
     products = fields.One2many("stock.lot", "owner", string="Products")
 
-    def _mail_get_partners(self, introspect_fields=False):
-        partners = dict((partner.id, partner) for partner in self)
-        return partners[0]
-
 
 class owner(models.Model):
     _inherit = "stock.lot"
