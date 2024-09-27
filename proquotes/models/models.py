@@ -452,6 +452,21 @@ class order(models.Model):
         string="Header OLD",
         help="Header selection field",
     )
+    
+    def get_translated_term(title, lang):
+        if "translate" in title:
+
+            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
+            terms =  title.split("+",2)
+
+            if terms[0] == "#translate":
+                english = terms[1]
+                french = terms[2]
+
+                if lang == 'fr_CA':
+                    return french
+                else:
+                    return english
 
     def _default_footer(self):
         # Get Company
@@ -1034,18 +1049,3 @@ class pdf_quote(models.Model):
 
     footer_field = fields.Selection("")
     # footer_field = fields.Selection(related="order_id.footer")
-    
-    def get_translated_term(title, lang):
-        if "translate" in title:
-
-            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
-            terms =  title.split("+",2)
-
-            if terms[0] == "#translate":
-                english = terms[1]
-                french = terms[2]
-
-                if lang == 'fr_CA':
-                    return french
-                else:
-                    return english
