@@ -114,10 +114,8 @@
                                     <t t-if="not line.display_type">
                                         <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
                                         <td name="td_name">
-                                            <span t-if="line.name == '#rental_accessories'">
-                                                Rental Accessories
-                                            </span>
-                                            <span t-else="" t-field="line.name"/>
+                                            <!-- <span t-else="" t-field="line.name"/> -->
+                                            <span dangerouslySetInnerHTML={{ __html: line.name }} />
                                             <br/>
                                             <!-- <t t-set="description" t-value="line.name"/> -->
                                             <style>
@@ -219,6 +217,9 @@
                                         <td name="td_note_line" colspan="99">
                                             <span t-field="line.name">A note, whose content usually applies to the section or product above.</span>
                                         </td>
+                                    </t>
+                                    <t else="">
+
                                     </t>
                                 </tr>
 
