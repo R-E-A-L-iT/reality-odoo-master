@@ -53,72 +53,17 @@
         <!--            </attribute>-->
         <!--        </xpath>-->
 
-        <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
-		</tr>
-
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-
-             <!-- temporary style fixes -->
-            <style>
-                .sale_tbody &gt; tr &gt; td {
-                    padding: 0.01rem 0.01rem !important;
-                }
-                .quote-head &gt; td.text-left {
-                    padding: 26px !important;
-                }
-                #sales_order_table &gt; tbody &gt; tr &gt; td:nth-child(3) {
-                    text-align: center !important;
-                }
-                #quote_content {
-                    padding: 0px !important;
-                }
-                #portal_sale_content {
-                    padding: 30px !important;
-                    padding-right: 40px !important;
-                    padding-top: 0px !important;
-                    background-color: #24272A !important;
-                }
-                #details &gt; div.quote-address &gt; video {
-                    z-index: 1 !important;
-                    width: 100vw !important;
-                    background-color: black !important;
-                }
-                div.quote-address {
-                    background-color: black !important;
-                }
-                #quote_content {
-                    width: 100%
-                }
-                .quoteLineRowSection {
-                    padding: 5px !important;
-                }
-                #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td &gt; div:nth-child(2) &gt; label {
-                    padding: 5px !important;
-                }
-                td#subtotal {
-                    padding-right: 5px !important;
-                }
-                .quoteLineRowSection &gt; td {
-                    padding: 20px !important;
-                }
-            </style>
-
-
         </xpath>
 
 
         <!-- Remove Original Table Header-->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
-        <t t-set="lines_to_report" position="replace">
-            <t t-set="lines_to_report" t-value="sale_order.order_line"/>
-        </t>
-
         <!-- Info Sections -->
-        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="before">
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[@t-foreach='lines_to_report']/t[1]" position="before">
             <t t-if="line.name == '$hardware'">
                 <tr>
                     <td style="border-style: none;" colspan="100">
@@ -249,7 +194,7 @@
         </xpath>
 
         <!-- Handle Special Sections Seperatly -->
-        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="attributes">
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody//t[@t-foreach='lines_to_report']/t[1]" position="attributes">
             <attribute name="t-if">line.name[0] != '$'</attribute>
         </xpath>
 
@@ -463,19 +408,6 @@
             <t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
             <span t-if="line.product_id.is_software == False" class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
             <span t-elif="line.product_id.is_software == True" class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/>
-            <style>
-                #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td {
-                    padding: 20px !important;
-                }
-                .is-subtotal {
-                    display: none !important;
-                }
-                .quoteLineRow &gt; #product_name {
-                    padding: 20px !important;
-                    padding-top: 20px !important;
-                    padding-right: 0px !important;
-                }
-            </style>
         </xpath>
 
         <!--			this will commented and deprecated due to price_total field have no more-->
@@ -492,7 +424,7 @@
             <t t-if="line.quantityLocked =='no'">
                 <t t-set="qty" t-value="round(line.product_uom_qty)"/>
                 <!-- <span t-out="qty" /> -->
-                <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}" style="display: inline; width: 60px;"/>
+                <input type="number" class="quantityChange" min="0" t-attf-value="{{qty}}" style="display: inline; width: 60px;"/>
             </t>
         </xpath>
 
@@ -626,10 +558,6 @@
                 </a>
             </div>
             <br/>
-        </xpath>
-
-        <!-- <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/> -->
-        <xpath expr="//div[@id=&quot;sale_order_communication&quot;]" position="before">
             <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/>
         </xpath>
     </template>
