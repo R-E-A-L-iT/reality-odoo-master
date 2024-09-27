@@ -114,8 +114,8 @@
                                     <t t-if="not line.display_type">
                                         <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
                                         <td name="td_name">
-                                            <!-- <span t-else="" t-field="line.name"/> -->
-                                            <span dangerouslySetInnerHTML={{ __html: line.name }} />
+                                            <span t-raw="line.name"/>
+                                            <!-- <span dangerouslySetInnerHTML={{ __html: line.name }} /> -->
                                             <br/>
                                             <!-- <t t-set="description" t-value="line.name"/> -->
                                             <style>
