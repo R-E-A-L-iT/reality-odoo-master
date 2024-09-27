@@ -311,7 +311,7 @@
                                          -->
 
                                         <td t-elif="'#translate' in line.name" name="td_section_line" colspan="99">
-                                            <t t-set="title" t-value="o.get_translated_term(line.name, clang)" />
+                                            <t t-set="title" t-value="doc.get_translated_term(line.name, clang)" />
                                             <span t-esc="title">Translated Title</span>
                                         </td>
 
