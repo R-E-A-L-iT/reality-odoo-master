@@ -50,7 +50,7 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(
+        groups = models.AbstractModel._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
         if not self:
