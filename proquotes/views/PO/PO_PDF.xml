@@ -9,5 +9,11 @@
 		<xpath expr="//div[1]" position="after">
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
+		<xpath expr="//t[@t-if=&quot;o.dest_address_id&quot;]" position="after">
+			<strong>Delivery address:</strong>
+                <div t-if="o.picking_type_id">
+                    <div t-field="o.picking_type_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="delivery"/>
+                </div>
+		</xpath>
 	</template>
 </odoo>
