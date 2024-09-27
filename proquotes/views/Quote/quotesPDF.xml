@@ -510,7 +510,7 @@
                     </div>
                     <div class="oe_structure"/>
                 </div>
-            </t>
+            </tr>
             <t t-if="line.name == '$software'">
                 <tr>
                     <td colspan="100" style="border-style: none !important;">
