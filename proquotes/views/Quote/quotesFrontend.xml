@@ -54,7 +54,7 @@
         <!--        </xpath>-->
 
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
+			<attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment and line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
 		</tr>
 
         <!-- Quote Label -->
