@@ -32,23 +32,21 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updateQuantityEvent: function (t) {
-            console.log('tttt------_updateQuantityEvent----', t)
-            setTimeout(() => {
 			//Update Quantity for Product
-    			let self = this;
-    			var target = t.currentTarget;
-    			var p = target;
-    			while (p.tagName != "TR") {
-    				p = p.parentNode;
-    			}
+			let self = this;
+			var target = t.currentTarget;
+			var p = target;
+			while (p.tagName != "TR") {
+				p = p.parentNode;
+			}
 
-                var closestChecked = target.closest('.quoteLineRow');
-                var checkbox = closestChecked.querySelector('.priceChange');
+            var closestChecked = target.closest('.quoteLineRow');
+            var checkbox = closestChecked.querySelector('.priceChange');
 
-                // if (checkbox.checked === true) {
-                    // Log the checkbox checked state
+            if (checkbox.checked === true) {
+                // Log the checkbox checked state
                 var lineId = p.querySelector(".line_id").id;
-                var qty = Math.round(target.value);
+    			var qty = Math.round(target.value);
                 //			return this._rpc({
                 //				route: "/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId,
                 //				params: {
@@ -57,70 +55,46 @@ import publicWidget from "@web/legacy/js/public/public_widget";
                 //					quantity: qty,
                 //				},
                 //			})
-                return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
-                        "access_token": this.orderDetail.token,
-                        "line_id": lineId,
-                        "quantity": checkbox.checked === true ? qty : 0
-                    },
-                ).then((data) => {
-                    if (data) {
-                        self.$("#portal_sale_content").html(
-                            $(data["sale_inner_template"])
-                        );
-                        this._updateView(data["order_amount_total"]);
-                    }
-                });
-            }, 800);
-
-		},
-
-		_updatePriceTotalsEvent: function (ev) {
-            console.log('------_updatePriceTotalsEvent----')
-            console.log('------_updatePriceTotalsEvent--ev--',ev)
-            setTimeout(() => {
-                if (ev !== undefined){
-                    var $target = $(ev.currentTarget);
-                    // debugger;
-                    console.log('-----$target--',$target)
-                    var closestrow = $target.closest('.quoteLineRow');
-                    console.log('-----closestrow--',closestrow)
-                    var checkbox = closestrow.find('.priceChange');
-                    console.log('-----checkbox--',checkbox)
-                    var qty = closestrow.find('.quantityChange').val();
-                    console.log('-----qty--',qty)
-                    if (checkbox[0].checked === false) {
-                        closestrow.find('.quantityChange').val(0).change();
-                        // $(closestrow.find('.quantityChange')).trigger("change");
-                        // console.log('-----AFTER VALUE-----',closestrow.find('.quantityChange').val())
-                    }
-                }
-    			//Find All Products that Might Change the Price
-                // var $link = $(ev.currentTarget);
-    			let self = this;
-    			var vpList = document.querySelectorAll(".priceChange");
-                // console.log('------$link----',$link)
-                console.log('------vpList----',vpList)
-    			var result = null;
-    			var line_ids = [];
-    			var targetsChecked = [];
-
-    			for (var i = 0; i < vpList.length; i++) {
-    				var p = vpList[i];
-    				while (p.tagName != "TR") {
-    					p = p.parentNode;
+    			return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
+    					"access_token": this.orderDetail.token,
+    					"line_id": lineId,
+    					"quantity": qty
+    				},
+    			).then((data) => {
+    				if (data) {
+    					self.$("#portal_sale_content").html(
+    						$(data["sale_inner_template"])
+    					);
+    					this._updateView(data["order_amount_total"]);
     				}
-    				targetsChecked.push(
-    					vpList[i].checked == true ? "true" : "false"
-    				);
-    				line_ids.push(p.querySelector(".line_id").id);
-    			}
-    			this._updatePriceTotals(targetsChecked, line_ids);
-             }, 800);
+    			});
+            } else {
+                console.log('Checkbox not found');
+            }
+
 		},
 
+		_updatePriceTotalsEvent: function () {
+			//Find All Products that Might Change the Price
+			let self = this;
+			var vpList = document.querySelectorAll(".priceChange");
+			var result = null;
+			var line_ids = [];
+			var targetsChecked = [];
+			for (var i = 0; i < vpList.length; i++) {
+				var p = vpList[i];
+				while (p.tagName != "TR") {
+					p = p.parentNode;
+				}
+				targetsChecked.push(
+					vpList[i].checked == true ? "true" : "false"
+				);
+				line_ids.push(p.querySelector(".line_id").id);
+			}
+			this._updatePriceTotals(targetsChecked, line_ids);
+		},
 
 		_rentalValueTotal: function () {
-            console.log('------_rentalValueTotal-------')
 			var totalLandingEnglish = document.getElementById("total-rental-value-english");
 			var totalLandingFrench = document.getElementById("total-rental-value-french");
 			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
@@ -128,9 +102,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			}
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
-            console.log('------items-------',items)
 			for (var i = 0; i < items.length; i++) {
-                console.log('------items-------',items)
 				var input = items[i].getElementsByTagName("input");
 				var include = true;
 				if (input.length > 0) {
@@ -144,15 +116,11 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				if (include) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
-
-
 					) {
-
 						total += parseInt(
 							items[i].getElementsByClassName("itemValue")[0]
 								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
 						);
-                        console.log('------total-------',total)
 					}
 				}
 			}
@@ -252,7 +220,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
-            console.log('------_updateSectionSelectionEvent----')
 			var target = ev.currentTarget;
 			var checked = target.checked;
 			var p = target;
@@ -298,18 +265,16 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updatePriceTotals: function (targetsChecked, line_ids) {
-            console.log('------_updatePriceTotals----')
 			let self = this;
-            //            return this._rpc({
-            //				route: "/my/orders/" + this.orderDetail.orderId + "/select",
-            //				params: {
-            //					access_token: this.orderDetail.token,
-            //					line_ids: line_ids,
-            //					selected: targetsChecked,
-            //				},
-            //			})
-            console.log('---282---targetsChecked----',targetsChecked)
-            console.log('---283---line_ids----',line_ids)
+//            return this._rpc({
+//				route: "/my/orders/" + this.orderDetail.orderId + "/select",
+//				params: {
+//					access_token: this.orderDetail.token,
+//					line_ids: line_ids,
+//					selected: targetsChecked,
+//				},
+//			})
+
             return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/select", {
 					'access_token': this.orderDetail.token,
 					'line_ids': line_ids,
