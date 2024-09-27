@@ -266,25 +266,28 @@
                                     <t t-elif="line.display_type == 'line_section'">
 
                                         <!-- this is probably where to edit section titles -->
-                                        <td t-if="line.name  == '#rental_accessories'" name="td_section_line">
+                                        <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
                                             <span>Rental Accessories</span>
                                         </td>
-                                        <td t-elif="line.name  == '$block+'" name="td_section_line">
+                                        <td t-elif="line.name  == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
-                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line">
+                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line" colspan="99">
                                             <span>Rental Info</span>
                                         </td>
-                                        <td t-elif="line.name  == '#rental_software'" name="td_section_line">
+                                        <td t-elif="line.name  == '$rental_info'" name="td_section_line" colspan="99">
+                                            <span>Rental Info</span>
+                                        </td>
+                                        <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
                                             <span>Rental Software</span>
                                         </td>
-                                        <td t-elif="line.name  == '$subscription'" name="td_section_line">
+                                        <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
                                             <span>Subscription</span>
                                         </td>
-                                        <td t-elif="line.name  == '$hardware'" name="td_section_line">
+                                        <td t-elif="line.name  == '$hardware'" name="td_section_line" colspan="99">
                                             <span>Hardware</span>
                                         </td>
-                                        <td t-elif="line.name  == '$block'" name="td_section_line">
+                                        <td t-elif="line.name  == '$block'" name="td_section_line"  colspan="99">
                                             <span></span>
                                         </td>
 
@@ -307,14 +310,14 @@
                                         
                                          -->
 
-                                        <td t-elif="'#translate' in line.name" name="td_section_line">
+                                        <td t-elif="'#translate' in line.name" name="td_section_line" colspan="99">
                                             <t t-set="title" t-value="o.get_translated_term(line.name, clang)" />
                                             <span t-esc="title">Translated Title</span>
                                         </td>
 
                                         <!-- ccp label -->
 
-                                        <td t-elif="line.name  == '$subscription'" name="td_section_line">
+                                        <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
                                             <span>Subscription</span>
                                         </td>
 
