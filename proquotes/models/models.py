@@ -453,7 +453,7 @@ class order(models.Model):
         help="Header selection field",
     )
     
-    def get_translated_term(title, lang):
+    def get_translated_term(self, title, lang):
         if "translate" in title:
 
             _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
