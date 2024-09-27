@@ -1038,6 +1038,7 @@ class pdf_quote(models.Model):
     def get_translated_term(title, lang):
         if "translate" in title:
 
+            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
             terms =  title.split("+",2)
 
             if terms[0] == "#translate":
