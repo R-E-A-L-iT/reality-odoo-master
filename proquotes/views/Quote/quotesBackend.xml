@@ -11,6 +11,10 @@
 				<attribute name="string">Business</attribute>
 			</xpath>
 
+			<!-- <xpath expr="//field[@name='pricelist_id']" position="after">
+                <field name="financing_available"></field>
+            </xpath> -->
+
 
 			<!-- NOTE: to make address appear under delivery address/invoice address, directly go to a quote in debug mode, go to the debug dropdown, select "edit view: form", and then scroll down to partner_invoice_id and partner_shipping_id and add 'show_address': 1 to the context. for some stupid reason odoo doesn't let you do this via xpath it seems. or i could just be stupid. idk. -->
 
@@ -64,6 +68,7 @@
 					<field name="rental_end" attrs="{'invisible': [('is_rental', '!=', True)]}" />
 					<field name="customer_po_number" invisible="0" />
 					<field name="manual_invoice_status" widget="selection_radio" />
+					<field name="financing_available" />
 					<field name="header_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 					<field name="header" invisible="1" />
 					<field name="footer" invisible="1" />
@@ -120,6 +125,11 @@
 					</group>
 				</page>
 			</xpath>
+
+			<!-- undo pricelist readonly -->
+			<!-- <xpath expr="//field[@name='pricelist_id']" position="replace">
+				<field string="Pricelist" name="pricelist_id" invisible="0" />
+			</xpath> -->
 
 			<xpath expr="//button[@name='update_prices']" position="attributes">
 				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>

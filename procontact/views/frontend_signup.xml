@@ -1,0 +1,28 @@
+<!-- 
+
+PLAN:
+
+Sign up form should be multi-step and ask for many more details. 
+
+https://www.odoo.com/forum/help-1/add-fields-to-signup-page-222708
+
+Fields:
+
+ category 1
+    √ full name
+    √ email
+    phone
+    √ password
+    √ confirm password
+ 
+ category 2
+    company name
+    company size
+    company industry
+    your role in company
+
+ category 3
+    company address ?? [what subfields are needed here?]
+    payment/invoicing info ?? [what subfields are needed here?]
+
+ -->

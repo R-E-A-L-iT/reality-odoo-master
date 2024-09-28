@@ -10,6 +10,7 @@ from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
+from odoo.addons.sale.controllers.portal import CustomerPortal as SalesOrder
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.osv import expression
 import re
@@ -331,3 +332,20 @@ class QuoteCustomerPortal(cPortal):
         )
 
         return results
+
+
+       
+# inheriting the controller of an existing model
+# class QuoteAddressSelection(SalesOrder):
+
+#     SaleOrder = request.env['sale.order']
+    
+#     @http.route(["/create/weboperation"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
+#     def create_webop(self, qcontext):
+#         values['partner_invoice_id'] = qcontext.get('partner_invoice_id')
+#         #update record in model
+#         your_record_id = qcontext.get('form_input_recordid')
+#         sale_record = self.env['sale.order'].browse(your_record_id)
+#         sale_record.write(values)
+#             # create record in model
+#             # my_new_record = self.env['sale'].create(values)

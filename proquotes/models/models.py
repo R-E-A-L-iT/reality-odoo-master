@@ -24,6 +24,10 @@ _logger = logging.getLogger(__name__)
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"
+    
+    # change to selection field of quotes
+    quote_source = fields.Char(name="Source")
+    
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -359,6 +363,8 @@ class order(models.Model):
 
     header_id = fields.Many2one("header.footer", default=_default_header, required=True)
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
+    
+    financing_available = fields.Boolean(string="Financing Available", default=False, required=True)
 
     is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
@@ -766,6 +772,11 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
 
+class frontendQuote(models.Model):
+    _inherit = "ir.ui.view.custom"
+    
+    invoicing_addresses = fields.Many2one("res.partner", string="Invoicing Address")
+
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
@@ -839,3 +850,8 @@ class pdf_quote(models.Model):
     _inherit = "sale.report"
 
     footer_field = fields.Selection(related="order_id.footer")
+    
+class delivery_slip(models.Model):
+    _inherit = "stock.picking"
+
+    po_number = fields.Char(string="PO Number")

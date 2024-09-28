@@ -146,9 +146,13 @@ class syncWeb:
 
             if not sheet[i][columns["valid"]].upper() == "TRUE":
                 _logger.info("Web Valid")
-                msg = utilities.buildMSG(
-                    msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row"
-                )
+                
+                # ezekiel: i've commented this out because I unlinked the home page from the sync and wanted to stop getting a sync report failed email half hour when it was just skipping the home page as I intended
+                
+                # msg = utilities.buildMSG(
+                #     msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row"
+                # )
+                
                 i += 1
                 continue
 

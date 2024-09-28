@@ -128,9 +128,9 @@ class sync_pricelist:
                     i = i + 1
                     continue
                 # Add Prices to the 4 pricelists
-                self.pricelist(product, "cadSale", "CAD SALE", i, columns)
+                self.pricelist(product, "cadSale", "🇨🇦", i, columns)
                 self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
-                self.pricelist(product, "usdSale", "USD SALE", i, columns)
+                self.pricelist(product, "usdSale", "🇺🇸", i, columns)
                 self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
 
                 if new:
@@ -139,6 +139,7 @@ class sync_pricelist:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.error(e)
+                _logger.exception("Traceback:")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg                   
 

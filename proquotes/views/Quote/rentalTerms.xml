@@ -100,7 +100,7 @@
                         <li>
                             <h3>Insurance</h3>
                             <p> The Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it. </p>
-                            <p> For all rentals involving Remotely Piloted Aircraft Systems (RPAS), the Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, that also covers RPAS operations, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to R-E-A-L.iT Solutions should R-E-A-L.iT Solutions so request it.
+                            <p> For all rentals involving Remotely Piloted Aircraft Systems (RPAS), the Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, that also covers RPAS operations, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it.
                             </p>
                         </li>
                         <li>
@@ -108,7 +108,7 @@
                             <p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
                         </li>
                         <li>
-                            <p> For any rental involving Remotely Piloted Aircraft Systems (RPAS), the Customer must conduct all flight operations in compliance with Canadian Aviation Regulations (CARs) Part IX – Remotely Piloted Aircraft Systems. </p>
+                            <p>For any rental involving drones, the Customer must conduct all flight operations in compliance with Canadian Aviation Regulations (CARs) Part IX – Remotely Piloted Aircraft Systems while operating in Canada or with Federal Aviation Administration (FAA) - 14 Code of Federal Regulations (CFR) Part 107 Small Unmanned Aircraft Systems while operating in US.</p>
                         </li>
                     </ol>
                 </li>
@@ -280,7 +280,7 @@
                         <li>
                             <h3>Assurances</h3>
                             <p> Le Client s'engage, par les présentes, à détenir une assurance de responsabilité civile générale le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de deux millions de dollars (2 000 000 $) et à remettre, à <t t-esc="company_name + ','" /> une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements. </p>
-                            <p> Pour toutes les locations impliquant des systèmes d'aéronefs télépilotés (SATP), le Client s'engage par la présente à détenir une assurance responsabilité civile générale couvrant toute responsabilité civile envers les tiers qui lui incombe (y compris l'assurance locataire) aux termes du présent Contrat, qui couvre également les opérations RPAS, avec une couverture minimale de deux millions de dollars (2 000 000 $) et à fournir une copie de la police à Solutions R-E-A-L.iT si Solutions R-E-A-L.iT le demande.
+                            <p> Pour toutes les locations impliquant des systèmes d'aéronefs télépilotés (SATP), le Client s'engage par la présente à détenir une assurance responsabilité civile générale couvrant toute responsabilité civile envers les tiers qui lui incombe (y compris l'assurance locataire) aux termes du présent Contrat, qui couvre également les opérations RPAS, avec une couverture minimale de deux millions de dollars (2 000 000 $) et à fournir une copie de la police à <t t-esc="company_name" /> si <t t-esc="company_name" /> le demande.
                             </p>
                         </li>
                         <li>
@@ -288,7 +288,7 @@
                             <p> Le Client s'engage, par les présentes, à respecter et à se conformer à toute norme, politique ou règlement édicté par <t t-esc="company_name" /> eu égard notamment à l'utilisation et la sécurité des Équipements. </p>
                         </li>
                         <li>
-                            <p>Pour toute location impliquant des systèmes d’aéronefs télépilotés (SATP), le Client doit effectuer toutes les opérations de vol en conformité avec le Règlement de l’aviation canadien (RAC), Partie IX – Systèmes d’aéronefs télépilotés.
+                            <p>Pour toutes locations impliquant des drones, le Client doit effectuer toutes les opérations de vol en conformité avec le Règlement de l'aviation canadien (RAC) Partie IX - Systèmes d'aéronefs télépilotés lorsqu'il opère au Canada ou avec la Federal Aviation Administration (FAA) - 14 Code of Federal Regulations (CFR) Partie 107 Petits systèmes d'aéronefs sans pilote lorsqu'il opère aux États-Unis.
                             </p>
                         </li>
                     </ol>

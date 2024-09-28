@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-<template id="portal_table" name="My Portal Table" inherit_id="portal.portal_table" priority="17">
-    <xpath expr="//table" position="attributes">
-        <attribute name="class">table rounded mb-0 o_portal_my_doc_table</attribute>
-        <attribute name="id">projectPortalTable</attribute>
-    </xpath>
-</template>
-</odoo>

@@ -25,6 +25,7 @@
 		<!-- Tax Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
 			<attribute name="t-attf-class">text-left</attribute>
+			<attribute name="style">display: none;</attribute>
 		</xpath>
 
 		<!-- Line_Total Alignment -->
