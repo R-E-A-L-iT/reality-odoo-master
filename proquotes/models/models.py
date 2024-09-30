@@ -413,6 +413,8 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
+    
+    payment_date = fields.Date(string="Date of Payment", related="payment_id.date", readonly=True)
 
 
 class order(models.Model):
