@@ -5,9 +5,12 @@
         <field name="name">Sale_Backend_Form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
+
+        <!-- the sale pricelists no longer have the word sale in them, instead they are flags, so this code makes it impossible to select a pricelist -->
+
         <field name="arch" type="xml">
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
-                <attribute name="domain">[('name', 'ilike', 'sale')]</attribute>
+                <attribute name="domain">[('name', 'ilike', '')]</attribute>
             </xpath>
         </field>
     </record>
