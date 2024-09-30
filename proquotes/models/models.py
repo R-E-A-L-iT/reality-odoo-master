@@ -476,12 +476,13 @@ class order(models.Model):
 
         # Customize the email template
         template_id = self.env.ref('sale.email_template_edi_sale').id    
+        partner_ids = self.partner_ids.ids
         
         ctx = {
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
-            'default_partner_ids': self.partner_ids,
+            'default_partner_ids': partner_ids,
             # Add any other context variables you need
         }
         res['context'] = ctx
