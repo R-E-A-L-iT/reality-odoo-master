@@ -470,6 +470,24 @@ class order(models.Model):
         help="Header selection field",
     )
     
+    def action_quotation_send(self):
+        # Call the original method to send the email
+        res = super().action_quotation_send()
+
+        # Customize the email template
+        template_id = self.env.ref('sale.email_template_edi_sale').id    
+        
+        ctx = {
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+            'default_partner_ids': res.partner_ids,
+            # Add any other context variables you need
+        }
+        res['context'] = ctx
+
+        return res
+    
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -996,24 +1014,24 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
 
-    def generate_email_for_composer(self, template_id, res_ids, fields):
-        """Call email_template.generate_email(), get fields relevant for
-        mail.compose.message, transform email_cc and email_to into partner_ids"""
-        # Overriden to define the default recipients of a message.
+    # def generate_email_for_composer(self, template_id, res_ids, fields):
+    #     """Call email_template.generate_email(), get fields relevant for
+    #     mail.compose.message, transform email_cc and email_to into partner_ids"""
+    #     # Overriden to define the default recipients of a message.
         
-        multi_mode = True
+    #     multi_mode = True
         
-        for res_id in res_ids:
-            contacts = res_id.partner_ids
-            validated_contacts = []
-            self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
-            for contact in contacts:
-                if contact.email:
-                    validated_contacts.append(contact.email)
-                    # self.env["sale.order"].browse(res_id).partner_ids
-            validated_contacts.append("sales@r-e-a-l.it")
+    #     for res_id in res_ids:
+    #         contacts = res_id.partner_ids
+    #         validated_contacts = []
+    #         self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
+    #         for contact in contacts:
+    #             if contact.email:
+    #                 validated_contacts.append(contact.email)
+    #                 # self.env["sale.order"].browse(res_id).partner_ids
+    #         validated_contacts.append("sales@r-e-a-l.it")
             
-        return multi_mode and validated_contacts
+    #     return multi_mode and validated_contacts
         
         # multi_mode = True
         # if isinstance(res_ids, int):
