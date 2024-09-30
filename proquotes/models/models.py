@@ -481,7 +481,7 @@ class order(models.Model):
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
-            'default_partner_ids': res.partner_ids,
+            'default_partner_ids': self.partner_ids,
             # Add any other context variables you need
         }
         res['context'] = ctx
