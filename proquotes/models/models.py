@@ -475,14 +475,14 @@ class order(models.Model):
         res = super().action_quotation_send()
 
         # Customize the email template
-        template_id = self.env.ref('sale.email_template_edi_sale').id    
+        # template_id = self.env.ref('sale.email_template_edi_sale').id    
         partner_ids = self.partner_ids.ids
         partner_ids.append(64744) # id of sales@r-e-a-l.it contact
         
         ctx = {
-            'default_template_id': template_id,
-            'default_composition_mode': 'comment',
-            'mark_so_as_sent': True,
+            # 'default_template_id': template_id,
+            # 'default_composition_mode': 'comment',
+            # 'mark_so_as_sent': True,
             'default_partner_ids': partner_ids,
             # Add any other context variables you need
         }
