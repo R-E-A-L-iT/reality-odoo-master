@@ -1016,54 +1016,54 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
 
-    def generate_email_for_composer(self, template_id, res_ids, fields):
-        """Call email_template.generate_email(), get fields relevant for
-        mail.compose.message, transform email_cc and email_to into partner_ids"""
-        # Overriden to define the default recipients of a message.
+    # def generate_email_for_composer(self, template_id, res_ids, fields):
+    #     """Call email_template.generate_email(), get fields relevant for
+    #     mail.compose.message, transform email_cc and email_to into partner_ids"""
+    #     # Overriden to define the default recipients of a message.
+        
+    # #     multi_mode = True
+        
+    # #     for res_id in res_ids:
+    # #         contacts = res_id.partner_ids
+    # #         validated_contacts = []
+    # #         self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
+    # #         for contact in contacts:
+    # #             if contact.email:
+    # #                 validated_contacts.append(contact.email)
+    # #                 # self.env["sale.order"].browse(res_id).partner_ids
+    # #         validated_contacts.append("sales@r-e-a-l.it")
+            
+    # #     return multi_mode and validated_contacts
         
     #     multi_mode = True
-        
+    #     if isinstance(res_ids, int):
+    #         multi_mode = False
+    #         res_ids = [res_ids]
+
+    #     returned_fields = fields + ["partner_ids", "attachments"]
+    #     values = dict.fromkeys(res_ids, False)
+
+    #     template_values = (
+    #         self.env["mail.template"]
+    #         .with_context(tpl_partners_only=True)
+    #         .browse(template_id)
+    #         .generate_email(res_ids, fields)
+    #     )
     #     for res_id in res_ids:
-    #         contacts = res_id.partner_ids
-    #         validated_contacts = []
-    #         self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
-    #         for contact in contacts:
-    #             if contact.email:
-    #                 validated_contacts.append(contact.email)
-    #                 # self.env["sale.order"].browse(res_id).partner_ids
-    #         validated_contacts.append("sales@r-e-a-l.it")
-            
-    #     return multi_mode and validated_contacts
-        
-        multi_mode = True
-        if isinstance(res_ids, int):
-            multi_mode = False
-            res_ids = [res_ids]
-
-        returned_fields = fields + ["partner_ids", "attachments"]
-        values = dict.fromkeys(res_ids, False)
-
-        template_values = (
-            self.env["mail.template"]
-            .with_context(tpl_partners_only=True)
-            .browse(template_id)
-            .generate_email(res_ids, fields)
-        )
-        for res_id in res_ids:
-            res_id_values = dict(
-                (field, template_values[res_id][field])
-                for field in returned_fields
-                if template_values[res_id].get(field)
-            )
-            res_id_values["body"] = res_id_values.pop("body_html", "")
-            if template_values[res_id].get("model") == "sale.order":
-                res_id_values["partner_ids"] = self.env["sale.order"].browse(
-                    res_id
-                ).partner_ids + self.env["res.partner"].search(
-                    [("email", "=", "sales@r-e-a-l.it")]
-                )
-            values[res_id] = res_id_values
-        return multi_mode and values or values[res_ids[0]]
+    #         res_id_values = dict(
+    #             (field, template_values[res_id][field])
+    #             for field in returned_fields
+    #             if template_values[res_id].get(field)
+    #         )
+    #         res_id_values["body"] = res_id_values.pop("body_html", "")
+    #         if template_values[res_id].get("model") == "sale.order":
+    #             res_id_values["partner_ids"] = self.env["sale.order"].browse(
+    #                 res_id
+    #             ).partner_ids + self.env["res.partner"].search(
+    #                 [("email", "=", "sales@r-e-a-l.it")]
+    #             )
+    #         values[res_id] = res_id_values
+    #     return multi_mode and values or values[res_ids[0]]
 
 
 class variant(models.Model):
