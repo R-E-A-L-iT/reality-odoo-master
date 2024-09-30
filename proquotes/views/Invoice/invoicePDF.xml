@@ -308,6 +308,9 @@
                     <span t-field="line.name">A section title</span>
                 </td>
             </t>
+            <t t-else="">
+                <span t-raw="line.product_id.name"></span>
+            </t>
             <br/>
 
             <style>
