@@ -245,10 +245,24 @@
 
         <!-- Add Description -->
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-            <t t-if="not line.display_type">
-                <span t-raw="line.product_id.name"></span>
-            </t>
-            <t t-elif="line.display_type == 'line_section' or line.display_type == 'line_note'">
+            <span t-raw="line.product_id.name"></span>
+            <br/>
+
+            <style>
+                .description-root, .description-root *{
+                font-size: 0.75rem
+                margin-top: 0px !important;
+                margin-bottom: 0px !important;
+                }
+            </style>
+            <span class="description-root">
+                <span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
+            </span>
+            <br/>
+        </xpath>
+
+        <xpath expr="//t[@t-elif='line.display_type == 'line_section']" position="replace">
+            <t t-elif="line.display_type == 'line_section'">
                 <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
                     <span>Rental Accessories</span>
                 </td>
@@ -277,7 +291,7 @@
                 <!-- translate -->
 
                 <!-- 
-                                            
+                                        
                 if line.name contains "translate":
 
                     terms =  line.name.split("+",2)
@@ -290,8 +304,8 @@
                             return french
                         else:
                             return english
-                                            
-                    -->
+                                        
+                 -->
 
                 <td t-elif="'#translate' in line.name" name="td_section_line" colspan="99">
                     <t t-set="title" t-value="doc.get_translated_term(line.name, clang)" />
@@ -305,25 +319,14 @@
                 </td>
 
                 <td t-else="" name="td_section_line" colspan="99">
-                    <span t-field="line.name">A section title</span>
+                    <span t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
                 </td>
+                <!-- <td colspan="99">
+                    <span t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
+                </td> -->
+                <t t-set="current_section" t-value="line"/>
+                <t t-set="current_subtotal" t-value="0"/>
             </t>
-            <t t-else="">
-                <span t-raw="line.product_id.name"></span>
-            </t>
-            <br/>
-
-            <style>
-                .description-root, .description-root *{
-                font-size: 0.75rem
-                margin-top: 0px !important;
-                margin-bottom: 0px !important;
-                }
-            </style>
-            <span class="description-root">
-                <span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
-            </span>
-            <br/>
         </xpath>
 
         <!-- Bank Info -->
