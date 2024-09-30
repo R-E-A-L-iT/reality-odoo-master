@@ -1007,7 +1007,7 @@ class proquotesMail(models.TransientModel):
             contacts = res_id.partner_ids
             validated_contacts = []
             self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
-            for contact in contacts
+            for contact in contacts:
                 if contact.email:
                     validated_contacts.append(contact.email)
                     # self.env["sale.order"].browse(res_id).partner_ids
