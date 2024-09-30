@@ -563,7 +563,7 @@ class invoice(models.Model):
         "header.footer", required=True, default=_get_default_footer
     )
     
-    payment_date = fields.Date(string="Date of Payment", related="payment_id.date", readonly=True)
+    payment_date = fields.Date(string="Date of Payment", related="payment_id.date")
 
 
 class order(models.Model):
