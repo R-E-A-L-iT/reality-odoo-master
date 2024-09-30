@@ -245,7 +245,69 @@
 
         <!-- Add Description -->
         <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-            <span t-raw="line.product_id.name"></span>
+            <t t-if="not line.display_type">
+                <span t-raw="line.product_id.name"></span>
+            </t>
+            <t t-elif="line.display_type == 'line_section'">
+                <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
+                    <span>Rental Accessories</span>
+                </td>
+                <td t-elif="line.name  == '$block+'" name="td_section_line" colspan="99">
+                    <span></span>
+                </td>
+                <td t-elif="line.name  == '#rental_info'" name="td_section_line" colspan="99">
+                    <span>Rental Info</span>
+                </td>
+                <td t-elif="line.name  == '$rental_info'" name="td_section_line" colspan="99">
+                    <span>Rental Info</span>
+                </td>
+                <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
+                    <span>Rental Software</span>
+                </td>
+                <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
+                    <span>Subscription</span>
+                </td>
+                <td t-elif="line.name  == '$hardware'" name="td_section_line" colspan="99">
+                    <span>Hardware</span>
+                </td>
+                <td t-elif="line.name  == '$block'" name="td_section_line"  colspan="99">
+                    <span></span>
+                </td>
+
+                <!-- translate -->
+
+                <!-- 
+                                            
+                if line.name contains "translate":
+
+                    terms =  line.name.split("+",2)
+
+                    if terms[0] == "#translate":
+                        english = terms[1]
+                        french = terms[2]
+
+                        if clang == 'fr_CA':
+                            return french
+                        else:
+                            return english
+                                            
+                    -->
+
+                <td t-elif="'#translate' in line.name" name="td_section_line" colspan="99">
+                    <t t-set="title" t-value="doc.get_translated_term(line.name, clang)" />
+                    <span t-esc="title">Translated Title</span>
+                </td>
+
+                <!-- ccp label -->
+
+                <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
+                    <span>Subscription</span>
+                </td>
+
+                <td t-else="" name="td_section_line" colspan="99">
+                    <span t-field="line.name">A section title</span>
+                </td>
+            </t>
             <br/>
 
             <style>
