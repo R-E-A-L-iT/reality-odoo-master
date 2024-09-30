@@ -261,7 +261,7 @@
             <br/>
         </xpath>
 
-        <xpath expr="//t[@t-elif='line.display_type == 'line_section']" position="replace">
+        <xpath expr="//t[@t-elif=&quot;line.display_type == 'line_section'&quot;]" position="replace">
             <t t-elif="line.display_type == 'line_section'">
                 <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
                     <span>Rental Accessories</span>
