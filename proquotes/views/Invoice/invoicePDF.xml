@@ -16,7 +16,7 @@
               priority="17">
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
             <!--            <t t-set="lang" t-value="o.env.context.get('lang')"/>-->
-            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+            <t t-set="doc" t-value="o.with_context(lang=doc.partner_id.lang)"/>
             <t t-set="lang" t-value="o.partner_id.lang"/>
             <t t-set="clang" t-value="lang"/>
             <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))"/>
