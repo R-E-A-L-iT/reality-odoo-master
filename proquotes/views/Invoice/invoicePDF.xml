@@ -248,7 +248,7 @@
             <t t-if="not line.display_type">
                 <span t-raw="line.product_id.name"></span>
             </t>
-            <t t-elif="line.display_type == 'line_section'">
+            <t t-elif="line.display_type == 'line_section' or line.display_type == 'line_note'">
                 <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
                     <span>Rental Accessories</span>
                 </td>
