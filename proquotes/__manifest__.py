@@ -51,6 +51,8 @@
         'web.assets_frontend': [
             "proquotes/static/src/JS/price.js",
             "proquotes/static/src/JS/fold.js",
+            "proquotes/static/src/JS/poNumber.js",
+            "proquotes/static/src/JS/rental.js",
         ]
     },
 

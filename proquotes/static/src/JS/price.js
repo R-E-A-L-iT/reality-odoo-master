@@ -60,7 +60,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
                 return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
                         "access_token": this.orderDetail.token,
                         "line_id": lineId,
-                        "quantity": checkbox.checked === true ? qty : 0
+                        "quantity": qty,
                     },
                 ).then((data) => {
                     if (data) {
@@ -78,22 +78,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
             console.log('------_updatePriceTotalsEvent----')
             console.log('------_updatePriceTotalsEvent--ev--',ev)
             setTimeout(() => {
-                if (ev !== undefined){
-                    var $target = $(ev.currentTarget);
-                    // debugger;
-                    console.log('-----$target--',$target)
-                    var closestrow = $target.closest('.quoteLineRow');
-                    console.log('-----closestrow--',closestrow)
-                    var checkbox = closestrow.find('.priceChange');
-                    console.log('-----checkbox--',checkbox)
-                    var qty = closestrow.find('.quantityChange').val();
-                    console.log('-----qty--',qty)
-                    if (checkbox[0].checked === false) {
-                        closestrow.find('.quantityChange').val(0).change();
-                        // $(closestrow.find('.quantityChange')).trigger("change");
-                        // console.log('-----AFTER VALUE-----',closestrow.find('.quantityChange').val())
-                    }
-                }
     			//Find All Products that Might Change the Price
                 // var $link = $(ev.currentTarget);
     			let self = this;

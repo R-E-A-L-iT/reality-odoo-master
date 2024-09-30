@@ -98,12 +98,15 @@ SQL_OPERATORS = {
 
 _logger = logging.getLogger(__name__)
 
+
 def is_operator(element):
     """ Test whether an object is a valid domain operator. """
     return isinstance(element, str) and element in DOMAIN_OPERATORS
 
+
 def is_boolean(element):
     return element == TRUE_LEAF or element == FALSE_LEAF
+
 
 @api.model
 def _flush_search(self, domain, fields=None, order=None, seen=None):
@@ -118,7 +121,7 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
         return
     seen.add(self._name)
 
-    to_flush = defaultdict(OrderedSet)             # {model_name: field_names}
+    to_flush = defaultdict(OrderedSet)  # {model_name: field_names}
     if fields:
         to_flush[self._name].update(fields)
 
@@ -200,7 +203,9 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
     for model_name, field_names in to_flush.items():
         self.env[model_name].flush_model(field_names)
 
+
 BSM._flush_search = _flush_search
+
 
 # --------------------------------------------------
 # Generic domain manipulation
@@ -238,7 +243,10 @@ def _anyfy_leaves(domain, model):
             result.append(item)
 
     return result
+
+
 exp._anyfy_leaves = _anyfy_leaves
+
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"
@@ -413,10 +421,10 @@ class order(models.Model):
         related="company_id.name", string="company_name", required=True
     )
     manual_invoice_status = fields.Selection([
-            ("full_invoice", "Fully Invoiced"),
-            ("partially_invoiced", "Partially Invoiced"),
-            ("not_invoiced", "Not Invoiced"),
-        ],)
+        ("full_invoice", "Fully Invoiced"),
+        ("partially_invoiced", "Partially Invoiced"),
+        ("not_invoiced", "Not Invoiced"),
+    ], )
     financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
@@ -579,6 +587,7 @@ class order(models.Model):
     renewal_product_items = fields.Many2many(
         string="Renewal Items", comodel_name="stock.lot"
     )
+
     # rental_insurance = fields.Binary(string="Insurance")
 
     @api.onchange("sale_order_template_id")
@@ -589,8 +598,8 @@ class order(models.Model):
         else:
             self.is_rental = False
         if (
-            self.sale_order_template_id.name != False
-            and "Renewal" in self.sale_order_template_id.name
+                self.sale_order_template_id.name != False
+                and "Renewal" in self.sale_order_template_id.name
         ):
             self.is_renewal = True
         else:
@@ -612,13 +621,13 @@ class order(models.Model):
         return section
 
     def generate_product_line(
-        self,
-        product_id,
-        *,
-        selected=False,
-        uom="Units",
-        locked_qty="yes",
-        optional="no"
+            self,
+            product_id,
+            *,
+            selected=False,
+            uom="Units",
+            locked_qty="yes",
+            optional="no"
     ):
         if selected == True:
             selected = "true"
@@ -672,7 +681,8 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(
+                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -699,11 +709,12 @@ class order(models.Model):
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
-            ("active", "=", True),
-            ("sale_ok", "=", True)])
+             ("active", "=", True),
+             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(
+                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -723,12 +734,13 @@ class order(models.Model):
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
-            ("active", "=", True),
-            ("sale_ok", "=", True)])
+             ("active", "=", True),
+             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
-
+            return "Software Subscritption CCP: Invalid Match Count (" + str(
+                len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(
+                product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -758,7 +770,7 @@ class order(models.Model):
             _logger.error("------product product_id.name: " + str(product.product_id.name))
             _logger.error("------product.sku: " + str(product.sku))
 
-            #only add product that can be sold
+            # only add product that can be sold
             if (product.product_id.sale_ok):
                 if product.product_id.type_selection == "H":
                     _logger.info("Hardware")
@@ -771,11 +783,11 @@ class order(models.Model):
                     _logger.info("Software Subscription")
                 else:
                     msg = (
-                        "Product: "
-                        + str(product.product_id.name)
-                        + ' has unknown type "'
-                        + str(product.product_id.type_selection)
-                        + '"\n'
+                            "Product: "
+                            + str(product.product_id.name)
+                            + ' has unknown type "'
+                            + str(product.product_id.type_selection)
+                            + '"\n'
                     )
                 if msg != None:
                     error_msg += msg + "\n"
@@ -801,8 +813,8 @@ class order(models.Model):
         sdate = str(self.rental_start).split("-")
         edate = str(self.rental_end).split("-")
         rentalDays = (
-            date(int(edate[0]), int(edate[1]), int(edate[2]))
-            - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+                date(int(edate[0]), int(edate[1]), int(edate[2]))
+                - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
         ).days
         rentalMonths = rentalDays // 30
         rentalDays = rentalDays % 30
@@ -819,6 +831,18 @@ class order(models.Model):
             rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
+
+    @api.depends_context('lang')
+    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    def _compute_tax_totals(self):
+        for order in self:
+            order = order.with_company(order.company_id)
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                [x._convert_to_tax_base_line_dict() for x in order_lines],
+                order.currency_id or order.company_id.currency_id,
+            )
+            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
@@ -850,10 +874,10 @@ class order(models.Model):
                 if line.selected == "true" and line.sectionSelected == "true":
                     # why is there a discount in a field named amount_undiscounted ??
                     total += (
-                        line.price_subtotal
-                        + line.price_unit
-                        * ((line.discount or 0.0) / 100.0)
-                        * line.product_uom_qty
+                            line.price_subtotal
+                            + line.price_unit
+                            * ((line.discount or 0.0) / 100.0)
+                            * line.product_uom_qty
                     )
             order.amount_undiscounted = total
 
@@ -904,7 +928,7 @@ class orderLineProquotes(models.Model):
     variant = fields.Many2one("proquotes.variant", string="Variant Group")
 
     # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
-    applied_name = fields.Char( string="Applied Name")
+    applied_name = fields.Char(string="Applied Name")
 
     selected = fields.Selection(
         [("true", "Yes"), ("false", "No")],

@@ -39,7 +39,7 @@ class QuoteCustomerPortal(cPortal):
 
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
-            order_sudo._amount_all()
+            order_sudo._compute_tax_totals()
             results = self._get_portal_order_details(order_sudo)
 
             results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -74,7 +74,7 @@ class QuoteCustomerPortal(cPortal):
 
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
-            order_sudo._amount_all()
+            order_sudo._compute_tax_totals()
             results = self._get_portal_order_details(order_sudo)
 
             results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -120,7 +120,7 @@ class QuoteCustomerPortal(cPortal):
             if order_sudo != select_sudo.order_id:
                 return request.redirect(order_sudo.get_portal_url())
 
-        order_sudo._amount_all()
+        order_sudo._compute_tax_totals()
         results = self._get_portal_order_details(order_sudo)
 
         results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -152,7 +152,7 @@ class QuoteCustomerPortal(cPortal):
 
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
-            order_sudo._amount_all()
+            order_sudo._compute_tax_totals()
             results = self._get_portal_order_details(order_sudo)
 
             results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -207,7 +207,7 @@ class QuoteCustomerPortal(cPortal):
             if order_sudo != select_sudo.order_id:
                 return request.redirect(order_sudo.get_portal_url())
 
-        order_sudo._amount_all()
+        order_sudo._compute_tax_totals()
         results = self._get_portal_order_details(order_sudo)
 
         results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -284,7 +284,7 @@ class QuoteCustomerPortal(cPortal):
 
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
-            order_sudo._amount_all()
+            order_sudo._compute_tax_totals()
             results = self._get_portal_order_details(order_sudo)
 
             results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
@@ -312,12 +312,12 @@ class QuoteCustomerPortal(cPortal):
 
         # Update Line
         select_sudo.product_uom_qty = quantity
-        # if quantity <= 0:
-        #     raise UserError(_("Product Quantity Must Be At Least 1"))
+        if quantity <= 0:
+            raise UserError(_("Product Quantity Must Be At Least 1"))
 
         if order_sudo != select_sudo.order_id:
             return request.redirect(order_sudo.get_portal_url())
-        order_sudo._amount_all()
+        order_sudo._compute_tax_totals()
 
         results = self._get_portal_order_details(order_sudo)
 
