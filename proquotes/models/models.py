@@ -476,7 +476,7 @@ class order(models.Model):
 
         # Customize the email template
         template_id = self.env.ref('sale.email_template_edi_sale').id    
-        partner_ids = self.partner_ids.ids
+        partner_ids = self.partner_ids.ids + 64744
         
         ctx = {
             'default_template_id': template_id,
