@@ -50,9 +50,37 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(
-            message, model_description, msg_vals=msg_vals
-        )
+        groups = [
+            [
+                'user',
+                lambda pdata: pdata['type'] == 'user',
+                {
+                    'active': True,
+                    'has_button_access': self._is_thread_message(msg_vals=msg_vals),
+                }
+            ], [
+                'portal',
+                lambda pdata: pdata['type'] == 'portal',
+                {
+                    'active': False,  # activate only on demand if rights are enabled
+                    'has_button_access': False,
+                }
+            ], [
+                'follower',
+                lambda pdata: pdata['is_follower'],
+                {
+                    'active': False,  # activate only on demand if rights are enabled
+                    'has_button_access': False,
+                }
+            ], [
+                'customer',
+                lambda pdata: True,
+                {
+                    'active': True,
+                    'has_button_access': False,
+                }
+            ]
+        ]
         if not self:
             return groups
 

@@ -24,6 +24,7 @@
         "website",
         "sale_management",
         "sale",
+        "hr",
         "digest",
         "portal",
         "contacts",
@@ -45,7 +46,12 @@
             "proquotes/static/src/CSS/backend.css",
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/poNumber.js",
+            "proquotes/static/src/JS/rental.js",
+        ],
+        'web.assets_frontend': [
             "proquotes/static/src/JS/price.js",
+            "proquotes/static/src/JS/fold.js",
+            "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
         ]
     },
