@@ -66,7 +66,7 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-          
+
             <!-- temporary style fixes -->
             <style>
                 .sale_tbody &gt; tr &gt; td {
@@ -230,7 +230,11 @@
                         <span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
                         </span>
                     </td>
-                    <td/>
+                    <td t-if="line.name == '$block+'" class="text-left">
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
+                        <span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
+                    </td>
+                    <td t-else=""/>
                     <td class="text-left">
                         <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
