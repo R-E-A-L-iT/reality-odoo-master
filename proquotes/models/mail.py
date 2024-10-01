@@ -37,9 +37,17 @@ class MailMessage(models.Model):
     def create(self, values_list):
         messages = super(MailMessage, self).create(values_list)
         for message in messages:
-            if message.model=='sale.order' and message.res_id and message.body:
+            if message.model=='sale.order' and message.res_id and message.body:        
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
+                    
+                    recipients = message.partner_ids
+                    for contact in order.email_contacts:
+                        recipients.append(contact)
+                    recipients.append("sales@r-e-a-l.it")
+                    
+                    message.partner_ids = recipients
+                    
                     body = message.body
                     bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
                     body = body + bottom_footer

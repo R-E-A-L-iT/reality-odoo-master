@@ -420,7 +420,8 @@ class invoice(models.Model):
 class order(models.Model):
     _inherit = "sale.order"
 
-    partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
+    # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
+    email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
     products = fields.One2many(related="partner_id.products", readonly=True)
 
