@@ -626,12 +626,12 @@ class order(models.Model):
             kwargs['partner_ids'] = []
 
         # Add email contacts from the many2many field
-        contacts = [(4, partner.id) for partner in self.email_contacts]
+        contacts = [partner.id for partner in self.email_contacts]
 
         # Add static email partner 'sales@r-e-a-l.it'
         sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
         if sales_partner:
-            contacts.append((4, sales_partner.id))
+            contacts.append(sales_partner.id)
 
         # Merge with the existing partner_ids if any
         kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
