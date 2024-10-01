@@ -634,7 +634,7 @@ class order(models.Model):
             contacts.append((4, sales_partner.id))
 
         # Merge with the existing partner_ids if any
-        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + email_contacts))
+        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
 
         # Ensure notifications are enabled
         if 'notify' not in kwargs:
