@@ -17,8 +17,10 @@
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
             <t t-set="clang" t-value="lang"/>
             <div class="quote-address">
-                <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img" t-attf-src="{{sale_order.header_id.url}}"/>
-                <video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img" t-attf-src="{{sale_order.header_id.url}}"/>
+                <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
+                     t-attf-src="{{sale_order.header_id.url}}"/>
+                <video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img"
+                       t-attf-src="{{sale_order.header_id.url}}"/>
                 <div class="quote-address-block">
                     <t t-if="sale_order.partner_id.parent_id">
                         <h1 class="title" t-field="sale_order.partner_id.parent_id.name"/>
@@ -53,56 +55,60 @@
         <!--            </attribute>-->
         <!--        </xpath>-->
 
-        <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment" position="attributes">
-			<attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name != '$subscription'</attribute>
-		</tr>
+        <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
+            position="attributes">
+            <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
+                'line_section') and not line.is_downpayment and line.name != '$hardware' and line.name != '$software'
+                and line.name != '$subscription'
+            </attribute>
+        </tr>
 
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-
-             <!-- temporary style fixes -->
+          
+            <!-- temporary style fixes -->
             <style>
                 .sale_tbody &gt; tr &gt; td {
-                    padding: 0.01rem 0.01rem !important;
+                padding: 0.01rem 0.01rem !important;
                 }
                 .quote-head &gt; td.text-left {
-                    padding: 26px !important;
+                padding: 26px !important;
                 }
                 #sales_order_table &gt; tbody &gt; tr &gt; td:nth-child(3) {
-                    text-align: center !important;
+                text-align: center !important;
                 }
                 #quote_content {
-                    padding: 0px !important;
+                padding: 0px !important;
                 }
                 #portal_sale_content {
-                    padding: 30px !important;
-                    padding-right: 40px !important;
-                    padding-top: 0px !important;
-                    background-color: #24272A !important;
+                padding: 30px !important;
+                padding-right: 40px !important;
+                padding-top: 0px !important;
+                background-color: #24272A !important;
                 }
                 #details &gt; div.quote-address &gt; video {
-                    z-index: 1 !important;
-                    width: 100vw !important;
-                    background-color: black !important;
+                z-index: 1 !important;
+                width: 100vw !important;
+                background-color: black !important;
                 }
                 div.quote-address {
-                    background-color: black !important;
+                background-color: black !important;
                 }
                 #quote_content {
-                    width: 100%
+                width: 100%
                 }
                 .quoteLineRowSection {
-                    padding: 5px !important;
+                padding: 5px !important;
                 }
                 #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td &gt; div:nth-child(2) &gt; label {
-                    padding: 5px !important;
+                padding: 5px !important;
                 }
                 td#subtotal {
-                    padding-right: 5px !important;
+                padding-right: 5px !important;
                 }
                 .quoteLineRowSection &gt; td {
-                    padding: 20px !important;
+                padding: 20px !important;
                 }
             </style>
 
@@ -182,7 +188,8 @@
                             <br/>
                         </div>
                         <div class=" rental_product_value" t-if=" clang== 'fr_CA'">
-                            <span>Valeur locative totale:  <span id="total-rental-value-french"/>
+                            <span>Valeur locative totale:  
+                                <span id="total-rental-value-french"/>
                             </span>
                             <br/>
                             <span>
@@ -217,16 +224,12 @@
             <t t-if="line.name == '$block' or line.name == '$block+'">
                 <tr class="quote-head">
                     <td class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead" style="padding-left: 20px !important;">Product
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead"
+                              style="padding-left: 20px !important;">Product
                         </span>
                         <span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
                         </span>
                     </td>
-                    <td t-if="line.name == '$block+'" class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
-                    </td>
-                    <td t-else=""/>
                     <td/>
                     <td class="text-left">
                         <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
@@ -236,6 +239,12 @@
                         <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
                         <span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
                     </td>
+                    <t t-if="any(line.discount for line in sale_order.order_line)">
+                        <td class="text-left">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Disc.%</span>
+                            <span t-elif="clang == 'fr_CA'" class="cHead">Rabais%</span>
+                        </td>
+                    </t>
                     <td>
                         <span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
                         <span t-elif="clang == 'fr_CA'">Taxes</span>
@@ -269,7 +278,8 @@
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
             <div style="width: 75%; float: left;">
-                <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                <label t-attf-for="fold{{line}}{{line_index}}"
+                       style="display: inline-block; width: 100%; height: 100%;">
 
 
                     <!-- DOWN ARROW THING -->
@@ -278,7 +288,8 @@
 
 
                     <t t-if="line.special == 'optional'">
-                        <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
+                        <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox"
+                               checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
                     </t>
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
@@ -291,30 +302,39 @@
 
                 <!--Apply Custom Class to Special Section Types if needed-->
                 <t t-if="line.hiddenSection == 'no'">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
+                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
+                           class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
+                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
+                           class="foldInput optionalSection" type="checkbox" style="display: none;"/>
+                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
+                           style="display: none;"/>
                 </t>
                 <t t-else="">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
+                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
+                           class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
+                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
+                           class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
+                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
+                           style="display: none;" checked="true"/>
                 </t>
             </div>
 
             <div style="width: 25%; float: right">
-
-                <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%; text-align: right;">
+                <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}"
+                       style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
-                        <strong t-if="clang == 'en_CA' or clang == 'en_US'" class="text-left subtotal-label" style="font-weight: bolder">
+                        <strong t-if="clang == 'en_CA' or clang == 'en_US'" class="text-left subtotal-label"
+                                style="font-weight: bolder">
                             Subtotal
                         </strong>
                         <strong t-if="clang == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
                             Sous-total
                         </strong>
                     </span>
-                    <span t-if="line.special != 'optional' or line.selected == 'true'" class="subtotal-destination text-left" style="font-weight: 400 !important;"/>
-                    <span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left" style="font-weight: 400 !important;">0.00 $
+                    <span t-if="line.special != 'optional' or line.selected == 'true'"
+                          class="subtotal-destination text-left" style="font-weight: 400 !important;"/>
+                    <span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left"
+                          style="font-weight: 400 !important;">0.00 $
                     </span>
                     <span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
                 </label>
@@ -347,13 +367,23 @@
         <!-- Rental Item Value -->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
             <t t-if="sale_order.is_rental == True">
-                <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)" class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False  and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)" class="text-left itemValue test"/>
+                <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                    style="width: fit-content;">
+                    <span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)"
+                          class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False  and clang == 'fr_CA'"
+                          t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)"
+                          class="text-left itemValue test"/>
                 </td>
-                <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell" style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')" t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)" class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and clang == 'fr_CA'" t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)" class="text-left itemValue test"/>
+                <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                    style="width: fit-content;">
+                    <span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)"
+                          class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False and clang == 'fr_CA'"
+                          t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)"
+                          class="text-left itemValue test"/>
                 </td>
             </t>
             <td t-else=""/>
@@ -367,7 +397,8 @@
                     <input t-else="" type="checkbox" class="priceChange"/>
                 </t>
                 <t t-else="">
-                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;" class="priceChange"/>
+                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
+                           class="priceChange"/>
                     <input t-else="" type="radio" style="display: none;" class="priceChange"/>
                 </t>
 
@@ -379,8 +410,10 @@
 
                     <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
                     </label>
-                    <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
-                    <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI" type="checkbox" style="display: none;"/>
+                    <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}"
+                           class="product_foldI" type="checkbox" style="display: none;"/>
+                    <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI"
+                           type="checkbox" style="display: none;"/>
                     <div class="product_fold" style="width: 100%;">
                         <span style="color: #777;" t-raw="line.product_id.description_sale"/>
                     </div>
@@ -392,7 +425,8 @@
         <!--End Multiple Choice Section Upon Optional Product-->
         <xpath expr="//t[@t-set=&quot;current_subtotal&quot;]" position="before">
             <t t-if="not current_section_ended">
-                <t t-if="current_section and line.optional == 'yes' and current_section.special == 'multiple'" t-set="current_section_ended" t-value="true"/>
+                <t t-if="current_section and line.optional == 'yes' and current_section.special == 'multiple'"
+                   t-set="current_section_ended" t-value="true"/>
             </t>
         </xpath>
 
@@ -409,7 +443,8 @@
                 <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
                     <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
                     <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
-                    <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+                    <t t-set="rentalDays"
+                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
                     <t t-set="rentalMonths" t-value="rentalDays // 30"/>
                     <t t-set="rentalDays" t-value="rentalDays % 30"/>
                     <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
@@ -418,9 +453,11 @@
 
                     <t t-set="rentalRate" t-value="0"/>
                     <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4"/>
+                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 4"/>
                     <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
-                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12"/>
+                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 12"/>
                     <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
                     <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
                     <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
@@ -438,7 +475,8 @@
                 <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
                     <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
                     <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
-                    <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+                    <t t-set="rentalDays"
+                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
                     <t t-set="rentalMonths" t-value="rentalDays // 30"/>
                     <t t-set="rentalDays" t-value="rentalDays % 30"/>
                     <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
@@ -447,9 +485,11 @@
 
                     <t t-set="rentalRate" t-value="0"/>
                     <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4"/>
+                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 4"/>
                     <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
-                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12"/>
+                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 12"/>
                     <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
                     <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
                     <t t-set="current_total" t-value="current_total + rentalRate"/>
@@ -459,21 +499,25 @@
 
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
-            <t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
-            <span t-if="line.product_id.is_software == False" class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
-            <span t-elif="line.product_id.is_software == True" class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/>
+            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price"
+               t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
+            <t t-elif="clang == 'fr_CA'" t-set="line_price"
+               t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
+            <span t-if="line.product_id.is_software == False"
+                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
+            <span t-elif="line.product_id.is_software == True"
+                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/>
             <style>
                 #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td {
-                    padding: 20px !important;
+                padding: 20px !important;
                 }
                 .is-subtotal {
-                    display: none !important;
+                display: none !important;
                 }
                 .quoteLineRow &gt; #product_name {
-                    padding: 20px !important;
-                    padding-top: 20px !important;
-                    padding-right: 0px !important;
+                padding: 20px !important;
+                padding-top: 20px !important;
+                padding-right: 0px !important;
                 }
             </style>
         </xpath>
@@ -486,13 +530,15 @@
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
             <t t-if="line.quantityLocked == 'yes'">
-                <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)" t-esc="round(line.product_uom_qty)"/>
+                <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
+                      t-esc="round(line.product_uom_qty)"/>
                 <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>
             </t>
             <t t-if="line.quantityLocked =='no'">
                 <t t-set="qty" t-value="round(line.product_uom_qty)"/>
                 <!-- <span t-out="qty" /> -->
-                <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}" style="display: inline; width: 60px;"/>
+                <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}"
+                       style="display: inline; width: 60px;"/>
             </t>
         </xpath>
 
@@ -530,8 +576,10 @@
         <!-- Quote Info -->
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
             <div id="quote_disclaimer">
-                <t t-set="currency_label" t-if="clang == 'fr_CA' and sale_order.currency_id.name == 'CAD'" t-value="'canadiens'"/>
-                <t t-set="currency_label" t-elif="clang == 'fr_CA' and sale_order.currency_id.name == 'USD'" t-value="'américains'"/>
+                <t t-set="currency_label" t-if="clang == 'fr_CA' and sale_order.currency_id.name == 'CAD'"
+                   t-value="'canadiens'"/>
+                <t t-set="currency_label" t-elif="clang == 'fr_CA' and sale_order.currency_id.name == 'USD'"
+                   t-value="'américains'"/>
                 <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
                 <span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
                     <t t-out="currency_label"/>
@@ -581,7 +629,8 @@
                 <div class="row mt-4" name="signature">
                     <div t-attf-class="#{'col-3' if report_type != 'html' else 'col-sm-7 col-md-4'} ml-auto text-center">
                         <h5>Signature</h5>
-                        <img t-att-src="image_data_uri(sale_order.signature)" style="max-height: 6rem; max-width: 100%;background-color:white !important;"/>
+                        <img t-att-src="image_data_uri(sale_order.signature)"
+                             style="max-height: 6rem; max-width: 100%;background-color:white !important;"/>
                         <p t-field="sale_order.signed_by"/>
                     </div>
                 </div>
