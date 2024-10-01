@@ -240,6 +240,155 @@ def _anyfy_leaves(domain, model):
     return result
 exp._anyfy_leaves = _anyfy_leaves
 
+def is_operator(element):
+    """ Test whether an object is a valid domain operator. """
+    return isinstance(element, str) and element in DOMAIN_OPERATORS
+
+
+def is_boolean(element):
+    return element == TRUE_LEAF or element == FALSE_LEAF
+
+
+@api.model
+def _flush_search(self, domain, fields=None, order=None, seen=None):
+    """ Flush all the fields appearing in `domain`, `fields` and `order`.
+
+    Note that ``order=None`` actually means no order, so if you expect some
+    fallback order, you have to provide it yourself.
+    """
+    if seen is None:
+        seen = set()
+    elif self._name in seen:
+        return
+    seen.add(self._name)
+
+    to_flush = defaultdict(OrderedSet)  # {model_name: field_names}
+    if fields:
+        to_flush[self._name].update(fields)
+
+    def collect_from_domain(model, domain):
+        # _logger.info('>>>>>>>>>>>>>>>>. model: %s, domain: %s', model, domain)
+        if not domain:
+            domain = []
+        for arg in domain:
+            if isinstance(arg, str):
+                continue
+            if not isinstance(arg[0], str):
+                continue
+            comodel = collect_from_path(model, arg[0])
+            if arg[1] in ('child_of', 'parent_of') and comodel._parent_store:
+                # hierarchy operators need the parent field
+                collect_from_path(comodel, comodel._parent_name)
+            if arg[1] in ('any', 'not any'):
+                collect_from_domain(comodel, arg[2])
+
+    def collect_from_path(model, path):
+        # path is a dot-separated sequence of field names
+        for fname in path.split('.'):
+            field = model._fields.get(fname)
+            if not field:
+                break
+            to_flush[model._name].add(fname)
+            if field.type == 'one2many' and field.inverse_name:
+                to_flush[field.comodel_name].add(field.inverse_name)
+                field_domain = field.get_domain_list(model)
+                if field_domain:
+                    collect_from_domain(self.env[field.comodel_name], field_domain)
+            # DLE P111: `test_message_process_email_partner_find`
+            # Search on res.users with email_normalized in domain
+            # must trigger the recompute and flush of res.partner.email_normalized
+            if field.related:
+                # DLE P129: `test_transit_multi_companies`
+                # `self.env['stock.picking'].search([('product_id', '=', product.id)])`
+                # Should flush `stock.move.picking_ids` as `product_id` on `stock.picking` is defined as:
+                # `product_id = fields.Many2one('product.product', 'Product', related='move_lines.product_id', readonly=False)`
+                collect_from_path(model, field.related)
+            if field.relational:
+                model = self.env[field.comodel_name]
+        # return the model found by traversing all fields (used in collect_from_domain)
+        return model
+
+    # flush the order fields
+    if order:
+        for order_part in order.split(','):
+            order_field = order_part.split()[0]
+            field = self._fields.get(order_field)
+            if field is not None:
+                to_flush[self._name].add(order_field)
+                if field.relational:
+                    comodel = self.env[field.comodel_name]
+                    comodel._flush_search([], order=comodel._order, seen=seen)
+
+    if self._active_name and self.env.context.get('active_test', True):
+        to_flush[self._name].add(self._active_name)
+
+    collect_from_domain(self, domain)
+
+    # Check access of fields with groups
+    for model_name, field_names in to_flush.items():
+        self.env[model_name].check_field_access_rights('read', field_names)
+
+    # also take into account the fields in the record rules
+    if ir_rule_domain := self.env['ir.rule']._compute_domain(self._name, 'read'):
+        collect_from_domain(self, ir_rule_domain)
+
+    # flush model dependencies (recursively)
+    if self._depends:
+        models = [self]
+        while models:
+            model = models.pop()
+            for model_name, field_names in model._depends.items():
+                to_flush[model_name].update(field_names)
+                models.append(self.env[model_name])
+
+    for model_name, field_names in to_flush.items():
+        self.env[model_name].flush_model(field_names)
+
+
+BSM._flush_search = _flush_search
+
+
+# --------------------------------------------------
+# Generic domain manipulation
+# --------------------------------------------------
+
+def _anyfy_leaves(domain, model):
+    """ Return the domain where all conditions on field sequences have been
+    transformed into 'any' conditions.
+    """
+    result = []
+    if not domain:
+        domain = []
+    for item in domain:
+        if is_operator(item):
+            result.append(item)
+            continue
+
+        left, operator, right = item = tuple(item)
+        if is_boolean(item):
+            result.append(item)
+            continue
+
+        path = left.split('.', 1)
+        field = model._fields.get(path[0])
+        if not field:
+            raise ValueError(f"Invalid field {model._name}.{path[0]} in leaf {item}")
+        if len(path) > 1 and field.relational:  # skip properties
+            subdomain = [(path[1], operator, right)]
+            comodel = model.env[field.comodel_name]
+            result.append((path[0], 'any', _anyfy_leaves(subdomain, comodel)))
+        elif operator in ('any', 'not any'):
+            comodel = model.env[field.comodel_name]
+            result.append((left, operator, _anyfy_leaves(right, comodel)))
+        else:
+            result.append(item)
+
+    return result
+
+
+exp._anyfy_leaves = _anyfy_leaves
+
+
 class purchase_order(models.Model):
     _inherit = "purchase.order"
     footer = fields.Selection(
@@ -431,10 +580,10 @@ class order(models.Model):
         related="company_id.name", string="company_name", required=True
     )
     manual_invoice_status = fields.Selection([
-            ("full_invoice", "Fully Invoiced"),
-            ("partially_invoiced", "Partially Invoiced"),
-            ("not_invoiced", "Not Invoiced"),
-        ],)
+        ("full_invoice", "Fully Invoiced"),
+        ("partially_invoiced", "Partially Invoiced"),
+        ("not_invoiced", "Not Invoiced"),
+    ], )
     financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
@@ -632,6 +781,7 @@ class order(models.Model):
     renewal_product_items = fields.Many2many(
         string="Renewal Items", comodel_name="stock.lot"
     )
+
     # rental_insurance = fields.Binary(string="Insurance")
 
     @api.onchange("sale_order_template_id")
@@ -642,8 +792,8 @@ class order(models.Model):
         else:
             self.is_rental = False
         if (
-            self.sale_order_template_id.name != False
-            and "Renewal" in self.sale_order_template_id.name
+                self.sale_order_template_id.name != False
+                and "Renewal" in self.sale_order_template_id.name
         ):
             self.is_renewal = True
         else:
@@ -665,13 +815,13 @@ class order(models.Model):
         return section
 
     def generate_product_line(
-        self,
-        product_id,
-        *,
-        selected=False,
-        uom="Units",
-        locked_qty="yes",
-        optional="no"
+            self,
+            product_id,
+            *,
+            selected=False,
+            uom="Units",
+            locked_qty="yes",
+            optional="no"
     ):
         if selected == True:
             selected = "true"
@@ -725,7 +875,8 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(
+                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -752,11 +903,12 @@ class order(models.Model):
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
-            ("active", "=", True),
-            ("sale_ok", "=", True)])
+             ("active", "=", True),
+             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software CCP: Invalid Match Count (" + str(len(product_list)) + ") for \n[stock.lot].name: " + str(
+                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -782,6 +934,10 @@ class order(models.Model):
         if len(product_list) != 1:
             return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
+        if len(product_list) != 1:
+            return "Software Subscritption CCP: Invalid Match Count (" + str(
+                len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(
+                product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
             product_list[0], selected=True, optional="yes"
@@ -811,7 +967,7 @@ class order(models.Model):
             _logger.error("------product product_id.name: " + str(product.product_id.name))
             _logger.error("------product.sku: " + str(product.sku))
 
-            #only add product that can be sold
+            # only add product that can be sold
             if (product.product_id.sale_ok):
                 if product.product_id.type_selection == "H":
                     _logger.info("Hardware")
@@ -824,11 +980,11 @@ class order(models.Model):
                     _logger.info("Software Subscription")
                 else:
                     msg = (
-                        "Product: "
-                        + str(product.product_id.name)
-                        + ' has unknown type "'
-                        + str(product.product_id.type_selection)
-                        + '"\n'
+                            "Product: "
+                            + str(product.product_id.name)
+                            + ' has unknown type "'
+                            + str(product.product_id.type_selection)
+                            + '"\n'
                     )
                 if msg != None:
                     error_msg += msg + "\n"
@@ -854,8 +1010,8 @@ class order(models.Model):
         sdate = str(self.rental_start).split("-")
         edate = str(self.rental_end).split("-")
         rentalDays = (
-            date(int(edate[0]), int(edate[1]), int(edate[2]))
-            - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
+                date(int(edate[0]), int(edate[1]), int(edate[2]))
+                - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
         ).days
         rentalMonths = rentalDays // 30
         rentalDays = rentalDays % 30
@@ -872,6 +1028,18 @@ class order(models.Model):
             rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
+
+    @api.depends_context('lang')
+    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    def _compute_tax_totals(self):
+        for order in self:
+            order = order.with_company(order.company_id)
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                [x._convert_to_tax_base_line_dict() for x in order_lines],
+                order.currency_id or order.company_id.currency_id,
+            )
+            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
@@ -903,10 +1071,10 @@ class order(models.Model):
                 if line.selected == "true" and line.sectionSelected == "true":
                     # why is there a discount in a field named amount_undiscounted ??
                     total += (
-                        line.price_subtotal
-                        + line.price_unit
-                        * ((line.discount or 0.0) / 100.0)
-                        * line.product_uom_qty
+                            line.price_subtotal
+                            + line.price_unit
+                            * ((line.discount or 0.0) / 100.0)
+                            * line.product_uom_qty
                     )
             order.amount_undiscounted = total
 
@@ -957,7 +1125,7 @@ class orderLineProquotes(models.Model):
     variant = fields.Many2one("proquotes.variant", string="Variant Group")
 
     # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
-    applied_name = fields.Char( string="Applied Name")
+    applied_name = fields.Char(string="Applied Name")
 
     selected = fields.Selection(
         [("true", "Yes"), ("false", "No")],

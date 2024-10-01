@@ -26,7 +26,7 @@ class sync_pricelist:
     ##################################################
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
-        sheetWidth = 34
+        sheetWidth = 33
         columns = dict()
         columnsMissing = False
         msg = ""

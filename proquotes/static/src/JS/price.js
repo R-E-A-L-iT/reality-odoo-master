@@ -1,6 +1,13 @@
-odoo.define("proquotes.price", function (require) {
-	"use strict";
-	var publicWidget = require("web.public.widget");
+/** @odoo-module **/
+
+//odoo.define("proquotes.price", function (require) {
+//	"use strict";
+
+import { jsonrpc } from "@web/core/network/rpc_service";
+import { renderToFragment } from "@web/core/utils/render";
+import publicWidget from "@web/legacy/js/public/public_widget";
+
+//	var publicWidget = require("web.public.widget");
 
 	publicWidget.registry.price = publicWidget.Widget.extend({
 		selector: ".o_portal_sale_sidebar",
@@ -20,59 +27,84 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_onLoad: function () {
-			console.log("load");
 			this._updatePriceTotalsEvent();
 			this._rentalValueTotal();
 		},
 
 		_updateQuantityEvent: function (t) {
+            console.log('tttt------_updateQuantityEvent----', t)
+            setTimeout(() => {
 			//Update Quantity for Product
-			let self = this;
-			var target = t.currentTarget;
-			var p = target;
-			while (p.tagName != "TR") {
-				p = p.parentNode;
-			}
-			var lineId = p.querySelector(".line_id").id;
-			var qty = Math.round(target.value);
-			return this._rpc({
-				route: "/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId,
-				params: {
-					access_token: this.orderDetail.token,
-					line_id: lineId,
-					quantity: qty,
-				},
-			}).then((data) => {
-				if (data) {
-					self.$("#portal_sale_content").html(
-						$(data["sale_inner_template"])
-					);
-					this._updateView(data["order_amount_total"]);
-				}
-			});
+    			let self = this;
+    			var target = t.currentTarget;
+    			var p = target;
+    			while (p.tagName != "TR") {
+    				p = p.parentNode;
+    			}
+
+                var closestChecked = target.closest('.quoteLineRow');
+                var checkbox = closestChecked.querySelector('.priceChange');
+
+                // if (checkbox.checked === true) {
+                    // Log the checkbox checked state
+                var lineId = p.querySelector(".line_id").id;
+                var qty = Math.round(target.value);
+                //			return this._rpc({
+                //				route: "/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId,
+                //				params: {
+                //					access_token: this.orderDetail.token,
+                //					line_id: lineId,
+                //					quantity: qty,
+                //				},
+                //			})
+                return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
+                        "access_token": this.orderDetail.token,
+                        "line_id": lineId,
+                        "quantity": qty,
+                    },
+                ).then((data) => {
+                    if (data) {
+                        self.$("#portal_sale_content").html(
+                            $(data["sale_inner_template"])
+                        );
+                        this._updateView(data["order_amount_total"]);
+                    }
+                });
+            }, 800);
+
 		},
 
-		_updatePriceTotalsEvent: function () {
-			//Find All Products that Might Change the Price
-			let self = this;
-			var vpList = document.querySelectorAll(".priceChange");
-			var result = null;
-			var line_ids = [];
-			var targetsChecked = [];
-			for (var i = 0; i < vpList.length; i++) {
-				var p = vpList[i];
-				while (p.tagName != "TR") {
-					p = p.parentNode;
-				}
-				targetsChecked.push(
-					vpList[i].checked == true ? "true" : "false"
-				);
-				line_ids.push(p.querySelector(".line_id").id);
-			}
-			this._updatePriceTotals(targetsChecked, line_ids);
+		_updatePriceTotalsEvent: function (ev) {
+            console.log('------_updatePriceTotalsEvent----')
+            console.log('------_updatePriceTotalsEvent--ev--',ev)
+            setTimeout(() => {
+    			//Find All Products that Might Change the Price
+                // var $link = $(ev.currentTarget);
+    			let self = this;
+    			var vpList = document.querySelectorAll(".priceChange");
+                // console.log('------$link----',$link)
+                console.log('------vpList----',vpList)
+    			var result = null;
+    			var line_ids = [];
+    			var targetsChecked = [];
+
+    			for (var i = 0; i < vpList.length; i++) {
+    				var p = vpList[i];
+    				while (p.tagName != "TR") {
+    					p = p.parentNode;
+    				}
+    				targetsChecked.push(
+    					vpList[i].checked == true ? "true" : "false"
+    				);
+    				line_ids.push(p.querySelector(".line_id").id);
+    			}
+    			this._updatePriceTotals(targetsChecked, line_ids);
+             }, 800);
 		},
+
 
 		_rentalValueTotal: function () {
+            console.log('------_rentalValueTotal-------')
 			var totalLandingEnglish = document.getElementById("total-rental-value-english");
 			var totalLandingFrench = document.getElementById("total-rental-value-french");
 			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
@@ -80,7 +112,9 @@ odoo.define("proquotes.price", function (require) {
 			}
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
+            console.log('------items-------',items)
 			for (var i = 0; i < items.length; i++) {
+                console.log('------items-------',items)
 				var input = items[i].getElementsByTagName("input");
 				var include = true;
 				if (input.length > 0) {
@@ -94,11 +128,15 @@ odoo.define("proquotes.price", function (require) {
 				if (include) {
 					if (
 						items[i].getElementsByClassName("itemValue").length > 0
+
+
 					) {
+
 						total += parseInt(
 							items[i].getElementsByClassName("itemValue")[0]
 								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
 						);
+                        console.log('------total-------',total)
 					}
 				}
 			}
@@ -198,6 +236,7 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
+            console.log('------_updateSectionSelectionEvent----')
 			var target = ev.currentTarget;
 			var checked = target.checked;
 			var p = target;
@@ -216,16 +255,23 @@ odoo.define("proquotes.price", function (require) {
 			}
 			let self = this;
 
-			return this._rpc({
-				route:
-					"/my/orders/" + this.orderDetail.orderId + "/sectionSelect",
-				params: {
+//			return this._rpc({
+//				route:
+//					"/my/orders/" + this.orderDetail.orderId + "/sectionSelect",
+//				params: {
+//					access_token: this.orderDetail.token,
+//					section_id: section_id,
+//					line_ids: line_ids,
+//					selected: checked,
+//				},
+//			})
+            return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/sectionSelect", {
 					access_token: this.orderDetail.token,
-					section_id: section_id,
-					line_ids: line_ids,
-					selected: checked,
-				},
-			}).then((data) => {
+					'section_id': section_id,
+					'line_ids': line_ids,
+					'selected': checked
+				}
+			).then((data) => {
 				if (data) {
 					self.$("#portal_sale_content").html(
 						$(data["sale_inner_template"])
@@ -236,16 +282,24 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updatePriceTotals: function (targetsChecked, line_ids) {
+            console.log('------_updatePriceTotals----')
 			let self = this;
-
-			return this._rpc({
-				route: "/my/orders/" + this.orderDetail.orderId + "/select",
-				params: {
-					access_token: this.orderDetail.token,
-					line_ids: line_ids,
-					selected: targetsChecked,
-				},
-			}).then((data) => {
+            //            return this._rpc({
+            //				route: "/my/orders/" + this.orderDetail.orderId + "/select",
+            //				params: {
+            //					access_token: this.orderDetail.token,
+            //					line_ids: line_ids,
+            //					selected: targetsChecked,
+            //				},
+            //			})
+            console.log('---282---targetsChecked----',targetsChecked)
+            console.log('---283---line_ids----',line_ids)
+            return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/select", {
+					'access_token': this.orderDetail.token,
+					'line_ids': line_ids,
+					'selected': targetsChecked
+				}
+			).then((data) => {
 				if (data) {
 					self.$("#portal_sale_content").html(
 						$(data["sale_inner_template"])
@@ -257,7 +311,6 @@ odoo.define("proquotes.price", function (require) {
 
 		_multipleChoiceView: function () {
 			var cbl = document.querySelectorAll(".multipleChoice");
-			console.log("Multiple");
 			for (var i = 0; i < cbl.length; i++) {
 				console.log(cbl[i]);
 				var cb = cbl[i];
@@ -305,7 +358,6 @@ odoo.define("proquotes.price", function (require) {
 						var tdList = y.querySelectorAll("td");
 
 						for (var j = 0; j < tdList.length; j++) {
-							console.log(tdList[j])
 							var inner = tdList[j].innerHTML;
 							var l = document.createElement("label");
 							l.setAttribute(
@@ -362,7 +414,6 @@ odoo.define("proquotes.price", function (require) {
 				var cb = cbl[i];
 
 				if (cb.checked == true) {
-					console.log(cb);
 					TRstyle = "none";
 					expandHTML = "+";
 				} else {
@@ -381,7 +432,6 @@ odoo.define("proquotes.price", function (require) {
 					} else {
 						if (y.style != undefined && y.style != null) {
 							y.style.display = TRstyle;
-							console.log(y.style.display);
 						}
 					}
 					y = y.nextElementSibling;
@@ -410,7 +460,6 @@ odoo.define("proquotes.price", function (require) {
 		},
 
 		_updateView: function (total) {
-			console.log("view");
 			this._multipleChoiceView();
 			this._optionalView();
 			this._updateFoldDisplay();
@@ -418,4 +467,4 @@ odoo.define("proquotes.price", function (require) {
 			this._updateTotal(total);
 		},
 	});
-});
+//});

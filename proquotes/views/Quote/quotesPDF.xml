@@ -131,7 +131,6 @@
                                                 }
                                             </style>
                                             <div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
-                                            
                                         </td>
                                         <td name="td_quantity" class="text-end">
                                             <span t-field="line.product_uom_qty">3</span>
@@ -262,7 +261,7 @@
                             dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
                             showing). The quote is valid for 30 days after submittal date.
                         </p>
-                        <p t-elif="clang == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes de
+                        <p t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de
                             vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
                             affichés). Cette soumission est valide pour 30 jours après la date soumise.
                         </p>
@@ -407,5 +406,4 @@
         </xpath>
 
     </template>
-
 </odoo>
