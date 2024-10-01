@@ -641,7 +641,7 @@ class order(models.Model):
             kwargs['notify'] = True
 
         # Call the super method to proceed with posting the message
-        return super(SaleOrder, self).message_post(**kwargs)
+        return super(order, self).message_post(**kwargs)
     
     # def action_quotation_send(self):
     #     # Call the original method to send the email
