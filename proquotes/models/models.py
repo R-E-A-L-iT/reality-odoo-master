@@ -1143,6 +1143,30 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
 
+    @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
+    def _compute_amount(self):
+        """
+        Compute the amounts of the SO line.
+        """
+        for line in self:
+            tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
+                line._convert_to_tax_base_line_dict()
+            ])
+            totals = list(tax_results['totals'].values())[0]
+            if line.selected == 'false' or line.product_uom_qty == 0:
+                amount_untaxed = 0.00
+                _logger.info('>>>>>>>>>>iff>>>>>>.amount_untaxed: %s,', amount_untaxed)
+
+            else:
+                amount_untaxed = totals['amount_untaxed']
+                _logger.info('>>>>>>>>else>>>>>>>>. amount_untaxed: %s,', amount_untaxed)
+            amount_tax = totals['amount_tax']
+
+            line.update({
+                'price_subtotal': amount_untaxed,
+                'price_tax': amount_tax,
+                'price_total': amount_untaxed + amount_tax,
+            })
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
