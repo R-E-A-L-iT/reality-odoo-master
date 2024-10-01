@@ -4,6 +4,7 @@ import ast
 import base64
 from email.policy import default
 import re
+from math import ceil
 
 from datetime import date, datetime, timedelta
 from functools import partial
@@ -98,12 +99,15 @@ SQL_OPERATORS = {
 
 _logger = logging.getLogger(__name__)
 
+
 def is_operator(element):
     """ Test whether an object is a valid domain operator. """
     return isinstance(element, str) and element in DOMAIN_OPERATORS
 
+
 def is_boolean(element):
     return element == TRUE_LEAF or element == FALSE_LEAF
+
 
 @api.model
 def _flush_search(self, domain, fields=None, order=None, seen=None):
@@ -118,7 +122,7 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
         return
     seen.add(self._name)
 
-    to_flush = defaultdict(OrderedSet)             # {model_name: field_names}
+    to_flush = defaultdict(OrderedSet)  # {model_name: field_names}
     if fields:
         to_flush[self._name].update(fields)
 
@@ -200,7 +204,9 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
     for model_name, field_names in to_flush.items():
         self.env[model_name].flush_model(field_names)
 
+
 BSM._flush_search = _flush_search
+
 
 # --------------------------------------------------
 # Generic domain manipulation
@@ -238,7 +244,10 @@ def _anyfy_leaves(domain, model):
             result.append(item)
 
     return result
+
+
 exp._anyfy_leaves = _anyfy_leaves
+
 
 def is_operator(element):
     """ Test whether an object is a valid domain operator. """
@@ -601,12 +610,22 @@ class order(models.Model):
         string="Header OLD",
         help="Header selection field",
     )
-    
+
+    @api.depends('rental_start', 'rental_end')
+    def _compute_duration(self):
+        self.duration_days = 0
+        self.remaining_hours = 0
+        for order in self:
+            if order.rental_start and order.rental_end:
+                duration = order.rental_end - order.rental_start
+                order.duration_days = duration.days
+                order.remaining_hours = ceil(duration.seconds / 3600)
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
             _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
-            terms =  title.split("+",2)
+            terms = title.split("+", 2)
 
             if terms[0] == "#translate":
                 english = terms[1]
@@ -890,11 +909,13 @@ class order(models.Model):
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
-            ("active", "=", True),
-            ("sale_ok", "=", True)])
+             ("active", "=", True),
+             ("sale_ok", "=", True)])
 
         if len(product_list) != 1:
-            return "Software Subscritption CCP: Invalid Match Count (" + str(len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Software Subscritption CCP: Invalid Match Count (" + str(
+                len(product_list)) + ") for\n[stock.lot].name: " + str(eid) + "\n[product.product].name: " + str(
+                product.product_id.name) + "\n\n"
 
         if len(product_list) != 1:
             return "Software Subscritption CCP: Invalid Match Count (" + str(
@@ -1167,6 +1188,7 @@ class orderLineProquotes(models.Model):
                 'price_tax': amount_tax,
                 'price_total': amount_untaxed + amount_tax,
             })
+
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"

@@ -168,7 +168,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
     _end: function (ev) {
         var target = ev.currentTarget;
         var end = target.value;
-         return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/start_date", {
+         return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/end_date", {
                         "access_token": this.orderDetail.token,
                         "end": end,
                     });

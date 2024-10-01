@@ -39,8 +39,8 @@
                            invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
                     <field name="rental_country"
                            invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
-                    <field name="rental_start" invisible="[('is_rental', '!=', True)]"/>
-                    <field name="rental_end" invisible="[('is_rental', '!=', True)]"/>
+
+
                     <field name="customer_po_number" invisible="0"/>
                     <field name="manual_invoice_status"/>
                     <field name="financing_available"/>
@@ -106,6 +106,17 @@
                         </field>
                     </group>
                 </page>
+            </xpath>
+            <xpath expr="//field[@name=&quot;rental_start_date&quot;]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="rental_start"
+                       string="Rental period"
+                       widget="daterange"
+                       options="{'end_date_field': 'rental_end'}"
+                       invisible="not is_rental"
+                       required="has_rented_products"/>
             </xpath>
 
             <!--			commented due to the undefine-->

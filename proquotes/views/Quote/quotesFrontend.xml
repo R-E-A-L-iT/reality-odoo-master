@@ -477,6 +477,7 @@
                     <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
                     <t t-set="rentalDays"
                        t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+
                     <t t-set="rentalMonths" t-value="rentalDays // 30"/>
                     <t t-set="rentalDays" t-value="rentalDays % 30"/>
                     <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
@@ -498,7 +499,7 @@
         </xpath>
 
         <!-- Format Price Dispaly -->
-        <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace"
+        <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
             <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price"
                t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
             <t t-elif="clang == 'fr_CA'" t-set="line_price"
