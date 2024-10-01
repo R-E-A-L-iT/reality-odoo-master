@@ -637,8 +637,8 @@ class order(models.Model):
         kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
 
         # Ensure notifications are enabled
-        if 'notify' not in kwargs:
-            kwargs['notify'] = True
+        # if 'notify' not in kwargs:
+        #     kwargs['notify'] = True
 
         # Call the super method to proceed with posting the message
         return super(order, self).message_post(**kwargs)
