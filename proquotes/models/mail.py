@@ -60,6 +60,7 @@ class MailMessage(models.Model):
                     bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
                     body = body + bottom_footer # + str(message.partner_ids)
                     message.body = body
+                    message.notify = True
         return messages
 
 class MailThread(models.AbstractModel):
