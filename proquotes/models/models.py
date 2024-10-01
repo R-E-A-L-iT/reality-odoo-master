@@ -470,25 +470,25 @@ class order(models.Model):
         help="Header selection field",
     )
     
-    def action_quotation_send(self):
-        # Call the original method to send the email
-        res = super().action_quotation_send()
+    # def action_quotation_send(self):
+    #     # Call the original method to send the email
+    #     res = super().action_quotation_send()
 
-        # Customize the email template
-        # template_id = self.env.ref('sale.email_template_edi_sale').id    
-        partner_ids = self.partner_ids.ids
-        partner_ids.append(64744) # id of sales@r-e-a-l.it contact
+    #     # Customize the email template
+    #     # template_id = self.env.ref('sale.email_template_edi_sale').id    
+    #     partner_ids = self.partner_ids.ids
+    #     partner_ids.append(64744) # id of sales@r-e-a-l.it contact
         
-        ctx = {
-            # 'default_template_id': template_id,
-            # 'default_composition_mode': 'comment',
-            # 'mark_so_as_sent': True,
-            'default_partner_ids': partner_ids,
-            # Add any other context variables you need
-        }
-        res['context'] = ctx
+    #     ctx = {
+    #         # 'default_template_id': template_id,
+    #         # 'default_composition_mode': 'comment',
+    #         # 'mark_so_as_sent': True,
+    #         'default_partner_ids': partner_ids,
+    #         # Add any other context variables you need
+    #     }
+    #     res['context'] = ctx
 
-        return res
+    #     return res
     
     def get_translated_term(self, title, lang):
         if "translate" in title:
