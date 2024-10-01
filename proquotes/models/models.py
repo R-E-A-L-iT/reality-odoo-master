@@ -620,6 +620,29 @@ class order(models.Model):
         help="Header selection field",
     )
     
+    def message_post(self, **kwargs):
+        # Intercept the message post process for Sale Orders
+        if 'partner_ids' not in kwargs:
+            kwargs['partner_ids'] = []
+
+        # Add email contacts from the many2many field
+        contacts = [(4, partner.id) for partner in self.email_contacts]
+
+        # Add static email partner 'sales@r-e-a-l.it'
+        sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if sales_partner:
+            contacts.append((4, sales_partner.id))
+
+        # Merge with the existing partner_ids if any
+        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + email_contacts))
+
+        # Ensure notifications are enabled
+        if 'notify' not in kwargs:
+            kwargs['notify'] = True
+
+        # Call the super method to proceed with posting the message
+        return super(SaleOrder, self).message_post(**kwargs)
+    
     # def action_quotation_send(self):
     #     # Call the original method to send the email
     #     res = super().action_quotation_send()

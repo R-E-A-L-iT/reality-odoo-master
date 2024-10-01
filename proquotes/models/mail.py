@@ -41,19 +41,19 @@ class MailMessage(models.Model):
                 order = self.env['sale.order'].sudo().browse(int(message.res_id))
                 if order:
                     # Collect the recipients (partners)
-                    recipients = [(4, partner.id) for partner in message.partner_ids]
+                    # recipients = [(4, partner.id) for partner in message.partner_ids]
                     
-                    # Add email contacts from the order
-                    for contact in order.email_contacts:
-                        recipients.append((4, contact.id))
+                    # # Add email contacts from the order
+                    # for contact in order.email_contacts:
+                    #     recipients.append((4, contact.id))
                     
-                    # Add a static recipient
-                    sales_email = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-                    if sales_email:
-                        recipients.append((4, sales_email.id))
+                    # # Add a static recipient
+                    # sales_email = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+                    # if sales_email:
+                    #     recipients.append((4, sales_email.id))
                     
-                    # Update the partner_ids with new recipients
-                    message.partner_ids = recipients
+                    # # Update the partner_ids with new recipients
+                    # message.partner_ids = recipients
 
                     # Append quotation info to the message body
                     body = message.body
