@@ -15,7 +15,8 @@
         <!-- Address -->
         <t t-if="product_documents" position="replace">
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            <t t-set="clang" t-value="lang"/>
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
+            <t t-set="clang" t-value="sale_order.partner_id.lang"/>
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
                      t-attf-src="{{sale_order.header_id.url}}"/>
@@ -70,7 +71,7 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-          
+
             <!-- temporary style fixes -->
             <style>
                 .sale_tbody &gt; tr &gt; td {
@@ -234,7 +235,11 @@
                         <span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
                         </span>
                     </td>
-                    <td/>
+                    <td t-if="line.name == '$block+'" class="text-left">
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
+                        <span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
+                    </td>
+                    <td t-else=""/>
                     <td class="text-left">
                         <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
@@ -481,6 +486,7 @@
                     <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
                     <t t-set="rentalDays"
                        t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+
                     <t t-set="rentalMonths" t-value="rentalDays // 30"/>
                     <t t-set="rentalDays" t-value="rentalDays % 30"/>
                     <t t-set="rentalWeeks" t-value="rentalDays // 7"/>

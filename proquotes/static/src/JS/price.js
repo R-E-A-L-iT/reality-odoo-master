@@ -173,7 +173,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			let secondsInMinute = 60
 			let minuteInHour = 60
 			let hourInDay = 24
-			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay);
+			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
 			var months = 0;
 			var weeks = 0;
 			var days = 0;
