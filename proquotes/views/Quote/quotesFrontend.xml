@@ -47,6 +47,10 @@
             <!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
         </xpath>
 
+        <!-- remove taxes column -->
+        <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
+        <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" />
+
         <!--		commented due to the temporary-->
         <!--		&lt;!&ndash; <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> &ndash;&gt;-->
         <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td"-->
@@ -250,10 +254,10 @@
                             <span t-elif="clang == 'fr_CA'" class="cHead">Rabais%</span>
                         </td>
                     </t>
-                    <td>
+                    <!-- <td>
                         <span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
                         <span t-elif="clang == 'fr_CA'">Taxes</span>
-                    </td>
+                    </td> -->
                     <td class="text-left">
                         <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
                         <span t-elif="clang == 'fr_CA'" class="cHead">Montant</span>

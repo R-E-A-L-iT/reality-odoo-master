@@ -499,6 +499,21 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
+    
+    def get_translated_term(self, title, lang):
+        if "translate" in title:
+
+            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
+            terms =  title.split("+",2)
+
+            if terms[0] == "#translate":
+                english = terms[1]
+                french = terms[2]
+
+                if lang == 'fr_CA':
+                    return french
+                else:
+                    return english
 
     @api.depends("company_id")
     def _get_default_footer(self):
@@ -556,12 +571,15 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
+    
+    payment_date = fields.Date(string="Date of Payment", related="payment_id.date", store=True, index=True)
 
 
 class order(models.Model):
     _inherit = "sale.order"
 
-    partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
+    # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
+    email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
     products = fields.One2many(related="partner_id.products", readonly=True)
 
@@ -611,6 +629,51 @@ class order(models.Model):
         help="Header selection field",
     )
 
+    
+     
+    def message_post(self, **kwargs):
+        # Intercept the message post process for Sale Orders
+        if 'partner_ids' not in kwargs:
+            kwargs['partner_ids'] = []
+
+        # Add email contacts from the many2many field
+        contacts = [partner.id for partner in self.email_contacts]
+
+        # Add static email partner 'sales@r-e-a-l.it'
+        sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if sales_partner:
+            contacts.append(sales_partner.id)
+
+        # Merge with the existing partner_ids if any
+        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+
+        # Ensure notifications are enabled
+        # if 'notify' not in kwargs:
+        #     kwargs['notify'] = True
+
+        # Call the super method to proceed with posting the message
+        return super(order, self).message_post(**kwargs)
+    
+    # def action_quotation_send(self):
+    #     # Call the original method to send the email
+    #     res = super().action_quotation_send()
+
+    #     # Customize the email template
+    #     # template_id = self.env.ref('sale.email_template_edi_sale').id    
+    #     partner_ids = self.partner_ids.ids
+    #     partner_ids.append(64744) # id of sales@r-e-a-l.it contact
+        
+    #     ctx = {
+    #         # 'default_template_id': template_id,
+    #         # 'default_composition_mode': 'comment',
+    #         # 'mark_so_as_sent': True,
+    #         'default_partner_ids': partner_ids,
+    #         # Add any other context variables you need
+    #     }
+    #     res['context'] = ctx
+
+    #     return res
+    
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
         self.duration_days = 0
@@ -620,7 +683,7 @@ class order(models.Model):
                 duration = order.rental_end - order.rental_start
                 order.duration_days = duration.days
                 order.remaining_hours = ceil(duration.seconds / 3600)
-
+    
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -1189,6 +1252,58 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
+
+# class proquotesMail(models.TransientModel):
+#     _inherit = "mail.compose.message"
+
+#     def generate_email_for_composer(self, template_id, res_ids, fields):
+#         """Call email_template.generate_email(), get fields relevant for
+#         mail.compose.message, transform email_cc and email_to into partner_ids"""
+#         # Overriden to define the default recipients of a message.
+        
+#         multi_mode = True
+        
+#         for res_id in res_ids:
+#             contacts = res_id.partner_ids
+#             validated_contacts = []
+#             self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
+#             for contact in contacts:
+#                 if contact.email:
+#                     validated_contacts.append(contact.email)
+#                     # self.env["sale.order"].browse(res_id).partner_ids
+#             validated_contacts.append("sales@r-e-a-l.it")
+            
+#         return multi_mode and validated_contacts
+        
+#     #     multi_mode = True
+#     #     if isinstance(res_ids, int):
+#     #         multi_mode = False
+#     #         res_ids = [res_ids]
+
+#     #     returned_fields = fields + ["partner_ids", "attachments"]
+#     #     values = dict.fromkeys(res_ids, False)
+
+#     #     template_values = (
+#     #         self.env["mail.template"]
+#     #         .with_context(tpl_partners_only=True)
+#     #         .browse(template_id)
+#     #         .generate_email(res_ids, fields)
+#     #     )
+#     #     for res_id in res_ids:
+#     #         res_id_values = dict(
+#     #             (field, template_values[res_id][field])
+#     #             for field in returned_fields
+#     #             if template_values[res_id].get(field)
+#     #         )
+#     #         res_id_values["body"] = res_id_values.pop("body_html", "")
+#     #         if template_values[res_id].get("model") == "sale.order":
+#     #             res_id_values["partner_ids"] = self.env["sale.order"].browse(
+#     #                 res_id
+#     #             ).partner_ids + self.env["res.partner"].search(
+#     #                 [("email", "=", "sales@r-e-a-l.it")]
+#     #             )
+#     #         values[res_id] = res_id_values
+#     #     return multi_mode and values or values[res_ids[0]]
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
