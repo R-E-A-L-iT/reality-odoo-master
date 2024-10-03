@@ -631,45 +631,45 @@ class order(models.Model):
 
     
      
-    def message_post(self, **kwargs):
+    # def message_post(self, **kwargs):
         
-        # Variable mail_post_autofollow is true when using send message function but not when log note
-        mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
+    #     # Variable mail_post_autofollow is true when using send message function but not when log note
+    #     mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
         
-        message_type = kwargs.get('message_type', False)
+    #     message_type = kwargs.get('message_type', False)
         
-        if 'body' not in kwargs:
-            kwargs['body'] = ''
+    #     if 'body' not in kwargs:
+    #         kwargs['body'] = ''
             
-        # DEBUGGING
+    #     # DEBUGGING
         
-        # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
+    #     # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
 
-        # internal note feature
-        if not mail_post_autofollow:
-            # Call super without adding any email contacts, since it's a log note
-            return super(order, self).message_post(**kwargs)
+    #     # internal note feature
+    #     if not mail_post_autofollow:
+    #         # Call super without adding any email contacts, since it's a log note
+    #         return super(order, self).message_post(**kwargs)
 
-        # send message feature
-        else:
-            if 'partner_ids' not in kwargs:
-                kwargs['partner_ids'] = []
+    #     # send message feature
+    #     else:
+    #         if 'partner_ids' not in kwargs:
+    #             kwargs['partner_ids'] = []
 
-            # Add email contacts from the many2many field
-            contacts = [partner.id for partner in self.email_contacts]
+    #         # Add email contacts from the many2many field
+    #         contacts = [partner.id for partner in self.email_contacts]
 
-            # Add static email partner 'sales@r-e-a-l.it'
-            sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-            if sales_partner:
-                contacts.append(sales_partner.id)
+    #         # Add static email partner 'sales@r-e-a-l.it'
+    #         sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+    #         if sales_partner:
+    #             contacts.append(sales_partner.id)
                 
-            contacts.append(self.partner_id.id)
+    #         contacts.append(self.partner_id.id)
 
-            # Merge with the existing partner_ids if any
-            kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+    #         # Merge with the existing partner_ids if any
+    #         kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
 
-            # Call the super method to proceed with posting the message
-            return super(order, self).message_post(**kwargs)
+    #         # Call the super method to proceed with posting the message
+    #         return super(order, self).message_post(**kwargs)
 
     
     # def action_quotation_send(self):
