@@ -644,9 +644,20 @@ class order(models.Model):
         # DEBUGGING
         
         # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
+        
+        current_user = self.env.user
+
+        # Check if the message is sent by the "Public user for R-E-A-L.iT Solutions"
+        public_user_ca = self.env['res.users'].sudo().search([('name', '=', 'Public user for R-E-A-L.iT Solutions')], limit=1)
+        public_user_us = self.env['res.users'].sudo().search([('name', '=', 'Public user for R-E-A-L.iT U.S. Inc.')], limit=1)
+
 
         # internal note feature
         if not mail_post_autofollow:
+            # Call super without adding any email contacts, since it's a log note
+            return super(order, self).message_post(**kwargs)
+        
+        elif current_user == public_user_ca or current_user == public_user_us:
             # Call super without adding any email contacts, since it's a log note
             return super(order, self).message_post(**kwargs)
 
