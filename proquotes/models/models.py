@@ -659,6 +659,8 @@ class order(models.Model):
         
         elif current_user == public_user_ca or current_user == public_user_us:
             # Call super without adding any email contacts, since it's a log note
+            sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            kwargs['partner_ids'] = list(set(sales_partner))
             return super(order, self).message_post(**kwargs)
 
         # send message feature
