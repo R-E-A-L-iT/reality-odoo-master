@@ -622,7 +622,7 @@ class order(models.Model):
     
     def message_post(self, **kwargs):
         
-        # Check for context variable 'mail_post_autofollow' to distinguish between log note and send message
+        # Variable mail_post_autofollow is true when using send message function but not when log note
         mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
         
         # Intercept the message post process for Sale Orders
@@ -632,8 +632,9 @@ class order(models.Model):
         if 'body' not in kwargs:
             kwargs['body'] = ''
             
-         # Append the mail_post_autofollow and message_type for debugging
-        kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
+        # DEBUGGING
+        
+        # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
 
         # If message_type is 'note', it's an internal note, so skip adding email recipients
         if not mail_post_autofollow:
