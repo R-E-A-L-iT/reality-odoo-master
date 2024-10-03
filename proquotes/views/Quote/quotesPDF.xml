@@ -469,7 +469,7 @@
         </xpath>
 
         <!-- For rental quotes calculate relevant sums -->
-		<!-- <xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<xpath expr="//tbody/t/t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-set="rentalValue" t-value="0" />
 			<t t-set="rentalRate" t-value="0" />
 
@@ -482,9 +482,9 @@
 				<t t-set="rentalWeeks" t-value="rentalDays // 7" />
 				<t t-set="rentalDays" t-value="rentalDays % 7" />
 			</t>
-		</xpath> -->
+		</xpath>
 		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after"> -->
-		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>
@@ -497,7 +497,7 @@
 			<t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
 			<t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
 			<t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
-		</xpath> -->
+		</xpath>
 
     </template>
 </odoo>
