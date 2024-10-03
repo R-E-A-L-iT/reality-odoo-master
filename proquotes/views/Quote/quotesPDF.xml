@@ -316,8 +316,8 @@
 
                     <!-- custom footer stuff -->
                     <div id="quote_disclaimer">
-                        <t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'" t-value="'canadiens'"/>
-                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'" t-value="'américains'"/>
+                        <t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == '🇨🇦'" t-value="'canadiens'"/>
+                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == '🇺🇸'" t-value="'américains'"/>
                         <t t-set="currency_label" t-else="" t-value="doc.currency_id.name"/>
                         <p t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
                             <t t-out="currency_label"/>
