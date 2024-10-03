@@ -625,11 +625,10 @@ class order(models.Model):
         subtype_id = kwargs.get('subtype_id', False)  # Default to 'comment' if not specified
 
         # Only apply custom logic for 'comment' messages (which are actual emails)
-        if subtype_id:
-            note_subtype = self.env.ref('mail.mt_note')  # Internal note subtype
+        note_subtype = self.env.ref('mail.mt_note')  # Internal note subtype
         
         # continue without interception
-        if subtype_id == note_subtype.id:
+        if subtype_id and subtype_id == note_subtype.id:
             # Call super without adding any email contacts, since it's a log note
             return super(order, self).message_post(**kwargs)
         
