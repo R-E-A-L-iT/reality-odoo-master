@@ -622,34 +622,38 @@ class order(models.Model):
     
     def message_post(self, **kwargs):
         # Intercept the message post process for Sale Orders
-        subtype_id = kwargs.get('subtype_id', False)  # Default to 'comment' if not specified
-
-        # Only apply custom logic for 'comment' messages (which are actual emails)
-        note_subtype = self.env.ref('mail.mt_note')  # Internal note subtype
+        message_type = kwargs.get('message_type', False)
         
-        # continue without interception
-        if subtype_id and subtype_id == note_subtype.id:
+        # Add message_type to the body of the message for debugging
+        if 'body' not in kwargs:
+            kwargs['body'] = ''
+        
+        # Append the message_type for debugging
+        kwargs['body'] += f"<br/><br/>[DEBUG] message_type: {message_type}"
+
+        # If message_type is 'note', it's an internal note, so skip adding email recipients
+        if message_type == 'note':
             # Call super without adding any email contacts, since it's a log note
             return super(order, self).message_post(**kwargs)
-        
-        else:
-            # Intercept the message post process for Sale Orders
-            if 'partner_ids' not in kwargs:
-                kwargs['partner_ids'] = []
 
-            # Add email contacts from the many2many field
-            contacts = [partner.id for partner in self.email_contacts]
+        # Proceed only for 'comment' messages (i.e., emails sent to customers)
+        if 'partner_ids' not in kwargs:
+            kwargs['partner_ids'] = []
 
-            # Add static email partner 'sales@r-e-a-l.it'
-            sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-            if sales_partner:
-                contacts.append(sales_partner.id)
+        # Add email contacts from the many2many field
+        contacts = [partner.id for partner in self.email_contacts]
 
-            # Merge with the existing partner_ids if any
-            kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+        # Add static email partner 'sales@r-e-a-l.it'
+        sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if sales_partner:
+            contacts.append(sales_partner.id)
 
-            # Call the super method to proceed with posting the message
-            return super(order, self).message_post(**kwargs)
+        # Merge with the existing partner_ids if any
+        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+
+        # Call the super method to proceed with posting the message
+        return super(order, self).message_post(**kwargs)
+
     
     # def action_quotation_send(self):
     #     # Call the original method to send the email
