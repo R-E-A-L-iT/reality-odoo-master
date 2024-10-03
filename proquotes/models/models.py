@@ -662,6 +662,8 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
+                
+            contacts.append(self.partner_id.id)
 
             # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
