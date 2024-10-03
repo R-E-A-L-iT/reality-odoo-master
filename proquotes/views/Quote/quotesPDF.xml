@@ -106,9 +106,40 @@
 
                             <t t-set="current_subtotal" t-value="0"/>
 
+                            <!-- rental calculations -->
+                            <t t-set="rentalValue" t-value="0" />
+                            <t t-set="rentalRate" t-value="0" />
+
+                            <t t-if="doc.rental_start != False and doc.rental_end != False">
+                                <t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
+                                <t t-set="edate" t-value="str(doc.rental_end).split('-')" />
+                                <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
+                                <t t-set="rentalMonths" t-value="rentalDays // 30" />
+                                <t t-set="rentalDays" t-value="rentalDays % 30" />
+                                <t t-set="rentalWeeks" t-value="rentalDays // 7" />
+                                <t t-set="rentalDays" t-value="rentalDays % 7" />
+                            </t>
+
+
                             <t t-foreach="lines_to_report" t-as="line">
 
                                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+
+                                <!-- rental calculations -->
+                                <t t-if="'CAD' in doc.currency_id.name">
+                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+                                </t>
+                                <t t-elif="'USD' in doc.currency_id.name">
+                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usdVal" />
+                                </t>
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalDayRate > line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
+                                <t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
+
+
 
                                 <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
                                     <t t-if="not line.display_type">
@@ -316,8 +347,8 @@
 
                     <!-- custom footer stuff -->
                     <div id="quote_disclaimer">
-                        <t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'" t-value="'canadiens'"/>
-                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'" t-value="'américains'"/>
+                        <t t-set="currency_label" t-if="clang == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/>
+                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and (doc.partner_id.country == 'United States' or doc.partner_id.country == 'US')" t-value="'américains'"/>
                         <t t-set="currency_label" t-else="" t-value="doc.currency_id.name"/>
                         <p t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
                             <t t-out="currency_label"/>
@@ -469,7 +500,7 @@
         </xpath>
 
         <!-- For rental quotes calculate relevant sums -->
-		<!-- <xpath expr="//tbody/t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<!-- <xpath expr="//tbody/t/t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-set="rentalValue" t-value="0" />
 			<t t-set="rentalRate" t-value="0" />
 
@@ -484,7 +515,7 @@
 			</t>
 		</xpath> -->
 		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after"> -->
-		<!-- <xpath expr="//t[@t-foreach=&quot;doc.order_line&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
+		<!-- <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//t[@t-set=&quot;current_subtotal&quot;]" position="after">
 			<t t-if="'CAD' in doc.currency_id.name">
 				<t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
 			</t>
