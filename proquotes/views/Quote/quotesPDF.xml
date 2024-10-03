@@ -162,11 +162,74 @@
                                         <td t-elif="line.name  == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
-                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line" colspan="99">
-                                            <span>Rental Info</span>
-                                        </td>
-                                        <td t-elif="line.name  == '$rental_info'" name="td_section_line" colspan="99">
-                                            <span>Rental Info</span>
+                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                <p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+                                                <p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                            </t>
+                                            <t t-elif="clang == 'fr_CA'">
+                                                <p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+                                                <p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                            </t>
+                                            <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                * The final rental cost will be calculated once the equipement is returned.
+                                                Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
+                                                Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
+                                            </p>
+                                            <p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+                                                * Le coût final sera calculé lorsque l'équipement sera retourné.
+                                                Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
+                                                Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
+                                            </p>
+                                            <!-- Format Estimated Rental Rate Number -->
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
+                                            <t t-if=" clang== 'en_CA' or clang == 'en_US'">
+                                                <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
+                                            </t>
+                                            <t t-elif="clang == 'fr_CA'">
+                                                <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
+                                            </t>
+                                            <br />
+                                            <br />
+
+                                            <!-- Format Remtal Value Number -->
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+                                            <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                <span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
+                                                <br />
+                                                <br />
+                                                <span>
+                                                    Please upload your proof of insurance in the comments section below or send a copy by email.
+                                                </span>
+                                                <br />
+                                            </div>
+                                            <div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
+                                                <span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+                                                <br />
+                                                <br />
+                                                <span>
+                                                    Merci de fournir votre attestation d'assurance :
+                                                </span>
+                                                <br />
+                                            </div>
+
+                                            <t t-if="doc.rental_diff_add == True">
+                                                <span t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                    Shipping To
+                                                </span>
+                                                <span t-elif="clang == 'fr_CA'">
+                                                    Expédition ànvoyez à
+                                                </span>
+                                                <br />
+                                                <span t-field="doc.rental_street" />
+                                                <br />
+                                                <span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
+                                                <span t-esc="doc.rental_state.code" />
+                                                <span t-field="doc.rental_zip" />
+                                                <span t-field="doc.rental_country" />
+                                            </t>
                                         </td>
                                         <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
                                             <span>Rental Software</span>
