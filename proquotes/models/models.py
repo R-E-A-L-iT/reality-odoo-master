@@ -632,12 +632,28 @@ class order(models.Model):
     
      
     def message_post(self, **kwargs):
+        
+        # Variable mail_post_autofollow is true when using send message function but not when log note
+        mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
+        
         # Intercept the message post process for Sale Orders
-        message_type = kwargs.get('message_type', 'comment')  # Default to 'comment' if not specified
+        message_type = kwargs.get('message_type', False)
+        
+        # Add message_type to the body of the message for debugging
+        if 'body' not in kwargs:
+            kwargs['body'] = ''
+            
+        # DEBUGGING
+        
+        # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
 
-        # Only apply custom logic for 'comment' messages (which are actual emails)
-        if message_type == 'comment':
-            # Intercept the message post process for Sale Orders
+        # If message_type is 'note', it's an internal note, so skip adding email recipients
+        if not mail_post_autofollow:
+            # Call super without adding any email contacts, since it's a log note
+            return super(order, self).message_post(**kwargs)
+
+        else:
+            # Proceed only for 'comment' messages (i.e., emails sent to customers)
             if 'partner_ids' not in kwargs:
                 kwargs['partner_ids'] = []
 
@@ -652,12 +668,9 @@ class order(models.Model):
             # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
 
-            # Ensure notifications are enabled
-            # if 'notify' not in kwargs:
-            #     kwargs['notify'] = True
-
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
+
     
     # def action_quotation_send(self):
     #     # Call the original method to send the email
