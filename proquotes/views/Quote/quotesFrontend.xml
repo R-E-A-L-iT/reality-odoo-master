@@ -47,7 +47,7 @@
         </xpath>
 
         <!-- remove taxes column -->
-        <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
+        <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" /> -->
         <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" />
 
         <!--		commented due to the temporary-->
