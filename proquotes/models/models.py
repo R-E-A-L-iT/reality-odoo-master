@@ -653,7 +653,7 @@ class order(models.Model):
         elif "Quotation viewed by customer" in kwargs['body']:
             # Call super without adding any email contacts, since it's a log note
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-            kwargs['partner_ids'] = list(set(sales_partner))
+            kwargs['partner_ids'] = [sales_partner.id]
             return super(order, self).message_post(**kwargs)
 
         # send message feature
