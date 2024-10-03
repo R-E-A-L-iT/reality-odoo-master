@@ -35,8 +35,11 @@ class person(models.Model):
 
     # Identify Owned Products
     products = fields.One2many(
-        "stock.lot", "owner", string="Products", readonly=True
+        "stock.lot", domain="'|', ('owner', '=', res.partner)", readonly=True
     )
+    # products = fields.One2many(
+    #     "stock.lot", "owner", string="Products", readonly=True
+    # )
     parentProducts = fields.One2many(
         related="parent_id.products", string="Company Products", readonly=True
     )
