@@ -10,7 +10,7 @@
                 <page name="products" string="Products">
                     <sheet>
                         <!-- <div t-if="parent_id"> -->
-                            <!-- <field name="parentProducts" string="Company Products"/> -->
+                            <field name="parentProducts" string="Company Products"/>
                         <!-- </div> -->
                         <!-- <div t-if="company_type == 'company'"> -->
                             <field name="products" string="Products"/>
