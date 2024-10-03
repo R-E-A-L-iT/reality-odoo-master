@@ -632,7 +632,7 @@ class order(models.Model):
         kwargs['body'] += f"<br/><br/>[DEBUG] message_type: {message_type}"
 
         # If message_type is 'note', it's an internal note, so skip adding email recipients
-        if message_type == 'note':
+        if message_type == 'comment':
             # Call super without adding any email contacts, since it's a log note
             return super(order, self).message_post(**kwargs)
 
