@@ -9,8 +9,8 @@
             <xpath expr="//notebook" position="inside">
                 <page name="products" string="Products">
                     <sheet>
-                        <field name="parentProducts" string="Company Products" invisible="'parent_id', '=', False"/>
-                        <field name="products" string="Products" invisible="'company_type', '!=', 'company'"/>
+                        <field name="parentProducts" string="Company Products" invisible="{'invisible': [('parent_id', '=', False)]}"/>
+                        <field name="products" string="Products" invisible="{'invisible': [('company_type', '!=', 'company')]}"/>
                         <!--                        <field name="products" string="Products" attrs="{'invisible': [('company_type', '!=', 'company')]}"/>-->
                     </sheet>
                 </page>
