@@ -48,7 +48,7 @@
 
         <!-- remove taxes column -->
         <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" /> -->
-        <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" />
+        <!-- <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" /> -->
 
         <!--		commented due to the temporary-->
         <!--		&lt;!&ndash; <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> &ndash;&gt;-->
