@@ -629,6 +629,19 @@ class order(models.Model):
         help="Header selection field",
     )
     
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super(SaleOrder, self).default_get(fields_list)
+
+        # Search for the "Immediate Payment" payment term
+        immediate_payment_term = self.env['account.payment.term'].search([('name', '=', 'Immediate Payment')], limit=1)
+        
+        # If found, set it as the default payment term
+        if immediate_payment_term:
+            defaults['payment_term_id'] = immediate_payment_term.id
+
+        return defaults
+    
     @api.onchange('is_rental', 'partner_id')
     def _onchange_is_rental(self):
         if self.is_rental and self.partner_id:
