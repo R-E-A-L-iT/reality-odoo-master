@@ -354,7 +354,7 @@
                             <t t-set="currency_label" t-elif="clang == 'fr_CA' and (doc.partner_id.country == 'United States' or doc.partner_id.country == 'US')" t-value="'américains'"/>
                         </t> -->
                         <!-- <t t-set="currency_label" t-if="clang == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/> -->
-                        <t t-set="currency_label" t-else="" t-value="doc.currency_id.name"/>
+                        <t t-set="currency_label" t-value="doc.currency_id.name"/>
                         <p t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
                             <t t-out="currency_label"/>
                             dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
