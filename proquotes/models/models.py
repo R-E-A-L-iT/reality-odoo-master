@@ -698,6 +698,8 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             kwargs['partner_ids'] = [sales_partner.id]
             return super(order, self).message_post(**kwargs)
+        elif "Product prices have been recomputed" in kwargs['body']:
+            return False
 
         # send message feature
         else:
