@@ -653,9 +653,9 @@ class order(models.Model):
 
             if rental_pricelist:
                 self.pricelist_id = rental_pricelist.id
-        else:
-            # Reset pricelist if not rental
-            self.pricelist_id = False
+        # else:
+        #     # Reset pricelist if not rental
+        #     self.pricelist_id = False
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
