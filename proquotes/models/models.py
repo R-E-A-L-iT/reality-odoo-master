@@ -631,7 +631,7 @@ class order(models.Model):
     
     @api.model
     def default_get(self, fields_list):
-        defaults = super(SaleOrder, self).default_get(fields_list)
+        defaults = super(order, self).default_get(fields_list)
 
         # Search for the "Immediate Payment" payment term
         immediate_payment_term = self.env['account.payment.term'].search([('name', '=', 'Immediate Payment')], limit=1)
