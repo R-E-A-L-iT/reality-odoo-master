@@ -119,7 +119,7 @@ class CustomerPortalINH(CustomerPortal):
     @http.route(
         ["/my/quotes", "/my/quotes/page/<int:page>"],
         type="http",
-        auth="user",
+        auth="public",
         website=True,
     )
     def portal_my_quotes(
