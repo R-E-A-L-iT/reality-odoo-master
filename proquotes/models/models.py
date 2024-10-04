@@ -628,6 +628,38 @@ class order(models.Model):
         string="Header OLD",
         help="Header selection field",
     )
+    
+    @api.onchange('is_rental', 'partner_id')
+    def _onchange_is_rental(self):
+        if self.is_rental and self.partner_id:
+            # Check the country of the customer
+            if self.partner_id.country_id.code == 'CA':  # Canada
+                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'CAD RENTAL')], limit=1)
+            elif self.partner_id.country_id.code == 'US':  # USA
+                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'USD RENTAL')], limit=1)
+
+            if rental_pricelist:
+                self.pricelist_id = rental_pricelist.id
+        else:
+            # Reset pricelist if not rental
+            self.pricelist_id = False
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self.partner_id and not self.is_rental:
+            # Set domain for non-rental pricelists
+            return {
+                'domain': {
+                    'pricelist_id': [('name', 'not ilike', 'rental')]
+                }
+            }
+        elif self.partner_id and self.is_rental:
+            # Set domain for rental pricelists
+            return {
+                'domain': {
+                    'pricelist_id': [('name', 'ilike', 'rental')]
+                }
+            }
      
     def message_post(self, **kwargs):
         
