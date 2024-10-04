@@ -181,7 +181,9 @@
                                             <span t-out="taxes">Tax 15%</span>
                                         </td>
                                         <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total">
-                                            <span t-field="line.price_subtotal">27.00</span>
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
+                                            <span t-out="line_price" />
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
