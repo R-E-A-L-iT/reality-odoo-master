@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <!-- Default domain for regular orders (not rental) -->
-                <attribute name="domain">[('name', 'not ilike', 'rental')]</attribute>
+                <attribute name="domain">[('name', 'ilike', '')]</attribute>
             </xpath>
         </field>
     </record>
