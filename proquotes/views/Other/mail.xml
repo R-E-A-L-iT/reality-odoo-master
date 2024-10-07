@@ -42,7 +42,8 @@
                                             <tbody>
                                                 <tr>
                                                     <t t-if="model == 'sale.order'">
-                                                        <a href="www.r-e-a-l.it/capture">Test link</a>
+                                                        <!-- add language code to 'View Quote' link -->
+                                                        <a t-att-href="'/my/orders/%s?lang=%s' % (record.access_token, record.partner_id.lang or 'en')">View Quote</a>
                                                     </t>
                                                     <t t-else="">
                                                         <td t-if="has_button_access"
