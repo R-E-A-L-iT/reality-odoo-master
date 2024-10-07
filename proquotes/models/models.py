@@ -675,7 +675,7 @@ class order(models.Model):
 
         return defaults
     
-      @api.onchange('pricelist_id')
+    @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
         if self.pricelist_id:
             # Check if the selected pricelist contains the word "RENTAL"
