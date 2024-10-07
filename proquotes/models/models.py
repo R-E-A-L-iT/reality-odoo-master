@@ -688,7 +688,7 @@ class order(models.Model):
     def _onchange_sale_order_template_id(self):
         if self.sale_order_template_id:
             # Check if the selected quote template contains the word "RENTAL"
-            if 'rental' in self.sale_order_template_id.name.lower():
+            if 'RENTAL' in self.sale_order_template_id.name.lower():
                 self.is_rental = True
             else:
                 self.is_rental = False
