@@ -41,11 +41,6 @@
                                         <table cellspacing="0" cellpadding="0" border="0">
                                             <tbody>
                                                 <tr>
-                                                    <t t-if="model == 'sale.order'">
-                                                        <!-- add language code to 'View Quote' link -->
-                                                        <a t-att-href="'/my/orders/%s?lang=%s' % (record.access_token, record.partner_id.lang or 'en')">View Quote</a>
-                                                    </t>
-                                                    <t t-else="">
                                                         <td t-if="has_button_access"
                                                             t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
                                                             <a t-att-href="button_access['url']"
@@ -75,7 +70,6 @@
                                                             <span style="font-weight:bold;" t-out="record_name"/>
                                                             <br/>
                                                         </td>
-                                                    </t>
                                                 </tr>
                                             </tbody>
                                         </table>
