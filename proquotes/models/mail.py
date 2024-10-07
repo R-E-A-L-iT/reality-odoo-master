@@ -59,7 +59,7 @@ class MailMessage(models.Model):
                     body = message.body
                     lang = order.partner_id.lang
                     if lang:
-                        bottom_footer = _("\r\n \r\n Quotation: %s") % ("www.r-e-a-l.it/" + lang + "my/orders/" + object.id + "?access_token=" + object.access_token)
+                        bottom_footer = _("\r\n \r\n Quotation: %s") % ("www.r-e-a-l.it/" + lang + "my/orders/" + order.id + "?access_token=" + order.access_token)
                     body = body + bottom_footer # + str(message.partner_ids)
                     message.body = body
                     # message.notify = True
