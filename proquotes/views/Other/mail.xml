@@ -41,36 +41,40 @@
                                         <table cellspacing="0" cellpadding="0" border="0">
                                             <tbody>
                                                 <tr>
-                                                    <td t-if="has_button_access"
-                                                        t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
-                                                        <a t-att-href="button_access['url']"
-                                                           style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
-                                                            <t t-out="button_access['title']"/>
-                                                        </a>
-                                                    </td>
-                                                    <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
-
-                                                    <td t-if="actions">
-                                                        <t t-foreach="actions" t-as="action">
-                                                            <a t-att-href="action['url']"
-                                                               t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
-                                                                <t t-out="action['title']"/>
+                                                    <t t-if="object._name == 'sale.order'">
+                                                        <a href="www.r-e-a-l.it/capture">Test link</a>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td t-if="has_button_access"
+                                                            t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
+                                                            <a t-att-href="button_access['url']"
+                                                            style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
+                                                                <t t-out="button_access['title']"/>
                                                             </a>
-                                                            &amp;nbsp;&amp;nbsp;
-                                                        </t>
-                                                    </td>
-                                                    <td t-if="subtitles" style="font-size: 12px;">
-                                                        <t t-foreach="subtitles" t-as="subtitle">
-                                                            <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}"
-                                                                  t-out="subtitle"/>
-                                                            <br t-if="not subtitle_last"/>
-                                                        </t>
-                                                    </td>
-                                                    <td t-else="">
-                                                        <span style="font-weight:bold;" t-out="record_name"/>
-                                                        <br/>
-                                                    </td>
+                                                        </td>
+                                                        <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
 
+                                                        <td t-if="actions">
+                                                            <t t-foreach="actions" t-as="action">
+                                                                <a t-att-href="action['url']"
+                                                                t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
+                                                                    <t t-out="action['title']"/>
+                                                                </a>
+                                                                &amp;nbsp;&amp;nbsp;
+                                                            </t>
+                                                        </td>
+                                                        <td t-if="subtitles" style="font-size: 12px;">
+                                                            <t t-foreach="subtitles" t-as="subtitle">
+                                                                <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}"
+                                                                    t-out="subtitle"/>
+                                                                <br t-if="not subtitle_last"/>
+                                                            </t>
+                                                        </td>
+                                                        <td t-else="">
+                                                            <span style="font-weight:bold;" t-out="record_name"/>
+                                                            <br/>
+                                                        </td>
+                                                    </t>
                                                 </tr>
                                             </tbody>
                                         </table>

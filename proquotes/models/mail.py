@@ -57,7 +57,9 @@ class MailMessage(models.Model):
 
                     # Append quotation info to the message body
                     body = message.body
-                    bottom_footer = _("\r\n \r\n Quotation: %s") % (order.sudo().name)
+                    lang = order.partner_id.language
+                    if lang:
+                        bottom_footer = _("\r\n \r\n Quotation: %s") % (```<a t-att-href="'www.r-e-a-l.it/my/orders/' + lang + )">View Quote</a>```)
                     body = body + bottom_footer # + str(message.partner_ids)
                     message.body = body
                     # message.notify = True
