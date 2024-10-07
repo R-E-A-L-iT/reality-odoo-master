@@ -675,6 +675,24 @@ class order(models.Model):
 
         return defaults
     
+      @api.onchange('pricelist_id')
+    def _onchange_pricelist_id(self):
+        if self.pricelist_id:
+            # Check if the selected pricelist contains the word "RENTAL"
+            if 'rental' in self.pricelist_id.name.lower():
+                self.is_rental = True
+            else:
+                self.is_rental = False
+
+    @api.onchange('sale_order_template_id')
+    def _onchange_sale_order_template_id(self):
+        if self.sale_order_template_id:
+            # Check if the selected quote template contains the word "RENTAL"
+            if 'rental' in self.sale_order_template_id.name.lower():
+                self.is_rental = True
+            else:
+                self.is_rental = False
+    
     @api.onchange('is_rental', 'partner_id')
     def _onchange_is_rental(self):
         if self.is_rental and self.partner_id:
