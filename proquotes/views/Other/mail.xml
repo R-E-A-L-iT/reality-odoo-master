@@ -41,7 +41,7 @@
                                         <table cellspacing="0" cellpadding="0" border="0">
                                             <tbody>
                                                 <tr>
-                                                    <t t-if="object._name == 'sale.order'">
+                                                    <t t-if="model == 'sale.order'">
                                                         <a href="www.r-e-a-l.it/capture">Test link</a>
                                                     </t>
                                                     <t t-else="">
