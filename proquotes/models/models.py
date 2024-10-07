@@ -499,12 +499,12 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
-    
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
             _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
-            terms =  title.split("+",2)
+            terms = title.split("+", 2)
 
             if terms[0] == "#translate":
                 english = terms[1]
@@ -571,7 +571,7 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
-    
+
     payment_date = fields.Date(string="Date of Payment", related="payment_id.date", store=True, index=True)
 
 
@@ -629,8 +629,6 @@ class order(models.Model):
         help="Header selection field",
     )
 
-    
-     
     def message_post(self, **kwargs):
         # Intercept the message post process for Sale Orders
         if 'partner_ids' not in kwargs:
@@ -653,7 +651,7 @@ class order(models.Model):
 
         # Call the super method to proceed with posting the message
         return super(order, self).message_post(**kwargs)
-    
+
     # def action_quotation_send(self):
     #     # Call the original method to send the email
     #     res = super().action_quotation_send()
@@ -662,7 +660,7 @@ class order(models.Model):
     #     # template_id = self.env.ref('sale.email_template_edi_sale').id    
     #     partner_ids = self.partner_ids.ids
     #     partner_ids.append(64744) # id of sales@r-e-a-l.it contact
-        
+
     #     ctx = {
     #         # 'default_template_id': template_id,
     #         # 'default_composition_mode': 'comment',
@@ -673,7 +671,7 @@ class order(models.Model):
     #     res['context'] = ctx
 
     #     return res
-    
+
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
         self.duration_days = 0
@@ -683,7 +681,7 @@ class order(models.Model):
                 duration = order.rental_end - order.rental_start
                 order.duration_days = duration.days
                 order.remaining_hours = ceil(duration.seconds / 3600)
-    
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -1080,7 +1078,8 @@ class order(models.Model):
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order_lines = order.order_line.filtered(
+                lambda x: not x.display_type and x.selected == "true" and x.product_id.is_software)
             order.tax_totals = order.env['account.tax']._prepare_tax_totals(
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
@@ -1260,9 +1259,9 @@ class orderLineProquotes(models.Model):
 #         """Call email_template.generate_email(), get fields relevant for
 #         mail.compose.message, transform email_cc and email_to into partner_ids"""
 #         # Overriden to define the default recipients of a message.
-        
+
 #         multi_mode = True
-        
+
 #         for res_id in res_ids:
 #             contacts = res_id.partner_ids
 #             validated_contacts = []
@@ -1272,9 +1271,9 @@ class orderLineProquotes(models.Model):
 #                     validated_contacts.append(contact.email)
 #                     # self.env["sale.order"].browse(res_id).partner_ids
 #             validated_contacts.append("sales@r-e-a-l.it")
-            
+
 #         return multi_mode and validated_contacts
-        
+
 #     #     multi_mode = True
 #     #     if isinstance(res_ids, int):
 #     #         multi_mode = False
