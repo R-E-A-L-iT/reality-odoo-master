@@ -686,21 +686,12 @@ class order(models.Model):
 
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id(self):
-        # Save the current rental status before applying template defaults
-        is_rental_before_template = self.is_rental
-
-        # Call the super to apply the defaults from the template
-        res = super(SaleOrder, self)._onchange_sale_order_template_id()
-
-        # Reapply the rental logic after template defaults are set
         if self.sale_order_template_id:
             # Check if the selected quote template contains the word "RENTAL"
             if 'RENTAL' in self.sale_order_template_id.name.upper():
-                self.is_rental = True
+                self.is_rental = False
             else:
-                self.is_rental = is_rental_before_template  # Preserve the previous state if not rental
-
-        return res
+                self.is_rental = True
     
     @api.onchange('is_rental', 'partner_id')
     def _onchange_is_rental(self):
