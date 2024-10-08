@@ -765,7 +765,7 @@ class order(models.Model):
                 contacts.append(sales_partner.id)
 
             # Merge with the existing partner_ids if any
-            kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+            kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
