@@ -80,6 +80,18 @@ import publicWidget from "@web/legacy/js/public/public_widget";
             setTimeout(() => {
     			//Find All Products that Might Change the Price
                 // var $link = $(ev.currentTarget);
+
+                if (ev !== undefined){
+                    var $target = $(ev.currentTarget);
+                    var closestrow = $target.closest('.quoteLineRow');
+                    var checkbox = closestrow.find('.priceChange');
+                    var qty = closestrow.find('.quantityChange').val();
+                    if (checkbox[0].checked === true && qty === '0') {
+                        closestrow.find('.quantityChange').val(1).trigger('change');
+                        $(closestrow.find('.quantityChange')).trigger("change");
+                    }
+                }
+
     			let self = this;
     			var vpList = document.querySelectorAll(".priceChange");
                 // console.log('------$link----',$link)

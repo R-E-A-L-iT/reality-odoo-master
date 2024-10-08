@@ -1078,13 +1078,21 @@ class order(models.Model):
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
-            order_lines = order.order_line.filtered(
-                lambda x: not x.display_type and x.selected == "true" and x.product_id.is_software)
-            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-                [x._convert_to_tax_base_line_dict() for x in order_lines],
-                order.currency_id or order.company_id.currency_id,
-            )
-            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+            if order.is_rental:
+                order_lines = order.order_line.filtered(
+                    lambda x: not x.display_type and x.selected == "true" and x.product_id.is_software)
+                order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                    [x._convert_to_tax_base_line_dict() for x in order_lines],
+                    order.currency_id or order.company_id.currency_id,
+                )
+                _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+            else:
+                order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+                order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                    [x._convert_to_tax_base_line_dict() for x in order_lines],
+                    order.currency_id or order.company_id.currency_id,
+                )
+
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to users and portal customer as portal is integrated
@@ -1274,6 +1282,17 @@ class orderLineProquotes(models.Model):
             return product.description_sale
         else:
             return "<span></span>"
+
+    @api.constrains('product_id', 'order_id')
+    @api.onchange('product_id', 'order_id')
+    def _check_duplicate_product(self):
+        for line in self:
+            if line.product_id:
+                order_lines = line.order_id.order_line.filtered(lambda l: l.product_id == line.product_id)
+                if len(order_lines) > 1:
+                    raise ValidationError(
+                        "The product '%s' has already been added to the order. Please update the quantity instead of adding it again." % line.product_id.display_name
+                    )
 
     @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
