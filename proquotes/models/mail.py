@@ -54,12 +54,14 @@ class MailMessage(models.Model):
                     
                     # # Update the partner_ids with new recipients
                     # message.partner_ids = recipients
+                    
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
                     # Append quotation info to the message body
                     body = message.body
                     lang = order.partner_id.lang
                     if lang:
-                        bottom_footer = _("\r\n \r\n Quotation: %s") % ("www.r-e-a-l.it/" + lang + "/my/orders/" + str(order.id) + "?access_token=" + str(order.access_token))
+                        bottom_footer = _("\r\n \r\n Quotation: %s") % (str(base_url) + str(lang) + "/my/orders/" + str(order.id) + "?access_token=" + str(order.access_token))
                     body = body + bottom_footer # + str(message.partner_ids)
                     message.body = body
                     # message.notify = True
