@@ -675,6 +675,23 @@ class order(models.Model):
 
         return defaults
     
+    @api.onchange('pricelist_id')
+    def _onchange_pricelist_id(self):
+        if self.pricelist_id:
+            # Check if the selected pricelist contains the word "RENTAL"
+            if 'RENTAL' in self.pricelist_id.name.upper():
+                self.is_rental = True
+            else:
+                self.is_rental = False
+
+    # @api.onchange('sale_order_template_id')
+    # def _onchange_sale_order_template_id(self):
+    #     if self.sale_order_template_id:
+    #         if 'RENTAL' in self.sale_order_template_id.name.upper():
+    #             self.is_rental = False
+    #         else:
+    #             self.is_rental = True
+    
     @api.onchange('is_rental', 'partner_id')
     def _onchange_is_rental(self):
         if self.is_rental and self.partner_id:
@@ -746,11 +763,9 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
-                
-            contacts.append(self.partner_id.id)
 
             # Merge with the existing partner_ids if any
-            kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+            kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
@@ -768,7 +783,6 @@ class order(models.Model):
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
-            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
             terms = title.split("+", 2)
 
             if terms[0] == "#translate":
