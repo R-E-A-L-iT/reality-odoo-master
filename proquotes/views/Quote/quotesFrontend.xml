@@ -140,7 +140,7 @@
                 <tr>
                     <td style="border-style: none;" colspan="100">
                         <t t-set="isPDF" t-value="False"/>
-                        <t t-if="clang ==  'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
+                        <t t-if="clang == 'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
                         <t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french"/>
                     </td>
                 </tr>
