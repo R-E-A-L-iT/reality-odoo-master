@@ -1237,7 +1237,7 @@ class order(models.Model):
                     personalized_url = f"{base_url}/{lang_code}{portal_url}?user_id={partner.id}"
                     
                     # Set the personalized URL with language code
-                    access_opt['url'] = personalized_url
+                    group[2]['button_access']['url'] = personalized_url
 
         # Return the modified recipient groups with the updated access options
         return groups
