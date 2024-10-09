@@ -1212,11 +1212,11 @@ class order(models.Model):
                 access_opt['title'] = _("View Order")
                 
             pdata = {
-                'id': customer.id,
-                'partner_id': customer.id,
-                'email': customer.email,
-                'name': customer.name,
-                'type': 'user',
+                'id': self.partner_id.id,  # Add partner ID as 'id' for tracking
+                'partner_id': self.partner_id.id,
+                'email': self.partner_id.email,
+                'name': self.partner_id.name,
+                'type': 'user',  # or 'customer', 'follower', etc.
             }
 
             recipients = group[1]
