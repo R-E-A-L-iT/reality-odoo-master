@@ -1185,16 +1185,13 @@ class order(models.Model):
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        # get the default recipient groups
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
-        
         if not self:
             return groups
-        
         self.ensure_one()
-
+        
         # Get the base URL for the portal
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = self.get_portal_url()
