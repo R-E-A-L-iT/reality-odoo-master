@@ -1217,7 +1217,7 @@ class order(models.Model):
                 'email': self.partner_id.email,
                 'name': self.partner_id.name,
                 'type': 'user',
-                'is_follower': self.partner_id.is_follower,
+                'is_follower': True,
             }
 
             recipients = group[1]
