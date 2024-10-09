@@ -1183,44 +1183,36 @@ class order(models.Model):
             _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to all users and portal customers to view the quote in the portal with tracking. """
+        """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        # Get the default recipient groups
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
-        
         if not self:
             return groups
-        
         self.ensure_one()
-
+        # Get the base URL for the portal
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = self.get_portal_url()
 
-        # Loop through each group and enable portal access for all of them
         for group in groups:
             group_name = group[0]
-            recipients = group[1]
 
+            # enable the access button for all groups
             group[2]['has_button_access'] = True
             access_opt = group[2].setdefault('button_access', {})
-
-            # based on order state
+            
+            # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
                 access_opt['title'] = _("View Quotation")
             else:
                 access_opt['title'] = _("View Order")
+            
+            # set the portal access URL for the button
+            access_opt['url'] = f"{base_url}{portal_url}"
 
-            for partner in recipients:
-                partner_id = partner.id  # The unique ID of the partner
-                personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
-                
-                access_opt['url'] = personalized_url
-
-        # Return the modified recipient groups with the updated access options
+        # return the modified recipient groups with the updated access options
         return groups
-
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
