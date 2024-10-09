@@ -786,7 +786,7 @@ class order(models.Model):
 
                 # Ensure each partner has access to the sale order via the portal
                 self.sudo()._portal_ensure_token()  # Ensures the record has a portal access token
-                access_url = self._get_portal_url()  # Generate the URL for the partner to access the sale order
+                access_url = self.get_portal_url()  # Correct method to generate the portal URL
 
                 # Manually compose the email if needed, or use Odoo's mail template
                 template = self.env.ref('sale.email_template_sale_order')
