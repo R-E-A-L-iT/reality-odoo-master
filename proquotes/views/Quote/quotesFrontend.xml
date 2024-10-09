@@ -72,9 +72,9 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-            <p>Language:
+            <!-- <p>Language:
                 <t t-out="clang"/>
-            </p>
+            </p> -->
 
             <!-- temporary style fixes -->
             <style>
