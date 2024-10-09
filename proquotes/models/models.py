@@ -1209,8 +1209,13 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
             
-            # set the portal access URL for the button
-            access_opt['url'] = f"{base_url}{portal_url}"
+            # set the portal access URL for the button and include tracking code
+            for partner in recipients:
+                partner_id = partner.id  # The unique ID of the partner
+                personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
+                
+                # Add the personalized URL to the access options (overwriting for each recipient)
+                access_opt['url'] = personalized_url
 
         # return the modified recipient groups with the updated access options
         return groups
