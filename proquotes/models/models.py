@@ -767,14 +767,11 @@ class order(models.Model):
             # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = contacts
             
-            # Ensure that the sale order has a portal access token
-            self.sudo()._portal_ensure_token()
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            access_url = f"{base_url}{self.get_portal_url()}"
 
-            # Generate a public portal link for each partner without creating any user accounts
-            access_url = self.get_portal_url()  # This generates the correct URL automatically
-
-            # Update the email body to include the public link as HTML
-            html_link = f"<br/>View the quote here: <a href='{access_url}'>View Quote</a><br/>"
+            # Update the email body to include the public link as HTML, ensure correct HTML formatting
+            html_link = f"<br/><br/>View the quote here: <a href='{access_url}'>View Quote</a><br/><br/>"
             kwargs['body'] = kwargs['body'].replace('\n', '<br/>') + html_link
 
             # Ensure the correct email template is used (if any template is selected)
