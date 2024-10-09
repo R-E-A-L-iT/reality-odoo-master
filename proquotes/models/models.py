@@ -772,24 +772,20 @@ class order(models.Model):
             for partner_id in contacts:
                 partner = self.env['res.partner'].browse(partner_id)
                 if partner and not partner.user_ids:
-                    # Create a user for the partner if it doesn't exist
                     user_vals = {
                         'partner_id': partner.id,
                         'login': partner.email,
-                        'groups_id': [(6, 0, [portal_group.id])]  # Assign to portal group
+                        'groups_id': [(6, 0, [portal_group.id])]
                     }
                     self.env['res.users'].sudo().create(user_vals)
                 else:
-                    # If user exists, ensure they are in the portal group
                     user = partner.user_ids[0]
                     user.sudo().write({'groups_id': [(4, portal_group.id)]})
 
-                # Ensure each partner has access to the sale order via the portal
-                self.sudo()._portal_ensure_token()  # Ensures the record has a portal access token
-                access_url = self.get_portal_url()  # Correct method to generate the portal URL
+                self.sudo()._portal_ensure_token()
+                access_url = self.get_portal_url()
 
-                # Manually compose the email if needed, or use Odoo's mail template
-                template = self.env.ref('sale.email_template_sale_order')
+                template = self.env.ref('sale.email_template_quotation')
                 if template:
                     template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
