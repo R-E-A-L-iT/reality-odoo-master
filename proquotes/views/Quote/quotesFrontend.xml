@@ -664,8 +664,8 @@
             <t t-else="">
                 <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.
                 </p>
-            </t> -->
-        </xpath>
+            </t>
+        </xpath> -->
 
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
             <span>
