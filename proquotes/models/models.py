@@ -782,7 +782,7 @@ class order(models.Model):
 
             # Inject the HTML content into the kwargs for HTML support
             kwargs['body'] = html_body
-            kwargs['subtype'] = 'html'  # Ensure it's treated as an HTML email
+            kwargs['content_subtype'] = 'html'  # Ensure it's treated as an HTML email
 
             # Use the correct email template if provided in the context
             if 'template_id' in kwargs:
