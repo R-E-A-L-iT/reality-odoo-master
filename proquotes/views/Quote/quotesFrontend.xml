@@ -15,7 +15,7 @@
         <t t-if="product_documents" position="replace">
 
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang)"/>
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/>
             <!-- <t t-set="clang" t-value="sale_order.partner_id.lang"/> -->
             <t t-set="clang" t-value="request.lang.code" />
 
