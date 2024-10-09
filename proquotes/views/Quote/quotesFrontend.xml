@@ -13,10 +13,12 @@
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <t t-if="product_documents" position="replace">
+
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
+            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
             <!-- <t t-set="clang" t-value="sale_order.partner_id.lang"/> -->
             <t t-set="clang" t-value="request.lang.code" />
+
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
                      t-attf-src="{{sale_order.header_id.url}}"/>
