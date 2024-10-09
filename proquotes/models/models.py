@@ -772,11 +772,20 @@ class order(models.Model):
             for partner_id in contacts:
                 partner = self.env['res.partner'].browse(partner_id)
                 if partner and not partner.user_ids:
-                    # Ensure the contact is added to the Portal group
-                    partner.sudo().write({'groups_id': [(4, portal_group.id)]})
+                    # Create a user for the partner if it doesn't exist
+                    user_vals = {
+                        'partner_id': partner.id,
+                        'login': partner.email,
+                        'groups_id': [(6, 0, [portal_group.id])]  # Assign to portal group
+                    }
+                    self.env['res.users'].sudo().create(user_vals)
+                else:
+                    # If user exists, ensure they are in the portal group
+                    user = partner.user_ids[0]
+                    user.sudo().write({'groups_id': [(4, portal_group.id)]})
 
-                    # Generate and send the access link
-                    self.sudo()._send_access_link_by_email(partner.id)
+                # Generate and send the access link
+                self.sudo()._send_access_link_by_email(partner.id)
 
 
             # Call the super method to proceed with posting the message
