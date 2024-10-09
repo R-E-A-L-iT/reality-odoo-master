@@ -766,6 +766,16 @@ class order(models.Model):
 
             # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = contacts
+            
+            # Grant portal access to all added contacts
+            for partner_id in contacts:
+                partner = self.env['res.partner'].browse(partner_id)
+                if partner and not partner.user_ids:
+                    # Check if the partner is already a portal user; if not, grant portal access
+                    self.env['portal.wizard'].sudo().with_context(
+                        active_model='sale.order',
+                        active_ids=self.ids
+                    ).action_apply()
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
