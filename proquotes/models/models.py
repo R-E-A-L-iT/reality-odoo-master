@@ -764,7 +764,8 @@ class order(models.Model):
             if sales_partner:
                 contacts.append(sales_partner.id)
 
-            kwargs['partner_ids'] = contacts
+            all_contacts = list(set(kwargs['partner_ids'] + contacts))
+            kwargs['partner_ids'] = all_contacts
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
