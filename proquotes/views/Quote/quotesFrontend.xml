@@ -655,12 +655,12 @@
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
         <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
-            <h1 t-if="clang == 'en_US' or clang == 'en_CA'" class="white-text">Customer Acceptance</h1>
-            <h1 t-elif="clang == 'fr_CA'" class="white-text">Acceptation du client</h1>
+            <h1 t-if="clang == 'fr_CA'" class="white-text">Acceptation du client</h1>
+            <h1 t-else="" class="white-text">Customer Acceptance</h1>
 
-            <p t-if="clang == 'en_US' or clang == 'en_CA'" class="white-text">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.
+            <p t-if="clang == 'fr_CA'">Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
+            <p t-else="" class="white-text">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.
             </p>
-            <p t-elif="clang == 'fr_CA'">Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
         </xpath>
 
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
