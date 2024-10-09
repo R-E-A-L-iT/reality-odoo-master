@@ -1201,7 +1201,6 @@ class order(models.Model):
         # Loop through each group and enable portal access for all of them
         for group in groups:
             group_name = group[0]
-            recipients = group[1]
 
             group[2]['has_button_access'] = True
             access_opt = group[2].setdefault('button_access', {})
@@ -1212,11 +1211,14 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
 
-            for partner in recipients:
-                partner_id = partner.id  # The unique ID of the partner
-                personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
-                
-                access_opt['url'] = personalized_url
+            recipients = group[1]()
+
+            if recipients:
+                for partner in recipients:
+                    partner_id = partner.id  # The unique ID of the partner
+                    personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
+                    
+                    access_opt['url'] = personalized_url
 
         # Return the modified recipient groups with the updated access options
         return groups
