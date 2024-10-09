@@ -17,20 +17,20 @@ import re
 _logger = logging.getLogger(__name__)
 
 
-class CustomPortalSaleOrder(http.Controller):
+# class CustomPortalSaleOrder(http.Controller):
 
-    @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
-    def update_requesT_lang(self, sale_order_id, **kwargs):
-        sale_order = request.env['sale.order'].sudo().browse(sale_order_id)
+#     @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
+#     def update_requesT_lang(self, sale_order_id, **kwargs):
+#         sale_order = request.env['sale.order'].sudo().browse(sale_order_id)
 
-        # Check if the partner's language is French and set the request language to French
-        if sale_order.partner_id.lang.code == 'fr_CA':
-            request.lang.code = 'fr_CA'
-        else:
-            request.lang = request.lang  # Keep the default website language
+#         # Check if the partner's language is French and set the request language to French
+#         if sale_order.partner_id.lang.code == 'fr_CA':
+#             request.lang.code = 'fr_CA'
+#         else:
+#             request.lang = request.lang  # Keep the default website language
 
-        # Call the default controller or return your own response
-        return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
+#         # Call the default controller or return your own response
+#         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(cPortal):
     def validate(string):
