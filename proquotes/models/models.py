@@ -1185,7 +1185,7 @@ class order(models.Model):
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        # Get the default recipient groups
+        # get the default recipient groups
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
@@ -1199,24 +1199,23 @@ class order(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = self.get_portal_url()
 
-        # Loop through each group and enable portal access for all of them
         for group in groups:
             group_name = group[0]
 
-            # Enable the access button for all groups (portal customers, followers, internal users, etc.)
+            # enable the access button for all groups
             group[2]['has_button_access'] = True
             access_opt = group[2].setdefault('button_access', {})
             
-            # Set the title for the access button based on the state of the order
+            # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
                 access_opt['title'] = _("View Quotation")
             else:
                 access_opt['title'] = _("View Order")
             
-            # Set the portal access URL for the button
+            # set the portal access URL for the button
             access_opt['url'] = f"{base_url}{portal_url}"
 
-        # Return the modified recipient groups with the updated access options
+        # return the modified recipient groups with the updated access options
         return groups
 
     def _amount_all(self):
