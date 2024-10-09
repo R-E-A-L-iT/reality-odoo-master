@@ -1211,7 +1211,7 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
 
-            recipients = group[1]()
+            recipients = group[1](message)
 
             if recipients:
                 for partner in recipients:
