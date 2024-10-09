@@ -653,6 +653,10 @@
 
             <t t-set="clang" t-value="request.lang.code" />
 
+            <p>Language:
+                <t t-out="clang"/>
+            </p>
+
             <div t-if="clang == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
