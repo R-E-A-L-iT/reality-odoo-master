@@ -1231,7 +1231,7 @@ class order(models.Model):
                     lang_code = partner.lang or 'en_US'  # Default to 'en_US' if no language is set
                     
                     # Generate the correct portal URL for the partner to view the sale order or quote
-                    portal_url = f"/my/orders/{self.id}?access_token={self.access_token}"
+                    portal_url = self.with_context(lang=lang_code).get_portal_url()
 
                     # Insert the language code into the URL
                     personalized_url = f"{base_url}/{lang_code}{portal_url}?user_id={partner.id}"
