@@ -1201,6 +1201,7 @@ class order(models.Model):
         # Loop through each group and enable portal access for all of them
         for group in groups:
             group_name = group[0]
+            recipients = group[1]
 
             group[2]['has_button_access'] = True
             access_opt = group[2].setdefault('button_access', {})
@@ -1210,34 +1211,12 @@ class order(models.Model):
                 access_opt['title'] = _("View Quotation")
             else:
                 access_opt['title'] = _("View Order")
+
+            for partner in recipients:
+                partner_id = partner.id  # The unique ID of the partner
+                personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
                 
-            recipients = group[1]
-            
-            pdata = {
-                'id': self.partner_id.id,
-                'partner_id': self.partner_id.id,
-                'email': self.partner_id.email,
-                'name': self.partner_id.name,
-                'type': 'follower',
-                'is_follower': True,
-            }
-    
-            # If callable, execute recipients to get the list of partners
-            recipients_list = recipients(pdata) if callable(recipients) else None
-
-            if recipients_list and isinstance(recipients_list, list):
-                for partner in recipients_list:
-                    # Get the language code from the partner's language field
-                    lang_code = partner.lang or 'en_US'  # Default to 'en_US' if no language is set
-                    
-                    # Generate the correct portal URL for the partner to view the sale order or quote
-                    portal_url = self.with_context(lang=lang_code).get_portal_url()
-
-                    # Insert the language code into the URL
-                    personalized_url = f"{base_url}/{lang_code}{portal_url}?user_id={partner.id}"
-                    
-                    # Set the personalized URL with language code
-                    group[2]['button_access']['url'] = personalized_url
+                access_opt['url'] = personalized_url
 
         # Return the modified recipient groups with the updated access options
         return groups
