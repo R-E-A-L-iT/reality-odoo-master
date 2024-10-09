@@ -764,22 +764,23 @@ class order(models.Model):
             if sales_partner:
                 contacts.append(sales_partner.id)
 
-            # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = contacts
             
+            self.sudo()._portal_ensure_token()
+
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             access_url = f"{base_url}{self.get_portal_url()}"
 
-            # Update the email body to include the public link as HTML, ensure correct HTML formatting
-            html_link = f"<br/><br/>View the quote here: <a href='{access_url}'>View Quote</a><br/><br/>"
+            # render html
+            html_link = f"<p><a href='{access_url}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;'>View Quote</a></p>"
             kwargs['body'] = kwargs['body'].replace('\n', '<br/>') + html_link
 
-            # Ensure the correct email template is used (if any template is selected)
+            # use already selected email template
             if 'template_id' in kwargs:
                 template_id = kwargs.get('template_id')
                 template = self.env['mail.template'].browse(template_id)
                 if template:
-                    # Update the link in the button of the template (if there's a button with a URL)
+                    # Update the link in the button of the template
                     template_body_html = template.body_html.replace(
                         'href="/my/orders/', 
                         f'href="{access_url}'
