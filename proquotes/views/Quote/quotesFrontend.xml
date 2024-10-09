@@ -627,7 +627,7 @@
                 </label>
                 <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
             </t>
-            <section class="quoteConfig">
+            <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
                 <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
             </section>
