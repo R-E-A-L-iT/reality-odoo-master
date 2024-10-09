@@ -767,30 +767,18 @@ class order(models.Model):
             # Merge with the existing partner_ids if any
             kwargs['partner_ids'] = contacts
             
-            # Grant portal access to all added contacts
-            portal_group = self.env.ref('base.group_portal')
+            # Ensure that the sale order has a portal access token
+            self.sudo()._portal_ensure_token()
+
+            # Generate a public portal link for each partner without creating any user accounts
             for partner_id in contacts:
                 partner = self.env['res.partner'].browse(partner_id)
-                if partner and not partner.user_ids:
-                    user_vals = {
-                        'partner_id': partner.id,
-                        'login': partner.email,
-                        'groups_id': [(6, 0, [portal_group.id])]
-                    }
-                    self.env['res.users'].sudo().create(user_vals)
-                else:
-                    user = partner.user_ids[0]
-                    user.sudo().write({'groups_id': [(4, portal_group.id)]})
 
-                self.sudo()._portal_ensure_token()
-                # access_url = self.get_portal_url()
+                # Generate the public link for the quote (this doesn't require creating a user account)
+                access_url = self.get_portal_url(suffix='/my/quote/%s' % self.id)
 
-                if 'template_id' in kwargs:
-                # Send the message using the selected template
-                    template_id = kwargs.get('template_id')
-                    template = self.env['mail.template'].browse(template_id)
-                    if template:
-                        template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
+                # You can manually customize the email body here to include the link
+                kwargs['body'] += f"<br/>View the quote here: <a href='{access_url}'>View Quote</a>"
 
 
             # Call the super method to proceed with posting the message
