@@ -1211,8 +1211,21 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
                 
-            # set the portal access URL for the button
-            access_opt['url'] = f"{base_url}{portal_url}"
+            recipients = group[1]
+
+            # If callable, execute recipients to get the list of partners
+            recipients_list = recipients() if callable(recipients) else None
+
+            if recipients_list and isinstance(recipients_list, list):
+                for partner in recipients_list:
+                    # Get the language code from the partner's language field
+                    lang_code = partner.lang or 'en_US'  # Default to 'en_US' if no language is set
+                    
+                    # Insert the language code into the URL
+                    personalized_url = f"{base_url}/{lang_code}{portal_url}?user_id={partner.id}"
+                    
+                    # Set the personalized URL with language code
+                    access_opt['url'] = personalized_url
 
         # Return the modified recipient groups with the updated access options
         return groups
