@@ -649,23 +649,16 @@
     <!--Sign Page-->
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
-        <!-- <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
-            <t t-if="clang == 'fr_CA'">
+        <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
+            <div t-if="clang == 'fr_CA" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
-            </t>
-            <t t-else="">
-                <h1 class="white-text">Customer Acceptance</h1>
-                <t t-out="clang" />
-            </t>
-
-            <t t-if="clang == 'fr_CA'">
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
-            </t>
-            <t t-else="">
-                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.
-                </p>
-            </t>
-        </xpath> -->
+            <div>
+            <div t-else="" id="customer-acceptance">
+                <h1 class="white-text">Acceptation du client</h1>
+                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+            </div>
+        </xpath>
 
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
             <span>
