@@ -1212,9 +1212,18 @@ class order(models.Model):
                 access_opt['title'] = _("View Order")
                 
             recipients = group[1]
-
+            
+            pdata = {
+                'id': self.partner_id.id,
+                'partner_id': self.partner_id.id,
+                'email': self.partner_id.email,
+                'name': self.partner_id.name,
+                'type': 'customer',
+                'is_follower': False,
+            }
+    
             # If callable, execute recipients to get the list of partners
-            recipients_list = recipients() if callable(recipients) else None
+            recipients_list = recipients(pdata) if callable(recipients) else None
 
             if recipients_list and isinstance(recipients_list, list):
                 for partner in recipients_list:
