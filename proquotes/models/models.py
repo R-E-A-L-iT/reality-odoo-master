@@ -1211,10 +1211,10 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
 
-            recipients = group
+            recipients = group[1]
 
-            if recipients:
-                for partner in recipients:
+            if recipients():
+                for partner in recipients():
                     partner_id = partner.id  # The unique ID of the partner
                     personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
                     
