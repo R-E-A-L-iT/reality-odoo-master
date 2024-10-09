@@ -1,7 +1,7 @@
 <odoo>
     <template id="custom_mail_notification_layout_sale_order" inherit_id="mail.mail_notification_layout">
         <!-- Override the button link only for sale.order -->
-        <xpath expr="//a[@t-att-href='button_access[&#x27;url&#x27;]']" position="attributes">
+        <xpath expr="//a[@t-att-href]" position="attributes">
             <attribute t-if="object._name == 'sale.order'" t-att-href="'/my/orders/%s?access_token=%s' % (object.id, object.access_token)"/>
         </xpath>
     </template>
