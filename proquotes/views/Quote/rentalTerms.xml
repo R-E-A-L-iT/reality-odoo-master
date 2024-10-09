@@ -2,12 +2,12 @@
 
 <odoo>
     <template name="Rental Terms" id="rental_terms">
-        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="city" t-value="'Montreal'" />
-        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="city" t-value="'Montréal'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="state" t-value="'Québec'" />
         <t t-if="company_name.upper() == 'R-E-A-L.IT SOLUTIONS'" t-set="country" t-value="'Canada'" />
 
-        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="city" t-value="'Montreal'" />
-        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="city" t-value="'Montréal'" />
+        <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="state" t-value="'Québec'" />
         <t t-if="company_name.upper() == 'R-E-A-L.IT'" t-set="country" t-value="'Canada'" />
 
         <t t-if="company_name.upper() == 'R-E-A-L.IT U.S. INC.'" t-set="city" t-value="'Dover'" />
@@ -19,7 +19,7 @@
         <t t-if="company_name.upper() == 'ABTECH ON. INC.'" t-set="country" t-value="'Canada'" />
 
         <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="city" t-value="'Sherbrooke'" />
-        <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="state" t-value="'Quebec'" />
+        <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="state" t-value="'Québec'" />
         <t t-if="company_name.upper() == 'ABTECH SERVICES POLYTECHNIQUE INC.'" t-set="country" t-value="'Canada'" />
 
         <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="city" t-value="'Moncton'" />

@@ -10,13 +10,13 @@
 
     </template>
 
-    <template id="sale_order_portal_content" name="Sales Order Portal Content"
-              inherit_id="sale.sale_order_portal_content" priority="17">
+    <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <t t-if="product_documents" position="replace">
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
             <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
-            <t t-set="clang" t-value="sale_order.partner_id.lang"/>
+            <!-- <t t-set="clang" t-value="sale_order.partner_id.lang"/> -->
+            <t t-set="clang" t-value="request.lang.code" />
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
                      t-attf-src="{{sale_order.header_id.url}}"/>
@@ -71,6 +71,9 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+            <!-- <p>Language:
+                <t t-out="clang"/>
+            </p> -->
 
             <!-- temporary style fixes -->
             <style>
@@ -591,14 +594,9 @@
                 <t t-set="currency_label" t-elif="clang == 'fr_CA' and sale_order.currency_id.name == 'USD'"
                    t-value="'américains'"/>
                 <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
-                <span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
-                    <t t-out="currency_label"/>
-                    dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
-                    showing). The quote is valid for 30 days after submittal date.
+                <span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label"/> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.
                 </span>
-                <span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes de
-                    vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
-                    affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                <span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.
                 </span>
             </div>
             <div t-if="'abtech' in sale_order.company_id.name.lower()">
@@ -629,7 +627,7 @@
                 </label>
                 <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
             </t>
-            <section class="quoteConfig">
+            <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
                 <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
             </section>
@@ -649,16 +647,20 @@
     </template>
 
     <!--Sign Page-->
-    <template id="ba_sale_order_portal_template" name="Sales Order Portal template"
-              inherit_id="sale.sale_order_portal_template" priority="17">
+    <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
-        <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]"
-               position="before">
-            <h1 class="white-text">Customer Acceptance</h1>
+        <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
 
-            <p class="white-text">With your signature you accept our offer on behalf of your company as above and you
-                confirm, that you are authorized to do so.
-            </p>
+            <t t-set="clang" t-value="request.lang.code" />
+
+            <div t-if="clang == 'fr_CA'" id="customer-acceptance">
+                <h1 class="white-text">Acceptation du client</h1>
+                <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
+            </div>
+            <div t-else="" id="customer-acceptance">
+                <h1 class="white-text">Customer Acceptance</h1>
+                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+            </div>
         </xpath>
 
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
