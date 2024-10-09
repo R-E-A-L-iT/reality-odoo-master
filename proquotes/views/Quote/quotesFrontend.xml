@@ -648,9 +648,11 @@
 
     <!--Sign Page-->
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
-        <t t-set="clang" t-value="request.lang.code" />
 
         <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
+
+            <t t-set="clang" t-value="request.lang.code" />
+
             <div t-if="clang == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
