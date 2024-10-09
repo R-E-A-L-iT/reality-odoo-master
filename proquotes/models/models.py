@@ -1210,11 +1210,18 @@ class order(models.Model):
                 access_opt['title'] = _("View Quotation")
             else:
                 access_opt['title'] = _("View Order")
+                
+            pdata = {
+                'partner_id': self.partner_id.id,  # The unique ID of the main partner
+                'email': self.partner_id.email,  # Email of the partner
+                'name': self.partner_id.name,  # Name of the partner
+                'type': 'user',  # Or 'customer', 'follower', etc.
+            }
 
             recipients = group[1]
 
-            if recipients():
-                for partner in recipients():
+            if recipients(pdata):
+                for partner in recipients(pdata):
                     partner_id = partner.id  # The unique ID of the partner
                     personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
                     
