@@ -655,6 +655,7 @@
             </t>
             <t t-else="">
                 <h1 class="white-text">Customer Acceptance</h1>
+                <t t-out="clang" />
             </t>
 
             <t t-if="clang == 'fr_CA'">
