@@ -1198,6 +1198,7 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
+            recipients = group[1]
 
             # enable the access button for all groups
             group[2]['has_button_access'] = True
