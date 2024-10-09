@@ -781,6 +781,8 @@ class order(models.Model):
             """
 
             kwargs['body'] = html_body
+            kwargs['message_type'] = 'comment'
+            kwargs['subtype_id'] = self.env.ref('mail.mt_comment').id
 
             # use correct template
             if 'template_id' in kwargs:
