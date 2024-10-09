@@ -1191,14 +1191,12 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
-        
         # Get the base URL for the portal
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = self.get_portal_url()
 
         for group in groups:
             group_name = group[0]
-            recipients = group[1]
 
             # enable the access button for all groups
             group[2]['has_button_access'] = True
@@ -1210,13 +1208,8 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
             
-            # set the portal access URL for the button and include tracking code
-            for partner in recipients:
-                partner_id = partner.id  # The unique ID of the partner
-                personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
-                
-                # Add the personalized URL to the access options (overwriting for each recipient)
-                access_opt['url'] = personalized_url
+            # set the portal access URL for the button
+            access_opt['url'] = f"{base_url}{portal_url}"
 
         # return the modified recipient groups with the updated access options
         return groups
