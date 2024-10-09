@@ -101,6 +101,7 @@ class sync_ccp:
             except Exception as e:
                 _logger.info("CCP")
                 _logger.error(e)
+                _logger.exception(e)
                 _logger.info(str(self.sheet[i]))
                 msg = utilities.buildMSG(msg, self.name, str(external_id), str(e))
                 msg = msg + str(e)
