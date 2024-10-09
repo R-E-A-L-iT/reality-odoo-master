@@ -768,14 +768,16 @@ class order(models.Model):
             kwargs['partner_ids'] = contacts
             
             # Grant portal access to all added contacts
+            portal_group = self.env.ref('base.group_portal')
             for partner_id in contacts:
                 partner = self.env['res.partner'].browse(partner_id)
                 if partner and not partner.user_ids:
-                    # Check if the partner is already a portal user; if not, grant portal access
-                    self.env['portal.wizard'].sudo().with_context(
-                        active_model='sale.order',
-                        active_ids=self.ids
-                    ).action_apply()
+                    # Ensure the contact is added to the Portal group
+                    partner.sudo().write({'groups_id': [(4, portal_group.id)]})
+
+                    # Generate and send the access link
+                    self.sudo()._send_access_link_by_email(partner.id)
+
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
