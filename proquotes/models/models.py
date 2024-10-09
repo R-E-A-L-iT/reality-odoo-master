@@ -783,9 +783,12 @@ class order(models.Model):
                     user.sudo().write({'groups_id': [(4, portal_group.id)]})
 
                 self.sudo()._portal_ensure_token()
-                access_url = self.get_portal_url()
+                # access_url = self.get_portal_url()
 
-                template = self.env.ref('sale.email_template_quotation')
+                if 'template_id' in kwargs:
+                # Send the message using the selected template
+                template_id = kwargs.get('template_id')
+                template = self.env['mail.template'].browse(template_id)
                 if template:
                     template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
