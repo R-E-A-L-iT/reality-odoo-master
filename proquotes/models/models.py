@@ -1216,7 +1216,7 @@ class order(models.Model):
                 'partner_id': self.partner_id.id,
                 'email': self.partner_id.email,
                 'name': self.partner_id.name,
-                'type': 'user',
+                'type': 'customer',
                 'is_follower': False,
             }
 
