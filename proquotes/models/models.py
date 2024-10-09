@@ -787,10 +787,10 @@ class order(models.Model):
 
                 if 'template_id' in kwargs:
                 # Send the message using the selected template
-                template_id = kwargs.get('template_id')
-                template = self.env['mail.template'].browse(template_id)
-                if template:
-                    template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
+                    template_id = kwargs.get('template_id')
+                    template = self.env['mail.template'].browse(template_id)
+                    if template:
+                        template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
 
             # Call the super method to proceed with posting the message
