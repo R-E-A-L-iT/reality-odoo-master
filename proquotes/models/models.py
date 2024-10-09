@@ -784,8 +784,14 @@ class order(models.Model):
                     user = partner.user_ids[0]
                     user.sudo().write({'groups_id': [(4, portal_group.id)]})
 
-                # Generate and send the access link
-                self.sudo()._send_access_link_by_email(partner.id)
+                # Ensure each partner has access to the sale order via the portal
+                self.sudo()._portal_ensure_token()  # Ensures the record has a portal access token
+                access_url = self._get_portal_url()  # Generate the URL for the partner to access the sale order
+
+                # Manually compose the email if needed, or use Odoo's mail template
+                template = self.env.ref('sale.email_template_sale_order')
+                if template:
+                    template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
 
             # Call the super method to proceed with posting the message
