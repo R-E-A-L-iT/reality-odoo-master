@@ -1211,25 +1211,8 @@ class order(models.Model):
             else:
                 access_opt['title'] = _("View Order")
                 
-            pdata = {
-                'id': self.partner_id.id,
-                'partner_id': self.partner_id.id,
-                'email': self.partner_id.email,
-                'name': self.partner_id.name,
-                'type': 'customer',
-                'is_follower': True,
-            }
-
-            recipients = group[1]
-
-            # Check if recipients(pdata) is iterable and valid
-            recipients_list = recipients(pdata) if callable(recipients) else None
-
-            if recipients_list and isinstance(recipients_list, list):
-                for partner in recipients_list:
-                    partner_id = partner.id  # The unique ID of the partner
-                    personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
-                    access_opt['url'] = personalized_url
+            # set the portal access URL for the button
+            access_opt['url'] = f"{base_url}{portal_url}"
 
         # Return the modified recipient groups with the updated access options
         return groups
