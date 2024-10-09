@@ -771,15 +771,24 @@ class order(models.Model):
             self.sudo()._portal_ensure_token()
 
             # Generate a public portal link for each partner without creating any user accounts
-            for partner_id in contacts:
-                partner = self.env['res.partner'].browse(partner_id)
+            access_url = self.get_portal_url()  # This generates the correct URL automatically
 
-                # Generate the public link for the quote (this doesn't require creating a user account)
-                access_url = self.get_portal_url(suffix='/my/quote/%s' % self.id)
+            # Update the email body to include the public link as HTML
+            html_link = f"<br/>View the quote here: <a href='{access_url}'>View Quote</a><br/>"
+            kwargs['body'] = kwargs['body'].replace('\n', '<br/>') + html_link
 
-                # You can manually customize the email body here to include the link
-                kwargs['body'] += f"<br/>View the quote here: <a href='{access_url}'>View Quote</a>"
-
+            # Ensure the correct email template is used (if any template is selected)
+            if 'template_id' in kwargs:
+                template_id = kwargs.get('template_id')
+                template = self.env['mail.template'].browse(template_id)
+                if template:
+                    # Update the link in the button of the template (if there's a button with a URL)
+                    template_body_html = template.body_html.replace(
+                        'href="/my/orders/', 
+                        f'href="{access_url}'
+                    )
+                    template.sudo().write({'body_html': template_body_html})
+                    template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
