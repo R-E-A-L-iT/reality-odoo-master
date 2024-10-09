@@ -17,7 +17,7 @@
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
             <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
             <!-- <t t-set="clang" t-value="sale_order.partner_id.lang"/> -->
-            <t t-set="clang" t-value="request.env['website'].get_current_website().default_lang_code" />
+            <t t-set="clang" t-value="request.lang" />
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
                      t-attf-src="{{sale_order.header_id.url}}"/>
