@@ -771,16 +771,25 @@ class order(models.Model):
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             access_url = f"{base_url}{self.get_portal_url()}"
 
-            # render html
-            html_link = f"<p><a href='{access_url}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;'>View Quote</a></p>"
-            kwargs['body'] = kwargs['body'].replace('\n', '<br/>') + html_link
+            # email html for send message (TEMPORARY, remove so that it doesn't override all email content and only adds link to view quote at the end without replacing)
+            html_body = f"""
+            <p>Hello,</p>
+            <p>Your quotation <strong>{self.name}</strong> amounting to <strong>{self.amount_total} $</strong> is ready for review.</p>
+            <p>Do not hesitate to contact us if you have any questions.</p>
+            <p><a href="{access_url}" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">View Quote</a></p>
+            <p>--<br/>The R-E-A-L.iT Team</p>
+            """
 
-            # use already selected email template
+            # Inject the HTML content into the kwargs for HTML support
+            kwargs['body'] = html_body
+            kwargs['subtype'] = 'html'  # Ensure it's treated as an HTML email
+
+            # Use the correct email template if provided in the context
             if 'template_id' in kwargs:
                 template_id = kwargs.get('template_id')
                 template = self.env['mail.template'].browse(template_id)
                 if template:
-                    # Update the link in the button of the template
+                    # Ensure the template sends the email with the correct HTML content
                     template_body_html = template.body_html.replace(
                         'href="/my/orders/', 
                         f'href="{access_url}'
