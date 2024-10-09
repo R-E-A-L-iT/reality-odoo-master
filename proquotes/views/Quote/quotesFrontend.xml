@@ -10,8 +10,7 @@
 
     </template>
 
-    <template id="sale_order_portal_content" name="Sales Order Portal Content"
-              inherit_id="sale.sale_order_portal_content" priority="17">
+    <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <t t-if="product_documents" position="replace">
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
