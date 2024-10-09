@@ -765,37 +765,6 @@ class order(models.Model):
                 contacts.append(sales_partner.id)
 
             kwargs['partner_ids'] = contacts
-            
-            self.sudo()._portal_ensure_token()
-
-            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-            access_url = f"{base_url}{self.get_portal_url()}"
-
-            # email html for send message (TEMPORARY, remove so that it doesn't override all email content and only adds link to view quote at the end without replacing)
-            html_body = f"""
-            <p>Hello,</p>
-            <p>Your quotation <strong>{self.name}</strong> amounting to <strong>{self.amount_total} $</strong> is ready for review.</p>
-            <p>Do not hesitate to contact us if you have any questions.</p>
-            <p><a href="{access_url}" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">View Quote</a></p>
-            <p>--<br/>The R-E-A-L.iT Team</p>
-            """
-
-            kwargs['body'] = html_body
-            kwargs['message_type'] = 'comment'
-            kwargs['subtype_id'] = self.env.ref('mail.mt_comment').id
-
-            # use correct template
-            if 'template_id' in kwargs:
-                template_id = kwargs.get('template_id')
-                template = self.env['mail.template'].browse(template_id)
-                if template:
-                    # inject html content
-                    template_body_html = template.body_html.replace(
-                        'href="/my/orders/', 
-                        f'href="{access_url}'
-                    )
-                    template.sudo().write({'body_html': template_body_html})
-                    template.sudo().send_mail(self.id, force_send=True, email_values={'recipient_ids': [(4, partner_id)]})
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
