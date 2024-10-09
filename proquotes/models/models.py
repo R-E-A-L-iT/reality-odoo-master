@@ -1221,11 +1221,13 @@ class order(models.Model):
 
             recipients = group[1]
 
-            if recipients(pdata):
-                for partner in recipients(pdata):
+            # Check if recipients(pdata) is iterable and valid
+            recipients_list = recipients(pdata) if callable(recipients) else None
+
+            if recipients_list and isinstance(recipients_list, list):
+                for partner in recipients_list:
                     partner_id = partner.id  # The unique ID of the partner
                     personalized_url = f"{base_url}{portal_url}?user_id={partner_id}"
-                    
                     access_opt['url'] = personalized_url
 
         # Return the modified recipient groups with the updated access options
