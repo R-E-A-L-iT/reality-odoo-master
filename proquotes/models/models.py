@@ -780,16 +780,14 @@ class order(models.Model):
             <p>--<br/>The R-E-A-L.iT Team</p>
             """
 
-            # Inject the HTML content into the kwargs for HTML support
             kwargs['body'] = html_body
-            kwargs['content_subtype'] = 'html'  # Ensure it's treated as an HTML email
 
-            # Use the correct email template if provided in the context
+            # use correct template
             if 'template_id' in kwargs:
                 template_id = kwargs.get('template_id')
                 template = self.env['mail.template'].browse(template_id)
                 if template:
-                    # Ensure the template sends the email with the correct HTML content
+                    # inject html content
                     template_body_html = template.body_html.replace(
                         'href="/my/orders/', 
                         f'href="{access_url}'
