@@ -1400,15 +1400,8 @@ class MailComposeMessage(models.TransientModel):
         res = super(MailComposeMessage, self).default_get(fields_list)
 
         # Check if we're composing an email for a sale.order
-        if self.env.context.get('default_model') == 'sale.order' and self.env.context.get('default_res_id'):
-            
-            # set defaults for partner_ids
-            sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
-            
-            if sale_order.email_contacts:
-                res['partner_ids'] = [(6, 0, sale_order.email_contacts.ids)]
-                
-            # set defaults for template_id
+        if self.env.context.get('default_model') == 'sale.order':
+            # Set default template to "General Sales" if available
             template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
             if template:
                 res['template_id'] = template.id
