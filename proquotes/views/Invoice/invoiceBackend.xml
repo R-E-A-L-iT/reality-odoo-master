@@ -2,11 +2,9 @@
 
 <odoo>
 
-	<record id="proquotes_invoice_backend"
-		model="ir.ui.view">
+	<record id="proquotes_invoice_backend" model="ir.ui.view">
 		<field name="name">Proquotes Invoice Backend</field>
-		<field
-			name="model">account.move</field>
+		<field name="model">account.move</field>
 		<field name="inherit_id" ref="account.view_move_form" />
 		<field name="arch" type="xml">
 			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
@@ -20,7 +18,7 @@
 				<field name="price_override" invisible="1" />
 			</xpath>
 			<xpath expr="//div[@name=&quot;journal_div&quot;]" position="after">
-				<field name="payment_date" readonly="True" />
+				<field name="payment_date" readonly="True" invisible="0" />
 			</xpath>
 		</field>
 	</record>
