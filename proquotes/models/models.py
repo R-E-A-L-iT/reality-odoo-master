@@ -1439,7 +1439,7 @@ class MailComposeMessage(models.TransientModel):
 
     #     return result
 
-     def generate_email_for_composer(self, template_id, res_ids, fields):
+    def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
         multi_mode = True
