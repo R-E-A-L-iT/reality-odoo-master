@@ -773,6 +773,9 @@ class order(models.Model):
             # all_contacts = list(set(kwargs['partner_ids'] + contacts))
             # kwargs['partner_ids'] = all_contacts
             
+            if kwargs['partner_ids']:
+                contacts += kwargs['partner_ids'][1:] 
+            
             kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
