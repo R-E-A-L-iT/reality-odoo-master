@@ -13,15 +13,15 @@
 		<!-- <xpath expr="//t[@t-set=&quot;information_block&quot;]" position="replace">
 			<t t-set="information_block">
 				<strong>Billing address:</strong>
-                <!-- <div t-if="o.company_id"> -->
+                <div t-if="o.company_id">
 					<span t-field="o.company_id.street" />
 					<span t-field="o.company_id.street2" />
 					<span t-field="o.company_id.city" />
 					<span t-field="o.company_id.state_id" />
 					<span t-field="o.company_id.zip" />
 					<span t-field="o.company_id.country_id" />
-                    <!-- <div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="purchase_shipping_address"/> -->
-                <!-- </div> -->
+                    <div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="purchase_shipping_address"/>
+                </div>
 			</t>
 		</xpath> -->
 
