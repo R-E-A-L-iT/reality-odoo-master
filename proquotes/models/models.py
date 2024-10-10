@@ -1388,30 +1388,42 @@ class proquotesMail(models.TransientModel):
 
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
+    
+    @api.model
+    def default_get(self, fields_list):
+        res = super(MailComposeMessage, self).default_get(fields_list)
 
-    @api.onchange('model')
-    def _onchange_recipients(self):
-        if self.model == 'sale.order' and self.env.context.get('default_res_id'):
-            
-            sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
-            
-            if sale_order.email_contacts:
-                self.partner_ids = sale_order.email_contacts
-            else:
-                self.partner_ids = [(5, 0, 0)]
-
-    def send_mail(self, auto_commit=False):
+        # Check if we're composing an email for a sale.order
+        if self.env.context.get('default_model') == 'sale.order':
+            # Set default template to "General Sales" if available
+            template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
+            if template:
+                res['template_id'] = template.id
         
-        result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
+        return res
 
-        if self.model == 'sale.order' and self.res_id:
-            sale_order = self.env['sale.order'].browse(self.res_id)
+    # @api.onchange('model')
+    # def _onchange_recipients(self):
+    #     if self.model == 'sale.order' and self.env.context.get('default_res_id'):
             
-            # Update email_contacts with the selected recipients from the wizard
-            sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
+    #         sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
+            
+    #         if sale_order.email_contacts:
+    #             self.partner_ids = sale_order.email_contacts
+    #         else:
+    #             self.partner_ids = [(5, 0, 0)]
 
-        return result
+    # def send_mail(self, auto_commit=False):
+        
+    #     result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
 
+    #     if self.model == 'sale.order' and self.res_id:
+    #         sale_order = self.env['sale.order'].browse(self.res_id)
+            
+    #         # Update email_contacts with the selected recipients from the wizard
+    #         sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
+
+    #     return result
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
