@@ -1389,11 +1389,11 @@ class proquotesMail(models.TransientModel):
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    @api.onchange('model', 'res_id')
+    @api.onchange('model')
     def _onchange_recipients(self):
-        if self.model == 'sale.order' and self.res_id:
+        if self.model == 'sale.order' and self.env.context.get('default_res_id'):
             
-            sale_order = self.env['sale.order'].browse(self.res_id)
+            sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
             
             if sale_order.email_contacts:
                 self.partner_ids = sale_order.email_contacts
