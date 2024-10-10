@@ -744,7 +744,7 @@ class order(models.Model):
             return super(order, self).message_post(**kwargs)
         
         elif "Quotation viewed by customer" in kwargs['body']:
-            # Call super without adding any email contacts, since it's a log note
+            # only send to salesperson (user_id = salesperson)
             # sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             kwargs['partner_ids'] = [order.user_id.id]
             return super(order, self).message_post(**kwargs)
@@ -764,11 +764,13 @@ class order(models.Model):
             if sales_partner:
                 contacts.append(sales_partner.id)
                 
-            # Filter out the default partner_id's email address
+            # Filter out the default partner_id's email address from kwargs['partner_ids']
             default_partner_email = self.partner_id.email if self.partner_id else None
             if default_partner_email:
                 default_partner = self.env['res.partner'].sudo().search([('email', '=', default_partner_email)], limit=1)
-                contacts = [contact for contact in contacts if contact != default_partner.id]
+                if default_partner:
+                    # Remove the default partner from kwargs['partner_ids']
+                    kwargs['partner_ids'] = [pid for pid in kwargs['partner_ids'] if pid != default_partner.id]
 
             all_contacts = list(set(kwargs['partner_ids'] + contacts))
             kwargs['partner_ids'] = all_contacts
