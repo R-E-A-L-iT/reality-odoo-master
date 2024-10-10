@@ -18,7 +18,7 @@
 				<field name="price_override" invisible="1" />
 			</xpath>
 			<xpath expr="//div[@name='journal_div']" position="after">
-				<field name="payment_date" readonly="True" attrs="{'invisible': [('payment_id', '=', False)]}" />
+				<field name="payment_date" readonly="1" modifiers="{'invisible': [('payment_id', '=', False)]}" />
 			</xpath>
 		</field>
 	</record>
