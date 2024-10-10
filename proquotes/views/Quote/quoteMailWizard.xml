@@ -17,6 +17,12 @@
                     </attribute>
                 </field>
 
+                <!-- set defaults for partner_ids -->
+                <field name="partner_ids" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                    <attribute name="context">{'default_model': model}</attribute>
+                </field>
+
             </field>
         </record>
     </data>
