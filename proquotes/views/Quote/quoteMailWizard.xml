@@ -17,6 +17,11 @@
                     </attribute>
                 </field>
 
+                <!-- replace text -->
+                <xpath expr="//span[@name='document_followers_text']" position="replace">
+                    <span name="document_followers_text">Anyone you added in the contacts table, sales@r-e-a-l.it, and...</span>
+                </xpath>
+
                 <!-- set defaults for partner_ids -->
                 <!-- <field name="partner_ids" position="attributes">
                     <attribute name="options">{'no_create': True}</attribute>
