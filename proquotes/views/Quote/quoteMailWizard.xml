@@ -10,7 +10,7 @@
                 <!-- filter templates -->
                 <field name="template_id" position="attributes">
                     <attribute name="domain">
-                        [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+                        [('name', 'in', ['General Sales', 'Rental Contract', 'Renewal'])]
                     </attribute>
                     <attribute name="context">
                         {'default_model': model, 'default_body_html': body, 'default_subject': subject}
