@@ -707,6 +707,12 @@ class order(models.Model):
         #     # Reset pricelist if not rental
         #     self.pricelist_id = False
 
+    @api.onchange('email_contacts')
+    def _onchange_email_contacts(self):
+        for contact in self.email_contacts:
+            if contact not in partner_ids:
+                partner_ids.append(contact.id)
+
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         if self.partner_id and not self.is_rental:
