@@ -1405,6 +1405,10 @@ class MailComposeMessage(models.TransientModel):
             template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
             if template:
                 res['template_id'] = template.id
+                
+            contacts = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
+            if contacts:
+                res['partner_ids'] = contacts
         
         return res
     
