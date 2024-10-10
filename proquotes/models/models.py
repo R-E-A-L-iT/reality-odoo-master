@@ -769,14 +769,16 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
+                
+            filtered_partner_ids = kwargs['partner_ids'][1:] if len(kwargs['partner_ids']) > 1 else []
 
-            # all_contacts = list(set(kwargs['partner_ids'] + contacts))
-            # kwargs['partner_ids'] = all_contacts
+            all_contacts = list(set(filtered_partner_ids + contacts))
+            kwargs['partner_ids'] = all_contacts
             
-            if kwargs['partner_ids']:
-                contacts += kwargs['partner_ids'][1:] 
+            # if kwargs['partner_ids']:
+            #     contacts += kwargs['partner_ids'][1:] 
             
-            kwargs['partner_ids'] = contacts
+            # kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
