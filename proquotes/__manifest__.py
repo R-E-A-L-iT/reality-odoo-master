@@ -82,11 +82,11 @@
         "views/Other/header_footer.xml",
         # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
-        "views/Invoice/invoiceBackend.xml",
         "views/Invoice/invoice_lot.xml",
         "views/PO/PO_Frontend.xml",
         "views/PO/PO_Backend.xml",
         "views/PO/PO_PDF.xml",
+        # "views/Invoice/invoiceBackend.xml",
         # "views/Other/quote_mail_link.xml",
         #         'models/quoteNotify.py'
     ],
