@@ -763,17 +763,11 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
-                
-            # Filter out the default partner_id's email address from kwargs['partner_ids']
-            default_partner_email = self.partner_id.email if self.partner_id else None
-            if default_partner_email:
-                default_partner = self.env['res.partner'].sudo().search([('email', '=', default_partner_email)], limit=1)
-                if default_partner:
-                    # Remove the default partner from kwargs['partner_ids']
-                    kwargs['partner_ids'] = [pid for pid in kwargs['partner_ids'] if pid != default_partner.id]
 
-            all_contacts = list(set(kwargs['partner_ids'] + contacts))
-            kwargs['partner_ids'] = all_contacts
+            # all_contacts = list(set(kwargs['partner_ids'] + contacts))
+            # kwargs['partner_ids'] = all_contacts
+            
+            kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
             return super(order, self).message_post(**kwargs)
@@ -1387,61 +1381,36 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-
-# class proquotesMail(models.TransientModel):
-#     _inherit = "mail.compose.message"
-
-#     def generate_email_for_composer(self, template_id, res_ids, fields):
-#         """Call email_template.generate_email(), get fields relevant for
-#         mail.compose.message, transform email_cc and email_to into partner_ids"""
-#         # Overriden to define the default recipients of a message.
-        
-#         multi_mode = True
-        
-#         for res_id in res_ids:
-#             contacts = res_id.partner_ids
-#             validated_contacts = []
-#             self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
-#             for contact in contacts:
-#                 if contact.email:
-#                     validated_contacts.append(contact.email)
-#                     # self.env["sale.order"].browse(res_id).partner_ids
-#             validated_contacts.append("sales@r-e-a-l.it")
-            
-#         return multi_mode and validated_contacts
-        
-#     #     multi_mode = True
-#     #     if isinstance(res_ids, int):
-#     #         multi_mode = False
-#     #         res_ids = [res_ids]
-
-#     #     returned_fields = fields + ["partner_ids", "attachments"]
-#     #     values = dict.fromkeys(res_ids, False)
-
-#     #     template_values = (
-#     #         self.env["mail.template"]
-#     #         .with_context(tpl_partners_only=True)
-#     #         .browse(template_id)
-#     #         .generate_email(res_ids, fields)
-#     #     )
-#     #     for res_id in res_ids:
-#     #         res_id_values = dict(
-#     #             (field, template_values[res_id][field])
-#     #             for field in returned_fields
-#     #             if template_values[res_id].get(field)
-#     #         )
-#     #         res_id_values["body"] = res_id_values.pop("body_html", "")
-#     #         if template_values[res_id].get("model") == "sale.order":
-#     #             res_id_values["partner_ids"] = self.env["sale.order"].browse(
-#     #                 res_id
-#     #             ).partner_ids + self.env["res.partner"].search(
-#     #                 [("email", "=", "sales@r-e-a-l.it")]
-#     #             )
-#     #         values[res_id] = res_id_values
-#     #     return multi_mode and values or values[res_ids[0]]
-
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
+    
+    @api.model
+    def default_get(self, fields_list):
+        # Fetch default values from super
+        res = super(proquotesMail, self).default_get(fields_list)
+
+        # Check if the model is sale.order
+        if self._context.get('default_model') == 'sale.order' and self._context.get('default_res_id'):
+            sale_order = self.env['sale.order'].browse(self._context['default_res_id'])
+
+            # Prefill recipients with the contacts in the email_contacts field
+            res['partner_ids'] = [(6, 0, sale_order.email_contacts.ids)]
+        
+        return res
+
+    @api.multi
+    def send_mail(self, auto_commit=False):
+        # Call the original send_mail method
+        result = super(proquotesMail, self).send_mail(auto_commit=auto_commit)
+
+        # After sending the email, update email_contacts with the new list of recipients
+        if self.model == 'sale.order' and self.res_id:
+            sale_order = self.env['sale.order'].browse(self.res_id)
+            
+            # Update email_contacts with the selected recipients from the wizard
+            sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
+
+        return result
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
