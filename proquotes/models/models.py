@@ -763,6 +763,12 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
+                
+            # Filter out the default partner_id's email address
+            default_partner_email = self.partner_id.email if self.partner_id else None
+            if default_partner_email:
+                default_partner = self.env['res.partner'].sudo().search([('email', '=', default_partner_email)], limit=1)
+                contacts = [contact for contact in contacts if contact != default_partner.id]
 
             all_contacts = list(set(kwargs['partner_ids'] + contacts))
             kwargs['partner_ids'] = all_contacts
