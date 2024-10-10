@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
-    <record id="website_sale.shop_product_grid" model="ir.ui.view">
-        <field name="name">website_sale.shop_product_grid</field>
-        <!-- <field name="model">product.template</field> -->
-        <field name="inherit_id" ref="product.product_template_form_view" />
-
+    <template id="website_sale_shop_product_grid_inherit" inherit_id="website_sale.shop_product_grid">
         <xpath expr="//div[@class='container position-relative overflow-hidden']" position="inside">
             <style>
                 #products_grid > div.o_wsale_products_grid_table_wrapper > table > tbody > tr > td > div > form > div.oe_product_image.position-relative.h-100.flex-grow-0.overflow-hidden > a > img {
@@ -13,5 +8,5 @@
                 }
             </style>
         </xpath>
-    </record>
+    </template>
 </odoo>
