@@ -770,7 +770,7 @@ class order(models.Model):
             if sales_partner:
                 contacts.append(sales_partner.id)
                 
-            filtered_partner_ids = kwargs['partner_ids'][1:] if len(kwargs['partner_ids']) > 1 else []
+            filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
 
             all_contacts = list(set(filtered_partner_ids + contacts))
             kwargs['partner_ids'] = all_contacts
