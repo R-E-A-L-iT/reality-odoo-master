@@ -1389,6 +1389,12 @@ class proquotesMail(models.TransientModel):
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
     
+    template_id = fields.Many2one(
+        'mail.template',
+        string='Use Template',
+        domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+    )
+    
     @api.model
     def default_get(self, fields_list):
         res = super(MailComposeMessage, self).default_get(fields_list)
@@ -1401,6 +1407,14 @@ class MailComposeMessage(models.TransientModel):
                 res['template_id'] = template.id
         
         return res
+    
+    @api.onchange('template_id')
+    def _onchange_template_id(self):
+        return {
+            'domain': {
+                'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+            }
+        }
 
     # @api.onchange('model')
     # def _onchange_recipients(self):
@@ -1425,10 +1439,9 @@ class MailComposeMessage(models.TransientModel):
 
     #     return result
 
-    def generate_email_for_composer(self, template_id, res_ids, fields):
+     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
-        # Overriden to define the default recipients of a message.
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False
