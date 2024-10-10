@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-
 	<record id="proquotes_invoice_backend" model="ir.ui.view">
 		<field name="name">Proquotes Invoice Backend</field>
 		<field name="model">account.move</field>
