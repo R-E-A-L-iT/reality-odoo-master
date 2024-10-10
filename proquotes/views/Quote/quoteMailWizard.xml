@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the existing mail.compose.message form -->
+        <record id="view_mail_compose_message_form_sale_order" model="ir.ui.view">
+            <field name="name">mail.compose.message.form.sale.order</field>
+            <field name="model">mail.compose.message</field>
+            <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Target the template_id field and add the domain -->
+                <field name="template_id" position="attributes">
+                    <attribute name="domain">
+                        [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+                    </attribute>
+                    <attribute name="options">
+                        {'no_create': True}
+                    </attribute>
+                    <attribute name="context">
+                        {'default_model': model, 'default_body_html': body, 'default_subject': subject}
+                    </attribute>
+                </field>
+
+                <!-- Conditionally add the domain if it is being sent from a sales order -->
+                <field name="template_id" position="replace">
+                    <field name="template_id"
+                        domain="[('name', 'in', ['General Sales', 'Rental', 'Renewal'])]"
+                        options="{'no_create': True}"
+                        context="{'default_model': model, 'default_body_html': body, 'default_subject': subject}"
+                        attrs="{'invisible': [('model', '!=', 'sale.order')]}"/>
+                </field>
+
+            </field>
+        </record>
+    </data>
+</odoo>

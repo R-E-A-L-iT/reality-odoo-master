@@ -1408,13 +1408,13 @@ class MailComposeMessage(models.TransientModel):
         
         return res
     
-    @api.onchange('template_id')
-    def _onchange_template_id(self):
-        return {
-            'domain': {
-                'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
-            }
-        }
+    # @api.onchange('template_id')
+    # def _onchange_template_id(self):
+    #     return {
+    #         'domain': {
+    #             'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+    #         }
+    #     }
 
     # @api.onchange('model')
     # def _onchange_recipients(self):

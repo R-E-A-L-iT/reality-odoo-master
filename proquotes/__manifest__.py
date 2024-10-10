@@ -72,6 +72,7 @@
         "views/Quote/quoteRentalAddress.xml",
         "views/Quote/table-align.xml",
         "views/Quote/pricelistFilter.xml",
+        "views/Quote/quoteMailWizard.xml",
         "views/Other/mail.xml",
         "views/Other/deliverPDF.xml",
         "views/Other/pdf_boxed.xml",
