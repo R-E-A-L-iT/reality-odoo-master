@@ -4,7 +4,7 @@
         <xpath expr="//div[@style='margin-top:32px;']" position="after">
             <t t-if="record._name == 'sale.order' and record.footer_id">
                 <div>
-                    <img t-att-src="record.footer_id" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                    <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
                 </div>
             </t>
         </xpath>
