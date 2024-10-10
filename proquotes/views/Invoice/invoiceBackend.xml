@@ -19,6 +19,9 @@
 			<xpath expr="//field[@name=&quot;price_unit&quot;]" position="before">
 				<field name="price_override" invisible="1" />
 			</xpath>
+			<xpath expr="//div[@name=&quot;journal_div&quot;]" position="after">
+				<field name="payment_date" readonly="True" />
+			</xpath>
 		</field>
 	</record>
 </odoo>
