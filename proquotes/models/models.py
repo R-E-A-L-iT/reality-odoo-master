@@ -1384,25 +1384,30 @@ class orderLineProquotes(models.Model):
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
     
+    from odoo import models, api
+
+class MailComposeMessage(models.TransientModel):
+    _inherit = 'mail.compose.message'
+
     @api.model
     def default_get(self, fields_list):
-        # Fetch default values from super
-        res = super(proquotesMail, self).default_get(fields_list)
+        res = super(MailComposeMessage, self).default_get(fields_list)
 
-        # Check if the model is sale.order
         if self._context.get('default_model') == 'sale.order' and self._context.get('default_res_id'):
             sale_order = self.env['sale.order'].browse(self._context['default_res_id'])
 
-            # Prefill recipients with the contacts in the email_contacts field
-            res['partner_ids'] = [(6, 0, sale_order.email_contacts.ids)]
-        
+            # Replace default partner_ids with email_contacts from the sale order
+            if sale_order.email_contacts:
+                res['partner_ids'] = [(6, 0, sale_order.email_contacts.ids)]
+            else:
+                res['partner_ids'] = []
+
         return res
 
     def send_mail(self, auto_commit=False):
-        # Call the original send_mail method
-        result = super(proquotesMail, self).send_mail(auto_commit=auto_commit)
+        
+        result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
 
-        # After sending the email, update email_contacts with the new list of recipients
         if self.model == 'sale.order' and self.res_id:
             sale_order = self.env['sale.order'].browse(self.res_id)
             
@@ -1410,6 +1415,7 @@ class proquotesMail(models.TransientModel):
             sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
 
         return result
+
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
