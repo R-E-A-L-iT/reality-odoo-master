@@ -1389,20 +1389,16 @@ class proquotesMail(models.TransientModel):
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super(MailComposeMessage, self).default_get(fields_list)
-
-        if self._context.get('default_model') == 'sale.order' and self._context.get('default_res_id'):
-            sale_order = self.env['sale.order'].browse(self._context['default_res_id'])
-
-            # Replace default partner_ids with email_contacts from the sale order
+    @api.onchange('model', 'res_id')
+    def _onchange_recipients(self):
+        if self.model == 'sale.order' and self.res_id:
+            
+            sale_order = self.env['sale.order'].browse(self.res_id)
+            
             if sale_order.email_contacts:
-                res['partner_ids'] = [(6, 0, sale_order.email_contacts.ids)]
+                self.partner_ids = sale_order.email_contacts
             else:
-                res['partner_ids'] = []
-
-        return res
+                self.partner_ids = [(5, 0, 0)]
 
     def send_mail(self, auto_commit=False):
         
