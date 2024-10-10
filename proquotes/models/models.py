@@ -1398,7 +1398,6 @@ class proquotesMail(models.TransientModel):
         
         return res
 
-    @api.multi
     def send_mail(self, auto_commit=False):
         # Call the original send_mail method
         result = super(proquotesMail, self).send_mail(auto_commit=auto_commit)
