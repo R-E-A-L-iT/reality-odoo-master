@@ -15,10 +15,10 @@
         <t t-if="product_documents" position="replace">
 
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/>
-            <!-- <t t-set="clang" t-value="sale_order.partner_id.lang"/> -->
-            <t t-set="clang" t-value="request.lang.code" />
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
+            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/> -->
+            <t t-set="clang" t-value="sale_order.partner_id.lang"/>
+            <!-- <t t-set="clang" t-value="request.lang.code" /> -->
 
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
@@ -74,9 +74,9 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
-            <p>Language:
+            <!-- <p>Language:
                 <t t-out="clang"/>
-            </p>
+            </p> -->
 
             <!-- temporary style fixes -->
             <style>
@@ -654,14 +654,14 @@
 
         <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
 
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/>
-            <t t-set="clang" t-value="request.lang.code" />
-            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
-            <t t-set="clang" t-value="sale_order.partner_id.lang" /> -->
+            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/>
+            <t t-set="clang" t-value="request.lang.code" /> -->
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
+            <t t-set="clang" t-value="sale_order.partner_id.lang" />
 
-            <p>Language:
+            <!-- <p>Language:
                 <t t-out="clang"/>
-            </p>
+            </p> -->
 
             <div t-if="clang == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
