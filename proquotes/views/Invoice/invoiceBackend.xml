@@ -7,7 +7,7 @@
 		<field name="model">account.move</field>
 		<field name="inherit_id" ref="account.view_move_form" />
 		<field name="arch" type="xml">
-			<xpath expr="//group[@id=&quot;header_left_group&quot;]/field[@name=&quot;partner_id&quot;]" position="after">
+			<xpath expr="//group[@id=&quot;header_left_group&quot;]/label[@string=&quot;Vendor&quot;]" position="after">
 				<field name="footer" invisible="1" />
 				<field name="footer_id" invisible="0" domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
 			</xpath>
