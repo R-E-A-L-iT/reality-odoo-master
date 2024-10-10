@@ -2,10 +2,9 @@
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
         <xpath expr="//div[@style='margin-top:32px;']" position="after">
-            <!-- footer image-->
-            <t t-if="object._name == 'sale.order' and object.footer_id">
+            <t t-if="record._name == 'sale.order' and record.footer_id">
                 <div>
-                    <img t-att-src="object.footer_id" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                    <img t-att-src="record.footer_id" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
                 </div>
             </t>
         </xpath>
