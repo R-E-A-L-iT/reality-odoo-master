@@ -756,6 +756,9 @@ class order(models.Model):
             return super(order, self).message_post(**kwargs)
         elif "Product prices have been recomputed" in kwargs['body']:
             return False
+        elif "Signed by" in kwargs['body'] or "Bon signé" in kwargs['body']:
+            kwargs['partner_ids'] = [order.user_id.id]
+            return super(order, self).message_post(**kwargs)
 
         # send message feature
         else:
