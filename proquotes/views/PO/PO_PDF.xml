@@ -30,8 +30,15 @@
 				</div>
 			</t> -->
 
+		<xpath expr="//t[@t-set='address']" position="replace">
+			<h2>To:</h2>
+			<t t-set="address">
+            	<div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;vat&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+        	</t>
+		</xpath>
+
 		<xpath expr="//t[@t-if=&quot;o.dest_address_id&quot;]" position="replace">
-			<h1>From:</h1>
+			<h2>From:</h2>
 			<br />
 			<strong>Billing address:</strong>
 				<div t-if="o.company_id">
