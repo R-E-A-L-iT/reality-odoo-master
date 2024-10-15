@@ -6,7 +6,7 @@
         </xpath>
         <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="attributes">
             <attribute name="style">width: 100% !important;</attribute>
-            <attribute name="t-att-src">new-logo</attribute>
+            <attribute name="t-att-src">new_logo</attribute>
         </xpath>
         <xpath expr="//div[@style='margin-top:32px;']" position="replace">
             <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
