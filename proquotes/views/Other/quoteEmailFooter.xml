@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
-        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="replace">
-            <td valign="center" t-if="company and not company.uses_default_logo" style="padding: 0px; margin: 0px; height: auto; width: 100%; max-height: 36px;">
-                <img src="https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png" style="width: 100%;" t-att-alt="'%s' % company.name"/>
-            </td>
-            <!-- padding: 0px; margin: 0px; height: auto; max-width: 200px; max-height: 36px; -->
-            <!-- <attribute name="style">width: 100% !important;</attribute>
-            <attribute name="src">https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png</attribute> -->
+        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="attributes">
+            <attribute name="style">width: 100% !important;</attribute>
+            <attribute name="src">https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png</attribute>
         </xpath>
         <xpath expr="//div[@style='margin-top:32px;']" position="replace">
             <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
