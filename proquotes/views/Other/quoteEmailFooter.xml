@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
-        <xpath expr="//div[@style='margin-top:32px;']" position="after">
-            <t t-if="record._name == 'sale.order' and record.footer_id">
+        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="before">
+            <t t-set="new_logo" t-value="'https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png'" />
+        </xpath>
+        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="attributes">
+            <attribute name="style">width: 100% !important;</attribute>
+            <attribute name="t-att-src">new_logo</attribute>
+        </xpath>
+        <xpath expr="//div[@style='margin-top:32px;']" position="replace">
+            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
+            <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
                 <div>
                     <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
                 </div>
             </t>
+        </xpath>
+        <xpath expr="//td[@t-if='subtitles']" position="replace">
+            <td t-if="subtitles and not record._name == 'sale.order'" style="font-size: 12px;">
+                <t t-foreach="subtitles" t-as="subtitle">
+                    <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}" t-out="subtitle"/>
+                    <br t-if="not subtitle_last"/>
+                </t>
+            </td>
         </xpath>
     </template>
 </odoo>
