@@ -31,10 +31,12 @@
 			</t> -->
 
 		<xpath expr="//t[@t-set='address']" position="replace">
-			<h2>To:</h2>
-			<t t-set="address">
-            	<div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;vat&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-        	</t>
+			<div id="seller_address_section" style="width: 50% !important;">
+				<h2>To:</h2>
+				<t t-set="address">
+					<div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;vat&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+				</t>
+			</div>
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;o.dest_address_id&quot;]" position="replace">
