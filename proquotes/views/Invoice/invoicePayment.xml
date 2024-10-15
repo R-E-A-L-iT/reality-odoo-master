@@ -3,6 +3,25 @@
     <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page">
         <!-- <xpath expr="//t[@t-call='portal.portal_record_sidebar']//h2[1]" position="after"> -->
         <xpath expr="//div[@id='invoice_communication']" position="before">
+
+            <style>
+                #invoice_content > div.o_portal_html_view.shadow.p-3 {
+                    width: 90vw !important;
+                }
+
+                #portalTotal > div {
+                    width: 100vw !important;
+                    padding: 4vw !important;
+                    justify-content: center !important;
+                }
+
+                #invoice_content > a {
+                    width: 50vw !important;
+                    margin: 25px auto !important;
+                }
+            </style>
+
+
             <t t-set="pending_txs" t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('pending', 'authorized') and tx.provider_code not in ('none', 'custom'))"/>
             <div class="d-grid">
                 <div t-if="invoice.payment_state in ('paid', 'in_payment')" class="position-sm-absolute position-lg-relative me-auto me-lg-0 top-0 end-0 rounded text-bg-success fs-6 fw-normal badge">
