@@ -2,7 +2,7 @@
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
         <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="before">
-            <t t-set="new_logo" t-value="https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png" />
+            <t t-set="new_logo" t-value="'https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png'" />
         </xpath>
         <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="attributes">
             <attribute name="style">width: 100% !important;</attribute>
