@@ -32,7 +32,7 @@
 
 		<xpath expr="//t[@t-set='address']" position="replace">
 			<div id="seller_address_section" style="width: 50% !important;">
-				<h2>To:</h2>
+				<!-- <h2>To:</h2> -->
 				<t t-set="address">
 					<div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;vat&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
 				</t>
@@ -40,7 +40,7 @@
 		</xpath>
 
 		<xpath expr="//t[@t-if=&quot;o.dest_address_id&quot;]" position="replace">
-			<h2>From:</h2>
+			<h3>From:</h3>
 			<br />
 			<strong>Billing address:</strong>
 				<div t-if="o.company_id">
@@ -51,6 +51,10 @@
                 <div t-if="o.picking_type_id">
                     <div t-field="o.picking_type_id.warehouse_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" name="delivery"/>
                 </div>
+		</xpath>
+
+		<xpath expr="//th[@name='th_description']" position="attributes">
+			<attribute name="style">text-align: right !important;</attribute>
 		</xpath>
 	</template>
 </odoo>
