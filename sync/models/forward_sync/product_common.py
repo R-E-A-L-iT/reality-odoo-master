@@ -16,10 +16,8 @@ class product_sync_common:
     @classmethod
     def translatePricelist(cls, database, product, name, description, lang):
         # Create or Update Translations
-        product_name = database.env["ir.translation"].search(
+        product_name = database.env["transifex.code.translation"].search(
             [
-                ("res_id", "=", product.id),
-                ("name", "=", "product.template,name"),
                 ("lang", "=", lang),
             ]
         )
@@ -28,16 +26,17 @@ class product_sync_common:
                 name_record.value = name
 
         else:
-            product_name_new = database.env["ir.translation"].create(
-                {"name": "product.template,name", "lang": lang, "res_id": product.id}
+            product_name_new = database.env["transifex.code.translation"].create(
+                {"lang": lang,
+                 # "res_id": product.id
+                 }
             )[0]
             product_name_new.value = name
             product_name_new.type = "model"
 
-        product_description = database.env["ir.translation"].search(
+        product_description = database.env["transifex.code.translation"].search(
             [
-                ("res_id", "=", product.id),
-                ("name", "=", "product.template,description_sale"),
+                # ("res_id", "=", product.id),
                 ("lang", "=", lang),
             ]
         )
@@ -46,11 +45,11 @@ class product_sync_common:
             for description_record in product_description:
                 description_record.value = description
         else:
-            product_description_new = database.env["ir.translation"].create(
+            product_description_new = database.env["transifex.code.translation"].create(
                 {
-                    "name": "product.template,description_sale",
+                    # "display_name": "product.template,description_sale",
                     "lang": lang,
-                    "res_id": product.id,
+                    # "res_id": product.id,
                 }
             )[0]
             product_description_new.value = description
@@ -66,23 +65,45 @@ class product_sync_common:
 
     @classmethod
     def addProductToPricelist(cls, database, product, pricelistName, price):
-        pricelist_id = (
-            database.env["product.pricelist"]
-            .search([("name", "=", pricelistName)])[0]
-            .id
-        )
-        pricelist_item_ids = database.env["product.pricelist.item"].search(
-            [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
-        )
+        # pricelist_id = (
+        #     database.env["product.pricelist"]
+        #     .search([("name", "=", pricelistName)])[0]
+        #     .id
+        # )
+        # pricelist_item_ids = database.env["product.pricelist.item"].search(
+        #     [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
+        # )
+        try:
+            pricelist_id = (
+                database.env["product.pricelist"]
+                .search([("name", "=", pricelistName)])[0]
+                .id
+            )
 
-        if len(pricelist_item_ids) > 0:
-            pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
-        else:
-            pricelist_item = database.env["product.pricelist.item"].create(
-                {"pricelist_id": pricelist_id, "product_tmpl_id": product.id}
-            )[0]
+            pricelist_item_ids = database.env["product.pricelist.item"].search(
+                [("product_tmpl_id", "=", product.id), ("pricelist_id", "=", pricelist_id)]
+            )
+            # if len(pricelist_item_ids) > 0:
+            #     pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            # else:
+            #     pricelist_item = database.env["product.pricelist.item"].create(
+            #         {"pricelist_id": pricelist_id, "product_tmpl_id": product.id}
+            #     )[0]
+            if len(pricelist_item_ids) > 0:
+                pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
+            else:
+                pricelist_item = database.env["product.pricelist.item"].create(
+                    {"pricelist_id": pricelist_id, "product_tmpl_id": product.id}
+                )[0]
 
-        pricelist_item.product_tmpl_id = product.id
-        pricelist_item.applied_on = "1_product"
-        if (str(price) != " ") and (str(price) != ""):
-            pricelist_item.fixed_price = float(price)
+            pricelist_item.product_tmpl_id = product.id
+            pricelist_item.applied_on = "1_product"
+            if (str(price) != " ") and (str(price) != ""):
+                pricelist_item.fixed_price = float(price)
+
+        # pricelist_item.product_tmpl_id = product.id
+        # pricelist_item.applied_on = "1_product"
+        # if (str(price) != " ") and (str(price) != ""):
+        #     pricelist_item.fixed_price = float(price)
+        except Exception as e:
+            _logger.exception(e)
