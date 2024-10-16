@@ -201,7 +201,7 @@ class sync_pricelist:
             str(self.sheet[i][columns["cadSale"]]) != " "
             and str(self.sheet[i][columns["cadSale"]]) != ""
         ):
-            product.lst_price = self.sheet[i][columns["cadSale"]]
+            product.list_price = self.sheet[i][columns["cadSale"]]
             product.cadVal = self.sheet[i][columns["cadSale"]]
 
         if (
