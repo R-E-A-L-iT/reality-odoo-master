@@ -48,6 +48,10 @@
 
                 }
 
+                #o_payment_methods > ul > li {
+                    background-color: #212529 !important;
+                }
+
             </style>
 
 
