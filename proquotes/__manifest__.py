@@ -85,7 +85,7 @@
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoice_lot.xml",
         "views/Invoice/invoiceBackend.xml",
-        "views/Invoice/invoicePayment.xml",
+        # "views/Invoice/invoicePayment.xml",
         "views/PO/PO_Frontend.xml",
         "views/PO/PO_Backend.xml",
         "views/PO/PO_PDF.xml",
