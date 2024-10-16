@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = False
+SKIP_NO_CHANGE = True
 
 
 class sync_products:
@@ -227,12 +227,16 @@ class sync_products:
         # since it will be erased be the addProductToPricelist.  Apparently,
         # Odoo set to price to 0 if we set the product in a pricelist.
         product_sync_common.addProductToPricelist(
-            self.database, product, "CAD SALE", product_price_cad
+            self.database, product, "🇨🇦", product_price_cad
         )
         product_sync_common.addProductToPricelist(
-            self.database, product, "USD SALE", product_price_usd
+            self.database, product, "🇺🇸", product_price_usd
         )
         product.price = product_price_cad
+        product.cadVal = product_price_cad
+        product.usdVal = product_price_usd
+        # product.list_price = product_price_cad
+
 
         product.sale_ok = can_be_sold
 
