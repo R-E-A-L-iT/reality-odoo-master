@@ -18,8 +18,6 @@ class product_sync_common:
         # Create or Update Translations
         product_name = database.env["transifex.code.translation"].search(
             [
-                # ("res_id", "=", product.id),
-                ("name", "=", "product.template,name"),
                 ("lang", "=", lang),
             ]
         )
@@ -29,7 +27,7 @@ class product_sync_common:
 
         else:
             product_name_new = database.env["transifex.code.translation"].create(
-                {"name": "product.template,name", "lang": lang,
+                {"lang": lang,
                  # "res_id": product.id
                  }
             )[0]
@@ -39,7 +37,6 @@ class product_sync_common:
         product_description = database.env["transifex.code.translation"].search(
             [
                 # ("res_id", "=", product.id),
-                ("name", "=", "product.template,description_sale"),
                 ("lang", "=", lang),
             ]
         )
@@ -50,7 +47,7 @@ class product_sync_common:
         else:
             product_description_new = database.env["transifex.code.translation"].create(
                 {
-                    "name": "product.template,description_sale",
+                    # "display_name": "product.template,description_sale",
                     "lang": lang,
                     # "res_id": product.id,
                 }
