@@ -13,7 +13,7 @@ from .product_common import product_sync_common
 
 _logger = logging.getLogger(__name__)
 
-SKIP_NO_CHANGE = False
+SKIP_NO_CHANGE = True
 
 
 class sync_pricelist:
@@ -26,7 +26,7 @@ class sync_pricelist:
     ##################################################
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
-        sheetWidth = 33
+        sheetWidth = 34pricelistHeaderDict["ProductCategory"] = "productCategory"
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -41,8 +41,9 @@ class sync_pricelist:
         pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
         pricelistHeaderDict["isSoftware"]       = "isSoftware"  
         pricelistHeaderDict["Type"]             = "type"        
-        pricelistHeaderDict["PriceCAD"]        = "cadSale"     
-        pricelistHeaderDict["PriceUSD"]        = "usdSale"     
+        pricelistHeaderDict["ProductCategory"]  = "productCategory"
+        pricelistHeaderDict["PriceCAD"]         = "cadSale"     
+        pricelistHeaderDict["PriceUSD"]         = "usdSale"     
         pricelistHeaderDict["Can Rental"]       = "cadRental"   
         pricelistHeaderDict["US Rental"]        = "usdRental"   
         pricelistHeaderDict["Publish_CA"]       = "canPublish"  
@@ -127,9 +128,9 @@ class sync_pricelist:
                     i = i + 1
                     continue
                 # Add Prices to the 4 pricelists
-                self.pricelist(product, "cadSale", "CAD SALE", i, columns)
+                self.pricelist(product, "cadSale", "🇨🇦", i, columns)
                 self.pricelist(product, "cadRental", "CAD RENTAL", i, columns)
-                self.pricelist(product, "usdSale", "USD SALE", i, columns)
+                self.pricelist(product, "usdSale", "🇺🇸", i, columns)
                 self.pricelist(product, "usdRental", "USD RENTAL", i, columns)
 
                 if new:
@@ -153,9 +154,7 @@ class sync_pricelist:
         if len(product_ids) > 0:
             return (
                 self.updatePricelistProducts(
-                    self.database.env["product.template"].browse(
-                        product_ids[len(product_ids) - 1].res_id
-                    ),
+                    self.database.env["product.template"].browse(product_ids[len(product_ids) - 1].res_id),
                     i,
                     columns,
                 ),
@@ -163,7 +162,8 @@ class sync_pricelist:
             )
         else:
             product = self.createPricelistProducts(
-                external_id, self.sheet[i][columns["eName"]]
+                external_id,
+                self.sheet[i][columns["eName"]]
             )
             product = self.updatePricelistProducts(product, i, columns)
             return product, True
@@ -228,6 +228,14 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
+            
+        if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
+            product.rent_ok = True
+        else:
+            product.rent_ok = False
+        # Product Category
+        catId = self.getProductCategoryId(str(self.sheet[i][columns["productCategory"]]))
+        product.categ_id = catId
 
         product.active = True
 
@@ -259,14 +267,19 @@ class sync_pricelist:
             product.type_selection = False
         return product
 
+    def getProductCategoryId(self, category):
+        categoryID = self.database.env["product.category"].search([("name", "=", category)])
+        if (len(categoryID) == 1):
+            return categoryID.id
+        else:
+            return self.database.env["product.category"].search([("name", "=", "All")]).id
+        
     # creates record and updates it
     def createPricelistProducts(self, external_id, product_name):
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}
         )[0]
-        product = self.database.env["product.template"].create({"name": product_name})[
-            0
-        ]
+        product = self.database.env["product.template"].create({"name": product_name})[0]
         ext.res_id = product.id
 
         product.tracking = "serial"
