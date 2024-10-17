@@ -27,6 +27,7 @@ class sync_pricelist:
     def syncPricelist(self):
         # Confirm GS Tab is in the correct Format
         sheetWidth = 34
+        pricelistHeaderDict["ProductCategory"] = "productCategory"
         columns = dict()
         columnsMissing = False
         msg = ""
@@ -40,11 +41,11 @@ class sync_pricelist:
         pricelistHeaderDict["FR-Name"]          = "fName"       
         pricelistHeaderDict["FR-Description"]   = "fDisc"            # Optionnal 
         pricelistHeaderDict["isSoftware"]       = "isSoftware"  
-        pricelistHeaderDict["Type"]             = "type"
-        pricelistHeaderDict["ProductCategory"] = "productCategory"
-        pricelistHeaderDict["PriceCAD"] = "cadSale"
-        pricelistHeaderDict["PriceUSD"] = "usdSale"
-        pricelistHeaderDict["Can Rental"]       = "cadRental"
+        pricelistHeaderDict["Type"]             = "type"        
+        pricelistHeaderDict["ProductCategory"]  = "productCategory"
+        pricelistHeaderDict["PriceCAD"]         = "cadSale"     
+        pricelistHeaderDict["PriceUSD"]         = "usdSale"     
+        pricelistHeaderDict["Can Rental"]       = "cadRental"   
         pricelistHeaderDict["US Rental"]        = "usdRental"   
         pricelistHeaderDict["Publish_CA"]       = "canPublish"  
         pricelistHeaderDict["Publish_USA"]      = "usPublish"   
@@ -139,7 +140,6 @@ class sync_pricelist:
                     product.stringRep = str(self.sheet[i][:])
             except Exception as e:
                 _logger.error(e)
-                _logger.exception("Traceback:")
                 msg = utilities.buildMSG(msg, self.name, key, str(e))
                 return True, msg                   
 
@@ -229,12 +229,11 @@ class sync_pricelist:
             product.sale_ok = True
         else:
             product.sale_ok = False
-
+            
         if str(self.sheet[i][columns["canBeRented"]]) == "TRUE":
             product.rent_ok = True
         else:
             product.rent_ok = False
-
         # Product Category
         catId = self.getProductCategoryId(str(self.sheet[i][columns["productCategory"]]))
         product.categ_id = catId
@@ -271,14 +270,12 @@ class sync_pricelist:
 
     def getProductCategoryId(self, category):
         categoryID = self.database.env["product.category"].search([("name", "=", category)])
-
         if (len(categoryID) == 1):
             return categoryID.id
         else:
             return self.database.env["product.category"].search([("name", "=", "All")]).id
-
-
-            # creates record and updates it
+        
+    # creates record and updates it
     def createPricelistProducts(self, external_id, product_name):
         ext = self.database.env["ir.model.data"].create(
             {"name": external_id, "model": "product.template"}

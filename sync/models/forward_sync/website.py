@@ -60,6 +60,7 @@ class syncWeb:
             msg = utilities.buildMSG(msg, self.name, "Header", "Specs English-01 Missing")
             missingColumn = True
 
+
         if "HTML French" in sheet[0]:
             columns["html_fr"] = sheet[0].index("HTML French")
         else:
@@ -121,8 +122,9 @@ class syncWeb:
             sheet[i][columns["specs_fr-00"]] += sheet[i][columns["specs_fr-01"]]
             i += 1
 
+
         # loop through all the rows
-        i = 1
+        i = 1        
         while True:
             # check if should continue
             _logger.info("Website: " + str(i))
@@ -145,7 +147,6 @@ class syncWeb:
             if not sheet[i][columns["valid"]].upper() == "TRUE":
                 _logger.info("Web Valid")
                 # ezekiel: i've commented this out because I unlinked the home page from the sync and wanted to stop getting a sync report failed email half hour when it was just skipping the home page as I intended
-
                 # msg = utilities.buildMSG(
                 #     msg, self.name, str(sheet[i][columns["id"]]), "Invalid Row"
                 # )
@@ -244,7 +245,7 @@ class syncWeb:
             conditionClose = "</t>\n"
             closer = "</xpath>\n</data>"
             page.arch_base = (
-                    opener + conditionOpen + html + footer + conditionClose + closer
+                opener + conditionOpen + html + footer + conditionClose + closer
             )
         else:
             msg = utilities.buildMSG(

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="website_sale_shop_product_grid_inherit" inherit_id="website_sale.products_item">
+        <xpath expr="//div[@class='oe_product_image position-relative h-100 flex-grow-0 overflow-hidden']" position="inside">
+            <style>
+                #products_grid > div.o_wsale_products_grid_table_wrapper > table > tbody > tr > td > div > form > div.oe_product_image.position-relative.h-100.flex-grow-0.overflow-hidden > a > img {
+                    max-width: 100% !important;
+                }
+            </style>
+        </xpath>
+    </template>
+</odoo>

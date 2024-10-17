@@ -21,10 +21,10 @@
             <t t-set="clang" t-value="lang"/>
             <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))"/>
         </xpath>
-        <xpath expr="//t[@t-set=&quot;address&quot;]" position="replace">
+        <xpath expr="//div[@class='row'][1]" position="replace">
 
             <!-- Setup Translations -->
-            <div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;">
+            <div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;" class="row">
                 <!--				<h3 t-if="o.partner_id.parent_id != False" t-field="o.partner_id.parent_id.name" />-->
                 <!--				<h3 t-field="o.partner_id.name" />-->
                 <!--				<br />-->

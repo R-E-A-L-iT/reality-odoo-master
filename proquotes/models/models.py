@@ -398,6 +398,39 @@ def _anyfy_leaves(domain, model):
 exp._anyfy_leaves = _anyfy_leaves
 
 
+class CustomViewModifier(models.Model):
+    _inherit = 'ir.ui.view'
+
+    @api.model
+    def modify_view(self):
+        # Get the view you want to modify (replace 'view_id_or_xmlid' with the actual ID or XMLID)
+        view = self.env.ref('sale.sale_order_portal_content')
+        if view:
+            # Modify the arch (the XML structure) of the view
+            arch_tree = etree.XML(view.arch_db)
+            
+            # Find and remove the elements with id='taxes_header' and id='taxes'
+            taxes_header_element = arch_tree.xpath("//th[@id='taxes_header']")
+            taxes_element = arch_tree.xpath("//td[@id='taxes']")
+
+            # Remove the 'taxes_header' element if it exists
+            if taxes_header_element:
+                parent = taxes_header_element[0].getparent()
+                if parent is not None:
+                    parent.remove(taxes_header_element[0])
+
+            # Remove the 'taxes' element if it exists
+            if taxes_element:
+                parent = taxes_element[0].getparent()
+                if parent is not None:
+                    parent.remove(taxes_element[0])
+
+            # Update the view arch with the modified version
+            view.write({'arch_db': etree.tostring(arch_tree, pretty_print=True).decode()})
+
+        return True
+
+
 class purchase_order(models.Model):
     _inherit = "purchase.order"
     footer = fields.Selection(
@@ -499,12 +532,12 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
-
+    
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
             _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
-            terms = title.split("+", 2)
+            terms =  title.split("+",2)
 
             if terms[0] == "#translate":
                 english = terms[1]
@@ -571,7 +604,7 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
-
+    
     payment_date = fields.Date(string="Date of Payment", related="payment_id.date", store=True, index=True)
 
 
@@ -628,50 +661,141 @@ class order(models.Model):
         string="Header OLD",
         help="Header selection field",
     )
+    
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super(order, self).default_get(fields_list)
 
+        # Search for the "Immediate Payment" payment term
+        immediate_payment_term = self.env['account.payment.term'].search([('name', '=', 'Immediate Payment')], limit=1)
+        
+        # If found, set it as the default payment term
+        if immediate_payment_term:
+            defaults['payment_term_id'] = immediate_payment_term.id
+
+        return defaults
+    
+    @api.onchange('pricelist_id')
+    def _onchange_pricelist_id(self):
+        if self.pricelist_id:
+            # Check if the selected pricelist contains the word "RENTAL"
+            if 'RENTAL' in self.pricelist_id.name.upper():
+                self.is_rental = True
+            else:
+                self.is_rental = False
+
+    # @api.onchange('sale_order_template_id')
+    # def _onchange_sale_order_template_id(self):
+    #     if self.sale_order_template_id:
+    #         if 'RENTAL' in self.sale_order_template_id.name.upper():
+    #             self.is_rental = False
+    #         else:
+    #             self.is_rental = True
+    
+    @api.onchange('is_rental', 'partner_id')
+    def _onchange_is_rental(self):
+        if self.is_rental and self.partner_id:
+            # Check the country of the customer
+            if self.partner_id.country_id.code == 'CA':  # Canada
+                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'CAD RENTAL')], limit=1)
+            elif self.partner_id.country_id.code == 'US':  # USA
+                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'USD RENTAL')], limit=1)
+
+            if rental_pricelist:
+                self.pricelist_id = rental_pricelist.id
+        # else:
+        #     # Reset pricelist if not rental
+        #     self.pricelist_id = False
+
+    @api.onchange('email_contacts')
+    def _onchange_email_contacts(self):
+        for contact in self.email_contacts:
+            if contact not in self.partner_ids:
+                self.partner_ids.append(contact.id)
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self.partner_id and not self.is_rental:
+            # Set domain for non-rental pricelists
+            return {
+                'domain': {
+                    'pricelist_id': [('name', 'not ilike', 'rental')]
+                }
+            }
+        elif self.partner_id and self.is_rental:
+            # Set domain for rental pricelists
+            return {
+                'domain': {
+                    'pricelist_id': [('name', 'ilike', 'rental')]
+                }
+            }
+     
     def message_post(self, **kwargs):
-        # Intercept the message post process for Sale Orders
-        if 'partner_ids' not in kwargs:
-            kwargs['partner_ids'] = []
+        
+        # Variable mail_post_autofollow is true when using send message function but not when log note
+        mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
+        
+        message_type = kwargs.get('message_type', False)
+        
+        if 'body' not in kwargs:
+            kwargs['body'] = ''
+            
+        # DEBUGGING
+        
+        # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
 
-        # Add email contacts from the many2many field
-        contacts = [partner.id for partner in self.email_contacts]
+        # internal note feature
+        if not mail_post_autofollow:
+            # Call super without adding any email contacts, since it's a log note
+            return super(order, self).message_post(**kwargs)
+        
+        elif "Quotation viewed by customer" in kwargs['body']:
+            # only send to salesperson (user_id = salesperson)
+            # sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            if order.user_id:
+                kwargs['partner_ids'] = [order.user_id.id]
+            else:
+                kwargs['partner_ids'] = []
+                
+            return super(order, self).message_post(**kwargs)
+        
+        elif "Product prices have been recomputed" in kwargs['body']:
+            return False
+        
+        elif "Signed by" in kwargs['body'] or "Bon signé" in kwargs['body']:
+            if order.user_id:
+                kwargs['partner_ids'] = [order.user_id.id]
+            else:
+                kwargs['partner_ids'] = []
+                
+            return super(order, self).message_post(**kwargs)
 
-        # Add static email partner 'sales@r-e-a-l.it'
-        sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-        if sales_partner:
-            contacts.append(sales_partner.id)
+        # send message feature
+        else:
+            if 'partner_ids' not in kwargs:
+                kwargs['partner_ids'] = []
 
-        # Merge with the existing partner_ids if any
-        kwargs['partner_ids'] = list(set(kwargs['partner_ids'] + contacts))
+            # Add email contacts from the many2many field
+            contacts = [partner.id for partner in self.email_contacts]
 
-        # Ensure notifications are enabled
-        # if 'notify' not in kwargs:
-        #     kwargs['notify'] = True
+            # Add static email partner 'sales@r-e-a-l.it'
+            sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            if sales_partner:
+                contacts.append(sales_partner.id)
+                
+            filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
 
-        # Call the super method to proceed with posting the message
-        return super(order, self).message_post(**kwargs)
+            all_contacts = list(set(filtered_partner_ids + contacts))
+            kwargs['partner_ids'] = all_contacts
+            
+            # if kwargs['partner_ids']:
+            #     contacts += kwargs['partner_ids'][1:] 
+            
+            # kwargs['partner_ids'] = contacts
 
-    # def action_quotation_send(self):
-    #     # Call the original method to send the email
-    #     res = super().action_quotation_send()
-
-    #     # Customize the email template
-    #     # template_id = self.env.ref('sale.email_template_edi_sale').id    
-    #     partner_ids = self.partner_ids.ids
-    #     partner_ids.append(64744) # id of sales@r-e-a-l.it contact
-
-    #     ctx = {
-    #         # 'default_template_id': template_id,
-    #         # 'default_composition_mode': 'comment',
-    #         # 'mark_so_as_sent': True,
-    #         'default_partner_ids': partner_ids,
-    #         # Add any other context variables you need
-    #     }
-    #     res['context'] = ctx
-
-    #     return res
-
+            # Call the super method to proceed with posting the message
+            return super(order, self).message_post(**kwargs)
+    
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
         self.duration_days = 0
@@ -681,11 +805,10 @@ class order(models.Model):
                 duration = order.rental_end - order.rental_start
                 order.duration_days = duration.days
                 order.remaining_hours = ceil(duration.seconds / 3600)
-
+    
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
-            _logger.info("PDF QUOTE - TRANSLATION FUNCTION ACTIVATED")
             terms = title.split("+", 2)
 
             if terms[0] == "#translate":
@@ -1078,69 +1201,43 @@ class order(models.Model):
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
-            if order.is_rental:
-                order_lines = order.order_line.filtered(
-                    lambda x: not x.display_type and x.selected == "true" and x.product_id.is_software)
-                order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-                    [x._convert_to_tax_base_line_dict() for x in order_lines],
-                    order.currency_id or order.company_id.currency_id,
-                )
-                _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-            else:
-                order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
-                order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-                    [x._convert_to_tax_base_line_dict() for x in order_lines],
-                    order.currency_id or order.company_id.currency_id,
-                )
-
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                [x._convert_to_tax_base_line_dict() for x in order_lines],
+                order.currency_id or order.company_id.currency_id,
+            )
+            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to users and portal customer as portal is integrated
-        in sale. Customer and portal group have probably no right to see
-        the document so they don't have the access button. """
+        """ Give access button to all users and portal customers to view the quote in the portal. """
+        
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
         if not self:
             return groups
-
         self.ensure_one()
-        if self._context.get('proforma'):
-            for group in [g for g in groups if g[0] in ('portal_customer', 'portal', 'follower', 'customer')]:
-                group[2]['has_button_access'] = False
-            return groups
+        # Get the base URL for the portal
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        portal_url = self.get_portal_url()
 
-        local_msg_vals = dict(msg_vals or {})
-        try:
-            customer_portal_group = next(group for group in groups if group[0] == 'portal_customer')
-        except StopIteration:
-            pass
-        else:
-            access_opt = customer_portal_group[2].setdefault('button_access', {})
-            is_tx_pending = self.get_portal_last_transaction().state == 'pending'
-            if self._has_to_be_signed():
-                if self._has_to_be_paid():
-                    access_opt['title'] = _("View Quotation") if is_tx_pending else _("Sign & Pay Quotation")
-                else:
-                    access_opt['title'] = _("Accept & Sign Quotation")
-            elif self._has_to_be_paid() and not is_tx_pending:
-                access_opt['title'] = _("Accept & Pay Quotation")
-            elif self.state in ('draft', 'sent'):
+        for group in groups:
+            group_name = group[0]
+
+            # enable the access button for all groups
+            group[2]['has_button_access'] = True
+            access_opt = group[2].setdefault('button_access', {})
+            
+            # set the title for the access button based on the state of the order
+            if self.state in ('draft', 'sent'):
                 access_opt['title'] = _("View Quotation")
+            else:
+                access_opt['title'] = _("View Order")
+            
+            # set the portal access URL for the button
+            access_opt['url'] = f"{base_url}{portal_url}"
 
-            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-            access_opt['url'] = base_url + self.get_portal_url()
-
-        follower_group = next(group for group in groups if group[0] == 'follower')
-        follower_group[2]['active'] = True
-        follower_group[2]['has_button_access'] = False
-        access_opt = follower_group[2].setdefault('button_access', {})
-        if self.state in ('draft', 'sent'):
-            access_opt['title'] = _("View Quotation")
-        else:
-            access_opt['title'] = _("View Order")
-        access_opt['url'] = base_url + self.get_portal_url()
-        email = base_url + self.get_portal_url()
+        # return the modified recipient groups with the updated access options
         return groups
 
     def _amount_all(self):
@@ -1283,17 +1380,6 @@ class orderLineProquotes(models.Model):
         else:
             return "<span></span>"
 
-    @api.constrains('product_id', 'order_id')
-    @api.onchange('product_id', 'order_id')
-    def _check_duplicate_product(self):
-        for line in self:
-            if line.product_id:
-                order_lines = line.order_id.order_line.filtered(lambda l: l.product_id == line.product_id)
-                if len(order_lines) > 1:
-                    raise ValidationError(
-                        "The product '%s' has already been added to the order. Please update the quantity instead of adding it again." % line.product_id.display_name
-                    )
-
     @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
         """
@@ -1319,66 +1405,71 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-
-# class proquotesMail(models.TransientModel):
-#     _inherit = "mail.compose.message"
-
-#     def generate_email_for_composer(self, template_id, res_ids, fields):
-#         """Call email_template.generate_email(), get fields relevant for
-#         mail.compose.message, transform email_cc and email_to into partner_ids"""
-#         # Overriden to define the default recipients of a message.
-
-#         multi_mode = True
-
-#         for res_id in res_ids:
-#             contacts = res_id.partner_ids
-#             validated_contacts = []
-#             self.env["mail.template"].browse(template_id).generate_email(res_ids, fields)
-#             for contact in contacts:
-#                 if contact.email:
-#                     validated_contacts.append(contact.email)
-#                     # self.env["sale.order"].browse(res_id).partner_ids
-#             validated_contacts.append("sales@r-e-a-l.it")
-
-#         return multi_mode and validated_contacts
-
-#     #     multi_mode = True
-#     #     if isinstance(res_ids, int):
-#     #         multi_mode = False
-#     #         res_ids = [res_ids]
-
-#     #     returned_fields = fields + ["partner_ids", "attachments"]
-#     #     values = dict.fromkeys(res_ids, False)
-
-#     #     template_values = (
-#     #         self.env["mail.template"]
-#     #         .with_context(tpl_partners_only=True)
-#     #         .browse(template_id)
-#     #         .generate_email(res_ids, fields)
-#     #     )
-#     #     for res_id in res_ids:
-#     #         res_id_values = dict(
-#     #             (field, template_values[res_id][field])
-#     #             for field in returned_fields
-#     #             if template_values[res_id].get(field)
-#     #         )
-#     #         res_id_values["body"] = res_id_values.pop("body_html", "")
-#     #         if template_values[res_id].get("model") == "sale.order":
-#     #             res_id_values["partner_ids"] = self.env["sale.order"].browse(
-#     #                 res_id
-#     #             ).partner_ids + self.env["res.partner"].search(
-#     #                 [("email", "=", "sales@r-e-a-l.it")]
-#     #             )
-#     #         values[res_id] = res_id_values
-#     #     return multi_mode and values or values[res_ids[0]]
-
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
+    
+    from odoo import models, api
+
+class MailComposeMessage(models.TransientModel):
+    _inherit = 'mail.compose.message'
+    
+    template_id = fields.Many2one(
+        'mail.template',
+        string='Use Template',
+        domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+    )
+    
+    @api.model
+    def default_get(self, fields_list):
+        res = super(MailComposeMessage, self).default_get(fields_list)
+
+        if self.env.context.get('default_model') == 'sale.order':
+            # set template
+            template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
+            if template:
+                res['template_id'] = template.id
+                
+            # set recipients
+            order = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
+            if order and order.email_contacts:
+                res['partner_ids'] = [(4, order.user_id)]
+        
+        return res
+    
+    # @api.onchange('template_id')
+    # def _onchange_template_id(self):
+    #     return {
+    #         'domain': {
+    #             'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+    #         }
+    #     }
+
+    # @api.onchange('model')
+    # def _onchange_recipients(self):
+    #     if self.model == 'sale.order' and self.env.context.get('default_res_id'):
+            
+    #         sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
+            
+    #         if sale_order.email_contacts:
+    #             self.partner_ids = sale_order.email_contacts
+    #         else:
+    #             self.partner_ids = [(5, 0, 0)]
+
+    # def send_mail(self, auto_commit=False):
+        
+    #     result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
+
+    #     if self.model == 'sale.order' and self.res_id:
+    #         sale_order = self.env['sale.order'].browse(self.res_id)
+            
+    #         # Update email_contacts with the selected recipients from the wizard
+    #         sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
+
+    #     return result
 
     def generate_email_for_composer(self, template_id, res_ids, fields):
         """Call email_template.generate_email(), get fields relevant for
         mail.compose.message, transform email_cc and email_to into partner_ids"""
-        # Overriden to define the default recipients of a message.
         multi_mode = True
         if isinstance(res_ids, int):
             multi_mode = False

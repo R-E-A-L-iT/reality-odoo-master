@@ -8,7 +8,7 @@
 			With the help of this module user can configure chatter position based on specific position
 			like 'Side', 'Bottom' & 'Responsive'.
     """,
-    'depends': ['web', 'mail'],
+    'depends': ['base','web', 'mail'],
     'category': 'Extra Tools',
     'data': [
         'views/res_users.xml',

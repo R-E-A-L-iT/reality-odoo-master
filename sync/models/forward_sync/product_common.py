@@ -95,7 +95,7 @@ class product_sync_common:
                 pricelist_item = database.env["product.pricelist.item"].create(
                     {"pricelist_id": pricelist_id, "product_tmpl_id": product.id}
                 )[0]
-
+                
             pricelist_item.product_tmpl_id = product.id
             pricelist_item.applied_on = "1_product"
             if (str(price) != " ") and (str(price) != ""):

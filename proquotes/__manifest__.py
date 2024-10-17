@@ -72,6 +72,7 @@
         "views/Quote/quoteRentalAddress.xml",
         "views/Quote/table-align.xml",
         "views/Quote/pricelistFilter.xml",
+        "views/Quote/quoteMailWizard.xml",
         "views/Other/mail.xml",
         "views/Other/deliverPDF.xml",
         "views/Other/pdf_boxed.xml",
@@ -82,11 +83,13 @@
         "views/Other/header_footer.xml",
         # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
-        "views/Invoice/invoiceBackend.xml",
         "views/Invoice/invoice_lot.xml",
+        "views/Invoice/invoiceBackend.xml",
+        # "views/Invoice/invoicePayment.xml",
         "views/PO/PO_Frontend.xml",
         "views/PO/PO_Backend.xml",
         "views/PO/PO_PDF.xml",
+        "views/Other/quoteEmailFooter.xml",
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode

@@ -34,10 +34,10 @@ class sheetsAPI(models.Model):
         # R-E-A-L.iT Master Database
         _master_database_template_id_prod = ("1Tbo0NdMVpva8coych4sgjWo7Zi-EHNdl6EFx2DZ6bJ8")
         
-        # google sheet id numbers (get from link to google sheet)
+        # Dev Numbers Set Based on When Developer Joined
         _master_database_template_id_dev_oli = ("1ck-eRcczAvmyiFT-5EQOKwrSdb_fANIRcDqkJiKXK9w")
         _master_database_template_id_dev_zek = ("1_jA6jiRhucAaNlqDyNDol_CtHKVYY9-Io1QrSx8hCjg")
-        _master_database_template_id_dev_bc = ("1_jA6jiRhucAaNlqDyNDol_CtHKVYY9-Io1QrSx8hCjg")         
+        _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")            
         
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:

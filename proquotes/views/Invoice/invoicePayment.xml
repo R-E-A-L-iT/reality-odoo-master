@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page">
+        <!-- <xpath expr="//t[@t-call='portal.portal_record_sidebar']//h2[1]" position="after"> -->
+        <xpath expr="//div[@id='invoice_communication']" position="before">
+
+            <style>
+                /* #invoice_content > div.o_portal_html_view.shadow.p-3 {
+                    width: 90vw !important;
+                }
+
+                #portalTotal > div {
+                    width: 100vw !important;
+                    padding: 4vw !important;
+                    justify-content: center !important;
+                }
+
+                #invoice_content {
+                    width: 100% !important;
+                }
+
+                #invoice_content > a {
+                    width: 50vw !important;
+                    margin: 25px auto !important;
+                } */
+
+                #sidebar_content > div.position-relative.d-flex.align-items-center.justify-content-md-center.justify-content-lg-between.flex-wrap.gap-2 {
+
+                    padding: 10px !important;
+
+                }
+
+                #sidebar_content > div.d-flex.flex-column.gap-4 > div.flex-grow-1 {
+
+                    padding: 10px !important;
+
+                }
+
+                #sidebar_content > div.d-flex.flex-column.gap-4 > div.flex-grow-1 > h6 > small {
+
+                    color: white !important;
+
+                }
+
+                #sidebar_content > div.position-relative.d-flex.align-items-center.justify-content-md-center.justify-content-lg-between.flex-wrap.gap-2 {
+
+                    border-radius: 10px !important;
+
+                }
+
+                #o_payment_methods > ul > li {
+                    background-color: #212529 !important;
+                }
+
+            </style>
+
+
+            <!-- <t t-set="pending_txs" t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('pending', 'authorized') and tx.provider_code not in ('none', 'custom'))"/>
+            <div class="d-grid">
+                <div t-if="invoice.payment_state in ('paid', 'in_payment')" class="position-sm-absolute position-lg-relative me-auto me-lg-0 top-0 end-0 rounded text-bg-success fs-6 fw-normal badge">
+                    <i class="fa fa-fw fa-check-circle"/> Paid
+                </div>
+                <div t-elif="pending_txs" class="position-sm-absolute position-lg-relative me-auto me-lg-0 top-0 end-0 rounded text-bg-info fw-normal fs-6 badge">
+                    <i class="fa fa-fw fa-check-circle"/> Pending
+                </div>
+            </div> -->
+        </xpath>
+
+        <!-- <xpath expr="//t[@t-call='portal.portal_record_sidebar']//div[hasclass('o_download_pdf')]" position="before"> -->
+
+        <!-- <xpath expr="//div[@id='invoice_communication']" position="before">
+            <a t-if="invoice._has_to_be_paid()" href="#" class="btn btn-primary d-block mb-2" data-bs-toggle="modal" data-bs-target="#pay_with">
+                <i class="fa fa-fw fa-arrow-circle-right"/> Pay Now
+            </a>
+        </xpath> -->
+
+        <!-- <xpath expr="//div[@id='invoice_content']//div[hasclass('o_portal_html_view')]" position="before"> -->
+
+        <!-- <xpath expr="//div[@id='invoice_communication']" position="before">
+            <t t-set="tx" t-value="invoice.get_portal_last_transaction()"/>
+            <div t-if="invoice.get_portal_last_transaction() and invoice.amount_total and not success and not error and (invoice.payment_state != 'not_paid' or tx.state in ('pending', 'authorized'))" class="o_account_payment_tx_status" t-att-data-invoice-id="invoice.id">
+                <t t-call="payment.transaction_status"/>
+            </div>
+            <div t-if="invoice._has_to_be_paid()" id="portal_pay">
+                <t t-call="account_payment.portal_invoice_payment"/>
+            </div>
+        </xpath> -->
+    </template>
+</odoo>

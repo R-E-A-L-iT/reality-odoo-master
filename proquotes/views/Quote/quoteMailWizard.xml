@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_mail_compose_message_form_sale_order" model="ir.ui.view">
+            <field name="name">mail.compose.message.form.sale.order</field>
+            <field name="model">mail.compose.message</field>
+            <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+            <field name="arch" type="xml">
+
+                <!-- filter templates -->
+                <field name="template_id" position="attributes">
+                    <attribute name="domain">
+                        [('name', 'in', ['General Sales', 'Rental Contract', 'Renewal'])]
+                    </attribute>
+                    <attribute name="context">
+                        {'default_model': model, 'default_body_html': body, 'default_subject': subject}
+                    </attribute>
+                </field>
+
+                <!-- replace text -->
+                <xpath expr="//span[@name='document_followers_text']" position="replace">
+                    <span name="document_followers_text">Anyone you added in the contacts table, sales@r-e-a-l.it, and...</span>
+                </xpath>
+
+                <!-- set defaults for partner_ids -->
+                <!-- <field name="partner_ids" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                    <attribute name="context">{'default_model': model}</attribute>
+                </field> -->
+
+            </field>
+        </record>
+    </data>
+</odoo>

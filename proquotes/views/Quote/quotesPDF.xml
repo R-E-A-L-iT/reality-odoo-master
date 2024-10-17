@@ -106,9 +106,40 @@
 
                             <t t-set="current_subtotal" t-value="0"/>
 
+                            <!-- rental calculations -->
+                            <t t-set="rentalValue" t-value="0" />
+                            <t t-set="rentalRate" t-value="0" />
+
+                            <t t-if="doc.rental_start != False and doc.rental_end != False">
+                                <t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
+                                <t t-set="edate" t-value="str(doc.rental_end).split('-')" />
+                                <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
+                                <t t-set="rentalMonths" t-value="rentalDays // 30" />
+                                <t t-set="rentalDays" t-value="rentalDays % 30" />
+                                <t t-set="rentalWeeks" t-value="rentalDays // 7" />
+                                <t t-set="rentalDays" t-value="rentalDays % 7" />
+                            </t>
+
+
                             <t t-foreach="lines_to_report" t-as="line">
 
                                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+
+                                <!-- rental calculations -->
+                                <t t-if="'CAD' in doc.currency_id.name">
+                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cadVal" />
+                                </t>
+                                <t t-elif="'USD' in doc.currency_id.name">
+                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usdVal" />
+                                </t>
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalDayRate > line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
+                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
+                                <t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
+
+
 
                                 <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
                                     <t t-if="not line.display_type">
@@ -150,7 +181,9 @@
                                             <span t-out="taxes">Tax 15%</span>
                                         </td>
                                         <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total">
-                                            <span t-field="line.price_subtotal">27.00</span>
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price" t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="line_price" t-value="'{value:,.2f} $'.format(value= line.price_subtotal)" />
+                                            <span t-out="line_price" />
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
@@ -162,14 +195,77 @@
                                         <td t-elif="line.name  == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
-                                        <td t-elif="line.name  == '#rental_info'" name="td_section_line" colspan="99">
-                                            <span>Rental Info</span>
-                                        </td>
-                                        <td t-elif="line.name  == '$rental_info'" name="td_section_line" colspan="99">
-                                            <span>Rental Info</span>
+                                        <td t-elif="(line.name  == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                <p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+                                                <p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                            </t>
+                                            <t t-elif="clang == 'fr_CA'">
+                                                <p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
+                                                <p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                            </t>
+                                            <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                * The final rental cost will be calculated once the equipement is returned.
+                                                Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
+                                                Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
+                                            </p>
+                                            <p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+                                                * Le coût final sera calculé lorsque l'équipement sera retourné.
+                                                Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
+                                                Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
+                                            </p>
+                                            <!-- Format Estimated Rental Rate Number -->
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
+                                            <t t-if=" clang== 'en_CA' or clang == 'en_US'">
+                                                <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
+                                            </t>
+                                            <t t-elif="clang == 'fr_CA'">
+                                                <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
+                                            </t>
+                                            <br />
+                                            <br />
+
+                                            <!-- Format Rental Value Number -->
+                                            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
+                                            <t t-elif="clang == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
+                                            <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                <span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
+                                                <br />
+                                                <br />
+                                                <span>
+                                                    Please upload your proof of insurance in the comments section below or send a copy by email.
+                                                </span>
+                                                <br />
+                                            </div>
+                                            <div class="rental_product_value" t-elif="clang == 'fr_ca' or true">
+                                                <span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+                                                <br />
+                                                <br />
+                                                <span>
+                                                    Merci de fournir votre attestation d'assurance :
+                                                </span>
+                                                <br />
+                                            </div>
+
+                                            <t t-if="doc.rental_diff_add == True">
+                                                <span t-if="clang == 'en_CA' or clang == 'en_US'">
+                                                    Shipping To
+                                                </span>
+                                                <span t-elif="clang == 'fr_CA'">
+                                                    Expédition ànvoyez à
+                                                </span>
+                                                <br />
+                                                <span t-field="doc.rental_street" />
+                                                <br />
+                                                <span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
+                                                <span t-esc="doc.rental_state.code" />
+                                                <span t-field="doc.rental_zip" />
+                                                <span t-field="doc.rental_country" />
+                                            </t>
                                         </td>
                                         <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
-                                            <span>Rental Software</span>
+                                            <span>Software rental: choose desired software along with quantities (in weeks)</span>
                                         </td>
                                         <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
                                             <span>Subscription</span>
@@ -253,9 +349,12 @@
 
                     <!-- custom footer stuff -->
                     <div id="quote_disclaimer">
-                        <t t-set="currency_label" t-if="clang == 'fr_CA' and doc.currency_id.name == 'CAD'" t-value="'canadiens'"/>
-                        <t t-set="currency_label" t-elif="clang == 'fr_CA' and doc.currency_id.name == 'USD'" t-value="'américains'"/>
-                        <t t-set="currency_label" t-else="" t-value="doc.currency_id.name"/>
+                        <!-- <t t-if="doc.partner_id.country">
+                            <t t-set="currency_label" t-if="clang == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/>
+                            <t t-set="currency_label" t-elif="clang == 'fr_CA' and (doc.partner_id.country == 'United States' or doc.partner_id.country == 'US')" t-value="'américains'"/>
+                        </t> -->
+                        <!-- <t t-set="currency_label" t-if="clang == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/> -->
+                        <t t-set="currency_label" t-value="doc.currency_id.name"/>
                         <p t-if="clang == 'en_CA' or clang == 'en_US'">All prices in
                             <t t-out="currency_label"/>
                             dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
@@ -326,7 +425,7 @@
                         <br/>
                         <br/>
                         <t t-set="footer" t-value="doc.footer_id.url"/>
-                        <img t-att-src="footer" style="width: 100%; height: 100px;"/>
+                        <!-- <img t-att-src="footer" style="width: 100%; height: 100px;"/> -->
 
                         <footer>
                             <t t-if="doc.company_id.id == 15">

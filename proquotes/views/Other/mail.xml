@@ -42,9 +42,9 @@
                                             <tbody>
                                                 <tr>
                                                     <td t-if="has_button_access"
-                                                        t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
+                                                            t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
                                                         <a t-att-href="button_access['url']"
-                                                           style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
+                                                            style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
                                                             <t t-out="button_access['title']"/>
                                                         </a>
                                                     </td>
@@ -53,7 +53,7 @@
                                                     <td t-if="actions">
                                                         <t t-foreach="actions" t-as="action">
                                                             <a t-att-href="action['url']"
-                                                               t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
+                                                                t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
                                                                 <t t-out="action['title']"/>
                                                             </a>
                                                             &amp;nbsp;&amp;nbsp;
@@ -61,8 +61,7 @@
                                                     </td>
                                                     <td t-if="subtitles" style="font-size: 12px;">
                                                         <t t-foreach="subtitles" t-as="subtitle">
-                                                            <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}"
-                                                                  t-out="subtitle"/>
+                                                            <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}" t-out="subtitle"/>
                                                             <br t-if="not subtitle_last"/>
                                                         </t>
                                                     </td>
@@ -70,7 +69,6 @@
                                                         <span style="font-weight:bold;" t-out="record_name"/>
                                                         <br/>
                                                     </td>
-
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -134,6 +132,9 @@
             </body>
         </html>
     </template>
+</odoo>
+
+
     <!--        commented due to its depricated-->
     <!--	<template name="Custom Mail Template" id="mail_notification_paynow" inherit_id="mail.mail_notification_paynow" priority="17">-->
     <!--		<xpath expr="table" position="replace">-->
@@ -224,7 +225,6 @@
 
     <!--																	<a t-else="" t-att-href="access_url" style="color:#db0d0d;">-->
     <!--																		Voir Bon de commande-->
-
     <!--																	</a>-->
     <!--																</t>-->
     <!--															</div>-->
@@ -262,4 +262,3 @@
     <!--			<t t-else="" t-set="access_name">View Purchase Order</t>-->
     <!--		</xpath>-->
     <!--	</template>-->
-</odoo>
