@@ -12,17 +12,20 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Opportunity Phases">
                     <group>
-                        <group string="Logged Opportunity">
+                        <group string="New Customer">
                             <field name="phase1_salesperson" />
                         </group>
-                        <group string="Meeting">
+                        <group string="New Lead">
                             <field name="phase2_salesperson" />
                         </group>
-                        <group string="Demo">
+                        <group string="Developed Opportunity">
                             <field name="phase3_salesperson" />
                         </group>
-                        <group string="Sale">
+                        <group string="Performed Demo">
                             <field name="phase4_salesperson" />
+                        </group>
+                        <group string="Quote to Order">
+                            <field name="phase5_salesperson" />
                         </group>
                     </group>
                 </page>
