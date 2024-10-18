@@ -113,7 +113,7 @@
                             <t t-if="doc.rental_start != False and doc.rental_end != False">
                                 <t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
                                 <t t-set="edate" t-value="str(doc.rental_end).split('-')" />
-                                <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days" />
+                                <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days + 1" />
                                 <t t-set="rentalMonths" t-value="rentalDays // 30" />
                                 <t t-set="rentalDays" t-value="rentalDays % 30" />
                                 <t t-set="rentalWeeks" t-value="rentalDays // 7" />
