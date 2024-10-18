@@ -782,49 +782,19 @@ class order(models.Model):
             sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if sales_partner:
                 contacts.append(sales_partner.id)
-
+                
             filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
 
             all_contacts = list(set(filtered_partner_ids + contacts))
-
-            if not all_contacts:
-                # no contacts
-                return False
+            kwargs['partner_ids'] = all_contacts
             
-            # cancel the original message sending and create new for each contact
-
-            if not all_contacts:
-                # No valid contacts to send emails to, return empty mail.message recordset
-                return MailMessage
+            # if kwargs['partner_ids']:
+            #     contacts += kwargs['partner_ids'][1:] 
             
-            # Cancel the original message sending
-            # Now we will manually create and send the emails
+            # kwargs['partner_ids'] = contacts
 
-            Mail = self.env['mail.mail']
-            for partner_id in all_contacts:
-                partner = self.env['res.partner'].browse(partner_id)
-                
-                if not partner.email:
-                    continue  # Skip if partner does not have an email address
-
-                # Create a custom email body with the partner's ID at the end
-                email_body = f"{kwargs['body']}<br/><br/>User ID: {partner_id}"
-                
-                # Create the mail values
-                mail_values = {
-                    'subject': kwargs.get('subject', 'Custom Email Subject'),
-                    'body_html': email_body,
-                    'email_to': partner.email,  # Send email to the partner
-                    'auto_delete': True,
-                    'email_from': self.env.user.email or self.env.company.email,
-                }
-                
-                # Create and send the email
-                mail = Mail.create(mail_values)
-                mail.send()
-
-            # Return an empty mail.message recordset instead of False to avoid type errors
-            return MailMessage
+            # Call the super method to proceed with posting the message
+            return super(order, self).message_post(**kwargs)
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
