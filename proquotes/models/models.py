@@ -788,13 +788,37 @@ class order(models.Model):
             all_contacts = list(set(filtered_partner_ids + contacts))
             kwargs['partner_ids'] = all_contacts
             
+            Mail = self.env['mail.mail']
+            for partner_id in all_contacts:
+                partner = self.env['res.partner'].browse(partner_id)
+
+                # Create a custom email body with the partner's ID at the end
+                email_body = f"{kwargs['body']}<br/><br/>User ID: {partner_id}"
+                
+                # Create the mail values
+                mail_values = {
+                    'subject': kwargs.get('subject', 'Custom Email Subject'),
+                    'body_html': email_body,
+                    'email_to': partner.email,  # Send email to the partner
+                    'auto_delete': True,
+                    'email_from': self.env.user.email or self.env.company.email,
+                }
+                
+                # Create and send the email
+                mail = Mail.create(mail_values)
+                mail.send()
+
+            # Return False to prevent the default message from being posted
+            return False
+            
+            
             # if kwargs['partner_ids']:
             #     contacts += kwargs['partner_ids'][1:] 
             
             # kwargs['partner_ids'] = contacts
 
             # Call the super method to proceed with posting the message
-            return super(order, self).message_post(**kwargs)
+            # return super(order, self).message_post(**kwargs)
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
