@@ -793,15 +793,24 @@ class order(models.Model):
             
             # cancel the original message sending and create new for each contact
 
+            if not all_contacts:
+                # No valid contacts to send emails to, return empty mail.message recordset
+                return MailMessage
+            
+            # Cancel the original message sending
+            # Now we will manually create and send the emails
+
             Mail = self.env['mail.mail']
             for partner_id in all_contacts:
                 partner = self.env['res.partner'].browse(partner_id)
                 
                 if not partner.email:
-                    continue  # skip if partner does not have an email address
+                    continue  # Skip if partner does not have an email address
 
+                # Create a custom email body with the partner's ID at the end
                 email_body = f"{kwargs['body']}<br/><br/>User ID: {partner_id}"
                 
+                # Create the mail values
                 mail_values = {
                     'subject': kwargs.get('subject', 'Custom Email Subject'),
                     'body_html': email_body,
@@ -810,11 +819,12 @@ class order(models.Model):
                     'email_from': self.env.user.email or self.env.company.email,
                 }
                 
+                # Create and send the email
                 mail = Mail.create(mail_values)
                 mail.send()
 
-            # stop default message
-            return False
+            # Return an empty mail.message recordset instead of False to avoid type errors
+            return MailMessage
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
