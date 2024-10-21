@@ -808,6 +808,8 @@ class order(models.Model):
                 if self.partner_ids:
                     if contact not in self.partner_ids:
                         self.partner_ids.append(contact.id)
+            except:
+                _logger.info("Failed to add contacts to the partner_ids from the email_contacts table")
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
