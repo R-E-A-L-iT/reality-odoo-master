@@ -7,6 +7,7 @@ import re
 from math import ceil
 
 from datetime import date, datetime, timedelta
+import functools
 from functools import partial
 from itertools import groupby
 import logging
@@ -19,6 +20,9 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 from odoo.models import BaseModel as BSM
 from collections import defaultdict
+from odoo.http import request
+from odoo.http import Response as Responseht
+from odoo.http import FutureResponse as FutureResponseht
 
 from .translation import name_translation
 from odoo.tools import (
@@ -27,6 +31,26 @@ from odoo.tools import (
     get_lang, LastOrderedSet, lazy_classproperty, OrderedSet, ormcache,
     partition, populate, Query, ReversedIterable, split_every, unique, SQL,
 )
+import werkzeug.datastructures
+import werkzeug.exceptions
+import werkzeug.local
+import werkzeug.routing
+import werkzeug.security
+import werkzeug.wrappers
+import werkzeug.wsgi
+from werkzeug.urls import URL, url_parse, url_encode, url_quote
+from werkzeug.exceptions import (HTTPException, BadRequest, Forbidden,
+                                 NotFound, InternalServerError)
+try:
+    from werkzeug.middleware.proxy_fix import ProxyFix as ProxyFix_
+    ProxyFix = functools.partial(ProxyFix_, x_for=1, x_proto=1, x_host=1)
+except ImportError:
+    from werkzeug.contrib.fixers import ProxyFix
+try:
+    from werkzeug.utils import send_file as _send_file
+except ImportError:
+    from .tools._vendor.send_file import send_file as _send_file
+
 
 # Domain operators.
 NOT_OPERATOR = '!'
@@ -247,6 +271,60 @@ def _anyfy_leaves(domain, model):
 
 
 exp._anyfy_leaves = _anyfy_leaves
+
+# class Response(Responseht)
+# def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
+#     """
+#     The default expires in Werkzeug is None, which means a session cookie.
+#     We want to continue to support the session cookie, but not by default.
+#     Now the default is arbitrary 1 year.
+#     So if you want a cookie of session, you have to explicitly pass expires=None.
+#     """
+#     if expires == -1:  # not provided value -> default value -> 1 year
+#         expires = datetime.now() + timedelta(days=365)
+#     if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
+#         max_age = 0
+#     _logger.info('>>>>>>>>>>>>>>request.httprequest.path: %s', request.httprequest.path)
+#     url = request.httprequest.path
+#     if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
+#         _logger.info('>>>>>>>>>>>>>>inside')
+#         if 'fr_CA' not in url:
+#             value = 'en_US'
+#         else:
+#             value = 'fr_CA'
+#     else:
+#         if ('/web/login' not in url) and request.httprequest.cookies.get('frontend_lang', False):
+#             value = request.httprequest.cookies.get('frontend_lang')
+#     _logger.info('>>>>>>>>> session language: %s', request.httprequest.cookies.get('frontend_lang'))
+#     _logger.info('>>>>>>>>>>>> cookie_value 2: %s', value)
+#     super(Responseht, self).set_cookie(key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
+# Responseht.set_cookie = set_cookie
+@functools.wraps(werkzeug.Response.set_cookie)
+def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
+    if expires == -1:  # not forced value -> default value -> 1 year
+        expires = datetime.now() + timedelta(days=365)
+    if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
+        max_age = 0
+    _logger.info('>>>>>>>>>>>>>>request.httprequest.path 1: %s', request.httprequest.path)
+    url = request.httprequest.path
+    if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
+        _logger.info('>>>>>>>>>>>>>>inside')
+        if 'fr_CA' not in url:
+            value = 'en_US'
+        else:
+            value = 'fr_CA'
+    else:
+        if (url.startswith('/web')) and key=='frontend_lang' and request.httprequest.cookies.get('frontend_lang', False):
+            value = request.httprequest.cookies.get('frontend_lang')
+    _logger.info('>>>>>>>>> session language 1: %s', request.httprequest.cookies.get('frontend_lang'))
+    _logger.info('>>>>>>>>>>>> cookie_value 1: %s', value)
+    werkzeug.Response.set_cookie(self, key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
+    
+FutureResponseht.set_cookie = set_cookie
+
+class CustomViewModifier(models.Model):
+    _inherit = 'ir.ui.view'
+
 
 
 def is_operator(element):
