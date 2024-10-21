@@ -604,8 +604,24 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
-    
-    payment_date = fields.Date(string="Date of Payment", related="payment_id.date", store=True, index=True)
+
+    payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
+
+    def _compute_payment_date(self):
+        for rec in self:
+            rec.payment_date = False
+            if rec.invoice_payments_widget:
+                data = rec.invoice_payments_widget
+                if data.get('content'):
+                    payment_dates = set()
+                    for payment in data['content']:
+                        payment_date = payment['date']
+                        formatted_date = payment_date.strftime('%d/%m/%Y')
+                        payment_dates.add(formatted_date)
+                    # For multi payment.
+                    rec.payment_date = ', '.join(sorted(payment_dates))
+                else:
+                    rec.payment_date = False
 
 
 class order(models.Model):
