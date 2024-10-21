@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <menuitem id="menu_pro_commissions_root" 
-              name="ProCommissions" 
-              icon="fa-dollar-sign" 
-              sequence="100" 
-              action="action_pro_commissions"
-              groups="base.group_no_one"/>
+    <menuitem id="menu_pro_commissions_root"
+          name="ProCommissions"
+          parent="base.menu_custom"
+          action="action_pro_commissions"
+          icon="fa-dollar-sign"
+          sequence="100"
+          groups="base.group_no_one"/>
 </odoo>
