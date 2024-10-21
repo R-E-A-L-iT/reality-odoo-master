@@ -710,9 +710,10 @@ class order(models.Model):
     @api.onchange('email_contacts')
     def _onchange_email_contacts(self):
         for contact in self.email_contacts:
-            if self.partner_ids:
-                if contact not in self.partner_ids:
-                    self.partner_ids.append(contact.id)
+            try:
+                if self.partner_ids:
+                    if contact not in self.partner_ids:
+                        self.partner_ids.append(contact.id)
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -770,6 +771,9 @@ class order(models.Model):
                 kwargs['partner_ids'] = []
                 
             return super(order, self).message_post(**kwargs)
+        
+        elif "Extra line with" in kwargs['body']:
+            return False
 
         # send message feature
         else:
