@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_pro_commissions_tree" model="ir.ui.view">
+        <field name="name">pro.commissions.tree</field>
+        <field name="model">pro.commissions</field>
+        <field name="arch" type="xml">
+            <tree string="Pro Commissions">
+                <field name="name"/>
+                <field name="amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_pro_commissions" model="ir.actions.act_window">
+        <field name="name">Pro Commissions</field>
+        <field name="res_model">pro.commissions</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Pro Commission Record
+            </p>
+        </field>
+    </record>
+</odoo>
