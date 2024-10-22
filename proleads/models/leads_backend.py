@@ -14,8 +14,8 @@ class opportunity(models.Model):
         ],
         string="Opportunity Source")
     
-    phase1_salesperson = fields.Many2one('res.users', string="Salesperson [Optional]")
-    phase2_salesperson = fields.Many2one('res.users', string="Salesperson [Optional]")
-    phase3_salesperson = fields.Many2one('res.users', string="Salesperson [Optional]")
-    phase4_salesperson = fields.Many2one('res.users', string="Salesperson [Optional]")
-    phase5_salesperson = fields.Many2one('res.users', string="Salesperson [Optional]")
+    phase1_salesperson = fields.Many2one('res.users', string="Salesperson [New Customer]")
+    phase2_salesperson = fields.Many2one('res.users', string="Salesperson [New Lead]")
+    phase3_salesperson = fields.Many2one('res.users', string="Salesperson [Developed Opportunity]")
+    phase4_salesperson = fields.Many2one('res.users', string="Salesperson [Performed Demo]")
+    phase5_salesperson = fields.Many2one('res.users', string="Salesperson [Quote to Order]")
