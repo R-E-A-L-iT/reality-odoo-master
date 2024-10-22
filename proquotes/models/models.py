@@ -884,6 +884,7 @@ class order(models.Model):
             if sales_partner:
                 contacts.append(sales_partner.id)
                 
+            # this removes the default partner_id, which is the email attatched to the company contact
             filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
 
             all_contacts = list(set(filtered_partner_ids + contacts))
