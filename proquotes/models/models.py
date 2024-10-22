@@ -1530,9 +1530,11 @@ class MailComposeMessage(models.TransientModel):
     @api.depends('model', 'res_id')
     def _compute_email_contacts(self):
         for record in self:
-            if record.model == 'sale.order':
+            if record.model == 'sale.order' and record.res_id:
                 sale_order = self.env['sale.order'].browse(record.res_id)
                 record.email_contacts = sale_order.email_contacts
+            else:
+                record.email_contacts = False
     
     @api.model
     def default_get(self, fields_list):
