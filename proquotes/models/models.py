@@ -1521,10 +1521,11 @@ class MailComposeMessage(models.TransientModel):
     )
     
     email_contacts = fields.Many2many(
-        'res.partner', 
-        string="Email Contacts", 
+        'res.partner',
+        string="Email Contacts",
         compute='_compute_email_contacts',
-        store=False
+        store=False,
+        readonly=False
     )
     
     @api.depends('model', 'res_ids')
