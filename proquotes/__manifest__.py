@@ -55,7 +55,7 @@
             "proquotes/static/src/JS/rental.js",
         ],
         'web.assets_backend': [
-            "proquotes/static/src/core/common/message.xml"
+            # "proquotes/static/src/core/common/message.xml"
         ],
     },
 
