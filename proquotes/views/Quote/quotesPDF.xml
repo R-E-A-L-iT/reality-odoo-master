@@ -475,7 +475,9 @@
 
                     <div class="oe_structure"/>
 
-                    <div t-if="not doc.signature" class="oe_structure"/>
+                    <!-- removed original signature -->
+
+                    <!-- <div t-if="not doc.signature" class="oe_structure"/>
                     <div t-else="" class="mt-4 ml64 mr4" name="signature">
                         <div class="offset-8">
                             <strong>Signature</strong>
@@ -486,7 +488,7 @@
                         <div class="offset-8 text-center">
                             <span t-field="doc.signed_by">Oscar Morgan</span>
                         </div>
-                    </div>
+                    </div> -->
                     <div>
                         <span t-field="doc.note" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if doc.company_id.terms_type != 'html' else ''}" name="order_note"/>
                         <p t-if="not is_html_empty(doc.payment_term_id.note)">
