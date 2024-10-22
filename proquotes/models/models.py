@@ -1531,7 +1531,7 @@ class MailComposeMessage(models.TransientModel):
     def _compute_email_contacts(self):
         for record in self:
             if record.model == 'sale.order' and record.res_ids:
-                sale_orders = self.env['sale.order'].browse(record.res_ids)
+                sale_orders = self.env['sale.order'].browse([int(res_id) for res_id in record.res_ids])
                 record.email_contacts = sale_orders.mapped('email_contacts')
             else:
                 record.email_contacts = False
