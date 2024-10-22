@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="appointment_page_style" inherit_id="appointment.appointment_info">
-        <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
+        <xpath expr="//t[@t-set='no_breadcrumbs']" position="after">
             <style>
 
                 .bg-light {
