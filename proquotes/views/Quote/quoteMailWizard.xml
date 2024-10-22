@@ -18,8 +18,20 @@
                 </field>
 
                 <!-- replace text -->
-                <xpath expr="//span[@name='document_followers_text']" position="replace">
+                <!-- <xpath expr="//span[@name='document_followers_text']" position="replace">
                     <span name="document_followers_text">Anyone you added in the contacts table, sales@r-e-a-l.it, and...</span>
+                </xpath> -->
+
+                <xpath expr="//label[@for='partner_ids']" position="replace">
+                    <!-- <label for="partner_ids" string="Recipients" invisible="composition_mode != 'comment' or subtype_is_log"/> -->
+                    <label for="email_contacts" string="Recipients" invisible="composition_mode != 'comment' or subtype_is_log"/>
+                </xpath>
+
+                <xpath expr="//div[@groups='base.group_user']" position="replace">
+                    <div groups="base.group_user" invisible="composition_mode != 'comment' or subtype_is_log">
+                            <span name="document_followers_text" invisible="not model or composition_mode == 'mass_mail'">The document will be sent sales@r-e-a-l.it and...</span>
+                            <field name="email_contacts" widget="many2many_tags_email" placeholder="Add contacts to notify..." options="{'no_quick_create': True}" context="{'show_email':True, 'form_view_ref': 'base.view_partner_simple_form'}"/>
+                        </div>
                 </xpath>
 
                 <!-- set defaults for partner_ids -->
