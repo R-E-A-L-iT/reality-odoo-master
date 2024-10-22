@@ -1547,7 +1547,7 @@ class MailComposeMessage(models.TransientModel):
         
         if self.env.context.get('active_model') == 'sale.order' and self.env.context.get('active_ids'):
             sale_orders = self.env['sale.order'].browse(self.env.context['active_ids'])
-            res['email_contacts'] = sale_orders.mapped('email_contacts').ids
+            res['email_contacts'] = [(6, 0, sale_orders.mapped('email_contacts').ids)]
 
         if self.env.context.get('default_model') == 'sale.order':
             # set template
