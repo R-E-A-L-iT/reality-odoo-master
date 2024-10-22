@@ -1520,6 +1520,20 @@ class MailComposeMessage(models.TransientModel):
         domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
     
+    email_contacts = fields.Many2many(
+        'res.partner', 
+        string="Email Contacts", 
+        compute='_compute_email_contacts',
+        store=False
+    )
+    
+    @api.depends('model', 'res_id')
+    def _compute_email_contacts(self):
+        for record in self:
+            if record.model == 'sale.order':
+                sale_order = self.env['sale.order'].browse(record.res_id)
+                record.email_contacts = sale_order.email_contacts
+    
     @api.model
     def default_get(self, fields_list):
         res = super(MailComposeMessage, self).default_get(fields_list)
