@@ -53,7 +53,10 @@
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
-        ]
+        ],
+        'web.assets_backend': [
+            "proquotes/static/src/core/common/message.xml"
+        ],
     },
 
     "version": "17.0",
