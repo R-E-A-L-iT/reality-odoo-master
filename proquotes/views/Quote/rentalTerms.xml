@@ -108,6 +108,7 @@
                             <p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
                         </li>
                         <li>
+                            <h3>Aircraft Procedures</h3>
                             <p> For any rental involving Remotely Piloted Aircraft Systems (RPAS), the Customer must conduct all flight operations in compliance with Canadian Aviation Regulations (CARs) Part IX – Remotely Piloted Aircraft Systems. </p>
                         </li>
                     </ol>
