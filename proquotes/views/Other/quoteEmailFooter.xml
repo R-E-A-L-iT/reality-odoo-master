@@ -25,7 +25,7 @@
                 }"/>
                 <t t-if="user_footers.get(user.email)">
                     <div>
-                        <img t-att-src="user_footers.get(record.user.email)" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                        <img t-att-src="user_footers.get(record.create_uid.email)" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
                     </div>
                 </t>
             </t>
