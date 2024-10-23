@@ -82,8 +82,6 @@
                         </span>
                         <input id="po_number" type="char" t-attf-value="{{source.customer_po_number}}"/>
                     </div>
-
-                    <br/>
                     <br/>
                     <div t-if="clang == 'en_CA' or clang == 'en_US'">
                         <span>Invoicing Address:</span>
@@ -98,7 +96,6 @@
                         </select>
                     </div>
                     <br/>
-                    <br/>
                     <div t-if="clang == 'en_CA' or clang == 'en_US'">
                         <span>Delivery Address:</span>
                         <t t-set="delivery_address_ids" t-value="request.env['res.partner'].search([])"/>
@@ -111,7 +108,52 @@
                             </t>
                         </select>
                     </div>
+                    <br/>
+                    <div>
+                        <label for="street">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
+                            <span t-elif="clang == 'fr_CA'">Rue</span>
+                        </label>
+                        <input id="shipping_street" type="text" t-attf-value="{{source.partner_shipping_id.street}}"/>
+                    </div>
+                    <div>
+                        <label for="city">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">City</span>
+                            <span t-elif="clang == 'fr_CA'">Ville</span>
+                        </label>
+                        <input id="shipping_city" type="text" t-attf-value="{{source.partner_shipping_id.city}}"/>
+                    </div>
+                    <div>
+                        <label for="state">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">State/Province</span>
+                            <span t-elif="clang == 'fr_CA'">Province/État</span>
+                        </label>
+                        <t t-set="states" t-value="request.env['res.country.state'].search([])"/>
+                        <select id="shipping_state" name="state_id">
+                            <t t-foreach="states" t-as="state">
+                                <option t-att-value="state.id"
+                                        t-att-selected="state.id == source.partner_shipping_id.state_id.id">
+                                    <t t-esc="state.name"/>
+                                </option>
+                            </t>
+                        </select>
 
+                    </div>
+                    <div>
+                         <label for="country">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">Country</span>
+                            <span t-elif="clang == 'fr_CA'">Pays</span>
+                        </label>
+                        <t t-set="country_ids" t-value="request.env['res.country'].search([])"/>
+                        <select id="shipping_country" name="country_id" data-init="1">
+                            <t t-foreach="country_ids" t-as="country">
+                                <option t-att-value="country.id"
+                                        t-att-selected="country.id == source.partner_shipping_id.country_id.id">
+                                    <t t-esc="country.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
                 </t>
                 <br/>
                 <!-- New Address Prompt -->

@@ -314,3 +314,43 @@ class RentalCustomerPortal(cPortal):
             return
         order_sudo.write({'partner_shipping_id': int(delivery_address_id)})
         return
+
+    # For delivery address stree
+    @http.route(["/my/orders/<int:order_id>/shipping_street"], type="json", auth="public", website=True)
+    def delivery_address_shipping_street(self, order_id, shipping_street, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(shipping_street):
+            return
+        partner_id = order_sudo.partner_shipping_id
+        partner_id.write({'street': shipping_street})
+        return
+
+    # For delivery address country
+    @http.route(["/my/orders/<int:order_id>/shipping_country"], type="json", auth="public", website=True)
+    def delivery_address_shipping_country(self, order_id, shipping_country, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(shipping_country):
+            return
+        partner_id = order_sudo.partner_shipping_id
+        partner_id.write({'country_id': int(shipping_country)})
+        return
+
+
+    # For delivery address state
+    @http.route(["/my/orders/<int:order_id>/shipping_state"], type="json", auth="public", website=True)
+    def delivery_address_shipping_state(self, order_id, shipping_state, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(shipping_state):
+            return
+        partner_id = order_sudo.partner_shipping_id
+        partner_id.write({'state_id': int(shipping_state)})
+        return
