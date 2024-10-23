@@ -28,6 +28,7 @@
                     <div>
                         <!-- <t t-out="record.create_uid.email"/> -->
                         <img t-att-src="user_footers.get(record.create_uid.email)" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                        <t t-log="user_footers.get(record.create_uid.email)"/>
                     </div>
                 </t>
             </t>
