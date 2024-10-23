@@ -21,7 +21,8 @@
                     'mael@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Mael.png',
                     'derek@r-e-a-l.it': 'https://cdn.r-e-a-l.it/images/footer/REALiTFooter_Derek.png',
                     'bill@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Bill.png',
-                    'ezekiel@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png'
+                    'ezekiel@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png',
+                    'notifications@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png'
                 }"/>
                 <t t-if="user_footers.get(record.create_uid.email)">
                     <div>
