@@ -1546,6 +1546,8 @@ class MailComposeMessage(models.TransientModel):
     def default_get(self, fields_list):
         res = super(MailComposeMessage, self).default_get(fields_list)
         
+        res['user'] = self.env.user
+        
         if self.env.context.get('active_model') == 'sale.order' and self.env.context.get('active_ids'):
             sale_orders = self.env['sale.order'].browse(self.env.context['active_ids'])
             res['email_contacts'] = [(6, 0, sale_orders.mapped('email_contacts').ids)]
