@@ -23,7 +23,7 @@
                     'bill@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Bill.png',
                     'ezekiel@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png'
                 }"/>
-                <t t-if="user_footers.get(user.email)">
+                <t t-if="user_footers.get(record.create_uid.email)">
                     <div>
                         <t t-out="record.create_uid.email"/>
                         <!-- <img t-att-src="user_footers.get(record.create_uid.email)" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/> -->
