@@ -1,274 +1,471 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template name="Rental Address Form" id="rental_address_form">
-		<t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
-		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
-		<t t-elif="o != undefined" t-set="source" t-value="o" />
-		<section id="user-info">
-			<form autocomplete="on">
-				<!-- Dates -->
-				<div>
-					<label for="rental-start">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
-						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
-					</label>
-					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
-					<br />
+    <template name="Rental Address Form" id="rental_address_form">
+        <t t-if="sale_order != undefined" t-set="source" t-value="sale_order"/>
+        <t t-elif="doc != undefined" t-set="source" t-value="doc"/>
+        <t t-elif="o != undefined" t-set="source" t-value="o"/>
+        <section id="user-info">
+            <form autocomplete="on">
+                <!-- Dates -->
+                <div>
+                    <label for="rental-start">
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
+                        <span t-if="clang == 'fr_CA'">Début de la Location:</span>
+                    </label>
+                    <input id="rental-start" type="date" t-attf-value="{{source.rental_start}}"/>
+                    <br/>
 
-					<label for="rental-end">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
-						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
-					</label>
-					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
-				</div>
-				<!-- Rental Hardware Estimate -->
-				<t t-if="rental_estimate_display == True">
-					<br />
-					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
-						* The final rental cost will be calculated once the equipement is returned.
-						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
-					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
-						* Le coût final sera calculé lorsque l'équipement sera retourné.
-						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-					</p>
+                    <label for="rental-end">
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
+                        <span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
+                    </label>
+                    <input t-if="source.rental_start != False" id="rental-end" type="date"
+                           t-attf-value="{{source.rental_end}}"/>
+                </div>
+                <!-- Rental Hardware Estimate -->
+                <t t-if="rental_estimate_display == True">
+                    <br/>
+                    <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+                        * The final rental cost will be calculated once the equipement is returned.
+                        Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
+                        Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
+                    </p>
+                    <p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+                        * Le coût final sera calculé lorsque l'équipement sera retourné.
+                        Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
+                        Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
+                    </p>
 
-					<br />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-english" /></span>
-					</t>
-					<br />
-					<br />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
-						<br />
-						<span>
-							Please upload your proof of insurance for the total amount in the comments below:
-						</span>
-						<br />
-					</div>
-					<div class=" rental_product_value" t-if=" clang== 'fr_CA'">
-						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
-						</span>
-						<br />
-						<span>
-							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
-						</span>
-						<br />
-					</div>
-				</t>
-				<br />
-				<!-- New Address Prompt -->
-				<div>
-					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
-					<input id="new-address" t-else="" type="checkbox" />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span>Is the shipping address the same as the billing address?</span>
-						<label id="address_yes_label" for="new-address">
-							<span style="cursor: pointer;">Yes</span>
-						</label>
-						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Yes</span>
-						<span>|</span>
-						<label id="address_no_label" for="new-address">
-							<span style="cursor: pointer;">No</span>
-						</label>
-						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
-					</t>
-					<t t-elif="clang == 'fr_CA'">
-						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
-						<label id="address_yes_label" for="new-address">
-							<span style="cursor: pointer;">Oui</span>
-						</label>
-						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Oui</span>
-						<span>|</span>
-						<label id="address_no_label" for="new-address">
-							<span style="cursor: pointer;">Non</span>
-						</label>
-						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
-					</t>
-					<br />
-					<!-- Rental Address -->
-					<div id="rental-address" class="rental-address">
-						<label for="street">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
-							<span t-elif="clang == 'fr_CA'">Rue</span>
-						</label>
-						<input id="street" type="text" t-attf-value="{{source.rental_street}}" />
-						<br />
-						<label for="city">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">City</span>
-							<span t-elif="clang == 'fr_CA'">Ville</span>
-						</label>
-						<input id="city" type="text" t-attf-value="{{source.rental_city}}" />
-						<br />
-						<label for="state">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">State/Province</span>
-							<span t-elif="clang == 'fr_CA'">Province/État</span>
-						</label>
-						<!-- States and Provinces -->
+                    <br/>
+                    <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories:
+                            <span id="rental-estimate-total-english"/>
+                        </span>
+                    </t>
+                    <t t-elif="clang == 'fr_CA'">
+                        <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
+                            accessoires:
+                            <span id="rental-estimate-total-english"/>
+                        </span>
+                    </t>
+                    <br/>
+                    <br/>
+                    <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span t-if="clang == 'en_CA' or clang == 'en_US'">Total Rental Value:&#160;
+                            <span id="total-rental-value-english"/>
+                        </span>
+                        <br/>
+                        <span>
+                            Please upload your proof of insurance for the total amount in the comments below:
+                        </span>
+                        <br/>
+                    </div>
+                    <div class=" rental_product_value" t-if=" clang== 'fr_CA'">
+                        <span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
+                        </span>
+                        <br/>
+                        <span>
+                            Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires
+                            ci-dessous:
+                        </span>
+                        <br/>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span>PO Number :</span>
+                        <input id="po_number" type="char" t-attf-value="{{source.customer_po_number}}"/>
+                    </div>
+                    <div t-if="clang == 'fr_CA'">
+                        <span>Numéro de bon de commande :
+                            <span id="total-rental-value-french"></span>
+                        </span>
+                        <input id="po_number" type="char" t-attf-value="{{source.customer_po_number}}"/>
+                    </div>
 
-						<!-- Canada -->
-						<select id="state">
-							<option t-if="source.rental_state.id == False" id="state-select" value="Select">Select</option>
-							<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
-							<option t-if="source.rental_state.id == 533" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Alberta</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Alberta</option>
-							<option t-if="source.rental_state.id == 534" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">British Columbia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">British Columbia</option>
-							<option t-if="source.rental_state.id == 535" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Manitoba</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Manitoba</option>
-							<option t-if="source.rental_state.id == 536" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">New Brunswick</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">New Brunswick</option>
-							<option t-if="source.rental_state.id == 538" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Northwest Territories</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Northwest Territories</option>
-							<option t-if="source.rental_state.id == 537" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Newfoundland and Labrador</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Newfoundland and Labrador</option>
-							<option t-if="source.rental_state.id == 539" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Nova Scotia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Nova Scotia</option>
-							<option t-if="source.rental_state.id == 540" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Nunavut</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Nunavut</option>
-							<option t-if="source.rental_state.id == 541" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Ontario</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Ontario</option>
-							<option t-if="source.rental_state.id == 542" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Prince Edward Island</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Prince Edward Island</option>
-							<option t-if="source.rental_state.id == 543" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Quebec</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Quebec</option>
-							<option t-if="source.rental_state.id == 544" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Saskatchewan</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Saskatchewan</option>
-							<option t-if="source.rental_state.id == 545" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Yukon</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Yukon</option>
+                    <br/>
+                    <br/>
+                    <div t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span>Invoicing Address:</span>
+                        <t t-set="invoice_address_ids" t-value="request.env['res.partner'].search([])"/>
+                        <select id="invoice_address" name="invoice_address_id" style="width:25%;">
+                            <t t-foreach="invoice_address_ids" t-as="address">
+                                <option t-att-value="address.id"
+                                        t-att-selected="address.id == source.partner_invoice_id.id">
+                                    <t t-esc="address.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span>Delivery Address:</span>
+                        <t t-set="delivery_address_ids" t-value="request.env['res.partner'].search([])"/>
+                        <select id="delivery_address" name="delivery_address_id" style="width:25%;">
+                            <t t-foreach="delivery_address_ids" t-as="address">
+                                <option t-att-value="address.id"
+                                        t-att-selected="address.id == source.partner_shipping_id.id">
+                                    <t t-esc="address.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
 
-							<!-- USA -->
-							<option t-if="source.rental_state.id == 9" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Alabama</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Alabama</option>
-							<option t-if="source.rental_state.id == 10" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Alaska</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Alaska</option>
-							<option t-if="source.rental_state.id == 11" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Arizona</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Arizona</option>
-							<option t-if="source.rental_state.id == 12" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Arkansas</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Arkansas</option>
-							<option t-if="source.rental_state.id == 13" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">California</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">California</option>
-							<option t-if="source.rental_state.id == 14" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Colorado</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Colorado</option>
-							<option t-if="source.rental_state.id == 15" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Connecticut</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Connecticut</option>
-							<option t-if="source.rental_state.id == 16" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Delaware</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Delaware</option>
-							<option t-if="source.rental_state.id == 17" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">District of Columbia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">District of Columbia</option>
-							<option t-if="source.rental_state.id == 18" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Florida</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Florida</option>
-							<option t-if="source.rental_state.id == 19" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Georgia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Georgia</option>
-							<option t-if="source.rental_state.id == 20" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Hawaii</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Hawaii</option>
-							<option t-if="source.rental_state.id == 21" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Idaho</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Idaho</option>
-							<option t-if="source.rental_state.id == 22" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Illinois</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Illinois</option>
-							<option t-if="source.rental_state.id == 23" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Indiana</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Indiana</option>
-							<option t-if="source.rental_state.id == 24" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Iowa</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Iowa</option>
-							<option t-if="source.rental_state.id == 25" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Kansas</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Kansas</option>
-							<option t-if="source.rental_state.id == 26" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Kentucky</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Kentucky</option>
-							<option t-if="source.rental_state.id == 27" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Louisiana</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Louisiana</option>
-							<option t-if="source.rental_state.id == 28" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Maine</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Maine</option>
-							<option t-if="source.rental_state.id == 29" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Montana</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Montana</option>
-							<option t-if="source.rental_state.id == 30" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Nebraska</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Nebraska</option>
-							<option t-if="source.rental_state.id == 31" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Nevada</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Nevada</option>
-							<option t-if="source.rental_state.id == 32" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">New Hampshire</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Hampshire</option>
-							<option t-if="source.rental_state.id == 33" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">New Jersey</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Jersey</option>
-							<option t-if="source.rental_state.id == 34" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">New Mexico</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Mexico</option>
-							<option t-if="source.rental_state.id == 35" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">New York</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New York</option>
-							<option t-if="source.rental_state.id == 36" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">North Carolina</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">North Carolina</option>
-							<option t-if="source.rental_state.id == 37" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">North Dakota</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">North Dakota</option>
-							<option t-if="source.rental_state.id == 38" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Ohio</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Ohio</option>
-							<option t-if="source.rental_state.id == 39" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Oklahoma</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Oklahoma</option>
-							<option t-if="source.rental_state.id == 40" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Oregon</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Oregon</option>
-							<option t-if="source.rental_state.id == 41" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Maryland</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Maryland</option>
-							<option t-if="source.rental_state.id == 42" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Massachusetts</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Massachusetts</option>
-							<option t-if="source.rental_state.id == 43" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Michigan</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Michigan</option>
-							<option t-if="source.rental_state.id == 44" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Minnesota</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Minnesota</option>
-							<option t-if="source.rental_state.id == 45" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Mississippi</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Mississippi</option>
-							<option t-if="source.rental_state.id == 46" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Missouri</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Missouri</option>
-							<option t-if="source.rental_state.id == 47" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Pennsylvania</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Pennsylvania</option>
-							<option t-if="source.rental_state.id == 48" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Rhode Island</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Rhode Island</option>
-							<option t-if="source.rental_state.id == 49" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">South Carolina</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">South Carolina</option>
-							<option t-if="source.rental_state.id == 50" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">South Dakota</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">South Dakota</option>
-							<option t-if="source.rental_state.id == 51" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Tennessee</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Tennessee</option>
-							<option t-if="source.rental_state.id == 52" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Texas</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Texas</option>
-							<option t-if="source.rental_state.id == 53" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Utah</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Utah</option>
-							<option t-if="source.rental_state.id == 54" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Vermont</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Vermont</option>
-							<option t-if="source.rental_state.id == 55" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Virginia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Virginia</option>
-							<option t-if="source.rental_state.id == 56" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Washington</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Washington</option>
-							<option t-if="source.rental_state.id == 57" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">West Virginia</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">West Virginia</option>
-							<option t-if="source.rental_state.id == 58" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Wisconsin</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Wisconsin</option>
-							<option t-if="source.rental_state.id == 59" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Wyoming</option>
-							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Wyoming</option>
-						</select>
-						<br />
-						<label for="country">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">Country</span>
-							<span t-elif="clang == 'fr_CA'">Pays</span>
-						</label>
-						<select id="country">
-							<option t-if="source.rental_country.id == False" value="Select">Select</option>
-							<option t-if="source.rental_country.id == 38" selected="selected" value="Canada">Canada</option>
-							<option t-else="" value="Canada">Canada</option>
-							<option t-if="source.rental_country.id == 233 and (clang == 'en_CA' or clang == 'en_US')" selected="selected" value="United States">United States</option>
-							<option t-elif="source.rental_country.id == 233 and (clang == 'fr_CA')" selected="selected" value="United States">États-Unis</option>
-							<option t-elif="clang == 'en_CA' or clang == 'en_US'" value="United States">United States</option>
-							<option t-elif="clang == 'fr_CA'" value="United States">États-Unis</option>
-						</select>
-						<br />
-						<label for="zip">
-							<span>Zip/Postal Code</span>
-						</label>
-						<input id="zip" type="text" t-attf-value="{{source.rental_zip}}" />
-					</div>
-				</div>
-			</form>
-		</section>
-	</template>
+                </t>
+                <br/>
+                <!-- New Address Prompt -->
+                <div>
+                    <input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true"/>
+                    <input id="new-address" t-else="" type="checkbox"/>
+                    <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <span>Is the shipping address the same as the billing address?</span>
+                        <label id="address_yes_label" for="new-address">
+                            <span style="cursor: pointer;">Yes</span>
+                        </label>
+                        <span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Yes</span>
+                        <span>|</span>
+                        <label id="address_no_label" for="new-address">
+                            <span style="cursor: pointer;">No</span>
+                        </label>
+                        <span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
+                    </t>
+                    <t t-elif="clang == 'fr_CA'">
+                        <span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
+                        <label id="address_yes_label" for="new-address">
+                            <span style="cursor: pointer;">Oui</span>
+                        </label>
+                        <span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Oui</span>
+                        <span>|</span>
+                        <label id="address_no_label" for="new-address">
+                            <span style="cursor: pointer;">Non</span>
+                        </label>
+                        <span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
+                    </t>
+                    <br/>
+                    <!-- Rental Address -->
+                    <div id="rental-address" class="rental-address">
+                        <label for="street">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
+                            <span t-elif="clang == 'fr_CA'">Rue</span>
+                        </label>
+                        <input id="street" type="text" t-attf-value="{{source.rental_street}}"/>
+                        <br/>
+                        <label for="city">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">City</span>
+                            <span t-elif="clang == 'fr_CA'">Ville</span>
+                        </label>
+                        <input id="city" type="text" t-attf-value="{{source.rental_city}}"/>
+                        <br/>
+                        <label for="state">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">State/Province</span>
+                            <span t-elif="clang == 'fr_CA'">Province/État</span>
+                        </label>
+                        <!-- States and Provinces -->
+
+                        <!-- Canada -->
+                        <select id="state">
+                            <option t-if="source.rental_state.id == False" id="state-select" value="Select">Select
+                            </option>
+                            <option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
+                            <option t-if="source.rental_state.id == 533" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Alberta
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Alberta</option>
+                            <option t-if="source.rental_state.id == 534" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">British Columbia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">British Columbia
+                            </option>
+                            <option t-if="source.rental_state.id == 535" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Manitoba
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Manitoba</option>
+                            <option t-if="source.rental_state.id == 536" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">New Brunswick
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">New Brunswick
+                            </option>
+                            <option t-if="source.rental_state.id == 538" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Northwest Territories
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Northwest
+                                Territories
+                            </option>
+                            <option t-if="source.rental_state.id == 537" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Newfoundland and Labrador
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Newfoundland and
+                                Labrador
+                            </option>
+                            <option t-if="source.rental_state.id == 539" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Nova Scotia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Nova Scotia</option>
+                            <option t-if="source.rental_state.id == 540" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Nunavut
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Nunavut</option>
+                            <option t-if="source.rental_state.id == 541" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Ontario
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Ontario</option>
+                            <option t-if="source.rental_state.id == 542" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Prince Edward Island
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Prince Edward
+                                Island
+                            </option>
+                            <option t-if="source.rental_state.id == 543" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Quebec
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Quebec</option>
+                            <option t-if="source.rental_state.id == 544" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Saskatchewan
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Saskatchewan</option>
+                            <option t-if="source.rental_state.id == 545" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} can-op">Yukon
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Yukon</option>
+
+                            <!-- USA -->
+                            <option t-if="source.rental_state.id == 9" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Alabama
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Alabama</option>
+                            <option t-if="source.rental_state.id == 10" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Alaska
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Alaska</option>
+                            <option t-if="source.rental_state.id == 11" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Arizona
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Arizona</option>
+                            <option t-if="source.rental_state.id == 12" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Arkansas
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Arkansas</option>
+                            <option t-if="source.rental_state.id == 13" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">California
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">California</option>
+                            <option t-if="source.rental_state.id == 14" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Colorado
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Colorado</option>
+                            <option t-if="source.rental_state.id == 15" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Connecticut
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Connecticut</option>
+                            <option t-if="source.rental_state.id == 16" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Delaware
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Delaware</option>
+                            <option t-if="source.rental_state.id == 17" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">District of Columbia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">District of Columbia
+                            </option>
+                            <option t-if="source.rental_state.id == 18" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Florida
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Florida</option>
+                            <option t-if="source.rental_state.id == 19" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Georgia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Georgia</option>
+                            <option t-if="source.rental_state.id == 20" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Hawaii
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Hawaii</option>
+                            <option t-if="source.rental_state.id == 21" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Idaho
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Idaho</option>
+                            <option t-if="source.rental_state.id == 22" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Illinois
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Illinois</option>
+                            <option t-if="source.rental_state.id == 23" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Indiana
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Indiana</option>
+                            <option t-if="source.rental_state.id == 24" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Iowa
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Iowa</option>
+                            <option t-if="source.rental_state.id == 25" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Kansas
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Kansas</option>
+                            <option t-if="source.rental_state.id == 26" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Kentucky
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Kentucky</option>
+                            <option t-if="source.rental_state.id == 27" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Louisiana
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Louisiana</option>
+                            <option t-if="source.rental_state.id == 28" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Maine
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Maine</option>
+                            <option t-if="source.rental_state.id == 29" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Montana
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Montana</option>
+                            <option t-if="source.rental_state.id == 30" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Nebraska
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Nebraska</option>
+                            <option t-if="source.rental_state.id == 31" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Nevada
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Nevada</option>
+                            <option t-if="source.rental_state.id == 32" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">New Hampshire
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Hampshire</option>
+                            <option t-if="source.rental_state.id == 33" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">New Jersey
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Jersey</option>
+                            <option t-if="source.rental_state.id == 34" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">New Mexico
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New Mexico</option>
+                            <option t-if="source.rental_state.id == 35" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">New York
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">New York</option>
+                            <option t-if="source.rental_state.id == 36" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">North Carolina
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">North Carolina
+                            </option>
+                            <option t-if="source.rental_state.id == 37" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">North Dakota
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">North Dakota</option>
+                            <option t-if="source.rental_state.id == 38" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Ohio
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Ohio</option>
+                            <option t-if="source.rental_state.id == 39" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Oklahoma
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Oklahoma</option>
+                            <option t-if="source.rental_state.id == 40" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Oregon
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Oregon</option>
+                            <option t-if="source.rental_state.id == 41" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Maryland
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Maryland</option>
+                            <option t-if="source.rental_state.id == 42" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Massachusetts
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Massachusetts</option>
+                            <option t-if="source.rental_state.id == 43" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Michigan
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Michigan</option>
+                            <option t-if="source.rental_state.id == 44" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Minnesota
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Minnesota</option>
+                            <option t-if="source.rental_state.id == 45" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Mississippi
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Mississippi</option>
+                            <option t-if="source.rental_state.id == 46" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Missouri
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Missouri</option>
+                            <option t-if="source.rental_state.id == 47" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Pennsylvania
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Pennsylvania</option>
+                            <option t-if="source.rental_state.id == 48" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Rhode Island
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Rhode Island</option>
+                            <option t-if="source.rental_state.id == 49" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">South Carolina
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">South Carolina
+                            </option>
+                            <option t-if="source.rental_state.id == 50" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">South Dakota
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">South Dakota</option>
+                            <option t-if="source.rental_state.id == 51" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Tennessee
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Tennessee</option>
+                            <option t-if="source.rental_state.id == 52" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Texas
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Texas</option>
+                            <option t-if="source.rental_state.id == 53" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Utah
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Utah</option>
+                            <option t-if="source.rental_state.id == 54" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Vermont
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Vermont</option>
+                            <option t-if="source.rental_state.id == 55" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Virginia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Virginia</option>
+                            <option t-if="source.rental_state.id == 56" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Washington
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Washington</option>
+                            <option t-if="source.rental_state.id == 57" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">West Virginia
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">West Virginia</option>
+                            <option t-if="source.rental_state.id == 58" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Wisconsin
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Wisconsin</option>
+                            <option t-if="source.rental_state.id == 59" selected="selected"
+                                    t-attf-class="{{source.rental_country.name}} us-op">Wyoming
+                            </option>
+                            <option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Wyoming</option>
+                        </select>
+                        <br/>
+                        <label for="country">
+                            <span t-if="clang == 'en_CA' or clang == 'en_US'">Country</span>
+                            <span t-elif="clang == 'fr_CA'">Pays</span>
+                        </label>
+                        <select id="country">
+                            <option t-if="source.rental_country.id == False" value="Select">Select</option>
+                            <option t-if="source.rental_country.id == 38" selected="selected" value="Canada">Canada
+                            </option>
+                            <option t-else="" value="Canada">Canada</option>
+                            <option t-if="source.rental_country.id == 233 and (clang == 'en_CA' or clang == 'en_US')"
+                                    selected="selected" value="United States">United States
+                            </option>
+                            <option t-elif="source.rental_country.id == 233 and (clang == 'fr_CA')" selected="selected"
+                                    value="United States">États-Unis
+                            </option>
+                            <option t-elif="clang == 'en_CA' or clang == 'en_US'" value="United States">United States
+                            </option>
+                            <option t-elif="clang == 'fr_CA'" value="United States">États-Unis</option>
+                        </select>
+                        <br/>
+                        <label for="zip">
+                            <span>Zip/Postal Code</span>
+                        </label>
+                        <input id="zip" type="text" t-attf-value="{{source.rental_zip}}"/>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </template>
 </odoo>

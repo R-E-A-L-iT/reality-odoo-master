@@ -19,6 +19,9 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "change #country": "_country",
         "change #rental-start": "_start",
         "change #rental-end": "_end",
+        "change #po_number": "_change_po_number",
+        "change #invoice_address": "_change_invoice_address_id",
+        "change #delivery_address": "_change_delivery_address_id",
     },
 
     async start() {
@@ -58,6 +61,8 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 //            },
 //        });
     },
+
+
 
     _city: function (ev) {
         var target = ev.currentTarget;
@@ -180,5 +185,32 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 //            },
 //        });
     },
+    // For PO Number
+    _change_po_number : function(ev) {
+        var target = ev.currentTarget;
+        var po_number = target.value;
+        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/po_number", {
+                        "access_token": this.orderDetail.token,
+                        "po_number": po_number,
+                    });
+    },
+    _change_invoice_address_id : function(ev) {
+        var target = ev.currentTarget;
+        var invoice_address_id = target.value;
+        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/invoice_address", {
+                        "access_token": this.orderDetail.token,
+                        "invoice_address_id": invoice_address_id,
+                    });
+    },
+
+    _change_delivery_address_id : function(ev) {
+        var target = ev.currentTarget;
+        var delivery_address_id = target.value;
+        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/delivery_address", {
+                        "access_token": this.orderDetail.token,
+                        "delivery_address_id": delivery_address_id,
+                    });
+    },
+
 });
 //});

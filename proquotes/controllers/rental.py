@@ -62,6 +62,8 @@ class RentalCustomerPortal(cPortal):
 
         return
 
+
+
     @http.route(
         ["/my/orders/<int:order_id>/city"], type="json", auth="public", website=True
     )
@@ -275,4 +277,40 @@ class RentalCustomerPortal(cPortal):
 
         order_sudo.rental_end = end
         self.checkDates(order_sudo)
+        return
+
+    # For PO Numebr
+    @http.route(["/my/orders/<int:order_id>/po_number"], type="json", auth="public", website=True)
+    def po_number(self, order_id, po_number, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(po_number):
+            return
+        order_sudo.customer_po_number = po_number
+        return
+
+    # For invoice address
+    @http.route(["/my/orders/<int:order_id>/invoice_address"], type="json", auth="public", website=True)
+    def invoice_address(self, order_id, invoice_address_id, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(invoice_address_id):
+            return
+        order_sudo.write({'partner_invoice_id':int(invoice_address_id)})
+        return
+
+    # For delivery address
+    @http.route(["/my/orders/<int:order_id>/delivery_address"], type="json", auth="public", website=True)
+    def delivery_address(self, order_id, delivery_address_id, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(delivery_address_id):
+            return
+        order_sudo.write({'partner_shipping_id': int(delivery_address_id)})
         return
