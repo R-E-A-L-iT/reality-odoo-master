@@ -48,144 +48,58 @@ from odoo.tools import groupby as groupbyelem
 
 
 class CustomerPortalReal(CustomerPortal):
-    # @route(['/my', '/my/home'], type='http', auth="user", website=True)
-    # def home(self, **kw):
-    #     values = {}
-    #     #companies = request.env['res.company'].sudo().search([])
-    #     partner = request.env.user.partner_id
-    #     SaleOrder = request.env['sale.order']
-    #     companies = partner.sudo().portal_companies
-    #
-    #     if companies:
-    #         companies_all_data = []
-    #         for company in companies:
-    #             print(company)
-    #             company_data = []
-    #
-    #             # Quotation block
-    #             quotation_count = SaleOrder.sudo().search_count(self._prepare_quotations_domain_companywise(partner, company)) \
-    #                 if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Quotations',
-    #                 'url': _('/my/quotes/company/%s') % int(company.id),
-    #                 'placeholder_count': quotation_count,
-    #             })
-    #
-    #             # Sale order block
-    #             order_count = SaleOrder.sudo().search_count(self._prepare_orders_domain_companywise(partner, company)) \
-    #                 if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Sales Orders',
-    #                 'url': _('/my/orders/company/%s') % int(company.id),
-    #                 'placeholder_count': order_count,
-    #             })
-    #
-    #             # Invoice block
-    #             invoice_count = request.env['account.move'].sudo().search_count(self._get_invoices_domain_companywise(company)) \
-    #                 if request.env['account.move'].check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Invoices',
-    #                 'url': _('/my/invoices/company/%s') % int(company.id),
-    #                 'placeholder_count': invoice_count,
-    #             })
-    #
-    #             # Tickets Block
-    #             ticket_count = request.env['helpdesk.ticket'].sudo().search_count(self._prepare_helpdesk_tickets_domain_companywise(company)) \
-    #                 if request.env['helpdesk.ticket'].check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Tickets',
-    #                 'url': _('/my/tickets/company/%s') % int(company.id),
-    #                 'placeholder_count': ticket_count,
-    #             })
-    #
-    #             # Rental Products
-    #             # rental_orders = request.env['sale.order'].sudo().search(self._prepare_rental_orders_domain_companywise(partner, company))
-    #             #     # if request.env['sale.order'].check_access_rights('read', raise_exception=False) else 0
-    #             # if rental_orders:
-    #             #     rental_product_count = len(rental_orders.mapped('order_line').mapped('product_id').ids)
-    #             # else:
-    #             #     rental_product_count = 0
-    #             # company_data.append({
-    #             #     'title': 'Rental Products',
-    #             #     'url': _('/my/rental/products/company/%s') % int(company.id),
-    #             #     'placeholder_count': rental_product_count,
-    #             # })
-    #
-    #             # Pass all blocks to list of that company
-    #             companies_all_data.append({
-    #                 'company_name': company.name,
-    #                 'company_data': company_data
-    #             })
-    #         values['companies'] = companies_all_data
-    #     else:
-    #         values['companies'] = False
-    #
-    #     print('>>>>>>>>>>>>>>>> deduct 01 ?????????????????????',request.render("ba_customer_portal_extension.portal_my_home_company_wise", values))
-    #     return request.render("ba_customer_portal_extension.portal_my_home_company_wise", values)
 
     @route(['/my', '/my/home'], type='http', auth="user", website=True)
     def home(self, **kw):
         values = {}
         # companies = request.env['res.company'].sudo().search([])
         partner = request.env.user.partner_id
-        print('>....................... partner ?????????', partner)
         SaleOrder = request.env['sale.order']
         companies = partner.sudo().portal_companies_ids
-        print('>....................... companies ?????????', companies)
 
         if companies:
-            print('>>>>>>>>>>> if ??????????????????????????????')
             companies_all_data = []
             for company in companies:
-                print('--company--', company)
                 company_data = []
 
                 # Quotation block
                 quotation_count = SaleOrder.sudo().search_count(
                     self._prepare_quotations_domain_companywise(partner, company)) \
                     if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-                print('>>>>>>>>>>>>>>>>>>>>> quotation_count ??????????????????????????', quotation_count)
                 company_data.append({
                     'title': 'Quotations',
                     'url': _('/my/quotes/company/%s') % int(company.id),
                     'placeholder_count': quotation_count,
                 })
-                print('>>>>>>>>>> quotation_count ???????????????????????', quotation_count)
 
                 # Sale order block
                 order_count = SaleOrder.sudo().search_count(self._prepare_orders_domain_companywise(partner, company)) \
                     if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-                print('>>>>>>>>>>>> order_count ????????????????????', order_count)
                 company_data.append({
                     'title': 'Sales Orders',
                     'url': _('/my/orders/company/%s') % int(company.id),
                     'placeholder_count': order_count,
                 })
-                print('>>>>>>>>>>>>>>> company_data order count ????????????????????????', company_data)
 
                 # Invoice block
                 invoice_count = request.env['account.move'].sudo().search_count(
                     self._get_invoices_domain_companywise(company)) \
                     if request.env['account.move'].check_access_rights('read', raise_exception=False) else 0
-                print('>>>>>>>>>>>>>>>>> invoice_count ???????????????????????????????', invoice_count)
                 company_data.append({
                     'title': 'Invoices',
                     'url': _('/my/invoices/company/%s') % int(company.id),
                     'placeholder_count': invoice_count,
                 })
-                print('>>>>>>>>>>>>>>> company_data dffd ????????????????????????', company_data)
 
                 # Tickets Block
                 ticket_count = request.env['helpdesk.ticket'].sudo().search_count(
                     self._prepare_helpdesk_tickets_domain_companywise(company)) \
                     if request.env['helpdesk.ticket'].check_access_rights('read', raise_exception=False) else 0
-                print('>> ticket_count ?????', ticket_count)
                 company_data.append({
                     'title': 'Tickets',
                     'url': _('/my/tickets/company/%s') % int(company.id),
                     'placeholder_count': ticket_count,
                 })
-                print('>> Company_data ?????', company_data)
 
                 # Rental Products
                 # rental_orders = request.env['sale.order'].sudo().search(self._prepare_rental_orders_domain_companywise(partner, company))
@@ -206,13 +120,8 @@ class CustomerPortalReal(CustomerPortal):
                     'company_data': company_data
                 })
             values['companies'] = companies_all_data
-            print('>> Company ?????', values['companies'])
         else:
-            print('>>>>>>>>>>> else ??????????????????????????????')
             values['companies'] = False
-
-        # print('>>>>>>>>>>>>>>... sdddds ???????????????????',
-        #       request.render("ba_customer_portal_extension.portal_my_home_company_wise", values))
         return request.render("ba_customer_portal_extension.portal_my_home_company_wise", values)
 
     @http.route(['/my/quotes', '/my/quotes/company/<int:partner_company_id>', '/my/quotes/company/<int:partner_company_id>/page/<int:page>', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
@@ -264,7 +173,6 @@ class CustomerPortalReal(CustomerPortal):
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
         })
-        print('>>>>>>>>>>>>>>>. deduct 2.0 ????????????????????',request.render("sale.portal_my_quotations", values))
         return request.render("sale.portal_my_quotations", values)
 
     @http.route(['/my/orders', '/my/orders/company/<int:partner_company_id>', '/my/orders/company/<int:partner_company_id>/page/<int:page>', '/my/orders/page/<int:page>'], type='http', auth="user", website=True)
@@ -316,7 +224,6 @@ class CustomerPortalReal(CustomerPortal):
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
         })
-        print('>>>>>>>>>>>>>.... deduct 3 ????????????????????',request.render("sale.portal_my_orders", values))
         return request.render("sale.portal_my_orders", values)
 
     @http.route(['/my/orders/<int:order_id>','/my/orders/company/<int:order_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
@@ -345,6 +252,11 @@ class CustomerPortalReal(CustomerPortal):
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
                 order_sudo.message_post(body=body)
 
+        backend_url = f'/web#model={order_sudo._name}'\
+                      f'&id={order_sudo.id}'\
+                      f'&action={order_sudo._get_portal_return_action().id}'\
+                      f'&view_type=form'
+
         values = {
             'sale_order': order_sudo,
             'message': message,
@@ -354,6 +266,7 @@ class CustomerPortalReal(CustomerPortal):
             'partner_id': order_sudo.partner_id.id,
             'report_type': 'html',
             'action': order_sudo._get_portal_return_action(),
+            'backend_url': backend_url,
         }
         if order_sudo.company_id:
             values['res_company'] = order_sudo.company_id
