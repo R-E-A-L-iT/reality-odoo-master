@@ -16,21 +16,9 @@
                 </div>
             </t>
             <t t-elif="record._name == 'helpdesk.ticket'">
-                <t t-set="user_footers" t-value="{
-                    'horia@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png',
-                    'mael@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Mael.png',
-                    'derek@r-e-a-l.it': 'https://cdn.r-e-a-l.it/images/footer/REALiTFooter_Derek.png',
-                    'bill@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Bill.png',
-                    'ezekiel@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png',
-                    'notifications@r-e-a-l.it': 'http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png'
-                }"/>
-                <t t-if="user_footers.get(record.create_uid.email)">
-                    <div>
-                        <!-- <t t-out="record.create_uid.email"/> -->
-                        <img t-att-src="user_footers.get(record.create_uid.email)" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
-                        <t t-log="user_footers.get(record.create_uid.email)"/>
-                    </div>
-                </t>
+               <div>
+                    <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                </div>
             </t>
         </xpath>
         <xpath expr="//td[@t-if='subtitles']" position="replace">
