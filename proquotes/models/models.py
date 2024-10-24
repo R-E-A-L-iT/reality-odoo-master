@@ -1663,7 +1663,7 @@ class ticket(models.Model):
     def _default_footer(self):
         return self.env['header.footer'].search([], limit=1)
 
-    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
+    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True, domain=[('name', 'ilike', 'FOOTER')],)
 
 # pdf footer
 

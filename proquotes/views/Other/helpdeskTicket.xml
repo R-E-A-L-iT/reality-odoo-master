@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <!-- Insert the footer_id field after the existing fields (adjust position as needed) -->
             <xpath expr="//group" position="inside">
-                <field name="footer_id"/>
+                <field name="footer_id" string="Footer"/>
             </xpath>
         </field>
     </record>
