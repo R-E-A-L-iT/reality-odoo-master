@@ -347,16 +347,14 @@
                         </strong>
                     </span>
                     <!-- <span t-if="line.special != 'optional' or line.selected == 'true'"
+                    <span t-if="line.special != 'optional' or line.selected == 'true'"
                           class="subtotal-destination text-left" style="font-weight: 400 !important;"/>
                     <span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left"
-                          style="font-weight: 400 !important;"><span t-out="current_subtotal">0.00</span> $
+                          style="font-weight: 400 !important;">0.00 $
                     </span>
-                    <span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ <span t-out="current_subtotal">0.00</span></span> -->
 
-                    <t t-if="current_subtotal">
-                        <!-- <span>True</span> -->
-                        <t t-out="current_subtotal" />
                     </t>
+                    <span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
                 </label>
             </div>
         </xpath>
