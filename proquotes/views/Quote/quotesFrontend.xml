@@ -84,7 +84,7 @@
                     </label>
                     <input id="po_number"  class="form-control" type="char" t-attf-value="{{sale_order.customer_po_number}}" style="width: 79%;"/>
                 </div>
-                <div class="col-md-4" t-if="clang == 'en_CA' or clang == 'en_US'">
+                <!-- <div class="col-md-4" t-if="clang == 'en_CA' or clang == 'en_US'">
                     <span>Invoicing Address:</span>
                     <t t-if="sale_order.partner_id and sale_order.partner_id.child_ids">
                         <t t-set="invoice_address_ids" t-value="request.env['res.partner'].sudo().search([('type','=','invoice'), '|', ('id', '=', sale_order.partner_id.id), ('parent_id', '=', sale_order.partner_id.id)])"/>
@@ -100,10 +100,10 @@
                             </option>
                         </t>
                     </select>
-                </div>
+                </div> -->
             </div>
             <br/>
-            <div>
+            <!-- <div>
                 <span>Delivery Address:</span>
                 <t t-if="sale_order.partner_id and sale_order.partner_id.child_ids">
                         <t t-set="invoice_address_ids" t-value="request.env['res.partner'].sudo().search([('type','=','delivery'), '|', ('id', '=', sale_order.partner_id.id), ('parent_id', '=', sale_order.partner_id.id)])"/>
@@ -119,8 +119,11 @@
                         </option>
                     </t>
                 </select>
-            </div>
+            </div> -->
             <br/>
+            <div class="row">
+                <h3 style="font-weight: bold;">Delivery Address</h3>
+            </div>
             <div class="row">
                 <div class="col-md-4">
                     <label for="street">
