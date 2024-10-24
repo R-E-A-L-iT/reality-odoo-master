@@ -90,6 +90,7 @@
         "views/PO/PO_Backend.xml",
         "views/PO/PO_PDF.xml",
         "views/Other/quoteEmailFooter.xml",
+        "views/Other/helpdeskTicket.xml"
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode
