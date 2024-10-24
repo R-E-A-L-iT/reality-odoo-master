@@ -62,8 +62,6 @@ class RentalCustomerPortal(cPortal):
 
         return
 
-
-
     @http.route(
         ["/my/orders/<int:order_id>/city"], type="json", auth="public", website=True
     )
@@ -300,7 +298,7 @@ class RentalCustomerPortal(cPortal):
             return request.redirect("/my")
         if not self.validate(invoice_address_id):
             return
-        order_sudo.write({'partner_invoice_id':int(invoice_address_id)})
+        order_sudo.write({'partner_invoice_id': int(invoice_address_id)})
         return
 
     # For delivery address
@@ -328,6 +326,19 @@ class RentalCustomerPortal(cPortal):
         partner_id.write({'street': shipping_street})
         return
 
+    # For delivery address city
+    @http.route(["/my/orders/<int:order_id>/shipping_city"], type="json", auth="public", website=True)
+    def delivery_address_shipping_city(self, order_id, shipping_city, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access("sale.order", order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+        if not self.validate(shipping_city):
+            return
+        partner_id = order_sudo.partner_shipping_id
+        partner_id.write({'city': shipping_city})
+        return
+
     # For delivery address country
     @http.route(["/my/orders/<int:order_id>/shipping_country"], type="json", auth="public", website=True)
     def delivery_address_shipping_country(self, order_id, shipping_country, access_token=None, **post):
@@ -340,7 +351,6 @@ class RentalCustomerPortal(cPortal):
         partner_id = order_sudo.partner_shipping_id
         partner_id.write({'country_id': int(shipping_country)})
         return
-
 
     # For delivery address state
     @http.route(["/my/orders/<int:order_id>/shipping_state"], type="json", auth="public", website=True)
