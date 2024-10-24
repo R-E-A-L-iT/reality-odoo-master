@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="footer_horia" model="header.footer">
+        <field name="name">EMAIL - Horia R-E-A-L.iT Footer</field>
+        <field name="record_type">Footer</field>
+        <field name="url">http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png</field>
+    </record>
+
+    <record id="footer_bill" model="header.footer">
+        <field name="name">EMAIL - Bill R-E-A-L.iT Footer</field>
+        <field name="record_type">Footer</field>
+        <field name="url">http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Bill.png</field>
+    </record>
+
+    <record id="footer_mael" model="header.footer">
+        <field name="name">EMAIL - Maël R-E-A-L.iT Footer</field>
+        <field name="record_type">Footer</field>
+        <field name="url">http://cdn.r-e-a-l.it/images/footer/REALiTFooter_Mael.png</field>
+    </record>
+</odoo>
