@@ -1661,14 +1661,12 @@ class ticket(models.Model):
     _inherit = 'helpdesk.ticket'
 
     current_user = self.env.user
-        if current_user.name == "Horia":
-            return self.env['header.footer'].search([('id', '=', 'footer_horia')], limit=1).id
-        elif current_user.name == "Bill":
-            return self.env['header.footer'].search([('id', '=', 'footer_bill')], limit=1).id
-        elif current_user.name == "Maël":
-            return self.env['header.footer'].search([('id', '=', 'footer_mael')], limit=1).id
-        # Add other user checks if necessary
-        return self.env['header.footer'].search([], limit=1).id
+    if current_user.name == "Horia":
+        return self.env['header.footer'].search([('id', '=', 'footer_horia')], limit=1).id
+    elif current_user.name == "Bill":
+        return self.env['header.footer'].search([('id', '=', 'footer_bill')], limit=1).id
+    elif current_user.name == "Maël":
+        return self.env['header.footer'].search([('id', '=', 'footer_mael')], limit=1).id
 
     footer_id = fields.Many2one("header.footer", default=_default_footer, required=True, domain=[('name', 'ilike', 'EMAIL')],)
 
