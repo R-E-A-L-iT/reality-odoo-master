@@ -352,6 +352,11 @@
                           style="font-weight: 400 !important;"><span t-out="current_subtotal">0.00</span> $
                     </span>
                     <span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ <span t-out="current_subtotal">0.00</span></span>
+
+                    <t t-if="current_subtotal">
+                        <span>True</span>
+                        <t t-out="current_subtotal" />
+                    </t>
                 </label>
             </div>
         </xpath>
