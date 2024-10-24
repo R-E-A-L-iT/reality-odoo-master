@@ -334,7 +334,7 @@
                 </t>
             </div>
 
-            <!-- <div style="width: 25%; float: right">
+            <div style="width: 25%; float: right">
                 <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
@@ -358,7 +358,7 @@
                         <t t-out="current_subtotal" />
                     </t>
                 </label>
-            </div> -->
+            </div>
         </xpath>
 
         <xpath expr="//span[@class='subtotal-destination']" position="replace">
