@@ -527,9 +527,9 @@
                 #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td {
                 padding: 20px !important;
                 }
-                .is-subtotal {
+                /*.is-subtotal {
                 display: none !important;
-                }
+                }*/
                 .quoteLineRow &gt; #product_name {
                 padding: 20px !important;
                 padding-top: 20px !important;
