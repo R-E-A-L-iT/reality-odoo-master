@@ -334,7 +334,7 @@
                 </t>
             </div>
 
-            <div style="width: 25%; float: right">
+            <!-- <div style="width: 25%; float: right">
                 <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
@@ -358,7 +358,16 @@
                         <t t-out="current_subtotal" />
                     </t>
                 </label>
-            </div>
+            </div> -->
+        </xpath>
+
+        <xpath expr="//span[@class='subtotal-destination']" position="replace">
+            <t t-if="current_subtotal > 0">
+                <span>Subtotal: </span><t t-out="current_subtotal"/>
+            </t>
+            <t t-else="">
+                <span>Subtotal: 0.00</span>
+            </t>
         </xpath>
 
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
@@ -457,6 +466,7 @@
         <!-- subtotal calculations -->
         <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
             <t t-set="current_subtotal" t-value="0"/>
+            
             <t t-if="line.selected == 'true' and not sale_order.is_rental">
                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
             </t>
