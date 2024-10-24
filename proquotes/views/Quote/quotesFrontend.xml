@@ -63,13 +63,13 @@
         <!--            </attribute>-->
         <!--        </xpath>-->
 
-        <!-- <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
+        <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
             <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
                 'line_section') and not line.is_downpayment and line.name != '$hardware' and line.name != '$software'
                 and line.name != '$subscription'
             </attribute>
-        </tr> -->
+        </tr>
 
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
@@ -438,19 +438,19 @@
 
 
         <!--End Multiple Choice Section Upon Optional Product-->
-        <!-- <xpath expr="//t[@t-set=&quot;current_subtotal&quot;]" position="before">
+        <xpath expr="//t[@t-set=&quot;current_subtotal&quot;]" position="before">
             <t t-if="not current_section_ended">
                 <t t-if="current_section and line.optional == 'yes' and current_section.special == 'multiple'"
                    t-set="current_section_ended" t-value="true"/>
             </t>
-        </xpath> -->
+        </xpath>
 
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
             <t t-set="current_section_ended" t-value="false"/>
         </xpath>
 
         <!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
-        <!-- <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
             <t t-if="line.selected == 'true' and not current_section_ended">
                 <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
                     <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
@@ -478,10 +478,10 @@
                     <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
                 </t>
             </t>
-        </xpath> -->
+        </xpath>
 
         <!-- Section Rental Estimate Given Rental Dates -->
-        <!-- <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
             <t t-set="current_total" t-value="0"/>
             <t t-if="line.selected == 'true' and not current_section_ended">
                 <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
@@ -511,7 +511,7 @@
                     <t t-set="current_total" t-value="current_total + rentalRate"/>
                 </t>
             </t>
-        </xpath> -->
+        </xpath>
 
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
