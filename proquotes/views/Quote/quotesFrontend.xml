@@ -334,7 +334,7 @@
                 </t>
             </div>
 
-            <div style="width: 25%; float: right">
+            <!-- <div style="width: 25%; float: right">
                 <label class="subtotal-label" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
@@ -358,16 +358,18 @@
                         <t t-out="current_subtotal" />
                     </t>
                 </label>
-            </div>
+            </div> -->
         </xpath>
 
-        <xpath expr="//span[@class='subtotal-destination']" position="replace">
-            <t t-if="current_subtotal > 0">
-                <span>Subtotal: </span><t t-out="current_subtotal"/>
-            </t>
-            <t t-else="">
-                <span>Subtotal: 0.00</span>
-            </t>
+        <xpath expr="//table[@id='sales_order_table']/tbody" position="after">
+            <div>
+                <span t-if="current_subtotal > 0">
+                    Subtotal: <t t-out="current_subtotal"/>
+                </span>
+                <span t-else="">
+                    Subtotal: 0.00
+                </span>
+            </div>
         </xpath>
 
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
