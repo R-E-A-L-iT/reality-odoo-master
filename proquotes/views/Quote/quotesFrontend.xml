@@ -518,53 +518,6 @@
             </t>
         </xpath> -->
 
-        <xpath expr="//tbody[@class='sale_tbody']" position="replace">
-            <t t-set="total_subtotal" t-value="0"/>
-                <t t-foreach="lines_to_report" t-as="line" t-index="line_index">
-
-                    <!-- Check if it's a section and reset section subtotal -->
-                    <t t-if="line.display_type == 'line_section'">
-                        <t t-set="current_section_subtotal" t-value="0"/>
-                        <tr class="o_line_section">
-                            <td colspan="99">
-                                <span t-field="line.name"/>
-                            </td>
-                        </tr>
-                    </t>
-
-                    <!-- Regular lines, adding to the current section subtotal -->
-                    <t t-if="not line.display_type">
-                        <tr>
-                            <td><span t-field="line.name"/></td>
-                            <td class="text-end"><span t-field="line.product_uom_qty"/></td>
-                            <td class="text-end"><span t-field="line.price_unit"/></td>
-                            <td class="text-end"><span t-field="line.price_subtotal"/></td>
-                        </tr>
-                        <!-- Update the current section subtotal -->
-                        <t t-set="current_section_subtotal" t-value="current_section_subtotal + line.price_subtotal"/>
-                        <t t-set="total_subtotal" t-value="total_subtotal + line.price_subtotal"/>
-                    </t>
-
-                    <!-- Display the subtotal at the end of each section -->
-                    <t t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section')">
-                        <tr class="text-end">
-                            <td colspan="99">
-                                <strong>Section Subtotal</strong>
-                                <span t-out="current_section_subtotal" t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
-                            </td>
-                        </tr>
-                    </t>
-                </t>
-
-                <!-- Display the overall total at the end -->
-                <tr class="text-end">
-                    <td colspan="99">
-                        <strong>Total Subtotal</strong>
-                        <span t-out="total_subtotal" t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
-                    </td>
-                </tr>
-        </xpath>
-
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
             <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price"
@@ -611,7 +564,7 @@
         </xpath>
 
         <!-- Hide Uneeded Unit Column -->
-        <!-- <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/> -->
+        <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
