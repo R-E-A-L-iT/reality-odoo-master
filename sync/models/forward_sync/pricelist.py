@@ -26,11 +26,26 @@ class sync_pricelist:
 
 
 
+    # utility function
+    # in odoo, booleans are "True" or "False"
+    # in sheets, booleans are "TRUE" or "FALSE"
+    # this function normalizes those values
+    def normalize_bools(self, value):
+        if value.strip().upper() in ["TRUE", "1"]:
+            return True
+        elif value.strip().upper() in ["FALSE", "0", ""]:
+            return False
+
+        return value.strip()
+
+
+
     # add error to sync report function
     # sync report sent on sync end
     def add_to_report(self, level, message):
         entry = f"{level.upper()}: {message}"
         self.sync_report.append(entry)
+
 
 
     # this function will be called to start the synchronization process for pricelists.
@@ -211,7 +226,7 @@ class sync_pricelist:
                         # get new sheets value
                         column_index = sheet_columns.index(column_name)
                         sheet_value = str(row[column_index]).strip()
-                        sheet_value_normalized = utilities.normalize_bools(self, sheet_value)
+                        sheet_value_normalized = self.normalize_bools(sheet_value.strip())
 
                         # update name fields for both languages
                         if column_name in ["EN-Name", "FR-Name"]:
@@ -383,7 +398,7 @@ class sync_pricelist:
                         # update published status
                         elif column_name in ["Publish_CA", "Publish_USA"]:
 
-                            publish = utilities.normalize_bools(self, sheet_value.strip())
+                            publish = self.normalize_bools(sheet_value.strip())
                             
                             if column_name == "Publish_CA":
                                 product.is_ca = publish
@@ -402,7 +417,7 @@ class sync_pricelist:
 
                         # update sale and rental status
                         elif column_name in ["Can_Be_Sold", "Can_Be_Rented"]:
-                            can_be_value = utilities.normalize_bools(self, sheet_value.strip())
+                            can_be_value = self.normalize_bools(sheet_value.strip())
 
                             if column_name == "Can_Be_Sold":
                                 product.sale_ok = can_be_value
@@ -604,7 +619,7 @@ class sync_pricelist:
                         # elif column_name == "SKU":
                             # _logger.error("[sheet_value] SKU: " + sheet_value)
                         elif column_name in ["Publish_CA", "Publish_USA", "Can_Be_Sold", "Can_Be_Rented"]:
-                            product_values[field_info] = utilities.normalize_bools(self, sheet_value)
+                            product_values[field_info] = self.normalize_bools(sheet_value.strip())
                         elif column_name == "PriceCAD":
                             product_values[field_info] = float(sheet_value) if sheet_value else 0.0
                         elif column_name == "Store Image" and sheet_value:
