@@ -124,7 +124,7 @@ class CustomerPortalReal(CustomerPortal):
             values['companies'] = False
         return request.render("ba_customer_portal_extension.portal_my_home_company_wise", values)
 
-    @http.route(['/my/quotes', '/my/quotes/company/<int:partner_company_id>', '/my/quotes/company/<int:partner_company_id>/page/<int:page>', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/my/quotes', '/my/quotes/company/<int:partner_company_id>', '/my/quotes/company/<int:partner_company_id>/page/<int:page>', '/my/quotes/page/<int:page>'], type='http', auth="public", website=True)
     def portal_my_quotes(self, partner_company_id=None, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
@@ -175,7 +175,7 @@ class CustomerPortalReal(CustomerPortal):
         })
         return request.render("sale.portal_my_quotations", values)
 
-    @http.route(['/my/orders', '/my/orders/company/<int:partner_company_id>', '/my/orders/company/<int:partner_company_id>/page/<int:page>', '/my/orders/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/my/orders', '/my/orders/company/<int:partner_company_id>', '/my/orders/company/<int:partner_company_id>/page/<int:page>', '/my/orders/page/<int:page>'], type='http', auth="public", website=True)
     def portal_my_orders(self, partner_company_id=None, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
