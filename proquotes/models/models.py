@@ -1595,19 +1595,34 @@ class orderLineProquotes(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
+    def _onchange_selected_line(self):
+        if self.is_selected:
+            self.selected = 'true'
+        else:
+            self.selected = 'false'
+        if self.quantityLocked == 'yes':
+            self.is_quantityLocked = True
+        else:
+            self.is_quantityLocked = False
+        if self.optional == 'yes':
+            self.is_optional = True
+        else:
+            self.is_optional = False
+
     def _check_selected_line(self):
         for rec in self:
             rec.demo_selected = False
             rec.is_quantityLocked = False
-            if rec.selected:
+            if rec.selected == 'true':
                 rec.is_selected = True
             else:
                 rec.is_selected = False
-            if rec.optional:
+            if rec.optional == 'yes':
                 rec.is_optional = True
             else:
                 rec.is_optional = False
-            if rec.quantityLocked:
+            if rec.quantityLocked == 'yes':
                 rec.is_quantityLocked = True
             else:
                 rec.is_quantityLocked = False
