@@ -43,8 +43,10 @@
         'website.assets_editor': [
             ('replace', 'website/static/src/services/website_custom_menus.js',
              'ba_show_seo_menuitem/static/src/JS/website_custom_menus.js'),
-            # ('replace', 'website/static/src/js/content/website_root.js',
-            #  'ba_show_seo_menuitem/static/src/JS/switch_lang_process_fast.js'),
+        ],
+        'web.assets_frontend': [
+             ('replace', 'website/static/src/js/content/website_root.js',
+             'ba_show_seo_menuitem/static/src/JS/switch_lang_process_fast.js'),
         ],
     },
     'demo': [],
