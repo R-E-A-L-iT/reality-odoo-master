@@ -718,7 +718,7 @@
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
             <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price"
-               t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
+               t-value="'{value:,.2f}$'.format(value= line.price_subtotal)"/>
             <t t-elif="clang == 'fr_CA'" t-set="line_price"
                t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
             <span t-if="line.product_id.is_software == False"
