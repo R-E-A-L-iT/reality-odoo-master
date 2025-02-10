@@ -626,6 +626,48 @@ class invoice(models.Model):
                 else:
                     return english
 
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
+
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
@@ -1031,11 +1073,50 @@ class order(models.Model):
             if terms[0] == "#translate":
                 english = terms[1]
                 french = terms[2]
+                return french if lang == 'fr_CA' else english
+        return title
+    
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
 
-                if lang == 'fr_CA':
-                    return french
-                else:
-                    return english
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
 
     def _default_footer(self):
         # Get Company
