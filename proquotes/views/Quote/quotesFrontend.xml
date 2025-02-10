@@ -10,15 +10,68 @@
 
     </template>
 
+    <template id="sale_order_portal_notification" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//div[@id='content']" position="before">
+            <style>
+                #language-notification .btn-close {
+                    filter: none !important;
+                }
+                #language-notification .btn-close:hover {
+                    filter: none !important;
+                }
+                .alert-dismissible .btn-close {
+                    padding: 0.4rem 0.4rem !important;
+                }
+            </style>
+            <t t-if="sale_order.partner_id.lang == 'fr_CA' and request.lang.code in ('en_US', 'en_CA')">
+                <div id="language-notification" class="alert alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">Préféreriez-vous voir cette quotation en français?</h4>
+                    <!-- <p>Si vous préférez, cliquez ici pour changer la langue de ce document en français.</p> -->
+                    <a t-att-href="'/website/lang/fr_CA?r=' + sale_order.get_portal_url()" class="btn btn-primary">
+                        Changer la langue
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </t>
+            <t t-elif="sale_order.partner_id.lang in ('en_US', 'en_CA') and request.lang.code == 'fr_CA'">
+            <div id="language-notification" class="alert alert-dismissible fade show" role="alert">
+                <h4 class="alert-heading">Would you prefer to see this quote in English?</h4>
+                <a t-att-href="'/website/lang/en_US?r=' + sale_order.get_portal_url()" class="btn btn-primary">
+                    Change Language
+                </a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </t>
+        </xpath>
+    </template>
+
+
+
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <t t-if="product_documents" position="replace">
 
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
-            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/> -->
-            <t t-set="clang" t-value="sale_order.partner_id.lang"/>
-            <!-- <t t-set="clang" t-value="request.lang.code" /> -->
+            
+            <!-- 
+            
+            important note: the langauge of the document can be set either to be
+             the language of the partner OR the language of the request (language of the website set by the actual user)
+
+             request lang is better because then you can switch between freely. If it is the lang of the partner, it is stuck on that.
+
+             Request lang is request.lang.code and other option is sale_order.partner_id.lang
+
+             however, using request lang does mean that you should have a system in place to email the link to the quote to the recipients with their native language code embedded, this is a wip
+             
+             
+             -->
+
+
+            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
+            <t t-set="language" t-value="request.lang.code" />
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
+            <!-- <t t-set="language" t-value="sale_order.partner_id.lang"/> -->
 
             <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
@@ -75,7 +128,7 @@
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
             <!-- <p>Language:
-                <t t-out="clang"/>
+                <t t-out="language"/>
             </p> -->
 
             <!-- temporary style fixes -->
@@ -140,8 +193,8 @@
                 <tr>
                     <td style="border-style: none;" colspan="100">
                         <t t-set="isPDF" t-value="False"/>
-                        <t t-if="clang == 'en_CA' or clang == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
-                        <t t-elif="clang == 'fr_CA'" t-call="proquotes.renewal-hardware-french"/>
+                        <t t-if="language == 'en_CA' or language == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
+                        <t t-elif="language == 'fr_CA'" t-call="proquotes.renewal-hardware-french"/>
                     </td>
                 </tr>
             </t>
@@ -163,24 +216,24 @@
             <t t-if="line.name == '$rental_pricenote'">
                 <tr>
                     <td style="border-style: none;" colspan="100">
-                        <p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
                             * The final rental cost will be calculated once the equipement is returned.
                             Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
                             Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
                         </p>
-                        <p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+                        <p class="rental_price_explain" t-elif="language == 'fr_CA'">
                             * Le coût final sera calculé lorsque l'équipement sera retourné.
                             Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
                             Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
                         </p>
                         <br/>
 
-                        <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">
                             <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories:
                                 <span id="rental-estimate-total-english"/>
                             </span>
                         </t>
-                        <t t-elif="clang == 'fr_CA'">
+                        <t t-elif="language == 'fr_CA'">
                             <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
                                 accessoires:
                                 <span id="rental-estimate-total-english"/>
@@ -188,8 +241,8 @@
                         </t>
                         <br/>
                         <br/>
-                        <div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-                            <span t-if="clang == 'en_CA' or clang == 'en_US'">Total Rental Value: 
+                        <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
+                            <span t-if="language == 'en_CA' or language == 'en_US'">Total Rental Value: 
                                 <span id="total-rental-value-english"/>
                             </span>
                             <br/>
@@ -198,7 +251,7 @@
                             </span>
                             <br/>
                         </div>
-                        <div class=" rental_product_value" t-if=" clang== 'fr_CA'">
+                        <div class=" rental_product_value" t-if=" language== 'fr_CA'">
                             <span>Valeur locative totale:  
                                 <span id="total-rental-value-french"/>
                             </span>
@@ -235,41 +288,47 @@
             <t t-if="line.name == '$block' or line.name == '$block+'">
                 <tr class="quote-head">
                     <td class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead"
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead"
                               style="padding-left: 20px !important;">Product
                         </span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
+                        <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
                         </span>
                     </td>
                     <td t-if="line.name == '$block+'" class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Value</span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead">Valeur</span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
                     </td>
                     <td t-else=""/>
                     <td class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Qty</span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead">Qté</span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
                     </td>
                     <td class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Price</span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead">Prix</span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Price</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
                     </td>
                     <t t-if="any(line.discount for line in sale_order.order_line)">
                         <td class="text-left">
-                            <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Disc.%</span>
-                            <span t-elif="clang == 'fr_CA'" class="cHead">Rabais%</span>
+                            <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
+                            <span t-elif="language == 'fr_CA'" class="cHead">Rabais%</span>
                         </td>
                     </t>
                     <!-- <td>
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'">Tax</span>
-                        <span t-elif="clang == 'fr_CA'">Taxes</span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Tax</span>
+                        <span t-elif="language == 'fr_CA'">Taxes</span>
                     </td> -->
                     <td class="text-left">
-                        <span t-if="clang == 'en_CA' or clang == 'en_US'" class="cHead">Amount</span>
-                        <span t-elif="clang == 'fr_CA'" class="cHead">Montant</span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Amount</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead">Montant</span>
                     </td>
                 </tr>
             </t>
+
+            <!-- <t t-if="'translate' in line.name">
+                <td colspan="100">
+                    <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
+                </td>
+            </t> -->
         </xpath>
 
         <!-- Handle Special Sections Seperatly -->
@@ -308,6 +367,12 @@
                                checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
                     </t>
+                    <t t-if="'translate' in line.name">
+                        <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
+                    </t>
+                    <t t-if="'ccplabel' in line.name">
+                        <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
+                    </t>
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
                     <span t-elif="line.name.strip()[0] == '#'">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
@@ -339,11 +404,11 @@
                 <label class="subtotal-label" t-att-data-sec-line="line.id" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
-                        <strong t-if="clang == 'en_CA' or clang == 'en_US'" class="text-left subtotal-label"
+                        <strong t-if="language == 'en_CA' or language == 'en_US'" class="text-left subtotal-label"
                                 style="font-weight: bolder">
                             Subtotal
                         </strong>
-                        <strong t-if="clang == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
+                        <strong t-if="language == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
                             Sous-total
                         </strong>
                     </span>
@@ -371,10 +436,10 @@
                     <span t-if="line.special != 'optional' or line.selected == 'true'"
                           class="text-left" t-att-data-section_id="line_section_id"
                           style="font-weight: 400 !important;"><t t-esc='"%.2f" %  section_subtotal'/>$</span>
-                    <span t-elif="clang == 'en_CA' or clang == 'en_US'" class="text-left"
+                    <span t-elif="language == 'en_CA' or language == 'en_US'" class="text-left"
                           style="font-weight: 400 !important;">0.00 $
                     </span>
-                    <span t-elif="clang == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
+                    <span t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
                 </label>
             </div>
         </xpath>
@@ -414,19 +479,19 @@
             <t t-if="sale_order.is_rental == True">
                 <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False  and (clang == 'en_CA' or clang == 'en_US')"
+                    <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)"
                           class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False  and clang == 'fr_CA'"
+                    <span t-if="line.product_id.is_software == False  and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)"
                           class="text-left itemValue test"/>
                 </td>
                 <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False and (clang == 'en_CA' or clang == 'en_US')"
+                    <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)"
                           class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and clang == 'fr_CA'"
+                    <span t-if="line.product_id.is_software == False and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)"
                           class="text-left itemValue test"/>
                 </td>
@@ -552,9 +617,9 @@
 
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <t t-if="clang == 'en_CA' or clang == 'en_US'" t-set="line_price"
+            <t t-if="language == 'en_CA' or language == 'en_US'" t-set="line_price"
                t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
-            <t t-elif="clang == 'fr_CA'" t-set="line_price"
+            <t t-elif="language == 'fr_CA'" t-set="line_price"
                t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
             <span t-if="line.product_id.is_software == False"
                   class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
@@ -629,25 +694,25 @@
         <!-- Quote Info -->
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
             <div id="quote_disclaimer">
-                <t t-set="currency_label" t-if="clang == 'fr_CA' and sale_order.currency_id.name == 'CAD'"
+                <t t-set="currency_label" t-if="language == 'fr_CA' and sale_order.currency_id.name == 'CAD'"
                    t-value="'canadiens'"/>
-                <t t-set="currency_label" t-elif="clang == 'fr_CA' and sale_order.currency_id.name == 'USD'"
+                <t t-set="currency_label" t-elif="language == 'fr_CA' and sale_order.currency_id.name == 'USD'"
                    t-value="'américains'"/>
                 <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
-                <span t-if="clang == 'en_CA' or clang == 'en_US'">All prices in <t t-out="currency_label"/> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.
+                <span t-if="language == 'en_CA' or language == 'en_US'">All prices in <t t-out="currency_label"/> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.
                 </span>
-                <span t-elif="clang == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.
                 </span>
             </div>
             <div t-if="'abtech' in sale_order.company_id.name.lower()">
                 <br/>
-                <t t-if="clang == 'en_CA' or clang == 'en_US'">
+                <t t-if="language == 'en_CA' or language == 'en_US'">
                     <span class="white-text">R-E-A-L.iT works with partners for fulfillment of certain products and
                         therefore some or all of the quoted products may be invoiced and delivered by one of our
                         partners.
                     </span>
                 </t>
-                <t t-elif="clang == 'fr_CA'">
+                <t t-elif="language == 'fr_CA'">
                     <span class="white-text">R-E-A-L.iT travaille avec des partenaires pour la fourniture de certains
                         produits et par conséquent, certains ou tous les produits cités peuvent être facturés et livrés
                         par l'un de nos partenaires.
@@ -660,9 +725,9 @@
                     <h1>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="clang == 'en_CA' or clang == 'en_US'">Terms and Conditions
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
-                        <strong class="white-text" t-if="clang == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
                     </h1>
                 </label>
                 <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
@@ -691,10 +756,8 @@
 
         <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
 
-            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=request.lang.code)"/>
-            <t t-set="clang" t-value="request.lang.code" /> -->
-            <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/>
-            <t t-set="clang" t-value="sale_order.partner_id.lang" />
+            <t t-set="language" t-value="request.lang.code" />
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
             <style>
                 #customer-acceptance {
@@ -720,10 +783,10 @@
             </style>
 
             <!-- <p>Language:
-                <t t-out="clang"/>
+                <t t-out="language"/>
             </p> -->
 
-            <div t-if="clang == 'fr_CA'" id="customer-acceptance">
+            <div t-if="language == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
             </div>
@@ -747,13 +810,13 @@
                position="replace"></xpath>
 
         <xpath expr="//div[@t-elif=&quot;sale_order._has_to_be_paid()&quot;]" position="after">
-            <t t-set="clang" t-value="lang"/>
+            <t t-set="language" t-value="lang"/>
             <div class="col-sm-auto mt8">
                 <a role="button" class="btn btn-secondary btn-block o_download_btn" id="quotesDownloadButton"
                    t-att-href="sale_order.get_portal_url(report_type='pdf')" title="Download">
                     <i class="fa fa-download"></i>
-                    <t t-if="clang == 'en_CA' or clang == 'en_US'">Download</t>
-                    <t t-elif="clang == 'fr_CA'">Télécharger</t>
+                    <t t-if="language == 'en_CA' or language == 'en_US'">Download</t>
+                    <t t-elif="language == 'fr_CA'">Télécharger</t>
                 </a>
             </div>
             <br/>
