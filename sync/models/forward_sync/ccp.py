@@ -41,50 +41,6 @@ class sync_ccp:
             
             
         
-    # utility function
-    # in odoo, booleans are "True" or "False"
-    # in sheets, booleans are "TRUE" or "FALSE"
-    # this function normalizes those values
-    def normalize_bools(self, field, value):
-        if field in ["publish", "expire"]:
-            if value.strip().upper() in ["TRUE", "1"]:
-                return True
-            elif value.strip().upper() in ["FALSE", "0", ""]:
-                return False
-        return value.strip()
-    
-    
-    
-    # utility function
-    # in odoo, dates are in this format: 2024-01-01
-    # in sheets, dates are in this format: 2024-1-1
-    # this function normalizes those values
-    # also handles dates being blank or "FALSE"
-    def normalize_date(self, value):
-        try:
-            
-            # handle none or false values
-            if not value or (isinstance(value, str) and value.strip().upper() == "FALSE"):
-                return ""
-
-            # convert datetime object to string
-            if isinstance(value, (datetime, date)):
-                return value.strftime("%Y-%m-%d")
-
-            # normalize string date values
-            if isinstance(value, str):
-                return datetime.strptime(value.strip(), "%Y-%m-%d").strftime("%Y-%m-%d")
-
-            # fallback
-            _logger.warning("normalize_date: Unexpected type for value '%s'. Returning as-is.", value)
-            return str(value)
-
-        except ValueError:
-            _logger.warning("normalize_date: Invalid date value '%s'. Returning as-is.", value)
-            return str(value)
-
-    
-        
     # this function will be called to start the synchronization process for ccp.
     # it delegates the function of actually updating or creating the ccp item to the other two functions
     def syncCCP(self):
@@ -149,7 +105,7 @@ class sync_ccp:
                 
                 if not valid:
                     warning_msg = f"Row {row_index}: Marked as invalid. Skipping."
-                    _logger.info(f"syncCCP: {warning_msg}")
+                    # _logger.info(f"syncCCP: {warning_msg}")
                     overall_status = "warning" if overall_status != "error" else overall_status
                     # not sending this to report because intended feature
                     # sync_report.append(f"WARNING: {warning_msg}")
@@ -206,7 +162,7 @@ class sync_ccp:
     # fields that are not updated will be added to a report at the end
     # note that if the expiration date is "false" or blank, it will not be added to the report, as this is a very common bug and intended to be overlooked
     def updateCCP(self, ccp_id, row, sheet_columns, row_index):
-        _logger.info("updateCCP: Searching for any changes for CCP item: %s.", ccp_id)
+        # _logger.info("updateCCP: Searching for any changes for CCP item: %s.", ccp_id)
 
         try:
             ccp = self.database.env["stock.lot"].browse(ccp_id)
@@ -228,7 +184,7 @@ class sync_ccp:
                         # get new sheets value
                         column_index = sheet_columns.index(column_name)
                         sheet_value = str(row[column_index]).strip()
-                        sheet_value_normalized = self.normalize_bools(odoo_field, sheet_value)
+                        sheet_value_normalized = utilities.normalize_bools(odoo_field, sheet_value)
 
                         # handle special cases for specific fields
                         if odoo_field == "product_id":
@@ -259,11 +215,11 @@ class sync_ccp:
                         elif odoo_field == "owner":
                             
                             owner_column_index = sheet_columns.index("Owner ID")
-                            owner_nickname = str(row[owner_column_index]).strip()
+                            owner_nickname = str(row[owner_column_index]).strip().upper()
                             
                             # find company owner in odoo
                             owner = self.database.env["res.partner"].search(
-                                [("company_nickname", "=", owner_nickname)], limit=1
+                                [("company_nickname", "ilike", owner_nickname)], limit=1
                             )
                             
                             # stop if not found
@@ -295,8 +251,8 @@ class sync_ccp:
                         elif odoo_field == "expire":
                             
                             # normalize both values (different data types)
-                            normalized_sheet_value = self.normalize_date(sheet_value)
-                            normalized_odoo_value = self.normalize_date(ccp.expire or "")
+                            normalized_sheet_value = utilities.normalize_dates(self, sheet_value)
+                            normalized_odoo_value = utilities.normalize_dates(self, ccp.expire or "")
 
                             # comprare normalized values
                             if normalized_odoo_value != normalized_sheet_value:
@@ -315,7 +271,7 @@ class sync_ccp:
                             # normalize
                             if isinstance(odoo_value, models.Model):
                                 odoo_value = odoo_value.id
-                            odoo_value_normalized = self.normalize_bools(odoo_field, str(odoo_value).strip() if odoo_value else "")
+                            odoo_value_normalized = utilities.normalize_bools(odoo_field, str(odoo_value).strip() if odoo_value else "")
 
                             # compare, log, and update
                             if odoo_value_normalized != sheet_value_normalized:
@@ -375,11 +331,11 @@ class sync_ccp:
 
                         # normalize booleans
                         if odoo_field in ["publish", "expire"]:
-                            normalized_value = self.normalize_bools(odoo_field, sheet_value)
+                            normalized_value = utilities.normalize_bools(odoo_field, sheet_value)
                             
                         # normalize date
                         elif odoo_field == "expire":
-                            normalized_value = self.normalize_date(sheet_value)
+                            normalized_value = utilities.normalize_dates(self, sheet_value)
                             
                         # get product id
                         elif odoo_field == "product_id":
