@@ -12,7 +12,7 @@
     </record>
 
     <menuitem id="menu_preconfigured_section_root" name="Preconfigured Sections"
-              parent="sale.menu_sale_config" sequence="50"
+              parent="sale.menu_sale_config" sequence="1"
               action="action_preconfigured_section"/>
 
     <record id="view_preconfigured_section_tree" model="ir.ui.view">
@@ -30,26 +30,40 @@
     <record id="view_preconfigured_section_form" model="ir.ui.view">
         <field name="name">preconfigured.section.form</field>
         <field name="model">preconfigured.section</field>
+        <field name="priority">4</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Preconfigured Section">
+            <form>
                 <sheet>
                     <group>
-                        <field name="section_name"/>
-                        <field name="section_description"/>
-                        <field name="number_of_products" readonly="1"/>
+                        <group>
+                            <field name="section_name"/>
+                            <field name="section_description"/>
+                            <field name="number_of_products" readonly="1" invisible="1"/>
+                        </group>
                     </group>
-                    <group>
-                         <field name="product_ids" nolabel="1">
-                            <tree editable="bottom">
-                                <field name="id" invisible="1"/>
-                                <field name="name"/>
+                    <field name="product_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_name"/>
+                            <field name="optional"/>
+                            <field name="selected"/>
+                            <field name="quantity_locked"/>
+                            <field name="price_unit"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="product_name"/>
+                                <field name="price_unit"/>
+                            </group>
+                            <group>
                                 <field name="optional"/>
                                 <field name="selected"/>
-                                <field name="quantityLocked"/>
-                                <field name="price_unit"/>
-                            </tree>
-                        </field>
-                    </group>
+                                <field name="quantity_locked"/>
+                            </group>
+                        </form>
+                    </field>
                 </sheet>
             </form>
         </field>
