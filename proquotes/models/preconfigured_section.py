@@ -44,6 +44,31 @@ class PreconfigSaleOrder(models.Model):
 
     preconfigured_section_ids = fields.Many2many('preconfigured.section', string='Preconfigured Sections')
 
+    @api.onchange('preconfigured_section_ids')
+    def _onchange_preconfigured_sections(self):
+        if self.preconfigured_section_ids:
+            new_lines = []
+            for section in self.preconfigured_section_ids:
+                new_lines.append((0, 0, {
+                    'order_id': self.id,
+                    'name': section.section_name,
+                    'display_type': 'line_section',
+                }))
+                for line in section.product_line_ids:
+                    new_lines.append((0, 0, {
+                        'order_id': self.id,
+                        'product_id': line.product_id.id,
+                        'name': line.product_name,
+                        'is_optional': line.optional,
+                        'is_selected': line.selected,
+                        'is_quantityLocked': line.quantity_locked,
+                        'price_unit': line.price_unit,
+                        'product_uom_qty': 1,
+                    }))
+            if new_lines:
+                self.order_line = [(5, 0, 0)] + new_lines
+
+
 
 class PreconfigSaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

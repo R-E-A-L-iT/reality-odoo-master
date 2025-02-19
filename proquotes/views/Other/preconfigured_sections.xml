@@ -76,16 +76,15 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet/group" position="after">
-                <group string="Preconfigured Sections">
-                    <field name="preconfigured_section_ids" widget="many2many_list" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="section_name"/>
-                            <field name="section_description"/>
-                            <field name="number_of_products"/>
-                        </tree>
-                    </field>
-                </group>
+            <xpath expr="//field[@name='renewal_product_items']" position="after">
+                <group string="Preconfigured Sections"/>
+                <field name="preconfigured_section_ids" widget="many2many_list" nolabel="1">
+                    <tree editable="bottom">
+                        <field name="section_name"/>
+                        <field name="section_description"/>
+                        <field name="number_of_products"/>
+                    </tree>
+                </field>
             </xpath>
         </field>
     </record>
