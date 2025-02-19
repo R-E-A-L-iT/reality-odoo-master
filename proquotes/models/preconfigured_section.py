@@ -14,6 +14,20 @@ class PreconfiguredSection(models.Model):
         for record in self:
             record.number_of_products = len(record.product_ids)
 
+class PreconfiguredSectionLine(models.Model):
+    _name = 'preconfigured.section.line'
+    _description = 'Preconfigured Section Line'
+
+    section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section', required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    name = fields.Char(string='Product Name', related='product_id.name', store=True, readonly=True)
+    optional = fields.Boolean(string='Optional')
+    selected = fields.Boolean(string='Selected', default=True)
+    quantity_locked = fields.Boolean(string='Quantity Locked')
+    price_unit = fields.Float(string='Unit Price', related='product_id.list_price', store=True, readonly=True)
+
+
+
 class PreconfigSaleOrder(models.Model):
     _inherit = 'sale.order'
 
