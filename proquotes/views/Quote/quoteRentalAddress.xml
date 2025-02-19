@@ -9,50 +9,50 @@
 				<!-- Dates -->
 				<div>
 					<label for="rental-start">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Start of the rental:</span>
-						<span t-if="clang == 'fr_CA'">Début de la Location:</span>
+						<span t-if="language == 'en_CA' or language == 'en_US'">Start of the rental:</span>
+						<span t-if="language == 'fr_CA'">Début de la Location:</span>
 					</label>
 					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
 
 					<label for="rental-end">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'">Estimated end of the rental:</span>
-						<span t-if="clang == 'fr_CA'">Fin estimée de la Location:</span>
+						<span t-if="language == 'en_CA' or language == 'en_US'">Estimated end of the rental:</span>
+						<span t-if="language == 'fr_CA'">Fin estimée de la Location:</span>
 					</label>
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
 				<!-- Rental Hardware Estimate -->
 				<t t-if="rental_estimate_display == True">
 					<br />
-					<p class="rental_price_explain" t-if="clang == 'en_CA' or clang == 'en_US'">
+					<p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
 						* The final rental cost will be calculated once the equipement is returned.
 						Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
 						Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
 					</p>
-					<p class="rental_price_explain" t-elif="clang == 'fr_CA'">
+					<p class="rental_price_explain" t-elif="language == 'fr_CA'">
 						* Le coût final sera calculé lorsque l'équipement sera retourné.
 						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
 
 					<br />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-if="language == 'en_CA' or language == 'en_US'">
 						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
 					</t>
-					<t t-elif="clang == 'fr_CA'">
+					<t t-elif="language == 'fr_CA'">
 						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-english" /></span>
 					</t>
 					<br />
 					<br />
-					<div class="rental_product_value" t-if="clang == 'en_CA' or clang == 'en_US'">
-						<span t-if="clang == 'en_CA' or clang == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
+					<div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
+						<span t-if="language == 'en_CA' or language == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
 						<br />
 						<span>
 							Please upload your proof of insurance for the total amount in the comments below:
 						</span>
 						<br />
 					</div>
-					<div class=" rental_product_value" t-if=" clang== 'fr_CA'">
+					<div class=" rental_product_value" t-if=" language== 'fr_CA'">
 						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
 						</span>
 						<br />
@@ -67,7 +67,7 @@
 				<div>
 					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
 					<input id="new-address" t-else="" type="checkbox" />
-					<t t-if="clang == 'en_CA' or clang == 'en_US'">
+					<t t-if="language == 'en_CA' or language == 'en_US'">
 						<span>Is the shipping address the same as the billing address?</span>
 						<label id="address_yes_label" for="new-address">
 							<span style="cursor: pointer;">Yes</span>
@@ -79,7 +79,7 @@
 						</label>
 						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
 					</t>
-					<t t-elif="clang == 'fr_CA'">
+					<t t-elif="language == 'fr_CA'">
 						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
 						<label id="address_yes_label" for="new-address">
 							<span style="cursor: pointer;">Oui</span>
@@ -95,20 +95,20 @@
 					<!-- Rental Address -->
 					<div id="rental-address" class="rental-address">
 						<label for="street">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">Street</span>
-							<span t-elif="clang == 'fr_CA'">Rue</span>
+							<span t-if="language == 'en_CA' or language == 'en_US'">Street</span>
+							<span t-elif="language == 'fr_CA'">Rue</span>
 						</label>
 						<input id="street" type="text" t-attf-value="{{source.rental_street}}" />
 						<br />
 						<label for="city">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">City</span>
-							<span t-elif="clang == 'fr_CA'">Ville</span>
+							<span t-if="language == 'en_CA' or language == 'en_US'">City</span>
+							<span t-elif="language == 'fr_CA'">Ville</span>
 						</label>
 						<input id="city" type="text" t-attf-value="{{source.rental_city}}" />
 						<br />
 						<label for="state">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">State/Province</span>
-							<span t-elif="clang == 'fr_CA'">Province/État</span>
+							<span t-if="language == 'en_CA' or language == 'en_US'">State/Province</span>
+							<span t-elif="language == 'fr_CA'">Province/État</span>
 						</label>
 						<!-- States and Provinces -->
 
@@ -249,17 +249,17 @@
 						</select>
 						<br />
 						<label for="country">
-							<span t-if="clang == 'en_CA' or clang == 'en_US'">Country</span>
-							<span t-elif="clang == 'fr_CA'">Pays</span>
+							<span t-if="language == 'en_CA' or language == 'en_US'">Country</span>
+							<span t-elif="language == 'fr_CA'">Pays</span>
 						</label>
 						<select id="country">
 							<option t-if="source.rental_country.id == False" value="Select">Select</option>
 							<option t-if="source.rental_country.id == 38" selected="selected" value="Canada">Canada</option>
 							<option t-else="" value="Canada">Canada</option>
-							<option t-if="source.rental_country.id == 233 and (clang == 'en_CA' or clang == 'en_US')" selected="selected" value="United States">United States</option>
-							<option t-elif="source.rental_country.id == 233 and (clang == 'fr_CA')" selected="selected" value="United States">États-Unis</option>
-							<option t-elif="clang == 'en_CA' or clang == 'en_US'" value="United States">United States</option>
-							<option t-elif="clang == 'fr_CA'" value="United States">États-Unis</option>
+							<option t-if="source.rental_country.id == 233 and (language == 'en_CA' or language == 'en_US')" selected="selected" value="United States">United States</option>
+							<option t-elif="source.rental_country.id == 233 and (language == 'fr_CA')" selected="selected" value="United States">États-Unis</option>
+							<option t-elif="language == 'en_CA' or language == 'en_US'" value="United States">United States</option>
+							<option t-elif="language == 'fr_CA'" value="United States">États-Unis</option>
 						</select>
 						<br />
 						<label for="zip">
