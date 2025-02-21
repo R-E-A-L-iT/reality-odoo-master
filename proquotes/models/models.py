@@ -704,6 +704,44 @@ class invoice(models.Model):
                     rec.payment_date = False
 
 
+    # @api.model
+    # def _get_sequence_format_param(self, previous):
+    #     format_str, format_values = super()._get_sequence_format_param(previous)
+    #     company = self.env.company
+    #     if company.name == "R-E-A-L.iT Solutions":
+    #         custom_prefix = "CAN-INV/"
+    #         if custom_prefix:
+    #             format_values["prefix1"] = custom_prefix
+    #             format_values["prefix"] = custom_prefix
+    #             _logger.warning("After - format_str: %s", format_str)
+    #             _logger.warning("After - format_values: %s", format_values)
+    #     elif company.name == "R-E-A-L.iT U.S. Inc.":
+    #         custom_prefix = "USA-INV/"
+    #         if custom_prefix:
+    #             format_values["prefix1"] = custom_prefix
+    #             format_values["prefix"] = custom_prefix
+    #             _logger.warning("After - format_str: %s", format_str)
+    #             _logger.warning("After - format_values: %s", format_values
+    #     return format_str, format_values
+    
+    def action_post(self):
+        res = super().action_post()
+        for move in self:
+            if move.move_type == "out_invoice" and move.name:
+                company = move.company_id
+                if company.name == "R-E-A-L.iT Solutions":
+                    custom_prefix = "CAN-INV/"
+                elif company.name == "R-E-A-L.iT U.S. Inc.":
+                    custom_prefix = "USA-INV/"
+                else:
+                    _logger.info("Using default Odoo sequence for %s", company.name)
+                    continue  # Odoo's default
+                if not move.name.startswith(custom_prefix):
+                    new_name = f"{custom_prefix}{move.name}"
+                    _logger.info("Renaming Invoice: %s -> %s", move.name, new_name)
+                    move.name = new_name
+        return res
+
 class order(models.Model):
     _inherit = "sale.order"
 
