@@ -2006,3 +2006,63 @@ class ProjectTask(models.Model):
         ('2', 'High'),
         ('3', 'Very High'),
     ], default='0', index=True, string="Priority", tracking=True)
+
+class delivery(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.depends("company_id")
+    def _get_default_footer(self):
+        # Get Company
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
+
+        # Get User
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        # Get Prefered Footers
+        result_raw = user.prefered_quote_footers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                # Verify footers are applicable for company
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+
+        # Check for default footer that matches company
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            return False
+            raise UserError("No Default Footer Available")
+
+    footer_id = fields.Many2one(
+        "header.footer", required=True, default=_get_default_footer
+    )
