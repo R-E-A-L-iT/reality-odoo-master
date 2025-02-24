@@ -12,3 +12,4 @@ from . import internal_user
 from . import mail
 from . import renewal_maps
 from . import preconfigured_section
+from . import expense
