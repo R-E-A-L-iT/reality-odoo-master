@@ -138,7 +138,7 @@
 
 
 
-                                    <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                    <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else 'border_bottom'">
                                         <t t-if="not line.display_type">
                                             <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
                                             <td name="td_name">
@@ -149,12 +149,12 @@
                                                 <!-- <t t-set="description" t-value="line.name"/> -->
                                                 <style>
                                                     description-root, .description-root *{
-                                                    font-size: .75rem;
-                                                    margin-top: 0px !important;
-                                                    margin-bottom: 0px !important;
+                                                        font-size: .75rem;
+                                                        margin-top: 0px !important;
+                                                        margin-bottom: 0px !important;
                                                     }
 
-                                                    .o_line_section {
+                                                    .o_line_section, .border_bottom {
                                                         border-bottom: 1px solid #ccc !important;
                                                     }
                                                 </style>
