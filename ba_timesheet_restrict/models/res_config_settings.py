@@ -38,7 +38,7 @@ class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     timesheet_allowed_past_days = fields.Integer(
-        string="Allowed Past Days for Timesheets",
+        string="Allowed Before Days for Timesheets",
         config_parameter='timesheet.allowed_past_days',
         default=0,
         help="Number of past days users can log timesheets for. Set to 0 to disallow past entries."

@@ -41,7 +41,7 @@
     'depends': ['hr_timesheet'],
     'data': [
         'views/res_config_settings_views.xml',
-        'views/account_analytic_line_views.xml',
+        # 'views/account_analytic_line_views.xml',
     ],
     'installable': True,
     'application': False,
