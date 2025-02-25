@@ -16,7 +16,17 @@
                                 <field name="timesheet_allowed_past_days"/>
                                 <br/>
                                 <span class="text-muted">
-                                    Define how many past days users can log timesheets for. Set to 0 to disallow past entries.
+                                    Define how many past days users can log timesheets for. Set to 0 to disallow past
+                                    entries.
+                                </span>
+                                <br/>
+                                <span class="o_form_label">Allowed Future Days for Timesheets</span>
+                                <br/>
+                                <field name="timesheet_allowed_future_days"/>
+                                <br/>
+                                <span class="text-muted">
+                                    Define how many Future days users can log timesheets for. Set to 0 to disallow past
+                                    entries.
                                 </span>
                             </div>
                         </div>

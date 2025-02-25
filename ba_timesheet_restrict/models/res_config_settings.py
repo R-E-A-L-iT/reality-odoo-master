@@ -43,3 +43,10 @@ class ResConfigSettings(models.TransientModel):
         default=0,
         help="Number of past days users can log timesheets for. Set to 0 to disallow past entries."
     )
+
+    timesheet_allowed_future_days = fields.Integer(
+        string="Allowed Future Days for Timesheets",
+        config_parameter='timesheet.allowed_future_days',
+        default=0,
+        help="Number of future days users can log timesheets for. Set to 0 to disallow future entries."
+    )
