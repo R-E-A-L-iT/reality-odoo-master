@@ -163,9 +163,9 @@ body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thre
 	background-color: #db0d0d;
 }
 
-.nav-link>span {
+/* .nav-link>span {
 	color: #db0d0d;
-}
+} */
 
 #custom_footer_bar {
 	display: flex;
