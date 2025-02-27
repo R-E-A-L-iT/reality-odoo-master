@@ -1691,6 +1691,55 @@ class orderLineProquotes(models.Model):
         help="Field to Lock Quantity on Products",
     )
 
+    is_optional = fields.Boolean(
+        required=True, string="Optional",
+        help="Field to Mark Product as Optional",
+    )
+    is_selected = fields.Boolean(
+        required=True, string="Selected",
+        help="Field to Mark Wether Customer has Selected Product",
+    )
+    is_quantityLocked = fields.Boolean(
+        string="Lock Quantity",
+        required=True,
+        help="Field to Lock Quantity on Products",
+    )
+
+    demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
+                                   help="Field to Mark Wether Customer has Selected Product",
+                                   )
+
+    @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
+    def _onchange_selected_line(self):
+        if self.is_selected:
+            self.selected = 'true'
+        else:
+            self.selected = 'false'
+        if self.is_quantityLocked:
+            self.quantityLocked = 'yes'
+        else:
+            self.quantityLocked = 'no'
+        if self.is_optional:
+            self.optional = 'yes'
+        else:
+            self.optional = 'no'
+    def _check_selected_line(self):
+        for rec in self:
+            rec.demo_selected = False
+            rec.is_quantityLocked = False
+            if rec.selected == 'true':
+                rec.is_selected = True
+            else:
+                rec.is_selected = False
+            if rec.optional == 'yes':
+                rec.is_optional = True
+            else:
+                rec.is_optional = False
+            if rec.quantityLocked == 'yes':
+                rec.is_quantityLocked = True
+            else:
+                rec.is_quantityLocked = False
+
     def get_applied_name(self):
         return True
         # n = name_translation(self)
