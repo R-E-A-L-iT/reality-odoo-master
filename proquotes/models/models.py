@@ -913,6 +913,7 @@ class order(models.Model):
             mail_template = self._find_mail_template()
         if mail_template and mail_template.lang:
             lang = mail_template._render_lang(self.ids)[self.id]
+        recipient_ids = self.email_contacts.ids if self.email_contacts else []
         ctx = {
             'default_model': 'sale.order',
             'default_res_ids': self.ids,
@@ -925,6 +926,12 @@ class order(models.Model):
             'model_description': self.with_context(lang=lang).type_name,
             'default_partner_ids': [(6, 0, self.email_contacts.ids)],
         }
+        if self.partner_id and self.partner_id.id not in recipient_ids:
+            followers_to_remove = self.message_follower_ids.filtered(
+                lambda follower: follower.partner_id.id == self.partner_id.id
+            )
+            _logger.info('>>>>>>>>>>iff>>>>>>.followers_to_remove: %s,', followers_to_remove)
+            followers_to_remove.unlink()
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
