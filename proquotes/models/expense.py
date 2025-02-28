@@ -20,6 +20,8 @@ class HrExpense(models.Model):
     def _compute_mileage_reimbursement(self):
         for record in self:
             if record.mileage <= 5000:
-                record.mileage_reimbursement = record.mileage * 70
+                record.mileage_reimbursement = record.mileage * 0.7
+                record.total_amount_currency += record.mileage_reimbursement
             else:
-                record.mileage_reimbursement = (5000 * 70) + ((record.mileage - 5000) * 64)
+                record.mileage_reimbursement = (5000 * 0.7) + ((record.mileage - 5000) * 0.64)
+                record.total_amount_currency += record.mileage_reimbursement
