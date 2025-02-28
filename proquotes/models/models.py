@@ -878,7 +878,8 @@ class order(models.Model):
                 _logger.info("Failed to add contacts to the partner_ids from the email_contacts table")
 
     def _action_confirm(self):
-        selected_lines = self.order_line.sudo().filtered(lambda line: line.selected == 'true')
+        selected_lines = self.order_line.sudo().filtered(
+            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
         # self.order_line._action_launch_stock_rule()
         # return super(order, self)._action_confirm()
