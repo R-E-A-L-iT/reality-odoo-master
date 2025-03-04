@@ -734,11 +734,11 @@ class invoice(models.Model):
                 elif company.name == "R-E-A-L.iT U.S. Inc.":
                     custom_prefix = "USA-INV/"
                 else:
-                    _logger.info("Using default Odoo sequence for %s", company.name)
                     continue  # Odoo's default
+                invoice_number = move.name.replace("INV/", "")
                 if not move.name.startswith(custom_prefix):
-                    new_name = f"{custom_prefix}{move.name}"
-                    _logger.info("Renaming Invoice: %s -> %s", move.name, new_name)
+                    new_name = f"{custom_prefix}{invoice_number}"
+                    _logger.info("__743__Renaming Invoice: %s -> %s", move.name, new_name)
                     move.name = new_name
         return res
 
