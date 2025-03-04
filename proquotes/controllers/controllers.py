@@ -349,24 +349,38 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 class Website(WebsiteINH):
+    # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
+    # def change_lang(self, lang, r='/', **kwargs):
+    #     """ :param lang: supposed to be value of `url_code` field """
+    #     _logger.info('**********************************',kwargs)
+    #     if lang == 'default':
+    #         lang = request.website.default_lang_id.url_code
+    #         r = '/%s%s' % (lang, r or '/')
+    #     lang_code = request.env['res.lang']._lang_get_code(lang)
+    #     # replace context with correct lang, to avoid that the url_for of request.redirect remove the
+    #     # default lang in case we switch from /fr -> /en with /en as default lang.
+    #     _logger.info('>>>>>>>lang_code>>>>>>>',lang_code)
+    #     request.update_context(lang=lang_code)
+    #     redirect = request.redirect(r or ('/%s' % lang))
+    #     redirect.set_cookie(key='frontend_lang', value=str(lang_code), path='/')
+        
+    #     request.session['lang'] = lang_code
+    #     request.env['res.lang']._activate_lang(lang_code)
+    #     _logger.info('>>>>>>>lang_code after>>>>>>>:%s',lang_code)
+    #     #
+    #     _logger.info('>>>>>>>123456789>>>>>>>')
+    #     return redirect
+    
     @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
     def change_lang(self, lang, r='/', **kwargs):
         """ :param lang: supposed to be value of `url_code` field """
-        _logger.info('**********************************',kwargs)
         if lang == 'default':
             lang = request.website.default_lang_id.url_code
             r = '/%s%s' % (lang, r or '/')
         lang_code = request.env['res.lang']._lang_get_code(lang)
         # replace context with correct lang, to avoid that the url_for of request.redirect remove the
         # default lang in case we switch from /fr -> /en with /en as default lang.
-        _logger.info('>>>>>>>lang_code>>>>>>>',lang_code)
         request.update_context(lang=lang_code)
         redirect = request.redirect(r or ('/%s' % lang))
-        redirect.set_cookie(key='frontend_lang', value=str(lang_code), path='/')
-        
-        request.session['lang'] = lang_code
-        request.env['res.lang']._activate_lang(lang_code)
-        _logger.info('>>>>>>>lang_code after>>>>>>>:%s',lang_code)
-        #
-        _logger.info('>>>>>>>123456789>>>>>>>')
+        redirect.set_cookie('frontend_lang', lang_code)
         return redirect
