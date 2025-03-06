@@ -955,14 +955,11 @@ class order(models.Model):
             }
             
     def _action_confirm(self):
-        for quote in self:
-            selected_order_lines = quote.order_line.filtered(lambda line: line.selected)
-            for line in selected_order_lines:
-                line._action_launch_stock_rule()
-            quote.write({'state': 'sale'})
-            # this creates an invoice automatically, uncomment to turn on
-            # quote._create_invoices()
-        return True
+        selected_lines = self.order_line.sudo().filtered(
+            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
+        selected_lines._action_launch_stock_rule()
+        # self.order_line._action_launch_stock_rule()
+        # return super(order, self)._action_confirm()
 
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
