@@ -17,18 +17,18 @@
                             <div style="display: flex; flex-direction: column;">
                                 <strong>
                                     <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
-                                        <t t-if="clang == 'fr_CA'">Adresse de facturation et de livraison:</t>
+                                        <t t-if="language == 'fr_CA'">Adresse de facturation et de livraison:</t>
                                         <t t-else="">Invoicing and Shipping Address:</t>
                                     </t>
                                     <t t-else="">
-                                        <t t-if="clang == 'fr_CA'">Adresse de facturation:</t>
+                                        <t t-if="language == 'fr_CA'">Adresse de facturation:</t>
                                         <t t-else="">Invoicing Address:</t>
                                     </t>
                                 </strong>
                                 <div t-field="doc.partner_invoice_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
                                 <strong>
                                     <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
-                                        <t t-if="clang == 'fr_CA'">Adresse de livraison:</t>
+                                        <t t-if="language == 'fr_CA'">Adresse de livraison:</t>
                                         <t t-else="">Shipping Address:</t>
                                     </t>
                                 </strong>
@@ -39,7 +39,7 @@
                 <div class="page">
                     <div class="oe_structure"/>
 
-                    <h2 t-if="clang == 'fr_CA'" class="mt-4">
+                    <h2 t-if="language == 'fr_CA'" class="mt-4">
                         <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
                         <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
                         <span t-else="">Commande # </span>
