@@ -80,12 +80,16 @@
         "views/Quote/quoteMailWizard.xml",
         "views/Other/mail.xml",
         "views/Other/deliverPDF.xml",
+        "views/Other/project_task.xml",
         "views/Other/pdf_boxed.xml",
         "views/Other/section_name.xml",
         "views/Other/internal_company_backend.xml",
         "views/Other/internal_user_backend.xml",
         "views/Other/renewal.xml",
         "views/Other/header_footer.xml",
+        "views/Other/preconfigured_sections.xml",
+        "views/Other/expense_mileage_views.xml",
+
         # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoice_lot.xml",
@@ -96,7 +100,11 @@
         "views/PO/PO_PDF.xml",
         "views/Other/quoteEmailFooter.xml",
         "views/Other/helpdeskTicket.xml",
-        "views/Other/header_footer_values.xml"
+        "views/Other/header_footer_values.xml",
+        "views/Other/preconfigured_sections.xml",
+        # "views/Other/translated_terms.xml",
+        # "views/Invoice/invoicePayment.xml",
+        # "views/Other/product_backend.xml",
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode

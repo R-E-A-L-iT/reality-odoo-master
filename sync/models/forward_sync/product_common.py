@@ -24,12 +24,12 @@ class product_sync_common:
 
             # Add or update translations for the product name
             if name:
-                product.with_context(lang=lang).write({"name": name})
+                product.with_context(lang=lang).sudo().write({"name": name})
                 _logger.info(f"Updated translation for product name to '{name}' in language {lang}.")
 
             # Add or update translations for the product description
             if description:
-                product.with_context(lang=lang).write({"description_sale": description})
+                product.with_context(lang=lang).sudo().write({"description_sale": description})
                 _logger.info(f"Updated translation for product description to '{description}' in language {lang}.")
 
         except Exception as e:
@@ -99,7 +99,7 @@ class product_sync_common:
             if len(pricelist_item_ids) > 0:
                 pricelist_item = pricelist_item_ids[len(pricelist_item_ids) - 1]
             else:
-                pricelist_item = database.env["product.pricelist.item"].create(
+                pricelist_item = database.env["product.pricelist.item"].sudo().create(
                     {"pricelist_id": pricelist_id, "product_tmpl_id": product.id}
                 )[0]
 

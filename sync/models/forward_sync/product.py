@@ -73,6 +73,16 @@ class sync_products:
                 _logger.debug(f"PRODUCT.PY: Stopping processing at row {i}.")
                 break
 
+            if str(sheet[i][columns["valid"]]).upper() == "FALSE":
+                _logger.debug(f"PRODUCT.PY: Skipping row {i} because 'Valid' is FALSE.")
+                # skipped_items.append({
+                #     "row": i,
+                #     "sku": sheet[i][columns["sku"]],
+                #     "error": "Row marked as invalid ('Valid' = FALSE)."
+                # })
+                i += 1
+                continue
+
             # Validation checks
             key = str(sheet[i][columns["sku"]])
             try:
@@ -94,14 +104,21 @@ class sync_products:
                     [("name", "=", external_id), ("model", "=", "product.template")]
                 )
 
-                if len(product_ids) > 0:
+                if product_ids:
+                    
+                    if len(product_ids) > 1:
+                        _logger.warning(
+                            f"PRODUCT.PY: Multiple product IDs found for SKU {key}: {product_ids.ids}. "
+                            "Using the first product found."
+                        )
+                    
                     product = self.database.env["product.template"].browse(
-                        product_ids[-1].res_id
-                    )
-
-                    if len(product) != 1:
+                        product_ids[0].res_id
+                    ).filtered(lambda p: p.active)
+                    
+                    if not product:
                         raise ValueError(
-                            f"Product ID recognized, but product count is invalid for SKU {key}."
+                            f"Product ID recognized, but no active product found for SKU {key}."
                         )
 
                     self.updateProducts(
@@ -117,6 +134,7 @@ class sync_products:
                         "product",
                         sheet[i][columns["can_be_sold"]],
                     )  # product_type
+
                 else:
                     self.createAndUpdateProducts(
                         external_id,
@@ -160,7 +178,8 @@ class sync_products:
         _logger.debug(f"PRODUCT.PY: Creating product with external ID {external_id}.")
 
         # Set company_id explicitly
-        company_id = self.database.env.company.id
+        # self.database.env.company.id
+        company_id = 1
 
         # Ensure the responsible user belongs to the correct company
         responsible_user = self.database.env["res.users"].search(
@@ -203,7 +222,7 @@ class sync_products:
     ):
         _logger.debug(f"PRODUCT.PY: Checking if update is needed for product {product.name}.")
         if product.stringRep == product_stringRep and SKIP_NO_CHANGE:
-            _logger.info(f"PRODUCT.PY: No changes detected for product {product.name}. Skipping update.")
+            # _logger.info(f"PRODUCT.PY: No changes detected for product {product.name}. Skipping update.")
             return
 
         _logger.info(f"PRODUCT.PY: Updating product {product.name}.")

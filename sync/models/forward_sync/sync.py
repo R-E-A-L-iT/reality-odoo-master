@@ -34,6 +34,23 @@ from .contact import sync_contacts
 _logger = logging.getLogger(__name__)
 
 
+# 
+# SYNC MODULE IDEAL ROADMAP:
+#
+# utilities.py > all data normalization functions
+# sync.py > start sync, end sync, create sync records
+#
+# v - sync types - v
+#
+# stock_lot.py > stock.lot model sync records (GS: CCP_ODOO, LEICA_ODOO (kind of))
+# product_template.py > product.template model sync records (GS: LEICA_ODOO, CCP CSV_ODOO, SECO_ODOO, BRICSCAD_ODOO, DEALS_ODOO, MISC_ODOO)
+# res_partner.py > contacts
+#
+# Column names should match name of odoo field they need to go into, then automatically be normalized and synced if they aren't a specially handled field
+# 
+
+
+
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
@@ -159,6 +176,37 @@ class sync(models.Model):
                         overall_status = "error"
                     elif status == "warning" and overall_status != "error":
                         overall_status = "warning"
+                
+                else:
+
+                    while (True):
+                        msg_temp = ""
+                        sheetName = str(sync_data[line_index][0])
+                        sheetIndex, msg_temp = self.getSheetIndex(sync_data, line_index)
+                        msg += msg_temp
+                        modelType = str(sync_data[line_index][2])
+                        valid = (str(sync_data[line_index][3]).upper() == "TRUE")
+
+                        if (not valid):
+                            _logger.info("Valid: " + sheetName + " is " + str(valid) + " because the str was : " +
+                                        str(sync_data[line_index][3]) + ".  Ending sync process!")
+                            break
+
+                        if (sheetIndex < 0):
+                            break
+
+                        _logger.info("Valid: " + sheetName + " is " + str(valid) + ".")
+                        quit, msgr, sync_result = self.getSyncValues(sheetName,
+                                                        psw,
+                                                        template_id,
+                                                        sheetIndex,
+                                                        modelType)
+                        msg = msg + msgr
+                        line_index += 1
+
+                        if (quit):
+                            self.syncFail(msg, self._sync_cancel_reason)
+                            return
 
         finally:
             # Ensure the custom log handler is removed

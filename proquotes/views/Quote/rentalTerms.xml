@@ -26,7 +26,7 @@
         <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="state" t-value="'New Brunswick'" />
         <t t-if="company_name.upper() == 'ABTECH ATL. INC.'" t-set="country" t-value="'Canada'" />
 
-        <div id="rental-terms" t-if="clang == 'en_CA' or clang == 'en_US'">
+        <div id="rental-terms" t-if="language == 'en_CA' or language == 'en_US'">
             <ol>
                 <li>
                     <h3>
@@ -207,7 +207,7 @@
             </ol>
         </div>
 
-        <div id="rental-terms" t-if="clang == 'fr_CA'">
+        <div id="rental-terms" t-if="language == 'fr_CA'">
             <ol>
                 <li>
                     <h3>

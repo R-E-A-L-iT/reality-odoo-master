@@ -132,6 +132,9 @@
             </body>
         </html>
     </template>
+    <template id="ba_remove_power_override_second_tr" inherit_id="mail.mail_notification_light">
+        <xpath expr="//table/tr[2]" position="replace"></xpath>
+    </template>
 </odoo>
 
 

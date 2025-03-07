@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 dev_oli = "dev-oli-"
 dev_zek = "dev-eze-"
 dev_braincrew = "dev-bc-"
+dev_josh = "dev-josh-"
 
 
 
@@ -37,7 +38,8 @@ class sheetsAPI(models.Model):
         # Dev Numbers Set Based on When Developer Joined
         _master_database_template_id_dev_oli = ("1ck-eRcczAvmyiFT-5EQOKwrSdb_fANIRcDqkJiKXK9w")
         _master_database_template_id_dev_zek = ("1P2iaEnP-oyfcVbbvjUHjiQF89-UhxK_yUXI6rDEzNgE")
-        _master_database_template_id_dev_bc = ("133YJZivkWenwqh1UjwtLQlf4t6gxwrdXsEUW11ExWko")            
+        _master_database_template_id_dev_bc = ("1P2iaEnP-oyfcVbbvjUHjiQF89-UhxK_yUXI6rDEzNgE")
+        _master_database_template_id_dev_josh = ("1P2iaEnP-oyfcVbbvjUHjiQF89-UhxK_yUXI6rDEzNgE")
         
         # Return the proper GoogleSheet Template ID base on the environement
         if _db_name == _db_name_prod:
@@ -51,7 +53,10 @@ class sheetsAPI(models.Model):
             return _master_database_template_id_dev_zek
         elif dev_braincrew in _db_name:
             _logger.info("Dev BrainCrew")
-            return _master_database_template_id_dev_bc            
+            return _master_database_template_id_dev_bc
+        elif dev_josh in _db_name:
+            _logger.info("Dev Josh")
+            return _master_database_template_id_dev_josh
         else:
             _logger.info("Default Dev GS")
             return _master_database_template_id_prod
