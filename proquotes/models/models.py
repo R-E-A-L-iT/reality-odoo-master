@@ -626,6 +626,48 @@ class invoice(models.Model):
                 else:
                     return english
 
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
+
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
@@ -701,9 +743,40 @@ class invoice(models.Model):
                 else:
                     rec.payment_date = False
 
+    def action_post(self):
+        res = super().action_post()
+        for move in self:
+            if move.move_type == "out_invoice" and move.name:
+                company = move.company_id
+                if company.name == "R-E-A-L.iT Solutions":
+                    custom_prefix = "CAN-INV/"
+                elif company.name == "R-E-A-L.iT U.S. Inc.":
+                    custom_prefix = "USA-INV/"
+                else:
+                    _logger.info("Using default Odoo sequence for %s", company.name)
+                    continue  # Odoo's default
+                if not move.name.startswith(custom_prefix):
+                    new_name = f"{custom_prefix}{move.name}"
+                    _logger.info("Renaming Invoice: %s -> %s", move.name, new_name)
+                    move.name = new_name
+        return res
 
 class order(models.Model):
     _inherit = "sale.order"
+
+    partner_id = fields.Many2one(
+        'res.partner', 
+        string="Customer",
+        domain="[('is_company', '=', True)]",
+        required=True
+    )
+
+    pricelist_id = fields.Many2one(
+        'product.pricelist',
+        string='Pricelist',
+        domain="[('name', 'not ilike', 'Default')]",
+        required=True
+    )
 
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
@@ -775,6 +848,11 @@ class order(models.Model):
         self.order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
         mail_template = self._find_mail_template()
+        template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
+        if template:
+            mail_template = template
+        else:
+            mail_template = self._find_mail_template()
         if mail_template and mail_template.lang:
             lang = mail_template._render_lang(self.ids)[self.id]
         ctx = {
@@ -807,6 +885,9 @@ class order(models.Model):
                 self.is_rental = True
             else:
                 self.is_rental = False
+            for line in self.order_line:
+                line.tax_id = [(5, 0, 0)]
+
 
     # @api.onchange('sale_order_template_id')
     # def _onchange_sale_order_template_id(self):
@@ -827,6 +908,7 @@ class order(models.Model):
 
             if rental_pricelist:
                 self.pricelist_id = rental_pricelist.id
+        
         # else:
         #     # Reset pricelist if not rental
         #     self.pricelist_id = False
@@ -873,14 +955,11 @@ class order(models.Model):
             }
             
     def _action_confirm(self):
-        for quote in self:
-            selected_order_lines = quote.order_line.filtered(lambda line: line.selected)
-            for line in selected_order_lines:
-                line._action_launch_stock_rule()
-            quote.write({'state': 'sale'})
-            # this creates an invoice automatically, uncomment to turn on
-            # quote._create_invoices()
-        return True
+        selected_lines = self.order_line.sudo().filtered(
+            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
+        selected_lines._action_launch_stock_rule()
+        # self.order_line._action_launch_stock_rule()
+        # return super(order, self)._action_confirm()
 
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
@@ -1008,11 +1087,50 @@ class order(models.Model):
             if terms[0] == "#translate":
                 english = terms[1]
                 french = terms[2]
+                return french if lang == 'fr_CA' else english
+        return title
+    
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
 
-                if lang == 'fr_CA':
-                    return french
-                else:
-                    return english
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
 
     def _default_footer(self):
         # Get Company
@@ -1400,7 +1518,8 @@ class order(models.Model):
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
             )
-            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
@@ -1424,9 +1543,15 @@ class order(models.Model):
             
             # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
-                access_opt['title'] = _("View Quotation")
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir le devis")
+                else:
+                    access_opt['title'] = _("View Quotation")
             else:
-                access_opt['title'] = _("View Order")
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir la commande")
+                else:
+                    access_opt['title'] = _("View Order")
             
             # set the portal access URL for the button
             access_opt['url'] = f"{base_url}{portal_url}"
@@ -1563,6 +1688,55 @@ class orderLineProquotes(models.Model):
         help="Field to Lock Quantity on Products",
     )
 
+    is_optional = fields.Boolean(
+        required=True, string="Optional",
+        help="Field to Mark Product as Optional",
+    )
+    is_selected = fields.Boolean(
+        required=True, string="Selected",
+        help="Field to Mark Wether Customer has Selected Product",
+    )
+    is_quantityLocked = fields.Boolean(
+        string="Lock Quantity",
+        required=True,
+        help="Field to Lock Quantity on Products",
+    )
+
+    demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
+                                   help="Field to Mark Wether Customer has Selected Product",
+                                   )
+
+    @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
+    def _onchange_selected_line(self):
+        if self.is_selected:
+            self.selected = 'true'
+        else:
+            self.selected = 'false'
+        if self.is_quantityLocked:
+            self.quantityLocked = 'yes'
+        else:
+            self.quantityLocked = 'no'
+        if self.is_optional:
+            self.optional = 'yes'
+        else:
+            self.optional = 'no'
+    def _check_selected_line(self):
+        for rec in self:
+            rec.demo_selected = False
+            rec.is_quantityLocked = False
+            if rec.selected == 'true':
+                rec.is_selected = True
+            else:
+                rec.is_selected = False
+            if rec.optional == 'yes':
+                rec.is_optional = True
+            else:
+                rec.is_optional = False
+            if rec.quantityLocked == 'yes':
+                rec.is_quantityLocked = True
+            else:
+                rec.is_quantityLocked = False
+
     def get_applied_name(self):
         return True
         # n = name_translation(self)
@@ -1633,7 +1807,8 @@ class MailComposeMessage(models.TransientModel):
                     record.email_contacts = False
             else:
                 record.email_contacts = False
-    
+
+
     # @api.model
     # def default_get(self, fields_list):
     #     res = super(MailComposeMessage, self).default_get(fields_list)
@@ -1858,7 +2033,7 @@ class ticket(models.Model):
 class pdf_quote(models.Model):
     _inherit = "sale.report"
 
-    footer_field = fields.Selection("")
+    # footer_field = fields.Selection("")
     # footer_field = fields.Selection(related="order_id.footer")
 
 # class StockMove(models.Model):
@@ -1894,3 +2069,63 @@ class ProjectTask(models.Model):
         ('2', 'High'),
         ('3', 'Very High'),
     ], default='0', index=True, string="Priority", tracking=True)
+
+class delivery(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.depends("company_id")
+    def _get_default_footer(self):
+        # Get Company
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
+
+        # Get User
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        # Get Prefered Footers
+        result_raw = user.prefered_quote_footers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                # Verify footers are applicable for company
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+
+        # Check for default footer that matches company
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            return False
+            raise UserError("No Default Footer Available")
+
+    footer_id = fields.Many2one(
+        "header.footer", required=True, default=_get_default_footer
+    )

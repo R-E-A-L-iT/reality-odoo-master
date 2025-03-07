@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_view_task_search_form" model="ir.ui.view">
+        <field name="name">inherit.view.task.search.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <filter name="private_tasks" position="after">
+                <separator/>
+                <filter string="Tasks I Assigned" name="tasks_i_assigned"
+                        domain="[('create_uid', '=', uid), ('user_ids', 'not in', uid)]"/>
+                <separator/>
+            </filter>
+        </field>
+    </record>
+</odoo>

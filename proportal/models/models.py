@@ -54,6 +54,10 @@ class productType(models.Model):
                                 "display_name": record_name,
                                 })
 
+class visitor(models.Model):
+    _inherit = 'website.visitor'
+
+    ip_address = fields.Char(string="IP Address", help="The IP address of the visitor")
 
 class person(models.Model):
     _inherit = "res.partner"

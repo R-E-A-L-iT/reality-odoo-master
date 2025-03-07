@@ -10,47 +10,90 @@
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
 
-		<xpath expr="//t[@t-set=&quot;information_block&quot;]" position="replace" />
-			<!-- <t t-set="information_block">
-				<strong>Billing address:</strong>
-                <div t-if="o.company_id">
-					<span t-field="o.company_id.street" />
-					<span t-field="o.company_id.street2" />
-					<span t-field="o.company_id.city" />
-					<span t-field="o.company_id.state_id" />
-					<span t-field="o.company_id.zip" />
-					<span t-field="o.company_id.country_id" />
-                    <div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="purchase_shipping_address"/>
-                </div>
-			</t> -->
-			<!-- <t t-set="information_block">
-			<strong>Billing address:</strong>
-				<div t-if="o.company_id">
-					<div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;street&quot;, 'street2', 'city', 'state_id', 'zip', 'country_id', &quot;name&quot;], &quot;no_marker&quot;: True}" name="billing"/>
-				</div>
-			</t> -->
+		<!-- <xpath expr="//div[@class='page']" position="before">
+			<style>
+				h2 span, strong, .text-danger {
+					color: #db0d0d !important;
+				}
 
-		<xpath expr="//t[@t-set='address']" position="replace">
-			<div id="seller_address_section" style="width: 50% !important;">
-				<!-- <h2>To:</h2> -->
-				<t t-set="address">
-					<div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;vat&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-				</t>
+				/* .table.table-borderless tr:last-child td {
+					background-color: #db0d0d !important;
+					color: white !important;
+					font-weight: bold;
+				}
+
+				.table.table-borderless tr:last-child td:first-child {
+					color: white !important;
+				} */
+			</style>
+		</xpath> -->
+
+		<xpath expr="//t[@t-set='address']" position="replace"/>
+
+		<!-- this code will not work unless you deactivate the view purchase_stock.report_purchaseorder_document first -->
+		<xpath expr="//t[@t-set='o']" position="after">
+			<div class="container-fluid">
+
+				<!-- first row -->
+				<div class="row align-items-center" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 10px;">
+					<div class="col-12">
+						<h4 style="margin-bottom: 5px;">Vendor Address</h4>
+						<div t-if="o.partner_id">
+							<div style="display: flex; flex-direction: column;">
+								<span t-field="o.partner_id.name"/><br/>
+								<span t-field="o.partner_id.street"/><br/>
+								<span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
+								<span>
+									<span t-field="o.partner_id.city"/> -
+									<span t-field="o.partner_id.state_id"/> - 
+									<span t-field="o.partner_id.zip"/>
+								</span><br/>
+								<span t-field="o.partner_id.country_id"/><br/>
+								<span>
+									<i class="fa fa-phone"/> <span t-field="o.partner_id.phone"/>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- second row -->
+				<div class="row" style="background-color: #f0f0f0; padding: 10px;">
+					<div class="col-6">
+						<h4>Billing Address</h4>
+						<div t-if="o.company_id">
+							<span t-field="o.company_id.street"/><br/>
+							<span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
+							<span t-field="o.company_id.city"/> - 
+							<span t-field="o.company_id.state_id"/> -
+							<span t-field="o.company_id.zip"/><br/>
+							<span t-field="o.company_id.country_id"/>
+							<div t-field="o.company_id" 
+								t-options="{&quot;widget&quot;: &quot;contact&quot;, 
+											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], 
+											&quot;no_marker&quot;: True, 
+											&quot;phone_icons&quot;: True}" 
+								name="purchase_billing_address"/>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<h4>Shipping Address</h4>
+						<div t-if="o.picking_type_id">
+							<div t-field="o.picking_type_id.warehouse_id.partner_id" 
+								t-options="{&quot;widget&quot;: &quot;contact&quot;, 
+											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], 
+											&quot;no_marker&quot;: True}" 
+								name="purchase_shipping_address"/>
+						</div>
+					</div>
+				</div>
 			</div>
 		</xpath>
 
-		<xpath expr="//t[@t-if=&quot;o.dest_address_id&quot;]" position="replace">
-			<h3>From:</h3>
-			<br />
-			<strong>Billing address:</strong>
-				<div t-if="o.company_id">
-					<div t-field="o.company_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;street&quot;, 'street2', 'city', 'state_id', 'zip', 'country_id', &quot;name&quot;], &quot;no_marker&quot;: True}" name="billing"/>
-				</div>
-			<br /><br />
-			<strong>Delivery address:</strong>
-                <div t-if="o.picking_type_id">
-                    <div t-field="o.picking_type_id.warehouse_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}" name="delivery"/>
-                </div>
+		<!-- make total box wider so no linebreak for taxes -->
+		<xpath expr="//div[@id='total']/div[@class='col-4']" position="attributes">
+			<attribute name="class">col-6</attribute>
 		</xpath>
 
 		<xpath expr="//th[@name='th_description']" position="attributes">
