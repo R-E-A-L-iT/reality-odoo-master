@@ -134,7 +134,6 @@ class sync_ccp:
                     self.updateCCP(existing_ccp.id, row, sheet_columns, row_index)
                     items_updated.append(f"Updated CCP: {eidsn}")
                 else:
-
                     _logger.info("syncCCP: Row %d: EID/SN '%s' not found in Odoo. Calling createCCP.", row_index, eidsn)
                     # self.createCCP(eidsn, row, sheet_columns, row_index)
                     # items_updated.append(f"Created CCP: {eidsn}")
