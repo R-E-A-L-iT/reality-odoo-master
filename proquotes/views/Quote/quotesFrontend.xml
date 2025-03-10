@@ -375,12 +375,12 @@
                                checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
                     </t>
-                    <t t-if="'translate' in line.name">
+                    <!-- <t t-if="'translate' in line.name">
                         <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
                     </t>
                     <t t-if="'ccplabel' in line.name">
                         <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
-                    </t>
+                    </t> -->
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
                     <span t-elif="line.name.strip()[0] == '#'">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
