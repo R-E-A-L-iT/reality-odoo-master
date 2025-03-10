@@ -4,43 +4,43 @@
 	<!-- Return Appropriate result based on SNAME -->
 	<template name="Section Bilingual Names" id="section_name_resolution">
 		<t t-set="sname" t-value="sname" />
-		<t t-if="'rental_equipment' in sname">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">EQUIPMENT rental: choose desired items along with quantities</t>
-			<t t-if="clang == 'fr_CA'">Location d'équipement: choisissez les items et quantités désirés</t>
+		<t t-if="sname == 'rental_equipment'">
+			<t t-if="language == 'en_CA' or language == 'en_US'">EQUIPMENT rental: choose desired items along with quantities</t>
+			<t t-if="language == 'fr_CA'">Location d'équipement: choisissez les items et quantités désirés</t>
 		</t>
-		<t t-elif="'rental_accessories' in sname">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">Additional accessories: choose desired items along with quantities</t>
-			<t t-if="clang == 'fr_CA'">Accessoires additionnels: choisissez les items et quantités désirés</t>
+		<t t-elif="sname == 'rental_accessories'">
+			<t t-if="language == 'en_CA' or language == 'en_US'">Additional accessories: choose desired items along with quantities</t>
+			<t t-if="language == 'fr_CA'">Accessoires additionnels: choisissez les items et quantités désirés</t>
 		</t>
-		<t t-elif="'rental_software' in sname">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">Software rental: choose desired software along with quantities (in weeks)</t>
-			<t t-if="clang == 'fr_CA'">Location de logiciel: choisissez les items et quantités désirés (en semaines)</t>
+		<t t-elif="sname == 'rental_software'">
+			<t t-if="language == 'en_CA' or language == 'en_US'">Software rental: choose desired software along with quantities (in weeks)</t>
+			<t t-if="language == 'fr_CA'">Location de logiciel: choisissez les items et quantités désirés (en semaines)</t>
 		</t>
-		<t t-elif="'existing_sub' in sname">
-			<t t-if="clang == 'en_CA' or clang == 'en_US'">Existing Subscription</t>
-			<t t-if="clang == 'fr_CA'">Abonnement(s) existant(s)</t>
+		<t t-elif="sname == 'existing_sub'">
+			<t t-if="language == 'en_CA' or language == 'en_US'">Existing Subscription</t>
+			<t t-if="language == 'fr_CA'">Abonnement(s) existant(s)</t>
 		</t>
 		<t t-elif="sname[:13] == 'product_subs+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="name" t-value="labelList[1]" />
 
-			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="'Additional' + name + 'Subscriptions'" />
-			<t t-if="clang == 'fr_CA'" t-out="'Abonnement(s) - ' + name + ' - additionnel(s)'" />
+			<t t-if="language == 'en_CA' or language == 'en_US'" t-out="'Additional' + name + 'Subscriptions'" />
+			<t t-if="language == 'fr_CA'" t-out="'Abonnement(s) - ' + name + ' - additionnel(s)'" />
 		</t>
 		<t t-elif="sname[:16] == 'reality_capture+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="name" t-value="labelList[1]" />
 
-			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="'REALITY CAPTURE' + name" />
-			<t t-if="clang == 'fr_CA'" t-out="name + ' CAPTURE DE RÉALITÉ'" />
+			<t t-if="language == 'en_CA' or language == 'en_US'" t-out="'REALITY CAPTURE' + name" />
+			<t t-if="language == 'fr_CA'" t-out="name + ' CAPTURE DE RÉALITÉ'" />
 		</t>
 		<t t-elif="sname[:10] == 'translate+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="english_content" t-value="labelList[1]" />
 			<t t-set="french_content" t-value="labelList[2]" />
 
-			<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="english_content" />
-			<t t-if="clang == 'fr_CA'" t-out="french_content" />
+			<t t-if="language == 'en_CA' or language == 'en_US'" t-out="english_content" />
+			<t t-if="language == 'fr_CA'" t-out="french_content" />
 		</t>
 		<t t-elif="sname[:9] == 'ccplabel+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
@@ -55,18 +55,18 @@
 				<t t-set="year" t-value="date[0]" />
 				<t t-set="monthNum" t-value="date[1]" />
 				<t t-set="day" t-value="date[2]" />
-				<t t-if="clang == 'en_CA' or clang == 'en_US'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">
 					<t t-set="monthList" t-value="['', 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']" />
 					<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + monthList[int(monthNum)] + ' ' + str(day) + ', ' + str(year)" />
 				</t>
-				<t t-elif="clang == 'fr_CA'">
+				<t t-elif="language == 'fr_CA'">
 					<t t-set="monthList" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']" />
 					<t t-out="str(name) + ' (' + str(id) + ') - Expiration: ' + str(day) + ' ' + monthList[int(monthNum)] + ', ' + str(year)" />
 				</t>
 			</t>
 			<t t-else="">
-				<t t-if="clang == 'en_CA' or clang == 'en_US'" t-out="str(name) + ' (' + str(id) + ')'" />
-				<t t-elif="clang == 'fr_CA'" t-out="str(name) + ' (' + str(id) + ')'" />
+				<t t-if="language == 'en_CA' or language == 'en_US'" t-out="str(name) + ' (' + str(id) + ')'" />
+				<t t-elif="language == 'fr_CA'" t-out="str(name) + ' (' + str(id) + ')'" />
 			</t>
 
 		</t>
