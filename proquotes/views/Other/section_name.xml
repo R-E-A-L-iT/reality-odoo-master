@@ -34,14 +34,14 @@
 			<t t-if="language == 'en_CA' or language == 'en_US'" t-out="'REALITY CAPTURE' + name" />
 			<t t-if="language == 'fr_CA'" t-out="name + ' CAPTURE DE RÉALITÉ'" />
 		</t>
-		<t t-elif="sname[:10] == 'translate+'">
+		<!-- <t t-elif="sname[:10] == 'translate+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="english_content" t-value="labelList[1]" />
 			<t t-set="french_content" t-value="labelList[2]" />
 
 			<t t-if="language == 'en_CA' or language == 'en_US'" t-out="english_content" />
 			<t t-if="language == 'fr_CA'" t-out="french_content" />
-		</t>
+		</t> -->
 		<t t-elif="sname[:9] == 'ccplabel+'">
 			<t t-set="labelList" t-value="sname.split('+')" />
 			<t t-set="id" t-value="labelList[1]" />
