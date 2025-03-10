@@ -212,6 +212,14 @@
                     </td>
                 </tr>
             </t>
+            <t t-if="line.name == '#rental_subscription'">
+                <span t-if="language == 'fr_CA'">Abonnement de location</span>
+                <span>Rental Subscription</span>
+            </t>
+            <t t-if="line.name == '#rental_software'">
+                <span t-if="language == 'fr_CA'">Logiciel de location</span>
+                <span>Rental Software</span>
+            </t>
             <!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
             <t t-if="line.name == '$rental_pricenote'">
                 <tr>
