@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Server Action to convert into Contacts -->
+        <record id="action_people_convert_contacts_wizard" model="ir.actions.server">
+            <field name="name">Convert into Contacts</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="model_id" ref="de_apollo_connector.model_apl_people"/>
+            <field name="binding_model_id" ref="de_apollo_connector.model_apl_people"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_convert_contacts()
+            </field>
+        </record>
+
+        <record id="action_people_convert_leads_wizard" model="ir.actions.server">
+            <field name="name">Convert into Leads</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="model_id" ref="de_apollo_connector.model_apl_people"/>
+            <field name="binding_model_id" ref="de_apollo_connector.model_apl_people"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_convert_leads()
+            </field>
+        </record>
+        
+        <!-- People form view -->
+        <record id="apl_people_form_view" model="ir.ui.view">
+            <field name="name">apl.people.form.view</field>
+            <field name="model">apl.people</field>
+            <field name="arch" type="xml">
+                <form string="People">
+                    <sheet>
+                        <field name="photo_url" invisible="1"/>
+                        <div class="o_field_image o_field_widget oe_avatar">
+                            <field name="photo_image" widget="image" options="{'size': [128, 128]}"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="title" />
+                                <field name="email" />
+                                <field name="country" />
+                                <field name="state" />
+                                <field name="city" />
+                                <field name="apl_people_company_id" />
+                            </group>
+                            <group>
+                                <field name="linkedin_url" />
+                                <field name="twitter_url" />
+                                <field name="facebook_url" />
+                                <field name="github_url" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Employement History" name="employment_history">
+                                <field name="people_employment_history_ids" > 
+                                    <tree string="Employement History" editable="bottom" create="false" edit="true" delete="false">
+                                        <field name="degree" />
+                                        <field name="start_date" />
+                                        <field name="end_date" />
+                                        <field name="grade_level" />
+                                        <field name="kind" />
+                                        <field name="major" />
+                                        <field name="description" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Peole tree View -->
+        <record id="view_people_tree" model="ir.ui.view">
+            <field name="name">people.tree</field>
+            <field name="model">apl.people</field>
+            <field name="arch" type="xml">
+                <tree string="Apollo Results" js_class="apl_search_button_in_tree">
+                    <field name="apl_id" optional="hide"/>
+                    <field name="first_name" optional="hide"/>
+                    <field name="last_name" optional="hide"/>
+                    <field name="name"/>
+                    <field name="photo_url" optional="hide"/>
+                    <field name="photo_image" widget="image" options="{'size': [50, 50]}"/>
+                    <field name="title"/>
+                    <field name="email"/>
+                    <field name="email_status"/>
+                    <field name="organization_id" optional="hide"/>
+                    <field name="apl_people_company_id" widget="many2one_link"/>
+                    <field name="linkedin_url" widget="url" options="{'class': 'fa fa-linkedin', 'target': '_blank'}" invisible="1"/>
+                    <button name="open_linkedin_profile" type="object" icon="fa-linkedin" />
+                    <button name="open_twitter_profile" type="object" icon="fa-twitter" />
+                    <button name="open_facebook_profile" type="object" icon="fa-facebook" />
+                    <button name="open_github_profile" type="object" icon="fa-github" />
+                    <field name="country" />
+                    <field name="state" />
+                    <field name="city" />
+                    <button name="action_open_details" icon="fa-arrow-right" type="object" string="Open Details" />
+
+                </tree>
+               
+            </field>
+        </record>
+
+        <record id="action_apl_people" model="ir.actions.act_window">
+            <field name="name">Search People</field>
+            <field name="res_model">apl.people</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create': false, 'edit': false}</field>
+
+        </record>
+
+        <!--
+        <menuitem id="menu_people_list" name="People" parent="menu_apollo_prospecting" action="action_apl_people" sequence="20"/>
+-->
+    </data>
+</odoo>
