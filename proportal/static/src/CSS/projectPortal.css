@@ -2,6 +2,24 @@
 	font-family: 'helvetica';
 }
 
+/* fix footer styles */
+body {
+	overflow: auto !important;
+}
+#wrapwrap {
+	height: initial !important;
+	overflow-x: hidden !important;
+}
+footer#bottom {
+	position: relative !important;
+	z-index: initial !important;
+	top: initial !important;
+	bottom: initial !important;
+	left: initial !important;
+}
+
+
+
 span>strong, td>strong {
 	font-family: 'helvetica';
 }
