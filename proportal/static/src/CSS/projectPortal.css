@@ -45,7 +45,7 @@ div.o_brand_promotion {
 
 #wrapwrap {
 	overflow-x: hidden;
-	overflow-y: scroll;
+	/* overflow-y: scroll; */
 }
 
 #wrap {
