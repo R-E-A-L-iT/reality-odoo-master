@@ -409,11 +409,11 @@
             }
             
             
-            /* #bottom {
+            #bottom {
             position: absolute;
             bottom: 0;
             left: 0;
-			} */
+			}
            
    .nav-mobile {
     width: 100vw;
@@ -422,7 +422,7 @@
     z-index: 60;
     position: fixed;
 
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
 
     text-align: center;
 

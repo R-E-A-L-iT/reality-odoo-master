@@ -2,25 +2,6 @@
 	font-family: 'helvetica';
 }
 
-
-/* fix footer styles */
-body {
-	overflow: auto !important;
-}
-#wrapwrap {
-	height: initial !important;
-	overflow-x: hidden !important;
-}
-footer#bottom {
-	position: relative !important;
-	z-index: initial !important;
-	top: initial !important;
-	bottom: initial !important;
-	left: initial !important;
-}
-
-
-
 span>strong, td>strong {
 	font-family: 'helvetica';
 }
@@ -62,10 +43,10 @@ div.o_brand_promotion {
 	display: block;
 }
 
-/* #wrapwrap {
+#wrapwrap {
 	overflow-x: hidden;
 	overflow-y: scroll;
-} */
+}
 
 #wrap {
 	height: 100%;
@@ -76,15 +57,15 @@ header#top>nav.Navbar {
 	border-bottom-color: #000 !important;
 }
 
-/* #bottom {
+#bottom {
 	z-index: 6;
 	background-color: #111;
 	position: fixed;
 	padding: 0px;
 	height: fit-content;
-} */
+}
 
-/* #bottom>div.o_footer_copyright.o_colored_level.o_cc {
+#bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	display: flex;
 	flex-wrap: nowrap;
 	z-index: 6;
@@ -95,30 +76,30 @@ header#top>nav.Navbar {
 	height: 4rem;
 	padding-top: 1.5rem;
 	padding-bottom: 1.5rem;
-} */
+}
 
-/* #bottom>div.o_footer_copyright.o_colored_level.o_cc *, #bottom>div.o_footer_copyright.o_colored_level.o_cc .py-3 {
+#bottom>div.o_footer_copyright.o_colored_level.o_cc *, #bottom>div.o_footer_copyright.o_colored_level.o_cc .py-3 {
 	margin: 0px;
 	padding-top: 0px !important;
 	padding-bottom: 0px !important;
 	height: 1em;
-} */
+}
 
-/* #bottom .o_footer_copyright .row, #bottom .o_footer_copyright .col-sm {
+#bottom .o_footer_copyright .row, #bottom .o_footer_copyright .col-sm {
 	display: flex;
 	flex-wrap: nowrap;
-} */
+}
 
-/* #bottom>div.o_footer_copyright.o_colored_level.o_cc>div button[type="button"] {
+#bottom>div.o_footer_copyright.o_colored_level.o_cc>div button[type="button"] {
 	height: fit-content;
 	font-size: .75rem;
-} */
+}
 
-/* #bottom .o_footer_copyright span {
+#bottom .o_footer_copyright span {
 	white-space: nowrap;
 	height: 1em;
 	font-size: 1rem;
-} */
+}
 
 .nav-item {
 	color: #fff;
@@ -197,13 +178,13 @@ body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thre
     font-weight: 100;
 }
 
-/* #bottom > div.o_footer_copyright.o_colored_level.o_cc {
+#bottom > div.o_footer_copyright.o_colored_level.o_cc {
 	display: none;
 }
 
 #bottom>div.o_footer_copyright.o_colored_level.o_cc {
 	height: 3rem;
-} */
+}
 
 #custom-footer span {
 	color: #888;
