@@ -1706,6 +1706,20 @@ class orderLineProquotes(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    @api.onchange('product_id', 'order_id.is_rental')
+    def _onchange_product_id(self):
+        for line in self:
+            if line.order_id.is_rental and line.product_id:
+                target_categories = [
+                    'Software (Permanent License)',
+                    'Software CCP',
+                    'Software Subscription'
+                ]
+                if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
+                    line.price_unit = line.product_id.list_price
+                else:
+                    line.price_unit = line.product_id.lst_price
+                    
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
         if self.is_selected:
