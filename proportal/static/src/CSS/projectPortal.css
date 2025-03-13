@@ -19,6 +19,12 @@ footer#bottom {
 	left: initial !important;
 }
 
+/* fix header styles */
+#top {
+	position: fixed;
+	width: 100%;
+}
+
 
 
 span>strong, td>strong {
