@@ -37,7 +37,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'section_wise_subtotal/static/src/js/section_wise_subtotal.js',
+            # 'section_wise_subtotal/static/src/js/section_wise_subtotal.js',
         ],
     },
     'images': ['static/description/banner.jpg'],
