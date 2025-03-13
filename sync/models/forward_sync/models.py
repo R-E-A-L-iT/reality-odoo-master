@@ -89,6 +89,7 @@ class pricelist(models.Model):
 class ccp(models.Model):
     _inherit = "stock.lot"
     stringRep = fields.Char(default="")
+    active = fields.Boolean(default=True)
 
 # app related models
 
