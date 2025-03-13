@@ -94,11 +94,17 @@
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoice_lot.xml",
         "views/Invoice/invoiceBackend.xml",
-        "views/Invoice/invoicePayment.xml",
+        # "views/Invoice/invoicePayment.xml",
         "views/PO/PO_Frontend.xml",
         "views/PO/PO_Backend.xml",
         "views/PO/PO_PDF.xml",
         "views/Other/quoteEmailFooter.xml",
+        "views/Other/helpdeskTicket.xml",
+        "views/Other/header_footer_values.xml",
+        "views/Other/preconfigured_sections.xml",
+        # "views/Other/translated_terms.xml",
+        # "views/Invoice/invoicePayment.xml",
+        # "views/Other/product_backend.xml",
         #         'models/quoteNotify.py'
     ],
     # only loaded in demonstration mode

@@ -63,9 +63,6 @@
                 <field name="special" invisible="1"/>
             </xpath>
 
-            <xpath expr="//field[@name='order_line']/tree/field[@name='special']" position="attributes">
-                  <attribute name="optional">hide</attribute>
-             </xpath>
 
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
                    position="before">
@@ -81,7 +78,7 @@
                 <field name="is_selected" invisible="0"/>
                 <field name="sectionSelected" invisible="1" optional="hide"/>
                 <field name="quantityLocked" column_invisible="1"/>
-                <field name="demo_selected" column_invisible="1" optional="hide"/>
+                 <field name="demo_selected" column_invisible="1" optional="hide"/>
                 <field name="is_quantityLocked" invisible="0"/>
                 <field name="variant" invisible="1" optional="hide"/>
                 <field name="hiddenSection" invisible="1" optional="hide"/>
@@ -142,6 +139,17 @@
         <field name="arch" type="xml">
             <!-- Hide Original Optional Products Implementation -->
             <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
+        </field>
+    </record>
+
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="pricelist_id" position="attributes">
+                <attribute name="domain">[('name', 'not ilike', 'default')]</attribute>
+            </field>
         </field>
     </record>
 </odoo>

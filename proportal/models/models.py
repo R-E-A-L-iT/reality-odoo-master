@@ -54,6 +54,10 @@ class productType(models.Model):
                                 "display_name": record_name,
                                 })
 
+class visitor(models.Model):
+    _inherit = 'website.visitor'
+
+    ip_address = fields.Char(string="IP Address", help="The IP address of the visitor")
 
 class person(models.Model):
     _inherit = "res.partner"
@@ -84,6 +88,8 @@ class productInstance(models.Model):
     )
     formated_label = fields.Char(compute="_label")
     publish = fields.Boolean(string="publish", default="True")
+
+    firmware_version = fields.Text(string='Firmware Version', help='Firmware version associated with this lot.')
 
     # Automate formated_label
     def _label(self):
@@ -185,3 +191,4 @@ class PurchaseOrder(models.Model):
                     "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
                 }
             )
+

@@ -15,6 +15,11 @@
                     <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
                 </div>
             </t>
+            <t t-elif="record._name == 'helpdesk.ticket'">
+               <div>
+                    <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
+                </div>
+            </t>
         </xpath>
         <xpath expr="//td[@t-if='subtitles']" position="replace">
             <td t-if="subtitles and not record._name == 'sale.order'" style="font-size: 12px;">
@@ -24,5 +29,8 @@
                 </t>
             </td>
         </xpath>
+
+        <!-- remove powered by odoo -->
+        <xpath expr="//div[@class='d-none']" position="replace" />
     </template>
 </odoo>

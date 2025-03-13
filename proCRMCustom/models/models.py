@@ -48,4 +48,3 @@ class opportunity(models.Model):
             else:
                 lead.quotation_amount = 0.00
                 lead.expected_revenue = 0.00
-

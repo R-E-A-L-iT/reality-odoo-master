@@ -347,7 +347,7 @@ class QuoteCustomerPortal(cPortal):
         )
 
         return results
-
+    
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
     # def change_lang(self, lang, r='/', **kwargs):
@@ -370,7 +370,7 @@ class Website(WebsiteINH):
     #     #
     #     _logger.info('>>>>>>>123456789>>>>>>>')
     #     return redirect
-    
+
     @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
     def change_lang(self, lang, r='/', **kwargs):
         """ :param lang: supposed to be value of `url_code` field """

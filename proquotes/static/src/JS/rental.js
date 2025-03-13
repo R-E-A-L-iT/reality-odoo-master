@@ -19,18 +19,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "change #country": "_country",
         "change #rental-start": "_start",
         "change #rental-end": "_end",
-        "change #po_number": "_change_po_number",
-        "change #invoice_address": "_change_invoice_address_id",
-        "change #delivery_address": "_change_delivery_address_id",
-        //        "change #shipping_street": "_change_shipping_street",
-        //        "change #shipping_city" : "_change_shipping_city",
-        //        "change #shipping_country" : "_change_shipping_country",
-        //        "change #shipping_state" : "_change_shipping_state",
-//
-        "change #shipping_street": "_change_shipping_address",
-        "change #shipping_city" : "_change_shipping_address",
-        "change #shipping_country" : "_change_shipping_address",
-        "change #shipping_state" : "_change_shipping_address",
     },
 
     async start() {
@@ -70,8 +58,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 //            },
 //        });
     },
-
-
 
     _city: function (ev) {
         var target = ev.currentTarget;
@@ -194,81 +180,5 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 //            },
 //        });
     },
-    // For PO Number
-    _change_po_number : function(ev) {
-        var target = ev.currentTarget;
-        var po_number = target.value;
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/po_number", {
-                        "access_token": this.orderDetail.token,
-                        "po_number": po_number,
-                    });
-    },
-    _change_invoice_address_id : function(ev) {
-        var target = ev.currentTarget;
-        var invoice_address_id = target.value;
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/invoice_address", {
-                        "access_token": this.orderDetail.token,
-                        "invoice_address_id": invoice_address_id,
-                    });
-    },
-
-    _change_delivery_address_id : function(ev) {
-        var target = ev.currentTarget;
-        var delivery_address_id = target.value;
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/delivery_address", {
-                        "access_token": this.orderDetail.token,
-                        "delivery_address_id": delivery_address_id,
-                    });
-    },
-
-    _change_shipping_address: function(ev) {
-        var shipping_street = $("#shipping_street").val();
-        var shipping_city = $("#shipping_city").val();
-        var shipping_country = $("#shipping_country").val();
-        var shipping_state = $("#shipping_state").val();
-
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/update_shipping_address", {
-            "access_token": this.orderDetail.token,
-            "shipping_street": shipping_street,
-            "shipping_city": shipping_city,
-            "shipping_country": shipping_country,
-            "shipping_state": shipping_state,
-        });
-    },
-    
-    //    _change_shipping_street : function(ev) {
-    //        var target = ev.currentTarget;
-    //        var shipping_street = target.value;
-    //        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/shipping_street", {
-    //                        "access_token": this.orderDetail.token,
-    //                        "shipping_street": shipping_street,
-    //                    });
-    //    },
-    //    _change_shipping_city : function(ev) {
-    //        var target = ev.currentTarget;
-    //        var shipping_city = target.value;
-    //        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/shipping_city", {
-    //                        "access_token": this.orderDetail.token,
-    //                        "shipping_city": shipping_city,
-    //                    });
-    //    },
-    //    _change_shipping_country : function(ev) {
-    //        var target = ev.currentTarget;
-    //        var shipping_country = target.value;
-    //        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/shipping_country", {
-    //                        "access_token": this.orderDetail.token,
-    //                        "shipping_country": shipping_country,
-    //                    });
-    //    },
-    //    _change_shipping_state : function(ev) {
-    //        var target = ev.currentTarget;
-    //        var shipping_state = target.value;
-    //        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/shipping_state", {
-    //                        "access_token": this.orderDetail.token,
-    //                        "shipping_state": shipping_state,
-    //                    });
-    //    },
-
-
 });
 //});

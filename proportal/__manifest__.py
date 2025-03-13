@@ -40,7 +40,6 @@
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
-        "data/live_session_started_email_temp.xml",
         "views/web_base.xml",
         "views/partnerView.xml",
         # 'views/portalAccess.xml',
@@ -58,7 +57,8 @@
         "views/partner_internal.xml",
         "views/notification_email.xml",
         "views/storePage.xml",
-        "views/portalAppointment.xml"
+        "views/portalAppointment.xml",
+        "views/productInstance.xml"
     ],
     # only loaded in demonstration mode
     "demo": [

@@ -137,6 +137,8 @@ class sync_ccp:
 
                     # _logger.info("syncCCP: Row %d: EID/SN '%s' not found in Odoo. Calling createCCP.", row_index, eidsn)
                     _logger.warning("syncCCP: Record not found with matching EID and Product SKU. Skipping creation.")
+                    
+                    # careful not to turn this back on
                     # self.createCCP(eidsn, row, sheet_columns, row_index)
                     # items_updated.append(f"Created CCP: {eidsn}")
             

@@ -41,17 +41,16 @@ import werkzeug.wsgi
 from werkzeug.urls import URL, url_parse, url_encode, url_quote
 from werkzeug.exceptions import (HTTPException, BadRequest, Forbidden,
                                  NotFound, InternalServerError)
-from odoo.addons.sale.models.sale_order import SALE_ORDER_STATE
 try:
     from werkzeug.middleware.proxy_fix import ProxyFix as ProxyFix_
     ProxyFix = functools.partial(ProxyFix_, x_for=1, x_proto=1, x_host=1)
 except ImportError:
     from werkzeug.contrib.fixers import ProxyFix
-
 try:
     from werkzeug.utils import send_file as _send_file
 except ImportError:
     from .tools._vendor.send_file import send_file as _send_file
+
 
 # Domain operators.
 NOT_OPERATOR = '!'
@@ -273,6 +272,60 @@ def _anyfy_leaves(domain, model):
 
 exp._anyfy_leaves = _anyfy_leaves
 
+# class Response(Responseht)
+# def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
+#     """
+#     The default expires in Werkzeug is None, which means a session cookie.
+#     We want to continue to support the session cookie, but not by default.
+#     Now the default is arbitrary 1 year.
+#     So if you want a cookie of session, you have to explicitly pass expires=None.
+#     """
+#     if expires == -1:  # not provided value -> default value -> 1 year
+#         expires = datetime.now() + timedelta(days=365)
+#     if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
+#         max_age = 0
+#     _logger.info('>>>>>>>>>>>>>>request.httprequest.path: %s', request.httprequest.path)
+#     url = request.httprequest.path
+#     if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
+#         _logger.info('>>>>>>>>>>>>>>inside')
+#         if 'fr_CA' not in url:
+#             value = 'en_US'
+#         else:
+#             value = 'fr_CA'
+#     else:
+#         if ('/web/login' not in url) and request.httprequest.cookies.get('frontend_lang', False):
+#             value = request.httprequest.cookies.get('frontend_lang')
+#     _logger.info('>>>>>>>>> session language: %s', request.httprequest.cookies.get('frontend_lang'))
+#     _logger.info('>>>>>>>>>>>> cookie_value 2: %s', value)
+#     super(Responseht, self).set_cookie(key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
+# Responseht.set_cookie = set_cookie
+@functools.wraps(werkzeug.Response.set_cookie)
+def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
+    if expires == -1:  # not forced value -> default value -> 1 year
+        expires = datetime.now() + timedelta(days=365)
+    if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
+        max_age = 0
+    _logger.info('>>>>>>>>>>>>>>request.httprequest.path 1: %s', request.httprequest.path)
+    url = request.httprequest.path
+    if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
+        _logger.info('>>>>>>>>>>>>>>inside')
+        if 'fr_CA' not in url:
+            value = 'en_US'
+        else:
+            value = 'fr_CA'
+    else:
+        if (url.startswith('/web')) and key=='frontend_lang' and request.httprequest.cookies.get('frontend_lang', False):
+            value = request.httprequest.cookies.get('frontend_lang')
+    _logger.info('>>>>>>>>> session language 1: %s', request.httprequest.cookies.get('frontend_lang'))
+    _logger.info('>>>>>>>>>>>> cookie_value 1: %s', value)
+    werkzeug.Response.set_cookie(self, key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
+    
+FutureResponseht.set_cookie = set_cookie
+
+class CustomViewModifier(models.Model):
+    _inherit = 'ir.ui.view'
+
+
 
 def is_operator(element):
     """ Test whether an object is a valid domain operator. """
@@ -422,61 +475,6 @@ def _anyfy_leaves(domain, model):
 
 exp._anyfy_leaves = _anyfy_leaves
 
-
-# class Response(Responseht)
-# def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
-#     """
-#     The default expires in Werkzeug is None, which means a session cookie.
-#     We want to continue to support the session cookie, but not by default.
-#     Now the default is arbitrary 1 year.
-#     So if you want a cookie of session, you have to explicitly pass expires=None.
-#     """
-#     if expires == -1:  # not provided value -> default value -> 1 year
-#         expires = datetime.now() + timedelta(days=365)
-
-#     if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
-#         max_age = 0
-#     _logger.info('>>>>>>>>>>>>>>request.httprequest.path: %s', request.httprequest.path)
-#     url = request.httprequest.path
-#     if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
-#         _logger.info('>>>>>>>>>>>>>>inside')
-#         if 'fr_CA' not in url:
-#             value = 'en_US'
-#         else:
-#             value = 'fr_CA'
-#     else:
-#         if ('/web/login' not in url) and request.httprequest.cookies.get('frontend_lang', False):
-#             value = request.httprequest.cookies.get('frontend_lang')
-#     _logger.info('>>>>>>>>> session language: %s', request.httprequest.cookies.get('frontend_lang'))
-#     _logger.info('>>>>>>>>>>>> cookie_value 2: %s', value)
-
-#     super(Responseht, self).set_cookie(key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
-
-# Responseht.set_cookie = set_cookie
-
-@functools.wraps(werkzeug.Response.set_cookie)
-def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
-    if expires == -1:  # not forced value -> default value -> 1 year
-        expires = datetime.now() + timedelta(days=365)
-
-    if request.db and not request.env['ir.http']._is_allowed_cookie(cookie_type):
-        max_age = 0
-    _logger.info('>>>>>>>>>>>>>>request.httprequest.path 1: %s', request.httprequest.path)
-    url = request.httprequest.path
-    if ('/website/lang/fr_CA' in url) or ('/website/lang/en' in url):
-        _logger.info('>>>>>>>>>>>>>>inside')
-        if 'fr_CA' not in url:
-            value = 'en_US'
-        else:
-            value = 'fr_CA'
-    else:
-        if (url.startswith('/web')) and key=='frontend_lang' and request.httprequest.cookies.get('frontend_lang', False):
-            value = request.httprequest.cookies.get('frontend_lang')
-    _logger.info('>>>>>>>>> session language 1: %s', request.httprequest.cookies.get('frontend_lang'))
-    _logger.info('>>>>>>>>>>>> cookie_value 1: %s', value)
-    werkzeug.Response.set_cookie(self, key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
-
-FutureResponseht.set_cookie = set_cookie
 
 class CustomViewModifier(models.Model):
     _inherit = 'ir.ui.view'
@@ -628,6 +626,48 @@ class invoice(models.Model):
                 else:
                     return english
 
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
+
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
@@ -684,9 +724,9 @@ class invoice(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
-
+    
     payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
-
+    
     def _compute_payment_date(self):
         for rec in self:
             rec.payment_date = False
@@ -703,27 +743,6 @@ class invoice(models.Model):
                 else:
                     rec.payment_date = False
 
-
-    # @api.model
-    # def _get_sequence_format_param(self, previous):
-    #     format_str, format_values = super()._get_sequence_format_param(previous)
-    #     company = self.env.company
-    #     if company.name == "R-E-A-L.iT Solutions":
-    #         custom_prefix = "CAN-INV/"
-    #         if custom_prefix:
-    #             format_values["prefix1"] = custom_prefix
-    #             format_values["prefix"] = custom_prefix
-    #             _logger.warning("After - format_str: %s", format_str)
-    #             _logger.warning("After - format_values: %s", format_values)
-    #     elif company.name == "R-E-A-L.iT U.S. Inc.":
-    #         custom_prefix = "USA-INV/"
-    #         if custom_prefix:
-    #             format_values["prefix1"] = custom_prefix
-    #             format_values["prefix"] = custom_prefix
-    #             _logger.warning("After - format_str: %s", format_str)
-    #             _logger.warning("After - format_values: %s", format_values
-    #     return format_str, format_values
-    
     def action_post(self):
         res = super().action_post()
         for move in self:
@@ -734,16 +753,30 @@ class invoice(models.Model):
                 elif company.name == "R-E-A-L.iT U.S. Inc.":
                     custom_prefix = "USA-INV/"
                 else:
+                    _logger.info("Using default Odoo sequence for %s", company.name)
                     continue  # Odoo's default
-                invoice_number = move.name.replace("INV/", "")
                 if not move.name.startswith(custom_prefix):
-                    new_name = f"{custom_prefix}{invoice_number}"
-                    _logger.info("__743__Renaming Invoice: %s -> %s", move.name, new_name)
+                    new_name = f"{custom_prefix}{move.name}"
+                    _logger.info("Renaming Invoice: %s -> %s", move.name, new_name)
                     move.name = new_name
         return res
 
 class order(models.Model):
     _inherit = "sale.order"
+
+    partner_id = fields.Many2one(
+        'res.partner', 
+        string="Customer",
+        domain="[('is_company', '=', True)]",
+        required=True
+    )
+
+    pricelist_id = fields.Many2one(
+        'product.pricelist',
+        string='Pricelist',
+        domain="[('name', 'not ilike', 'Default')]",
+        required=True
+    )
 
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
@@ -808,6 +841,41 @@ class order(models.Model):
             defaults['payment_term_id'] = immediate_payment_term.id
 
         return defaults
+
+    def action_quotation_send(self):
+        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
+        self.ensure_one()
+        self.order_line._validate_analytic_distribution()
+        lang = self.env.context.get('lang')
+        mail_template = self._find_mail_template()
+        template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
+        if template:
+            mail_template = template
+        else:
+            mail_template = self._find_mail_template()
+        if mail_template and mail_template.lang:
+            lang = mail_template._render_lang(self.ids)[self.id]
+        ctx = {
+            'default_model': 'sale.order',
+            'default_res_ids': self.ids,
+            'default_template_id': mail_template.id if mail_template else None,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
+            'proforma': self.env.context.get('proforma', False),
+            'force_email': True,
+            'model_description': self.with_context(lang=lang).type_name,
+            'default_partner_ids': [(6, 0, self.email_contacts.ids)],
+        }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(False, 'form')],
+            'view_id': False,
+            'target': 'new',
+            'context': ctx,
+        }
     
     @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
@@ -819,11 +887,7 @@ class order(models.Model):
                 self.is_rental = False
             for line in self.order_line:
                 line.tax_id = [(5, 0, 0)]
-            self.env['bus.bus']._sendone(self.env.user.partner_id, 'simple_notification', {
-                'type': 'danger',
-                'title': _("Warning"),
-                'message': _('Taxes have been removed. Please set them manually for this order..'),
-            })
+
 
     # @api.onchange('sale_order_template_id')
     # def _onchange_sale_order_template_id(self):
@@ -844,31 +908,13 @@ class order(models.Model):
 
             if rental_pricelist:
                 self.pricelist_id = rental_pricelist.id
+        
         # else:
         #     # Reset pricelist if not rental
         #     self.pricelist_id = False
 
     @api.onchange('email_contacts')
     def _onchange_email_contacts(self):
-        current_follower_ids = self.message_follower_ids.mapped('partner_id.id')
-        new_partner_ids = []
-        for contact in self.email_contacts:
-            if isinstance(contact._origin.id, int):  # Real database ID
-                new_partner_ids.append(contact._origin.id)
-            else:
-                _logger.warning("Skipping unsaved contact with NewId: %s", contact._origin.id)
-        to_add = list(set(new_partner_ids) - set(current_follower_ids))
-        if to_add:
-            _logger.info('Adding new followers: %s', to_add)
-            self.message_subscribe(partner_ids=to_add)
-        to_remove = list(set(current_follower_ids) - set(new_partner_ids))
-        if to_remove:
-            _logger.info('Removing followers: %s', to_remove)
-            self.message_unsubscribe(partner_ids=to_remove)
-
-        if not to_add and not to_remove:
-            _logger.info('No changes in followers.')
-
         for contact in self.email_contacts:
             try:
                 if self.partner_ids:
@@ -877,12 +923,19 @@ class order(models.Model):
             except:
                 _logger.info("Failed to add contacts to the partner_ids from the email_contacts table")
 
-    def _action_confirm(self):
-        selected_lines = self.order_line.sudo().filtered(
-            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
-        selected_lines._action_launch_stock_rule()
-        # self.order_line._action_launch_stock_rule()
-        # return super(order, self)._action_confirm()
+    def _recompute_prices(self):
+        lines_to_recompute = self._get_update_prices_lines()
+        lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
+        lines_to_recompute._compute_price_unit()
+        # Special case: we want to overwrite the existing discount on _recompute_prices call
+        # i.e. to make sure the discount is correctly reset
+        # if pricelist discount_policy is different than when the price was first computed.
+        for lines in lines_to_recompute:
+            if not lines.discount:
+                lines.discount = 0.0
+        lines_to_recompute._compute_discount()
+        self.show_update_pricelist = False
+
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -900,74 +953,52 @@ class order(models.Model):
                     'pricelist_id': [('name', 'ilike', 'rental')]
                 }
             }
+            
+    def _action_confirm(self):
+        selected_lines = self.order_line.sudo().filtered(
+            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
+        selected_lines._action_launch_stock_rule()
+        # self.order_line._action_launch_stock_rule()
+        # return super(order, self)._action_confirm()
 
-    def action_quotation_send(self):
-        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
-        self.ensure_one()
-        self.order_line._validate_analytic_distribution()
-        lang = self.env.context.get('lang')
-        template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
-        if template:
-            mail_template = template
-        else:
-            mail_template = self._find_mail_template()
-        if mail_template and mail_template.lang:
-            lang = mail_template._render_lang(self.ids)[self.id]
-        recipient_ids = self.email_contacts.ids if self.email_contacts else []
-        ctx = {
-            'default_model': 'sale.order',
-            'default_res_ids': self.ids,
-            'default_template_id': mail_template.id if mail_template else None,
-            'default_composition_mode': 'comment',
-            'mark_so_as_sent': True,
-            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
-            'proforma': self.env.context.get('proforma', False),
-            'force_email': True,
-            'model_description': self.with_context(lang=lang).type_name,
-            'default_partner_ids': [(6, 0, self.email_contacts.ids)],
-        }
-        if self.partner_id and self.partner_id.id not in recipient_ids:
-            followers_to_remove = self.message_follower_ids.filtered(
-                lambda follower: follower.partner_id.id == self.partner_id.id
-            )
-            _logger.info('>>>>>>>>>>iff>>>>>>.followers_to_remove: %s,', followers_to_remove)
-            followers_to_remove.unlink()
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'views': [(False, 'form')],
-            'view_id': False,
-            'target': 'new',
-            'context': ctx,
-        }
-    
-    def _recompute_prices(self):
-        lines_to_recompute = self._get_update_prices_lines()
-        lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
-        lines_to_recompute._compute_price_unit()
-        # Special case: we want to overwrite the existing discount on _recompute_prices call
-        # i.e. to make sure the discount is correctly reset
-        # if pricelist discount_policy is different than when the price was first computed.
-        for lines in lines_to_recompute:
-            if not lines.discount:
-                lines.discount = 0.0
-        lines_to_recompute._compute_discount()
-        self.show_update_pricelist = False
-    
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
+        sales_email = self.env['res.partner'].browse(64744)
+        if ('partner_ids' in kwargs) and sales_email:
+            kwargs['partner_ids'].append(sales_email.id)
         if self.env.context.get('mark_so_as_sent'):
             self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
         so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
         if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
             kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
+        #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
+        return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
         if 'tracking_value_ids' not in kwargs:
             return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
         else:
             pass
+    # @api.returns('mail.message', lambda value: value.id)
+    # def message_post(self, **kwargs):
+    #     if self.env.context.get('mark_so_as_sent'):
+    #         self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
+    #     so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
+    #     if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
+    #         kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
+    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
+    #     sales_email_id = 64744
+    #     sales_email = self.env['res.partner'].browse(sales_email_id)
+        
+    #     if 'partner_ids' not in kwargs:
+    #         kwargs['partner_ids'] = []
+    #     if sales_email.id not in kwargs['partner_ids']:
+    #         kwargs['partner_ids'].append(sales_email.id)
+    #     #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
+    #     if 'tracking_value_ids' not in kwargs:
+    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
+    #     else:
+    #         pass
 
-
+     
     # def message_post(self, **kwargs):
         
     #     # Variable mail_post_autofollow is true when using send message function but not when log note
@@ -990,7 +1021,7 @@ class order(models.Model):
     #     elif "Quotation viewed by customer" in kwargs['body']:
     #         # only send to salesperson (user_id = salesperson)
     #         # sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-    #         if order.user_id:
+    #         if order and order.user_id:
     #             kwargs['partner_ids'] = [order.user_id.id]
     #         else:
     #             kwargs['partner_ids'] = []
@@ -1001,12 +1032,15 @@ class order(models.Model):
     #         return False
         
     #     elif "Signed by" in kwargs['body'] or "Bon signé" in kwargs['body']:
-    #         if order.user_id:
+    #         if order and order.user_id:
     #             kwargs['partner_ids'] = [order.user_id.id]
     #         else:
     #             kwargs['partner_ids'] = []
                 
     #         return super(order, self).message_post(**kwargs)
+        
+    #     elif "Extra line with" in kwargs['body']:
+    #         return False
 
     #     # send message feature
     #     else:
@@ -1021,6 +1055,7 @@ class order(models.Model):
     #         if sales_partner:
     #             contacts.append(sales_partner.id)
                 
+    #         # this removes the default partner_id, which is the email attatched to the company contact
     #         filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
 
     #         all_contacts = list(set(filtered_partner_ids + contacts))
@@ -1052,11 +1087,50 @@ class order(models.Model):
             if terms[0] == "#translate":
                 english = terms[1]
                 french = terms[2]
+                return french if lang == 'fr_CA' else english
+        return title
+    
+    def parse_ccp_label(self, label):
+        try:
+            if not label.startswith('#ccplabel+'):
+                return label
+            
+            parts = label.split('+')
+            # if len(parts) != 4:
+            #     return label
+            
+            product_code = parts[2]
+            expiry_date = parts[3]
+            product_name = product_code
 
-                if lang == 'fr_CA':
-                    return french
-                else:
-                    return english
+            new_label = ""
+
+            expiry_date_obj = datetime.strptime(expiry_date, '%Y-%m-%d')
+            if self.env.context.get('lang') == 'fr_CA':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_fr = {
+                    'January': 'janvier', 'February': 'février', 'March': 'mars',
+                    'April': 'avril', 'May': 'mai', 'June': 'juin',
+                    'July': 'juillet', 'August': 'août', 'September': 'septembre',
+                    'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                }
+                month_name = months_fr.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            else:
+                formatted_date = expiry_date_obj.strftime('%d %B, %Y')
+
+            product = self.env['product.product'].search([('name', '=', product_code)], limit=1)
+            if product:
+                product_name = product.with_context(lang=self.env.context.get('lang', 'en_US')).name
+
+            if self.env.context.get('lang') == 'fr_CA':
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            else:
+                new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+
+            return new_label
+        except Exception:
+            return label
 
     def _default_footer(self):
         # Get Company
@@ -1444,12 +1518,12 @@ class order(models.Model):
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
             )
+            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
-            _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
-
+        
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
@@ -1466,7 +1540,7 @@ class order(models.Model):
             # enable the access button for all groups
             group[2]['has_button_access'] = True
             access_opt = group[2].setdefault('button_access', {})
-
+            
             # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
                 if self.partner_id.lang == 'fr_CA':
@@ -1478,18 +1552,9 @@ class order(models.Model):
                     access_opt['title'] = _("Voir la commande")
                 else:
                     access_opt['title'] = _("View Order")
-
+            
             # set the portal access URL for the button
             access_opt['url'] = f"{base_url}{portal_url}"
-            if message.is_internal:
-                access_opt['url'] = f"{base_url}/web#id={self.id}&model={self._name}&view_type=form"
-            elif access_opt['title'] == _("View Quotation"):
-                access_opt['url'] = f"{base_url}/web#id={self.id}&model={self._name}&view_type=form"
-            else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['url'] = f"{base_url}/fr_CA{portal_url}"
-                else:
-                    access_opt['url'] = f"{base_url}{portal_url}"
 
         # return the modified recipient groups with the updated access options
         return groups
@@ -1641,35 +1706,20 @@ class orderLineProquotes(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
-    @api.onchange('product_id', 'order_id.is_rental')
-    def _onchange_product_id(self):
-        for line in self:
-            if line.order_id.is_rental and line.product_id:
-                target_categories = [
-                    'Software (Permanent License)',
-                    'Software CCP',
-                    'Software Subscription'
-                ]
-                if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
-                    line.price_unit = line.product_id.list_price
-                else:
-                    line.price_unit = line.product_id.lst_price
-
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
         if self.is_selected:
             self.selected = 'true'
         else:
             self.selected = 'false'
-        if self.quantityLocked == 'yes':
-            self.is_quantityLocked = True
+        if self.is_quantityLocked:
+            self.quantityLocked = 'yes'
         else:
-            self.is_quantityLocked = False
-        if self.optional == 'yes':
-            self.is_optional = True
+            self.quantityLocked = 'no'
+        if self.is_optional:
+            self.optional = 'yes'
         else:
-            self.is_optional = False
-
+            self.optional = 'no'
     def _check_selected_line(self):
         for rec in self:
             rec.demo_selected = False
@@ -1737,22 +1787,57 @@ class MailComposeMessage(models.TransientModel):
         domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
     
-    @api.model
-    def default_get(self, fields_list):
-        res = super(MailComposeMessage, self).default_get(fields_list)
+    email_contacts = fields.Many2many(
+        'res.partner',
+        string="Email Contacts",
+        compute='_compute_email_contacts',
+        store=False,
+        readonly=False
+    )
+    
+    @api.depends('model', 'res_ids')
+    def _compute_email_contacts(self):
+        for record in self:
+            if record.model == 'sale.order' and record.res_ids:
+                valid_res_ids = [int(res_id) for res_id in record.res_ids if isinstance(res_id, int)]
+                if valid_res_ids:
+                    sale_orders = self.env['sale.order'].browse(valid_res_ids)
+                    record.email_contacts = sale_orders.mapped('email_contacts')
+                else:
+                    record.email_contacts = False
+            else:
+                record.email_contacts = False
 
-        if self.env.context.get('default_model') == 'sale.order':
-            # set template
-            template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
-            if template:
-                res['template_id'] = template.id
-                
-            # set recipients
-            order = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
-            if order and order.email_contacts:
-                res['partner_ids'] = [(4, order.user_id)]
+
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super(MailComposeMessage, self).default_get(fields_list)
         
-        return res
+    #     message = False
+    #     if self.env.context.get('active_model') == 'mail.message' and self.env.context.get('active_id'):
+    #         message = self.env['mail.message'].browse(self.env.context['active_id'])
+        
+    #     if message:
+    #         res['user'] = message.create_uid
+        
+    #     if self.env.context.get('active_model') == 'sale.order' and self.env.context.get('active_ids'):
+    #         sale_orders = self.env['sale.order'].browse(self.env.context['active_ids'])
+    #         res['email_contacts'] = [(6, 0, sale_orders.mapped('email_contacts').ids)]
+
+    #     if self.env.context.get('default_model') == 'sale.order':
+    #         # set template
+    #         template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
+    #         if template:
+    #             res['template_id'] = template.id
+                
+    #         # set recipients
+    #         order = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
+    #         if order and order.email_contacts:
+    #             res['partner_ids'] = [(4, order.user_id.id)]
+        
+    #     return res
+        
+    #     return res
     
     # @api.onchange('template_id')
     # def _onchange_template_id(self):
@@ -1846,239 +1931,134 @@ class owner(models.Model):
         return
 
 
+class ticket(models.Model):
+    _inherit = 'helpdesk.ticket'
+
+    def _default_footer(self):
+        """
+        Determine the default footer based on the active company and the sending user's first name.
+        """
+        current_user = self.env.user
+        company_name = self.env.company.name
+        footer = False
+
+        # Personal footers based on first name
+        if current_user.name.startswith('Horia'):
+            footer = self.env.ref('proquotes.footer_horia', raise_if_not_found=False)
+        elif current_user.name.startswith('Bill'):
+            footer = self.env.ref('proquotes.footer_bill', raise_if_not_found=False)
+        elif current_user.name.startswith('Maël'):
+            footer = self.env.ref('proquotes.footer_mael', raise_if_not_found=False)
+
+        # Default footers based on company name
+        if not footer:
+            if company_name == 'R-E-A-L.iT Solutions':
+                footer = self.env['header.footer'].search(
+                    [('name', '=', 'EMAIL - Canadian Default Footer')],
+                    limit=1
+                )
+            elif company_name == 'R-E-A-L.iT U.S. Inc.':
+                footer = self.env['header.footer'].search(
+                    [('name', '=', 'EMAIL - American Default Footer')],
+                    limit=1
+                )
+
+        return footer.id if footer else False
+
+    footer_id = fields.Many2one(
+        "header.footer",
+        default=_default_footer,
+        required=False,
+        domain=[('record_type', '=', 'Footer')],
+        string="Footer"
+    )
+    
+    @api.model
+    def create(self, vals):
+        
+        helpdesk_ticket = super(ticket, self).create(vals)
+        helpdesk_team = helpdesk_ticket.team_id
+
+        if not helpdesk_team:
+            _logger.info("No helpdesk team assigned to this ticket.")
+            return helpdesk_ticket
+
+        partners_with_emails = helpdesk_team.message_partner_ids.filtered(lambda partner: partner.email)
+
+        if not partners_with_emails:
+            _logger.info("No users with emails found in the helpdesk team: %s", helpdesk_team.name)
+            return helpdesk_ticket
+
+        _logger.info("Sending email to the following users: %s", ", ".join([partner.name for partner in partners_with_emails]))
+
+        # subject = _("New Helpdesk Ticket: %s") % helpdesk_ticket.name
+        
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # ticket_url = f"{base_url}/web#id={helpdesk_ticket.id}&model=helpdesk.ticket&view_type=form"
+        
+        # button_html = f"""
+        #     <a href="{ticket_url}" style="background-color: #875A7B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        #         View Helpdesk Ticket
+        #     </a>
+        # """
+        
+        # body_html = f"""
+        #     <p>Dear Team,</p>
+        #     <p>A new helpdesk ticket has been created:</p>
+        #     <ul>
+        #         <li><strong>Ticket:</strong> {helpdesk_ticket.name}</li>
+        #         <li><strong>Description:</strong> {helpdesk_ticket.description or "No description provided."}</li>
+        #     </ul>
+        #     <p>{button_html}</p>
+        #     <p>Please view this ticket and respond swiftly. Thank you.</p>
+        # """
+        
+        # email_to = ",".join(partner.email for partner in partners_with_emails if partner.email)
+
+        # if email_to:
+        #     mail_values = {
+        #         'subject': subject,
+        #         'body_html': body_html,
+        #         'email_to': email_to,
+        #     }
+        #     # Create and send the email
+        #     mail = self.env['mail.mail'].create(mail_values)
+        #     mail.send()
+
+        return helpdesk_ticket
+
 # pdf footer
 
 
-# class pdf_quote(models.Model):
-#     _inherit = "sale.report"
+class pdf_quote(models.Model):
+    _inherit = "sale.report"
 
-#     footer_field = fields.Selection("")
-#     # footer_field = fields.Selection(related="order_id.footer")
-
-
-class SaleReport(models.Model):
-    _name = "sale.report"
-    _description = "Sales Analysis Report"
-    _auto = False
-    _rec_name = 'date'
-    _order = 'date desc'
-
-    @api.model
-    def _get_done_states(self):
-        return ['sale']
-
-    # sale.order fields
-    name = fields.Char(string="Order Reference", readonly=True)
-    date = fields.Datetime(string="Order Date", readonly=True)
-    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", readonly=True)
-    company_id = fields.Many2one(comodel_name='res.company', readonly=True)
-    pricelist_id = fields.Many2one(comodel_name='product.pricelist', readonly=True)
-    team_id = fields.Many2one(comodel_name='crm.team', string="Sales Team", readonly=True)
-    user_id = fields.Many2one(comodel_name='res.users', string="Salesperson", readonly=True)
-    state = fields.Selection(selection=SALE_ORDER_STATE, string="Status", readonly=True)
-    analytic_account_id = fields.Many2one(
-        comodel_name='account.analytic.account', string="Analytic Account", readonly=True)
-    invoice_status = fields.Selection(
-        selection=[
-            ('upselling', "Upselling Opportunity"),
-            ('invoiced', "Fully Invoiced"),
-            ('to invoice', "To Invoice"),
-            ('no', "Nothing to Invoice"),
-        ], string="Invoice Status", readonly=True)
-
-    campaign_id = fields.Many2one(comodel_name='utm.campaign', string="Campaign", readonly=True)
-    medium_id = fields.Many2one(comodel_name='utm.medium', string="Medium", readonly=True)
-    source_id = fields.Many2one(comodel_name='utm.source', string="Source", readonly=True)
-
-    # res.partner fields
-    commercial_partner_id = fields.Many2one(
-        comodel_name='res.partner', string="Customer Entity", readonly=True)
-    country_id = fields.Many2one(
-        comodel_name='res.country', string="Customer Country", readonly=True)
-    industry_id = fields.Many2one(
-        comodel_name='res.partner.industry', string="Customer Industry", readonly=True)
-    partner_zip = fields.Char(string="Customer ZIP", readonly=True)
-    state_id = fields.Many2one(comodel_name='res.country.state', string="Customer State", readonly=True)
-
-    # sale.order.line fields
-    order_reference = fields.Reference(string='Related Order', selection=[('sale.order', 'Sales Order')], group_operator="count_distinct")
-
-    categ_id = fields.Many2one(
-        comodel_name='product.category', string="Product Category", readonly=True)
-    product_id = fields.Many2one(
-        comodel_name='product.product', string="Product Variant", readonly=True)
-    product_tmpl_id = fields.Many2one(
-        comodel_name='product.template', string="Product", readonly=True)
-    product_uom = fields.Many2one(comodel_name='uom.uom', string="Unit of Measure", readonly=True)
-    product_uom_qty = fields.Float(string="Qty Ordered", readonly=True)
-    qty_to_deliver = fields.Float(string="Qty To Deliver", readonly=True)
-    qty_delivered = fields.Float(string="Qty Delivered", readonly=True)
-    qty_to_invoice = fields.Float(string="Qty To Invoice", readonly=True)
-    qty_invoiced = fields.Float(string="Qty Invoiced", readonly=True)
-    price_subtotal = fields.Monetary(string="Untaxed Total", readonly=True)
-    price_total = fields.Monetary(string="Total", readonly=True)
-    untaxed_amount_to_invoice = fields.Monetary(string="Untaxed Amount To Invoice", readonly=True)
-    untaxed_amount_invoiced = fields.Monetary(string="Untaxed Amount Invoiced", readonly=True)
-
-    weight = fields.Float(string="Gross Weight", readonly=True)
-    volume = fields.Float(string="Volume", readonly=True)
-
-    discount = fields.Float(string="Discount %", readonly=True, group_operator='avg')
-    discount_amount = fields.Monetary(string="Discount Amount", readonly=True)
-
-    # aggregates or computed fields
-    nbr = fields.Integer(string="# of Lines", readonly=True)
-    currency_id = fields.Many2one(comodel_name='res.currency', compute='_compute_currency_id')
     # footer_field = fields.Selection("")
+    # footer_field = fields.Selection(related="order_id.footer")
 
-    @api.depends_context('allowed_company_ids')
-    def _compute_currency_id(self):
-        self.currency_id = self.env.company.currency_id
+# class StockMove(models.Model):
+#     _inherit = 'stock.move'
 
-    def _with_sale(self):
-        return ""
+#     selected = fields.Boolean(string="Selected")
 
-    def _select_sale(self):
-        select_ = f"""
-            MIN(l.id) AS id,
-            l.product_id AS product_id,
-            t.uom_id AS product_uom,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.product_uom_qty / u.factor * u2.factor) ELSE 0 END AS product_uom_qty,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.qty_delivered / u.factor * u2.factor) ELSE 0 END AS qty_delivered,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM((l.product_uom_qty - l.qty_delivered) / u.factor * u2.factor) ELSE 0 END AS qty_to_deliver,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.qty_invoiced / u.factor * u2.factor) ELSE 0 END AS qty_invoiced,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.qty_to_invoice / u.factor * u2.factor) ELSE 0 END AS qty_to_invoice,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_total
-                / {self._case_value_or_one('s.currency_rate')}
-                * {self._case_value_or_one('currency_table.rate')}
-                ) ELSE 0
-            END AS price_total,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal
-                / {self._case_value_or_one('s.currency_rate')}
-                * {self._case_value_or_one('currency_table.rate')}
-                ) ELSE 0
-            END AS price_subtotal,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.untaxed_amount_to_invoice
-                / {self._case_value_or_one('s.currency_rate')}
-                * {self._case_value_or_one('currency_table.rate')}
-                ) ELSE 0
-            END AS untaxed_amount_to_invoice,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.untaxed_amount_invoiced
-                / {self._case_value_or_one('s.currency_rate')}
-                * {self._case_value_or_one('currency_table.rate')}
-                ) ELSE 0
-            END AS untaxed_amount_invoiced,
-            COUNT(*) AS nbr,
-            s.name AS name,
-            s.date_order AS date,
-            s.state AS state,
-            s.invoice_status as invoice_status,
-            s.partner_id AS partner_id,
-            s.user_id AS user_id,
-            s.company_id AS company_id,
-            s.campaign_id AS campaign_id,
-            s.medium_id AS medium_id,
-            s.source_id AS source_id,
-            t.categ_id AS categ_id,
-            s.pricelist_id AS pricelist_id,
-            s.analytic_account_id AS analytic_account_id,
-            s.team_id AS team_id,
-            p.product_tmpl_id,
-            partner.commercial_partner_id AS commercial_partner_id,
-            partner.country_id AS country_id,
-            partner.industry_id AS industry_id,
-            partner.state_id AS state_id,
-            partner.zip AS partner_zip,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(p.weight * l.product_uom_qty / u.factor * u2.factor) ELSE 0 END AS weight,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(p.volume * l.product_uom_qty / u.factor * u2.factor) ELSE 0 END AS volume,
-            l.discount AS discount,
-            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_unit * l.product_uom_qty * l.discount / 100.0
-                / {self._case_value_or_one('s.currency_rate')}
-                * {self._case_value_or_one('currency_table.rate')}
-                ) ELSE 0
-            END AS discount_amount,
-            concat('sale.order', ',', s.id) AS order_reference"""
+#     @api.model
+#     def create(self, vals):
+#         if 'sale_line_id' in vals:
+#             sale_line = self.env['sale.order.line'].browse(vals['sale_line_id'])
+#             # if not sale_line.selected:
+#             #     return False
+#             vals['selected'] = sale_line.selected
+#         return super(StockMove, self).create(vals)
+    
+# # override error message about 0 units being processed of unselect items
+# class StockPicking(models.Model):
+#     _inherit = 'stock.picking'
 
-        additional_fields_info = self._select_additional_fields()
-        template = """,
-            %s AS %s"""
-        for fname, query_info in additional_fields_info.items():
-            select_ += template % (query_info, fname)
-
-        return select_
-
-    def _case_value_or_one(self, value):
-        return f"""CASE COALESCE({value}, 0) WHEN 0 THEN 1.0 ELSE {value} END"""
-
-    def _select_additional_fields(self):
-        """Hook to return additional fields SQL specification for select part of the table query.
-
-        :returns: mapping field -> SQL computation of field, will be converted to '_ AS _field' in the final table definition
-        :rtype: dict
-        """
-        return {}
-
-    def _from_sale(self):
-        return """
-            sale_order_line l
-            LEFT JOIN sale_order s ON s.id=l.order_id
-            JOIN res_partner partner ON s.partner_id = partner.id
-            LEFT JOIN product_product p ON l.product_id=p.id
-            LEFT JOIN product_template t ON p.product_tmpl_id=t.id
-            LEFT JOIN uom_uom u ON u.id=l.product_uom
-            LEFT JOIN uom_uom u2 ON u2.id=t.uom_id
-            JOIN {currency_table} ON currency_table.company_id = s.company_id
-            """.format(
-            currency_table=self.env['res.currency']._get_query_currency_table(self.env.companies.ids, fields.Date.today())
-            )
-
-    def _where_sale(self):
-        return """
-            l.display_type IS NULL"""
-
-    def _group_by_sale(self):
-        return """
-            l.product_id,
-            l.order_id,
-            t.uom_id,
-            t.categ_id,
-            s.name,
-            s.date_order,
-            s.partner_id,
-            s.user_id,
-            s.state,
-            s.invoice_status,
-            s.company_id,
-            s.campaign_id,
-            s.medium_id,
-            s.source_id,
-            s.pricelist_id,
-            s.analytic_account_id,
-            s.team_id,
-            p.product_tmpl_id,
-            partner.commercial_partner_id,
-            partner.country_id,
-            partner.industry_id,
-            partner.state_id,
-            partner.zip,
-            l.discount,
-            s.id,
-            currency_table.rate"""
-
-    def _query(self):
-        with_ = self._with_sale()
-        return f"""
-            {"WITH" + with_ + "(" if with_ else ""}
-            SELECT {self._select_sale()}
-            FROM {self._from_sale()}
-            WHERE {self._where_sale()}
-            GROUP BY {self._group_by_sale()}
-            {")" if with_ else ""}
-        """
-
-    @property
-    def _table_query(self):
-        return self._query()
+#     def button_validate(self):
+#         for move in self.move_ids_without_package:
+#             if not move.selected:
+#                 move.state = 'cancel'
+#         return super(StockPicking, self).button_validate()
 
 class ProjectTask(models.Model):
     _inherit = 'project.task'
@@ -2090,19 +2070,62 @@ class ProjectTask(models.Model):
         ('3', 'Very High'),
     ], default='0', index=True, string="Priority", tracking=True)
 
+class delivery(models.Model):
+    _inherit = 'stock.picking'
 
-class SOMailComposeMessage(models.TransientModel):
-    _inherit = 'mail.compose.message'
+    @api.depends("company_id")
+    def _get_default_footer(self):
+        # Get Company
+        company = None
+        if self.company_id == False or self.company_id == None:
+            company = self.company_id
+        else:
+            company = self.env.company
 
-    @api.onchange('partner_ids')
-    def _onchange_contacts_email_send(self):
-        res_ids_list = ast.literal_eval(self.res_ids)
-        sale_ids = self.env['sale.order'].sudo().search([('id', 'in', res_ids_list)])
-        if sale_ids:
-            for sale in sale_ids:
-                if sale.email_contacts.ids != self.partner_ids.ids:
-                    sale.email_contacts = [(6, 0, self.partner_ids.ids)]
-                    existing_partner_ids = set(self.partner_ids.ids)
-                    followers_to_remove = sale.message_follower_ids.filtered(lambda follower: follower.partner_id.id not in existing_partner_ids)
-                    followers_to_remove.unlink()
-                    self.update({'partner_ids': list(existing_partner_ids)})
+        # Get User
+        user = None
+        if self.user_id == False or self.user_id == None:
+            user = self.user_id
+        else:
+            user = self.env.user
+
+        # Get Prefered Footers
+        result_raw = user.prefered_quote_footers
+
+        if result_raw != False:
+            result = []
+            for item in result_raw:
+                # Verify footers are applicable for company
+                if company in item.company_ids or len(item.company_ids) == 0:
+                    result.append(item)
+            if len(result) != 0:
+                return result[-1]
+
+        # Check for default footer that matches company
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", company.id),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        defaults = self.env["header.footer"].search(
+            [
+                ("active", "=", True),
+                ("record_type", "=", "Footer"),
+                ("default", "=", True),
+                ("company_ids", "=", False),
+            ]
+        )
+        if len(defaults) != 0:
+            return defaults[-1]
+        else:
+            return False
+            raise UserError("No Default Footer Available")
+
+    footer_id = fields.Many2one(
+        "header.footer", required=True, default=_get_default_footer
+    )

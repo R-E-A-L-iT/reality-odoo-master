@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-
 	<template id="stock_report_delivery_has_serial_move_line_inherit"
               inherit_id="stock.stock_report_delivery_has_serial_move_line">
         <xpath expr="//td[1]" position="replace">
             <td>
                 <span t-field="move_line.product_id"/>
-                <!-- this is an annoying workaround for the multiple types of descriptions (often auto-filled) that we do not want to print -->
-                <!-- this makes it so we can pre-filter the descriptions in inherited templates since we cannot extend the standard "if" condition -->
-                <!-- let's agree that pre-filtered descriptions will be set to "" -->
-                <!--                <t t-if="not description and description != ''">-->
-                <!--                    <t t-set="description" t-value="move_line.move_id.description_picking"/>-->
-                <!--                </t>-->
-                <!--                <p t-if="description !='' and description != move_line.product_id.name">-->
-                <!--                    <span t-esc="description"/>-->
-                <!--                </p>-->
                 <span class="description-root" t-raw="move_line.product_id.description_sale"
                       t-if="move_line.product_id.description_sale" style="color: #777;"/>
             </td>
@@ -30,7 +20,7 @@
             </td>
         </xpath>
     </template>
-	
+    
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
 		<!-- Translate Info Labels -->
@@ -55,7 +45,10 @@
 				</tr>
 				<tr>
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-						<h5 style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturer à</h5>
+						<h5 t-else="" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<span t-field="src.partner_id.name" />
+						<br />
 						<span t-field="src.partner_id.street" />
 						<br />
 						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
@@ -67,7 +60,10 @@
 						<br />
 					</td>
 					<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-						<h5 style="color: #db0d0d;">Ship To</h5>
+						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Envoyer à</h5>
+						<h5 t-else="" style="color: #db0d0d;">Ship To</h5>
+						<span t-field="src.partner_id.name" />
+						<br />
 						<span t-field="src.partner_shipping_id.street" />
 						<br />
 						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
@@ -125,7 +121,12 @@
 				<br />
 				<br />
 				<br />
-				<t t-set="footer" t-value="o.footer_id"></t>
+				<div t-if="o.footer_id">
+					<t t-set="footer" t-value="o.footer_id.url" />
+				</div>
+				<div t-else="">
+					<span>No footer found</span>
+				</div>
 			</div>
 		</xpath>
 	</template>

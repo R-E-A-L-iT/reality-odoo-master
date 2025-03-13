@@ -30,46 +30,46 @@ class mail(models.TransientModel):
             result[key]["reply_to_force_new"] = True
         return result
 
-class MailMessage(models.Model):
-    _inherit = 'mail.message'
+# class MailMessage(models.Model):
+#     _inherit = 'mail.message'
 
-    @api.model_create_multi
-    def create(self, values_list):
-        messages = super(MailMessage, self).create(values_list)
-        for message in messages:
-            if message.model=='sale.order' and message.res_id and message.body:        
-                order = self.env['sale.order'].sudo().browse(int(message.res_id))
-                if order:
-                    # Collect the recipients (partners)
-                    # recipients = [(4, partner.id) for partner in message.partner_ids]
-                    
-                    # # Add email contacts from the order
-                    # for contact in order.email_contacts:
-                    #     recipients.append((4, contact.id))
-                    
-                    # # Add a static recipient
-                    # sales_email = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-                    # if sales_email:
-                    #     recipients.append((4, sales_email.id))
-                    
-                    # # Update the partner_ids with new recipients
-                    # message.partner_ids = recipients
-                    
-                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-
-                    # Append quotation info to the message body
-                    body = message.body
-                    lang = order.partner_id.lang
-                    
-                    # add back link tracker generated link
-                    
-                    
-                    # if lang:
-                    #     bottom_footer = _("\r\n \r\n Quotation: %s") % (str(base_url) + "/" + str(lang) + "/my/orders/" + str(order.id) + "?access_token=" + str(order.access_token))
-                    #     body = body + bottom_footer # + str(message.partner_ids)
-                    message.body = body
-                    # message.notify = True
-        return messages
+    # @api.model_create_multi
+    # def create(self, values_list):
+    #     messages = super(MailMessage, self).create(values_list)
+    #     for message in messages:
+    #         if message.model=='sale.order' and message.res_id and message.body:
+    #             order = self.env['sale.order'].sudo().browse(int(message.res_id))
+    #             if order:
+    #                 # Collect the recipients (partners)
+    #                 # recipients = [(4, partner.id) for partner in message.partner_ids]
+    #
+    #                 # # Add email contacts from the order
+    #                 # for contact in order.email_contacts:
+    #                 #     recipients.append((4, contact.id))
+    #
+    #                 # # Add a static recipient
+    #                 # sales_email = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+    #                 # if sales_email:
+    #                 #     recipients.append((4, sales_email.id))
+    #
+    #                 # # Update the partner_ids with new recipients
+    #                 # message.partner_ids = recipients
+    #
+    #                 base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #
+    #                 # Append quotation info to the message body
+    #                 body = message.body
+    #                 lang = order.partner_id.lang
+    #
+    #                 # add back link tracker generated link
+    #
+    #
+    #                 # if lang:
+    #                 #     bottom_footer = _("\r\n \r\n Quotation: %s") % (str(base_url) + "/" + str(lang) + "/my/orders/" + str(order.id) + "?access_token=" + str(order.access_token))
+    #                 #     body = body + bottom_footer # + str(message.partner_ids)
+    #                 message.body = body
+    #                 # message.notify = True
+    #     return messages
 
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
