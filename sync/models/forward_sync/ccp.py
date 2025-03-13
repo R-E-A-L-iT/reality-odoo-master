@@ -22,6 +22,7 @@ _logger = logging.getLogger(__name__)
 # 
 # ------
 
+
 class sync_ccp:
     
     def __init__(self, name, sheet, database):
@@ -103,14 +104,6 @@ class sync_ccp:
                 valid_column = sheet_columns.index("Valid")
                 valid = str(row[valid_column]).strip().lower() == "true"
                 
-                if not valid:
-                    warning_msg = f"Row {row_index}: Marked as invalid. Skipping."
-                    # _logger.info(f"syncCCP: {warning_msg}")
-                    overall_status = "warning" if overall_status != "error" else overall_status
-                    # not sending this to report because intended feature
-                    # sync_report.append(f"WARNING: {warning_msg}")
-                    continue
-                
                 
                 # get eid/sn and check if it exists in odoo
                 eidsn_column = sheet_columns.index("EID/SN")
@@ -128,8 +121,11 @@ class sync_ccp:
                     continue
                 
                 existing_ccp = self.database.env["stock.lot"].search([("name", "=", eidsn), ("sku", "=", sku)], limit=1)
-                
-                if existing_ccp:
+
+                if not valid and existing_ccp:
+                    _logger.info("archiveCCP: Row %d: EID/SN '%s' marked as invalid. Archiving.", row_index, eidsn)
+                    self.archiveCCP(existing_ccp.id)
+                elif existing_ccp:
                     # _logger.info("syncCCP: Row %d: EID/SN '%s' found in Odoo. Calling updateCCP.", row_index, eidsn)
                     self.updateCCP(existing_ccp.id, row, sheet_columns, row_index)
                     items_updated.append(f"Updated CCP: {eidsn}")
@@ -153,7 +149,12 @@ class sync_ccp:
             "items_updated": items_updated,
         }
     
-    
+    def archiveCCP(self, ccp_id):
+        ccp = self.database.env["stock.lot"].browse(ccp_id)
+
+        if ccp:
+            _logger.info("archiveCCP: Archiving CCP item with ID %s.", ccp_id)
+            ccp.active = False
     
     # this function is called to update a ccp that already exists
     # it will attempt to update the ccp cell by cell, and skip updating any info that generates errors
