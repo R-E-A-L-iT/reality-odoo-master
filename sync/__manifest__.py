@@ -6,7 +6,7 @@
     "description": """
         Module that Manages the Syncing between Odoo And Google Sheets
     """,
-    "author": "Ty Cyr",
+    "author": "Ezekiel deBlois & Ty Cyr",
     "license": "LGPL-3",
     # Categories can be used to filter modules in m1dules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -17,7 +17,6 @@
     "depends": [
         "base",
         "proportal",
-
         "product",
         "google_account",
         "proquotes",
@@ -30,5 +29,6 @@
         "data/reverse_contact.xml",
         "views/company_backend.xml",
         "views/module_dashboard.xml",
+        "views/stock_lot.xml",
     ],
 }
