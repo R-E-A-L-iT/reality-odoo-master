@@ -32,7 +32,6 @@
         "sale_project",
         "website_sale",
         "sale_timesheet",
-        "sync",
     ],
     # "product",
     "assets": {
@@ -90,7 +89,6 @@
         "views/Other/header_footer.xml",
         "views/Other/preconfigured_sections.xml",
         "views/Other/expense_mileage_views.xml",
-
         # "views/Other/product_backend.xml",
         "views/Invoice/invoicePDF.xml",
         "views/Invoice/invoice_lot.xml",
