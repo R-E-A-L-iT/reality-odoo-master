@@ -16,7 +16,7 @@
                 <field name="email_contacts" invisible="0" />
                 <field name="is_renewal" invisible="1"/>
                 <!-- Renewal Quotes Added Products -->
-                <field name="renewal_product_items" invisible="not is_renewal" domain="[('owner', '=', partner_id), ('active', '=', True), ('company_id', '=', 1)]">
+                <field name="renewal_product_items" invisible="not is_renewal" domain="[('owner', '=', partner_id)]">
                     <tree>
                         <field name="name"></field>
                         <field name="product_id"></field>
