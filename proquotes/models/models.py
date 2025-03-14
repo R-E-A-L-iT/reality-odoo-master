@@ -761,6 +761,27 @@ class invoice(models.Model):
                     move.name = new_name
         return res
 
+    @api.model
+    def create(self, vals):
+        invoice_object = super(invoice, self).create(vals)
+
+        if invoice_object.move_type not in ['out_invoice', 'out_refund']:
+            return invoice_object
+
+        # Find the related sale orders
+        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
+
+        for order in sale_orders:
+            for line in invoice_object.invoice_line_ids:
+                # Get the corresponding sale order line
+                sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
+
+                # Remove the invoice line if the related sale line is not selected
+                if sale_line and not sale_line.selected:
+                    line.unlink()
+
+        return invoice_object
+
 class order(models.Model):
     _inherit = "sale.order"
 
