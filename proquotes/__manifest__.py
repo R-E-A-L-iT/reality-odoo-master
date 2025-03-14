@@ -32,6 +32,7 @@
         "sale_project",
         "website_sale",
         "sale_timesheet",
+        "sync",
     ],
     # "product",
     "assets": {
