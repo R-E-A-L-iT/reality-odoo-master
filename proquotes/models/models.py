@@ -1636,6 +1636,13 @@ class order(models.Model):
                 for l in res
             ]
 
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        self.ensure_one()
+        invoice_vals = super(order, self)._create_invoices(grouped, final, date)
+        for invoice in invoice_vals:
+            invoice.invoice_line_ids = invoice.invoice_line_ids.filtered(lambda l: l.sale_line_ids.selected)
+        return invoice_vals
+
 
 class orderLineProquotes(models.Model):
     _inherit = "sale.order.line"
@@ -1772,6 +1779,12 @@ class orderLineProquotes(models.Model):
                 'price_tax': amount_tax,
                 'price_total': amount_untaxed + amount_tax,
             })
+    
+    def _prepare_invoice_line(self, **optional_values):
+        self.ensure_one()
+        if not self.selected:
+            return None
+        return super(orderLineProquotes, self)._prepare_invoice_line(**optional_values)
 
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
