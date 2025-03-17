@@ -40,13 +40,13 @@
                     <div class="oe_structure"/>
 
                     <h2 t-if="language == 'fr_CA'" class="mt-4">
-                        <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
+                        <span t-if="env.context.get('proforma', False) or is_pro_forma">Facture Pro-Forma # </span>
                         <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
                         <span t-else="">Commande # </span>
                         <span t-field="doc.name">SO0000</span>
                     </h2>
                     <h2 t-else="" class="mt-4">
-                        <span t-if="env.context.get('proforma', False) or is_pro_forma">Facture Pro-Forma # </span>
+                        <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
                         <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
                         <span t-else="">Order # </span>
                         <span t-field="doc.name">SO0000</span>
