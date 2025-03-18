@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Define the CRM Configuration menu -->
+        <menuitem id="menu_crm_config_apollo" name="Apollo" parent="crm.crm_menu_config" sequence="50"/>
+
+
+        <!-- Define the form view for Apollo Instance -->
+        <record id="view_apollo_instance_form" model="ir.ui.view">
+            <field name="name">apollo.instance.form</field>
+            <field name="model">apl.instance</field>
+            <field name="arch" type="xml">
+                <form string="Apollo Instance">
+                    <header>
+                        <!-- Add a button in the header -->
+                        <button name="connection_test" type="object" string="Test Connection" class="btn-primary" states="draft"/>
+                        <button name="button_draft" type="object" string="Set to Draft" states="verified,active"/>
+                        <button name="button_confirm" type="object" string="Confirm" class="btn-primary" states="verified"/>
+
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,verified,active" force_save="1"/>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Apollo Connection" force_save="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="url" />
+                                <field name="url_sample" class="text-muted" nolabel="1" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="api_key" password="True" string="API Key"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Settings" name="settings" attrs="{'invisible': [('state', '!=', 'active')]}">
+                                <group>
+                                    <group name="group_import_operations" string="Import Operations" col="1" class="row mt16 o_settings_container" groups="sales_team.group_sale_manager">
+                                        <div>
+                                            <!-- Import Contacts -->
+                                            <div class="o_setting_box" id="instance_imports" groups="sales_team.group_sale_manager">
+                                                <div class="o_setting_left_pane">
+                                                </div>
+                                                <div class="o_setting_right_pane">
+                                                    <div class="content-group">
+                                                        <div class="mt8">
+                                                            <button name="button_import" context="{'op_name':'contacts'}" icon="fa-arrow-right" type="object" string="Import Contacts" class="btn-primary"/>
+                                                        </div>
+                                                    </div>
+                                                    <label for="apl_date_import_contacts" class="fw-bold o_form_label" string="The last contacts were imported on "/>
+                                                    <b><field name="apl_date_import_contacts" nolabel="1"/></b>
+                                                    <div class="text-muted">
+                                                        Seamlessly import individual contacts from Apollo into Odoo contacts.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Import Accounts -->
+                                            <div class="o_setting_box" id="instance_imports" groups="sales_team.group_sale_manager">
+                                                <div class="o_setting_left_pane">
+                                                </div>
+                                                <div class="o_setting_right_pane">
+                                                    <div class="content-group">
+                                                        <div class="mt8">
+                                                            <button name="button_import" context="{'op_name':'accounts'}" icon="fa-arrow-right" type="object" string="Import Accounts" class="btn-primary"/>
+                                                        </div>
+                                                    </div>
+                                                    <label for="apl_date_import_accounts" class="fw-bold o_form_label" string="The last accounts were imported on "/>
+                                                    <b><field name="apl_date_import_accounts" nolabel="1"/></b>
+                                                    <div class="text-muted">
+                                                        Seamlessly import companies from Apollo into Odoo contacts.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- import Opportunities -->
+                                            <div class="o_setting_box" id="instance_imports" groups="sales_team.group_sale_manager">
+                                                <div class="o_setting_left_pane">
+                                                </div>
+                                                <div class="o_setting_right_pane">
+                                                    <div class="content-group">
+                                                        <div class="mt8">
+                                                            <button name="button_import" icon="fa-arrow-right" type="object" string="Import Leads" context="{'op_name':'leads'}" class="btn-primary"/>
+                                                        </div>
+                                                    </div>
+                                                    <label for="apl_date_import_leads" class="fw-bold o_form_label" string="The last leads were imported on "/>
+                                                    <b><field name="apl_date_import_leads" nolabel="1"/></b>
+                                                    <div class="text-muted">
+                                                        Seamlessly import leads or opportunities from Apollo into Odoo leads.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group name="group_export_operations" string="Export Operations" col="1" class="row mt16 o_settings_container" groups="sales_team.group_sale_manager">
+                                        <div>
+                                            <!-- Export Contacts -->
+                                            <div class="o_setting_box" id="instance_imports" groups="sales_team.group_sale_manager">
+                                                <div class="o_setting_left_pane">
+                                                </div>
+                                                <div class="o_setting_right_pane">
+                                                    <div class="content-group">
+                                                        <div class="mt8">
+                                                            <button name="button_export" icon="fa-arrow-right" type="object" string="Export Contacts" context="{'op_name':'contacts'}" class="btn-primary"/>
+                                                        </div>
+                                                    </div>
+                                                    <label for="apl_date_export_contacts" class="fw-bold o_form_label" string="The last contacts were exported on "/>
+                                                    <b><field name="apl_date_export_contacts" nolabel="1"/></b>
+                                                    <div class="text-muted">
+                                                        Seamlessly export individual and company contacts into Apollo contacts and accounts.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Export Opportunities -->
+                                            <div class="o_setting_box" id="instance_imports" groups="sales_team.group_sale_manager">
+                                                <div class="o_setting_left_pane">
+                                                </div>
+                                                <div class="o_setting_right_pane">
+                                                    <div class="content-group">
+                                                        <div class="mt8">
+                                                            <button name="button_export" icon="fa-arrow-right" type="object" string="Export Leads" context="{'op_name':'leads'}" class="btn-primary"/>
+                                                        </div>
+                                                    </div>
+                                                    <label for="apl_date_export_leads" class="fw-bold o_form_label" string="The last leads were exported on "/>
+                                                    <b><field name="apl_date_export_leads" nolabel="1"/></b>
+                                                    <div class="text-muted">
+                                                        Seamlessly export leads or opportunities into Apollo opportunities.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </group>
+                                </group>
+
+                                        <!-- end -->
+                                
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Define the tree view for Apollo Instance -->
+        <record id="view_apollo_instance_tree" model="ir.ui.view">
+            <field name="name">apollo.instance.tree</field>
+            <field name="model">apl.instance</field>
+            <field name="arch" type="xml">
+                <tree string="Apollo Instances">
+                    <field name="name"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Define the action for the Apollo Instance -->
+        <record id="action_apollo_instance" model="ir.actions.act_window">
+            <field name="name">Apollo Instances</field>
+            <field name="res_model">apl.instance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Create a menu item for Apollo Instance -->
+        <menuitem id="menu_apollo_instance_list" name="Instances" parent="menu_crm_config_apollo" action="action_apollo_instance" sequence="20"/>
+
+    </data>
+</odoo>

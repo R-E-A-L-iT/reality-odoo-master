@@ -1,0 +1,48 @@
+<odoo>
+    <data>
+        <!-- Define a form view for convert data wizard -->
+        <record id="apl_convert_data_wizard_form" model="ir.ui.view">
+            <field name="name">apl.convert.data.wizard.form</field>
+            <field name="model">apl.convert.data.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="op_name" invisible="1" />
+                                <field name="type" widget="radio" attrs="{'invisible': [('op_name', '!=', 'leads')]}"/>
+                            </group>
+                            <group>
+                               
+                            </group>
+                        </group>
+                       
+                        <footer>
+                            <button name="action_process" string="Process" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Define an action to open the form view for convert into contacts -->
+        <record id="action_apl_convert_contacts_wizard" model="ir.actions.act_window">
+            <field name="name">Convert into Contacts</field>
+            <field name="res_model">apl.convert.data.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="apl_convert_data_wizard_form"/>
+        </record>
+
+        <!-- Define an action to open the form view for convert into leads -->
+        <record id="action_apl_convert_leads_wizard" model="ir.actions.act_window">
+            <field name="name">Convert into Leads</field>
+            <field name="res_model">apl.convert.data.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="apl_convert_data_wizard_form"/>
+        </record>
+
+    </data>
+</odoo>

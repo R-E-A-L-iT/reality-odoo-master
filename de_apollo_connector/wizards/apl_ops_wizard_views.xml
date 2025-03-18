@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_apl_ops_wizard_form" model="ir.ui.view">
+        <field name="name">apl.ops.wizard.form</field>
+        <field name="model">apl.ops.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <div class="o_td_label">
+                        <label for="page_start" />
+                    </div>
+                    <div name="page_start">
+                        <field name="page_start" nolabel="1" style="width: 8rem;" />
+                        <span class="ml8" > <strong> To Page: </strong><field name="page_last" nolabel="1" style="width: 8rem;" /></span>
+                    </div>
+                </group>
+                <div class="oe_form_field">
+                    <div class="">
+                        <div class="text-muted">
+                            Enter the number of records you want to import:
+                        </div>
+                    </div>
+                </div>
+                <group>
+                    <field name="duplicate_records" />
+                    <field name="op_name" invisible="1"/>
+                    <field name="type" widget="radio" attrs="{'invisible': [('op_name', '!=', 'leads')]}"/>
+                </group>
+                <footer>
+                    <button name="run_process" string="Process" type="object" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Define an action to open the form view -->
+        <record id="action_apl_ops_wizard" model="ir.actions.act_window">
+            <field name="name">Apollo Operations</field>
+            <field name="res_model">apl.ops.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_apl_ops_wizard_form"/>
+        </record>
+    
+</odoo>

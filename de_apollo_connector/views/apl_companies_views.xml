@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Companies form view -->
+        <record id="apl_companies_form_view" model="ir.ui.view">
+            <field name="name">apl.companies.form.view</field>
+            <field name="model">apl.companies</field>
+            <field name="arch" type="xml">
+                <form string="Companies">
+                    <header>
+                        
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                            <button name="action_open_people"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                type="object"
+                                >
+                                Employees
+                            </button>
+                        </div>
+                        <field name="logo_url" invisible="1"/>
+                        <div class="o_field_image o_field_widget oe_avatar">
+                            <field name="logo_image" widget="image" options="{'size': [128, 128]}"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="founded_year" />
+                                <field name="primary_domain" />
+                                <field name="phone" />
+                                <field name="email" />
+                            </group>
+                            <group>
+                                <field name="website_url" />
+                                <field name="blog_url" />
+                                <field name="angellist_url" />
+                                <field name="linkedin_url" />
+                                <field name="twitter_url" />
+                                <field name="facebook_url" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Companies tree view -->
+        <record id="view_companies_tree" model="ir.ui.view">
+            <field name="name">Comapnies.tree</field>
+            <field name="model">apl.companies</field>
+            <field name="arch" type="xml">
+                <tree string="Apollo Companies" js_class="apl_search_button_in_tree">
+                    <field name="apl_id" optional="hide"/>
+                    <field name="name"/>
+                    <field name="logo_url" optional="hide"/>
+                    <field name="logo_image" widget="image" options="{'size': [50, 50]}"/>
+                    <field name="founded_year"/>
+                    <field name="primary_domain"/>
+                </tree>
+               
+            </field>
+        </record>
+
+        <!-- Define the action for the Apollo Instance -->
+        <record id="action_apl_companies" model="ir.actions.act_window">
+            <field name="name">Search Companies</field>
+            <field name="res_model">apl.companies</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create': false, 'edit': false}</field>
+
+        </record>
+
+        <!--
+        <menuitem id="menu_companies_list" name="Comapnies" parent="menu_apollo_prospecting" action="action_apl_companies" sequence="20"/>
+        -->
+    </data>
+</odoo>
