@@ -19,18 +19,22 @@ class ApolloInstance(models.Model):
     _name = 'apl.instance'
     _description = 'Apollo Instance'
 
-    name = fields.Char(string='Name', required=True, readonly=False, states=READONLY_FIELD_STATES)
-    api_key = fields.Char(string='API Key', required=True, help='Secret API Key', readonly=False, states=READONLY_FIELD_STATES)
-    url = fields.Char(string='URL', required=True, readonly=False, states=READONLY_FIELD_STATES)
+    # name = fields.Char(string='Name', required=True, readonly=False, states=READONLY_FIELD_STATES)
+    # api_key = fields.Char(string='API Key', required=True, help='Secret API Key', readonly=False, states=READONLY_FIELD_STATES)
+    # url = fields.Char(string='URL', required=True, readonly=False, states=READONLY_FIELD_STATES)
+    name = fields.Char(string='Name', required=True, readonly=False,)
+    api_key = fields.Char(string='API Key', required=True, help='Secret API Key', readonly=False)
+    url = fields.Char(string='URL', required=True, readonly=False,)
     url_sample = fields.Char(default='https://api.apollo.io/api/v1/')
-    
-    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True, states=READONLY_FIELD_STATES, default=lambda self: self.env.company)
+
+    # company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True, states=READONLY_FIELD_STATES, default=lambda self: self.env.company)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
 
     state = fields.Selection([
-        ('draft', 'Draft'), 
-        ('verified', 'Verified'), 
-        ('active', 'Active')], 
+        ('draft', 'Draft'),
+        ('verified', 'Verified'),
+        ('active', 'Active')],
         string='Status',default='draft', required=True
     )
 
@@ -51,9 +55,9 @@ class ApolloInstance(models.Model):
         self.write({
             'state':'active'
         })
-        
+
     def connection_test(self):
-        
+
         notification = {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -73,7 +77,7 @@ class ApolloInstance(models.Model):
             'Content-Type': 'application/json'
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
-        if response.status_code == 200: 
+        if response.status_code == 200:
             self.write({
                 'state': 'verified'
             })
@@ -82,7 +86,7 @@ class ApolloInstance(models.Model):
                 'type': 'success',
                 'next': {'type': 'ir.actions.act_window_close'},
             })
-            
+
         else:
             # The response indicates an error
             error_message = "API connection error. Please check the response."
@@ -95,7 +99,7 @@ class ApolloInstance(models.Model):
                 raise UserError("You cannot delete a record with a state other than 'draft'.")
         return super(ApolloInstance, self).unlink()
 
-        
+
     def button_import_labels(self):
         data = {
             #'api_key': 'GbYvCle7WbRW0lFKYXlArw',
@@ -150,9 +154,9 @@ class ApolloInstance(models.Model):
                             'is_won': stage.get('is_won'),
                         })
 
-                        
+
     def button_import(self):
-        
+
         context = {
             'default_op_name': self.name,
         }
@@ -183,14 +187,14 @@ class ApolloInstance(models.Model):
             self.write({
                 'apl_date_export_leads': self.env.cr.now(),
             })
-            
+
         #for partner in partners:
 
 
     # ---------------------------------------------------------
     # ---------------------- Operations for Apollo ------------
     # ---------------------------------------------------------
-    
+
     @api.model
     def _post_apollo_data(self, api_name, api_data=None):
         """
@@ -214,8 +218,8 @@ class ApolloInstance(models.Model):
             api_data['api_key'] = self.api_key
 
             #raise UserError(api_data)
-            
-            response = requests.request("POST", url, headers=headers, json=api_data)   
+
+            response = requests.request("POST", url, headers=headers, json=api_data)
             #raise UserError(response.text)
             json_data = json.loads(response.text)
             return json_data

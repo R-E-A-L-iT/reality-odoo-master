@@ -9,10 +9,10 @@
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.action_send_to_apollo_data()
+                action = records.action_send_to_apollo_data()
             </field>
         </record>
-        
+
         <record id="crm_lead_view_form_inherit" model="ir.ui.view">
             <field name="name">crm.lead.view.form.inherit</field>
             <field name="model">crm.lead</field>
@@ -22,15 +22,15 @@
                     <page string="Apollo">
                         <group>
                             <group>
-                                <field name="apl_id" />
-                                <field name="update_required_for_apollo" />
-                                <field name="apl_date_sync" />
+                                <field name="apl_id"/>
+                                <field name="update_required_for_apollo"/>
+                                <field name="apl_date_sync"/>
                             </group>
                         </group>
                     </page>
                 </xpath>
             </field>
         </record>
-        
+
     </data>
 </odoo>

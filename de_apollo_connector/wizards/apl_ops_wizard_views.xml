@@ -24,7 +24,7 @@
                 <group>
                     <field name="duplicate_records" />
                     <field name="op_name" invisible="1"/>
-                    <field name="type" widget="radio" attrs="{'invisible': [('op_name', '!=', 'leads')]}"/>
+                    <field name="type" widget="radio" invisible="op_name != 'leads'"/>
                 </group>
                 <footer>
                     <button name="run_process" string="Process" type="object" class="btn-primary"/>
