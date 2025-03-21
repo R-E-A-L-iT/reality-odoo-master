@@ -8,7 +8,7 @@ body {
 	overflow: auto !important;
 }
 #wrapwrap {
-	height: initial !important;
+	/* height: initial !important; */
 	overflow-x: hidden !important;
 }
 footer#bottom {
@@ -21,7 +21,7 @@ footer#bottom {
 
 /* fix header styles */
 #top {
-	position: fixed;
+	/* position: fixed; */
 	width: 100%;
 }
 
