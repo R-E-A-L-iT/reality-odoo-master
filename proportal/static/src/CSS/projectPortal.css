@@ -16,6 +16,9 @@ footer#bottom {
 	bottom: initial !important;
 	left: initial !important;
 }
+.video-background {
+	z-index: 0 !important;
+}
 
 
 
