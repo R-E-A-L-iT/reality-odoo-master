@@ -582,8 +582,8 @@ class sync_pricelist:
                 "sku": product_id,
                 "sale_ok": True,
                 "rent_ok": False,
-                "company_id": company_id,
-                "responsible_id": responsible_user.id,
+                # "company_id": company_id,
+                # "responsible_id": responsible_user.id,
                 "name": "Unnamed Product %s" % product_id,  # Fallback name
                 "detailed_type": 'product',
             }
