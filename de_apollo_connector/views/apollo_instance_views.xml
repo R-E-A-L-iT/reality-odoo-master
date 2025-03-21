@@ -14,12 +14,12 @@
                     <header>
                         <!-- Add a button in the header -->
                         <button name="connection_test" type="object" string="Test Connection" class="btn-primary"
-                                invisible="state == 'draft'"/>
+                                invisible="state != 'draft'"/>
 
                         <button name="button_confirm" type="object" string="Confirm" class="btn-primary"
-                                invisible="state == 'verified'"/>
+                                invisible="state != 'verified'"/>
                         <button name="button_draft" type="object" string="Set to Draft"
-                                invisible="state in ['verified',' active']"/>
+                                invisible="state in [' active','draft']"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,verified,active"
                                force_save="1"/>
