@@ -116,8 +116,8 @@ class sync_ccp:
                 if not eidsn:
                     warning_msg = f"Row {row_index}: Missing EID/SN. Skipping."
                     _logger.warning(f"syncCCP: {warning_msg}")
-                    self.add_to_report("WARNING", f"{warning_msg}")
-                    overall_status = "warning" if overall_status != "error" else overall_status
+                    # self.add_to_report("WARNING", f"{warning_msg}")
+                    # overall_status = "warning" if overall_status != "error" else overall_status
                     continue
                 
                 existing_ccp = self.database.env["stock.lot"].search([("name", "=", eidsn), ("sku", "=", sku)], limit=1)
