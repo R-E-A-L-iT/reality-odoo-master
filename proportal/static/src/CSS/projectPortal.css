@@ -6,10 +6,9 @@
 body {
 	overflow: auto !important;
 }
-/* #wrapwrap {
-	height: initial !important;
+#wrapwrap {
 	overflow-x: hidden !important;
-} */
+}
 footer#bottom {
 	position: relative !important;
 	z-index: initial !important;
