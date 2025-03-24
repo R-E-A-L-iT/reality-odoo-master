@@ -535,9 +535,9 @@ class sync_pricelist:
             # Set company and default responsible user
             company_id = 1 # R-E-A-L.iT in the system
             user_id = 2 # Ezekiel deBlois in the system
-            responsible_user = self.database.env["res.users"].search([("id", "=", user_id)], limit=1)
-            if not responsible_user:
-                raise ValueError("No valid responsible user found for company ID %s." % company_id)
+            # responsible_user = self.database.env["res.users"].search([("id", "=", user_id)], limit=1)
+            # if not responsible_user:
+            #     raise ValueError("No valid responsible user found for company ID %s." % company_id)
 
             # Check for existing external ID in ir.model.data
             existing_ext_id = self.database.env["ir.model.data"].search(
