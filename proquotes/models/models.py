@@ -585,6 +585,9 @@ class purchase_order(models.Model):
 
 class invoice(models.Model):
     _inherit = "account.move"
+
+    email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
+
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -781,6 +784,21 @@ class invoice(models.Model):
                     line.unlink()
 
         return invoice_object
+
+class AccountMoveSend(models.TransientModel):
+    _inherit = 'account.move.send'
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        if 'mail_partner_ids' in vals:
+            for wizard in self:
+                invoice_ids = wizard.move_ids
+                invoice_ids.write({
+                    'email_partner_ids': [(6, 0, wizard.mail_partner_ids.ids)]
+                })
+
+        return res
 
 class order(models.Model):
     _inherit = "sale.order"
