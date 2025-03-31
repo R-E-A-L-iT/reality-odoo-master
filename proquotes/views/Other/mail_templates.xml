@@ -1,0 +1,31 @@
+<odoo>
+  <!-- Inherit and extend Quote Email Template -->
+  <template id="custom_email_template_edi_sale" inherit_id="sale.email_template_edi_sale">
+    <xpath expr="//div[last()]" position="after">
+      <div style="margin-top: 20px; font-size: 12px; color: #555;">
+        <p><strong>This email was also sent to:</strong></p>
+        <t t-if="ctx.get('email_cc')">
+          <p t-esc="ctx.get('email_cc')" />
+        </t>
+        <t t-if="ctx.get('email_to_list') and not ctx.get('email_cc')">
+          <p t-esc="'None (you are the only recipient)'" />
+        </t>
+      </div>
+    </xpath>
+  </template>
+
+  <!-- Inherit and extend Invoice Email Template -->
+  <template id="custom_email_template_edi_invoice" inherit_id="account.email_template_edi_invoice">
+    <xpath expr="//div[last()]" position="after">
+      <div style="margin-top: 20px; font-size: 12px; color: #555;">
+        <p><strong>This email was also sent to:</strong></p>
+        <t t-if="ctx.get('email_cc')">
+          <p t-esc="ctx.get('email_cc')" />
+        </t>
+        <t t-if="ctx.get('email_to_list') and not ctx.get('email_cc')">
+          <p t-esc="'None (you are the only recipient)'" />
+        </t>
+      </div>
+    </xpath>
+  </template>
+</odoo>
