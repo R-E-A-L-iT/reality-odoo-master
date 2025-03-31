@@ -732,33 +732,6 @@
             <t t-set="language" t-value="request.lang.code" />
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
-            <style>
-                #customer-acceptance {
-                    width: 100vw !important;
-                    text-align: center;
-                    padding: 30px !important;
-                }
-                #quote_content > div.d-flex.justify-content-center.gap-1.d-print-none {
-                    width: 100vw !important;
-                    text-align: center;
-                }
-                #quote_content > hr {
-                    width: 100vw !important;
-                }
-                #footer-img {
-                    width:100vw !important;
-                    padding: 10px !important;
-                }
-                #sale_order_communication {
-                    width: 100vw !important;
-                    padding: 4vw !important;
-                }
-            </style>
-
-            <!-- <p>Language:
-                <t t-out="language"/>
-            </p> -->
-
             <div t-if="language == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
