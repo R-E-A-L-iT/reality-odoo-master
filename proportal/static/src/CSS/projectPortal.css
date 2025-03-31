@@ -2,7 +2,8 @@
 	font-family: 'helvetica';
 }
 
-/* fix footer styles */
+
+/* NEW IMPORTANT STYLES, DON'T REMOVE */
 body {
 	overflow: auto !important;
 }
@@ -19,6 +20,12 @@ footer#bottom {
 .video-background {
 	z-index: 0 !important;
 }
+#o_main_nav > ul.navbar-nav.align-items-center.gap-2.flex-shrink-0.justify-content-end.ps-3 > li.dropdown.o_no_autohide_item > a {
+	color: white !important;
+}
+
+
+
 
 
 
