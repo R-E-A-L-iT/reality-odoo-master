@@ -724,8 +724,8 @@
                 </span>
                 <br />
                 <br />
-                <span t-if="language == 'en_CA' or language == 'en_US'">Please note that while we strive for accuracy, R-E-A-L.iT Solutions does not take responsibility for any unintentional errors or omissions in this quote.</span>
-                <span t-elif="language == 'fr_CA'">Veuillez noter que même si nous nous efforçons d'être précis, R-E-A-L.iT Solutions n'assume aucune responsabilité pour les erreurs ou omissions involontaires dans ce devis.</span>
+                <span style="color: #888;" t-if="language == 'en_CA' or language == 'en_US'">Please note that while we strive for accuracy, R-E-A-L.iT Solutions does not take responsibility for any unintentional errors or omissions in this quote.</span>
+                <span style="color: #888;" t-elif="language == 'fr_CA'">Veuillez noter que même si nous nous efforçons d'être précis, R-E-A-L.iT Solutions n'assume aucune responsabilité pour les erreurs ou omissions involontaires dans ce devis.</span>
             </div>
             <div t-if="'abtech' in sale_order.company_id.name.lower()">
                 <br/>
