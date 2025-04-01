@@ -127,6 +127,56 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+            <!-- <p>Language:
+                <t t-out="language"/>
+            </p> -->
+
+            <!-- temporary style fixes -->
+            <style>
+                .sale_tbody &gt; tr &gt; td {
+                padding: 0.01rem 0.01rem !important;
+                }
+                .quote-head &gt; td.text-left {
+                padding: 26px !important;
+                }
+                #sales_order_table &gt; tbody &gt; tr &gt; td:nth-child(3) {
+                text-align: center !important;
+                }
+                #quote_content {
+                padding: 0px !important;
+                }
+                #portal_sale_content {
+                padding: 30px !important;
+                padding-right: 40px !important;
+                padding-top: 0px !important;
+                background-color: #24272A !important;
+                }
+                #details &gt; div.quote-address &gt; video {
+                z-index: 1 !important;
+                width: 100vw !important;
+                background-color: black !important;
+                }
+                div.quote-address {
+                background-color: black !important;
+                }
+                #quote_content {
+                width: 100%
+                }
+                .quoteLineRowSection {
+                padding: 5px !important;
+                }
+                #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td &gt; div:nth-child(2) &gt; label {
+                padding: 5px !important;
+                }
+                td#subtotal {
+                padding-right: 5px !important;
+                }
+                .quoteLineRowSection &gt; td {
+                padding: 20px !important;
+                }
+            </style>
+
+
         </xpath>
 
 
