@@ -29,7 +29,7 @@ footer#bottom {
 
 
 
-span>strong, td>strong {
+/* span>strong, td>strong {
 	font-family: 'helvetica';
 }
 
@@ -72,7 +72,6 @@ div.o_brand_promotion {
 
 #wrapwrap {
 	overflow-x: hidden;
-	/* overflow-y: scroll; */
 }
 
 #wrap {
@@ -190,10 +189,6 @@ body > div.o_thread_window.o_in_home_menu > div.o_mail_thread > div > div.o_thre
 	background-color: #db0d0d;
 }
 
-/* .nav-link>span {
-	color: #db0d0d;
-} */
-
 #custom_footer_bar {
 	display: flex;
 	width: 100vw;
@@ -244,10 +239,6 @@ main {
 	height: fit-content;
 }
 
-/* .align-items-center {
-	background-color: #24272A !important;
-} */
-
 h5.mb-1 {
 	color: #fff;
 }
@@ -280,4 +271,4 @@ div.col-lg-auto, #sidebar_content, #sidebar_content *{
 
 #product_name > img{
 	display: none !important;
-}
+} */
