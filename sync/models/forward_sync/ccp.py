@@ -212,30 +212,37 @@ class sync_ccp:
                                 ccp.product_id = product.id
 
                         elif odoo_field == "owner":
+
+                            if str(row[sheet_columns.index("Active")]).strip().lower() == "false":
+                                owner = self.database.env["res.partner"].search(
+                                    [("company_nickname", "ilike", "INACTIVE")], limit=1
+                                ) 
                             
-                            owner_column_index = sheet_columns.index("Owner ID")
-                            owner_nickname = str(row[owner_column_index]).strip().upper()
+                            else:
                             
-                            # find company owner in odoo
-                            owner = self.database.env["res.partner"].search(
-                                [("company_nickname", "ilike", owner_nickname)], limit=1
-                            )
-                            
-                            # stop if not found
-                            if not owner:
-                                _logger.warning(
-                                    "updateCCP: Row %d: Owner with nickname '%s' not found. Skipping owner update.",
-                                    row_index, owner_nickname
+                                owner_column_index = sheet_columns.index("Owner ID")
+                                owner_nickname = str(row[owner_column_index]).strip().upper()
+                                
+                                # find company owner in odoo
+                                owner = self.database.env["res.partner"].search(
+                                    [("company_nickname", "ilike", owner_nickname)], limit=1
                                 )
-                                continue
-                            
-                            # update if found
-                            if ccp.owner.id != owner.id:
-                                _logger.info(
-                                    "updateCCP: Field 'owner' changed for CCP ID %s. Old Value: '%s', New Value: '%s'.",
-                                    ccp_id, ccp.owner.name if ccp.owner else None, owner.name
-                                )
-                                ccp.owner = owner.id
+                                
+                                # stop if not found
+                                if not owner:
+                                    _logger.warning(
+                                        "updateCCP: Row %d: Owner with nickname '%s' not found. Skipping owner update.",
+                                        row_index, owner_nickname
+                                    )
+                                    continue
+                                
+                                # update if found
+                                if ccp.owner.id != owner.id:
+                                    _logger.info(
+                                        "updateCCP: Field 'owner' changed for CCP ID %s. Old Value: '%s', New Value: '%s'.",
+                                        ccp_id, ccp.owner.name if ccp.owner else None, owner.name
+                                    )
+                                    ccp.owner = owner.id
 
                         # directly update sku (char field in odoo)
                         elif odoo_field == "sku":
@@ -357,7 +364,7 @@ class sync_ccp:
                         # get company id
                         elif odoo_field == "owner":
                             owner = self.database.env["res.partner"].search(
-                                [("company_nickname", "=", sheet_value.strip())], limit=1
+                                [("company_nickname", "=", "INACTIVE")], limit=1
                             )
                             
                             if not owner:
