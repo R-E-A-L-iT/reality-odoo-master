@@ -10,43 +10,6 @@
 
     </template>
 
-    <template id="sale_order_portal_notification" inherit_id="sale.sale_order_portal_content">
-        <xpath expr="//div[@id='content']" position="before">
-            <style>
-                #language-notification .btn-close {
-                    filter: none !important;
-                }
-                #language-notification .btn-close:hover {
-                    filter: none !important;
-                }
-                .alert-dismissible .btn-close {
-                    padding: 0.4rem 0.4rem !important;
-                }
-            </style>
-            <t t-if="sale_order.partner_id.lang == 'fr_CA' and request.lang.code in ('en_US', 'en_CA')">
-                <div id="language-notification" class="alert alert-dismissible fade show" role="alert">
-                    <h4 class="alert-heading">Préféreriez-vous voir cette quotation en français?</h4>
-                    <!-- <p>Si vous préférez, cliquez ici pour changer la langue de ce document en français.</p> -->
-                    <a t-att-href="'/website/lang/fr_CA?r=' + sale_order.get_portal_url()" class="btn btn-primary">
-                        Changer la langue
-                    </a>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </t>
-            <t t-elif="sale_order.partner_id.lang in ('en_US', 'en_CA') and request.lang.code == 'fr_CA'">
-            <div id="language-notification" class="alert alert-dismissible fade show" role="alert">
-                <h4 class="alert-heading">Would you prefer to see this quote in English?</h4>
-                <a t-att-href="'/website/lang/en_US?r=' + sale_order.get_portal_url()" class="btn btn-primary">
-                    Change Language
-                </a>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </t>
-        </xpath>
-    </template>
-
-
-
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <t t-if="product_documents" position="replace">
