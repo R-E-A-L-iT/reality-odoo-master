@@ -24,3 +24,11 @@ class individual(models.Model):
         string="LinkedIn link"
     )
 
+    first_name = fields.Char(string="First Name", compute="_compute_first_last_names", store=False)
+    last_name = fields.Char(string="Last Name", compute="_compute_first_last_names", store=False)
+
+    def _compute_first_last_names(self):
+        for rec in self:
+            parts = (rec.name or "").strip().split()
+            rec.first_name = parts[0] if parts else ''
+            rec.last_name = parts[-1] if len(parts) > 1 else rec.first_name
