@@ -35,5 +35,25 @@ class ProductBundle(models.Model):
     rental_price_cad = fields.Monetary(string='Rental Price (CAD)', currency_field='currency_id_cad')
     rental_price_usd = fields.Monetary(string='Rental Price (USD)', currency_field='currency_id_usd')
 
-    currency_id_cad = fields.Many2one('res.currency', string='CAD Currency', default=lambda self: self.env.ref('base.CAD'), readonly=True)
-    currency_id_usd = fields.Many2one('res.currency', string='USD Currency', default=lambda self: self.env.ref('base.USD'), readonly=True)
+    def _get_currency_cad(self):
+        try:
+            return self.env.ref('base.CAD')
+        except ValueError:
+            return None
+
+    def _get_currency_usd(self):
+        try:
+            return self.env.ref('base.USD')
+        except ValueError:
+            return None
+
+
+    currency_id_cad = fields.Many2one(
+        'res.currency', string='CAD Currency',
+        default=_get_currency_cad, readonly=True
+    )
+    currency_id_usd = fields.Many2one(
+        'res.currency', string='USD Currency',
+        default=_get_currency_usd, readonly=True
+    )
+
