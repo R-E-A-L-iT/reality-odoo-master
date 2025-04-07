@@ -7,6 +7,7 @@
     "version": "17.0",
     "depends": ["base"],
     "data": [
+        "security/ir.model.access.csv",
         "views/product_bundle.xml"
     ],
     "installable": True,
