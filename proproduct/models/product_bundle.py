@@ -29,11 +29,3 @@ class ProductBundle(models.Model):
     name = fields.Char(string='Bundle Name', required=True)
     sku = fields.Char(string='SKU')
     product_lines = fields.One2many('product.bundle.line', 'bundle_id', string='Products')
-
-    price_cad = fields.Monetary(string='Price (CAD)', currency_field='currency_id_cad')
-    price_usd = fields.Monetary(string='Price (USD)', currency_field='currency_id_usd')
-    rental_price_cad = fields.Monetary(string='Rental Price (CAD)', currency_field='currency_id_cad')
-    rental_price_usd = fields.Monetary(string='Rental Price (USD)', currency_field='currency_id_usd')
-
-    currency_id_cad = fields.Many2one('res.currency', string='CAD Currency', default=lambda self: self.env.ref('base.CAD'), readonly=True)
-    currency_id_usd = fields.Many2one('res.currency', string='USD Currency', default=lambda self: self.env.ref('base.USD'), readonly=True)
