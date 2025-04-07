@@ -16,7 +16,11 @@ class ProductBundleLine(models.Model):
     @api.depends('product_id')
     def _compute_product_description(self):
         for line in self:
-            line.product_description = line.product_id.name or ''
+            if line.product_id:
+                line.product_description = line.product_id.name or ''
+            else:
+                line.product_description = ''
+
 
 class ProductBundle(models.Model):
     _name = 'product.bundle'
