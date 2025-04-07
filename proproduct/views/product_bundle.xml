@@ -1,0 +1,46 @@
+<odoo>
+    <record id="view_product_bundle_form" model="ir.ui.view">
+        <field name="name">product.bundle.form</field>
+        <field name="model">product.bundle</field>
+        <field name="arch" type="xml">
+            <form string="Product Bundle">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sku"/>
+                    </group>
+                    <field name="product_lines">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_description" readonly="1"/>
+                            <field name="quantity"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_product_bundle_tree" model="ir.ui.view">
+        <field name="name">product.bundle.tree</field>
+        <field name="model">product.bundle</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="sku"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_product_bundle" model="ir.actions.act_window">
+        <field name="name">Product Bundles</field>
+        <field name="res_model">product.bundle</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_product_bundle_root"
+              name="Product Bundles"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_product_bundle"
+              sequence="20"/>
+</odoo>
