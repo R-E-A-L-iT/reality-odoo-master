@@ -8,7 +8,7 @@ class ProductBundleLine(models.Model):
 
     bundle_id = fields.Many2one('product.bundle', string='Bundle', required=True, ondelete='cascade')
     product_id = fields.Many2one('product.template', string='Product', required=True)
-    product_description = fields.Text(string='Description', related='product_id.description', store=True)
+    product_description = fields.Char(string='Description', related='product_id.description', store=True)
     quantity = fields.Float(string='Quantity', default=1.0)
 
 class ProductBundle(models.Model):
