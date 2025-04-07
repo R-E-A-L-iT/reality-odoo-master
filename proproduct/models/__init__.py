@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import product_bundle.py
+from . import product_bundle
