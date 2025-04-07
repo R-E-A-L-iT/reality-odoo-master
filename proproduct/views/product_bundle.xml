@@ -9,6 +9,12 @@
                         <field name="name"/>
                         <field name="sku"/>
                     </group>
+                    <group string="Pricing" col="2">
+                        <field name="price_cad"/>
+                        <field name="price_usd"/>
+                        <field name="rental_price_cad"/>
+                        <field name="rental_price_usd"/>
+                    </group>
                     <field name="product_lines">
                         <tree editable="bottom">
                             <field name="product_id"/>
