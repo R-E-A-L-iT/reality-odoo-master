@@ -39,9 +39,9 @@
     </record>
 
     <menuitem id="menu_product_bundle_root"
-        name="Bundles"
-        parent="stock.menu_product_variant_config"
-        action="action_product_bundle"
-        sequence="25"/>
+          name="Bundles"
+          parent="stock.menu_product_template_action"
+          action="action_product_bundle"
+          sequence="25"/>
 
 </odoo>
