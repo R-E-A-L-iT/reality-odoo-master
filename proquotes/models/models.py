@@ -1510,6 +1510,9 @@ class order(models.Model):
         if rentalWeekDayRate > price * 12:
             rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
+
+        _logger.warning(f"[RentalCalc] price={price} type={type(price)}, start={self.rental_start}, end={self.rental_end}")
+
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     @api.depends_context('lang')
