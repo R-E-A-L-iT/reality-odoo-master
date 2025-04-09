@@ -1481,6 +1481,10 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
+
+        if not price:
+            return 0
+
         # Take into account length of rental
         if self.rental_start == False or self.rental_end == False:
             return price
