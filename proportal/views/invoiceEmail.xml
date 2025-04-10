@@ -1,0 +1,18 @@
+<odoo>
+  <data>
+
+    <template id="custom_email_template_edi_invoice" inherit_id="account.email_template_edi_invoice">
+      <xpath expr="//p[last()]" position="after">
+        <div style="margin-top:20px; padding-top:10px; border-top:1px solid #ccc;">
+          <p>This email was also sent to:</p>
+          <ul>
+            <t t-foreach="object._get_other_email_recipients(email_to)" t-as="extra">
+              <li><t t-esc="extra"/></li>
+            </t>
+          </ul>
+        </div>
+      </xpath>
+    </template>
+
+  </data>
+</odoo>

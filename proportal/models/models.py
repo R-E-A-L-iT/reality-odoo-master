@@ -192,3 +192,25 @@ class PurchaseOrder(models.Model):
                 }
             )
 
+class invoice(models.Model):
+    _inherit = "account.move"
+
+    # bar at bottom of emails with other recipients
+    def _get_other_email_recipients(self, main_email):
+        
+        if isinstance(main_email, str):
+            main_email = main_email.strip().lower()
+        else:
+            main_email = ""
+
+        recipients = set()
+
+        if self.partner_id.email:
+            recipients.add(self.partner_id.email.strip().lower())
+
+        followers = self.message_follower_ids.mapped('partner_id.email')
+        recipients.update(email.strip().lower() for email in followers if email)
+
+        recipients.discard(main_email)
+
+        return sorted(recipients)
