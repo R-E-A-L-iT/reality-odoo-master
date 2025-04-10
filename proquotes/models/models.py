@@ -862,13 +862,18 @@ class order(models.Model):
         self.order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
         mail_template = self._find_mail_template()
+
+        # Fallback to your General Sales template
         template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
         if template:
             mail_template = template
-        else:
-            mail_template = self._find_mail_template()
+
         if mail_template and mail_template.lang:
             lang = mail_template._render_lang(self.ids)[self.id]
+
+        # Get recipients from email_contacts
+        partner_ids = self.email_contacts.ids
+
         ctx = {
             'default_model': 'sale.order',
             'default_res_ids': self.ids,
@@ -879,8 +884,11 @@ class order(models.Model):
             'proforma': self.env.context.get('proforma', False),
             'force_email': True,
             'model_description': self.with_context(lang=lang).type_name,
-            'default_partner_ids': [(6, 0, self.email_contacts.ids)],
+            'default_partner_ids': [(6, 0, partner_ids)],
+            # Optional: pass also to your custom field if needed
+            'default_email_contacts': [(6, 0, partner_ids)],
         }
+
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -890,6 +898,7 @@ class order(models.Model):
             'target': 'new',
             'context': ctx,
         }
+
     
     @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
