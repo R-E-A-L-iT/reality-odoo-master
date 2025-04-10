@@ -1865,6 +1865,27 @@ class MailComposeMessage(models.TransientModel):
         readonly=False
     )
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('model') == 'sale.order' and vals.get('res_ids'):
+                res_ids = vals['res_ids']
+                if isinstance(res_ids, str):
+                    try:
+                        res_ids = ast.literal_eval(res_ids)
+                    except Exception:
+                        res_ids = []
+                elif isinstance(res_ids, int):
+                    res_ids = [res_ids]
+
+                sale_orders = self.env['sale.order'].browse(res_ids)
+                email_contacts = sale_orders.mapped('email_contacts')
+                if email_contacts:
+                    vals['partner_ids'] = [(6, 0, email_contacts.ids)]
+
+        return super().create(vals_list)
+
+
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
