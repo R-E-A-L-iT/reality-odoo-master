@@ -72,7 +72,7 @@ class SignatureForm extends Component {
             return;
         }
         const signature = this.signature.getSignatureImage()[1];
-        const data = await this.rpc(this.props.callUrl, { name, signatures });
+        const data = await this.rpc(this.props.callUrl, { name, signature });
         if (data.force_refresh) {
             if (data.redirect_url) {
                 redirect(data.redirect_url);
