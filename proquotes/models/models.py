@@ -1877,20 +1877,29 @@ class MailComposeMessage(models.TransientModel):
         
         return res
 
-
     
-    @api.depends('model', 'res_ids')
+    @api.depends_context('default_model', 'default_res_ids')
     def _compute_email_contacts(self):
         for record in self:
-            if record.model == 'sale.order' and record.res_ids:
-                valid_res_ids = [int(res_id) for res_id in record.res_ids if isinstance(res_id, int)]
-                if valid_res_ids:
-                    sale_orders = self.env['sale.order'].browse(valid_res_ids)
-                    record.email_contacts = sale_orders.mapped('email_contacts')
-                else:
-                    record.email_contacts = False
+            # Try using the current instance values first
+            model = record.model or self.env.context.get('default_model')
+            res_ids = record.res_ids or self.env.context.get('default_res_ids')
+
+            # Make sure we have valid res_ids
+            if model == 'sale.order' and res_ids:
+                if isinstance(res_ids, int):
+                    res_ids = [res_ids]
+                if isinstance(res_ids, str):
+                    try:
+                        res_ids = ast.literal_eval(res_ids)
+                    except Exception:
+                        res_ids = []
+
+                sale_orders = self.env['sale.order'].browse(res_ids)
+                record.email_contacts = sale_orders.mapped('email_contacts')
             else:
                 record.email_contacts = False
+
 
 
     # @api.model
