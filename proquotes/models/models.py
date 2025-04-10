@@ -1864,22 +1864,6 @@ class MailComposeMessage(models.TransientModel):
         store=False,
         readonly=False
     )
-
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        
-        if self.env.context.get('default_model') == 'sale.order' and self.env.context.get('default_res_ids'):
-            order_ids = self.env.context['default_res_ids']
-            if isinstance(order_ids, int):
-                order_ids = [order_ids]
-
-            sale_orders = self.env['sale.order'].browse(order_ids)
-            email_contacts = sale_orders.mapped('email_contacts')
-            res['partner_ids'] = [(6, 0, email_contacts.ids)]
-        
-        return res
-
     
     @api.depends('model', 'res_ids')
     def _compute_email_contacts(self):
