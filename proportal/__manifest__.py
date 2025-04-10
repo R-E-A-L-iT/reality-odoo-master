@@ -59,7 +59,7 @@
         "views/storePage.xml",
         "views/portalAppointment.xml",
         "views/productInstance.xml",
-        "views/invoiceEmail.xml"
+        # "views/invoiceEmail.xml"
     ],
     # only loaded in demonstration mode
     "demo": [
