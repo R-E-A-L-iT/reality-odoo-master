@@ -2208,3 +2208,22 @@ class delivery(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
+
+class AccountMoveSend(models.TransientModel):
+    _inherit = 'account.move.send'
+
+    @api.depends('checkbox_send_mail')
+    def _compute_send_mail_extra_fields(self):
+        for wizard in self:
+            wizard.send_mail_readonly = False
+            wizard.display_mail_composer = wizard.mode == 'invoice_single'
+            wizard.send_mail_warning_message = False
+
+            invoices_without_mail_data = wizard.move_ids.filtered(lambda x: x.partner_id.email)
+            # wizard.send_mail_readonly = invoices_without_mail_data == wizard.move_ids
+
+            if wizard.mode == 'invoice_multi' and wizard.checkbox_send_mail:
+                wizard.send_mail_warning_message = _(
+                    "The partners on the following invoices have no email address, "
+                    "so those invoices will not be sent: %s",
+                    ", ".join(invoices_without_mail_data.mapped('name')))
