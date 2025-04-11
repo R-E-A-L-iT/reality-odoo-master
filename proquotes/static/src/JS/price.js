@@ -196,7 +196,11 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 						}
 					}
 				}
-				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
+				const match = productPrices[i].innerHTML.match(/<span class="oe_currency_value">(.*?)<\/span>/);
+                const priceStr = match ? match[1] : '0.0';
+                const price = parseFloat(priceStr.replace(/,/g, ''));
+
+//				var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
 				var rentalEstimateSubTotal = 0;
 				rentalEstimateSubTotal += 1 * days * price;
 				if(rentalEstimateSubTotal > 4 * price) {
