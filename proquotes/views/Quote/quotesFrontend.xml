@@ -441,13 +441,18 @@
                         </t>
                     </t>
                     <!-- <t t-esc="section_subtotal"/> -->
-                    <span t-if="line.special != 'optional' or line.selected == 'true'"
-                          class="text-left" t-att-data-section_id="line_section_id"
-                          style="font-weight: 400 !important;"><t t-esc='"%.2f" %  section_subtotal'/>$</span>
-                    <span t-elif="language == 'en_CA' or language == 'en_US'" class="text-left"
-                          style="font-weight: 400 !important;">0.00 $
-                    </span>
-                    <span t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
+                    <t t-if="line.special != 'optional' or line.selected == 'true'"
+                       class="text-left"
+                       t-att-data-section_id="line_section_id"
+                       style="font-weight: 400 !important;">
+                       <t t-esc="request.env['ir.qweb.field.float'].value_to_html(section_subtotal, {'lang': language, 'precision': 2})"/>$
+                    </t>
+                    <t t-elif="language == 'en_CA' or language == 'en_US'" class="text-left" style="font-weight: 400 !important;">
+                        0.00$
+                    </t>
+                    <t t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">
+                        0,00$
+                    </t>
                 </label>
             </div>
         </xpath>
