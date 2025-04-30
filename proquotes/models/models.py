@@ -1727,6 +1727,11 @@ class orderLineProquotes(models.Model):
                 else:
                     line.price_unit = line.product_id.lst_price
 
+                if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
+                    line.is_selected = True
+                else:
+                    line.is_selected = False
+
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
         if self.is_selected:
