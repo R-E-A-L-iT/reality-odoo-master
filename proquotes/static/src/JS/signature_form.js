@@ -6,6 +6,7 @@ import { registry } from "@web/core/registry";
 import { redirect } from "@web/core/utils/urls";
 import { NameAndSignature } from "@web/core/signature/name_and_signature";
 import { useService } from "@web/core/utils/hooks";
+import { patch } from "@web/core/utils/patch";
 
 /**
  * This Component is a signature request form. It uses
@@ -30,6 +31,7 @@ class SignatureForm extends Component {
             signature: this.signature,
             fontColor: this.props.fontColor || "black",
         };
+        console.log('setup')
         if (this.props.signatureRatio) {
             this.nameAndSignatureProps.displaySignatureRatio = this.props.signatureRatio;
         }
@@ -39,6 +41,7 @@ class SignatureForm extends Component {
         if (this.props.mode) {
             this.nameAndSignatureProps.mode = this.props.mode;
         }
+
 
         // Correctly set up the signature area if it is inside a modal
         onMounted(() => {
@@ -63,10 +66,10 @@ class SignatureForm extends Component {
      */
     async onClickSubmit() {
         const name = this.signature.name;
-        // only added this code.
         if (
-            name === 'Public User' ||
-            name.toLowerCase().includes('public user')
+            (name === 'Public User' ||
+            name.toLowerCase().includes('public user')) && this.signature.signMode === "auto"
+
         ) {
             alert("You must input your own name to automatically sign the document.");
             return;
@@ -90,5 +93,10 @@ class SignatureForm extends Component {
         };
     }
 }
-
+patch(NameAndSignature.prototype, {
+    async setMode(mode, reset) {
+        await super.setMode(mode, reset);
+        this.props.signature.signMode = this.state.signMode;
+    }
+})
 registry.category("public_components").add("portal.signature_form", SignatureForm);
