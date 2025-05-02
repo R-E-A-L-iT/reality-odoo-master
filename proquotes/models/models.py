@@ -585,6 +585,9 @@ class purchase_order(models.Model):
 
 class invoice(models.Model):
     _inherit = "account.move"
+
+    email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
+
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -759,6 +762,42 @@ class invoice(models.Model):
                     new_name = f"{custom_prefix}{move.name}"
                     _logger.info("Renaming Invoice: %s -> %s", move.name, new_name)
                     move.name = new_name
+        return res
+
+    @api.model
+    def create(self, vals):
+        invoice_object = super(invoice, self).create(vals)
+
+        if invoice_object.move_type not in ['out_invoice', 'out_refund']:
+            return invoice_object
+
+        # Find the related sale orders
+        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
+
+        for order in sale_orders:
+            for line in invoice_object.invoice_line_ids:
+                # Get the corresponding sale order line
+                sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
+
+                # Remove the invoice line if the related sale line is not selected
+                if sale_line and not sale_line.selected:
+                    line.unlink()
+
+        return invoice_object
+
+class AccountMoveSend(models.TransientModel):
+    _inherit = 'account.move.send'
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        if 'mail_partner_ids' in vals:
+            for wizard in self:
+                invoice_ids = wizard.move_ids
+                invoice_ids.write({
+                    'email_partner_ids': [(6, 0, wizard.mail_partner_ids.ids)]
+                })
+
         return res
 
 class order(models.Model):
@@ -1481,10 +1520,6 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     def calc_rental_price(self, price):
-
-        if not price:
-            return 0
-
         # Take into account length of rental
         if self.rental_start == False or self.rental_end == False:
             return price
@@ -1510,9 +1545,6 @@ class order(models.Model):
         if rentalWeekDayRate > price * 12:
             rentalDayRate = price * 12
         rentalMonthRate = 12 * price * rentalMonths
-
-        _logger.warning(f"[RentalCalc] price={price} type={type(price)}, start={self.rental_start}, end={self.rental_end}")
-
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     @api.depends_context('lang')
@@ -1712,25 +1744,6 @@ class orderLineProquotes(models.Model):
     demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
-
-    @api.onchange('product_id', 'order_id.is_rental')
-    def _onchange_product_id(self):
-        for line in self:
-            if line.order_id.is_rental and line.product_id:
-                target_categories = [
-                    'Software (Permanent License)',
-                    'Software CCP',
-                    'Software Subscription'
-                ]
-                if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
-                    line.price_unit = line.product_id.list_price
-                else:
-                    line.price_unit = line.product_id.lst_price
-
-                if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
-                    line.is_selected = True
-                else:
-                    line.is_selected = False
 
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
