@@ -196,10 +196,12 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 						}
 					}
 				}
-                //	var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-                const match = productPrices[i].innerHTML.match(/<span class="oe_currency_value">(.*?)<\/span>/);
-                const priceStr = match ? match[1] : '0.0';
-                const price = parseFloat(priceStr.replace(/,/g, ''));
+                var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
+                
+				// removed because caused a bug when it could not find the price span that resulted in product prices being set to zero when signed.
+				// const match = productPrices[i].innerHTML.match(/<span class="oe_currency_value">(.*?)<\/span>/);
+                // const priceStr = match ? match[1] : '0.0';
+                // const price = parseFloat(priceStr.replace(/,/g, ''));
 
 				var rentalEstimateSubTotal = 0;
 				rentalEstimateSubTotal += 1 * days * price;
