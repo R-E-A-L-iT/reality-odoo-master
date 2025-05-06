@@ -613,7 +613,19 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
-    
+
+    @api.model
+    def create(self, vals):
+        res = super(invoice, self).create(vals)
+        if res.partner_id and not res.partner_id.email:
+            raise UserError("Your company must have an email address set.")
+        return res
+
+    @api.onchange('partner_id')
+    def _onchange_partner_email_check(self):
+        if self.partner_id and not self.partner_id.email:
+            raise UserError("Your company must have an email address set.")
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
