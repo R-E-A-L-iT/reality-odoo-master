@@ -8,15 +8,15 @@
             <field name="arch" type="xml">
                 <form string="Companies">
                     <header>
-                        
+
                     </header>
                     <sheet>
                         <div name="button_box" class="oe_button_box">
                             <button name="action_open_people"
-                                class="oe_stat_button"
-                                icon="fa-file-text-o"
-                                type="object"
-                                >
+                                    class="oe_stat_button"
+                                    icon="fa-file-text-o"
+                                    type="object"
+                            >
                                 Employees
                             </button>
                         </div>
@@ -26,19 +26,19 @@
                         </div>
                         <group>
                             <group>
-                                <field name="name" />
-                                <field name="founded_year" />
-                                <field name="primary_domain" />
-                                <field name="phone" />
-                                <field name="email" />
+                                <field name="name"/>
+                                <field name="founded_year"/>
+                                <field name="primary_domain"/>
+                                <field name="phone"/>
+                                <field name="email"/>
                             </group>
                             <group>
-                                <field name="website_url" />
-                                <field name="blog_url" />
-                                <field name="angellist_url" />
-                                <field name="linkedin_url" />
-                                <field name="twitter_url" />
-                                <field name="facebook_url" />
+                                <field name="website_url"/>
+                                <field name="blog_url"/>
+                                <field name="angellist_url"/>
+                                <field name="linkedin_url"/>
+                                <field name="twitter_url"/>
+                                <field name="facebook_url"/>
                             </group>
                         </group>
                     </sheet>
@@ -59,7 +59,7 @@
                     <field name="founded_year"/>
                     <field name="primary_domain"/>
                 </tree>
-               
+
             </field>
         </record>
 

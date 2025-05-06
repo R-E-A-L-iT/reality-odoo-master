@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        
+
         <record id="crm_stage_view_tree_inherit" model="ir.ui.view">
             <field name="name">crm.stage.view.tree.inherit</field>
             <field name="model">crm.stage</field>
@@ -20,12 +20,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//group[1]" position="inside">
                     <group string="Apollo">
-                        <field name="apl_id" />
-                        <field name="apl_date_update" />
+                        <field name="apl_id"/>
+                        <field name="apl_date_update"/>
                     </group>
                 </xpath>
             </field>
         </record>
-        
+
     </data>
 </odoo>

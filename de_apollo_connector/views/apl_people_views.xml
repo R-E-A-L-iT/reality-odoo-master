@@ -11,7 +11,7 @@
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.action_convert_contacts()
+                action = records.action_convert_contacts()
             </field>
         </record>
 
@@ -24,10 +24,10 @@
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.action_convert_leads()
+                action = records.action_convert_leads()
             </field>
         </record>
-        
+
         <!-- People form view -->
         <record id="apl_people_form_view" model="ir.ui.view">
             <field name="name">apl.people.form.view</field>
@@ -41,32 +41,33 @@
                         </div>
                         <group>
                             <group>
-                                <field name="name" />
-                                <field name="title" />
-                                <field name="email" />
-                                <field name="country" />
-                                <field name="state" />
-                                <field name="city" />
-                                <field name="apl_people_company_id" />
+                                <field name="name"/>
+                                <field name="title"/>
+                                <field name="email"/>
+                                <field name="country"/>
+                                <field name="state"/>
+                                <field name="city"/>
+                                <field name="apl_people_company_id"/>
                             </group>
                             <group>
-                                <field name="linkedin_url" />
-                                <field name="twitter_url" />
-                                <field name="facebook_url" />
-                                <field name="github_url" />
+                                <field name="linkedin_url"/>
+                                <field name="twitter_url"/>
+                                <field name="facebook_url"/>
+                                <field name="github_url"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Employement History" name="employment_history">
-                                <field name="people_employment_history_ids" > 
-                                    <tree string="Employement History" editable="bottom" create="false" edit="true" delete="false">
-                                        <field name="degree" />
-                                        <field name="start_date" />
-                                        <field name="end_date" />
-                                        <field name="grade_level" />
-                                        <field name="kind" />
-                                        <field name="major" />
-                                        <field name="description" />
+                                <field name="people_employment_history_ids">
+                                    <tree string="Employement History" editable="bottom" create="false" edit="true"
+                                          delete="false">
+                                        <field name="degree"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="grade_level"/>
+                                        <field name="kind"/>
+                                        <field name="major"/>
+                                        <field name="description"/>
                                     </tree>
                                 </field>
                             </page>
@@ -75,7 +76,7 @@
                 </form>
             </field>
         </record>
-        
+
         <!-- Peole tree View -->
         <record id="view_people_tree" model="ir.ui.view">
             <field name="name">people.tree</field>
@@ -93,18 +94,19 @@
                     <field name="email_status"/>
                     <field name="organization_id" optional="hide"/>
                     <field name="apl_people_company_id" widget="many2one_link"/>
-                    <field name="linkedin_url" widget="url" options="{'class': 'fa fa-linkedin', 'target': '_blank'}" invisible="1"/>
-                    <button name="open_linkedin_profile" type="object" icon="fa-linkedin" />
-                    <button name="open_twitter_profile" type="object" icon="fa-twitter" />
-                    <button name="open_facebook_profile" type="object" icon="fa-facebook" />
-                    <button name="open_github_profile" type="object" icon="fa-github" />
-                    <field name="country" />
-                    <field name="state" />
-                    <field name="city" />
-                    <button name="action_open_details" icon="fa-arrow-right" type="object" string="Open Details" />
+                    <field name="linkedin_url" widget="url" options="{'class': 'fa fa-linkedin', 'target': '_blank'}"
+                           invisible="1"/>
+                    <button name="open_linkedin_profile" type="object" icon="fa-linkedin"/>
+                    <button name="open_twitter_profile" type="object" icon="fa-twitter"/>
+                    <button name="open_facebook_profile" type="object" icon="fa-facebook"/>
+                    <button name="open_github_profile" type="object" icon="fa-github"/>
+                    <field name="country"/>
+                    <field name="state"/>
+                    <field name="city"/>
+                    <button name="action_open_details" icon="fa-arrow-right" type="object" string="Open Details"/>
 
                 </tree>
-               
+
             </field>
         </record>
 

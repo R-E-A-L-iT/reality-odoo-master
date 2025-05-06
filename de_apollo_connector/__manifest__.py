@@ -12,7 +12,7 @@
     'category': 'Sales/Marketing',
     'version': '0.4',
     'live_test_url': 'https://youtu.be/_qKgJmMrVq4',
-    'depends': ['crm'],
+    'depends': ['base', 'crm'],
     'data': [
         'security/ir.model.access.csv',
         'data/apollo_data.xml',
@@ -25,7 +25,7 @@
         'views/crm_tag_views.xml',
         'views/crm_stage_views.xml',
         'wizards/people_search_wizard_views.xml',
-        #'wizards/companies_search_wizard_views.xml',
+        # 'wizards/companies_search_wizard_views.xml',
         'wizards/apl_ops_wizard_views.xml',
         'views/apl_people_views.xml',
         'views/apl_companies_views.xml',
@@ -33,10 +33,10 @@
         'wizards/convert_data_wizard_views.xml',
     ],
     'assets': {
-       'web.assets_backend': [
-           'de_apollo_connector/static/src/js/button_search.js',
-           'de_apollo_connector/static/src/xml/button_search.xml',
-       ],
+        'web.assets_backend': [
+            'de_apollo_connector/static/src/js/button_search.js',
+            'de_apollo_connector/static/src/xml/button_search.xml',
+        ],
     },
     'license': 'OPL-1',
     'price': 110,
