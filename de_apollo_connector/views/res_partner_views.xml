@@ -20,7 +20,7 @@
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[1]/group[1]" position="inside">
-                    <field name="founded_year" placeholder="e.g 2001" invisible="company_type not in ['company']"/>
+                    <field name="founded_year" placeholder="e.g 2001"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page string="Apollo">
