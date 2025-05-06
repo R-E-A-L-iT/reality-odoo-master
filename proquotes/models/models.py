@@ -868,6 +868,18 @@ class order(models.Model):
         help="Header selection field",
     )
     
+    def open_product_bundle_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Select Product Bundle',
+            'res_model': 'product.bundle.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'view_id': self.env.ref('proproduct.view_product_bundle_wizard_form').id,
+            'context': {'active_id': self.id}
+        }
+
+
     @api.model
     def default_get(self, fields_list):
         defaults = super(order, self).default_get(fields_list)
