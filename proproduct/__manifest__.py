@@ -8,7 +8,8 @@
     "depends": ["base"],
     "data": [
         "security/ir.model.access.csv",
-        "views/product_bundle.xml"
+        "views/product_bundle.xml",
+        "views/product_bundle_wizard.xml",
     ],
     "installable": True,
     "application": True,
