@@ -341,10 +341,19 @@ class CustomerPortalReal(CustomerPortal):
             session_obj_date = request.session.get('view_quote_%s' % order_sudo.id)
             if session_obj_date != now and request.env.user.share and access_token:
                 request.session['view_quote_%s' % order_sudo.id] = now
+                # body = _('Quotation viewed by customer %s',
+                #          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
+                # order_sudo.message_post(body=body)
                 body = _('Quotation viewed by customer %s',
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
-                order_sudo.message_post(body=body)
-                
+                order_sudo.message_post(
+                    body=body,
+                    subject="Quotation Viewed",
+                    message_type="notification",
+                    subtype_xmlid="mail.mt_note",  # You can use 'mail.mt_comment' too
+                    partner_ids=[partner.id for partner in order_sudo.message_follower_ids.mapped('partner_id')],
+                )
+
         backend_url = f'/web#model={order_sudo._name}'\
                       f'&id={order_sudo.id}'\
                       f'&action={order_sudo._get_portal_return_action().id}'\
