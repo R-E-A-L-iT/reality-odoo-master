@@ -1,0 +1,44 @@
+<odoo>
+    <data>
+        <!-- Define a form view for APLPeopleSearchWizard -->
+        <record id="apl_send_data_wizard_form" model="ir.ui.view">
+            <field name="name">apl.send.data.wizard.form</field>
+            <field name="model">apl.send.data.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                        <span class="o_form_label" >Instance</span>
+                            <h1 class="d-flex">
+                                <field name="apl_instance_id" options="{'no_create': True, 'no_open': True}"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                
+                            </group>
+                            <group>
+                               
+                            </group>
+                        </group>
+                       
+                        <footer>
+                            <button name="action_process" string="Process" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Define an action to open the form view -->
+        <record id="action_apl_send_data_wizard" model="ir.actions.act_window">
+            <field name="name">Send Data</field>
+            <field name="res_model">apl.send.data.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="apl_send_data_wizard_form"/>
+        </record>
+
+    </data>
+</odoo>

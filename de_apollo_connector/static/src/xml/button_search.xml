@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-extend="ListView.buttons" t-name="de_apollo_connector.search_buttons">
+        <t t-jquery=".o_legacy_list_buttons" t-operation="replace">
+            <div class="o_legacy_list_buttons">
+                <!--
+                <button type="button" class="btn btn-primary open_wizard_action_companies_search">
+                    Search Companies
+                </button>
+                -->
+                <button type="button" class="btn btn-primary open_wizard_action_apl_people_search_results">
+                    Search People
+                </button>
+                <t t-call="ListView.buttons"/>
+            </div>
+        </t>
+    </t>
+</templates>

@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <record id="action_appolo_crm_lead_wizard" model="ir.actions.server">
+            <field name="name">Send to Apollo</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="binding_model_id" ref="crm.model_crm_lead"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_send_to_apollo_data()
+            </field>
+        </record>
+        
+        <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+            <field name="name">crm.lead.view.form.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Apollo">
+                        <group>
+                            <group>
+                                <field name="apl_id" />
+                                <field name="update_required_for_apollo" />
+                                <field name="apl_date_sync" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</odoo>
