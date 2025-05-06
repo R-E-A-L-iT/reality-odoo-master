@@ -17,9 +17,10 @@
             <field name="name">view.partner.form.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[1]/group[1]" position="inside">
-                    <field name="founded_year" placeholder="e.g 2001" invisible="company_type != 'company'"/>
+                    <field name="founded_year" placeholder="e.g 2001" invisible="company_type not in ['company']"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page string="Apollo">
