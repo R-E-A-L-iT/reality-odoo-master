@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_product_bundle,access_product_bundle,model_product_bundle,,1,1,1,1
 access_product_bundle_line,access_product_bundle_line,model_product_bundle_line,,1,1,1,1
+access_product_bundle_wizard,access_product_bundle_wizard,model_product_bundle_wizard,,1,1,1,0
