@@ -9,11 +9,24 @@ class ProductBundleWizard(models.TransientModel):
     def action_add_bundle_to_quote(self):
         sale_order = self.env['sale.order'].browse(self.env.context.get('active_id'))
 
-        # Add a section line to indicate the bundle
+        # Determine price based on pricelist currency
+        currency = sale_order.pricelist_id.currency_id
+        if currency.name == 'USD':
+            price = self.bundle_id.price_usd
+        else:
+            price = self.bundle_id.price_cad
+
+        # Format price with 2 decimal places
+        price_str = "{:.2f}".format(price)
+
+        # Construct section title with prefix, bundle name, and price
+        section_title = f"#bundle+{self.bundle_id.name}+{price_str}"
+
+        # Add section line
         sale_order.order_line.create({
             'order_id': sale_order.id,
             'display_type': 'line_section',
-            'name': f"#bundle+{self.bundle_id.name}",
+            'name': section_title,
         })
 
         # Add each product in the bundle
@@ -26,3 +39,4 @@ class ProductBundleWizard(models.TransientModel):
             })
 
         return {'type': 'ir.actions.act_window_close'}
+
