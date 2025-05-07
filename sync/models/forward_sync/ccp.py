@@ -213,7 +213,7 @@ class sync_ccp:
 
                         elif odoo_field == "owner":
 
-                            if str(row[sheet_columns.index("Active")]).strip().lower() == "false":
+                            if str(row[sheet_columns.index("Valid")]).strip().lower() == "false":
                                 owner = self.database.env["res.partner"].search(
                                     [("company_nickname", "ilike", "INACTIVE")], limit=1
                                 ) 
