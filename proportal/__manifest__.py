@@ -51,7 +51,7 @@
         "views/navbarCustom.xml",
         # "views/cart.xml",
         "views/carousel.xml",
-        "views/shopTile.xml",
+        # "views/shopTile.xml",
         "views/language_selector.xml",
         "views/companyBackend.xml",
         "views/partner_internal.xml",
