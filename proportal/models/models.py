@@ -26,8 +26,8 @@ class productType(models.Model):
     skuhidden = fields.One2many("ir.model.data", "res_id", readonly=True)
     sku = fields.Char(related="skuhidden.name", string="SKU")
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
-    ecom_folder = fields.Char(string="folder", required=True, default="")
-    ecom_media = fields.Char(string="Img Count", required=True, default="")
+    # ecom_folder = fields.Char(string="folder", required=True, default="")
+    # ecom_media = fields.Char(string="Img Count", required=True, default="")
 
     @api.model
     def create(self, vals):
