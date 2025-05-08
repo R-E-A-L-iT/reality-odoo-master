@@ -1574,41 +1574,30 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to all users and portal customers to view the quote in the portal. """
-        
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
         if not self:
             return groups
         self.ensure_one()
-        # Get the base URL for the portal
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        local_msg_vals = dict(msg_vals or {})
         portal_url = self.get_portal_url()
-
+        backend_url = f"/web#id={self.id}&model={self._name}&view_type=form"
         for group in groups:
             group_name = group[0]
-
-            # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
-            
-            # set the title for the access button based on the state of the order
+            group_info = group[2]
+            group_info['has_button_access'] = True
+            access_opt = group_info.setdefault('button_access', {})
             if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
+                title = _("Voir le devis") if self.partner_id.lang == 'fr_CA' else _("View Quotation")
             else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
-            
-            # set the portal access URL for the button
-            access_opt['url'] = f"{base_url}{portal_url}"
-
-        # return the modified recipient groups with the updated access options
+                title = _("Voir la commande") if self.partner_id.lang == 'fr_CA' else _("View Order")
+            access_opt['title'] = title
+            is_internal_user = any(user.has_group('base.group_user') for user in group_info.get('partners', []))
+            if is_internal_user:
+                access_opt['url'] = backend_url
+            else:
+                access_opt['url'] = portal_url
         return groups
 
     def _amount_all(self):
