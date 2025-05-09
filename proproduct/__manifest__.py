@@ -6,7 +6,7 @@
     "license": "LGPL-3",
     "version": "17.0",
     "depends": ["base"],
-    "data"/fsd: [
+    "data": [
         "security/ir.model.access.csv",
         "views/product_bundle.xml",
         "views/product_bundle_wizard.xml",
