@@ -320,44 +320,42 @@
 
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="replace">
-            <!-- Product column -->
-            <td class="text-left" style="width: 40%;">
-                <t t-set="line_section_id" t-value="line.id"/>
-                <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                    <span t-else="" class="quote-folding-arrow">+</span>
-                    <t t-if="line.special == 'optional'">
-                        <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
-                        <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
-                    </t>
-                    <t t-if="'translate' in line.name">
-                        <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
-                    </t>
-                    <t t-if="'ccplabel' in line.name">
-                        <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
-                    </t>
-                    <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
-                    <span t-elif="line.name.strip()[0] == '#'">
-                        <t t-set="sname" t-value="line.name[1:].strip()"/>
-                        <t t-call="proquotes.section_name_resolution"/>
-                    </span>
-                </label>
+            <!-- Expanded first cell to span product + value columns -->
+            <td t-attf-colspan="{{ 2 if '#bundle' in line.name else 1 }}">
+                <div style="width: 100%;">
+                    <t t-set="line_section_id" t-value="line.id"/>
+                    <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                        <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
+                        <span t-else="" class="quote-folding-arrow">+</span>
+
+                        <t t-if="line.special == 'optional'">
+                            <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
+                            <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
+                        </t>
+
+                        <t t-if="'translate' in line.name">
+                            <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
+                        </t>
+                        <t t-if="'ccplabel' in line.name">
+                            <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
+                        </t>
+                        <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
+                        <span t-elif="line.name.strip()[0] == '#'">
+                            <t t-set="sname" t-value="line.name[1:].strip()"/>
+                            <t t-call="proquotes.section_name_resolution"/>
+                        </span>
+                        <span class="line_id" t-attf-id="{{line}}"/>
+                    </label>
+                </div>
             </td>
 
-            <!-- Qty -->
-            <td class="text-left" style="width: 10%;">0</td>
-
-            <!-- Price -->
-            <td class="text-left" style="width: 15%;">0.00<t t-out="sale_order.currency_id.symbol"/></td>
-
-            <!-- Discount (if shown) -->
-            <t t-if="any(line.discount for line in sale_order.order_line)">
-                <td class="text-left" style="width: 15%;">0%</td>
-            </t>
-
-            <!-- Amount -->
-            <td class="text-left" style="width: 20%;">0.00<t t-out="sale_order.currency_id.symbol"/></td>
+            <!-- Empty product-style columns for bundle sections -->
+            <td t-if="'#bundle' in line.name" class="text-center">0</td>
+            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
+            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
         </xpath>
+
+
 
 
 
