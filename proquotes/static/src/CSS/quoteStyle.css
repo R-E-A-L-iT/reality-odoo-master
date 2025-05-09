@@ -337,6 +337,7 @@ span.qtySpan {
 /* Bundle style code */
 .bundle-section {
 	background-color: white !important;
+	color: black !important;
 }
 
 .bundle-section > td {
