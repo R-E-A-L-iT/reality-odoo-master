@@ -42,7 +42,7 @@
                     data-scroll-background-ratio="0" 
                     data-snippet="s_parallax" 
                     data-name="Parallax" 
-                    style="background-image: url('header_image'); text-align: center;">
+                    t-att-style="'background-image: url(' + header_image + '); text-align: center;'">
                 <h1>
                     <br />
                     <span t-if="sale_order.partner_id.parent_id" t-field="sale_order.partner_id.parent_id.name" />
