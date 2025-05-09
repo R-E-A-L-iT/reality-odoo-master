@@ -308,14 +308,12 @@
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]/tr" position="attributes">
             <attribute name="t-att-class">
                 (line.display_type == 'line_section' and 
-                ('quoteLineRowSection font-weight-bold o_line_section' + 
-                (' bundle-section' if '#bundle' in line.name else ' bg-200'))
+                (('font-weight-bold o_line_section bundle-section' if '#bundle' in line.name else 'quoteLineRowSection font-weight-bold o_line_section bg-200'))
                 ) or 
                 (line.display_type == 'line_note' and 'quoteLineRowNote font-italic o_line_note') or 
                 'quoteLineRow'
             </attribute>
         </xpath>
-
 
 
         <!--Add Check Box to control fold Section-->
