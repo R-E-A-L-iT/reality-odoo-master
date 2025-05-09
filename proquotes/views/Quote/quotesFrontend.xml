@@ -344,8 +344,8 @@
                 </label>
             </td>
             <td class="text-left">0</td>
-            <td class="text-left">0.00&nbsp;<t t-out="sale_order.currency_id.symbol"/></td>
-            <td class="text-left">0.00&nbsp;<t t-out="sale_order.currency_id.symbol"/></td>
+            <td class="text-left">0.00 <t t-out="sale_order.currency_id.symbol"/></td>
+            <td class="text-left">0.00 <t t-out="sale_order.currency_id.symbol"/></td>
         </xpath>
 
 
