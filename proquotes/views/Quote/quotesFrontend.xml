@@ -38,7 +38,7 @@
 
             <t t-if="sale_order.header_id.url[-4:] == '.jpg'" t-set="header_image" t-field="sale_order.header_id.url" />
             <t t-if="sale_order.header_id.url[-4:] == '.mp4'" t-set="header_video" t-field="sale_order.header_id.url" />
-            <section t-if="header_image" class="s_parallax o_colored_level o_half_screen_height s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box pb224 pt256"
+            <section class="s_parallax o_colored_level o_half_screen_height s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box pb224 pt256"
                     data-scroll-background-ratio="0" 
                     data-snippet="s_parallax" 
                     data-name="Parallax" 
