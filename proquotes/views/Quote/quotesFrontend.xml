@@ -38,7 +38,8 @@
 
             <t t-if="sale_order.header_id.url[-4:] == '.jpg'" t-set="header_image" t-value="sale_order.header_id.url" />
             <t t-if="sale_order.header_id.url[-4:] == '.mp4'" t-set="header_video" t-value="sale_order.header_id.url" />
-            <section t-if="header_image" class="s_parallax o_colored_level o_half_screen_height s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box pb224 pt256"
+            <section t-if="header_image" 
+                    class="s_parallax o_colored_level o_half_screen_height s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box pb224 pt256"
                     data-scroll-background-ratio="0" 
                     data-snippet="s_parallax" 
                     data-name="Parallax" 
@@ -51,6 +52,28 @@
                     <div class="oe_structure oe_empty" data-editor-message-default="true" data-editor-message="DRAG BUILDING BLOCKS HERE"></div>
                 </h1>
             </section>
+            <section t-if="header_video" 
+                    class="s_parallax o_colored_level o_half_screen_height s_parallax_no_overflow_hidden pb224 pt256 o_background_video oe_img_bg o_bg_img_center o_bg_img_origin_border_box" 
+                    data-scroll-background-ratio="0" 
+                    data-snippet="s_parallax" 
+                    data-name="Parallax" 
+                    style="text-align: center;" 
+                    t-att-data-bg-video-src="header_video">
+                    
+                <div class="o_bg_video_container">
+                    <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_1" t-att-src="header_video" style="width: 100%; height: 108.09581%; inset-inline-start: 0px; inset-block-start: -4.047905%;">
+                    </iframe>
+                </div>
+                    
+                <h1>
+                    <span t-if="sale_order.partner_id.parent_id" t-field="sale_order.partner_id.parent_id.name" />
+                    <span t-else="" t-field="sale_order.partner_id.name"/>
+                    <br><br><br>
+                    <div class="oe_structure oe_empty" data-editor-message-default="true" data-editor-message="DRAG BUILDING BLOCKS HERE"></div>
+                </h1>
+            </section>
+
+            
 
             <!-- <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
