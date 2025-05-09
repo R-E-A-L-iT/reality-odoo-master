@@ -355,6 +355,10 @@ tr.bundle-subproduct td#subtotal > span  /* Amount column */ {
 	display: none;
 }
 
+tr.bundle-subproduct > td > div > div > div {
+	color: #888 !important;
+}
+
 #subtotal > span > span
 /* #sales_order_table > tbody > tr.quoteLineRow.bundle-subproduct > td.tax-column.text-left.\{\{.\'d-md-table-cell\'.if.report_type.\=\=.\'html\'.else.\'\'.\}\}.table-column-none > div */
 
