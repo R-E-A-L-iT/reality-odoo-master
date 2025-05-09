@@ -306,19 +306,16 @@
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]/tr" position="attributes">
-            <attribute name="t-attf-class">
-                <t t-if="line.display_type == 'line_section'">
-                    quoteLineRowSection bg-200 font-weight-bold o_line_section
-                    <t t-if="'#bundle' in line.name"> bundle-section</t>
-                </t>
-                <t t-elif="line.display_type == 'line_note'">
-                    quoteLineRowNote font-italic o_line_note
-                </t>
-                <t t-else="">
-                    quoteLineRow
-                </t>
+            <attribute name="t-att-class">
+                (line.display_type == 'line_section' and 
+                'quoteLineRowSection bg-200 font-weight-bold o_line_section' + 
+                (' bundle-section' if '#bundle' in line.name else '')
+                ) or 
+                (line.display_type == 'line_note' and 'quoteLineRowNote font-italic o_line_note') or 
+                'quoteLineRow'
             </attribute>
         </xpath>
+
 
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
