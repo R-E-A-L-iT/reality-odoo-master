@@ -319,103 +319,53 @@
 
 
         <!--Add Check Box to control fold Section-->
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-            <div style="width: 75%; float: left;">
-                <t t-set="line_section_id" t-value="line.id"/>
-                <label t-attf-for="fold{{line}}{{line_index}}"
-                       style="display: inline-block; width: 100%; height: 100%;">
+        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="replace">
+            <td>
+                <div style="width: 75%; float: left;">
+                    <t t-set="line_section_id" t-value="line.id"/>
+                    <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
+                        <!-- Down Arrow Icon -->
+                        <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
+                        <span t-else="" class="quote-folding-arrow">+</span>
 
-
-                    <!-- DOWN ARROW THING -->
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                    <span t-else="" class="quote-folding-arrow">+</span>
-
-
-                    <t t-if="line.special == 'optional'">
-                        <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox"
-                               checked="true"/>
-                        <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
-                    </t>
-                    <t t-if="'translate' in line.name">
-                        <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
-                    </t>
-                    <t t-if="'ccplabel' in line.name">
-                        <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
-                    </t>
-                    <!-- <span t-if="'#bundle' in line.name" class="bundle-section">
-                        <t t-set="sname" t-value="line.name[1:].strip()"/>
-                        <t t-call="proquotes.section_name_resolution"/>
-                    </span> -->
-                    <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
-                    <span t-elif="line.name.strip()[0] == '#'">
-                        <t t-set="sname" t-value="line.name[1:].strip()"/>
-                        <t t-call="proquotes.section_name_resolution"/>
-                    </span>
-                    <span class="line_id" t-attf-id="{{line}}"/>
-                </label>
-
-                <!--Apply Custom Class to Special Section Types if needed-->
-                <t t-if="line.hiddenSection == 'no'">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput optionalSection" type="checkbox" style="display: none;"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
-                           style="display: none;"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
-                           style="display: none;" checked="true"/>
-                </t>
-            </div>
-
-            <div style="width: 25%; float: right">
-                <label class="subtotal-label" t-att-data-sec-line="line.id" t-attf-for="fold{{line}}{{line_index}}"
-                       style="display: inline-block; width: 100%; height: 100%; text-align: right;">
-                    <span>
-                        <strong t-if="language == 'en_CA' or language == 'en_US'" class="text-left subtotal-label"
-                                style="font-weight: bolder">
-                            Subtotal
-                        </strong>
-                        <strong t-if="language == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
-                            Sous-total
-                        </strong>
-                    </span>
-                    <!-- <span t-if="line.special != 'optional' or line.selected == 'true'"
-                          class="subtotal-destination-span text-left" t-att-data-section_id="line_section_id"
-                          style="font-weight: 400 !important;"/> -->
-                    <t t-set="section_subtotal" t-value="0"/>
-                    <t t-set="flag" t-value="0"/>
-                    <t t-foreach="sale_order.order_line" t-as="rec">
-                        <t t-if="line_index == rec_index or flag == 1">
-                            <t t-if="rec.display_type != 'line_section'">
-                                <t t-set="section_subtotal"
-                                   t-value="section_subtotal + rec.price_subtotal"/>
-                                <t t-set="flag" t-value="1"/>
-                            </t>
-                            <t t-elif="line_index == rec_index">
-                                <t t-set="flag" t-value="1"/>
-                            </t>
-                            <t t-else="">
-                                <t t-set="flag" t-value="0"/>
-                            </t>
+                        <t t-if="line.special == 'optional'">
+                            <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
+                            <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
                         </t>
+
+                        <t t-if="'translate' in line.name">
+                            <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
+                        </t>
+                        <t t-if="'ccplabel' in line.name">
+                            <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
+                        </t>
+                        <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
+                        <span t-elif="line.name.strip()[0] == '#'">
+                            <t t-set="sname" t-value="line.name[1:].strip()"/>
+                            <t t-call="proquotes.section_name_resolution"/>
+                        </span>
+                        <span class="line_id" t-attf-id="{{line}}"/>
+                    </label>
+                    <t t-if="line.hiddenSection == 'no'">
+                        <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
+                        <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;"/>
+                        <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;"/>
                     </t>
-                    <!-- <t t-esc="section_subtotal"/> -->
-                    <span t-if="line.special != 'optional' or line.selected == 'true'"
-                          class="text-left" t-att-data-section_id="line_section_id"
-                          style="font-weight: 400 !important;"><t t-esc='"%.2f" %  section_subtotal'/>$</span>
-                    <span t-elif="language == 'en_CA' or language == 'en_US'" class="text-left"
-                          style="font-weight: 400 !important;">0.00 $
-                    </span>
-                    <span t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">$ 0.00</span>
-                </label>
-            </div>
+                    <t t-else="">
+                        <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
+                        <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}" class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
+                        <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox" style="display: none;" checked="true"/>
+                    </t>
+                </div>
+            </td>
+
+            <!-- Empty product-style columns for bundle sections -->
+            <td t-if="'#bundle' in line.name" class="text-center">0</td>
+            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
+            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
         </xpath>
+
+        
         <xpath expr="//tr[hasclass('is-subtotal')]/td" position="inside">
             <!-- <span class="is-section-subtotal d-none" t-att-data-section_id="line_section_id"> -->
             <span t-out="current_subtotal" class="is-section-subtotal d-none" t-att-data-section_id="line_section_id"

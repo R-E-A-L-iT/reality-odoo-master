@@ -345,3 +345,7 @@ span.qtySpan {
 	padding-top: 20px !important;
 	padding-bottom: 5px !important;
 }
+
+.bundle-section > td > div:nth-child(2) {
+	display: none !important;
+}
