@@ -306,9 +306,17 @@
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]/tr" position="attributes">
-            <attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if
-                line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type
-                == 'line_note' else 'quoteLineRow'
+            <attribute name="t-attf-class">
+                <t t-if="line.display_type == 'line_section'">
+                    quoteLineRowSection bg-200 font-weight-bold o_line_section
+                    <t t-if="'#bundle' in line.name"> bundle-section</t>
+                </t>
+                <t t-elif="line.display_type == 'line_note'">
+                    quoteLineRowNote font-italic o_line_note
+                </t>
+                <t t-else="">
+                    quoteLineRow
+                </t>
             </attribute>
         </xpath>
 
@@ -336,10 +344,10 @@
                     <t t-if="'ccplabel' in line.name">
                         <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
                     </t>
-                    <span t-if="'#bundle' in line.name" class="bundle-section">
+                    <!-- <span t-if="'#bundle' in line.name" class="bundle-section">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
                         <t t-call="proquotes.section_name_resolution"/>
-                    </span>
+                    </span> -->
                     <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
                     <span t-elif="line.name.strip()[0] == '#'">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
