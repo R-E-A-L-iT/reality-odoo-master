@@ -350,7 +350,7 @@
             </td>
 
             <!-- Recreate product columns for bundle sections -->
-            <t t-if="'#bundle' in line.name">
+            <t t-if="'#bundle' in line.name and line.name.split('+')[-1].isdigit()">
                 <t t-set="bundle_id" t-value="int(line.name.split('+')[-1])"/>
                 <t t-set="bundle" t-value="env['product.bundle'].browse(bundle_id)"/>
 
