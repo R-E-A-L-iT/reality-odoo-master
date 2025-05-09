@@ -16,11 +16,8 @@ class ProductBundleWizard(models.TransientModel):
         else:
             price = self.bundle_id.price_cad
 
-        # Format price with 2 decimal places
-        price_str = "{:.2f}".format(price)
-
         # Construct section title with prefix, bundle name, and price
-        section_title = f"#bundle+{self.bundle_id.name}+{price_str}"
+        section_title = f"#bundle+{self.bundle_id.name}+{self.bundle_id.id}"
 
         # Add section line
         sale_order.order_line.create({

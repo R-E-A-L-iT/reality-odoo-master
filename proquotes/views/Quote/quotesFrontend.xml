@@ -349,10 +349,36 @@
                 </div>
             </td>
 
-            <!-- Empty product-style columns for bundle sections -->
-            <td t-if="'#bundle' in line.name" class="text-center">0</td>
-            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
-            <td t-if="'#bundle' in line.name" class="text-center">0.00 $</td>
+            <!-- Recreate product columns for bundle sections -->
+            <t t-if="'#bundle' in line.name">
+                <t t-set="bundle_id" t-value="int(line.name.split('+')[-1])"/>
+                <t t-set="bundle" t-value="env['product.bundle'].browse(bundle_id)"/>
+
+                <t t-if="sale_order.is_rental == True">
+                    <t t-if="sale_order.currency_id.name == 'CAD'">
+                        <t t-set="bundle_price" t-value="bundle.rental_price_cad"/>
+                    </t>
+                    <t t-elif="sale_order.currency_id.name == 'USD'">
+                        <t t-set="bundle_price" t-value="bundle.rental_price_usd"/>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-if="sale_order.currency_id.name == 'CAD'">
+                        <t t-set="bundle_price" t-value="bundle.price_cad"/>
+                    </t>
+                    <t t-elif="sale_order.currency_id.name == 'USD'">
+                        <t t-set="bundle_price" t-value="bundle.price_usd"/>
+                    </t>
+                </t>
+
+                <td class="text-center">1</td>
+                <td class="text-center">
+                    <t t-esc="'$ {:.2f}'.format(bundle_price)"/>
+                </td>
+                <td class="text-center">
+                    <t t-esc="'$ {:.2f}'.format(bundle_price)"/>
+                </td>
+            </t>
         </xpath>
 
 
