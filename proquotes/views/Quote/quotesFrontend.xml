@@ -312,9 +312,15 @@
                     ('quoteLineRowSection font-weight-bold o_line_section' + (' bundle-section' if '#bundle' in line.name else ' bg-200'))
                 ) or 
                 (line.display_type == 'line_note' and 'quoteLineRowNote font-italic o_line_note') or 
-                ('quoteLineRow' + (' bundle-subproduct' if current_section and '#bundle' in current_section.name else ''))
+                (
+                    (not line.display_type or line.display_type == False) and
+                    (
+                        'quoteLineRow' + (' bundle-subproduct' if current_section and '#bundle' in current_section.name else '')
+                    )
+                )
             </attribute>
         </xpath>
+
 
 
 
