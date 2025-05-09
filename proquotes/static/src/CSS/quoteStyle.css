@@ -350,10 +350,12 @@ span.qtySpan {
 	display: none !important;
 }
 
-tr.bundle-subproduct td:nth-child(4), /* Price column */
-tr.bundle-subproduct td:nth-child(5)  /* Amount column */ {
-	/* visibility: hidden; */
+tr.bundle-subproduct td:nth-child(4) > div, /* Price column */
+tr.bundle-subproduct td:nth-child(5) > div  /* Amount column */ {
+	display: none;
 }
+
+/* #sales_order_table > tbody > tr.quoteLineRow.bundle-subproduct > td.tax-column.text-left.\{\{.\'d-md-table-cell\'.if.report_type.\=\=.\'html\'.else.\'\'.\}\}.table-column-none > div */
 
 tr.bundle-subproduct td:nth-child(4)::after,
 tr.bundle-subproduct td:nth-child(5)::after {
