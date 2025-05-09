@@ -323,12 +323,15 @@
                 <div style="width: 100%;">
                     <t t-set="line_section_id" t-value="line.id"/>
                     <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
-                        <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                        <span t-else="" class="quote-folding-arrow">+</span>
 
-                        <t t-if="line.special == 'optional'">
-                            <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
-                            <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
+                        <t t-if="'#bundle' not in line.name">
+                            <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
+                            <span t-else="" class="quote-folding-arrow">+</span>
+
+                            <t t-if="line.special == 'optional'">
+                                <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox" checked="true"/>
+                                <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
+                            </t>
                         </t>
 
                         <t t-if="'translate' in line.name">
@@ -346,6 +349,7 @@
                     </label>
                 </div>
             </td>
+
 
             <!-- Recreate product columns for bundle sections -->
             <t t-if="'#bundle' in line.name and line.name.split('+')[-1].isdigit()">
