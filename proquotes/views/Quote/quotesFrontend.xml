@@ -543,11 +543,12 @@
             <t t-set="current_section_ended" t-value="false"/>
         </xpath>
 
-        <!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
-        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+       
+        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set='current_subtotal']" position="replace">
             
+            <t t-set="current_subtotal" t-value="current_subtotal"/>
 
-            <!-- add any prices from bundles to total -->
+            <!-- add any prices from bundle to total -->
             <t t-if="line.display_type == 'line_section' and '#bundle' in line.name and line.name.split('+')[-1].isdigit()">
                 <t t-set="bundle_id" t-value="int(line.name.split('+')[-1])"/>
                 <t t-set="bundle" t-value="env['product.bundle'].browse(bundle_id)"/>
@@ -569,9 +570,10 @@
                     </t>
                 </t>
 
-                <t t-set="current_subtotal" t-value="current_subtotal + bundle_price"/>
+                <t t-if="bundle_price">
+                    <t t-set="current_subtotal" t-value="current_subtotal + bundle_price"/>
+                </t>
             </t>
-
 
 
             <!-- add every other line price -->
@@ -583,25 +585,25 @@
                     <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
                     <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
                     <t t-set="rentalDays"
-                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+                        t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
                     <t t-set="rentalMonths" t-value="rentalDays // 30"/>
                     <t t-set="rentalDays" t-value="rentalDays % 30"/>
                     <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
                     <t t-set="rentalDays" t-value="rentalDays % 7"/>
 
-
                     <t t-set="rentalRate" t-value="0"/>
                     <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 4"/>
+                    <t t-if="(rentalDayRate &gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                        t-value="line.price_subtotal * 4"/>
                     <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
                     <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 12"/>
+                        t-value="line.price_subtotal * 12"/>
                     <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
                     <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
                     <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
                 </t>
             </t>
+
 
         </xpath>
 
