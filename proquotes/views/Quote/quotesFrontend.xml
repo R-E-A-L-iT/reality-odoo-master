@@ -569,7 +569,7 @@
                     </t>
                 </t>
 
-                <t t-set="current_total" t-value="current_total + bundle_price"/>
+                <t t-set="current_subtotal" t-value="current_subtotal + bundle_price"/>
             </t>
 
 
@@ -602,7 +602,7 @@
                     <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
                 </t>
             </t>
-            
+
         </xpath>
 
         <!-- Section Rental Estimate Given Rental Dates -->
