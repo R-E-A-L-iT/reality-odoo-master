@@ -9,7 +9,6 @@
 
             <xpath expr="//field[@name='title']" position="after">
                 <field name="linkedin_link" />
-                <!-- <field name="is_customer" /> -->
             </xpath>
 
             <xpath expr="//sheet/group" position="before">
