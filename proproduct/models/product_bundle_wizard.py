@@ -9,24 +9,35 @@ class ProductBundleWizard(models.TransientModel):
     def action_add_bundle_to_quote(self):
         sale_order = self.env['sale.order'].browse(self.env.context.get('active_id'))
 
-        # Determine price based on pricelist currency
+        # Determine bundle price based on pricelist and rental status
         currency = sale_order.pricelist_id.currency_id
-        if currency.name == 'USD':
-            price = self.bundle_id.price_usd
-        else:
-            price = self.bundle_id.price_cad
+        is_rental = sale_order.is_rental
 
-        # Construct section title with prefix, bundle name, and price
+        if is_rental:
+            price = self.bundle_id.rental_price_usd if currency.name == 'USD' else self.bundle_id.rental_price_cad
+        else:
+            price = self.bundle_id.price_usd if currency.name == 'USD' else self.bundle_id.price_cad
+
+        # Construct section title with prefix, bundle name, and id
         section_title = f"#bundle+{self.bundle_id.name}+{self.bundle_id.id}"
 
-        # Add section line
-        sale_order.order_line.create({
+        # Add the bundle section line
+        section_line = sale_order.order_line.create({
             'order_id': sale_order.id,
             'display_type': 'line_section',
             'name': section_title,
         })
 
-        # Add each product in the bundle
+        # Add a dummy pricing line with no product just to hold the bundle price
+        sale_order.order_line.create({
+            'order_id': sale_order.id,
+            'name': f"{self.bundle_id.name} (bundle total)",
+            'product_uom_qty': 1,
+            'price_unit': price,
+            'sequence': section_line.sequence + 1,
+        })
+
+        # Add the actual product lines
         for line in self.bundle_id.product_lines:
             sale_order.order_line.create({
                 'order_id': sale_order.id,
@@ -36,4 +47,5 @@ class ProductBundleWizard(models.TransientModel):
             })
 
         return {'type': 'ir.actions.act_window_close'}
+
 

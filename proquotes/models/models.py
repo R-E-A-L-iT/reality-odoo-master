@@ -880,36 +880,36 @@ class order(models.Model):
         }
 
     
-    @api.depends('order_line.price_total', 'order_line.display_type')
-    def _compute_amount(self):
-        for order in self:
-            super(SaleOrder, order)._compute_amount()  # Run default computation
+    # @api.depends('order_line.price_total', 'order_line.display_type')
+    # def _compute_amount(self):
+    #     for order in self:
+    #         super(SaleOrder, order)._compute_amount()  # Run default computation
 
-            # Add bundle section price if applicable
-            bundle_total = 0
-            for line in order.order_line:
-                if line.display_type == 'line_section' and '#bundle' in (line.name or ''):
-                    try:
-                        bundle_id = int(line.name.split('+')[-1])
-                        bundle = self.env['product.bundle'].browse(bundle_id)
-                        if bundle:
-                            if order.is_rental:
-                                if order.currency_id.name == 'USD':
-                                    bundle_price = bundle.rental_price_usd or bundle.rental_price_cad or 0.0
-                                else:
-                                    bundle_price = bundle.rental_price_cad or 0.0
-                            else:
-                                if order.currency_id.name == 'USD':
-                                    bundle_price = bundle.price_usd or bundle.price_cad or 0.0
-                                else:
-                                    bundle_price = bundle.price_cad or 0.0
-                            bundle_total += bundle_price
-                    except Exception:
-                        pass  # Avoid errors if format is wrong
+    #         # Add bundle section price if applicable
+    #         bundle_total = 0
+    #         for line in order.order_line:
+    #             if line.display_type == 'line_section' and '#bundle' in (line.name or ''):
+    #                 try:
+    #                     bundle_id = int(line.name.split('+')[-1])
+    #                     bundle = self.env['product.bundle'].browse(bundle_id)
+    #                     if bundle:
+    #                         if order.is_rental:
+    #                             if order.currency_id.name == 'USD':
+    #                                 bundle_price = bundle.rental_price_usd or bundle.rental_price_cad or 0.0
+    #                             else:
+    #                                 bundle_price = bundle.rental_price_cad or 0.0
+    #                         else:
+    #                             if order.currency_id.name == 'USD':
+    #                                 bundle_price = bundle.price_usd or bundle.price_cad or 0.0
+    #                             else:
+    #                                 bundle_price = bundle.price_cad or 0.0
+    #                         bundle_total += bundle_price
+    #                 except Exception:
+    #                     pass  # Avoid errors if format is wrong
 
-            order.amount_total += bundle_total
-            order.amount_untaxed += bundle_total
-            
+    #         order.amount_total += bundle_total
+    #         order.amount_untaxed += bundle_total
+
 
     @api.model
     def default_get(self, fields_list):
