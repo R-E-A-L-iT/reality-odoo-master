@@ -546,7 +546,7 @@
        
         <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set='current_subtotal']" position="replace">
             
-            <t t-set="current_subtotal" t-value="current_subtotal"/>
+            <t t-set="current_subtotal" t-value="0"/>
 
             <!-- add any prices from bundle to total -->
             <t t-if="line.display_type == 'line_section' and '#bundle' in line.name and line.name.split('+')[-1].isdigit()">
