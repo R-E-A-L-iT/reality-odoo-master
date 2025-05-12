@@ -1786,7 +1786,6 @@ class orderLineProquotes(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
-
             if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
                 line.is_selected = True
             else:
