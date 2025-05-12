@@ -366,7 +366,7 @@
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td" position="replace">
             <!-- Expanded first cell to span product + value columns -->
-            <td t-attf-colspan="{{ 2 if '#bundle' in line.name else 4 }}">
+            <td t-attf-colspan="{{ 2 if '#bundle' in line.name else 5 }}">
                 <div style="width: 100%;">
                     <t t-set="line_section_id" t-value="line.id"/>
                     <label t-attf-for="fold{{line}}{{line_index}}" style="display: inline-block; width: 100%; height: 100%;">
