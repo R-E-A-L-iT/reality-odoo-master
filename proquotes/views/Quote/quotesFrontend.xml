@@ -68,7 +68,7 @@
                 <h1>
                     <span t-if="sale_order.partner_id.parent_id" t-field="sale_order.partner_id.parent_id.name" />
                     <span t-else="" t-field="sale_order.partner_id.name"/>
-                    <br><br><br>
+                    <br /><br /><br />
                     <div class="oe_structure oe_empty" data-editor-message-default="true" data-editor-message="DRAG BUILDING BLOCKS HERE"></div>
                 </h1>
             </section>
