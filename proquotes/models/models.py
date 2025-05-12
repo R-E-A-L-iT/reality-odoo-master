@@ -1574,9 +1574,7 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(
-            message, model_description, msg_vals=msg_vals
-        )
+        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
         if not self:
             return groups
         self.ensure_one()
@@ -1593,11 +1591,13 @@ class order(models.Model):
             else:
                 title = _("Voir la commande") if self.partner_id.lang == 'fr_CA' else _("View Order")
             access_opt['title'] = title
-            is_internal_user = any(user.has_group('base.group_user') for user in group_info.get('partners', []))
-            if is_internal_user:
-                access_opt['url'] = backend_url
-            else:
-                access_opt['url'] = portal_url
+
+            # Check if any partner has a linked user who is an internal user
+            is_internal_user = any(
+                partner.user_ids and any(user.has_group('base.group_user') for user in partner.user_ids)
+                for partner in group_info.get('partners', [])
+            )
+            access_opt['url'] = backend_url if is_internal_user else portal_url
         return groups
 
     def _amount_all(self):
