@@ -24,6 +24,11 @@ class individual(models.Model):
         string="LinkedIn link"
     )
 
+    is_customer = fields.Boolean(
+        string="Is Customer?",
+        default=True,
+    )
+
     first_name = fields.Char(string="First Name", compute="_compute_first_last_names", store=False)
     last_name = fields.Char(string="Last Name", compute="_compute_first_last_names", store=False)
 
