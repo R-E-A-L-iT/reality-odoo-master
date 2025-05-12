@@ -546,10 +546,40 @@
        
         <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set='current_subtotal']" position="replace">
             
+            <t t-set="bundle_total" t-value="0"/>
+            <t t-foreach="lines_to_report" t-as="bline">
+                <t t-if="bline.display_type == 'line_section' and '#bundle' in bline.name and bline.name.split('+')[-1].isdigit()">
+                    <t t-set="bundle_id" t-value="int(bline.name.split('+')[-1])"/>
+                    <t t-set="bundle" t-value="env['product.bundle'].browse(bundle_id)"/>
+
+                    <t t-if="sale_order.is_rental">
+                        <t t-if="sale_order.currency_id.name == 'USD'">
+                            <t t-set="bundle_price" t-value="bundle.rental_price_usd or bundle.rental_price_cad"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="bundle_price" t-value="bundle.rental_price_cad"/>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <t t-if="sale_order.currency_id.name == 'USD'">
+                            <t t-set="bundle_price" t-value="bundle.price_usd or bundle.price_cad"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="bundle_price" t-value="bundle.price_cad"/>
+                        </t>
+                    </t>
+
+                    <t t-if="bundle_price">
+                        <t t-set="bundle_total" t-value="bundle_total + bundle_price"/>
+                    </t>
+                </t>
+            </t>
+
+
             <t t-set="current_subtotal" t-value="0"/>
 
             <!-- add any prices from bundle to total -->
-            <t t-if="line.display_type == 'line_section' and '#bundle' in line.name and line.name.split('+')[-1].isdigit()">
+            <!-- <t t-if="line.display_type == 'line_section' and '#bundle' in line.name and line.name.split('+')[-1].isdigit()">
                 <t t-set="bundle_id" t-value="int(line.name.split('+')[-1])"/>
                 <t t-set="bundle" t-value="env['product.bundle'].browse(bundle_id)"/>
 
@@ -573,7 +603,7 @@
                 <t t-if="bundle_price">
                     <t t-set="current_subtotal" t-value="current_subtotal + bundle_price"/>
                 </t>
-            </t>
+            </t> -->
 
 
             <!-- add every other line price -->
