@@ -576,7 +576,7 @@
             </t>
 
 
-            <t t-set="current_subtotal" t-value="0"/>
+            <t t-set="current_subtotal" t-value="bundle_total"/>
 
             <!-- add any prices from bundle to total -->
             <!-- <t t-if="line.display_type == 'line_section' and '#bundle' in line.name and line.name.split('+')[-1].isdigit()">
