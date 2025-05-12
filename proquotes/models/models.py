@@ -626,6 +626,22 @@ class invoice(models.Model):
         if self.partner_id and not self.partner_id.email:
             raise UserError("Your company must have an email address set.")
 
+    def action_invoice_sent(self):
+        """ Open a window to compose an email, with the edi invoice template
+            message loaded by default
+        """
+        self.ensure_one()
+
+        if self.invoice_pdf_report_id:
+            self.invoice_pdf_report_id.unlink()
+
+        report_action = self.action_send_and_print()
+        if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get(
+                'discard_logo_check'):
+            return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
+
+        return report_action
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
