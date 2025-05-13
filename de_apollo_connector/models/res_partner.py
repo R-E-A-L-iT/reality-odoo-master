@@ -251,10 +251,26 @@ class ResPartner(models.Model):
                   'linkedin_url', 'twitter_url', 'github_url','facebook_url', 'blog_url', 
                   'angellist_url', 'founded_year',
                  )
+    # def _onchange_partner_for_apollo(self):
+    #     for partner in self:
+    #         # Check if any field in the Partner record has changed
+    #         any_field_changed = any(getattr(partner, field) != partner._origin[field] for field in partner._fields.keys())
+    #         partner.update_required_for_apollo = any_field_changed
+
     def _onchange_partner_for_apollo(self):
         for partner in self:
-            # Check if any field in the Partner record has changed
-            any_field_changed = any(getattr(partner, field) != partner._origin[field] for field in partner._fields.keys())
+            any_field_changed = False
+            for field_name, field in partner._fields.items():
+                if not field.store:
+                    continue
+                if field_name not in partner._origin:
+                    continue
+                try:
+                    if getattr(partner, field_name) != partner._origin[field_name]:
+                        any_field_changed = True
+                        break
+                except Exception:
+                    continue
             partner.update_required_for_apollo = any_field_changed
 
     @api.depends('photo_url')
