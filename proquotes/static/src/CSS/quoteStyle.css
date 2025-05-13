@@ -1,3 +1,14 @@
+/* accept & sign window style corrections */
+#sign-dialog > p:nth-child(1) {
+	color: #000 !important;
+}
+#wrapwrap main#sign-dialog {
+	background-color: #fff !important;
+}
+
+
+
+
 div#wrap.o_portal_wrap, main[style] {
 	background-color: #000 !important;
 }
@@ -115,7 +126,7 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 }
 
 #wrapwrap main {
-	background-color: #000 !important;
+	background-color: #000;
 }
 
 .product_fold * {
