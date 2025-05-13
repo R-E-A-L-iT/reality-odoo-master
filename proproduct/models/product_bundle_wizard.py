@@ -31,6 +31,7 @@ class ProductBundleWizard(models.TransientModel):
         # Add a dummy pricing line with no product just to hold the bundle price
         sale_order.order_line.create({
             'order_id': sale_order.id,
+            'product_id': line.product_id.id
             'name': f"{self.bundle_id.name} (bundle total)",
             'product_uom_qty': 1,
             'price_unit': price,
