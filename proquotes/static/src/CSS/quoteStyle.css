@@ -363,6 +363,11 @@ span.qtySpan {
 	display: none !important;
 }
 
+.bundle-section > td:nth-child(1) {
+	padding-left: 40px !important;
+	padding-bottom: 5px !important;
+}
+
 tr.bundle-subproduct td:nth-child(4) > div, /* Price column */
 tr.bundle-subproduct td#subtotal > span  /* Amount column */ {
 	display: none;
