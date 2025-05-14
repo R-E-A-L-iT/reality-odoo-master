@@ -369,7 +369,8 @@ tr.bundle-subproduct td#subtotal > span  /* Amount column */ {
 }
 
 tr.bundle-subproduct > td > div > div > div {
-	color: #888 !important;
+	color: #777 !important;
+	font-size: 0.75rem !important;
 }
 tr.bundle-subproduct > #product_name {
 	padding: 5px !important;
