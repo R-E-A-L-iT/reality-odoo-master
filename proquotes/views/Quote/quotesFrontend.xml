@@ -425,7 +425,7 @@
                     <t t-esc="'{:.2f}'.format(bundle_price)"/>
                 </td>
                 <td class="bundle-amount">
-                    <t t-esc="'{:.2f}'.format(bundle_price) $"/>
+                    <t t-esc="'{:.2f} $'.format(bundle_price)"/>
                 </td>
             </t>
         </xpath>
