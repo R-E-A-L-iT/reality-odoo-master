@@ -363,6 +363,10 @@ span.qtySpan {
 	display: none !important;
 }
 
+.bundle-section > td > div > label > span {
+	margin-left: 30px !important;
+}
+
 .bundle-section > td:nth-child(1) {
 	padding-left: 40px !important;
 	padding-bottom: 5px !important;
@@ -382,6 +386,11 @@ tr.bundle-subproduct > #product_name {
 	padding-top: 5px !important;
 	padding: 0px !important;
 	padding-left: 20px !important;
+	border-bottom-width: 0px !important;
+}
+
+tr.bundle-subproduct > #product_name > div.flex {
+	margin-left: 40px !important;
 }
 
 #subtotal > span > span
