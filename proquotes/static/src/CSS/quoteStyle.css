@@ -404,3 +404,7 @@ tr.bundle-subproduct td:nth-child(4)::after,
 tr.bundle-subproduct td:nth-child(5)::after {
 	content: "";
 }
+
+.bundle-price, .bundle-amount {
+	text-align: left !important;
+}

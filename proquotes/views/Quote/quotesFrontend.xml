@@ -421,11 +421,11 @@
                 </t>
 
                 <td class="text-center">1</td>
-                <td class="text-center">
-                    <t t-esc="'$ {:.2f}'.format(bundle_price)"/>
+                <td class="bundle-price">
+                    <t t-esc="'{:.2f}'.format(bundle_price)"/>
                 </td>
-                <td class="text-center">
-                    <t t-esc="'$ {:.2f}'.format(bundle_price)"/>
+                <td class="bundle-amount">
+                    <t t-esc="'{:.2f}'.format(bundle_price) $"/>
                 </td>
             </t>
         </xpath>
