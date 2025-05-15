@@ -377,6 +377,10 @@ tr.bundle-subproduct td#subtotal > span  /* Amount column */ {
 	display: none;
 }
 
+tr.bundle-subproduct > td {
+	border-bottom-width: 0px !important
+}
+
 tr.bundle-subproduct > td > div > div > div {
 	color: #777 !important;
 	font-size: 0.75rem !important;
@@ -390,7 +394,7 @@ tr.bundle-subproduct > #product_name {
 }
 
 tr.bundle-subproduct > #product_name > div.flex {
-	margin-left: 40px !important;
+	margin-left: 30px !important;
 }
 
 #subtotal > span > span
