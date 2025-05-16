@@ -434,7 +434,7 @@ class sync_pricelist:
                             try:
                                 response = requests.get(sheet_value, timeout=10)
                                 if response.status_code == 200:
-                                    product.image_1920 = base64.b64encode(response.content)
+                                    product.image_1920 = base64.b64encode(response.content).decode('utf-8')
                                     _logger.info("Image applied successfully from URL '%s' for Product ID %s.", sheet_value, product_id)
                                 else:
                                     _logger.warning(
@@ -644,7 +644,7 @@ class sync_pricelist:
                             try:
                                 response = requests.get(sheet_value, timeout=10)
                                 if response.status_code == 200:
-                                    product_values["image_1920"] = base64.b64encode(response.content)
+                                    product_values["image_1920"] = base64.b64encode(response.content).decode('utf-8')
                                     _logger.info("Image fetched successfully from URL '%s' for Product ID %s.", sheet_value, product_id)
                                 else:
                                     _logger.warning(
