@@ -428,6 +428,24 @@ class sync_pricelist:
                                 product.rent_ok = can_be_value
                                 if product.rent_ok == can_be_value:
                                     updated_fields.append("rent_ok")
+
+                        # update image
+                        elif column_name == "Store Image":
+                            try:
+                                response = requests.get(sheet_value, timeout=10)
+                                if response.status_code == 200:
+                                    product.image_1920 = base64.b64encode(response.content)
+                                    _logger.info("Image applied successfully from URL '%s' for Product ID %s.", sheet_value, product_id)
+                                else:
+                                    _logger.warning(
+                                        "createProduct: Failed to fetch image from URL '%s' for Product ID %s. Status Code: %s.",
+                                        sheet_value, product.id, response.status_code
+                                    )
+                            except requests.exceptions.RequestException as e:
+                                _logger.error(
+                                    "createProduct: Error fetching image for Product ID %s from URL '%s': %s",
+                                    product.id, sheet_value, str(e), exc_info=True
+                                )
                             
                 except Exception as e:
                     _logger.error(
@@ -627,6 +645,7 @@ class sync_pricelist:
                                 response = requests.get(sheet_value, timeout=10)
                                 if response.status_code == 200:
                                     product_values["image_1920"] = base64.b64encode(response.content)
+                                    _logger.info("Image fetched successfully from URL '%s' for Product ID %s.", sheet_value, product_id)
                                 else:
                                     _logger.warning(
                                         "createProduct: Failed to fetch image from URL '%s' for Product ID %s. Status Code: %s.",
