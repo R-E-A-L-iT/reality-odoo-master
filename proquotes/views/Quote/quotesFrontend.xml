@@ -133,6 +133,35 @@
                 <t t-out="language"/>
             </p> -->
 
+            <t t-if="sale_order.approve_financing">
+                <script type="text/javascript" async>
+                    window.kwipped_approve = window.kwipped_approve || {};
+                    window.kwipped_approve.url = "https://www.kwipped.com";
+                    window.kwipped_approve.approve_id = "eyJpdiI6InRpbngyN3dmTFNUMEsrd2FlMUpQM0E9PSIsInZhbHVlIjoiazhxcVZTakE5QVRtdWhCNlVFV1NoQT09IiwibWFjIjoiMjc4YzMzZTA1MGM2MzU2MDRmZTI1NGExNGJhY2ZlNTU2YTRiMTc5NzZiMzIwZmMzZjhjMGRkMDE2NjhlNzkxMyJ9";
+                    function init_kwipped_approve_snippet() {
+                        var b = document.getElementsByTagName('body')[0];
+                        var t = document.querySelector('approve-widget');
+                        if (!t) {
+                            t = document.createElement('approve-widget');
+                            t.setAttribute('autosubmission', 1);
+                            t.setAttribute('theme', 'custom');
+                            t.setAttribute('themestyle', '{"bgcolor":"#000000","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#000000","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#FFFFFF","headertext_color":"white"}');
+                            b.appendChild(t);
+                        }
+                        var s=document.createElement('script');
+                        s.type= 'text/javascript';
+                        s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php';
+                        b.appendChild(s);
+                    }
+                    if(document.readyState != 'loading'){
+                        init_kwipped_approve_snippet();
+                    } else{
+                        window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet);
+                    }
+                </script>
+            </t>
+
+
             <!-- temporary style fixes -->
             <style>
                 .sale_tbody &gt; tr &gt; td {

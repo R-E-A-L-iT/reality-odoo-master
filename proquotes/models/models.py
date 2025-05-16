@@ -817,6 +817,8 @@ class order(models.Model):
         required=True
     )
 
+    approve_financing = fields.Boolean(string="APPROVE Financing")
+
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
