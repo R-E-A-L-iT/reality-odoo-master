@@ -134,7 +134,7 @@
             </p> -->
 
             <t t-if="sale_order.approve_financing">
-                <script type="text/javascript" async>
+                <script type="text/javascript" async="">
                     window.kwipped_approve = window.kwipped_approve || {};
                     window.kwipped_approve.url = "https://www.kwipped.com";
                     window.kwipped_approve.approve_id = "eyJpdiI6InRpbngyN3dmTFNUMEsrd2FlMUpQM0E9PSIsInZhbHVlIjoiazhxcVZTakE5QVRtdWhCNlVFV1NoQT09IiwibWFjIjoiMjc4YzMzZTA1MGM2MzU2MDRmZTI1NGExNGJhY2ZlNTU2YTRiMTc5NzZiMzIwZmMzZjhjMGRkMDE2NjhlNzkxMyJ9";
@@ -160,7 +160,6 @@
                     }
                 </script>
             </t>
-
 
             <!-- temporary style fixes -->
             <style>
