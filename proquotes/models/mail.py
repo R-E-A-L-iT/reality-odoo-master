@@ -30,6 +30,45 @@ class mail(models.TransientModel):
             result[key]["reply_to_force_new"] = True
         return result
 
+
+
+
+class MailMessage(models.Model):
+    _inherit = 'mail.message'
+
+    url = fields.Char(string="URL", compute="_get_page_url")
+
+    def _get_page_url(self):
+        for obj in self:
+            if obj:
+                base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                discuss_url = f"/web#action=109&menu_id=86&active_id=discuss.channel_{obj.res_id}"
+                obj.url = base_url + discuss_url
+            else:
+                obj.url = False
+
+    @api.model_create_multi
+    def create(self, values_list):
+        messages = super(MailMessage, self).create(values_list)
+        for message in messages:
+            if message.message_type == 'comment':
+                email_template = self.env.ref('proquotes.email_template_mail_message_notify', raise_if_not_found=False)
+                # _logger.info("___ email_template: %s", email_template)
+                if email_template:
+                    mail_body = email_template.body_html
+                    subject = email_template.subject
+                    mail_body = mail_body.replace('author_name', message.author_id.name)
+                    mail_body = mail_body.replace('discuss_url', message.url)
+                    template_values = {
+                        'subject': subject,
+                        'email_from': message.author_id.email,
+                        'email_to': message.reply_to,
+                        'body_html': mail_body,
+                    }
+                    url = message.url
+                    email_template.with_context(url=url).send_mail(message.id, email_values=template_values,
+                                                                   force_send=True)
+        return message
 # class MailMessage(models.Model):
 #     _inherit = 'mail.message'
 

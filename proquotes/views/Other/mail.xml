@@ -135,6 +135,30 @@
     <template id="ba_remove_power_override_second_tr" inherit_id="mail.mail_notification_light">
         <xpath expr="//table/tr[2]" position="replace"></xpath>
     </template>
+
+    <record id="email_template_mail_message_notify" model="mail.template">
+        <field name="name">Notify Message with URL</field>
+        <field name="model_id" ref="mail.model_mail_message"/>
+        <field name="email_from">${(object.author_id.email or user.email) if object.author_id else user.email}</field>
+        <field name="email_to">${object.author_id.email if object.author_id else ''}</field>
+        <field name="subject">Mail Message Notification</field>
+        <field name="body_html" type="html">
+            <div>
+                <br/>
+                <p>Hello,</p>
+                <p>You received a new message from <b>author_name</b>.</p>
+                <br/>
+                <p>
+                    <a href="discuss_url" style="background:red;color:white;padding:10px 16px;border-radius:4px;text-decoration:none;font-weight: 600;" target="_blank">
+        View Message
+      </a>
+                </p>
+            </div>
+        </field>
+        <field name="email_layout_xmlid">mail.mail_notification_light</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
 </odoo>
 
 
