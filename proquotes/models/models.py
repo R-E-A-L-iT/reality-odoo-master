@@ -1616,11 +1616,7 @@ class order(models.Model):
             access_opt['title'] = title
 
             # Check if any partner has a linked user who is an internal user
-            is_internal_user = any(
-                partner.user_ids and any(user.has_group('base.group_user') for user in partner.user_ids)
-                for partner in group_info.get('partners', [])
-            )
-            access_opt['url'] = backend_url if is_internal_user else portal_url
+            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
         return groups
 
     def _amount_all(self):
