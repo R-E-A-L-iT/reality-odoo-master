@@ -645,6 +645,26 @@ class invoice(models.Model):
 
         return report_action
 
+    def action_send_and_print(self):
+        template = self.env.ref(self._get_mail_template(), raise_if_not_found=False)
+
+        if any(not x.is_sale_document(include_receipts=True) for x in self):
+            raise UserError(_("You can only send sales documents"))
+        partner = self.partner_id if self.partner_id.email else False
+        return {
+            'name': _("Send"),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'account.move.send',
+            'target': 'new',
+            'context': {
+                'active_ids': self.ids,
+                'default_mail_template_id': template.id,
+                'default_mail_partner_ids': [partner.id] if partner else False,
+            },
+        }
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -2237,6 +2257,20 @@ class delivery(models.Model):
 
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
+
+    def _get_default_mail_partner_ids(self, move, mail_template, mail_lang):
+        partners = self.env['res.partner'].with_company(move.company_id)
+        if mail_template.email_to:
+            for mail_data in tools.email_split(mail_template.email_to):
+                partners |= partners.find_or_create(mail_data)
+        if mail_template.email_cc:
+            for mail_data in tools.email_split(mail_template.email_cc):
+                partners |= partners.find_or_create(mail_data)
+        if mail_template.partner_to:
+            #     partner_to = self._get_mail_default_field_value_from_template(mail_template, mail_lang, move, 'partner_to')
+            #     partner_ids = mail_template._parse_partner_to(partner_to)
+            partners |= self.env['res.partner'].sudo().browse(partners).exists()
+        return partners
 
     @api.depends('checkbox_send_mail')
     def _compute_send_mail_extra_fields(self):
