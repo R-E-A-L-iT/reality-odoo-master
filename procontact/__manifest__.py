@@ -7,7 +7,8 @@
     "version": "17.0",
     "depends": ["base"],
     "data": [
-        "views/contact_internal.xml"
+        "views/contact_internal.xml",
+        "views/contact_list.xml"
     ],
     "installable": True,
     "application": True,
