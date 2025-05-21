@@ -817,9 +817,6 @@ class order(models.Model):
         required=True
     )
 
-    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all')
-    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
-
     approve_financing = fields.Boolean(string="APPROVE Financing")
 
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
