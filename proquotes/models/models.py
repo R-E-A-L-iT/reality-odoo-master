@@ -1731,7 +1731,7 @@ class order(models.Model):
                             * ((line.discount or 0.0) / 100.0)
                             * line.product_uom_qty
                     )
-            order.amount_undiscounted = total + 1000.0
+            order.amount_undiscounted = total
 
     def _amount_by_group(self):
         #  Overden Method to Ensure sale order lines are selected to included in calculation
