@@ -569,11 +569,11 @@
 
 
         <!-- EDIT HERE TO FIX BUNDLE SECTION PROCESSING -->
-        <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
+        <!-- <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]" position="inside">
             <t t-if="'#bundle' not in line.name">
                 <t t-set="current_section_ended" t-value="false"/>
             </t>
-        </xpath>
+        </xpath> -->
 
        
         <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
