@@ -632,8 +632,8 @@ class invoice(models.Model):
         """
         self.ensure_one()
 
-        if self.partner_id and not self.partner_id.email:
-            raise UserError("Your company must have an email address set.")
+        # if self.partner_id and not self.partner_id.email:
+        #     raise UserError("Your company must have an email address set.")
 
         if self.invoice_pdf_report_id:
             self.invoice_pdf_report_id.unlink()
