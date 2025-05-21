@@ -1902,8 +1902,8 @@ class orderLineProquotes(models.Model):
             amount_tax = totals['amount_tax']
 
             line.update({
-                'price_subtotal': amount_untaxed,
-                'price_tax': amount_tax,
+                'price_subtotal': amount_untaxed + 50.0,
+                'price_tax': amount_tax + 50.0,
                 'price_total': amount_untaxed + amount_tax + 50.0,
             })
 
