@@ -1904,7 +1904,7 @@ class orderLineProquotes(models.Model):
             line.update({
                 'price_subtotal': amount_untaxed,
                 'price_tax': amount_tax,
-                'price_total': amount_untaxed + amount_tax,
+                'price_total': amount_untaxed + amount_tax + 50.0,
             })
 
 class proquotesMail(models.TransientModel):
