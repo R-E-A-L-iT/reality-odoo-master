@@ -15,6 +15,7 @@ from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
 import re
+from werkzeug.utils import redirect
 
 _logger = logging.getLogger(__name__)
 
@@ -347,6 +348,19 @@ class QuoteCustomerPortal(cPortal):
         )
 
         return results
+
+    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
+                website=True)
+    def check_quotation_redirect(self, order_id, access_token, **kwargs):
+        if not request.env.user._is_public():
+            url = f"/web#id={order_id}&model=sale.order&view_type=form"
+        else:
+            order = request.env['sale.order'].sudo().browse(order_id)
+            if order and order.access_token == access_token:
+                url = order.get_portal_url()
+            else:
+                url = '/my'
+        return redirect(url)
     
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
