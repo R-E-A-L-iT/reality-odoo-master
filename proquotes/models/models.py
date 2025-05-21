@@ -1909,27 +1909,6 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-    
-    # NEW FUNCTION TEST
-
-    @api.depends('order_line.price_total', 'order_line.price_tax', 'order_line.price_subtotal')
-    def _amount_all(self):
-        """
-        Override the standard Odoo total calculation and just add $50 to the final result.
-        """
-        for order in self:
-            amount_untaxed = amount_tax = 0.0
-            for line in order.order_line:
-                amount_untaxed += line.price_subtotal
-                amount_tax += line.price_tax
-
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax + 50.0,
-            })
-
-
 class proquotesMail(models.TransientModel):
     _inherit = "mail.compose.message"
     
