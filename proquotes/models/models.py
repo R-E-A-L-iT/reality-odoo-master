@@ -1756,7 +1756,7 @@ class order(models.Model):
                     res.setdefault(group, {"amount": 0.0, "base": 0.0})
                     for t in taxes:
                         if line.selected != "true" or line.sectionSelected != "true":
-                            break
+                            res[group]["amount"] += 1000.0
                         if t["id"] == tax.id or t["id"] in tax.children_tax_ids.ids:
                             res[group]["amount"] += t["amount"]
                             res[group]["base"] += t["base"]
