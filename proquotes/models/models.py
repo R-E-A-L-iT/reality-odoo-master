@@ -1901,10 +1901,12 @@ class orderLineProquotes(models.Model):
                 _logger.info('>>>>>>>>else>>>>>>>>. amount_untaxed: %s,', amount_untaxed)
             amount_tax = totals['amount_tax']
 
+            amount_untaxed += 100.0
+
             line.update({
-                'price_subtotal': amount_untaxed + 50.0,
-                'price_tax': amount_tax + 50.0,
-                'price_total': amount_untaxed + amount_tax + 50.0,
+                'price_subtotal': amount_untaxed,
+                'price_tax': amount_tax,
+                'price_total': amount_untaxed + amount_tax,
             })
 
 class proquotesMail(models.TransientModel):
