@@ -343,18 +343,8 @@ class CustomerPortalReal(CustomerPortal):
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation viewed by customer %s',
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
-                email_contacts = order_sudo.email_contacts
-                follower_partners = order_sudo.message_follower_ids.mapped('partner_id')
-                partner_ids = [partner.id for partner in follower_partners if partner not in email_contacts]
-                if partner_ids:
-                    order_sudo.message_post(
-                        body=body,
-                        subject="Quotation Viewed",
-                        message_type="notification",
-                        subtype_xmlid="mail.mt_note",
-                        partner_ids=partner_ids,
-                    )
-
+                order_sudo.message_post(body=body)
+                
         backend_url = f'/web#model={order_sudo._name}'\
                       f'&id={order_sudo.id}'\
                       f'&action={order_sudo._get_portal_return_action().id}'\
