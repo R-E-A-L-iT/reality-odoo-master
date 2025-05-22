@@ -36,6 +36,7 @@ class ProductBundleWizard(models.TransientModel):
             'price_unit': price,
             'name': f"$$bundle_helper$$:{self.bundle_id.name}",
             'sequence': section_line.sequence + 1,
+            'is_selected': True,
         })
 
         # Add actual product lines
@@ -47,6 +48,7 @@ class ProductBundleWizard(models.TransientModel):
                 'product_uom_qty': line.quantity,
                 'name': line.product_id.name,
                 'sequence': sequence,
+                'is_selected': False,
             })
             sequence += 1
 
