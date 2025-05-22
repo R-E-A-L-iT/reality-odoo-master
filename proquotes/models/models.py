@@ -1623,7 +1623,7 @@ class order(models.Model):
                     access_opt['title'] = _("View Order")
             
             # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            access_opt['url'] = f"{base_url}{portal_url}"
 
         # return the modified recipient groups with the updated access options
         return groups
