@@ -34,7 +34,7 @@ class ProductBundleWizard(models.TransientModel):
             'product_id': 564922,  # Dummy product ID
             'product_uom_qty': 1,
             'price_unit': price,
-            'name': f"{self.bundle_id.name} (bundle total)",
+            'name': f"$$bundle_helper$$:{self.bundle_id.name}",
             'sequence': section_line.sequence + 1,
         })
 

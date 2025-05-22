@@ -382,11 +382,14 @@
                 (
                     (not line.display_type or line.display_type == False) and
                     (
-                        'quoteLineRow' + (' bundle-subproduct' if current_section and '#bundle' in current_section.name else '')
+                        'quoteLineRow' + 
+                        (' bundle-subproduct' if current_section and '#bundle' in current_section.name else '') + 
+                        (' bundle_helper' if line.name.startswith('$$bundle_helper$$:') else '')
                     )
                 )
             </attribute>
         </xpath>
+
 
 
 
@@ -574,6 +577,7 @@
                 <t t-set="current_section_ended" t-value="false"/>
             </t>
         </xpath> -->
+        
 
        
         <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
