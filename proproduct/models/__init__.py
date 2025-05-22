@@ -2,4 +2,4 @@
 
 from . import product_bundle
 from . import product_bundle_wizard
-from . import models
+# from . import models
