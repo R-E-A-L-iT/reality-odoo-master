@@ -5,7 +5,7 @@
     "author": "Ezekiel deBlois",
     "license": "LGPL-3",
     "version": "17.0",
-    "depends": ["base"],
+    "depends": ["base", "sale"],
     "data": [
         "security/ir.model.access.csv",
         "views/product_bundle.xml",
