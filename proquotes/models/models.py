@@ -1592,18 +1592,18 @@ class order(models.Model):
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
-    # @api.depends_context('lang')
-    # @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
-    # def _compute_tax_totals(self):
-    #     for order in self:
-    #         order = order.with_company(order.company_id)
-    #         order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
-    #         order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-    #             [x._convert_to_tax_base_line_dict() for x in order_lines],
-    #             order.currency_id or order.company_id.currency_id,
-    #         )
-    #         # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-    #         order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
+    @api.depends_context('lang')
+    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    def _compute_tax_totals(self):
+        for order in self:
+            order = order.with_company(order.company_id)
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+                [x._convert_to_tax_base_line_dict() for x in order_lines],
+                order.currency_id or order.company_id.currency_id,
+            )
+            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
@@ -1643,132 +1643,132 @@ class order(models.Model):
         # return the modified recipient groups with the updated access options
         return groups
 
-    # @api.depends('order_line.price_total', 'order_line.display_type', 'order_line.name',
-    #              'currency_id', 'is_rental')
-    # def _amount_all(self):
-    #     for order in self:
-    #         amount_untaxed = amount_tax = bundle_extra_total = 0.0
+    @api.depends('order_line.price_total', 'order_line.display_type', 'order_line.name',
+                 'currency_id', 'is_rental')
+    def _amount_all(self):
+        for order in self:
+            amount_untaxed = amount_tax = bundle_extra_total = 0.0
 
-    #         for line in order.order_line:
-    #             # Include standard line prices if selected and within selected section
-    #             if line.selected == "true" and line.sectionSelected == "true":
-    #                 if not order.is_rental or line.product_id.is_software:
-    #                     amount_untaxed += line.price_subtotal
-    #                     amount_tax += line.price_tax
-    #                 elif order.is_rental and not line.product_id.is_software:
-    #                     amount_untaxed += order.calc_rental_price(line.price_subtotal)
-    #                     amount_tax += order.calc_rental_price(line.price_tax)
+            for line in order.order_line:
+                # Include standard line prices if selected and within selected section
+                if line.selected == "true" and line.sectionSelected == "true":
+                    if not order.is_rental or line.product_id.is_software:
+                        amount_untaxed += line.price_subtotal
+                        amount_tax += line.price_tax
+                    elif order.is_rental and not line.product_id.is_software:
+                        amount_untaxed += order.calc_rental_price(line.price_subtotal)
+                        amount_tax += order.calc_rental_price(line.price_tax)
 
-    #             # Bundle section handling
-    #             if line.display_type == 'line_section' and line.name and line.name.startswith('#bundle+'):
-    #                 try:
-    #                     bundle_id = int(line.name.split('+')[-1])
-    #                     bundle = self.env['product.bundle'].sudo().browse(bundle_id)
-    #                 except (ValueError, AttributeError):
-    #                     continue  # Skip if bundle ID parsing fails
+                # Bundle section handling
+                if line.display_type == 'line_section' and line.name and line.name.startswith('#bundle+'):
+                    try:
+                        bundle_id = int(line.name.split('+')[-1])
+                        bundle = self.env['product.bundle'].sudo().browse(bundle_id)
+                    except (ValueError, AttributeError):
+                        continue  # Skip if bundle ID parsing fails
 
-    #                 if bundle:
-    #                     # Choose correct price field based on currency and rental
-    #                     if order.currency_id.name == 'USD':
-    #                         price = bundle.rental_price_usd if order.is_rental else bundle.price_usd
-    #                     elif order.currency_id.name == 'CAD':
-    #                         price = bundle.rental_price_cad if order.is_rental else bundle.price_cad
-    #                     else:
-    #                         price = bundle.price_usd  # fallback
+                    if bundle:
+                        # Choose correct price field based on currency and rental
+                        if order.currency_id.name == 'USD':
+                            price = bundle.rental_price_usd if order.is_rental else bundle.price_usd
+                        elif order.currency_id.name == 'CAD':
+                            price = bundle.rental_price_cad if order.is_rental else bundle.price_cad
+                        else:
+                            price = bundle.price_usd  # fallback
 
-    #                     bundle_extra_total += price or 0.0
+                        bundle_extra_total += price or 0.0
 
-    #         currency = order.currency_id or order.company_id.currency_id
-    #         bundle_extra_total = currency.round(bundle_extra_total)
+            currency = order.currency_id or order.company_id.currency_id
+            bundle_extra_total = currency.round(bundle_extra_total)
 
-    #         amount_untaxed += bundle_extra_total
+            amount_untaxed += bundle_extra_total
 
-    #         order.update({
-    #             'amount_untaxed': amount_untaxed,
-    #             'amount_tax': amount_tax,
-    #             'amount_total': amount_untaxed + amount_tax,
-    #         })
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
 
 
 
     # UPDATED ABOVE
 
-    # def _amount_all(self):
-    #     # Ensure sale order lines are selected to included in calculation
-    #     for order in self:
-    #         amount_untaxed = amount_tax = 0.0
-    #         for line in order.order_line:
-    #             if line.selected == "true" and line.sectionSelected == "true":
-    #                 if order.is_rental == False or line.product_id.is_software:
-    #                     amount_untaxed += line.price_subtotal
-    #                     amount_tax += line.price_tax
-    #                 elif order.is_rental and line.product_id.is_software == False:
-    #                     price = self.calc_rental_price(line.price_subtotal)
-    #                     amount_untaxed += price
-    #                     amount_tax += self.calc_rental_price(line.price_tax)
+    def _amount_all(self):
+        # Ensure sale order lines are selected to included in calculation
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                if line.selected == "true" and line.sectionSelected == "true":
+                    if order.is_rental == False or line.product_id.is_software:
+                        amount_untaxed += line.price_subtotal
+                        amount_tax += line.price_tax
+                    elif order.is_rental and line.product_id.is_software == False:
+                        price = self.calc_rental_price(line.price_subtotal)
+                        amount_untaxed += price
+                        amount_tax += self.calc_rental_price(line.price_tax)
 
-    #         order.update(
-    #             {
-    #                 "amount_untaxed": amount_untaxed,
-    #                 "amount_tax": amount_tax,
-    #                 "amount_total": amount_untaxed + amount_tax,
-    #             }
-    #         )
+            order.update(
+                {
+                    "amount_untaxed": amount_untaxed,
+                    "amount_tax": amount_tax,
+                    "amount_total": amount_untaxed + amount_tax,
+                }
+            )
 
-    # def _compute_amount_undiscounted(self):
-    #     # Ensure sale order lines are selected to included in calculation
-    #     for order in self:
-    #         total = 0.0
-    #         for line in order.order_line:
-    #             if line.selected == "true" and line.sectionSelected == "true":
-    #                 # why is there a discount in a field named amount_undiscounted ??
-    #                 total += (
-    #                         line.price_subtotal
-    #                         + line.price_unit
-    #                         * ((line.discount or 0.0) / 100.0)
-    #                         * line.product_uom_qty
-    #                 )
-    #         order.amount_undiscounted = total
+    def _compute_amount_undiscounted(self):
+        # Ensure sale order lines are selected to included in calculation
+        for order in self:
+            total = 0.0
+            for line in order.order_line:
+                if line.selected == "true" and line.sectionSelected == "true":
+                    # why is there a discount in a field named amount_undiscounted ??
+                    total += (
+                            line.price_subtotal
+                            + line.price_unit
+                            * ((line.discount or 0.0) / 100.0)
+                            * line.product_uom_qty
+                    )
+            order.amount_undiscounted = total
 
-    # def _amount_by_group(self):
-    #     #  Overden Method to Ensure sale order lines are selected to included in calculation
-    #     for order in self:
-    #         currency = order.currency_id or order.company_id.currency_id
-    #         fmt = partial(
-    #             formatLang,
-    #             self.with_context(lang=order.partner_id.lang).env,
-    #             currency_obj=currency,
-    #         )
-    #         res = {}
-    #         for line in order.order_line:
-    #             price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
-    #             taxes = line.tax_id.compute_all(
-    #                 price_reduce,
-    #                 quantity=line.product_uom_qty,
-    #                 product=line.product_id,
-    #                 partner=order.partner_shipping_id,
-    #             )["taxes"]
-    #             for tax in line.tax_id:
-    #                 group = tax.tax_group_id
-    #                 res.setdefault(group, {"amount": 0.0, "base": 0.0})
-    #                 for t in taxes:
-    #                     if line.selected != "true" or line.sectionSelected != "true":
-    #                         break
-    #                     if t["id"] == tax.id or t["id"] in tax.children_tax_ids.ids:
-    #                         res[group]["amount"] += t["amount"]
-    #                         res[group]["base"] += t["base"]
-    #         res = sorted(res.items(), key=lambda l: l[0].sequence)
-    #         order.amount_by_group = [
-    #             (
-    #                 l[0].name,
-    #                 l[1]["amount"],
-    #                 l[1]["base"],
-    #                 fmt(l[1]["amount"]),
-    #                 fmt(l[1]["base"]),
-    #                 len(res),
-    #             )
-    #             for l in res
-    #         ]
+    def _amount_by_group(self):
+        #  Overden Method to Ensure sale order lines are selected to included in calculation
+        for order in self:
+            currency = order.currency_id or order.company_id.currency_id
+            fmt = partial(
+                formatLang,
+                self.with_context(lang=order.partner_id.lang).env,
+                currency_obj=currency,
+            )
+            res = {}
+            for line in order.order_line:
+                price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                taxes = line.tax_id.compute_all(
+                    price_reduce,
+                    quantity=line.product_uom_qty,
+                    product=line.product_id,
+                    partner=order.partner_shipping_id,
+                )["taxes"]
+                for tax in line.tax_id:
+                    group = tax.tax_group_id
+                    res.setdefault(group, {"amount": 0.0, "base": 0.0})
+                    for t in taxes:
+                        if line.selected != "true" or line.sectionSelected != "true":
+                            break
+                        if t["id"] == tax.id or t["id"] in tax.children_tax_ids.ids:
+                            res[group]["amount"] += t["amount"]
+                            res[group]["base"] += t["base"]
+            res = sorted(res.items(), key=lambda l: l[0].sequence)
+            order.amount_by_group = [
+                (
+                    l[0].name,
+                    l[1]["amount"],
+                    l[1]["base"],
+                    fmt(l[1]["amount"]),
+                    fmt(l[1]["base"]),
+                    len(res),
+                )
+                for l in res
+            ]
 
 
 class orderLineProquotes(models.Model):
