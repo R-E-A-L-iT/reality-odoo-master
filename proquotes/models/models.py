@@ -1592,18 +1592,18 @@ class order(models.Model):
         rentalMonthRate = 12 * price * rentalMonths
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
-    @api.depends_context('lang')
-    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
-    def _compute_tax_totals(self):
-        for order in self:
-            order = order.with_company(order.company_id)
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
-            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-                [x._convert_to_tax_base_line_dict() for x in order_lines],
-                order.currency_id or order.company_id.currency_id,
-            )
-            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
+    # @api.depends_context('lang')
+    # @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    # def _compute_tax_totals(self):
+    #     for order in self:
+    #         order = order.with_company(order.company_id)
+    #         order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+    #         order.tax_totals = order.env['account.tax']._prepare_tax_totals(
+    #             [x._convert_to_tax_base_line_dict() for x in order_lines],
+    #             order.currency_id or order.company_id.currency_id,
+    #         )
+    #         # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
+    #         order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """

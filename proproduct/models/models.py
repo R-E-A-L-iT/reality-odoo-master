@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -8,7 +11,8 @@ class SaleOrder(models.Model):
         super()._amount_all()
 
         for order in self:
-            
-            # Add $100 per line (excluding section/note lines)
             line_count = len(order.order_line.filtered(lambda l: l.display_type is False))
-            order.amount_total += 100 * line_count
+            extra = 100 * line_count
+            order.amount_total += extra
+            _logger.info("Added $%s to order %s (from %s lines)", extra, order.name or order.id, line_count)
+
