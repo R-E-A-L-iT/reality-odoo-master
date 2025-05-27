@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ProductBundleWizard(models.TransientModel):
     _name = 'product.bundle.wizard'
@@ -8,7 +8,7 @@ class ProductBundleWizard(models.TransientModel):
 
     @api.model
     def action_add_bundle_to_document(self):
-        
+
         active_model = self._context.get('default_model')
         active_id = self._context.get('default_res_id')
         doc = self.env[active_model].browse(active_id)
