@@ -122,19 +122,30 @@ class StockPicking(models.Model):
             # Map each move line to the correct bundle
             for move_line in picking.move_line_ids:
                 lot = move_line.lot_id
-                product_line = move_line.move_id.purchase_line_id
+                move = move_line.move_id
+                product_line = move.purchase_line_id
 
-                if not lot or not product_line:
+                _logger.info(f"MoveLine {move_line.id} - Product: {move.product_id.display_name}, Lot: {lot and lot.name}, Purchase Line: {product_line and product_line.name}")
+
+                if not lot:
+                    _logger.warning(f"No lot found for MoveLine {move_line.id}")
+                    continue
+                if not product_line:
+                    _logger.warning(f"No purchase_line_id found for Move {move.id}")
                     continue
 
-                # Find closest previous section by sequence
+                # Find closest section
                 closest_section = None
                 for section in section_lines:
                     if section.sequence < product_line.sequence:
                         closest_section = section
 
                 if closest_section and closest_section.id in bundle_map:
-                    lot.bundle_instance_id = bundle_map[closest_section.id].id
+                    bundle_instance = bundle_map[closest_section.id]
+                    lot.bundle_instance_id = bundle_instance.id
+                    _logger.info(f"Lot {lot.name} assigned to bundle instance {bundle_instance.name} (ID: {bundle_instance.id})")
+                else:
+                    _logger.warning(f"Could not find matching bundle section for product line {product_line.name} (sequence {product_line.sequence})")
 
         return res
 
