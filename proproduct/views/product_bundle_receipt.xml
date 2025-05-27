@@ -1,7 +1,7 @@
 <odoo>
-    <record id="view_bundle_serial_wizard_form" model="ir.ui.view">
-        <field name="name">bundle.serial.wizard.form</field>
-        <field name="model">bundle.serial.wizard</field>
+    <record id="view_bundle_receipt_wizard_form" model="ir.ui.view">
+        <field name="name">bundle.receipt.wizard.form</field>
+        <field name="model">bundle.receipt.wizard</field>
         <field name="arch" type="xml">
             <form string="Assign Serial Numbers to Bundles">
                 <group>
