@@ -89,7 +89,7 @@ class ProductBundleWizard(models.TransientModel):
             for line in self.bundle_id.product_lines:
                 doc.order_line.create({
                     'order_id': doc.id,
-                    'product_id': line.product_id.id,
+                    'product_id': line.product_id.product_variant_id.id,
                     'product_uom_qty': line.quantity,
                     'product_uom': line.product_id.uom_po_id.id,
                     'price_unit': line.product_id.standard_price,
