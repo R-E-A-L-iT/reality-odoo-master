@@ -84,10 +84,10 @@ class ProductBundleWizard(models.TransientModel):
             # insert bundle section
             section_line = doc.order_line.create({
                 'order_id': doc.id,
-                'name': self.bundle_id.name,
+                'name': f"#bundle+{self.bundle_id.name}+{self.bundle_id.id}",
                 'display_type': 'line_section',
-                'product_uom_qty': 1,    # temporarily required
-                'product_qty': 1,        # temporarily required
+                'product_uom_qty': 1,    
+                'product_qty': 1,        
                 'product_uom': self.bundle_id.product_lines[0].product_id.uom_po_id.id
                                 if self.bundle_id.product_lines else self.env.ref('uom.product_uom_unit').id,
             }).sudo()
@@ -112,3 +112,35 @@ class ProductBundleWizard(models.TransientModel):
                     'name': line.product_id.name,
                 })
 
+class BundleReceiptWizard(models.TransientModel):
+    _name = 'bundle.receipt.wizard'
+    _description = 'Enter Serial Numbers for Bundles'
+
+    order_id = fields.Many2one('purchase.order', required=True)
+    serial_lines = fields.One2many('bundle.receipt.line.wizard', 'wizard_id', string='Bundle Serials')
+
+    def action_confirm_with_serials(self):
+        self.ensure_one()
+        self.order_id.bundle_serial_data = {
+            line.section_line_id.id: line.serial_number for line in self.serial_lines
+        }
+        return self.order_id._confirm_after_serials()
+
+class BundleReceiptLineWizard(models.TransientModel):
+    _name = 'bundle.receipt.line.wizard'
+    _description = 'Single Bundle Product Entry'
+
+    wizard_id = fields.Many2one('bundle.receipt.wizard', required=True)
+    section_line_id = fields.Many2one('purchase.order.line', required=True, string="Bundle Section Line")
+    bundle_name = fields.Char(related='section_line_id.name', string="Bundle")
+    serial_number = fields.Char(required=True, string="Serial Number")
+
+    product_names = fields.Text(string="Bundle Products", compute='_compute_product_names')
+
+    def _compute_product_names(self):
+        for rec in self:
+            rec.product_names = '\n'.join(
+                rec.section_line_id.order_id.order_line.filtered(
+                    lambda l: l.sequence > rec.section_line_id.sequence and not l.display_type
+                ).mapped('name')
+            )

@@ -31,6 +31,8 @@ class StockLot(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    bundle_serial_data = fields.Json(string="Bundle Serial Cache")
+
     def action_open_bundle_wizard(self):
         return {
             'type': 'ir.actions.act_window',
@@ -42,3 +44,28 @@ class PurchaseOrder(models.Model):
                 'default_res_id': self.id,
             }
         }
+
+    def button_confirm(self):
+        for order in self:
+            bundle_sections = order.order_line.filtered(
+                lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
+            )
+            if bundle_sections and not order.bundle_serial_data:
+                wizard = self.env['bundle.serial.wizard'].create({
+                    'order_id': order.id,
+                    'serial_lines': [(0, 0, {
+                        'section_line_id': section.id,
+                    }) for section in bundle_sections]
+                })
+                return {
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'bundle.serial.wizard',
+                    'view_mode': 'form',
+                    'res_id': wizard.id,
+                    'target': 'new'
+                }
+
+        return super().button_confirm()
+
+    def _confirm_after_serials(self):
+        return super().button_confirm()

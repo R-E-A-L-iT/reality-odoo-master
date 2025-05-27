@@ -11,6 +11,7 @@
         "views/product_bundle.xml",
         "views/product_bundle_wizard.xml",
         "views/product_bundle_instance.xml",
+        "views/product_bundle_receipt.xml",
         "views/views.xml",
     ],
     "installable": True,
