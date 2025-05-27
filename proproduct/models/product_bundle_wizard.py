@@ -89,7 +89,8 @@ class ProductBundleWizard(models.TransientModel):
             for line in self.bundle_id.product_lines:
                 doc.order_line += [(0, 0, {
                     'product_id': line.product_id.id,
-                    'product_qty': 1,
+                    'product_uom_qty': 1,
+                    'product_uom': self.bundle_id.product_lines[0].product_id.uom_po_id.id if self.bundle_id.product_lines else self.env.ref('uom.product_uom_unit').id,
                     'price_unit': line.product_id.standard_price,
                     'name': line.product_id.name,
                 })]
