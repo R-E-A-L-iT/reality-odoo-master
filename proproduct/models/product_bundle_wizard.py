@@ -82,10 +82,10 @@ class ProductBundleWizard(models.TransientModel):
         elif active_model == 'purchase.order':
 
             # Insert into PO lines
-            doc.order_line = [(0, 0, {
-                'name': self.bundle_id.name,
-                'display_type': 'line_section',
-            })]
+            # doc.order_line = [(0, 0, {
+            #     'name': self.bundle_id.name,
+            #     'display_type': 'line_section',
+            # })]
             for line in self.bundle_id.product_lines:
                 doc.order_line += [(0, 0, {
                     'product_id': line.product_id.id,
