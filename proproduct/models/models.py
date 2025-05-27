@@ -51,7 +51,7 @@ class PurchaseOrder(models.Model):
                 lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
             )
             if bundle_sections and not order.bundle_serial_data:
-                wizard = self.env['bundle.serial.wizard'].create({
+                wizard = self.env['bundle.receipt.wizard'].create({
                     'order_id': order.id,
                     'serial_lines': [(0, 0, {
                         'section_line_id': section.id,
@@ -59,7 +59,7 @@ class PurchaseOrder(models.Model):
                 })
                 return {
                     'type': 'ir.actions.act_window',
-                    'res_model': 'bundle.serial.wizard',
+                    'res_model': 'bundle.receipt.wizard',
                     'view_mode': 'form',
                     'res_id': wizard.id,
                     'target': 'new'
