@@ -131,7 +131,7 @@ class BundleReceiptLineWizard(models.TransientModel):
     _description = 'Single Bundle Product Entry'
 
     wizard_id = fields.Many2one('bundle.receipt.wizard', required=True)
-    section_line_id = fields.Many2one('purchase.order.line', required=True, string="Bundle Section Line")
+    section_line_id = fields.Many2one('purchase.order.line', required=True)
     bundle_name = fields.Char(related='section_line_id.name', string="Bundle")
     serial_number = fields.Char(required=True, string="Serial Number")
 
