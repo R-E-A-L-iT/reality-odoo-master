@@ -63,20 +63,20 @@ class ProductBundleWizard(models.TransientModel):
             return {'type': 'ir.actions.act_window_close'}
 
 
-        elif active_model == 'account.move':
+        # elif active_model == 'account.move':
 
-            # Insert into invoice lines
-            doc.invoice_line_ids = [(0, 0, {
-                'name': self.bundle_id.name,
-                'display_type': 'line_section',
-            })]
-            for line in self.bundle_id.product_lines:
-                doc.invoice_line_ids += [(0, 0, {
-                    'product_id': line.product_id.id,
-                    'quantity': line.quantity,
-                    'price_unit': line.product_id.list_price,
-                    'name': line.product_id.name,
-                })]
+        #     # Insert into invoice lines
+        #     doc.invoice_line_ids = [(0, 0, {
+        #         'name': self.bundle_id.name,
+        #         'display_type': 'line_section',
+        #     })]
+        #     for line in self.bundle_id.product_lines:
+        #         doc.invoice_line_ids += [(0, 0, {
+        #             'product_id': line.product_id.id,
+        #             'quantity': line.quantity,
+        #             'price_unit': line.product_id.list_price,
+        #             'name': line.product_id.name,
+        #         })]
 
 
         elif active_model == 'purchase.order':
@@ -89,6 +89,7 @@ class ProductBundleWizard(models.TransientModel):
             for line in self.bundle_id.product_lines:
                 doc.order_line += [(0, 0, {
                     'product_id': line.product_id.id,
+                    'product_uom': line.product_id.uom_po_id.id,
                     'product_qty': line.quantity,
                     'price_unit': line.product_id.standard_price,
                     'name': line.product_id.name,
