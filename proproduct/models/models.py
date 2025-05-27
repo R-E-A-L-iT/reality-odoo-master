@@ -28,3 +28,17 @@ class AccountMove(models.Model):
             }
         }
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    def action_open_bundle_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.bundle.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_model': self._name,
+                'default_res_id': self.id,
+            }
+        }
