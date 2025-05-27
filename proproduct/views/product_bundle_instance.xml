@@ -31,6 +31,16 @@
             <field name="expire"/>
             <field name="owner"/>
             <field name="company_id"/>
+            
+            <field name="lot_lines" string="Subproducts">
+                <tree>
+                    <field name="product_id"/>
+                    <field name="name" string="Serial Number"/>
+                    <field name="product_qty"/>
+                    <field name="expiration_date"/>
+                </tree>
+            </field>
+
           </group>
         </sheet>
       </form>

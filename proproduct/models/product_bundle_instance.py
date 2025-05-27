@@ -14,3 +14,9 @@ class ProductBundleInstance(models.Model):
     owner = fields.Many2one('res.partner', string='Owner', help="Owner of the bundle instance")
     sku = fields.Char(string='SKU', related='bundle_id.sku', readonly=True, help="SKU of the bundle")
     expire = fields.Date(string='Expiration Date', help="Expiration date of the bundle")
+
+    lot_lines = fields.One2many(
+        'stock.lot',
+        'bundle_instance_id',
+        string="Subproducts"
+    )
