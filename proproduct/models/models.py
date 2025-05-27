@@ -69,3 +69,57 @@ class PurchaseOrder(models.Model):
 
     def _confirm_after_serials(self):
         return super().button_confirm()
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    def button_validate(self):
+        res = super().button_validate()
+
+        for picking in self:
+            if picking.picking_type_id.code != 'incoming':
+                continue
+
+            purchase = picking.purchase_id
+            if not purchase or not purchase.bundle_serial_data:
+                continue
+
+            # Identify bundle sections from the PO
+            bundle_sections = purchase.order_line.filtered(
+                lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
+            )
+
+            # Map section sequence to bundle_instance
+            instance_map = {}
+            for line in bundle_sections:
+                serial = purchase.bundle_serial_data.get(str(line.id))
+                if not serial:
+                    continue
+                instance = self.env['product.bundle.instance'].search([
+                    ('name', '=', serial),
+                    ('bundle_id', '=', int(line.name.split('+')[-1])),
+                ], limit=1)
+                if instance:
+                    instance_map[line.sequence] = instance
+
+            if not instance_map:
+                continue
+
+            # For each move line: assign bundle_instance_id on related lot
+            for move_line in picking.move_line_ids:
+                lot = move_line.lot_id
+                if not lot:
+                    continue
+
+                product_line = move_line.move_id.purchase_line_id
+                if not product_line:
+                    continue
+
+                # Find the closest previous bundle section
+                section_seq = max((seq for seq in instance_map if seq < product_line.sequence), default=None)
+                if section_seq:
+                    lot.bundle_instance_id = instance_map[section_seq].id
+
+        return res
+
