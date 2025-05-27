@@ -78,48 +78,54 @@ class StockPicking(models.Model):
         res = super().button_validate()
 
         for picking in self:
-            if picking.picking_type_id.code != 'incoming':
+            if picking.picking_type_id.code != 'incoming' or not picking.purchase_id:
                 continue
 
-            purchase = picking.purchase_id
-            if not purchase or not purchase.bundle_serial_data:
+            po = picking.purchase_id
+            serial_map = po.bundle_serial_data or {}
+            if not serial_map:
                 continue
 
-            # Identify bundle sections from the PO
-            bundle_sections = purchase.order_line.filtered(
-                lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
-            )
+            # Find all bundle instances by serial+bundle ID
+            section_lines = po.order_line.filtered(lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+'))
 
-            # Map section sequence to bundle_instance
-            instance_map = {}
-            for line in bundle_sections:
-                serial = purchase.bundle_serial_data.get(str(line.id))
+            bundle_map = {}  # {section_line_id: bundle_instance}
+
+            for section in section_lines:
+                serial = serial_map.get(str(section.id))
                 if not serial:
                     continue
+                try:
+                    bundle_id = int(section.name.split('+')[-1])
+                except ValueError:
+                    continue
+
                 instance = self.env['product.bundle.instance'].search([
                     ('name', '=', serial),
-                    ('bundle_id', '=', int(line.name.split('+')[-1])),
+                    ('bundle_id', '=', bundle_id),
                 ], limit=1)
                 if instance:
-                    instance_map[line.sequence] = instance
+                    bundle_map[section.id] = instance
 
-            if not instance_map:
+            if not bundle_map:
                 continue
 
-            # For each move line: assign bundle_instance_id on related lot
+            # Map each move line to the correct bundle
             for move_line in picking.move_line_ids:
                 lot = move_line.lot_id
-                if not lot:
-                    continue
-
                 product_line = move_line.move_id.purchase_line_id
-                if not product_line:
+
+                if not lot or not product_line:
                     continue
 
-                # Find the closest previous bundle section
-                section_seq = max((seq for seq in instance_map if seq < product_line.sequence), default=None)
-                if section_seq:
-                    lot.bundle_instance_id = instance_map[section_seq].id
+                # Find closest previous section by sequence
+                closest_section = None
+                for section in section_lines:
+                    if section.sequence < product_line.sequence:
+                        closest_section = section
+
+                if closest_section and closest_section.id in bundle_map:
+                    lot.bundle_instance_id = bundle_map[closest_section.id].id
 
         return res
 

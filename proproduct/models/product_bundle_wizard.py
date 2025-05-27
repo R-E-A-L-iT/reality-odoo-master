@@ -129,7 +129,7 @@ class BundleReceiptWizard(models.TransientModel):
         partner = self.order_id.partner_id
 
         for line in self.serial_lines:
-            name = line.serial_number.strip()
+            name = (line.serial_number or '').strip()
             if not name:
                 continue
 
