@@ -77,21 +77,28 @@ class StockPicking(models.Model):
     def button_validate(self):
         res = super().button_validate()
 
+
         for picking in self:
             if picking.picking_type_id.code != 'incoming' or not picking.purchase_id:
                 continue
 
-            po = picking.purchase_id
-            serial_map = po.bundle_serial_data or {}
+            purchase = picking.purchase_id
+
+            _logger.info(f"Processing picking {picking.name} for purchase {purchase.name} (ID: {purchase.id})")
+
+            serial_map = purchase.bundle_serial_data or {}
             if not serial_map:
                 continue
 
             # Find all bundle instances by serial+bundle ID
-            section_lines = po.order_line.filtered(lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+'))
+            section_lines = purchase.order_line.filtered(lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+'))
 
             bundle_map = {}  # {section_line_id: bundle_instance}
 
             for section in section_lines:
+
+                _logger.info(f"Bundle section found for {purchase.name} (ID: {purchase.id})... {str(section.name)})")
+
                 serial = serial_map.get(str(section.id))
                 if not serial:
                     continue
@@ -104,7 +111,9 @@ class StockPicking(models.Model):
                     ('name', '=', serial),
                     ('bundle_id', '=', bundle_id),
                 ], limit=1)
+
                 if instance:
+                    _logger.info(f"Bundle instance found for {str(section.name)}: {instance.name} (ID: {instance.id})")
                     bundle_map[section.id] = instance
 
             if not bundle_map:
