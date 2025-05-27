@@ -81,11 +81,25 @@ class ProductBundleWizard(models.TransientModel):
 
         elif active_model == 'purchase.order':
 
-            # Insert into PO lines
-            # doc.order_line = [(0, 0, {
-            #     'name': self.bundle_id.name,
-            #     'display_type': 'line_section',
-            # })]
+            # insert bundle section
+            first_uom = (
+                self.bundle_id.product_lines[0].product_id.uom_po_id.id
+                if self.bundle_id.product_lines
+                else self.env.ref('uom.product_uom_unit').id  # fallback if bundle is empty
+            )
+
+            # Create the bundle section line
+            doc.order_line.create({
+                'order_id': doc.id,
+                'name': self.bundle_id.name,
+                'display_type': 'line_section',
+                'product_uom_qty': 1,
+                'product_uom': first_uom,
+                'product_qty': 1,
+            })
+
+
+            # insert bundle lines
             for line in self.bundle_id.product_lines:
                 doc.order_line.create({
                     'order_id': doc.id,
