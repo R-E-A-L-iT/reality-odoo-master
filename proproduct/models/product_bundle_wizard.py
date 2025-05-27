@@ -8,6 +8,7 @@ class ProductBundleWizard(models.TransientModel):
 
     @api.model
     def action_add_bundle_to_document(self):
+        self.ensure_one()
 
         active_model = self._context.get('default_model')
         active_id = self._context.get('default_res_id')
