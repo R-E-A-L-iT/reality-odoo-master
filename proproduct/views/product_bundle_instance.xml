@@ -37,7 +37,7 @@
                     <field name="product_id"/>
                     <field name="name" string="Serial Number"/>
                     <field name="product_qty"/>
-                    <field name="use_date"/>
+                    <!-- <field name="use_date"/> -->
                 </tree>
             </field>
 
