@@ -37,8 +37,8 @@
             <button name="action_open_bundle_wizard"
                     type="object"
                     string="Add Product Bundle"
-                    class="btn-primary"
-                    attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                    class="btn-primary"/>
+                    <!-- attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/> -->
             </xpath>
         </field>
     </record>
