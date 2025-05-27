@@ -10,6 +10,7 @@
         "security/ir.model.access.csv",
         "views/product_bundle.xml",
         "views/product_bundle_wizard.xml",
+        "views/product_bundle_instance.xml",
     ],
     "installable": True,
     "application": True,
