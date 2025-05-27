@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <form string="Assign Serial Numbers to Bundles">
                 <group>
+                    <label string="Please fill out a serial number for each bundle in the list below to continue." />
                     <field name="serial_lines">
                         <tree editable="bottom">
                             <field name="bundle_name" readonly="1"/>

@@ -124,6 +124,32 @@ class BundleReceiptWizard(models.TransientModel):
         self.order_id.bundle_serial_data = {
             line.section_line_id.id: line.serial_number for line in self.serial_lines
         }
+
+        product_bundle_instance = self.env['product.bundle.instance']
+        partner = self.order_id.partner_id
+
+        for line in self.serial_lines:
+            name = line.serial_number.strip()
+            if not name:
+                continue
+
+            # Parse bundle ID from the section line name
+            section = line.section_line_id
+            parts = section.name.split('+')
+            bundle_id = int(parts[-1]) if parts[-1].isdigit() else False
+
+            if not bundle_id:
+                continue
+
+            product_bundle_instance.create({
+                'name': name,
+                'ref': section.name,
+                'bundle_id': bundle_id,
+                'company_id': self.order_id.company_id.id,
+                'owner': partner.id,
+            })
+
+
         return self.order_id._confirm_after_serials()
 
 class BundleReceiptLineWizard(models.TransientModel):
