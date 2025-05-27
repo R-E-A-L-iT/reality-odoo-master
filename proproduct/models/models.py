@@ -74,34 +74,31 @@ class PurchaseOrder(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    def button_validate(self):
-        res = super().button_validate()
-
+    def _action_done(self):
+        res = super()._action_done()
 
         for picking in self:
             if picking.picking_type_id.code != 'incoming' or not picking.purchase_id:
                 continue
 
-            purchase = picking.purchase_id
+            po = picking.purchase_id
+            serial_map = po.bundle_serial_data or {}
 
-            _logger.info(f"Processing picking {picking.name} for purchase {purchase.name} (ID: {purchase.id})")
-
-            serial_map = purchase.bundle_serial_data or {}
             if not serial_map:
                 continue
 
-            # Find all bundle instances by serial+bundle ID
-            section_lines = purchase.order_line.filtered(lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+'))
+            _logger.info(f"[BundleLink] Finalizing picking {picking.name} from PO {po.name} (ID: {po.id})")
 
-            bundle_map = {}  # {section_line_id: bundle_instance}
+            section_lines = po.order_line.filtered(
+                lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
+            )
 
+            bundle_map = {}
             for section in section_lines:
-
-                _logger.info(f"Bundle section found for {purchase.name} (ID: {purchase.id})... {str(section.name)})")
-
                 serial = serial_map.get(str(section.id))
                 if not serial:
                     continue
+
                 try:
                     bundle_id = int(section.name.split('+')[-1])
                 except ValueError:
@@ -113,39 +110,35 @@ class StockPicking(models.Model):
                 ], limit=1)
 
                 if instance:
-                    _logger.info(f"Bundle instance found for {str(section.name)}: {instance.name} (ID: {instance.id})")
+                    _logger.info(f"[BundleLink] Found instance {instance.name} for section {section.name}")
                     bundle_map[section.id] = instance
 
             if not bundle_map:
                 continue
 
-            # Map each move line to the correct bundle
+            sorted_sections = sorted(section_lines, key=lambda s: s.sequence)
+
             for move_line in picking.move_line_ids:
                 lot = move_line.lot_id
-                move = move_line.move_id
-                product_line = move.purchase_line_id
+                product_line = move_line.move_id.purchase_line_id
 
-                _logger.info(f"MoveLine {move_line.id} - Product: {move.product_id.display_name}, Lot: {lot and lot.name}, Purchase Line: {product_line and product_line.name}")
-
-                if not lot:
-                    _logger.warning(f"No lot found for MoveLine {move_line.id}")
-                    continue
-                if not product_line:
-                    _logger.warning(f"No purchase_line_id found for Move {move.id}")
+                if not lot or not lot.id or not product_line:
+                    _logger.warning(f"[BundleLink] Skipping line {move_line.id} — missing lot or purchase line")
                     continue
 
-                # Find closest section
+                # Match closest bundle section above product line by sequence
                 closest_section = None
-                for section in section_lines:
-                    if section.sequence < product_line.sequence:
+                for section in sorted_sections:
+                    if section.sequence <= product_line.sequence:
                         closest_section = section
 
                 if closest_section and closest_section.id in bundle_map:
-                    bundle_instance = bundle_map[closest_section.id]
-                    lot.bundle_instance_id = bundle_instance.id
-                    _logger.info(f"Lot {lot.name} assigned to bundle instance {bundle_instance.name} (ID: {bundle_instance.id})")
+                    lot.bundle_instance_id = bundle_map[closest_section.id].id
+                    _logger.info(
+                        f"[BundleLink] Assigned Lot {lot.name} (ID: {lot.id}) to Bundle Instance {bundle_map[closest_section.id].name}"
+                    )
                 else:
-                    _logger.warning(f"Could not find matching bundle section for product line {product_line.name} (sequence {product_line.sequence})")
+                    _logger.warning(f"[BundleLink] Could not match line {move_line.id} to bundle section")
 
         return res
 
