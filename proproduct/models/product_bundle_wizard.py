@@ -6,7 +6,6 @@ class ProductBundleWizard(models.TransientModel):
 
     bundle_id = fields.Many2one('product.bundle', string='Bundle to Add', required=True)
 
-    @api.model
     def action_add_bundle_to_document(self):
         self.ensure_one()
 
