@@ -36,6 +36,7 @@
                 <tree>
                     <field name="product_id"/>
                     <field name="name" string="Serial Number"/>
+                    <field name="location_id" string="Location"/>
                     <field name="product_qty"/>
                     <!-- <field name="use_date"/> -->
                 </tree>
