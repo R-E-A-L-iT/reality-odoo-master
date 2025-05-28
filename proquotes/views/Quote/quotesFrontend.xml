@@ -141,7 +141,6 @@
                 padding: 30px !important;
                 padding-right: 40px !important;
                 padding-top: 0px !important;
-                background-color: #24272A !important;
                 }
                 #details &gt; div.quote-address &gt; video {
                 z-index: 1 !important;
