@@ -133,7 +133,6 @@ class BundleReceiptWizard(models.TransientModel):
             if not name:
                 continue
 
-            # Parse bundle ID from the section line name
             section = line.section_line_id
             parts = section.name.split('+')
             bundle_id = int(parts[-1]) if parts[-1].isdigit() else False
@@ -149,8 +148,12 @@ class BundleReceiptWizard(models.TransientModel):
                 'owner': partner.id,
             })
 
+        # Resume picking validation
+        picking_id = self.env.context.get('default_picking_id')
+        if picking_id:
+            return self.env['stock.picking'].browse(picking_id).button_validate()
+        return {'type': 'ir.actions.act_window_close'}
 
-        return self.order_id._confirm_after_serials()
 
 class BundleReceiptLineWizard(models.TransientModel):
     _name = 'bundle.receipt.line.wizard'

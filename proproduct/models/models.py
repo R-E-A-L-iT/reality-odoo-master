@@ -45,14 +45,48 @@ class PurchaseOrder(models.Model):
             }
         }
 
-    def button_confirm(self):
-        for order in self:
-            bundle_sections = order.order_line.filtered(
+    # def button_confirm(self):
+    #     for order in self:
+            # bundle_sections = order.order_line.filtered(
+            #     lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
+            # )
+            # if bundle_sections and not order.bundle_serial_data:
+            #     wizard = self.env['bundle.receipt.wizard'].create({
+            #         'order_id': order.id,
+            #         'serial_lines': [(0, 0, {
+            #             'section_line_id': section.id,
+            #         }) for section in bundle_sections]
+            #     })
+            #     return {
+            #         'type': 'ir.actions.act_window',
+            #         'res_model': 'bundle.receipt.wizard',
+            #         'view_mode': 'form',
+            #         'res_id': wizard.id,
+            #         'target': 'new'
+            #     }
+
+        # return super().button_confirm()
+
+    def _confirm_after_serials(self):
+        return super().button_confirm()
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    def button_validate(self):
+        for picking in self:
+            if picking.picking_type_id.code != 'incoming' or not picking.purchase_id:
+                continue
+
+            po = picking.purchase_id
+            bundle_sections = po.order_line.filtered(
                 lambda l: l.display_type == 'line_section' and l.name.startswith('#bundle+')
             )
-            if bundle_sections and not order.bundle_serial_data:
+
+            if bundle_sections and not po.bundle_serial_data:
                 wizard = self.env['bundle.receipt.wizard'].create({
-                    'order_id': order.id,
+                    'order_id': po.id,
                     'serial_lines': [(0, 0, {
                         'section_line_id': section.id,
                     }) for section in bundle_sections]
@@ -62,17 +96,15 @@ class PurchaseOrder(models.Model):
                     'res_model': 'bundle.receipt.wizard',
                     'view_mode': 'form',
                     'res_id': wizard.id,
-                    'target': 'new'
+                    'target': 'new',
+                    'context': {
+                        'default_picking_id': picking.id
+                    }
                 }
 
-        return super().button_confirm()
+        # Only call _action_done if not interrupted
+        return super().button_validate()
 
-    def _confirm_after_serials(self):
-        return super().button_confirm()
-
-
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
 
     def _action_done(self):
         res = super()._action_done()
