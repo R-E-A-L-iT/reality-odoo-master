@@ -244,13 +244,13 @@ class sync_ccp:
                                 if ccp.owner.id != owner.id:
                                     _logger.info(
                                         "updateCCP: Field 'owner' changed for CCP EID/SN %s. Old Value: '%s', New Value: '%s'.",
-                                        eidsn, ccp.owner.name if ccp.owner else None, owner.name
+                                        eidsn, ccp.owner.company_nickname if ccp.owner else None, owner_nickname
                                     )
                                     ccp.owner = owner.id
                                 else:
                                     _logger.info(
                                         "updateCCP: Field 'owner' for CCP EID/SN %s is unchanged. No update needed. Owner [Odoo]: %s. Owner [Sheets]: %s.",
-                                        eidsn, ccp.owner.name if ccp.owner else "None", owner.name if owner else "None"
+                                        eidsn, ccp.owner.company_nickname if ccp.owner else "None", owner_nickname
                                     )
 
 
