@@ -179,6 +179,10 @@ class sync_ccp:
             for column_name, odoo_field in field_mapping.items():
                 try:
                     if column_name in sheet_columns:
+
+                        # eidsn fields
+                        eidsn_column = sheet_columns.index("EID/SN")
+                        eidsn = str(row[eidsn_column]).strip()
                         
                         # get new sheets value
                         column_index = sheet_columns.index(column_name)
@@ -216,7 +220,7 @@ class sync_ccp:
                             if str(row[sheet_columns.index("Valid")]).strip().lower() == "false":
                                 owner = self.database.env["res.partner"].search(
                                     [("company_nickname", "ilike", "INACTIVE")], limit=1
-                                ) 
+                                )
                             
                             else:
                             
@@ -239,10 +243,11 @@ class sync_ccp:
                                 # update if found
                                 if ccp.owner.id != owner.id:
                                     _logger.info(
-                                        "updateCCP: Field 'owner' changed for CCP ID %s. Old Value: '%s', New Value: '%s'.",
-                                        ccp_id, ccp.owner.name if ccp.owner else None, owner.name
+                                        "updateCCP: Field 'owner' changed for CCP EID/SN %s. Old Value: '%s', New Value: '%s'.",
+                                        eidsn, ccp.owner.name if ccp.owner else None, owner.name
                                     )
                                     ccp.owner = owner.id
+
 
                         # directly update sku (char field in odoo)
                         elif odoo_field == "sku":
