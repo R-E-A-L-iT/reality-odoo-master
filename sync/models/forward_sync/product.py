@@ -204,7 +204,7 @@ class sync_products:
         product.sale_ok = True
         ext.res_id = product.id
 
-        _logger.info(f"PRODUCT.PY: Created product {product.name} with company_id {company_id}.")
+        _logger.info(f"PRODUCT.PY: Created product {product.name}.")
         return product
 
 
