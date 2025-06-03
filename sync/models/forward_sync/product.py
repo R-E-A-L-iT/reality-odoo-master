@@ -195,8 +195,8 @@ class sync_products:
         product = self.database.env["product.template"].sudo().create({
             "name": product_name,
             "sku": str("CCP-" + external_id),
-            # "company_id": company_id,  # Ensure the product belongs to the current company
-            # "responsible_id": responsible_user.id,
+            "company_id": False, 
+            "responsible_id": False
         })[0]
 
         product.tracking = "serial"
