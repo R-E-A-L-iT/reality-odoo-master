@@ -192,13 +192,13 @@ class sync_products:
             {"name": external_id, "model": "product.template"}
         )[0]
 
-        product = self.database.env["product.template"].create({
+        product = self.database.env["product.template"].sudo().create({
             "name": product_name,
+            "sku": str("CCP-" + external_id),
             # "company_id": company_id,  # Ensure the product belongs to the current company
             # "responsible_id": responsible_user.id,
         })[0]
 
-        product.sku = str("CCP-" + external_id)
         product.tracking = "serial"
         product.type = "product"
         product.sale_ok = True
