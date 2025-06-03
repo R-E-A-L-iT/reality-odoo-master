@@ -192,17 +192,18 @@ class sync_products:
             {"name": external_id, "model": "product.template"}
         )[0]
 
-        product = self.database.env["product.template"].create({
+        product = self.database.env["product.template"].sudo().create({
             "name": product_name,
-            "company_id": company_id,  # Ensure the product belongs to the current company
-            "responsible_id": responsible_user.id,
+            "sku": str("CCP-" + external_id),
+            "company_id": False, 
+            "responsible_id": False
         })[0]
 
         product.tracking = "serial"
         product.type = "product"
         ext.res_id = product.id
 
-        _logger.info(f"PRODUCT.PY: Created product {product.name} with company_id {company_id}.")
+        _logger.info(f"PRODUCT.PY: Created product {product.name}.")
         return product
 
 
