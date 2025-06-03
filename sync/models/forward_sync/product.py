@@ -198,6 +198,7 @@ class sync_products:
             # "responsible_id": responsible_user.id,
         })[0]
 
+        product.sku = str("CCP-" + external_id)
         product.tracking = "serial"
         product.type = "product"
         product.sale_ok = True
