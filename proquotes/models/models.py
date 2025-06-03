@@ -1421,8 +1421,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(
-                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Either a renewal map is missing, or there are too many renewal maps available for the " + str(product.product_id.name) + ". Amount of renewal maps found: (" + str(len(renewal_maps)) + ")\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
