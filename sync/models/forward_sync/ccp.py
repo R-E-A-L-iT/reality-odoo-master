@@ -120,7 +120,7 @@ class sync_ccp:
                     # overall_status = "warning" if overall_status != "error" else overall_status
                     continue
                 
-                existing_ccp = self.database.env["stock.lot"].search([("name", "=", eidsn), ("sku", "=", sku)], limit=1)
+                existing_ccp = self.database.env["stock.lot"].search([("name", "=", eidsn), ("sku", "=", sku), ("company_id", "=", 1)], limit=1)
 
                 if not valid and existing_ccp:
                     _logger.info("archiveCCP: Row %d: EID/SN '%s' marked as invalid. Archiving.", row_index, eidsn)
