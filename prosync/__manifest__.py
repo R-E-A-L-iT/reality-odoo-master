@@ -22,11 +22,7 @@
     "version": "2.0.0",
     "depends": [
         "base",
-        "proportal",
-
-        "product",
         "google_account",
-        "proquotes",
     ],
     "data": [
         "security/ir.model.access.csv",
