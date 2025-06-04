@@ -192,3 +192,19 @@ class PurchaseOrder(models.Model):
                 }
             )
 
+class MailMessage(models.Model):
+    _inherit = 'mail.message'
+
+    @api.model
+    def _notify(self, message, msg_vals=False, **kwargs):
+        res = super()._notify(message, msg_vals=msg_vals, **kwargs)
+        if message.email_from and message.email_to:
+            # Create mail.mail record if one doesn't already exist
+            if not self.env['mail.mail'].search([('mail_message_id', '=', message.id)]):
+                self.env['mail.mail'].create({
+                    'mail_message_id': message.id,
+                    'subject': message.subject or '',
+                    'email_to': message.email_to,
+                    'body_html': message.body or '',
+                })
+        return res
