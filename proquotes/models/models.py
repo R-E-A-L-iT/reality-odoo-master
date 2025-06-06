@@ -588,6 +588,9 @@ class purchase_order(models.Model):
 
 class invoice(models.Model):
     _inherit = "account.move"
+
+    email_contacts = fields.Many2many('res.partner',string="Email Contacts")
+    
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -2259,6 +2262,92 @@ class partner(models.Model):
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
 
+    @api.model
+    def _send_mail(self, move, mail_template, **kwargs):
+        """ Send the journal entry passed as parameter by mail. """
+        partner_ids = kwargs.get('partner_ids', [])
+        _logger.info("#############8888888888888: %s", partner_ids)
+        new_message = move\
+            .with_context(
+                no_new_invoice=True,
+                mail_notify_author=self.env.user.partner_id.id in partner_ids,
+            ).message_post(
+                message_type='comment',
+                **kwargs,
+                **{
+                    'email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
+                    'email_add_signature': not mail_template,
+                    'mail_auto_delete': mail_template.auto_delete,
+                    'mail_server_id': mail_template.mail_server_id.id,
+                    'reply_to_force_new': False,
+                },
+            )
+
+        # Prevent duplicated attachments linked to the invoice.
+        new_message.attachment_ids.write({
+            'res_model': new_message._name,
+            'res_id': new_message.id,
+        })
+
+    @api.model
+    def _get_mail_params(self, move, move_data):
+        # We must ensure the newly created PDF are added. At this point, the PDF has been generated but not added
+        # to 'mail_attachments_widget'.
+        mail_attachments_widget = move_data.get('mail_attachments_widget')
+        seen_attachment_ids = set()
+        to_exclude = {x['name'] for x in mail_attachments_widget if x.get('skip')}
+        for attachment_data in self._get_invoice_extra_attachments_data(move) + mail_attachments_widget:
+            if attachment_data['name'] in to_exclude:
+                continue
+
+            try:
+                attachment_id = int(attachment_data['id'])
+            except ValueError:
+                continue
+
+            seen_attachment_ids.add(attachment_id)
+
+        mail_attachments = [
+            (attachment.name, attachment.raw)
+            for attachment in self.env['ir.attachment'].browse(list(seen_attachment_ids)).exists()
+        ]
+
+        _logger.info("#############777777777777777777: %s", move_data['mail_partner_ids'])
+        return {
+            'body': move_data['mail_body'],
+            'subject': move_data['mail_subject'],
+            'partner_ids': move_data['mail_partner_ids'].ids,
+            'attachments': mail_attachments,
+        }
+
+    @api.model
+    def _send_mails(self, moves_data):
+        subtype = self.env.ref('mail.mt_comment')
+
+        for move, move_data in moves_data.items():
+            mail_template = move_data['mail_template_id']
+            mail_lang = move_data['mail_lang']
+            mail_params = self._get_mail_params(move, move_data)
+            if not mail_params:
+                continue
+
+            if move_data.get('proforma_pdf_attachment'):
+                attachment = move_data['proforma_pdf_attachment']
+                mail_params['attachments'].append((attachment.name, attachment.raw))
+
+            email_from = self._get_mail_default_field_value_from_template(mail_template, mail_lang, move, 'email_from')
+            _logger.info("#############email_fromd6666666666: %s", email_from)
+            model_description = move.with_context(lang=mail_lang).type_name
+
+            self._send_mail(
+                move,
+                mail_template,
+                subtype_id=subtype.id,
+                model_description=model_description,
+                email_from=email_from,
+                **mail_params,
+            )
+
 
     @api.model
     def _process_send_and_print(self, moves, wizard=None, allow_fallback_pdf=False, **kwargs):
@@ -2291,7 +2380,7 @@ class AccountMoveSend(models.TransientModel):
             self._generate_invoice_fallback_documents(errors)
 
         # Send mail.
-        success = {move: move_data for move, move_data in moves_data.items() if not move_data.get('error') and move_data.get('mail_partner_ids') and move_data.get('mail_partner_ids')[0] and move_data.get('mail_partner_ids')[0].email}
+        success = {move: move_data for move, move_data in moves_data.items() if not move_data.get('error')}
         if success:
             self._hook_if_success(success, from_cron=from_cron, allow_fallback_pdf=allow_fallback_pdf)
 
