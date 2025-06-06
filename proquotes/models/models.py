@@ -827,17 +827,17 @@ class invoice(models.Model):
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
 
-    def write(self, vals):
-        res = super().write(vals)
+    # def write(self, vals):
+    #     res = super().write(vals)
 
-        if 'mail_partner_ids' in vals:
-            for wizard in self:
-                invoice_ids = wizard.move_ids
-                invoice_ids.write({
-                    'email_partner_ids': [(6, 0, wizard.mail_partner_ids.ids)]
-                })
+    #     if 'mail_partner_ids' in vals:
+    #         for wizard in self:
+    #             invoice_ids = wizard.move_ids
+    #             invoice_ids.write({
+    #                 'email_partner_ids': [(6, 0, wizard.mail_partner_ids.ids)]
+    #             })
 
-        return res
+    #     return res
 
 class order(models.Model):
     _inherit = "sale.order"
@@ -921,41 +921,6 @@ class order(models.Model):
             defaults['payment_term_id'] = immediate_payment_term.id
 
         return defaults
-
-    def action_quotation_send(self):
-        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
-        self.ensure_one()
-        self.order_line._validate_analytic_distribution()
-        lang = self.env.context.get('lang')
-        mail_template = self._find_mail_template()
-        template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
-        if template:
-            mail_template = template
-        else:
-            mail_template = self._find_mail_template()
-        if mail_template and mail_template.lang:
-            lang = mail_template._render_lang(self.ids)[self.id]
-        ctx = {
-            'default_model': 'sale.order',
-            'default_res_ids': self.ids,
-            'default_template_id': mail_template.id if mail_template else None,
-            'default_composition_mode': 'comment',
-            'mark_so_as_sent': True,
-            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
-            'proforma': self.env.context.get('proforma', False),
-            'force_email': True,
-            'model_description': self.with_context(lang=lang).type_name,
-            'default_partner_ids': [(6, 0, self.email_contacts.ids)],
-        }
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'views': [(False, 'form')],
-            'view_id': False,
-            'target': 'new',
-            'context': ctx,
-        }
     
     @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
@@ -993,16 +958,6 @@ class order(models.Model):
         #     # Reset pricelist if not rental
         #     self.pricelist_id = False
 
-    @api.onchange('email_contacts')
-    def _onchange_email_contacts(self):
-        for contact in self.email_contacts:
-            try:
-                if self.partner_ids:
-                    if contact not in self.partner_ids:
-                        self.partner_ids.append(contact.id)
-            except:
-                _logger.info("Failed to add contacts to the partner_ids from the email_contacts table")
-
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
         lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
@@ -1038,116 +993,6 @@ class order(models.Model):
         selected_lines = self.order_line.sudo().filtered(
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
-        # self.order_line._action_launch_stock_rule()
-        # return super(order, self)._action_confirm()
-
-    @api.returns('mail.message', lambda value: value.id)
-    def message_post(self, **kwargs):
-        sales_email = self.env['res.partner'].browse(64744)
-        if ('partner_ids' in kwargs) and sales_email:
-            kwargs['partner_ids'].append(sales_email.id)
-        if self.env.context.get('mark_so_as_sent'):
-            self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
-        so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
-        if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
-            kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
-        #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
-        return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-        if 'tracking_value_ids' not in kwargs:
-            return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-        else:
-            pass
-    # @api.returns('mail.message', lambda value: value.id)
-    # def message_post(self, **kwargs):
-    #     if self.env.context.get('mark_so_as_sent'):
-    #         self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
-    #     so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
-    #     if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
-    #         kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
-    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-    #     sales_email_id = 64744
-    #     sales_email = self.env['res.partner'].browse(sales_email_id)
-        
-    #     if 'partner_ids' not in kwargs:
-    #         kwargs['partner_ids'] = []
-    #     if sales_email.id not in kwargs['partner_ids']:
-    #         kwargs['partner_ids'].append(sales_email.id)
-    #     #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
-    #     if 'tracking_value_ids' not in kwargs:
-    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-    #     else:
-    #         pass
-
-     
-    # def message_post(self, **kwargs):
-        
-    #     # Variable mail_post_autofollow is true when using send message function but not when log note
-    #     mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
-        
-    #     message_type = kwargs.get('message_type', False)
-        
-    #     if 'body' not in kwargs:
-    #         kwargs['body'] = ''
-            
-    #     # DEBUGGING
-        
-    #     # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
-
-    #     # internal note feature
-    #     if not mail_post_autofollow:
-    #         # Call super without adding any email contacts, since it's a log note
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Quotation viewed by customer" in kwargs['body']:
-    #         # only send to salesperson (user_id = salesperson)
-    #         # sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-    #         if order and order.user_id:
-    #             kwargs['partner_ids'] = [order.user_id.id]
-    #         else:
-    #             kwargs['partner_ids'] = []
-                
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Product prices have been recomputed" in kwargs['body']:
-    #         return False
-        
-    #     elif "Signed by" in kwargs['body'] or "Bon signé" in kwargs['body']:
-    #         if order and order.user_id:
-    #             kwargs['partner_ids'] = [order.user_id.id]
-    #         else:
-    #             kwargs['partner_ids'] = []
-                
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Extra line with" in kwargs['body']:
-    #         return False
-
-    #     # send message feature
-    #     else:
-    #         if 'partner_ids' not in kwargs:
-    #             kwargs['partner_ids'] = []
-
-    #         # Add email contacts from the many2many field
-    #         contacts = [partner.id for partner in self.email_contacts]
-
-    #         # Add static email partner 'sales@r-e-a-l.it'
-    #         sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-    #         if sales_partner:
-    #             contacts.append(sales_partner.id)
-                
-    #         # this removes the default partner_id, which is the email attatched to the company contact
-    #         filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
-
-    #         all_contacts = list(set(filtered_partner_ids + contacts))
-    #         kwargs['partner_ids'] = all_contacts
-            
-    #         # if kwargs['partner_ids']:
-    #         #     contacts += kwargs['partner_ids'][1:] 
-            
-    #         # kwargs['partner_ids'] = contacts
-
-    #         # Call the super method to proceed with posting the message
-    #         return super(order, self).message_post(**kwargs)
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
@@ -1870,11 +1715,6 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-class proquotesMail(models.TransientModel):
-    _inherit = "mail.compose.message"
-    
-    from odoo import models, api
-
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
     
@@ -1883,122 +1723,15 @@ class MailComposeMessage(models.TransientModel):
         string='Use Template',
         domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
-    
-    email_contacts = fields.Many2many(
-        'res.partner',
-        string="Email Contacts",
-        compute='_compute_email_contacts',
-        store=False,
-        readonly=False
-    )
-    
-    @api.depends('model', 'res_ids')
-    def _compute_email_contacts(self):
-        for record in self:
-            if record.model == 'sale.order' and record.res_ids:
-                valid_res_ids = [int(res_id) for res_id in record.res_ids if isinstance(res_id, int)]
-                if valid_res_ids:
-                    sale_orders = self.env['sale.order'].browse(valid_res_ids)
-                    record.email_contacts = sale_orders.mapped('email_contacts')
-                else:
-                    record.email_contacts = False
-            else:
-                record.email_contacts = False
 
-
-    # @api.model
-    # def default_get(self, fields_list):
-    #     res = super(MailComposeMessage, self).default_get(fields_list)
-        
-    #     message = False
-    #     if self.env.context.get('active_model') == 'mail.message' and self.env.context.get('active_id'):
-    #         message = self.env['mail.message'].browse(self.env.context['active_id'])
-        
-    #     if message:
-    #         res['user'] = message.create_uid
-        
-    #     if self.env.context.get('active_model') == 'sale.order' and self.env.context.get('active_ids'):
-    #         sale_orders = self.env['sale.order'].browse(self.env.context['active_ids'])
-    #         res['email_contacts'] = [(6, 0, sale_orders.mapped('email_contacts').ids)]
-
-    #     if self.env.context.get('default_model') == 'sale.order':
-    #         # set template
-    #         template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
-    #         if template:
-    #             res['template_id'] = template.id
-                
-    #         # set recipients
-    #         order = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
-    #         if order and order.email_contacts:
-    #             res['partner_ids'] = [(4, order.user_id.id)]
-        
-    #     return res
-        
-    #     return res
-    
-    # @api.onchange('template_id')
-    # def _onchange_template_id(self):
-    #     return {
-    #         'domain': {
-    #             'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
-    #         }
-    #     }
-
-    # @api.onchange('model')
-    # def _onchange_recipients(self):
-    #     if self.model == 'sale.order' and self.env.context.get('default_res_id'):
-            
-    #         sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
-            
-    #         if sale_order.email_contacts:
-    #             self.partner_ids = sale_order.email_contacts
-    #         else:
-    #             self.partner_ids = [(5, 0, 0)]
-
-    # def send_mail(self, auto_commit=False):
-        
-    #     result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
-
-    #     if self.model == 'sale.order' and self.res_id:
-    #         sale_order = self.env['sale.order'].browse(self.res_id)
-            
-    #         # Update email_contacts with the selected recipients from the wizard
-    #         sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
-
-    #     return result
-
-    def generate_email_for_composer(self, template_id, res_ids, fields):
-        """Call email_template.generate_email(), get fields relevant for
-        mail.compose.message, transform email_cc and email_to into partner_ids"""
-        multi_mode = True
-        if isinstance(res_ids, int):
-            multi_mode = False
-            res_ids = [res_ids]
-
-        returned_fields = fields + ["partner_ids", "attachments"]
-        values = dict.fromkeys(res_ids, False)
-
-        template_values = (
-            self.env["mail.template"]
-            .with_context(tpl_partners_only=True)
-            .browse(template_id)
-            .generate_email(res_ids, fields)
-        )
-        for res_id in res_ids:
-            res_id_values = dict(
-                (field, template_values[res_id][field])
-                for field in returned_fields
-                if template_values[res_id].get(field)
-            )
-            res_id_values["body"] = res_id_values.pop("body_html", "")
-            if template_values[res_id].get("model") == "sale.order":
-                res_id_values["partner_ids"] = self.env["sale.order"].browse(
-                    res_id
-                ).partner_ids + self.env["res.partner"].search(
-                    [("email", "=", "sales@r-e-a-l.it")]
-                )
-            values[res_id] = res_id_values
-        return multi_mode and values or values[res_ids[0]]
+    # this clears the default recipients that are autofilled into the wizard. this is here because we don't want to send emails to the email address attatched to the company contact.
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+        model = self.env.context.get('default_model')
+        if model == 'sale.order':
+            defaults['partner_ids'] = [(5, 0, 0)]
+        return defaults
 
 
 class variant(models.Model):
