@@ -57,7 +57,7 @@
                     data-scroll-background-ratio="0" 
                     data-snippet="s_parallax" 
                     data-name="Parallax" 
-                    style="text-align: center;" />
+                    style="text-align: center;" >
                     <!-- t-att-data-bg-video-src="header_video + '?autoplay=1&amp;controls=0&amp;loop=1&amp;mute=1&amp;playlist=' + header_video.split('/').pop()"> -->
                     
                 <div class="o_bg_video_container" style="z-index: 1;">
