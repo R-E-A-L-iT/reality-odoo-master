@@ -2254,6 +2254,59 @@ class delivery(models.Model):
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
 
+
+    @api.model
+    def _process_send_and_print(self, moves, wizard=None, allow_fallback_pdf=False, **kwargs):
+        """ Process the moves given their individual configuration set on move.send_and_print_values.
+        :param moves: account.move to process
+        :param wizard: account.move.send wizard if exists. If not we avoid raising any error.
+        :param allow_fallback_pdf:  In case of error when generating the documents for invoices, generate a proforma PDF report instead.
+        """
+        from_cron = not wizard
+
+        moves_data = {
+            move: {
+                **(move.send_and_print_values if not wizard else wizard._get_wizard_values()),
+                **self._get_mail_move_values(move, wizard),
+            }
+            for move in moves
+        }
+
+        # Generate all invoice documents.
+        self._generate_invoice_documents(moves_data, allow_fallback_pdf=allow_fallback_pdf)
+
+        # Manage errors.
+        errors = {move: move_data for move, move_data in moves_data.items() if move_data.get('error')}
+        if errors:
+            self._hook_if_errors(errors, from_cron=from_cron, allow_fallback_pdf=allow_fallback_pdf)
+
+        # Fallback in case of error.
+        errors = {move: move_data for move, move_data in moves_data.items() if move_data.get('error')}
+        if allow_fallback_pdf and errors:
+            self._generate_invoice_fallback_documents(errors)
+
+        # Send mail.
+        success = {move: move_data for move, move_data in moves_data.items() if not move_data.get('error') and move_data.get('mail_partner_ids') and move_data.get('mail_partner_ids')[0] and move_data.get('mail_partner_ids')[0].email}
+        if success:
+            self._hook_if_success(success, from_cron=from_cron, allow_fallback_pdf=allow_fallback_pdf)
+
+        # Update send and print values of moves
+        for move in moves:
+            if move.send_and_print_values:
+                move.send_and_print_values = False
+
+        to_download = {move: move_data for move, move_data in moves_data.items() if move_data.get('download')}
+        if to_download:
+            attachment_ids = []
+            for move, move_data in to_download.items():
+                attachment_ids += self._get_invoice_extra_attachments(move).ids or move_data.get('proforma_pdf_attachment').ids
+            if attachment_ids:
+                if kwargs.get('bypass_download'):
+                    return attachment_ids
+                return self._download(attachment_ids, to_download)
+
+        return {'type': 'ir.actions.act_window_close'}
+
     def _get_default_mail_partner_ids(self, move, mail_template, mail_lang):
         partners = self.env['res.partner'].with_company(move.company_id)
         if mail_template.email_to:
