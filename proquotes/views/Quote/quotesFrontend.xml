@@ -60,12 +60,12 @@
                     style="text-align: center;" 
                     t-att-data-bg-video-src="header_video">
                     
-                <div class="o_bg_video_container">
-                    <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_1" t-att-src="header_video" style="width: 100%; height: 108.09581%; inset-inline-start: 0px; inset-block-start: -4.047905%;">
+                <div class="o_bg_video_container" style="z-index: 1;">
+                    <iframe class="o_bg_video_iframe fade show" controls="0" loop="0" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_1" t-att-src="header_video" style="width: 100%; height: 108.09581%; inset-inline-start: 0px; inset-block-start: -4.047905%;">
                     </iframe>
                 </div>
                     
-                <h1>
+                <h1 style="z-index: 2;">
                     <span t-if="sale_order.partner_id.parent_id" t-field="sale_order.partner_id.parent_id.name" />
                     <span t-else="" t-field="sale_order.partner_id.name"/>
                     <br /><br /><br />
