@@ -2251,6 +2251,11 @@ class delivery(models.Model):
         "header.footer", required=True, default=_get_default_footer
     )
 
+class partner(models.Model):
+    _inherit = 'res.partner'
+
+    email_contacts = fields.Many2many('res.partner',string="Email Contacts",store=False,readonly=False)
+
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
 
@@ -2306,6 +2311,58 @@ class AccountMoveSend(models.TransientModel):
                 return self._download(attachment_ids, to_download)
 
         return {'type': 'ir.actions.act_window_close'}
+
+    def action_send_and_print(self, force_synchronous=False, allow_fallback_pdf=False, **kwargs):
+        """ Create the documents and send them to the end customers.
+        If we are sending multiple invoices and not downloading them we will process the moves asynchronously.
+        :param force_synchronous:   Flag indicating if the method should be done synchronously.
+        :param allow_fallback_pdf:  In case of error when generating the documents for invoices, generate a
+                                    proforma PDF report instead.
+        """
+        
+        self.ensure_one()
+
+        # _logger.info('>>>>>>>>>>called my action button bro >>>>>>>>>>>.amount_untaxed: %s,', self.mail_partner_ids)
+        active_ids = self.env.context.get('active_ids', [])
+        # _logger.info("##############Active IDs from wizard: %s", active_ids)
+    
+        # Example: get the related invoices
+        invoices = self.env['account.move'].browse(active_ids)
+        # _logger.info("#############invoices IDs from wizard: %s", invoices.partner_id.email_contacts)
+        for invoice in invoices:
+            partner = invoice.partner_id
+            if invoice:
+                # _logger.info(">>> Setting email_contacts on partner: %s", self.mail_partner_ids.ids)
+                invoice.email_contacts = [(6, 0, self.mail_partner_ids.ids)]
+                # _logger.info(">>> partner.email_contacts partner: %s", partner.email_contacts)
+                
+        if self.mode == 'invoice_multi' and self.checkbox_send_mail and not self.mail_template_id:
+            raise UserError(_('Please select a mail template to send multiple invoices.'))
+
+        force_synchronous = force_synchronous or self.checkbox_download
+        process_later = self.mode == 'invoice_multi' and not force_synchronous
+        if process_later:
+            # Set sending information on moves
+            for move in self.move_ids:
+                move.send_and_print_values = self._get_wizard_values()
+            self.env.ref('account.ir_cron_account_move_send')._trigger()
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'info',
+                    'title': _('Sending invoices'),
+                    'message': _('Invoices are being sent in the background.'),
+                    'next': {'type': 'ir.actions.act_window_close'},
+                },
+            }
+
+        return self._process_send_and_print(
+            self.move_ids,
+            wizard=self,
+            allow_fallback_pdf=allow_fallback_pdf,
+            **kwargs,
+        )
 
     def _get_default_mail_partner_ids(self, move, mail_template, mail_lang):
         partners = self.env['res.partner'].with_company(move.company_id)
