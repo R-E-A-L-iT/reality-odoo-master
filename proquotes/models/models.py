@@ -586,6 +586,17 @@ class purchase_order(models.Model):
 class invoice(models.Model):
     _inherit = "account.move"
 
+    customer_po_number = fields.Char(
+        compute="_compute_customer_po_number",
+        store=True
+    )
+
+    @api.depends('invoice_origin')
+    def _compute_customer_po_number(self):
+        for move in self:
+            order = self.env['sale.order'].search([('name', '=', move.invoice_origin)], limit=1)
+            move.customer_po_number = order.customer_po_number or ''
+
     email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
 
     footer = fields.Selection(
