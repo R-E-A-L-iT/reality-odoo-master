@@ -343,7 +343,25 @@ class CustomerPortalReal(CustomerPortal):
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation viewed by customer %s',
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
-                order_sudo.message_post(body=body)
+                
+                # Send notification to followers who are internal users
+                recipients = []
+                sales_email = request.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+                if sales_email:
+                    recipients.append(sales_email.id)
+
+                if order_sudo.user_id and order_sudo.user_id.partner_id:
+                    recipients.append(order_sudo.user_id.partner_id.id)
+
+                if recipients:
+                    order_sudo.message_post(
+                        body=_('Quotation viewed by customer %s') % (
+                            order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name),
+                        subject="Quotation Viewed",
+                        message_type="notification",
+                        subtype_xmlid="mail.mt_note",
+                        partner_ids=recipients,
+                    )
                 
         backend_url = f'/web#model={order_sudo._name}'\
                       f'&id={order_sudo.id}'\

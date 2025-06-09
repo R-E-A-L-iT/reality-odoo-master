@@ -591,6 +591,16 @@ class invoice(models.Model):
         store=True
     )
 
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        # Exclude the invoice's customer from being subscribed
+        partner_ids = [
+            pid for pid in (partner_ids or [])
+            if pid not in self.mapped('partner_id').ids
+        ]
+        if not partner_ids:
+            return
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
+
     @api.depends('invoice_origin')
     def _compute_customer_po_number(self):
         for move in self:
@@ -782,6 +792,13 @@ class invoice(models.Model):
         if invoice_object.move_type not in ['out_invoice', 'out_refund']:
             return invoice_object
 
+        # add sales@r-e-a-l.it as a follower of the document
+        if invoice_object.move_type in ['out_invoice', 'out_refund']:
+            partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            if partner and partner.id not in invoice_object.message_partner_ids.ids:
+                invoice_object.message_subscribe(partner_ids=[partner.id])
+
+
         # Find the related sale orders
         sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
 
@@ -881,6 +898,17 @@ class order(models.Model):
         help="Header selection field",
     )
     
+    # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
+    @api.model
+    def create(self, vals):
+        order = super().create(vals)
+
+        # Find or create the partner with email sales@r-e-a-l.it
+        partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if partner:
+            order.message_subscribe(partner_ids=[partner.id])
+        return order
+
     def open_product_bundle_wizard(self):
         return {
             'type': 'ir.actions.act_window',
@@ -976,6 +1004,16 @@ class order(models.Model):
         selected_lines = self.order_line.sudo().filtered(
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
+
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        # Always exclude the customer (partner_id) from being subscribed
+        partner_ids = [
+            pid for pid in (partner_ids or [])
+            if pid not in self.mapped('partner_id').ids
+        ]
+        if not partner_ids:
+            return  # no one left to subscribe
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
@@ -1462,7 +1500,7 @@ class order(models.Model):
                     access_opt['title'] = _("View Order")
             
             # set the portal access URL for the button
-            access_opt['url'] = f"{base_url}{portal_url}"
+            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
         return groups
@@ -1593,6 +1631,24 @@ class order(models.Model):
                 )
                 for l in res
             ]
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        invoices = super()._create_invoices(grouped=grouped, final=final, date=date)
+
+        for order in self:
+            if order.state != 'sale':
+                continue  # Only handle confirmed orders
+
+            for invoice in invoices.filtered(lambda inv: inv.invoice_origin == order.name):
+                # Get all followers from the quote, excluding the customer
+                follower_ids = order.message_partner_ids.filtered(
+                    lambda p: p != order.partner_id
+                ).ids
+
+                if follower_ids:
+                    invoice.message_subscribe(partner_ids=follower_ids)
+
+        return invoices
 
 
 class orderLineProquotes(models.Model):
@@ -1744,10 +1800,28 @@ class MailComposeMessage(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
+
         model = self.env.context.get('default_model')
-        if model == 'sale.order':
+
+        if model in ['sale.order', 'account.move']:
             defaults['partner_ids'] = [(5, 0, 0)]
+            defaults['mail_partner_ids'] = [(5, 0, 0)]
+
         return defaults
+
+class MailWizardInvite(models.TransientModel):
+    _inherit = 'mail.wizard.invite'
+
+    @api.model
+    def default_get(self, fields):
+        res = super().default_get(fields)
+        res['notify'] = False  # always default to false
+        return res
+
+    def add_followers(self):
+        self.ensure_one()
+        self.notify = False  # force disable before executing
+        return super().add_followers()
 
 
 class variant(models.Model):

@@ -21,8 +21,6 @@
             </xpath>
 
             <xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
-                <!-- <field name="partner_ids" invisible="0"/> -->
-                <field name="email_contacts" invisible="0" />
                 <field name="is_renewal" invisible="1"/>
                 <!-- Renewal Quotes Added Products -->
                 <!-- ('active', '=', True), filter can't be added without adding sync module dependency, but adding sync module dependency creates more errors for some reason -->

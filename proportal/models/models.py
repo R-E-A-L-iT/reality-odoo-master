@@ -2,6 +2,7 @@
 
 import ast
 import base64
+import requests
 import re
 
 from datetime import datetime, timedelta
@@ -28,6 +29,25 @@ class productType(models.Model):
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
     # ecom_folder = fields.Char(string="folder", required=True, default="")
     # ecom_media = fields.Char(string="Img Count", required=True, default="")
+
+    def import_images_from_url(self):
+        for product in self.search([]):
+            sku = product.default_code
+            if not sku:
+                continue  # Skip products with no SKU
+
+            image_url = f"https://cdn.r-e-a-l.it/images/ecommerce/Leica/{sku}/{sku}-01.png"
+
+            try:
+                response = requests.get(image_url, timeout=5)
+                if response.status_code == 200:
+                    product.image_1920 = base64.b64encode(response.content)
+                    self.env.cr.commit()  # Commit after each image to avoid timeout
+                    _logger.info(f"ProPortal: Uploaded image for {sku}")
+                else:
+                    _logger.warning(f"ProPortal: Image not found for {sku} (status {response.status_code})")
+            except Exception as e:
+                _logger.error(f"ProPortal: Error processing {sku}: {e}")
 
     @api.model
     def create(self, vals):
