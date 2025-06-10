@@ -32,7 +32,7 @@ class productType(models.Model):
 
     def import_images_from_url(self):
         for product in self.search([]):
-            sku = product.default_code
+            sku = product.sku
             if not sku:
                 continue  # Skip products with no SKU
 
