@@ -1788,8 +1788,9 @@ class MailComposeMessage(models.TransientModel):
 
         model = self.env.context.get('default_model')
 
-        if model in ['sale.order', 'account.move']:
+        if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
+        elif model in ['account.move']:
             defaults['mail_partner_ids'] = [(5, 0, 0)]
 
         return defaults
