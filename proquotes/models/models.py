@@ -1809,7 +1809,7 @@ class MailComposeMessage(models.TransientModel):
             
             if template:
                 defaults['template_id'] = template.id
-                defaults['use_template'] = True
+                # defaults['use_template'] = True
 
         elif model in ['account.move']:
             defaults['mail_partner_ids'] = [(5, 0, 0)]
@@ -1820,7 +1820,7 @@ class MailComposeMessage(models.TransientModel):
 
             if template:
                 defaults['template_id'] = template.id
-                defaults['use_template'] = True
+                # defaults['use_template'] = True
                 defaults['attachment_ids'] = [(5, 0, 0)]
 
         return defaults
