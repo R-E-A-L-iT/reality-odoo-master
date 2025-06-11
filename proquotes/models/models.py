@@ -1790,8 +1790,26 @@ class MailComposeMessage(models.TransientModel):
 
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
+
+            template = self.env['mail.template'].search([
+                ('name', '=', 'General Sales')
+            ], limit=1)
+            
+            if template:
+                defaults['template_id'] = template.id
+                defaults['use_template'] = True
+
         elif model in ['account.move']:
             defaults['mail_partner_ids'] = [(5, 0, 0)]
+
+            template = self.env['mail.template'].search([
+                ('name', '=', 'Invoice: Send by email')
+            ], limit=1)
+
+            if template:
+                defaults['template_id'] = template.id
+                defaults['use_template'] = True
+                defaults['attachment_ids'] = [(5, 0, 0)]
 
         return defaults
 
