@@ -1800,8 +1800,6 @@ class MailComposeMessage(models.TransientModel):
 
         model = self.env.context.get('default_model')
 
-        defaults['reply_to'] = 'catchall@lezejde-reality.odoo.com'
-
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
 
