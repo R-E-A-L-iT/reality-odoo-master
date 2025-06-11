@@ -31,10 +31,10 @@ class productType(models.Model):
     # ecom_media = fields.Char(string="Img Count", required=True, default="")
 
     def import_images_from_url(self):
-        for product in self.search([]):
+        for product in self:
             sku = product.sku
             if not sku:
-                continue  # Skip products with no SKU
+                continue
 
             image_url = f"https://cdn.r-e-a-l.it/images/ecommerce/Leica/{sku}/{sku}-01.png"
 
@@ -42,8 +42,8 @@ class productType(models.Model):
                 response = requests.get(image_url, timeout=5)
                 if response.status_code == 200:
                     product.image_1920 = base64.b64encode(response.content)
-                    self.env.cr.commit()  # Commit after each image to avoid timeout
                     _logger.info(f"ProPortal: Uploaded image for {sku}")
+                    self.env.cr.commit()
                 else:
                     _logger.warning(f"ProPortal: Image not found for {sku} (status {response.status_code})")
             except Exception as e:
