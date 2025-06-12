@@ -1861,6 +1861,9 @@ class MailComposeMessage(models.TransientModel):
                                 {title}
                             </a>
                         </p>
+                        <p>
+                            Partner: {partner.name}, ID: {partner.id}, Email: {partner.email}
+                        </p>
                     """
 
                     # Inject the button into the body
