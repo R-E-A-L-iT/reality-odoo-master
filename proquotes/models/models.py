@@ -1843,30 +1843,32 @@ class MailComposeMessage(models.TransientModel):
                     if not partner.email:
                         continue
 
-                    # Generate URL with user_id tag
+                    # Correct: create recipient-specific URL
                     url = f"/check_quotation_redirect/{sale_order.id}/{sale_order.access_token}?user_id={partner.id}"
 
-                    # Get localized title
-                    lang = partner.lang or 'en_US'
+                    # Localized title
+                    lang = partner.lang or sale_order.partner_id.lang or 'en_US'
                     title = _("View Quotation") if sale_order.state in ('draft', 'sent') else _("View Order")
                     if lang == 'fr_CA':
                         title = _("Voir le devis") if sale_order.state in ('draft', 'sent') else _("Voir la commande")
 
-                    # Compose new body with injected button
-                    body = f"""
-                        <p>{wizard.body}</p>
+                    # Build the button with the proper link
+                    button_html = f"""
                         <p>
                             <a href="{url}"
-                               style="background-color: #875A7B; padding: 12px 24px; color: white;
-                                      text-decoration: none; border-radius: 4px;">
+                            style="background-color: #875A7B; padding: 12px 24px; color: white;
+                                    text-decoration: none; border-radius: 4px;">
                                 {title}
                             </a>
                         </p>
                     """
 
-                    # Post the email individually per partner
+                    # Inject the button into the body
+                    full_body = f"{wizard.body or ''}{button_html}"
+
+                    # Send email
                     message = sale_order.message_post(
-                        body=body,
+                        body=full_body,
                         subject=wizard.subject,
                         partner_ids=[partner.id],
                         email_layout_xmlid='mail.mail_notification_light',
@@ -1875,6 +1877,7 @@ class MailComposeMessage(models.TransientModel):
                         attachment_ids=wizard.attachment_ids.ids
                     )
                     messages |= message
+
 
         return messages
 
