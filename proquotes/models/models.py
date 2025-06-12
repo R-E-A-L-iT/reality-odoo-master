@@ -1494,7 +1494,7 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
-            partners = group[1]
+            partners = group[1]()
             options = group[2]
 
             # Ensure button is visible
