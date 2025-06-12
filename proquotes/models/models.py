@@ -1494,25 +1494,33 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
+            partners = group[1]
+            options = group[2]
 
-            # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
-            
-            # set the title for the access button based on the state of the order
+            # Ensure button is visible
+            options['has_button_access'] = True
+            access_opts = options.setdefault('button_access', {})
+
+            # Set default title
             if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
+                title_en = _("View Quotation")
+                title_fr = _("Voir le devis")
             else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
-            
-            # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+                title_en = _("View Order")
+                title_fr = _("Voir la commande")
+
+            # Assign custom URL per recipient
+            url_template = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={{}}"
+
+            partner_urls = {}
+            for partner in partners:
+                partner_urls[partner.id] = {
+                    'url': url_template.format(partner.id),
+                    'title': title_fr if partner.lang == 'fr_CA' else title_en
+                }
+
+            # Store it for template rendering if needed
+            access_opts['multi'] = partner_urls
 
         # return the modified recipient groups with the updated access options
         return groups
