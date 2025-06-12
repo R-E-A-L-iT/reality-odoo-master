@@ -1494,7 +1494,8 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
-            partners = group[1]()
+            partners_data = msg_vals.get('partners_data') if msg_vals else {}
+            partners = group[1](partners_data) if callable(group[1]) else group[1]
             options = group[2]
 
             # Ensure button is visible
