@@ -1825,6 +1825,59 @@ class MailComposeMessage(models.TransientModel):
 
         return defaults
 
+    def _action_send_mail_comment(self, res_ids):
+        
+        # only split email threads for sales orders
+        if self.model != 'sale.order':
+            return super()._action_send_mail_comment(res_ids)
+
+        messages = self.env['mail.message']
+
+        for wizard in self:
+            for res_id in res_ids:
+                sale_order = self.env['sale.order'].browse(res_id).sudo()
+
+                # Get recipients (from wizard or followers)
+                partners = wizard.partner_ids or sale_order.message_partner_ids
+                for partner in partners:
+                    if not partner.email:
+                        continue
+
+                    # Generate URL with user_id tag
+                    url = f"/check_quotation_redirect/{sale_order.id}/{sale_order.access_token}?user_id={partner.id}"
+
+                    # Get localized title
+                    lang = partner.lang or 'en_US'
+                    title = _("View Quotation") if sale_order.state in ('draft', 'sent') else _("View Order")
+                    if lang == 'fr_CA':
+                        title = _("Voir le devis") if sale_order.state in ('draft', 'sent') else _("Voir la commande")
+
+                    # Compose new body with injected button
+                    body = f"""
+                        <p>{wizard.body}</p>
+                        <p>
+                            <a href="{url}"
+                               style="background-color: #875A7B; padding: 12px 24px; color: white;
+                                      text-decoration: none; border-radius: 4px;">
+                                {title}
+                            </a>
+                        </p>
+                    """
+
+                    # Post the email individually per partner
+                    message = sale_order.message_post(
+                        body=body,
+                        subject=wizard.subject,
+                        partner_ids=[partner.id],
+                        email_layout_xmlid='mail.mail_notification_light',
+                        message_type='email',
+                        subtype_xmlid='mail.mt_note',
+                        attachment_ids=wizard.attachment_ids.ids
+                    )
+                    messages |= message
+
+        return messages
+
 class MailWizardInvite(models.TransientModel):
     _inherit = 'mail.wizard.invite'
 
