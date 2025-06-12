@@ -1841,31 +1841,27 @@ class MailComposeMessage(models.TransientModel):
                 # Get recipients (from wizard or followers)
                 partners = wizard.partner_ids or sale_order.message_partner_ids
                 for partner in partners:
-                    if not partner.email:
-                        continue
-
                     template = self.template_id.with_context(lang=partner.lang or 'en_US')
-    
-                    # Render email body from template (without sending)
-                    values = template.generate_email(self.res_id, fields=['body_html', 'subject'], partner=partner.id)
 
-                    original_body = values.get('body_html', '')
-                    subject = values.get('subject', '')
+                    # Render fields using Odoo 17 API
+                    body_html = template._render_field('body_html', self.res_id, compute_lang=True, partner_id=partner.id)[self.res_id]
+                    subject = template._render_field('subject', self.res_id, compute_lang=True, partner_id=partner.id)[self.res_id]
 
-                    tree = html.fromstring(original_body)
+                    # Inject user_id into any matching CTA URL
+                    tree = html.fromstring(body_html)
                     for link in tree.xpath('//a[contains(@href, "/check_quotation_redirect/")]'):
                         href = link.get('href')
                         if href and f"user_id=" not in href:
                             href += f"&user_id={partner.id}" if '?' in href else f"?user_id={partner.id}"
                             link.set('href', href)
-                    new_body = html.tostring(tree, encoding='unicode')
+                    custom_body = html.tostring(tree, encoding='unicode')
 
-                    # Send the email using the original template structure but with updated body
+                    # Send using the template but overriding body_html + recipient
                     template.send_mail(
                         self.res_id,
                         force_send=True,
                         email_values={
-                            'body_html': new_body,
+                            'body_html': custom_body,
                             'email_to': partner.email,
                             'partner_ids': [partner.id],
                             'subject': subject,
