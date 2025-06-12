@@ -124,17 +124,13 @@ class MailThread(models.AbstractModel):
             access_link = self._notify_get_action_link('view', **local_msg_vals)
 
             new_group = [
-                (
-                    'portal_customer',
-                    lambda pdata: pdata and pdata.get('id') == customer[0].id,
-                    {
-                        'active': True,
-                        'button_access': {
-                            'url': access_link,
-                        },
-                        'has_button_access': True,
-                    }
-                )
+                ('portal_customer', lambda pdata: pdata['id'] == customer[0].id, {
+                    'active': True,
+                    'button_access': {
+                        'url': access_link,
+                    },
+                    'has_button_access': True,
+                })
             ]
         else:
             new_group = []

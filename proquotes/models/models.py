@@ -634,7 +634,35 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
-    
+
+    @api.model
+    def create(self, vals):
+        res = super(invoice, self).create(vals)
+        if res.partner_id and not res.partner_id.email:
+            raise UserError("Your company must have an email address set.")
+        return res
+
+    @api.onchange('partner_id')
+    def _onchange_partner_email_check(self):
+        if self.partner_id and not self.partner_id.email:
+            raise UserError("Your company must have an email address set.")
+
+    def action_invoice_sent(self):
+        """ Open a window to compose an email, with the edi invoice template
+            message loaded by default
+        """
+        self.ensure_one()
+
+        if self.invoice_pdf_report_id:
+            self.invoice_pdf_report_id.unlink()
+
+        report_action = self.action_send_and_print()
+        if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get(
+                'discard_logo_check'):
+            return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
+
+        return report_action
+
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -921,16 +949,6 @@ class order(models.Model):
             order.message_subscribe(partner_ids=[partner.id])
         return order
 
-    def open_product_bundle_wizard(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Select Product Bundle',
-            'res_model': 'product.bundle.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'view_id': self.env.ref('proproduct.view_product_bundle_wizard_form').id,
-            'context': {'active_id': self.id}
-        }
 
     @api.model
     def default_get(self, fields_list):
@@ -1310,8 +1328,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(
-                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Either a renewal map is missing, or there are too many renewal maps available for the " + str(product.product_id.name) + ". Amount of renewal maps found: (" + str(len(renewal_maps)) + ")\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -1494,87 +1511,28 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
-            partners_data = msg_vals.get('partners_data') if msg_vals else {}
-            partners = group[1](partners_data) if callable(group[1]) else group[1]
-            options = group[2]
 
-            # Ensure button is visible
-            options['has_button_access'] = True
-            access_opts = options.setdefault('button_access', {})
-
-            # Set default title
+            # enable the access button for all groups
+            group[2]['has_button_access'] = True
+            access_opt = group[2].setdefault('button_access', {})
+            
+            # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
-                title_en = _("View Quotation")
-                title_fr = _("Voir le devis")
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir le devis")
+                else:
+                    access_opt['title'] = _("View Quotation")
             else:
-                title_en = _("View Order")
-                title_fr = _("Voir la commande")
-
-            # Assign custom URL per recipient
-            url_template = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={{}}"
-
-            partner_urls = {}
-            for partner in partners:
-                partner_urls[partner.id] = {
-                    'url': url_template.format(partner.id),
-                    'title': title_fr if partner.lang == 'fr_CA' else title_en
-                }
-
-            # Store it for template rendering if needed
-            access_opts['multi'] = partner_urls
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir la commande")
+                else:
+                    access_opt['title'] = _("View Order")
+            
+            # set the portal access URL for the button
+            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
         return groups
-
-    @api.depends('order_line.price_total', 'order_line.display_type', 'order_line.name',
-                 'currency_id', 'is_rental')
-    def _amount_all(self):
-        for order in self:
-            amount_untaxed = amount_tax = bundle_extra_total = 0.0
-
-            for line in order.order_line:
-                # Include standard line prices if selected and within selected section
-                if line.selected == "true" and line.sectionSelected == "true":
-                    if not order.is_rental or line.product_id.is_software:
-                        amount_untaxed += line.price_subtotal
-                        amount_tax += line.price_tax
-                    elif order.is_rental and not line.product_id.is_software:
-                        amount_untaxed += order.calc_rental_price(line.price_subtotal)
-                        amount_tax += order.calc_rental_price(line.price_tax)
-
-                # Bundle section handling
-                if line.display_type == 'line_section' and line.name and line.name.startswith('#bundle+'):
-                    try:
-                        bundle_id = int(line.name.split('+')[-1])
-                        bundle = self.env['product.bundle'].sudo().browse(bundle_id)
-                    except (ValueError, AttributeError):
-                        continue  # Skip if bundle ID parsing fails
-
-                    if bundle:
-                        # Choose correct price field based on currency and rental
-                        if order.currency_id.name == 'USD':
-                            price = bundle.rental_price_usd if order.is_rental else bundle.price_usd
-                        elif order.currency_id.name == 'CAD':
-                            price = bundle.rental_price_cad if order.is_rental else bundle.price_cad
-                        else:
-                            price = bundle.price_usd  # fallback
-
-                        bundle_extra_total += price or 0.0
-
-            currency = order.currency_id or order.company_id.currency_id
-            bundle_extra_total = currency.round(bundle_extra_total)
-
-            amount_untaxed += bundle_extra_total
-
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax,
-            })
-
-
-
-    # UPDATED ABOVE
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
@@ -1741,6 +1699,24 @@ class orderLineProquotes(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    @api.onchange('product_id', 'order_id.is_rental')
+    def _onchange_product_id(self):
+        for line in self:
+            if line.order_id.is_rental and line.product_id:
+                target_categories = [
+                    'Software (Permanent License)',
+                    'Software CCP',
+                    'Software Subscription'
+                ]
+                if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
+                    line.price_unit = line.product_id.list_price
+                else:
+                    line.price_unit = line.product_id.lst_price
+            if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
+                line.is_selected = True
+            else:
+                line.is_selected = False
+                
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
         if self.is_selected:
@@ -1826,8 +1802,26 @@ class MailComposeMessage(models.TransientModel):
 
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
+
+            template = self.env['mail.template'].search([
+                ('name', '=', 'General Sales')
+            ], limit=1)
+            
+            if template:
+                defaults['template_id'] = template.id
+                defaults['use_template'] = True
+
         elif model in ['account.move']:
             defaults['mail_partner_ids'] = [(5, 0, 0)]
+
+            template = self.env['mail.template'].search([
+                ('name', '=', 'Invoice: Send by email')
+            ], limit=1)
+
+            if template:
+                defaults['template_id'] = template.id
+                defaults['use_template'] = True
+                defaults['attachment_ids'] = [(5, 0, 0)]
 
         return defaults
 
