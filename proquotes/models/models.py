@@ -1651,7 +1651,7 @@ class order(models.Model):
 
         # return the modified recipient groups with the updated access options
         # return groups
-        return []
+        # return []
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
