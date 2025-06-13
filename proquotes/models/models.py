@@ -1508,8 +1508,8 @@ class order(models.Model):
 
         self.ensure_one()
 
-        manual_partners = message.partner_ids.mapped('email') if message else []
-        follower_partners = self.message_follower_ids.mapped('partner_id.email')
+        manual_partners   = message.partner_ids
+        follower_partners = self.message_follower_ids.mapped('partner_id')
         partners = set(manual_partners + follower_partners)
 
         partners_data = (msg_vals or {}).get('partners_data', {})
