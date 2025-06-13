@@ -48,16 +48,7 @@
                                                             <t t-out="button_access['title']"/>
                                                         </a>
                                                     </td>
-                                                    <td t-else=""
-                                                            t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
-                                                        <a t-att-href="button_access['url']"
-                                                            style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
-                                                            <!-- <t t-out="button_access['title']"/> -->
-                                                            Fallback Button
-                                                        </a>
-                                                    </td>
                                                     <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
-                                                    <td t-else="">&amp;nbsp;&amp;nbsp;</td>
 
                                                     <td t-if="actions">
                                                         <t t-foreach="actions" t-as="action">
