@@ -1507,6 +1507,10 @@ class order(models.Model):
             return groups
         self.ensure_one()
 
+        manual_emails = message.partner_ids.mapped('email') if message else []
+        follower_emails = self.message_follower_ids.mapped('partner_id.email')
+        all_emails = set(manual_emails + follower_emails)
+
         partners_data = (msg_vals or {}).get('partners_data', {})
         emails = [
             pdata.get('email')
@@ -1514,10 +1518,10 @@ class order(models.Model):
             if isinstance(pdata, dict) and pdata.get('email')
         ]
 
-        if emails:
+        if all_emails:
             _logger.info(
                 "SALE QUOTE %s — email send intercepted, recipients were: %s",
-                self.name, ", ".join(emails)
+                self.name, ", ".join(sorted(all_emails))
             )
 
         # Get the base URL for the portal
