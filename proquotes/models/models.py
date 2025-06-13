@@ -1547,6 +1547,8 @@ class order(models.Model):
             separator = '&' if ('?' in base_url) else '?'
             personalized_url = f"{base_url}{separator}user_id={partner.id}"
 
+            smart_title = "View Quotation" if self.state in ('draft', 'sent') else "View Order"
+
             # Define a custom group for this partner
             new_group = (
                 f"partner_{partner.id}",                     # unique group name
@@ -1554,7 +1556,7 @@ class order(models.Model):
                 {
                     'active': True,
                     'has_button_access': True,
-                    'button_access': {'url': personalized_url}
+                    'button_access': {'url': personalized_url, 'title': smart_title},
                 }
             )
             new_groups.append(new_group)
