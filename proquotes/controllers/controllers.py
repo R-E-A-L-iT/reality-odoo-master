@@ -350,19 +350,40 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
-    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
-                website=True)
+    @http.route(
+        ['/check_quotation_redirect/<int:order_id>/<string:access_token>'],
+        type='http', auth='public', website=True
+    )
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
+
+        user_id = kwargs.get('user_id')
+        
         if not request.env.user._is_public():
-            url = f"/web#id={order_id}&model=sale.order&view_type=form"
+            return redirect(f"/web#id={order_id}&model=sale.order&view_type=form")
+
+        order = request.env['sale.order'].sudo().browse(order_id)
+        if not order or order.access_token != access_token:
+            # invalid or expired token → back to “my account”
+            return redirect('/my')
+
+        portal_path = order.get_portal_url()
+
+        if user_id:
+            sep = '&' if '?' in portal_path else '?'
+            portal_path = f"{portal_path}{sep}user_id={int(user_id)}"
+
+        partner = request.env['res.partner'].sudo().browse(int(user_id or 0))
+        user_lang = partner.lang or ''
+
+        if user_lang == 'fr_CA':
+            base = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            portal_url = f"{base}/fr_CA{portal_path}"
         else:
-            order = request.env['sale.order'].sudo().browse(order_id)
-            if order and order.access_token == access_token:
-                url = order.get_portal_url()
-            else:
-                url = '/my'
-        return redirect(url)
-    
+            base = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            portal_url = f"{base}{portal_path}"
+
+        return redirect(portal_url)
+
     class Website(WebsiteINH):
         @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
         def change_lang(self, lang, r='/', **kwargs):
