@@ -1498,29 +1498,76 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super(order, self)._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
-        if not groups:
+        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+        if not self:
             return groups
-        self.ensure_one()  # focusing on one sale.order at a time
+        self.ensure_one()
 
+        # Identify portal-access recipients: portal users or customers (no internal users)
+        recipient_partners = message.sudo().partner_ids
+        portal_partners = []
+        for partner in recipient_partners:
+            # Determine if partner is an internal user (employee) or external
+            is_internal = any(
+                user.share is False for user in partner.user_ids
+            )  # user.share = False indicates an internal (employee) user account
+            if not partner.user_ids or any(user.share for user in partner.user_ids):
+                # Partner has no user (customer) or has at least one portal user -> treat as portal/contact
+                # (We include portal users and pure customers, exclude internal employees)
+                portal_partners.append(partner)
+
+        if not portal_partners:
+            return groups  # nothing to customize
+
+        # Ensure the record has a portal access token (for portal links)
+        access_token = None
+        if isinstance(self, self.env['portal.mixin'].__class__):
+            # Only generate token if the model uses portal.mixin
+            access_token = self.sudo()._portal_ensure_token()  # ensures an access_token for this record
+
+        # Build new groups for each portal/contact partner with a personalized link
         new_groups = []
-        for group_name, recipient_list, group_values in groups:
-            # Only modify groups that have a portal access button
-            if group_values.get('has_button_access') and group_values.get('button_access'):
-                # For each recipient in this group, create a personalized group
-                for recipient in recipient_list:
-                    # Copy group data to avoid mutating the original
-                    indiv_group_vals = dict(group_values)
-                    access_info = indiv_group_vals.get('button_access', {})
-                    # Append tracking parameter to the portal URL
-                    if access_info.get('url'):
-                        access_info['url'] += f"&user_id={recipient['id']}"
-                    indiv_group_vals['button_access'] = access_info
-                    new_groups.append((group_name, [recipient], indiv_group_vals))
-            else:
-                # Keep groups that have no portal button or don’t need modification
-                new_groups.append((group_name, recipient_list, group_values))
-        return new_groups
+        for partner in portal_partners:
+            # Prepare message context for link generation
+            local_vals = dict(msg_vals or {})
+            if access_token:
+                local_vals['access_token'] = access_token
+            if partner.id:
+                local_vals['pid'] = partner.id
+                # Include a secure hash for the partner (used for verifying chatter posts via email)
+                if hasattr(self, '_sign_token'):
+                    local_vals['hash'] = self._sign_token(partner.id)
+            # If the partner has no user (guest), include signup token parameters so they can set a password
+            if not partner.user_ids:
+                local_vals.update(partner.sudo().signup_get_auth_param().get(partner.id, {}))
+
+            # Generate the base portal URL for viewing the record
+            base_url = self._notify_get_action_link('view', **local_vals)  # Odoo’s built-in link (could be portal or backend URL depending on context)
+            # Append the tracking query parameter
+            separator = '&' if ('?' in base_url) else '?'
+            personalized_url = f"{base_url}{separator}user_id={partner.id}"
+
+            # Define a custom group for this partner
+            new_group = (
+                f"partner_{partner.id}",                     # unique group name
+                (lambda pdata, pid=partner.id: pdata['id'] == pid),   # filter to this specific partner
+                {
+                    'active': True,
+                    'has_button_access': True,
+                    'button_access': {'url': personalized_url}
+                }
+            )
+            new_groups.append(new_group)
+
+        # Remove or adjust default groups to avoid duplicates.
+        # Specifically, exclude the original 'portal'/'portal_customer'/'customer' groups since we've replaced those recipients.
+        filtered_groups = [
+            grp for grp in groups 
+            if grp[0] not in ('portal', 'portal_customer', 'customer')
+        ]
+        # Include other groups (e.g. 'follower' for internal users) unchanged, then add our new groups:
+        final_groups = filtered_groups + new_groups
+        return final_groups
 
     # def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
     #     """ Give access button to all users and portal customers to view the quote in the portal. """
