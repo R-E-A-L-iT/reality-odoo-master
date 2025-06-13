@@ -1530,7 +1530,7 @@ class order(models.Model):
             'subject': message.subject,
             'attachment_ids': message.attachment_ids.ids,
             'message_type': 'email',
-            'subtype_xmlid': 'mail.mt_note',
+            'subtype_xmlid': 'mail.mt_comment',
             'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
         }
 
