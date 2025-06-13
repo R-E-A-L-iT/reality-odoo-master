@@ -1547,13 +1547,24 @@ class order(models.Model):
             #     **common_vals
             # )
 
+            rendered_dict = template_id._render_template(
+                template_id.body_html, 'sale.order', [self.id]
+            )
+            body_html = rendered_dict.get(self.id, '') 
+
+            body_html += (
+                f"<p style='margin-top:20px;'>"
+                f"Link to view quote is: "
+                f"<a href='{new_link}' target='_blank'>{new_link}</a>"
+                f"</p>"
+            )
+
             template_id.send_mail(
                 self.id,
                 force_send=True,
                 email_values={
                     'email_to': partner.email,
-                    'body_html': template_id._render_template(template_id.body_html, 'sale.order', [self.id])
-                                + f"<p>Link to view quote is <a href='{new_link}'>{new_link}</a></p>",
+                    'body_html': body_html,
                 }
             )
 
