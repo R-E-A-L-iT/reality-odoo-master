@@ -1522,7 +1522,17 @@ class order(models.Model):
         for group in groups:
 
             partners_fn = group[1]
-            partners = partners_fn(partners_data) if callable(partners_fn) else partners_fn
+            partners_data = (msg_vals or {}).get('partners_data', {})
+
+            if callable(partners_fn):
+                partners = [
+                    self.env['res.partner'].browse(pdata['id'])
+                    for pdata in partners_data.values()
+                    if isinstance(pdata, dict) and partners_fn(pdata)
+                ]
+            else:
+                partners = partners_fn or self.env['res.partner']
+
             options = group[2]
 
             # group_name = group[0]

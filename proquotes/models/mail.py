@@ -126,10 +126,10 @@ class MailThread(models.AbstractModel):
             new_group = [
                 ('portal_customer', lambda pdata: isinstance(pdata, dict) and pdata.get('id') == customer[0].id, {
                     'active': True,
+                    'has_button_access': True,
                     'button_access': {
                         'url': access_link,
-                    },
-                    'has_button_access': True,
+                    }
                 })
             ]
         else:
