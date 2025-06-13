@@ -1536,7 +1536,7 @@ class order(models.Model):
 
         for partner in partners:
 
-            new_body = message.body + "{partner.name}'s email is {partner.email}"
+            new_body = message.body + f"{partner.name}'s email is {partner.email}"
 
             self.with_context(quote_split_done=True).message_post(
                 partner_ids=[partner.id],
