@@ -1510,7 +1510,7 @@ class order(models.Model):
 
         manual_partners = message.partner_ids
         follower_partners = self.message_follower_ids.mapped('partner_id')
-        partners = set(manual_partners + follower_partners)
+        partners = (manual_partners | follower_partners).filtered('email')
 
         partners_data = (msg_vals or {}).get('partners_data', {})
         emails = [
