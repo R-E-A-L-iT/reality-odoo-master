@@ -1506,31 +1506,67 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
-        # Get the base URL for the portal
+
+        # helper function
+        def _default_title(lang):
+            if self.state in ('draft', 'sent'):
+                return _("Voir le devis") if lang == 'fr_CA' else _("View Quotation")
+            else:
+                return _("Voir la commande") if lang == 'fr_CA' else _("View Order")
+
+        # get base url and partners data
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        portal_url = self.get_portal_url()
+        partners_data = (msg_vals or {}).get('partners_data', {})
+        # portal_url = self.get_portal_url()
 
         for group in groups:
-            group_name = group[0]
+
+            partners_fn = group[1]
+            partners = partners_fn(partners_data) if callable(partners_fn) else partners_fn
+            options = group[2]
+
+            # group_name = group[0]
+
+            options['has_button_access'] = True
+            access_opt = options.setdefault('button_access', {})
 
             # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
+            # group[2]['has_button_access'] = True
+            # access_opt = group[2].setdefault('button_access', {})
             
+            multi = {}
+            for p in partners:
+                if not p:
+                    continue
+                href = f"{base_href}?user_id={p.id}"
+                multi[p.id] = {
+                    'url':  href,
+                    'title': _default_title(p.lang),
+                }
+
+            if not multi:
+                continue
+
+            access_opt['multi'] = multi
+
+            any_entry = next(iter(multi.values()))
+            access_opt.setdefault('url',   any_entry['url'])
+            access_opt.setdefault('title', any_entry['title'])
+
             # set the title for the access button based on the state of the order
-            if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
-            else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
+            # if self.state in ('draft', 'sent'):
+            #     if self.partner_id.lang == 'fr_CA':
+            #         access_opt['title'] = _("Voir le devis")
+            #     else:
+            #         access_opt['title'] = _("View Quotation")
+            # else:
+            #     if self.partner_id.lang == 'fr_CA':
+            #         access_opt['title'] = _("Voir la commande")
+            #     else:
+            #         access_opt['title'] = _("View Order")
             
             # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            # access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
         return groups
@@ -1826,73 +1862,72 @@ class MailComposeMessage(models.TransientModel):
 
         return defaults
 
-    def _action_send_mail_comment(self, res_ids):
+    # def _action_send_mail_comment(self, res_ids):
         
-        # only split email threads for sales orders
-        if self.model != 'sale.order':
-            return super()._action_send_mail_comment(res_ids)
+    #     # only split email threads for sales orders
+    #     if self.model != 'sale.order':
+    #         return super()._action_send_mail_comment(res_ids)
 
-        messages = self.env['mail.message']
+    #     messages = self.env['mail.message']
 
-        for wizard in self:
-            for res_id in res_ids:
-                sale_order = self.env['sale.order'].browse(res_id).sudo()
+    #     for wizard in self:
+    #         for res_id in res_ids:
+    #             sale_order = self.env['sale.order'].browse(res_id).sudo()
 
-                # Get recipients (from wizard or followers)
-                partners = wizard.partner_ids or sale_order.message_partner_ids
-                for partner in partners:
-                    if not partner.email:
-                        continue
-
+    #             # Get recipients (from wizard or followers)
+    #             partners = wizard.partner_ids or sale_order.message_partner_ids
+    #             for partner in partners:
+    #                 if not partner.email:
+    #                     continue
                     
-                    template = wizard.template_id.with_context(lang=partner.lang or 'en_US')
+    #                 template = wizard.template_id.with_context(lang=partner.lang or 'en_US')
 
-                    # Render email body from template (without sending)
-                    values = template.generate_email(self.res_id, fields=['body_html', 'subject'], partner=partner.id)
+    #                 # Render email body from template (without sending)
+    #                 values = template.generate_email(self.res_id, fields=['body_html', 'subject'], partner=partner.id)
 
-                    original_body = values.get('body_html', '')
-                    subject = values.get('subject', '')
+    #                 original_body = values.get('body_html', '')
+    #                 subject = values.get('subject', '')
 
-                    # Correct: create recipient-specific URL
-                    url = f"/check_quotation_redirect/{sale_order.id}/{sale_order.access_token}?user_id={partner.id}"
+    #                 # Correct: create recipient-specific URL
+    #                 url = f"/check_quotation_redirect/{sale_order.id}/{sale_order.access_token}?user_id={partner.id}"
 
-                    # Localized title
-                    lang = partner.lang or sale_order.partner_id.lang or 'en_US'
-                    title = _("View Quotation") if sale_order.state in ('draft', 'sent') else _("View Order")
-                    if lang == 'fr_CA':
-                        title = _("Voir le devis") if sale_order.state in ('draft', 'sent') else _("Voir la commande")
+    #                 # Localized title
+    #                 lang = partner.lang or sale_order.partner_id.lang or 'en_US'
+    #                 title = _("View Quotation") if sale_order.state in ('draft', 'sent') else _("View Order")
+    #                 if lang == 'fr_CA':
+    #                     title = _("Voir le devis") if sale_order.state in ('draft', 'sent') else _("Voir la commande")
 
-                    # Build the button with the proper link
-                    button_html = f"""
-                        <p>
-                            <a href="{url}"
-                            style="background-color: #875A7B; padding: 12px 24px; color: white;
-                                    text-decoration: none; border-radius: 4px;">
-                                {title}
-                            </a>
-                        </p>
-                        <p>
-                            Partner: {partner.name}, ID: {partner.id}, Email: {partner.email}
-                        </p>
-                    """
+    #                 # Build the button with the proper link
+    #                 button_html = f"""
+    #                     <p>
+    #                         <a href="{url}"
+    #                         style="background-color: #875A7B; padding: 12px 24px; color: white;
+    #                                 text-decoration: none; border-radius: 4px;">
+    #                             {title}
+    #                         </a>
+    #                     </p>
+    #                     <p>
+    #                         Partner: {partner.name}, ID: {partner.id}, Email: {partner.email}
+    #                     </p>
+    #                 """
 
-                    # Inject the button into the body
-                    full_body = f"{wizard.body or ''}{button_html}"
+    #                 # Inject the button into the body
+    #                 full_body = f"{wizard.body or ''}{button_html}"
 
-                    # Send email
-                    message = sale_order.message_post(
-                        body=full_body,
-                        subject=wizard.subject,
-                        partner_ids=[partner.id],
-                        email_layout_xmlid='mail.mail_notification_light',
-                        message_type='email',
-                        subtype_xmlid='mail.mt_note',
-                        attachment_ids=wizard.attachment_ids.ids
-                    )
-                    messages |= message
+    #                 # Send email
+    #                 message = sale_order.message_post(
+    #                     body=full_body,
+    #                     subject=wizard.subject,
+    #                     partner_ids=[partner.id],
+    #                     email_layout_xmlid='mail.mail_notification_light',
+    #                     message_type='email',
+    #                     subtype_xmlid='mail.mt_note',
+    #                     attachment_ids=wizard.attachment_ids.ids
+    #                 )
+    #                 messages |= message
 
 
-        return messages
+    #     return messages
 
 class MailWizardInvite(models.TransientModel):
     _inherit = 'mail.wizard.invite'
