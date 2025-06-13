@@ -1506,62 +1506,31 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
-
-        # helper function
-        def _default_title(lang):
-            if self.state in ('draft', 'sent'):
-                return _("Voir le devis") if lang == 'fr_CA' else _("View Quotation")
-            else:
-                return _("Voir la commande") if lang == 'fr_CA' else _("View Order")
-
-        # get base url and partners data
+        # Get the base URL for the portal
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        partners_data = (msg_vals or {}).get('partners_data', {})
-        # portal_url = self.get_portal_url()
+        portal_url = self.get_portal_url()
 
         for group in groups:
-            group_name, partners_fn, options = group
+            group_name = group[0]
 
-            # Skip if not active
-            if not options.get('active'):
-                continue
-
-            partners_data = (msg_vals or {}).get('partners_data', {})
-
-            if callable(partners_fn):
-                matched_partners = [
-                    self.env['res.partner'].browse(pdata['id'])
-                    for pdata in partners_data.values()
-                    if isinstance(pdata, dict) and partners_fn(pdata)
-                ]
-            else:
-                matched_partners = partners_fn if partners_fn else self.env['res.partner']
-
-            for partner in matched_partners:
-                token = self._portal_ensure_token()
-                lang = partner.lang or self.env.user.lang
-                custom_url = f"/check_quotation_redirect/{self.id}/{token}?user_id={partner.id}"
-
-                options['has_button_access'] = True
-                options['button_access'] = {
-                    'url': custom_url,
-                    'title': _("View Quotation") if self.state in ('draft', 'sent') else _("View Order"),
-                }
-
+            # enable the access button for all groups
+            group[2]['has_button_access'] = True
+            access_opt = group[2].setdefault('button_access', {})
+            
             # set the title for the access button based on the state of the order
-            # if self.state in ('draft', 'sent'):
-            #     if self.partner_id.lang == 'fr_CA':
-            #         access_opt['title'] = _("Voir le devis")
-            #     else:
-            #         access_opt['title'] = _("View Quotation")
-            # else:
-            #     if self.partner_id.lang == 'fr_CA':
-            #         access_opt['title'] = _("Voir la commande")
-            #     else:
-            #         access_opt['title'] = _("View Order")
+            if self.state in ('draft', 'sent'):
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir le devis")
+                else:
+                    access_opt['title'] = _("View Quotation")
+            else:
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir la commande")
+                else:
+                    access_opt['title'] = _("View Order")
             
             # set the portal access URL for the button
-            # access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
         return groups
@@ -1856,32 +1825,6 @@ class MailComposeMessage(models.TransientModel):
                 defaults['attachment_ids'] = [(5, 0, 0)]
 
         return defaults
-
-    def _action_send_mail_comment(self, res_ids):
-        if self.model != 'sale.order':
-            return super()._action_send_mail_comment(res_ids)
-
-        messages = self.env['mail.message']
-        for wizard in self:
-            for res_id in res_ids:
-                record = self.env[self.model].browse(res_id)
-
-                msg = record.message_post(
-                    body=wizard.body,
-                    subject=wizard.subject,
-                    partner_ids=[p.id for p in wizard.partner_ids],
-                    attachment_ids=wizard.attachment_ids.ids,
-                    message_type='email',
-                    subtype_xmlid='mail.mt_note',
-                    email_layout_xmlid='mail.mail_notification_light',
-                    **{
-                        'mail_notify': True,  # Ensures the email is sent
-                    }
-                )
-                messages |= msg
-
-        return messages
-
 
     # def _action_send_mail_comment(self, res_ids):
         
