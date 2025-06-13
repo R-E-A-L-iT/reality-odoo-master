@@ -1552,7 +1552,7 @@ class order(models.Model):
                 force_send=True,
                 email_values={
                     'email_to': partner.email,
-                    'body_html': template_id._render_template(template_id.body_html, 'sale.order', self.id)
+                    'body_html': template_id._render_template(template_id.body_html, 'sale.order', [self.id])
                                 + f"<p>Link to view quote is <a href='{new_link}'>{new_link}</a></p>",
                 }
             )
@@ -1566,6 +1566,7 @@ class order(models.Model):
             })
             mail.send()
 
+        return []
 
         # Get the base URL for the portal
         # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -1595,7 +1596,6 @@ class order(models.Model):
 
         # return the modified recipient groups with the updated access options
         # return groups
-        return []
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
