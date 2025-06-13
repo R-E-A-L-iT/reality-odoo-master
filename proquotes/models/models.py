@@ -1505,7 +1505,7 @@ class order(models.Model):
         # run once per message
         if self.env.context.get('quote_split_done') or not message:
             return []
-            
+
         self.ensure_one()
 
         manual_partners = message.partner_ids.mapped('email') if message else []
@@ -1522,7 +1522,7 @@ class order(models.Model):
         if partners:
             _logger.info(
                 "SALE QUOTE %s — email send intercepted, recipients were: %s",
-                self.name, ", ".join(sorted(all_emails))
+                self.name, ", ".join(sorted(partners))
             )
 
         common_vals = {
