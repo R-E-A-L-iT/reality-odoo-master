@@ -1549,6 +1549,12 @@ class order(models.Model):
             )
             full_body = original_html + link_html
 
+            new_template = self.env.ref('proquotes.mail_notification_layout_inherit')
+            if new_template:
+                new_template.send_mail(self.id, force_send=True)
+            else:
+                raise UserError(_("Email template missing"))
+
             mail_vals = {
                 'email_to': partner.email,
                 'subject':   message.subject,
