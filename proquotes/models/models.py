@@ -1537,6 +1537,7 @@ class order(models.Model):
         for partner in partners:
 
             selected_template = self.env.context.get('default_template_id')
+            template_id = self.env['mail.template'].browse(selected_template)
             new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
             new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template}"
 
@@ -1545,6 +1546,16 @@ class order(models.Model):
             #     body=new_body,
             #     **common_vals
             # )
+
+            template_id.send_mail(
+                self.id,
+                force_send=True,
+                email_values={
+                    'email_to': partner.email,
+                    'body_html': template_id._render_template(template_id.body_html, 'sale.order', self.id)
+                                + f"<p>Link to view quote is <a href='{new_link}'>{new_link}</a></p>",
+                }
+            )
 
             mail = self.env['mail.mail'].create({
                 'body_html': new_body,
