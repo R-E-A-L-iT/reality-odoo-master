@@ -1508,7 +1508,7 @@ class order(models.Model):
 
         self.ensure_one()
 
-        manual_partners   = message.partner_ids
+        manual_partners = message.partner_ids
         follower_partners = self.message_follower_ids.mapped('partner_id')
         partners = set(manual_partners + follower_partners)
 
@@ -1522,7 +1522,7 @@ class order(models.Model):
         if partners:
             _logger.info(
                 "SALE QUOTE %s — email send intercepted, recipients were: %s",
-                self.name, ", ".join(sorted(partners))
+                self.name, ", ".join(sorted(partners.mapped('email')))
             )
 
         common_vals = {
