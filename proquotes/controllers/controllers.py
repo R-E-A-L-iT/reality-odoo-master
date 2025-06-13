@@ -358,19 +358,26 @@ class QuoteCustomerPortal(cPortal):
         else:
 
             order = request.env['sale.order'].sudo().browse(order_id)
-            
+
             if order and order.access_token == access_token:
                 url = order.get_portal_url()
             else:
                 url = '/my'
 
             user_id = kwargs.get('user_id')
+            partner = request.env['res.partner'].sudo().browse(int(user_id))
 
             if user_id:
                 sep = '&' if '?' in url else '?'
                 url = f"{url}{sep}user_id={int(user_id)}"
-            
-            partner = request.env['res.partner'].sudo().browse(int(user_id))
+
+                partner = request.env['res.partner'].sudo().browse(int(user_id))
+                if partner.exists():
+                    order.message_post(
+                        body=_("Quotation viewed by %s") % partner.name,
+                        message_type='notification',
+                        subtype_xmlid='sale.mt_quote_viewed',
+                    )
 
             if partner and partner.lang == 'fr_CA':
                 redirect_url = f"/fr_CA{url}"
