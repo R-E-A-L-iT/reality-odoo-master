@@ -1558,7 +1558,7 @@ class order(models.Model):
             tpl = self.env.ref('sale.email_template_edi_sale')
             tpl.send_mail(self.id, force_send=True, email_values={
                 'email_to': partner.email,
-                'body_html': your_full_body_html,
+                'body_html': full_body,
             })
 
             mail_vals = {
