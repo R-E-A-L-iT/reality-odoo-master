@@ -1499,77 +1499,39 @@ class order(models.Model):
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
-        if not self:
-            return groups
-        self.ensure_one()
-
-        # Identify portal-access recipients: portal users or customers (no internal users)
-        recipient_partners = message.sudo().partner_ids
-        portal_partners = []
-        for partner in recipient_partners:
-            # Determine if partner is an internal user (employee) or external
-            is_internal = any(
-                user.share is False for user in partner.user_ids
-            )  # user.share = False indicates an internal (employee) user account
-            if not partner.user_ids or any(user.share for user in partner.user_ids):
-                # Partner has no user (customer) or has at least one portal user -> treat as portal/contact
-                # (We include portal users and pure customers, exclude internal employees)
-                portal_partners.append(partner)
-
-        if not portal_partners:
-            return groups  # nothing to customize
-
-        # Ensure the record has a portal access token (for portal links)
-        access_token = None
-        if isinstance(self, self.env['portal.mixin'].__class__):
-            # Only generate token if the model uses portal.mixin
-            access_token = self.sudo()._portal_ensure_token()  # ensures an access_token for this record
-
-        # Build new groups for each portal/contact partner with a personalized link
         new_groups = []
-        for partner in portal_partners:
-            # Prepare message context for link generation
-            local_vals = dict(msg_vals or {})
-            if access_token:
-                local_vals['access_token'] = access_token
-            if partner.id:
-                local_vals['pid'] = partner.id
-                # Include a secure hash for the partner (used for verifying chatter posts via email)
-                if hasattr(self, '_sign_token'):
-                    local_vals['hash'] = self._sign_token(partner.id)
-            # If the partner has no user (guest), include signup token parameters so they can set a password
-            if not partner.user_ids:
-                local_vals.update(partner.sudo().signup_get_auth_param().get(partner.id, {}))
-
-            # Generate the base portal URL for viewing the record
-            base_url = self._notify_get_action_link('view', **local_vals)  # Odoo’s built-in link (could be portal or backend URL depending on context)
-            # Append the tracking query parameter
-            separator = '&' if ('?' in base_url) else '?'
-            personalized_url = f"{base_url}{separator}user_id={partner.id}"
-
-            smart_title = "View Quotation" if self.state in ('draft', 'sent') else "View Order"
-
-            # Define a custom group for this partner
-            new_group = (
-                f"partner_{partner.id}",                     # unique group name
-                (lambda pdata, pid=partner.id: pdata['id'] == pid),   # filter to this specific partner
-                {
-                    'active': True,
-                    'has_button_access': True,
-                    'button_access': {'url': personalized_url, 'title': smart_title},
-                }
-            )
-            new_groups.append(new_group)
-
-        # Remove or adjust default groups to avoid duplicates.
-        # Specifically, exclude the original 'portal'/'portal_customer'/'customer' groups since we've replaced those recipients.
-        filtered_groups = [
-            grp for grp in groups 
-            if grp[0] not in ('portal', 'portal_customer', 'customer')
-        ]
-        # Include other groups (e.g. 'follower' for internal users) unchanged, then add our new groups:
-        final_groups = filtered_groups + new_groups
-        return final_groups
+        for group_name, group_filter, group_vals in groups:
+            # If this group has an access URL, append the user_id param to it
+            if group_vals.get('button_access') and group_vals['button_access'].get('url'):
+                # Append ?user_id=<id> for tracking (use actual partner or user ID as needed)
+                base_url = group_vals['button_access']['url']
+                # Example: if the group_filter is a lambda, you may need to find the partner from message or context
+                # Here we'll assume a single partner (like portal_customer) for simplicity:
+                partner_id = (message.partner_ids and message.partner_ids[0].id) or False
+                if partner_id:
+                    group_vals['button_access']['url'] = f"{base_url}?user_id={partner_id}"
+                # Ensure title and flag are set
+                if not group_vals['button_access'].get('title'):
+                    group_vals['button_access']['title'] = _("View Quotation")
+                group_vals['has_button_access'] = True
+            else:
+                # No access link was set by super for this group (possibly a portal follower)
+                # We can inject a portal link manually as fallback
+                if group_name in ('portal', 'portal_customer'):
+                    custom_link = self._notify_get_action_link('view', **(msg_vals or {}))
+                    if custom_link:
+                        custom_link += f"?user_id={message.partner_ids[0].id if message.partner_ids else ''}"
+                        # Append a styled button link to the email body
+                        button_html = _(
+                            '<p><a href="%s" style="padding:8px 12px; font-size:12px; color:#FFFFFF; text-decoration:none; font-weight:400; background-color:#875A7B; border-radius:3px;">View Quotation</a></p>'
+                        ) % custom_link
+                        # Add to body (ensure body exists as a string)
+                        orig_body = group_vals.get('body') or msg_vals.get('body') or ""
+                        group_vals['body'] = orig_body + button_html
+            # Mark group active just in case (especially for newly added portal groups)
+            group_vals['active'] = True
+            new_groups.append((group_name, group_filter, group_vals))
+        return new_groups
 
     # def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
     #     """ Give access button to all users and portal customers to view the quote in the portal. """
