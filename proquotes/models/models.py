@@ -1520,48 +1520,33 @@ class order(models.Model):
         # portal_url = self.get_portal_url()
 
         for group in groups:
+            group_name, partners_fn, options = group
 
-            partners_fn = group[1]
+            # Skip if not active
+            if not options.get('active'):
+                continue
+
             partners_data = (msg_vals or {}).get('partners_data', {})
 
             if callable(partners_fn):
-                partners = [
+                matched_partners = [
                     self.env['res.partner'].browse(pdata['id'])
                     for pdata in partners_data.values()
                     if isinstance(pdata, dict) and partners_fn(pdata)
                 ]
             else:
-                partners = partners_fn or self.env['res.partner']
+                matched_partners = partners_fn if partners_fn else self.env['res.partner']
 
-            options = group[2]
+            for partner in matched_partners:
+                token = self._portal_ensure_token()
+                lang = partner.lang or self.env.user.lang
+                custom_url = f"/check_quotation_redirect/{self.id}/{token}?user_id={partner.id}"
 
-            # group_name = group[0]
-
-            options['has_button_access'] = True
-            access_opt = options.setdefault('button_access', {})
-
-            # enable the access button for all groups
-            # group[2]['has_button_access'] = True
-            # access_opt = group[2].setdefault('button_access', {})
-            
-            multi = {}
-            for p in partners:
-                if not p:
-                    continue
-                href = f"{base_href}?user_id={p.id}"
-                multi[p.id] = {
-                    'url':  href,
-                    'title': _default_title(p.lang),
+                options['has_button_access'] = True
+                options['button_access'] = {
+                    'url': custom_url,
+                    'title': _("View Quotation") if self.state in ('draft', 'sent') else _("View Order"),
                 }
-
-            if not multi:
-                continue
-
-            access_opt['multi'] = multi
-
-            any_entry = next(iter(multi.values()))
-            access_opt.setdefault('url',   any_entry['url'])
-            access_opt.setdefault('title', any_entry['title'])
 
             # set the title for the access button based on the state of the order
             # if self.state in ('draft', 'sent'):
