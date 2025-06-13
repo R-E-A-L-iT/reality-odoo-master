@@ -1536,8 +1536,9 @@ class order(models.Model):
 
         for partner in partners:
 
+            selected_template = self.env.context.get('default_template_id')
             new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
-            new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {message.template_id}"
+            new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template.name}"
 
             self.with_context(quote_split_done=True).message_post(
                 partner_ids=[partner.id],
