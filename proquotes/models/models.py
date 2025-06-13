@@ -1536,46 +1536,71 @@ class order(models.Model):
 
         for partner in partners:
 
-            selected_template = self.env.context.get('default_template_id')
-            template_id = self.env['mail.template'].browse(selected_template)
-            new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
-            new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template}"
+            base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            new_link = f"{base}/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
 
-            # self.with_context(quote_split_done=True).message_post(
-            #     partner_ids=[partner.id],
-            #     body=new_body,
-            #     **common_vals
-            # )
+            original_html = message.body or ""
 
-            rendered_dict = template_id._render_template(
-                template_id.body_html, 'sale.order', [self.id]
-            )
-            body_html = rendered_dict.get(self.id, '') 
-
-            body_html += (
-                f"<p style='margin-top:20px;'>"
-                f"Link to view quote is: "
+            link_html = (
+                "<p style='margin-top:20px;'>"
+                "Link to view quote is: "
                 f"<a href='{new_link}' target='_blank'>{new_link}</a>"
-                f"</p>"
+                "</p>"
             )
+            full_body = original_html + link_html
 
-            template_id.send_mail(
-                self.id,
-                force_send=True,
-                email_values={
-                    'email_to': partner.email,
-                    'body_html': body_html,
-                }
-            )
-
-            mail = self.env['mail.mail'].create({
-                'body_html': new_body,
+            mail_vals = {
                 'email_to': partner.email,
-                'subject': message.subject,
+                'subject':   message.subject,
+                'body_html': full_body,
                 'attachment_ids': message.attachment_ids.ids,
                 'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-            })
+                'reply_to':   message.email_from,
+                'email_from': message.email_from,
+            }
+            mail = self.env['mail.mail'].create(mail_vals)
             mail.send()
+
+            # selected_template = self.env.context.get('default_template_id')
+            # template_id = self.env['mail.template'].browse(selected_template)
+            # new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+            # new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template}"
+
+            # # self.with_context(quote_split_done=True).message_post(
+            # #     partner_ids=[partner.id],
+            # #     body=new_body,
+            # #     **common_vals
+            # # )
+
+            # rendered_dict = template_id._render_template(
+            #     template_id.body_html, 'sale.order', [self.id]
+            # )
+            # body_html = rendered_dict.get(self.id, '') 
+
+            # body_html += (
+            #     f"<p style='margin-top:20px;'>"
+            #     f"Link to view quote is: "
+            #     f"<a href='{new_link}' target='_blank'>{new_link}</a>"
+            #     f"</p>"
+            # )
+
+            # template_id.send_mail(
+            #     self.id,
+            #     force_send=True,
+            #     email_values={
+            #         'email_to': partner.email,
+            #         'body_html': body_html,
+            #     }
+            # )
+
+            # mail = self.env['mail.mail'].create({
+            #     'body_html': new_body,
+            #     'email_to': partner.email,
+            #     'subject': message.subject,
+            #     'attachment_ids': message.attachment_ids.ids,
+            #     'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+            # })
+            # mail.send()
 
         return []
 
