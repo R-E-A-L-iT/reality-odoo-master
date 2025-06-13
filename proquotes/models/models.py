@@ -1500,16 +1500,17 @@ class order(models.Model):
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        groups = super()._notify_get_recipients_groups(
-            message, model_description, msg_vals=msg_vals
-        )
-        if not self:
-            return groups
+        super()._notify_get_recipients_groups(message, model_description, msg_vals)
+
+        # run once per message
+        if self.env.context.get('quote_split_done') or not message:
+            return []
+            
         self.ensure_one()
 
-        manual_emails = message.partner_ids.mapped('email') if message else []
-        follower_emails = self.message_follower_ids.mapped('partner_id.email')
-        all_emails = set(manual_emails + follower_emails)
+        manual_partners = message.partner_ids.mapped('email') if message else []
+        follower_partners = self.message_follower_ids.mapped('partner_id.email')
+        partners = set(manual_partners + follower_partners)
 
         partners_data = (msg_vals or {}).get('partners_data', {})
         emails = [
@@ -1518,11 +1519,27 @@ class order(models.Model):
             if isinstance(pdata, dict) and pdata.get('email')
         ]
 
-        if all_emails:
+        if partners:
             _logger.info(
                 "SALE QUOTE %s — email send intercepted, recipients were: %s",
                 self.name, ", ".join(sorted(all_emails))
             )
+
+        common_vals = {
+            'body': message.body,
+            'subject': message.subject,
+            'attachment_ids': [(6, 0, message.attachment_ids.ids)],
+            'message_type': 'email',
+            'subtype_xmlid': 'mail.mt_note',
+            'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+        }
+
+        for partner in partners:
+            self.with_context(quote_split_done=True).message_post(
+                partner_ids=[partner.id],
+                **common_vals
+            )
+
 
         # Get the base URL for the portal
         # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
