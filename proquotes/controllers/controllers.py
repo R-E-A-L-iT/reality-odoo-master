@@ -377,6 +377,7 @@ class QuoteCustomerPortal(cPortal):
                         body=_("Quotation viewed by %s") % partner.name,
                         message_type='notification',
                         subtype_xmlid='sale.mt_quote_viewed',
+                        author_id=partner.id,
                     )
 
             if partner and partner.lang == 'fr_CA':
