@@ -1536,14 +1536,8 @@ class order(models.Model):
 
         for partner in partners:
 
-            template = self.env['mail.template'].browse(msg_vals.get('template_id')).with_context(lang=partner.lang or 'en_US')
-            values = template.generate_email(self.id, ['subject', 'body_html'], partner_id=partner.id)
-            
-            portal_url = self.get_base_url()  # or use ir.config_parameter
-            button_url = f"{portal_url}/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
-            
-            values['body_html'] = values['body_html'].replace('/my/orders/', button_url)
-            # new_body = message.body + f"{partner.name}'s email is {partner.email}"
+            new_link = self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+            new_body = message.body + f"Link to view quote is {new_link}"
 
             self.with_context(quote_split_done=True).message_post(
                 partner_ids=[partner.id],
@@ -1551,18 +1545,14 @@ class order(models.Model):
                 **common_vals
             )
 
-            self.env['mail.mail'].create({
-                'email_from': values.get('email_from', message.email_from),
+            mail = self.env['mail.mail'].create({
+                'body_html': new_body,
                 'email_to': partner.email,
-                'subject': values['subject'],
-                'body_html': values['body_html'],
-                'auto_delete': True,
-                'model': self._name,
-                'res_id': self.id,
-                'recipient_ids': [(4, partner.id)],
+                'subject': message.subject,
                 'attachment_ids': message.attachment_ids.ids,
-                'mail_server_id': message.mail_server_id.id if message.mail_server_id else None,
-            }).send()
+                'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+            })
+            mail.send()
 
 
         # Get the base URL for the portal
