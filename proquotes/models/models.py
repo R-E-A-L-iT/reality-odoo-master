@@ -1498,129 +1498,61 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
-        if not self:
-            return groups
+        """ Give access button to all users and portal customers to view the quote in the portal. """
+        
+        super()._notify_get_recipients_groups(message, model_description, msg_vals)
+
+        # run once per message
+        if self.env.context.get('quote_split_done') or not message:
+            return []
+
         self.ensure_one()
 
-        # Identify portal-access recipients: portal users or customers (no internal users)
-        recipient_partners = message.sudo().partner_ids
-        portal_partners = []
-        for partner in recipient_partners:
-            # Determine if partner is an internal user (employee) or external
-            is_internal = any(
-                user.share is False for user in partner.user_ids
-            )  # user.share = False indicates an internal (employee) user account
-            if not partner.user_ids or any(user.share for user in partner.user_ids):
-                # Partner has no user (customer) or has at least one portal user -> treat as portal/contact
-                # (We include portal users and pure customers, exclude internal employees)
-                portal_partners.append(partner)
+        manual_partners = message.partner_ids
+        follower_partners = self.message_follower_ids.mapped('partner_id')
+        partners = (manual_partners | follower_partners).filtered('email')
 
-        if not portal_partners:
-            return groups  # nothing to customize
+        partners_data = (msg_vals or {}).get('partners_data', {})
+        emails = [
+            pdata.get('email')
+            for pdata in partners_data.values()
+            if isinstance(pdata, dict) and pdata.get('email')
+        ]
 
-        # Ensure the record has a portal access token (for portal links)
-        access_token = None
-        if isinstance(self, self.env['portal.mixin'].__class__):
-            # Only generate token if the model uses portal.mixin
-            access_token = self.sudo()._portal_ensure_token()  # ensures an access_token for this record
-
-        # Build new groups for each portal/contact partner with a personalized link
-        new_groups = []
-        for partner in portal_partners:
-            # build the URL for this partner
-            ctx = dict(msg_vals or {})
-            if token:
-                ctx['access_token'] = token
-            ctx['pid'] = partner.id
-            if not partner.user_ids:
-                ctx.update(partner.sudo().signup_get_auth_param().get(partner.id, {}))
-            base = self._notify_get_action_link('view', **ctx)
-            sep  = '&' if '?' in base else '?'
-            url  = f"{base}{sep}user_id={partner.id}"
-
-            smart_title = "View Quotation" if self.state in ('draft', 'sent') else "View Order"
-
-            original_html = (msg_vals or {}).get('body') or message.body or ''
-            modified_html = (
-                f"{original_html}"
-                f"<p style='margin-top:24px;'>"
-                f"<strong>Your personal link:</strong> "
-                f"<a href='{url}' target='_blank'>{url}</a>"
-                f"</p>"
+        if partners:
+            _logger.info(
+                "SALE QUOTE %s — email send intercepted, recipients were: %s",
+                self.name, ", ".join(sorted(partners.mapped('email')))
             )
-            # Define a custom group for this partner
-            new_groups.append((
-                f"partner_{partner.id}",
-                lambda pdata, pid=partner.id: pdata['id'] == pid,
-                {
-                    'active': True,
-                    'has_button_access': False,                     # turn off header button
-                    'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-                    'body_html': modified_html,                   # override the HTML body
-                }
-            ))
 
-        # Include other groups (e.g. 'follower' for internal users) unchanged, then add our new groups:
-        filtered = [g for g in groups if g[0] not in ('portal', 'portal_customer', 'customer')]
-        return filtered + new_groups
+        common_vals = {
+            # 'body': message.body,
+            'subject': message.subject,
+            'attachment_ids': message.attachment_ids.ids,
+            'message_type': 'email',
+            # 'subtype_xmlid': 'mail.mt_comment',
+            'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+        }
 
-    # def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-    #     """ Give access button to all users and portal customers to view the quote in the portal. """
-        
-    #     super()._notify_get_recipients_groups(message, model_description, msg_vals)
+        for partner in partners:
 
-    #     # run once per message
-    #     if self.env.context.get('quote_split_done') or not message:
-    #         return []
+            new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+            new_body = message.body + f"Link to view quote is {new_link}"
 
-    #     self.ensure_one()
+            self.with_context(quote_split_done=True).message_post(
+                partner_ids=[partner.id],
+                body=new_body,
+                **common_vals
+            )
 
-    #     manual_partners = message.partner_ids
-    #     follower_partners = self.message_follower_ids.mapped('partner_id')
-    #     partners = (manual_partners | follower_partners).filtered('email')
-
-    #     partners_data = (msg_vals or {}).get('partners_data', {})
-    #     emails = [
-    #         pdata.get('email')
-    #         for pdata in partners_data.values()
-    #         if isinstance(pdata, dict) and pdata.get('email')
-    #     ]
-
-    #     if partners:
-    #         _logger.info(
-    #             "SALE QUOTE %s — email send intercepted, recipients were: %s",
-    #             self.name, ", ".join(sorted(partners.mapped('email')))
-    #         )
-
-    #     common_vals = {
-    #         # 'body': message.body,
-    #         'subject': message.subject,
-    #         'attachment_ids': message.attachment_ids.ids,
-    #         'message_type': 'email',
-    #         # 'subtype_xmlid': 'mail.mt_comment',
-    #         'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-    #     }
-
-    #     for partner in partners:
-
-    #         new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
-    #         new_body = message.body + f"Link to view quote is {new_link}"
-
-    #         self.with_context(quote_split_done=True).message_post(
-    #             partner_ids=[partner.id],
-    #             body=new_body,
-    #             **common_vals
-    #         )
-
-    #         mail = self.env['mail.mail'].create({
-    #             'body_html': new_body,
-    #             'email_to': partner.email,
-    #             'subject': message.subject,
-    #             'attachment_ids': message.attachment_ids.ids,
-    #             'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-    #         })
-    #         mail.send()
+            mail = self.env['mail.mail'].create({
+                'body_html': new_body,
+                'email_to': partner.email,
+                'subject': message.subject,
+                'attachment_ids': message.attachment_ids.ids,
+                'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+            })
+            mail.send()
 
 
         # Get the base URL for the portal
@@ -1651,7 +1583,7 @@ class order(models.Model):
 
         # return the modified recipient groups with the updated access options
         # return groups
-        # return []
+        return []
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
