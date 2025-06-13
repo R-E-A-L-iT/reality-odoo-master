@@ -1865,6 +1865,7 @@ class MailComposeMessage(models.TransientModel):
         for wizard in self:
             for res_id in res_ids:
                 record = self.env[self.model].browse(res_id)
+
                 msg = record.message_post(
                     body=wizard.body,
                     subject=wizard.subject,
@@ -1872,7 +1873,10 @@ class MailComposeMessage(models.TransientModel):
                     attachment_ids=wizard.attachment_ids.ids,
                     message_type='email',
                     subtype_xmlid='mail.mt_note',
-                    email_layout_xmlid='mail.mail_notification_light',  # This is the only modification
+                    email_layout_xmlid='mail.mail_notification_light',
+                    **{
+                        'mail_notify': True,  # Ensures the email is sent
+                    }
                 )
                 messages |= msg
 
