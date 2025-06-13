@@ -1498,61 +1498,86 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to all users and portal customers to view the quote in the portal. """
+        groups = super(SaleOrder, self)._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+        if not groups:
+            return groups
+        self.ensure_one()  # focusing on one sale.order at a time
+
+        new_groups = []
+        for group_name, recipient_list, group_values in groups:
+            # Only modify groups that have a portal access button
+            if group_values.get('has_button_access') and group_values.get('button_access'):
+                # For each recipient in this group, create a personalized group
+                for recipient in recipient_list:
+                    # Copy group data to avoid mutating the original
+                    indiv_group_vals = dict(group_values)
+                    access_info = indiv_group_vals.get('button_access', {})
+                    # Append tracking parameter to the portal URL
+                    if access_info.get('url'):
+                        access_info['url'] += f"&user_id={recipient['id']}"
+                    indiv_group_vals['button_access'] = access_info
+                    new_groups.append((group_name, [recipient], indiv_group_vals))
+            else:
+                # Keep groups that have no portal button or don’t need modification
+                new_groups.append((group_name, recipient_list, group_values))
+        return new_groups
+
+    # def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
+    #     """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        super()._notify_get_recipients_groups(message, model_description, msg_vals)
+    #     super()._notify_get_recipients_groups(message, model_description, msg_vals)
 
-        # run once per message
-        if self.env.context.get('quote_split_done') or not message:
-            return []
+    #     # run once per message
+    #     if self.env.context.get('quote_split_done') or not message:
+    #         return []
 
-        self.ensure_one()
+    #     self.ensure_one()
 
-        manual_partners = message.partner_ids
-        follower_partners = self.message_follower_ids.mapped('partner_id')
-        partners = (manual_partners | follower_partners).filtered('email')
+    #     manual_partners = message.partner_ids
+    #     follower_partners = self.message_follower_ids.mapped('partner_id')
+    #     partners = (manual_partners | follower_partners).filtered('email')
 
-        partners_data = (msg_vals or {}).get('partners_data', {})
-        emails = [
-            pdata.get('email')
-            for pdata in partners_data.values()
-            if isinstance(pdata, dict) and pdata.get('email')
-        ]
+    #     partners_data = (msg_vals or {}).get('partners_data', {})
+    #     emails = [
+    #         pdata.get('email')
+    #         for pdata in partners_data.values()
+    #         if isinstance(pdata, dict) and pdata.get('email')
+    #     ]
 
-        if partners:
-            _logger.info(
-                "SALE QUOTE %s — email send intercepted, recipients were: %s",
-                self.name, ", ".join(sorted(partners.mapped('email')))
-            )
+    #     if partners:
+    #         _logger.info(
+    #             "SALE QUOTE %s — email send intercepted, recipients were: %s",
+    #             self.name, ", ".join(sorted(partners.mapped('email')))
+    #         )
 
-        common_vals = {
-            # 'body': message.body,
-            'subject': message.subject,
-            'attachment_ids': message.attachment_ids.ids,
-            'message_type': 'email',
-            # 'subtype_xmlid': 'mail.mt_comment',
-            'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-        }
+    #     common_vals = {
+    #         # 'body': message.body,
+    #         'subject': message.subject,
+    #         'attachment_ids': message.attachment_ids.ids,
+    #         'message_type': 'email',
+    #         # 'subtype_xmlid': 'mail.mt_comment',
+    #         'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+    #     }
 
-        for partner in partners:
+    #     for partner in partners:
 
-            new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
-            new_body = message.body + f"Link to view quote is {new_link}"
+    #         new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+    #         new_body = message.body + f"Link to view quote is {new_link}"
 
-            self.with_context(quote_split_done=True).message_post(
-                partner_ids=[partner.id],
-                body=new_body,
-                **common_vals
-            )
+    #         self.with_context(quote_split_done=True).message_post(
+    #             partner_ids=[partner.id],
+    #             body=new_body,
+    #             **common_vals
+    #         )
 
-            mail = self.env['mail.mail'].create({
-                'body_html': new_body,
-                'email_to': partner.email,
-                'subject': message.subject,
-                'attachment_ids': message.attachment_ids.ids,
-                'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
-            })
-            mail.send()
+    #         mail = self.env['mail.mail'].create({
+    #             'body_html': new_body,
+    #             'email_to': partner.email,
+    #             'subject': message.subject,
+    #             'attachment_ids': message.attachment_ids.ids,
+    #             'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+    #         })
+    #         mail.send()
 
 
         # Get the base URL for the portal

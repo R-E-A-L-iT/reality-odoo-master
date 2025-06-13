@@ -101,7 +101,6 @@
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",
          "views/Quote/quotesTemplates.xml",
-        # "views/Other/mail_templates.xml",
         # "views/Other/translated_terms.xml",
         # "views/Invoice/invoicePayment.xml",
         # "views/Other/product_backend.xml",
