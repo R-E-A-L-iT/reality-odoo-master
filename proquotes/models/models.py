@@ -1526,7 +1526,7 @@ class order(models.Model):
             )
 
         common_vals = {
-            'body': message.body,
+            # 'body': message.body,
             'subject': message.subject,
             'attachment_ids': message.attachment_ids.ids,
             'message_type': 'email',
@@ -1537,6 +1537,7 @@ class order(models.Model):
         for partner in partners:
             self.with_context(quote_split_done=True).message_post(
                 partner_ids=[partner.id],
+                body=message.body+="{partner.name}'s email is {partner.email}",
                 **common_vals
             )
 
