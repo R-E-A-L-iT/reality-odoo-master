@@ -1540,11 +1540,11 @@ class order(models.Model):
             new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
             new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template}"
 
-            self.with_context(quote_split_done=True).message_post(
-                partner_ids=[partner.id],
-                body=new_body,
-                **common_vals
-            )
+            # self.with_context(quote_split_done=True).message_post(
+            #     partner_ids=[partner.id],
+            #     body=new_body,
+            #     **common_vals
+            # )
 
             mail = self.env['mail.mail'].create({
                 'body_html': new_body,
