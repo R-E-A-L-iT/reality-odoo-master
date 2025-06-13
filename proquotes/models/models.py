@@ -1536,7 +1536,7 @@ class order(models.Model):
 
         for partner in partners:
 
-            template = message.template_id.with_context({'lang': partner.lang or 'en_US',})
+            template = self.env['mail.template'].browse(msg_vals.get('template_id')).with_context(lang=partner.lang or 'en_US')
             values = template.generate_email(self.id, ['subject', 'body_html'], partner_id=partner.id)
             
             portal_url = self.get_base_url()  # or use ir.config_parameter
