@@ -1528,51 +1528,42 @@ class order(models.Model):
         # Build new groups for each portal/contact partner with a personalized link
         new_groups = []
         for partner in portal_partners:
-            # Prepare message context for link generation
-            local_vals = dict(msg_vals or {})
-            if access_token:
-                local_vals['access_token'] = access_token
-            if partner.id:
-                local_vals['pid'] = partner.id
-                # Include a secure hash for the partner (used for verifying chatter posts via email)
-                if hasattr(self, '_sign_token'):
-                    local_vals['hash'] = self._sign_token(partner.id)
-            # If the partner has no user (guest), include signup token parameters so they can set a password
+            # build the URL for this partner
+            ctx = dict(msg_vals or {})
+            if token:
+                ctx['access_token'] = token
+            ctx['pid'] = partner.id
             if not partner.user_ids:
-                local_vals.update(partner.sudo().signup_get_auth_param().get(partner.id, {}))
-
-            # Generate the base portal URL for viewing the record
-            base_url = self._notify_get_action_link('view', **local_vals)  # Odoo’s built-in link (could be portal or backend URL depending on context)
-            # Append the tracking query parameter
-            separator = '&' if ('?' in base_url) else '?'
-            personalized_url = f"{base_url}{separator}user_id={partner.id}"
+                ctx.update(partner.sudo().signup_get_auth_param().get(partner.id, {}))
+            base = self._notify_get_action_link('view', **ctx)
+            sep  = '&' if '?' in base else '?'
+            url  = f"{base}{sep}user_id={partner.id}"
 
             smart_title = "View Quotation" if self.state in ('draft', 'sent') else "View Order"
-            custom_body = f"{message.body}<p><strong>Link to quote for partner {partner.id}:</strong> " \
-                       f"<a href=\"{personalized_url}\">{personalized_url}</a></p>"
 
+            original_html = (msg_vals or {}).get('body') or message.body or ''
+            modified_html = (
+                f"{original_html}"
+                f"<p style='margin-top:24px;'>"
+                f"<strong>Your personal link:</strong> "
+                f"<a href='{url}' target='_blank'>{url}</a>"
+                f"</p>"
+            )
             # Define a custom group for this partner
-            new_group = (
-                f"partner_{partner.id}",                     # unique group name
-                (lambda pdata, pid=partner.id: pdata['id'] == pid),   # filter to this specific partner
+            new_groups.append((
+                f"partner_{partner.id}",
+                lambda pdata, pid=partner.id: pdata['id'] == pid,
                 {
                     'active': True,
-                    'body': custom_body,
-                    'has_button_access': True,
-                    'button_access': {'url': personalized_url, 'title': "View Quotation"},
+                    'has_button_access': False,                     # turn off header button
+                    'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+                    'body_html': modified_html,                   # override the HTML body
                 }
-            )
-            new_groups.append(new_group)
+            ))
 
-        # Remove or adjust default groups to avoid duplicates.
-        # Specifically, exclude the original 'portal'/'portal_customer'/'customer' groups since we've replaced those recipients.
-        filtered_groups = [
-            grp for grp in groups 
-            if grp[0] not in ('portal', 'portal_customer', 'customer')
-        ]
         # Include other groups (e.g. 'follower' for internal users) unchanged, then add our new groups:
-        final_groups = filtered_groups + new_groups
-        return final_groups
+        filtered = [g for g in groups if g[0] not in ('portal', 'portal_customer', 'customer')]
+        return filtered + new_groups
 
     # def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
     #     """ Give access button to all users and portal customers to view the quote in the portal. """
