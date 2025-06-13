@@ -1528,7 +1528,7 @@ class order(models.Model):
         common_vals = {
             'body': message.body,
             'subject': message.subject,
-            'attachment_ids': [(6, 0, message.attachment_ids.ids)],
+            'attachment_ids': message.attachment_ids.ids,
             'message_type': 'email',
             'subtype_xmlid': 'mail.mt_note',
             'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
