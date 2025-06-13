@@ -1506,34 +1506,49 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
+
+        partners_data = (msg_vals or {}).get('partners_data', {})
+        emails = [
+            pdata.get('email')
+            for pdata in partners_data.values()
+            if isinstance(pdata, dict) and pdata.get('email')
+        ]
+
+        if emails:
+            _logger.info(
+                "SALE QUOTE %s — email send intercepted, recipients were: %s",
+                self.name, ", ".join(emails)
+            )
+
         # Get the base URL for the portal
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        portal_url = self.get_portal_url()
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # portal_url = self.get_portal_url()
 
-        for group in groups:
-            group_name = group[0]
+        # for group in groups:
+        #     group_name = group[0]
 
-            # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
+        #     # enable the access button for all groups
+        #     group[2]['has_button_access'] = True
+        #     access_opt = group[2].setdefault('button_access', {})
             
-            # set the title for the access button based on the state of the order
-            if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
-            else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
+        #     # set the title for the access button based on the state of the order
+        #     if self.state in ('draft', 'sent'):
+        #         if self.partner_id.lang == 'fr_CA':
+        #             access_opt['title'] = _("Voir le devis")
+        #         else:
+        #             access_opt['title'] = _("View Quotation")
+        #     else:
+        #         if self.partner_id.lang == 'fr_CA':
+        #             access_opt['title'] = _("Voir la commande")
+        #         else:
+        #             access_opt['title'] = _("View Order")
             
-            # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+        #     # set the portal access URL for the button
+        #     access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
-        return groups
+        # return groups
+        return []
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
