@@ -1554,7 +1554,7 @@ class order(models.Model):
                 'subject':   message.subject,
                 'body_html': full_body,
                 'attachment_ids': message.attachment_ids.ids,
-                'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+                'email_layout_xmlid': 'proquotes.mail_notification_layout_inherit',
                 'reply_to':   message.email_from,
                 'email_from': message.email_from,
             }
