@@ -1549,17 +1549,11 @@ class order(models.Model):
             )
             full_body = original_html + link_html
 
-            # new_template = self.env.ref('proquotes.mail_notification_layout_inherit')
-            # if new_template:
-            #     new_template.send_mail(self.id, force_send=True)
-            # else:
-            #     raise UserError(_("Email template missing"))
-
-            tpl = self.env.ref('sale.email_template_edi_sale')
-            tpl.send_mail(self.id, force_send=True, email_values={
-                'email_to': partner.email,
-                'body_html': full_body,
-            })
+            self.with_context(quote_split_done=True).message_post(
+                partner_ids=[partner.id],
+                body=new_body,
+                **common_vals
+            )
 
             mail_vals = {
                 'email_to': partner.email,
