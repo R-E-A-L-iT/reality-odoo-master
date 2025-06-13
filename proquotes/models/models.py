@@ -1544,6 +1544,15 @@ class order(models.Model):
                 **common_vals
             )
 
+            mail = self.env['mail.mail'].create({
+                'body_html': new_body,
+                'email_to': partner.email,
+                'subject': message.subject,
+                'attachment_ids': message.attachment_ids.ids,
+                'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+            })
+            mail.send()
+
 
         # Get the base URL for the portal
         # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
