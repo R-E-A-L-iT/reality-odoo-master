@@ -1862,41 +1862,19 @@ class MailComposeMessage(models.TransientModel):
             return super()._action_send_mail_comment(res_ids)
 
         messages = self.env['mail.message']
-
         for wizard in self:
-            template = wizard.template_id
-            if not template:
-                continue
-
             for res_id in res_ids:
-                sale_order = self.env['sale.order'].browse(res_id).sudo()
-
-                partners = wizard.partner_ids or sale_order.message_partner_ids
-                for partner in partners:
-                    if not partner.email:
-                        continue
-
-                    # Render template for this partner
-                    template_lang = partner.lang or sale_order.partner_id.lang or 'en_US'
-                    values = template.with_context(lang=template_lang).generate_email(
-                        sale_order.id,
-                        fields=['body_html', 'subject'],
-                        partner=partner.id
-                    )
-                    body_html = values.get('body_html', '')
-                    subject = values.get('subject', '')
-
-                    # Post the message (uses selected template + button layout)
-                    msg = sale_order.message_post(
-                        body=body_html,
-                        subject=subject,
-                        partner_ids=[partner.id],
-                        message_type='email',
-                        subtype_xmlid='mail.mt_note',
-                        email_layout_xmlid='mail.mail_notification_light',
-                        attachment_ids=wizard.attachment_ids.ids
-                    )
-                    messages |= msg
+                record = self.env[self.model].browse(res_id)
+                msg = record.message_post(
+                    body=wizard.body,
+                    subject=wizard.subject,
+                    partner_ids=[p.id for p in wizard.partner_ids],
+                    attachment_ids=wizard.attachment_ids.ids,
+                    message_type='email',
+                    subtype_xmlid='mail.mt_note',
+                    email_layout_xmlid='mail.mail_notification_light',  # This is the only modification
+                )
+                messages |= msg
 
         return messages
 
