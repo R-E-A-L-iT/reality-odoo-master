@@ -1536,7 +1536,7 @@ class order(models.Model):
 
         for partner in partners:
 
-            new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + self.get_portal_url() + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+            new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
             new_body = message.body + f"Link to view quote is {new_link}"
 
             self.with_context(quote_split_done=True).message_post(
