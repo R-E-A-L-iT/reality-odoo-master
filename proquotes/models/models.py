@@ -1841,32 +1841,55 @@ class MailComposeMessage(models.TransientModel):
                 # Get recipients (from wizard or followers)
                 partners = wizard.partner_ids or sale_order.message_partner_ids
                 for partner in partners:
-                    template = self.template_id.with_context(lang=partner.lang or 'en_US')
+                    if not partner.email:
+                        continue
 
-                    # Render fields using Odoo 17 API
-                    body_html = template._render_field('body_html', self.res_id, compute_lang=True, partner_id=partner.id)[self.res_id]
-                    subject = template._render_field('subject', self.res_id, compute_lang=True, partner_id=partner.id)[self.res_id]
+                    
+                    template = wizard.template_id.with_content(lang=partner.lang or 'en_US')
 
-                    # Inject user_id into any matching CTA URL
-                    tree = html.fromstring(body_html)
-                    for link in tree.xpath('//a[contains(@href, "/check_quotation_redirect/")]'):
-                        href = link.get('href')
-                        if href and f"user_id=" not in href:
-                            href += f"&user_id={partner.id}" if '?' in href else f"?user_id={partner.id}"
-                            link.set('href', href)
-                    custom_body = html.tostring(tree, encoding='unicode')
+                    # Render email body from template (without sending)
+                    values = template.generate_email(self.res_id, fields=['body_html', 'subject'], partner=partner.id)
 
-                    # Send using the template but overriding body_html + recipient
-                    template.send_mail(
-                        self.res_id,
-                        force_send=True,
-                        email_values={
-                            'body_html': custom_body,
-                            'email_to': partner.email,
-                            'partner_ids': [partner.id],
-                            'subject': subject,
-                        }
+                    original_body = values.get('body_html', '')
+                    subject = values.get('subject', '')
+
+                    # Correct: create recipient-specific URL
+                    url = f"/check_quotation_redirect/{sale_order.id}/{sale_order.access_token}?user_id={partner.id}"
+
+                    # Localized title
+                    lang = partner.lang or sale_order.partner_id.lang or 'en_US'
+                    title = _("View Quotation") if sale_order.state in ('draft', 'sent') else _("View Order")
+                    if lang == 'fr_CA':
+                        title = _("Voir le devis") if sale_order.state in ('draft', 'sent') else _("Voir la commande")
+
+                    # Build the button with the proper link
+                    button_html = f"""
+                        <p>
+                            <a href="{url}"
+                            style="background-color: #875A7B; padding: 12px 24px; color: white;
+                                    text-decoration: none; border-radius: 4px;">
+                                {title}
+                            </a>
+                        </p>
+                        <p>
+                            Partner: {partner.name}, ID: {partner.id}, Email: {partner.email}
+                        </p>
+                    """
+
+                    # Inject the button into the body
+                    full_body = f"{wizard.body or ''}{button_html}"
+
+                    # Send email
+                    message = sale_order.message_post(
+                        body=full_body,
+                        subject=wizard.subject,
+                        partner_ids=[partner.id],
+                        email_layout_xmlid='mail.mail_notification_light',
+                        message_type='email',
+                        subtype_xmlid='mail.mt_note',
+                        attachment_ids=wizard.attachment_ids.ids
                     )
+                    messages |= message
 
 
         return messages
