@@ -1845,7 +1845,7 @@ class MailComposeMessage(models.TransientModel):
                         continue
 
                     
-                    template = wizard.template_id.with_content(lang=partner.lang or 'en_US')
+                    template = wizard.template_id.with_context(lang=partner.lang or 'en_US')
 
                     # Render email body from template (without sending)
                     values = template.generate_email(self.res_id, fields=['body_html', 'subject'], partner=partner.id)
