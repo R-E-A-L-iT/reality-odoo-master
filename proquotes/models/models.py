@@ -1498,7 +1498,7 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super(SaleOrder, self)._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+        groups = super(order, self)._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
         if not groups:
             return groups
         self.ensure_one()  # focusing on one sale.order at a time
