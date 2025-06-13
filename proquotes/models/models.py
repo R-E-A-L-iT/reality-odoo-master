@@ -1857,6 +1857,19 @@ class MailComposeMessage(models.TransientModel):
 
         return defaults
 
+    def _action_send_mail_comment(self, res_ids):
+
+        sale_order.message_post(
+            body=values['body_html'],
+            subject=values['subject'],
+            partner_ids=[partner.id],
+            message_type='email',
+            subtype_xmlid='mail.mt_note',
+            email_layout_xmlid='mail.mail_notification_light',
+            attachment_ids=wizard.attachment_ids.ids
+        )
+
+
     # def _action_send_mail_comment(self, res_ids):
         
     #     # only split email threads for sales orders
