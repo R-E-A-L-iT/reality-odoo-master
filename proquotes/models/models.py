@@ -1014,22 +1014,22 @@ class order(models.Model):
         self.show_update_pricelist = False
 
 
-    @api.onchange('partner_id')
-    def _onchange_partner_id(self):
-        if self.partner_id and not self.is_rental:
-            # Set domain for non-rental pricelists
-            return {
-                'domain': {
-                    'pricelist_id': [('name', 'not ilike', 'rental')]
-                }
-            }
-        elif self.partner_id and self.is_rental:
-            # Set domain for rental pricelists
-            return {
-                'domain': {
-                    'pricelist_id': [('name', 'ilike', 'rental')]
-                }
-            }
+    # @api.onchange('partner_id')
+    # def _onchange_partner_id(self):
+    #     if self.partner_id and not self.is_rental:
+    #         # Set domain for non-rental pricelists
+    #         return {
+    #             'domain': {
+    #                 'pricelist_id': [('name', 'not ilike', 'rental')]
+    #             }
+    #         }
+    #     elif self.partner_id and self.is_rental:
+    #         # Set domain for rental pricelists
+    #         return {
+    #             'domain': {
+    #                 'pricelist_id': [('name', 'ilike', 'rental')]
+    #             }
+            # }
             
     def _action_confirm(self):
         selected_lines = self.order_line.sudo().filtered(
