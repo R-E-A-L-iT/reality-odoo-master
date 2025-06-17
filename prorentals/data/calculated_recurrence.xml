@@ -3,6 +3,7 @@
   <record id="sale_temporal_recurrence_calculated" model="sale.temporal.recurrence">
     <field name="name">Calculated</field>
     <field name="unit">day</field>
+    <field name="duration">1</field>
     <!-- <field name="interval">1</field> -->
     <!-- <field name="code">calculated</field>  -->
   </record>
