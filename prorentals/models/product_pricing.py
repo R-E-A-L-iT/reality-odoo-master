@@ -12,79 +12,67 @@ class SaleOrderLine(models.Model):
     # Adds extensive DEBUG logs so we can see why a line is kept
     # or skipped and which values are used in the formula.
     # ---------------------------------------------------------
-    def _apply_calculated_pricing(self):
-        for line in self:
-            _logger.debug("[CalDebug] Processing line %s (product=%s)", line.id, line.product_id.display_name if line.product_id else None)
+    def compute_rental_price(self):
+        super().compute_rental_price()
 
-            # 0) Guard clause — must have product and dates
+        for line in self:
+            _logger.debug("[CalDebug] Line %s: product=%s", line.id, line.product_id.display_name if line.product_id else None)
+
             start = getattr(line, "rental_start_date", None)
-            stop  = getattr(line, "rental_stop_date",  None)
+            stop = getattr(line, "rental_stop_date", None)
+
             if not line.product_id or not start or not stop:
-                _logger.debug("[CalDebug] Skip – missing product or dates (start=%s, stop=%s)", start, stop)
+                _logger.debug("[CalDebug] Skip – missing product or dates")
                 continue
 
-            # 1) Product must be rentable
             if not getattr(line.product_id, "can_be_rented", False):
                 _logger.debug("[CalDebug] Skip – product not rentable")
                 continue
 
-            # 2) Recurrence check
             recurrence = line.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
-            _logger.debug("[CalDebug] Recurrence on line: %s", recurrence.name if recurrence else None)
+            _logger.debug("[CalDebug] Recurrence: %s", recurrence.name if recurrence else None)
+
             if not recurrence or recurrence.name.lower().strip() != "calculated":
                 _logger.debug("[CalDebug] Skip – recurrence is not 'Calculated'")
                 continue
 
-            # 3) Fetch associated pricing line
             pricing_line = line.product_id.rental_pricing_ids.filtered(
                 lambda p: p.recurrence_id and p.recurrence_id.name.lower().strip() == "calculated"
             )[:1]
+
             if not pricing_line:
                 _logger.warning("[CalDebug] Product %s has no 'Calculated' pricing line", line.product_id.display_name)
                 continue
 
             base_rate = pricing_line.price
             rental_days = (stop - start).days
-            _logger.debug("[CalDebug] Rental days=%s base_rate=%s", rental_days, base_rate)
+            _logger.debug("[CalDebug] Rental days: %s, Base rate: %s", rental_days, base_rate)
 
             if rental_days <= 0:
-                _logger.debug("[CalDebug] Skip – duration <= 0 days")
+                _logger.debug("[CalDebug] Skip – rental_days <= 0")
                 continue
 
-            # 4) Apply formula: pay 4 each 7‑day block + up to 4 remainder, cap 12
-            full_weeks  = rental_days // 7
-            extra_days  = rental_days % 7
-            paid_days   = full_weeks * 4 + min(extra_days, 4)
-            paid_days   = min(paid_days, 12)
+            full_weeks = rental_days // 7
+            extra_days = rental_days % 7
+            paid_days = full_weeks * 4 + min(extra_days, 4)
+            paid_days = min(paid_days, 12)
 
-            _logger.debug(
-                "[CalDebug] full_weeks=%s extra_days=%s → paid_days=%s",
-                full_weeks,
-                extra_days,
-                paid_days,
-            )
+            _logger.debug("[CalDebug] full_weeks=%s, extra_days=%s, paid_days=%s", full_weeks, extra_days, paid_days)
 
-            # 5) Set price
             line.price_unit = base_rate * paid_days
-            line.discount   = 0.0
+            line.discount = 0.0
 
-            _logger.info(
-                "[Calculated] %s days → %s paid → price_unit %.2f on line %s",
-                rental_days,
-                paid_days,
-                line.price_unit,
-                line.id,
-            )
+            _logger.info("[Calculated] %s days → %s paid → price_unit %.2f on line %s", rental_days, paid_days, line.price_unit, line.id)
 
 
-class SaleOrder(models.Model):
-    _inherit = "sale.order"
+# class SaleOrder(models.Model):
+#     _inherit = "sale.order"
 
-    # Override tied to the *Update Rental Prices* button
-    def action_update_rental_prices(self):
-        _logger.debug("[CalDebug] action_update_rental_prices called for orders: %s", self.ids)
-        res = super().action_update_rental_prices()
-        for order in self:
-            _logger.debug("[CalDebug] Applying custom pricing on order %s", order.name)
-            order.order_line._apply_calculated_pricing()
-        return res
+#     # Override tied to the *Update Rental Prices* button
+#     def action_update_rental_prices(self):
+#         _logger.debug("[CalDebug] action_update_rental_prices called for orders: %s", self.ids)
+#         res = super().action_update_rental_prices()
+#         for order in self:
+#             _logger.debug("[CalDebug] Applying custom pricing on order %s", order.name)
+#             order.order_line._apply_calculated_pricing()
+#         return res
