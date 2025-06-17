@@ -1229,8 +1229,8 @@ class order(models.Model):
     # )
     # rental_country = fields.Many2one("res.country", string="Country", store="true")
 
-    # rental_start = fields.Date(string="Rental Start Date", default=False)
-    # rental_end = fields.Date(string="Rental End Date", default=False)
+    rental_start = fields.Date(string="Rental Start Date", default=False)
+    rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
         string="Renewal Items", comodel_name="stock.lot"
