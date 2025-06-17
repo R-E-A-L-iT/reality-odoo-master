@@ -44,6 +44,10 @@ class SaleOrderLine(models.Model):
         )
 
         if not calculated_line:
+            _logger.warning(
+                "Product %s does not have a 'Calculated' recurrence pricing line.",
+                self.product_id.name
+            )
             return  # use standard Odoo logic
 
         # Use the first applicable calculated pricing line
