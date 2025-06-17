@@ -3,7 +3,7 @@ from odoo import api, fields, models
 
 
 class ProductRentalPricing(models.Model):
-    _inherit = "product.rental.pricing"
+    _inherit = "product.pricing"
 
     # 1)  Extend the “unit” selection with an extra value
     unit = fields.Selection(
