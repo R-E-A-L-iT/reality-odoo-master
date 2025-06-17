@@ -6,7 +6,7 @@ class ProductPricing(models.Model):
 
     @api.model
     def _get_price(self, duration_value, duration_unit, quantity=1.0):
-        if self.recurrence_id and self.recurrence_id.code == "calculated":
+        if self.recurrence_id and self.recurrence_id.name.lower() == "calculated":
             # Convert to days
             if duration_unit == "week":
                 days = duration_value * 7
