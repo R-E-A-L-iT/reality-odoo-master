@@ -12,8 +12,8 @@ class SaleOrderLine(models.Model):
     # Adds extensive DEBUG logs so we can see why a line is kept
     # or skipped and which values are used in the formula.
     # ---------------------------------------------------------
-    def compute_rental_price(self):
-        super().compute_rental_price()
+    @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
+    def _compute_amount(self):
 
         for line in self:
             _logger.debug("[CalDebug] Line %s: product=%s", line.id, line.product_id.display_name if line.product_id else None)
