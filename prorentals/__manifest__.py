@@ -7,7 +7,8 @@
     "license": "LGPL-3",
     "assets": {},
     "data": [
-        "views/product_rental_pricing_views.xml",
+        # "views/product_rental_pricing_views.xml",
+        "data/calculated_recurrence.xml",
     ],
     "installable": True,
 }

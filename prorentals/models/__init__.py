@@ -1,1 +1,1 @@
-from . import product_rental_pricing
+from . import product_pricing
