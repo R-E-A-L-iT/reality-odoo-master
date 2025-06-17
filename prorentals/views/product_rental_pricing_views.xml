@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit the rental-pricing form -->
+    <record id="view_product_rental_pricing_form_inherit_calculated"
+            model="ir.ui.view">
+        <field name="name">product.rental.pricing.form.calculated</field>
+        <field name="model">product.rental.pricing</field>
+        <field name="inherit_id" ref="sale_renting.product_rental_pricing_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add helper hint under the Unit field -->
+            <xpath expr="//field[@name='unit']" position="attributes">
+                <attribute name="help">
+                    Choose “Calculated” to use the 4-day / 12-day rental formula.
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

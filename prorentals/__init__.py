@@ -1,0 +1,1 @@
+from . import product_rental_pricing
