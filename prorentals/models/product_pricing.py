@@ -31,6 +31,13 @@ class ProductPricing(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
+    # Add rental_start_date and rental_stop_date if not already present
+    rental_start_date = fields.Datetime()
+    rental_stop_date = fields.Datetime()
+
+    # ---------------------------------------------------------
+    # Helper called from SaleOrder.action_update_rental_prices
+    # ---------------------------------------------------------
     def _apply_calculated_pricing(self):
         for line in self:
             if (
