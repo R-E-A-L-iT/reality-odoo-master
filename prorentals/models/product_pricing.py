@@ -4,98 +4,87 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class ProductPricing(models.Model):
-    _inherit = "product.pricing"
-
-    @api.model
-    def _get_price(self, duration_value, duration_unit, quantity=1.0):
-        if self.recurrence_id and self.recurrence_id.name.lower() == "calculated":
-
-            # Convert to days
-            if duration_unit == "week":
-                days = duration_value * 7
-            elif duration_unit == "month":
-                days = duration_value * 30
-            elif duration_unit == "hour":
-                days = duration_value / 24
-            else:
-                days = duration_value
-
-            base = self.price
-            full_weeks = int(days // 7)
-            paid = full_weeks * 4
-            paid += min(int(days % 7), 4)
-            paid = min(paid, 12)
-            return base * paid * quantity
-
-        # Fallback to standard logic
-        return super()._get_price(duration_value, duration_unit, quantity)
-
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    # Add rental_start_date and rental_stop_date if not already present
-    rental_start_date = fields.Datetime()
-    rental_stop_date = fields.Datetime()
-
     # ---------------------------------------------------------
     # Helper called from SaleOrder.action_update_rental_prices
+    # Adds extensive DEBUG logs so we can see why a line is kept
+    # or skipped and which values are used in the formula.
     # ---------------------------------------------------------
     def _apply_calculated_pricing(self):
         for line in self:
-            if (
-                not line.product_id
-                or not line.rental_start_date
-                or not line.rental_stop_date
-                or not line.product_id.can_be_rented
-            ):
+            _logger.debug("[CalDebug] Processing line %s (product=%s)", line.id, line.product_id.display_name if line.product_id else None)
+
+            # 0) Guard clause — must have product and dates
+            start = getattr(line, "rental_start_date", None)
+            stop  = getattr(line, "rental_stop_date",  None)
+            if not line.product_id or not start or not stop:
+                _logger.debug("[CalDebug] Skip – missing product or dates (start=%s, stop=%s)", start, stop)
                 continue
 
-            # Detect custom recurrence by NAME; switch to XML‑ID if preferred
-            recurrence = line.recurrence_id or line.product_id._get_default_rental_recurrence()
-            if not recurrence or recurrence.name.lower().strip() != "calculated":
-                continue  # Not our custom rule
+            # 1) Product must be rentable
+            if not getattr(line.product_id, "can_be_rented", False):
+                _logger.debug("[CalDebug] Skip – product not rentable")
+                continue
 
-            # Find the pricing line that uses this recurrence
-            pricing = line.product_id.rental_pricing_ids.filtered(
+            # 2) Recurrence check
+            recurrence = line.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
+            _logger.debug("[CalDebug] Recurrence on line: %s", recurrence.name if recurrence else None)
+            if not recurrence or recurrence.name.lower().strip() != "calculated":
+                _logger.debug("[CalDebug] Skip – recurrence is not 'Calculated'")
+                continue
+
+            # 3) Fetch associated pricing line
+            pricing_line = line.product_id.rental_pricing_ids.filtered(
                 lambda p: p.recurrence_id and p.recurrence_id.name.lower().strip() == "calculated"
             )[:1]
-            if not pricing:
-                _logger.warning("Product %s has no 'Calculated' pricing line", line.product_id.display_name)
+            if not pricing_line:
+                _logger.warning("[CalDebug] Product %s has no 'Calculated' pricing line", line.product_id.display_name)
                 continue
 
-            base_rate = pricing.price  # user enters this in Rental Prices tab
-            rental_days = (line.rental_stop_date - line.rental_start_date).days
+            base_rate = pricing_line.price
+            rental_days = (stop - start).days
+            _logger.debug("[CalDebug] Rental days=%s base_rate=%s", rental_days, base_rate)
+
             if rental_days <= 0:
+                _logger.debug("[CalDebug] Skip – duration <= 0 days")
                 continue
 
-            # --- Custom formula: 4‑paid / 3‑free, capped at 12 paid days ----
-            full_weeks = rental_days // 7
-            extra_days = rental_days % 7
+            # 4) Apply formula: pay 4 each 7‑day block + up to 4 remainder, cap 12
+            full_weeks  = rental_days // 7
+            extra_days  = rental_days % 7
+            paid_days   = full_weeks * 4 + min(extra_days, 4)
+            paid_days   = min(paid_days, 12)
 
-            paid_days = full_weeks * 4 + min(extra_days, 4)
-            paid_days = min(paid_days, 12)
-            # ----------------------------------------------------------------
+            _logger.debug(
+                "[CalDebug] full_weeks=%s extra_days=%s → paid_days=%s",
+                full_weeks,
+                extra_days,
+                paid_days,
+            )
 
+            # 5) Set price
             line.price_unit = base_rate * paid_days
-            line.discount = 0.0
+            line.discount   = 0.0
 
             _logger.info(
-                "[Calculated] %s days → %s paid days → price_unit %.2f",
+                "[Calculated] %s days → %s paid → price_unit %.2f on line %s",
                 rental_days,
                 paid_days,
                 line.price_unit,
+                line.id,
             )
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # This is the method tied to the *Update Rental Prices* button in Odoo 17
+    # Override tied to the *Update Rental Prices* button
     def action_update_rental_prices(self):
-        # Let Odoo compute its standard rental prices first
+        _logger.debug("[CalDebug] action_update_rental_prices called for orders: %s", self.ids)
         res = super().action_update_rental_prices()
-
-        # Now apply our custom formula where relevant
         for order in self:
+            _logger.debug("[CalDebug] Applying custom pricing on order %s", order.name)
             order.order_line._apply_calculated_pricing()
         return res
