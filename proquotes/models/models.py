@@ -1551,7 +1551,7 @@ class order(models.Model):
 
             self.with_context(quote_split_done=True).message_post(
                 partner_ids=[partner.id],
-                body=new_body,
+                body=full_body,
                 **common_vals
             )
 
