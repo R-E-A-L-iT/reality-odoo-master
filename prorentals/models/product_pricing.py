@@ -1,5 +1,8 @@
 # models/product_pricing.py
-from odoo import api, models
+from odoo import models, api, fields
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class ProductPricing(models.Model):
     _inherit = "product.pricing"
