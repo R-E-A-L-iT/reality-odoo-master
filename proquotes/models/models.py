@@ -1884,38 +1884,38 @@ class orderLineProquotes(models.Model):
             price = line.price_unit
             duration_days = line.order_id.duration_days or 0
 
-            if rental_period.name:
-                if line.product_id.rent_ok and duration_days > 0 and rental_period.name.lower() == "calculated":
+            # if rental_period.name:
+            #     if line.product_id.rent_ok and duration_days > 0 and rental_period.name.lower() == "calculated":
                     
-                    # custom rental calculation logic
-                    base_price = line.price_unit
-                    price = 0
-                    paid_days_total = 0
-                    days_remaining = duration_days
+            #         # custom rental calculation logic
+            #         base_price = line.price_unit
+            #         price = 0
+            #         paid_days_total = 0
+            #         days_remaining = duration_days
 
-                    while days_remaining > 0:
-                        # Each pricing cycle is a 7-day block: 4 paid, 3 free
-                        if paid_days_total >= 12:
-                            # Once 12 paid days reached, give the rest of the 30-day cycle free
-                            cycle_free_days = min(days_remaining, 30 - (paid_days_total + (paid_days_total // 4) * 3))
-                            days_remaining -= cycle_free_days
-                            if days_remaining > 0:
-                                paid_days_total = 0  # Reset for next monthly cycle
-                            continue
+            #         while days_remaining > 0:
+            #             # Each pricing cycle is a 7-day block: 4 paid, 3 free
+            #             if paid_days_total >= 12:
+            #                 # Once 12 paid days reached, give the rest of the 30-day cycle free
+            #                 cycle_free_days = min(days_remaining, 30 - (paid_days_total + (paid_days_total // 4) * 3))
+            #                 days_remaining -= cycle_free_days
+            #                 if days_remaining > 0:
+            #                     paid_days_total = 0  # Reset for next monthly cycle
+            #                 continue
 
-                        # For the current 7-day block:
-                        block_days = min(days_remaining, 7)
-                        paid_days_in_block = min(block_days, 4)
-                        price += paid_days_in_block * base_price
-                        paid_days_total += paid_days_in_block
-                        days_remaining -= block_days
+            #             # For the current 7-day block:
+            #             block_days = min(days_remaining, 7)
+            #             paid_days_in_block = min(block_days, 4)
+            #             price += paid_days_in_block * base_price
+            #             paid_days_total += paid_days_in_block
+            #             days_remaining -= block_days
 
                         
-                    # price variable now contains the total rental price for the duration for this line
-                    _logger.info('RENTAL CALCULATIONS: Calculated rental price: %s, paid_days_total: %s, duration_days: %s', price, paid_days_total, duration_days)
+            #         # price variable now contains the total rental price for the duration for this line
+            #         _logger.info('RENTAL CALCULATIONS: Calculated rental price: %s, paid_days_total: %s, duration_days: %s', price, paid_days_total, duration_days)
 
-                else:
-                    _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.rent_ok: %s, duration_days: %s, rental_period.name: %s', line.product_id.rent_ok, duration_days, rental_period.name)
+            #     else:
+            #         _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.rent_ok: %s, duration_days: %s, rental_period.name: %s', line.product_id.rent_ok, duration_days, rental_period.name)
             
             # tax behaviour
             tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
