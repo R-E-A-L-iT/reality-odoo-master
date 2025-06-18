@@ -1880,6 +1880,7 @@ class orderLineProquotes(models.Model):
             _logger.info('RENTAL CALCULATIONS: rental_period: %s,', str(rental_period) if rental_period else 'None')
             # line_rental_price = 0
             price = line.price_unit
+            duration_days = line.order_id.duration_days or 0
 
             if line.product_id.rent_ok and duration_days > 0 and rental_period.name.lower() == "calculated":
                 
