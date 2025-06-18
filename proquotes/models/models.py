@@ -860,7 +860,7 @@ class SaleOrderTemplate(models.Model):
     _inherit = 'sale.order.template'
 
     header_id = fields.Many2one('header.footer', string="Default Header")
-    footer_id = fields.Many2one('header.footer', string="Default Footer")
+    # footer_id = fields.Many2one('header.footer', string="Default Footer")
 
 class order(models.Model):
     _inherit = "sale.order"
@@ -934,9 +934,9 @@ class order(models.Model):
 
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id_set_header_footer(self):
-        if self.sale_order_template_id:
+        if self.sale_order_template_id and self.sale_order_template_id.header_id:
             self.header_id = self.sale_order_template_id.header_id
-            self.footer_id = self.sale_order_template_id.footer_id
+            # self.footer_id = self.sale_order_template_id.footer_id
     
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
