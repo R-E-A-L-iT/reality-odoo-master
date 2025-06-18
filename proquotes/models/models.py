@@ -1879,7 +1879,7 @@ class orderLineProquotes(models.Model):
             for prod_id in line.product_id.product_pricing_ids:
                 _logger.info("Product ID: " + str(prod_id))
             # rental_period = line.product_id.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
-            _logger.info('RENTAL CALCULATIONS: product_pricing_id: %s, rental_period: %s, recurrence_id: %s', str(product_pricing_id), str(rental_period) if rental_period else 'None', str(product_template.recurrence_id) if product_template.recurrence_id else 'None')
+            _logger.info('RENTAL CALCULATIONS: product_pricing_id: %s, rental_period: %s, recurrence_id: %s', str(product_pricing_id), str(rental_period) if rental_period else 'None', "temporary removal")
             # line_rental_price = 0
             price = line.price_unit
             duration_days = line.order_id.duration_days or 0
