@@ -1873,7 +1873,7 @@ class orderLineProquotes(models.Model):
 
             # rental behaviour
             product_template = line.product_id.product_tmpl_id
-            match = re.search(r'([\d,.]+)', product_template.display_price)
+            match = re.search(r'([\d,.]+)', str(product_template.display_price))
             base_price = float(match.group(1).replace(',', '')) if match else 0.0
 
             _logger.info("Rental calculations: base_price is " + str(base_price))
