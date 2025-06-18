@@ -1876,6 +1876,8 @@ class orderLineProquotes(models.Model):
             product_pricing_id = line.product_id.product_pricing_ids[:1] if line.product_id.product_pricing_ids else None
             rental_period = self.env['sale.temporal.recurrence'].browse(product_pricing_id) if product_pricing_id else None
 
+            for prod_id in line.product_pricing_ids:
+                _logger.info("Product ID: " + str(prod_id))
             # rental_period = line.product_id.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
             _logger.info('RENTAL CALCULATIONS: product_pricing_id: %s, rental_period: %s,', str(product_pricing_id), str(rental_period) if rental_period else 'None')
             # line_rental_price = 0
