@@ -1882,7 +1882,7 @@ class orderLineProquotes(models.Model):
             price = line.price_unit
             duration_days = line.order_id.duration_days or 0
 
-            if line.product_id.rent_ok and duration_days > 0 and rental_period.name.lower() == "calculated":
+            if rental_period and line.product_id.rent_ok and duration_days > 0 and rental_period.name.lower() == "calculated":
                 
                 # custom rental calculation logic
                 base_price = line.price_unit
