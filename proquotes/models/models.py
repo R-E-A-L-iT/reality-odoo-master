@@ -1872,7 +1872,10 @@ class orderLineProquotes(models.Model):
         for line in self:
 
             # rental behaviour
-            rental_period = self.env['product.template'].search([('id', '=', line.product_id.id)]).recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
+            product_template = line.product_id.product_tmpl_id
+            rental_period = getattr(product_template, "_get_default_rental_recurrence", lambda: None)()
+
+            # rental_period = line.product_id.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
             _logger.info('RENTAL CALCULATIONS: rental_period: %s,', str(rental_period.name))
             # line_rental_price = 0
             price = line.price_unit
