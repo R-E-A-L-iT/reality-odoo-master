@@ -1930,7 +1930,7 @@ class orderLineProquotes(models.Model):
                 'price_subtotal': amount_untaxed,
                 'price_tax': amount_tax,
                 'price_total': amount_untaxed + amount_tax,
-                'price_unit': price,
+                # 'price_unit': price,
             })
 
 class MailComposeMessage(models.TransientModel):
