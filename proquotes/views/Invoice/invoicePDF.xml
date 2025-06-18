@@ -72,8 +72,11 @@
             <t t-if="o.invoice_origin">
                 <t t-set="so" t-value="env['sale.order'].search([('name', '=', o.invoice_origin)], limit=1)" />
                 <t t-if="so.customer_po_number">
-                    <div style="display: block; position: relative; bottom: 50px; margin-bottom: -25px;" class="row">
-                        <span><strong>PO Number:</strong> <t t-esc="so.customer_po_number"/></span>
+
+                
+                    <div style="display: block; position: relative; bottom: 50px; margin-top:50px;" class="row">
+                        <h5>PO Number:</h5>
+                        <span><t t-esc="so.customer_po_number"/></span>
                     </div>
                 </t>
             </t>
