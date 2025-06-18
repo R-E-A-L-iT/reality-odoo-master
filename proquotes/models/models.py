@@ -1872,45 +1872,45 @@ class orderLineProquotes(models.Model):
         for line in self:
 
             # rental behaviour
-            # product_template = line.product_id.product_tmpl_id
-            # rental_period = getattr(product_template, "_get_default_rental_recurrence", lambda: None)()
+            product_template = line.product_id.product_tmpl_id
+            rental_period = line.product_id.product_pricing_ids[0].recurrence_id
 
-            # # rental_period = line.product_id.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
-            # _logger.info('RENTAL CALCULATIONS: rental_period: %s,', str(rental_period.name))
-            # # line_rental_price = 0
-            # price = line.price_unit
+            # rental_period = line.product_id.recurrence_id or getattr(line.product_id, "_get_default_rental_recurrence", lambda: None)()
+            _logger.info('RENTAL CALCULATIONS: rental_period: %s,', str(rental_period.name))
+            # line_rental_price = 0
+            price = line.price_unit
 
-            # if product_id.can_be_rented and duration_days > 0 and rental_period.name.lower() == "calculated":
+            if product_id.can_be_rented and duration_days > 0 and rental_period.name.lower() == "calculated":
                 
-            #     # custom rental calculation logic
-            #     base_price = line.price_unit
-            #     price = 0
-            #     paid_days_total = 0
-            #     days_remaining = duration_days
+                # custom rental calculation logic
+                base_price = line.price_unit
+                price = 0
+                paid_days_total = 0
+                days_remaining = duration_days
 
-            #     while days_remaining > 0:
-            #         # Each pricing cycle is a 7-day block: 4 paid, 3 free
-            #         if paid_days_total >= 12:
-            #             # Once 12 paid days reached, give the rest of the 30-day cycle free
-            #             cycle_free_days = min(days_remaining, 30 - (paid_days_total + (paid_days_total // 4) * 3))
-            #             days_remaining -= cycle_free_days
-            #             if days_remaining > 0:
-            #                 paid_days_total = 0  # Reset for next monthly cycle
-            #             continue
+                while days_remaining > 0:
+                    # Each pricing cycle is a 7-day block: 4 paid, 3 free
+                    if paid_days_total >= 12:
+                        # Once 12 paid days reached, give the rest of the 30-day cycle free
+                        cycle_free_days = min(days_remaining, 30 - (paid_days_total + (paid_days_total // 4) * 3))
+                        days_remaining -= cycle_free_days
+                        if days_remaining > 0:
+                            paid_days_total = 0  # Reset for next monthly cycle
+                        continue
 
-            #         # For the current 7-day block:
-            #         block_days = min(days_remaining, 7)
-            #         paid_days_in_block = min(block_days, 4)
-            #         price += paid_days_in_block * base_price
-            #         paid_days_total += paid_days_in_block
-            #         days_remaining -= block_days
+                    # For the current 7-day block:
+                    block_days = min(days_remaining, 7)
+                    paid_days_in_block = min(block_days, 4)
+                    price += paid_days_in_block * base_price
+                    paid_days_total += paid_days_in_block
+                    days_remaining -= block_days
 
                     
-            #     # price variable now contains the total rental price for the duration for this line
-            #     _logger.info('RENTAL CALCULATIONS: Calculated rental price: %s, paid_days_total: %s, duration_days: %s', price, paid_days_total, duration_days)
+                # price variable now contains the total rental price for the duration for this line
+                _logger.info('RENTAL CALCULATIONS: Calculated rental price: %s, paid_days_total: %s, duration_days: %s', price, paid_days_total, duration_days)
 
-            # else:
-            #     _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.can_be_rented: %s, duration_days: %s, rental_period.name: %s', product_id.can_be_rented, duration_days, rental_period.name)
+            else:
+                _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.can_be_rented: %s, duration_days: %s, rental_period.name: %s', product_id.can_be_rented, duration_days, rental_period.name)
             
             # tax behaviour
             tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
@@ -1930,7 +1930,7 @@ class orderLineProquotes(models.Model):
                 'price_subtotal': amount_untaxed,
                 'price_tax': amount_tax,
                 'price_total': amount_untaxed + amount_tax,
-                # 'price_unit': price,
+                'price_unit': price,
             })
 
 class MailComposeMessage(models.TransientModel):
