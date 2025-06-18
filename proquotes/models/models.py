@@ -1911,7 +1911,7 @@ class orderLineProquotes(models.Model):
                 _logger.info('RENTAL CALCULATIONS: Calculated rental price: %s, paid_days_total: %s, duration_days: %s', price, paid_days_total, duration_days)
 
             else:
-                _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.can_be_rented: %s, duration_days: %s, rental_period.name: %s', product_id.can_be_rented, duration_days, rental_period.name)
+                _logger.info('RENTAL CALCULATIONS: Requirements not met. product_id.rent_ok: %s, duration_days: %s, rental_period.name: %s', line.product_id.rent_ok, duration_days, rental_period.name)
             
             # tax behaviour
             tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
