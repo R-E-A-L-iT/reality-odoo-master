@@ -27,6 +27,29 @@ class invoice(models.Model):
         store=True
     )
 
+    def action_thank_you_email(self):
+        """
+        Open the email compose wizard with our 'thank you' template
+        """
+        self.ensure_one()
+        template = self.env.ref('proquotes.email_template_invoice_thank_you')
+        # Use the built-in mail.compose.message wizard
+        compose_ctx = dict(
+            default_model='account.move',
+            default_res_ids=[self.id],
+            default_use_template=bool(template),
+            default_template_id=template and template.id or False,
+            default_composition_mode='comment',
+        )
+        return {
+            'name': _('Send Thank You'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'target': 'new',
+            'context': compose_ctx,
+        }
+
     def message_subscribe(self, partner_ids=None, subtype_ids=None):
         # Exclude the invoice's customer from being subscribed
         partner_ids = [
