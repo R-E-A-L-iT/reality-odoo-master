@@ -19,6 +19,10 @@
 			<xpath expr="//div[@name='journal_div']" position="after">
 				<field name="payment_date" readonly="1" modifiers="{'invisible': [('payment_id', '=', False)]}" />
 			</xpath>
+			<!-- Payment receipt email send button -->
+			<xpath expr="//header" position="inside">
+				<button name="action_thank_you_email" type="object" string="Thank Customer" class="oe_highlight" modifiers="{'invisible': [('invoice_payment_state', 'not in', ['in_payment', 'paid'])]}"/>
+			</xpath>
 		</field>
 	</record>
 </odoo>
