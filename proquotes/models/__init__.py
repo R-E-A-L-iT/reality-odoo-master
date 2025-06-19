@@ -1,14 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from . import account_move_line
+from . import account_move
+from . import header_footer
+from . import helpdesk_ticket
+from . import ir_ui_view
+from . import mail_compose_message
+from . import mail_thread
+from . import mail_wizard_invite
 from . import models
-from . import invoiceModels
-from . import templates
-from . import product
-
-from . import footer_header
-from . import stock
-from . import internal_company
-from . import internal_user
-from . import mail
-from . import renewal_maps
 from . import preconfigured_section
+from . import product_product
+from . import product_template
+from . import project_task
+from . import purchase_order
+from . import renewal_maps
+from . import res_company
+from . import res_partner
+from . import res_users
+from . import sale_order_line
+from . import sale_order_template_line
+from . import sale_order_template
+from . import sale_order
+from . import stock_lot
+from . import stock_picking
