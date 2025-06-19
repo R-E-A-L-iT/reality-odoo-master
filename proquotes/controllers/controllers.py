@@ -16,6 +16,7 @@ from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
 import re
 from werkzeug.utils import redirect
+
 _logger = logging.getLogger(__name__)
 
 
@@ -348,6 +349,7 @@ class QuoteCustomerPortal(cPortal):
 
         return results
 
+
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
@@ -360,7 +362,7 @@ class QuoteCustomerPortal(cPortal):
             else:
                 url = '/my'
         return redirect(url)
-
+    
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
     # def change_lang(self, lang, r='/', **kwargs):
