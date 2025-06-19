@@ -1531,40 +1531,145 @@ class order(models.Model):
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
         
-        groups = super()._notify_get_recipients_groups(
-            message, model_description, msg_vals=msg_vals
-        )
-        if not self:
-            return groups
+        super()._notify_get_recipients_groups(message, model_description, msg_vals)
+
+        # run once per message
+        if self.env.context.get('quote_split_done') or not message:
+            return []
+
         self.ensure_one()
+
+        manual_partners = message.partner_ids
+        follower_partners = self.message_follower_ids.mapped('partner_id')
+        partners = (manual_partners | follower_partners).filtered('email')
+
+        partners_data = (msg_vals or {}).get('partners_data', {})
+        emails = [
+            pdata.get('email')
+            for pdata in partners_data.values()
+            if isinstance(pdata, dict) and pdata.get('email')
+        ]
+
+        if partners:
+            _logger.info(
+                "SALE QUOTE %s — email send intercepted, recipients were: %s",
+                self.name, ", ".join(sorted(partners.mapped('email')))
+            )
+
+        common_vals = {
+            # 'body': message.body,
+            'subject': message.subject,
+            'attachment_ids': message.attachment_ids.ids,
+            'message_type': 'email',
+            # 'subtype_xmlid': 'mail.mt_comment',
+            'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+        }
+
+        for partner in partners:
+
+            base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            new_link = f"{base}/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+
+            original_html = message.body or ""
+
+            link_html = (
+                "<p style='margin-top:20px;'>"
+                "Link to view quote is: "
+                f"<a href='{new_link}' target='_blank'>{new_link}</a>"
+                "</p>"
+            )
+            full_body = original_html + link_html
+
+            self.with_context(quote_split_done=True).message_post(
+                partner_ids=[partner.id],
+                body=full_body,
+                **common_vals
+            )
+
+            mail_vals = {
+                'email_to': partner.email,
+                'subject':   message.subject,
+                'body_html': full_body,
+                'attachment_ids': message.attachment_ids.ids,
+                'email_layout_xmlid': 'proquotes.mail_notification_layout_inherit',
+                'reply_to':   message.email_from,
+                'email_from': message.email_from,
+            }
+            mail = self.env['mail.mail'].create(mail_vals)
+            mail.send()
+
+            # selected_template = self.env.context.get('default_template_id')
+            # template_id = self.env['mail.template'].browse(selected_template)
+            # new_link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner.id}"
+            # new_body = message.body + f"Link to view quote is {new_link}\nThe template used is {selected_template}"
+
+            # # self.with_context(quote_split_done=True).message_post(
+            # #     partner_ids=[partner.id],
+            # #     body=new_body,
+            # #     **common_vals
+            # # )
+
+            # rendered_dict = template_id._render_template(
+            #     template_id.body_html, 'sale.order', [self.id]
+            # )
+            # body_html = rendered_dict.get(self.id, '') 
+
+            # body_html += (
+            #     f"<p style='margin-top:20px;'>"
+            #     f"Link to view quote is: "
+            #     f"<a href='{new_link}' target='_blank'>{new_link}</a>"
+            #     f"</p>"
+            # )
+
+            # template_id.send_mail(
+            #     self.id,
+            #     force_send=True,
+            #     email_values={
+            #         'email_to': partner.email,
+            #         'body_html': body_html,
+            #     }
+            # )
+
+            # mail = self.env['mail.mail'].create({
+            #     'body_html': new_body,
+            #     'email_to': partner.email,
+            #     'subject': message.subject,
+            #     'attachment_ids': message.attachment_ids.ids,
+            #     'email_layout_xmlid': message.email_layout_xmlid or 'mail.mail_notification_light',
+            # })
+            # mail.send()
+
+        return []
+
         # Get the base URL for the portal
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        portal_url = self.get_portal_url()
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # portal_url = self.get_portal_url()
 
-        for group in groups:
-            group_name = group[0]
+        # for group in groups:
+        #     group_name = group[0]
 
-            # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
+        #     # enable the access button for all groups
+        #     group[2]['has_button_access'] = True
+        #     access_opt = group[2].setdefault('button_access', {})
             
-            # set the title for the access button based on the state of the order
-            if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
-            else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
+        #     # set the title for the access button based on the state of the order
+        #     if self.state in ('draft', 'sent'):
+        #         if self.partner_id.lang == 'fr_CA':
+        #             access_opt['title'] = _("Voir le devis")
+        #         else:
+        #             access_opt['title'] = _("View Quotation")
+        #     else:
+        #         if self.partner_id.lang == 'fr_CA':
+        #             access_opt['title'] = _("Voir la commande")
+        #         else:
+        #             access_opt['title'] = _("View Order")
             
-            # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+        #     # set the portal access URL for the button
+        #     access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         # return the modified recipient groups with the updated access options
-        return groups
+        # return groups
+
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
