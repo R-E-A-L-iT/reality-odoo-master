@@ -23,9 +23,7 @@ from collections import defaultdict
 from odoo.http import request
 from odoo.http import Response as Responseht
 from odoo.http import FutureResponse as FutureResponseht
-from odoo.fields import Command
-from odoo.osv import expression
-from odoo.tools import float_is_zero, float_compare, float_round, format_date, groupby
+
 from .translation import name_translation
 from odoo.tools import (
     clean_context, config, CountingStream, date_utils, discardattr,
@@ -539,7 +537,6 @@ class purchase_order(models.Model):
         help="Footer selection field",
     )
 
-
     def _get_default_footer(self):
         # Get Company
         company = None
@@ -589,8 +586,29 @@ class purchase_order(models.Model):
 class invoice(models.Model):
     _inherit = "account.move"
 
-    email_contacts = fields.Many2many('res.partner',string="Email Contacts")
-    
+    customer_po_number = fields.Char(
+        compute="_compute_customer_po_number",
+        store=True
+    )
+
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        # Exclude the invoice's customer from being subscribed
+        partner_ids = [
+            pid for pid in (partner_ids or [])
+            if pid not in self.mapped('partner_id').ids
+        ]
+        if not partner_ids:
+            return
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
+
+    @api.depends('invoice_origin')
+    def _compute_customer_po_number(self):
+        for move in self:
+            order = self.env['sale.order'].search([('name', '=', move.invoice_origin)], limit=1)
+            move.customer_po_number = order.customer_po_number or ''
+
+    email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
+
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -617,26 +635,23 @@ class invoice(models.Model):
         help="Footer selection field",
     )
 
-    # @api.model
-    # def create(self, vals):
-    #     res = super(invoice, self).create(vals)
-    #     if res.partner_id and not res.partner_id.email:
-    #         raise UserError("Your company must have an email address set.")
-    #     return res
-    #
-    # @api.onchange('partner_id')
-    # def _onchange_partner_email_check(self):
-    #     if self.partner_id and not self.partner_id.email:
-    #         raise UserError("Your company must have an email address set.")
+    @api.model
+    def create(self, vals):
+        res = super(invoice, self).create(vals)
+        if res.partner_id and not res.partner_id.email:
+            raise UserError("Your company must have an email address set.")
+        return res
+
+    @api.onchange('partner_id')
+    def _onchange_partner_email_check(self):
+        if self.partner_id and not self.partner_id.email:
+            raise UserError("Your company must have an email address set.")
 
     def action_invoice_sent(self):
         """ Open a window to compose an email, with the edi invoice template
             message loaded by default
         """
         self.ensure_one()
-
-        # if self.partner_id and not self.partner_id.email:
-        #     raise UserError("Your company must have an email address set.")
 
         if self.invoice_pdf_report_id:
             self.invoice_pdf_report_id.unlink()
@@ -818,6 +833,55 @@ class invoice(models.Model):
                     move.name = new_name
         return res
 
+    @api.model
+    def create(self, vals):
+        invoice_object = super(invoice, self).create(vals)
+
+        if invoice_object.move_type not in ['out_invoice', 'out_refund']:
+            return invoice_object
+
+        # add sales@r-e-a-l.it as a follower of the document
+        if invoice_object.move_type in ['out_invoice', 'out_refund']:
+            partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            if partner and partner.id not in invoice_object.message_partner_ids.ids:
+                invoice_object.message_subscribe(partner_ids=[partner.id])
+
+
+        # Find the related sale orders
+        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
+
+        for order in sale_orders:
+            for line in invoice_object.invoice_line_ids:
+                # Get the corresponding sale order line
+                sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
+
+                # Remove the invoice line if the related sale line is not selected
+                if sale_line and not sale_line.selected:
+                    line.unlink()
+
+        return invoice_object
+
+class AccountMoveSend(models.TransientModel):
+    _inherit = 'account.move.send'
+
+    # def write(self, vals):
+    #     res = super().write(vals)
+
+    #     if 'mail_partner_ids' in vals:
+    #         for wizard in self:
+    #             invoice_ids = wizard.move_ids
+    #             invoice_ids.write({
+    #                 'email_partner_ids': [(6, 0, wizard.mail_partner_ids.ids)]
+    #             })
+
+    #     return res
+
+class SaleOrderTemplate(models.Model):
+    _inherit = 'sale.order.template'
+
+    header_id = fields.Many2one('header.footer', string="Default Header")
+    # footer_id = fields.Many2one('header.footer', string="Default Footer")
+
 class order(models.Model):
     _inherit = "sale.order"
 
@@ -834,6 +898,8 @@ class order(models.Model):
         domain="[('name', 'not ilike', 'Default')]",
         required=True
     )
+
+    approve_financing = fields.Boolean(string="APPROVE Financing")
 
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
@@ -897,7 +963,25 @@ class order(models.Model):
             invoiceable_line_ids.append(line.id)
 
         return self.env['sale.order.line'].browse(invoiceable_line_ids + down_payment_line_ids)
+
+    @api.onchange('sale_order_template_id')
+    def _onchange_sale_order_template_id_set_header_footer(self):
+        if self.sale_order_template_id and self.sale_order_template_id.header_id:
+            self.header_id = self.sale_order_template_id.header_id
+            # self.footer_id = self.sale_order_template_id.footer_id
     
+    # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
+    @api.model
+    def create(self, vals):
+        order = super().create(vals)
+
+        # Find or create the partner with email sales@r-e-a-l.it
+        partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if partner:
+            order.message_subscribe(partner_ids=[partner.id])
+        return order
+
+
     @api.model
     def default_get(self, fields_list):
         defaults = super(order, self).default_get(fields_list)
@@ -910,50 +994,6 @@ class order(models.Model):
             defaults['payment_term_id'] = immediate_payment_term.id
 
         return defaults
-
-    def action_quotation_send(self):
-        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
-        self.ensure_one()
-        self.order_line._validate_analytic_distribution()
-        lang = self.env.context.get('lang')
-        mail_template = self._find_mail_template()
-
-        # Fallback to your General Sales template
-        template = self.env['mail.template'].sudo().search([('name', '=', 'General Sales')], limit=1)
-        if template:
-            mail_template = template
-
-        if mail_template and mail_template.lang:
-            lang = mail_template._render_lang(self.ids)[self.id]
-
-        # Get recipients from email_contacts
-        partner_ids = self.email_contacts.ids
-
-        ctx = {
-            'default_model': 'sale.order',
-            'default_res_ids': self.ids,
-            'default_template_id': mail_template.id if mail_template else None,
-            'default_composition_mode': 'comment',
-            'mark_so_as_sent': True,
-            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
-            'proforma': self.env.context.get('proforma', False),
-            'force_email': True,
-            'model_description': self.with_context(lang=lang).type_name,
-            'default_partner_ids': [(6, 0, partner_ids)],
-            # Optional: pass also to your custom field if needed
-            'default_email_contacts': [(6, 0, partner_ids)],
-        }
-
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'views': [(False, 'form')],
-            'view_id': False,
-            'target': 'new',
-            'context': ctx,
-        }
-
     
     @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
@@ -991,16 +1031,6 @@ class order(models.Model):
         #     # Reset pricelist if not rental
         #     self.pricelist_id = False
 
-    @api.onchange('email_contacts')
-    def _onchange_email_contacts(self):
-        for contact in self.email_contacts:
-            try:
-                if self.partner_ids:
-                    if contact not in self.partner_ids:
-                        self.partner_ids.append(contact.id)
-            except:
-                _logger.info("Failed to add contacts to the partner_ids from the email_contacts table")
-
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
         lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
@@ -1036,116 +1066,16 @@ class order(models.Model):
         selected_lines = self.order_line.sudo().filtered(
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
-        # self.order_line._action_launch_stock_rule()
-        # return super(order, self)._action_confirm()
 
-    @api.returns('mail.message', lambda value: value.id)
-    def message_post(self, **kwargs):
-        sales_email = self.env['res.partner'].browse(64744)
-        if ('partner_ids' in kwargs) and sales_email:
-            kwargs['partner_ids'].append(sales_email.id)
-        if self.env.context.get('mark_so_as_sent'):
-            self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
-        so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
-        if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
-            kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
-        #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
-        return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-        if 'tracking_value_ids' not in kwargs:
-            return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-        else:
-            pass
-    # @api.returns('mail.message', lambda value: value.id)
-    # def message_post(self, **kwargs):
-    #     if self.env.context.get('mark_so_as_sent'):
-    #         self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
-    #     so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
-    #     if self.env.context.get('mark_so_as_sent') and 'mail_notify_author' not in kwargs:
-    #         kwargs['notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
-    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-    #     sales_email_id = 64744
-    #     sales_email = self.env['res.partner'].browse(sales_email_id)
-        
-    #     if 'partner_ids' not in kwargs:
-    #         kwargs['partner_ids'] = []
-    #     if sales_email.id not in kwargs['partner_ids']:
-    #         kwargs['partner_ids'].append(sales_email.id)
-    #     #_logger.info('>>>>>>>>>>>>> kwargs: %s', kwargs)
-    #     if 'tracking_value_ids' not in kwargs:
-    #         return super(order, self.with_context(**so_ctx)).message_post(**kwargs)
-    #     else:
-    #         pass
-
-     
-    # def message_post(self, **kwargs):
-        
-    #     # Variable mail_post_autofollow is true when using send message function but not when log note
-    #     mail_post_autofollow = self.env.context.get('mail_post_autofollow', True)
-        
-    #     message_type = kwargs.get('message_type', False)
-        
-    #     if 'body' not in kwargs:
-    #         kwargs['body'] = ''
-            
-    #     # DEBUGGING
-        
-    #     # kwargs['body'] += f"<br/><br/>[DEBUG] mail_post_autofollow: {mail_post_autofollow}, message_type: {kwargs.get('message_type', 'undefined')}"
-
-    #     # internal note feature
-    #     if not mail_post_autofollow:
-    #         # Call super without adding any email contacts, since it's a log note
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Quotation viewed by customer" in kwargs['body']:
-    #         # only send to salesperson (user_id = salesperson)
-    #         # sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-    #         if order and order.user_id:
-    #             kwargs['partner_ids'] = [order.user_id.id]
-    #         else:
-    #             kwargs['partner_ids'] = []
-                
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Product prices have been recomputed" in kwargs['body']:
-    #         return False
-        
-    #     elif "Signed by" in kwargs['body'] or "Bon signé" in kwargs['body']:
-    #         if order and order.user_id:
-    #             kwargs['partner_ids'] = [order.user_id.id]
-    #         else:
-    #             kwargs['partner_ids'] = []
-                
-    #         return super(order, self).message_post(**kwargs)
-        
-    #     elif "Extra line with" in kwargs['body']:
-    #         return False
-
-    #     # send message feature
-    #     else:
-    #         if 'partner_ids' not in kwargs:
-    #             kwargs['partner_ids'] = []
-
-    #         # Add email contacts from the many2many field
-    #         contacts = [partner.id for partner in self.email_contacts]
-
-    #         # Add static email partner 'sales@r-e-a-l.it'
-    #         sales_partner = self.env['res.partner'].sudo().search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-    #         if sales_partner:
-    #             contacts.append(sales_partner.id)
-                
-    #         # this removes the default partner_id, which is the email attatched to the company contact
-    #         filtered_partner_ids = kwargs['partner_ids'][0:] if len(kwargs['partner_ids']) > 1 else []
-
-    #         all_contacts = list(set(filtered_partner_ids + contacts))
-    #         kwargs['partner_ids'] = all_contacts
-            
-    #         # if kwargs['partner_ids']:
-    #         #     contacts += kwargs['partner_ids'][1:] 
-            
-    #         # kwargs['partner_ids'] = contacts
-
-    #         # Call the super method to proceed with posting the message
-    #         return super(order, self).message_post(**kwargs)
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        # Always exclude the customer (partner_id) from being subscribed
+        partner_ids = [
+            pid for pid in (partner_ids or [])
+            if pid not in self.mapped('partner_id').ids
+        ]
+        if not partner_ids:
+            return  # no one left to subscribe
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):
@@ -1430,8 +1360,7 @@ class order(models.Model):
             [("product_id", "=", product.product_id.id)])
 
         if len(renewal_maps) != 1:
-            return "Hardware CCP: Invalid Match Count (" + str(len(renewal_maps)) + ") for \n[stock.lot].name: " + str(
-                eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
+            return "Either a renewal map is missing, or there are too many renewal maps available for the " + str(product.product_id.name) + ". Amount of renewal maps found: (" + str(len(renewal_maps)) + ")\n\n"
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
@@ -1600,26 +1529,41 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+        """ Give access button to all users and portal customers to view the quote in the portal. """
+        
+        groups = super()._notify_get_recipients_groups(
+            message, model_description, msg_vals=msg_vals
+        )
         if not self:
             return groups
         self.ensure_one()
-        local_msg_vals = dict(msg_vals or {})
+        # Get the base URL for the portal
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = self.get_portal_url()
-        backend_url = f"/web#id={self.id}&model={self._name}&view_type=form"
+
         for group in groups:
             group_name = group[0]
-            group_info = group[2]
-            group_info['has_button_access'] = True
-            access_opt = group_info.setdefault('button_access', {})
-            if self.state in ('draft', 'sent'):
-                title = _("Voir le devis") if self.partner_id.lang == 'fr_CA' else _("View Quotation")
-            else:
-                title = _("Voir la commande") if self.partner_id.lang == 'fr_CA' else _("View Order")
-            access_opt['title'] = title
 
-            # Check if any partner has a linked user who is an internal user
+            # enable the access button for all groups
+            group[2]['has_button_access'] = True
+            access_opt = group[2].setdefault('button_access', {})
+            
+            # set the title for the access button based on the state of the order
+            if self.state in ('draft', 'sent'):
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir le devis")
+                else:
+                    access_opt['title'] = _("View Quotation")
+            else:
+                if self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir la commande")
+                else:
+                    access_opt['title'] = _("View Order")
+            
+            # set the portal access URL for the button
             access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+
+        # return the modified recipient groups with the updated access options
         return groups
 
     def _amount_all(self):
@@ -1698,6 +1642,24 @@ class order(models.Model):
                 )
                 for l in res
             ]
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        invoices = super()._create_invoices(grouped=grouped, final=final, date=date)
+
+        for order in self:
+            if order.state != 'sale':
+                continue  # Only handle confirmed orders
+
+            for invoice in invoices.filtered(lambda inv: inv.invoice_origin == order.name):
+                # Get all followers from the quote, excluding the customer
+                follower_ids = order.message_partner_ids.filtered(
+                    lambda p: p != order.partner_id
+                ).ids
+
+                if follower_ids:
+                    invoice.message_subscribe(partner_ids=follower_ids)
+
+        return invoices
 
 
 class orderLineProquotes(models.Model):
@@ -1782,12 +1744,11 @@ class orderLineProquotes(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
-
             if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
                 line.is_selected = True
             else:
                 line.is_selected = False
-                    
+                
     @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
     def _onchange_selected_line(self):
         if self.is_selected:
@@ -1855,6 +1816,17 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
+    def _get_invoiceable_lines(self, final=False):
+        down_payment_line_ids = []
+        invoiceable_line_ids = []
+        pending_section = None
+        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+        is_selected_sales_order = self.order_line.search(
+            [('is_selected', '=', True), ('order_id', '=', self.id), ('product_id', '!=', False)])
+        for line in is_selected_sales_order:
+            invoiceable_line_ids.append(line.id)
+
+        return self.env['sale.order.line'].browse(invoiceable_line_ids + down_payment_line_ids)
 
     def _prepare_invoice_line(self, **optional_values):
         """Prepare the values to create the new invoice line for a sales order line.
@@ -1895,13 +1867,6 @@ class orderLineProquotes(models.Model):
             res['account_id'] = False
         return res
 
-
-
-class proquotesMail(models.TransientModel):
-    _inherit = "mail.compose.message"
-    
-    from odoo import models, api
-
 class MailComposeMessage(models.TransientModel):
     _inherit = 'mail.compose.message'
     
@@ -1910,122 +1875,52 @@ class MailComposeMessage(models.TransientModel):
         string='Use Template',
         domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
-    
-    email_contacts = fields.Many2many(
-        'res.partner',
-        string="Email Contacts",
-        compute='_compute_email_contacts',
-        store=False,
-        readonly=False
-    )
-    
-    @api.depends('model', 'res_ids')
-    def _compute_email_contacts(self):
-        for record in self:
-            if record.model == 'sale.order' and record.res_ids:
-                valid_res_ids = [int(res_id) for res_id in record.res_ids if isinstance(res_id, int)]
-                if valid_res_ids:
-                    sale_orders = self.env['sale.order'].browse(valid_res_ids)
-                    record.email_contacts = sale_orders.mapped('email_contacts')
-                else:
-                    record.email_contacts = False
-            else:
-                record.email_contacts = False
 
+    # this clears the default recipients that are autofilled into the wizard. this is here because we don't want to send emails to the email address attatched to the company contact.
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
 
-    # @api.model
-    # def default_get(self, fields_list):
-    #     res = super(MailComposeMessage, self).default_get(fields_list)
-        
-    #     message = False
-    #     if self.env.context.get('active_model') == 'mail.message' and self.env.context.get('active_id'):
-    #         message = self.env['mail.message'].browse(self.env.context['active_id'])
-        
-    #     if message:
-    #         res['user'] = message.create_uid
-        
-    #     if self.env.context.get('active_model') == 'sale.order' and self.env.context.get('active_ids'):
-    #         sale_orders = self.env['sale.order'].browse(self.env.context['active_ids'])
-    #         res['email_contacts'] = [(6, 0, sale_orders.mapped('email_contacts').ids)]
+        model = self.env.context.get('default_model')
 
-    #     if self.env.context.get('default_model') == 'sale.order':
-    #         # set template
-    #         template = self.env['mail.template'].search([('name', '=', 'General Sales')], limit=1)
-    #         if template:
-    #             res['template_id'] = template.id
-                
-    #         # set recipients
-    #         order = self.env['sale.order'].search([('id', '=', self.env.context.get('default_res_id'))], limit=1)
-    #         if order and order.email_contacts:
-    #             res['partner_ids'] = [(4, order.user_id.id)]
-        
-    #     return res
-        
-    #     return res
-    
-    # @api.onchange('template_id')
-    # def _onchange_template_id(self):
-    #     return {
-    #         'domain': {
-    #             'template_id': [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
-    #         }
-    #     }
+        if model in ['sale.order']:
+            defaults['partner_ids'] = [(5, 0, 0)]
 
-    # @api.onchange('model')
-    # def _onchange_recipients(self):
-    #     if self.model == 'sale.order' and self.env.context.get('default_res_id'):
+            template = self.env['mail.template'].search([
+                ('name', '=', 'General Sales')
+            ], limit=1)
             
-    #         sale_order = self.env['sale.order'].browse(self.env.context.get('default_res_id'))
-            
-    #         if sale_order.email_contacts:
-    #             self.partner_ids = sale_order.email_contacts
-    #         else:
-    #             self.partner_ids = [(5, 0, 0)]
+            if template:
+                defaults['template_id'] = template.id
+                # defaults['use_template'] = True
 
-    # def send_mail(self, auto_commit=False):
-        
-    #     result = super(MailComposeMessage, self).send_mail(auto_commit=auto_commit)
+        elif model in ['account.move']:
+            defaults['mail_partner_ids'] = [(5, 0, 0)]
 
-    #     if self.model == 'sale.order' and self.res_id:
-    #         sale_order = self.env['sale.order'].browse(self.res_id)
-            
-    #         # Update email_contacts with the selected recipients from the wizard
-    #         sale_order.email_contacts = [(6, 0, self.partner_ids.ids)]
+            template = self.env['mail.template'].search([
+                ('name', '=', 'Invoice: Send by email')
+            ], limit=1)
 
-    #     return result
+            if template:
+                defaults['template_id'] = template.id
+                # defaults['use_template'] = True
+                defaults['attachment_ids'] = [(5, 0, 0)]
 
-    def generate_email_for_composer(self, template_id, res_ids, fields):
-        """Call email_template.generate_email(), get fields relevant for
-        mail.compose.message, transform email_cc and email_to into partner_ids"""
-        multi_mode = True
-        if isinstance(res_ids, int):
-            multi_mode = False
-            res_ids = [res_ids]
+        return defaults
 
-        returned_fields = fields + ["partner_ids", "attachments"]
-        values = dict.fromkeys(res_ids, False)
+class MailWizardInvite(models.TransientModel):
+    _inherit = 'mail.wizard.invite'
 
-        template_values = (
-            self.env["mail.template"]
-            .with_context(tpl_partners_only=True)
-            .browse(template_id)
-            .generate_email(res_ids, fields)
-        )
-        for res_id in res_ids:
-            res_id_values = dict(
-                (field, template_values[res_id][field])
-                for field in returned_fields
-                if template_values[res_id].get(field)
-            )
-            res_id_values["body"] = res_id_values.pop("body_html", "")
-            if template_values[res_id].get("model") == "sale.order":
-                res_id_values["partner_ids"] = self.env["sale.order"].browse(
-                    res_id
-                ).partner_ids + self.env["res.partner"].search(
-                    [("email", "=", "sales@r-e-a-l.it")]
-                )
-            values[res_id] = res_id_values
-        return multi_mode and values or values[res_ids[0]]
+    @api.model
+    def default_get(self, fields):
+        res = super().default_get(fields)
+        res['notify'] = False  # always default to false
+        return res
+
+    def add_followers(self):
+        self.ensure_one()
+        self.notify = False  # force disable before executing
+        return super().add_followers()
 
 
 class variant(models.Model):
@@ -2253,232 +2148,3 @@ class delivery(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
-
-class partner(models.Model):
-    _inherit = 'res.partner'
-
-    email_contacts = fields.Many2many('res.partner',string="Email Contacts",store=False,readonly=False)
-
-class AccountMoveSend(models.TransientModel):
-    _inherit = 'account.move.send'
-
-    @api.model
-    def _send_mail(self, move, mail_template, **kwargs):
-        """ Send the journal entry passed as parameter by mail. """
-        partner_ids = kwargs.get('partner_ids', [])
-        _logger.info("#############8888888888888: %s", partner_ids)
-        new_message = move\
-            .with_context(
-                no_new_invoice=True,
-                mail_notify_author=self.env.user.partner_id.id in partner_ids,
-            ).message_post(
-                message_type='comment',
-                **kwargs,
-                **{
-                    'email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
-                    'email_add_signature': not mail_template,
-                    'mail_auto_delete': mail_template.auto_delete,
-                    'mail_server_id': mail_template.mail_server_id.id,
-                    'reply_to_force_new': False,
-                },
-            )
-
-        # Prevent duplicated attachments linked to the invoice.
-        new_message.attachment_ids.write({
-            'res_model': new_message._name,
-            'res_id': new_message.id,
-        })
-
-    @api.model
-    def _get_mail_params(self, move, move_data):
-        # We must ensure the newly created PDF are added. At this point, the PDF has been generated but not added
-        # to 'mail_attachments_widget'.
-        mail_attachments_widget = move_data.get('mail_attachments_widget')
-        seen_attachment_ids = set()
-        to_exclude = {x['name'] for x in mail_attachments_widget if x.get('skip')}
-        for attachment_data in self._get_invoice_extra_attachments_data(move) + mail_attachments_widget:
-            if attachment_data['name'] in to_exclude:
-                continue
-
-            try:
-                attachment_id = int(attachment_data['id'])
-            except ValueError:
-                continue
-
-            seen_attachment_ids.add(attachment_id)
-
-        mail_attachments = [
-            (attachment.name, attachment.raw)
-            for attachment in self.env['ir.attachment'].browse(list(seen_attachment_ids)).exists()
-        ]
-
-        _logger.info("#############777777777777777777: %s", move_data['mail_partner_ids'])
-        return {
-            'body': move_data['mail_body'],
-            'subject': move_data['mail_subject'],
-            'partner_ids': move_data['mail_partner_ids'].ids,
-            'attachments': mail_attachments,
-        }
-
-    @api.model
-    def _send_mails(self, moves_data):
-        subtype = self.env.ref('mail.mt_comment')
-
-        for move, move_data in moves_data.items():
-            mail_template = move_data['mail_template_id']
-            mail_lang = move_data['mail_lang']
-            mail_params = self._get_mail_params(move, move_data)
-            if not mail_params:
-                continue
-
-            if move_data.get('proforma_pdf_attachment'):
-                attachment = move_data['proforma_pdf_attachment']
-                mail_params['attachments'].append((attachment.name, attachment.raw))
-
-            email_from = self._get_mail_default_field_value_from_template(mail_template, mail_lang, move, 'email_from')
-            _logger.info("#############email_fromd6666666666: %s", email_from)
-            model_description = move.with_context(lang=mail_lang).type_name
-
-            self._send_mail(
-                move,
-                mail_template,
-                subtype_id=subtype.id,
-                model_description=model_description,
-                email_from=email_from,
-                **mail_params,
-            )
-
-
-    @api.model
-    def _process_send_and_print(self, moves, wizard=None, allow_fallback_pdf=False, **kwargs):
-        """ Process the moves given their individual configuration set on move.send_and_print_values.
-        :param moves: account.move to process
-        :param wizard: account.move.send wizard if exists. If not we avoid raising any error.
-        :param allow_fallback_pdf:  In case of error when generating the documents for invoices, generate a proforma PDF report instead.
-        """
-        from_cron = not wizard
-
-        moves_data = {
-            move: {
-                **(move.send_and_print_values if not wizard else wizard._get_wizard_values()),
-                **self._get_mail_move_values(move, wizard),
-            }
-            for move in moves
-        }
-
-        # Generate all invoice documents.
-        self._generate_invoice_documents(moves_data, allow_fallback_pdf=allow_fallback_pdf)
-
-        # Manage errors.
-        errors = {move: move_data for move, move_data in moves_data.items() if move_data.get('error')}
-        if errors:
-            self._hook_if_errors(errors, from_cron=from_cron, allow_fallback_pdf=allow_fallback_pdf)
-
-        # Fallback in case of error.
-        errors = {move: move_data for move, move_data in moves_data.items() if move_data.get('error')}
-        if allow_fallback_pdf and errors:
-            self._generate_invoice_fallback_documents(errors)
-
-        # Send mail.
-        success = {move: move_data for move, move_data in moves_data.items() if not move_data.get('error')}
-        if success:
-            self._hook_if_success(success, from_cron=from_cron, allow_fallback_pdf=allow_fallback_pdf)
-
-        # Update send and print values of moves
-        for move in moves:
-            if move.send_and_print_values:
-                move.send_and_print_values = False
-
-        to_download = {move: move_data for move, move_data in moves_data.items() if move_data.get('download')}
-        if to_download:
-            attachment_ids = []
-            for move, move_data in to_download.items():
-                attachment_ids += self._get_invoice_extra_attachments(move).ids or move_data.get('proforma_pdf_attachment').ids
-            if attachment_ids:
-                if kwargs.get('bypass_download'):
-                    return attachment_ids
-                return self._download(attachment_ids, to_download)
-
-        return {'type': 'ir.actions.act_window_close'}
-
-    def action_send_and_print(self, force_synchronous=False, allow_fallback_pdf=False, **kwargs):
-        """ Create the documents and send them to the end customers.
-        If we are sending multiple invoices and not downloading them we will process the moves asynchronously.
-        :param force_synchronous:   Flag indicating if the method should be done synchronously.
-        :param allow_fallback_pdf:  In case of error when generating the documents for invoices, generate a
-                                    proforma PDF report instead.
-        """
-        
-        self.ensure_one()
-
-        # _logger.info('>>>>>>>>>>called my action button bro >>>>>>>>>>>.amount_untaxed: %s,', self.mail_partner_ids)
-        active_ids = self.env.context.get('active_ids', [])
-        # _logger.info("##############Active IDs from wizard: %s", active_ids)
-    
-        # Example: get the related invoices
-        invoices = self.env['account.move'].browse(active_ids)
-        # _logger.info("#############invoices IDs from wizard: %s", invoices.partner_id.email_contacts)
-        for invoice in invoices:
-            partner = invoice.partner_id
-            if invoice:
-                # _logger.info(">>> Setting email_contacts on partner: %s", self.mail_partner_ids.ids)
-                invoice.email_contacts = [(6, 0, self.mail_partner_ids.ids)]
-                # _logger.info(">>> partner.email_contacts partner: %s", partner.email_contacts)
-                
-        if self.mode == 'invoice_multi' and self.checkbox_send_mail and not self.mail_template_id:
-            raise UserError(_('Please select a mail template to send multiple invoices.'))
-
-        force_synchronous = force_synchronous or self.checkbox_download
-        process_later = self.mode == 'invoice_multi' and not force_synchronous
-        if process_later:
-            # Set sending information on moves
-            for move in self.move_ids:
-                move.send_and_print_values = self._get_wizard_values()
-            self.env.ref('account.ir_cron_account_move_send')._trigger()
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'type': 'info',
-                    'title': _('Sending invoices'),
-                    'message': _('Invoices are being sent in the background.'),
-                    'next': {'type': 'ir.actions.act_window_close'},
-                },
-            }
-
-        return self._process_send_and_print(
-            self.move_ids,
-            wizard=self,
-            allow_fallback_pdf=allow_fallback_pdf,
-            **kwargs,
-        )
-
-    def _get_default_mail_partner_ids(self, move, mail_template, mail_lang):
-        partners = self.env['res.partner'].with_company(move.company_id)
-        if mail_template.email_to:
-            for mail_data in tools.email_split(mail_template.email_to):
-                partners |= partners.find_or_create(mail_data)
-        if mail_template.email_cc:
-            for mail_data in tools.email_split(mail_template.email_cc):
-                partners |= partners.find_or_create(mail_data)
-        if mail_template.partner_to:
-            #     partner_to = self._get_mail_default_field_value_from_template(mail_template, mail_lang, move, 'partner_to')
-            #     partner_ids = mail_template._parse_partner_to(partner_to)
-            partners |= self.env['res.partner'].sudo().browse(partners).exists()
-        return partners
-
-    @api.depends('checkbox_send_mail')
-    def _compute_send_mail_extra_fields(self):
-        for wizard in self:
-            wizard.send_mail_readonly = False
-            wizard.display_mail_composer = wizard.mode == 'invoice_single'
-            wizard.send_mail_warning_message = False
-
-            invoices_without_mail_data = wizard.move_ids.filtered(lambda x: x.partner_id.email)
-            # wizard.send_mail_readonly = invoices_without_mail_data == wizard.move_ids
-
-            if wizard.mode == 'invoice_multi' and wizard.checkbox_send_mail:
-                wizard.send_mail_warning_message = _(
-                    "The partners on the following invoices have no email address, "
-                    "so those invoices will not be sent: %s",
-                    ", ".join(invoices_without_mail_data.mapped('name')))
