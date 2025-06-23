@@ -6,7 +6,7 @@
             <t t-set="base_url" t-value="request.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
             <t t-set="hide_ribbon_div" t-value="False"/>
             <t t-if="'lezejde-reality.odoo.com' in base_url">
-              <t t-set="hide_ribbon_div" t-value="True"/>
+              <t t-set="hide_ribbon_div" t-value="False"/>
             </t>
             <t t-if="'www.r-e-a-l.it' in base_url">
               <t t-set="hide_ribbon_div" t-value="True"/>
