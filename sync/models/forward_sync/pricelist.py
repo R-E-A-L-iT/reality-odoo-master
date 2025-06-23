@@ -91,8 +91,6 @@ class sync_pricelist:
         ignored_columns = [
             "DEALER DISCOUNT",
             "Barcode",
-            "Purchase Price CAD",
-            "Purchase Price USD",
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
@@ -458,81 +456,6 @@ class sync_pricelist:
                         product.sudo().write({"barcode": barcode})
                         updated_fields.append("barcode")
                         _logger.info("updateProduct: Updated barcode for Product ID %s to '%s'.", product_id, barcode)
-
-            if "Purchase Price CAD" in sheet_columns:
-                
-                purchase_price_cad = str(row[sheet_columns.index("Purchase Price CAD")]).strip()
-                cad_currency = self.env['res.currency'].search([('name', '=', 'CAD')], limit=1)
-                cad_partner = self.env['res.partner'].search(
-                    [('name', '=', 'Leica Geosystems Ltd.'), ('is_company', '=', True)],
-                    limit=1
-                )
-
-                if purchase_price_cad and cad_currency and cad_partner:
-
-                    supplier_info = self.env['product.supplierinfo'].search([
-                        ('product_tmpl_id', '=', product.id),
-                        ('name', '=', cad_partner.id),
-                        ('currency_id', '=', cad_currency.id),
-                    ], limit=1)
-
-                    if supplier_info:
-                        if supplier_info.price != purchase_price_cad:
-                            supplier_info.sudo().write({'price': purchase_price_cad})
-                            updated_fields.append(f'supplier_price_{cad_partner.name}')
-                            _logger.info("Updated %s price for Product %s to %.2f %s", cad_partner.name, product.id, purchase_price_cad, cad_currency.name)
-                        else:
-                            _logger.info("No change to %s price for Product %s (still %.2f)", cad_partner.name, product.id, purchase_price_cad)
-                    else:
-                        vals = {
-                            'name': cad_partner.id,
-                            'currency_id': cad_currency.id,
-                            'price': purchase_price_cad,
-                            'product_tmpl_id': product.id,
-                            # optionally set minimum_qty, sequence, delay, etc
-                        }
-                        self.env['product.supplierinfo'].sudo().create(vals)
-                        updated_fields.append(f'supplier_price_{cad_partner.name}')
-                        _logger.info("Created vendor price for %s on Product %s: %.2f %s", cad_partner.name, product.id, purchase_price_cad, cad_currency.name)
-
-
-
-            if "Purchase Price USD" in sheet_columns:
-
-                purchase_price_usd = str(row[sheet_columns.index("Purchase Price USD")]).strip()
-                usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
-                usd_partner = self.env['res.partner'].search(
-                    [('name', '=', 'Leica Geosystems Ltd.'), ('is_company', '=', True)],
-                    limit=1
-                )
-
-                if purchase_price_usd and usd_currency and usd_partner:
-
-                    supplier_info = self.env['product.supplierinfo'].search([
-                        ('product_tmpl_id', '=', product.id),
-                        ('name', '=', usd_partner.id),
-                        ('currency_id', '=', usd_currency.id),
-                    ], limit=1)
-
-                    if supplier_info:
-                        if supplier_info.price != purchase_price_usd:
-                            supplier_info.sudo().write({'price': purchase_price_usd})
-                            updated_fields.append(f'supplier_price_{usd_partner.name}')
-                            _logger.info("Updated %s price for Product %s to %.2f %s", usd_partner.name, product.id, purchase_price_usd, usd_currency.name)
-                        else:
-                            _logger.info("No change to %s price for Product %s (still %.2f)", usd_partner.name, product.id, purchase_price_usd)
-                    else:
-                        vals = {
-                            'name': usd_partner.id,
-                            'currency_id': usd_currency.id,
-                            'price': purchase_price_usd,
-                            'product_tmpl_id': product.id,
-                            # optionally set minimum_qty, sequence, delay, etc
-                        }
-                        self.env['product.supplierinfo'].sudo().create(vals)
-                        updated_fields.append(f'supplier_price_{usd_partner.name}')
-                        _logger.info("Created vendor price for %s on Product %s: %.2f %s", usd_partner.name, product.id, purchase_price_usd, usd_currency.name)
-
 
             # special handling of margins (not available for all products/pricelists)
             # if "DEALER DISCOUNT" in sheet_columns:
