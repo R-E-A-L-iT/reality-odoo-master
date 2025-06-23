@@ -3,7 +3,7 @@
     "summary": """
 		Portal Upgrade Module that adds Advanced Features""",
     "description": """
-		Module that allows expands Customer Portal Test
+		Module that allows expands Customer Portal
 	""",
     "author": "Ty Cyr",
     "license": "LGPL-3",
