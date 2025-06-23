@@ -90,6 +90,7 @@ class sync_pricelist:
         # columns that will not trigger sync validation failure regardless of whether they are present or not
         ignored_columns = [
             "DEALER DISCOUNT",
+            "Barcode",
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
@@ -435,6 +436,26 @@ class sync_pricelist:
                         odoo_field, product_id, str(e), exc_info=True
                     )
                     self.add_to_report("ERROR", f"updateProduct: Error while updating field {odoo_field} for Product ID {product_id}: {str(e)}")
+
+            if "Barcode" in sheet_columns:
+                
+                barcode = str(row[sheet_columns.index("Barcode")]).strip()
+
+                if barcode:
+
+                    # check if barcode already exists
+                    existing_barcode = self.database.env["product.template"].search([("barcode", "=", barcode)], limit=1)
+
+                    if existing_barcode.barcode == barcode:
+                        _logger.info(
+                            "updateProduct: Barcode already set and unchanged. No update needed for Product ID %s.",
+                            barcode, product_id
+                        )
+                        # self.add_to_report("ERROR", f"Barcode '{barcode}' already exists for another product. Skipping update for Product ID {product_id}.")
+                    else:
+                        product.sudo().write({"barcode": barcode})
+                        updated_fields.append("barcode")
+                        _logger.info("updateProduct: Updated barcode for Product ID %s to '%s'.", product_id, barcode)
 
             # special handling of margins (not available for all products/pricelists)
             # if "DEALER DISCOUNT" in sheet_columns:
