@@ -91,6 +91,8 @@ class sync_pricelist:
         ignored_columns = [
             "DEALER DISCOUNT",
             "Barcode",
+            "Purchase Price CAD",
+            "Purchase Price USD",
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
@@ -429,6 +431,98 @@ class sync_pricelist:
                                 product.rent_ok = can_be_value
                                 if product.rent_ok == can_be_value:
                                     updated_fields.append("rent_ok")
+                        
+                        elif column_name == "Purchase Price CAD":
+
+                            purchase_price_cad = str(row[sheet_columns.index("Purchase Price CAD")]).strip()
+                            cad_currency = self.database.env['res.currency'].search([('name', '=', 'CAD')], limit=1)
+                            cad_partner = self.database.env['res.partner'].search(
+                                [('name', '=', 'Leica Geosystems Ltd.'), ('is_company', '=', True)],
+                                limit=1
+                            )
+
+                            if purchase_price_cad and cad_currency and cad_partner:
+
+                                supplier_info = self.database.env['product.supplierinfo'].search([
+                                    ('product_tmpl_id', '=', product.id),
+                                    ('partner_id', '=', cad_partner.id),
+                                    ('currency_id', '=', cad_currency.id),
+                                ], limit=1)
+
+                                if supplier_info:
+                                    if supplier_info.price != purchase_price_cad:
+                                        supplier_info.sudo().write({'price': purchase_price_cad})
+                                        updated_fields.append(f'supplier_price_{cad_partner.name}')
+                                        _logger.info("Updated %s price for Product %s to %.2f %s", cad_partner.name, product.id, purchase_price_cad, cad_currency.name)
+                                    else:
+                                        _logger.info("No change to %s price for Product %s (still %.2f)", cad_partner.name, product.id, purchase_price_cad)
+                                else:
+                                    vals = {
+                                        'partner_id': cad_partner.id,
+                                        'currency_id': cad_currency.id,
+                                        'price': purchase_price_cad,
+                                        'product_tmpl_id': product.id,
+                                        # optionally set minimum_qty, sequence, delay, etc
+                                    }
+                                    self.database.env['product.supplierinfo'].sudo().create(vals)
+                                    updated_fields.append(f'supplier_price_{cad_partner.name}')
+                                    _logger.info("Created vendor price for %s on Product %s: %.2f %s", cad_partner.name, product.id, purchase_price_cad, cad_currency.name)
+
+                        elif column_name == "Purhcase Price USD":
+
+                            purchase_price_usd = str(row[sheet_columns.index("Purchase Price USD")]).strip()
+                            usd_currency = self.database.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+                            usd_partner = self.database.env['res.partner'].search(
+                                [('name', '=', 'Leica Geosystems Inc'), ('is_company', '=', True)],
+                                limit=1
+                            )
+
+                            if purchase_price_usd and usd_currency and usd_partner:
+
+                                supplier_info = self.database.env['product.supplierinfo'].search([
+                                    ('product_tmpl_id', '=', product.id),
+                                    ('partner_id', '=', usd_partner.id),
+                                    ('currency_id', '=', usd_currency.id),
+                                ], limit=1)
+
+                                if supplier_info:
+                                    if supplier_info.price != purchase_price_usd:
+                                        supplier_info.sudo().write({'price': purchase_price_usd})
+                                        updated_fields.append(f'supplier_price_{usd_partner.name}')
+                                        _logger.info("Updated %s price for Product %s to %.2f %s", usd_partner.name, product.id, purchase_price_usd, usd_currency.name)
+                                    else:
+                                        _logger.info("No change to %s price for Product %s (still %.2f)", usd_partner.name, product.id, purchase_price_usd)
+                                else:
+                                    vals = {
+                                        'partner_id': usd_partner.id,
+                                        'currency_id': usd_currency.id,
+                                        'price': purchase_price_usd,
+                                        'product_tmpl_id': product.id,
+                                        # optionally set minimum_qty, sequence, delay, etc
+                                    }
+                                    self.database.env['product.supplierinfo'].sudo().create(vals)
+                                    updated_fields.append(f'supplier_price_{usd_partner.name}')
+                                    _logger.info("Created vendor price for %s on Product %s: %.2f %s", usd_partner.name, product.id, purchase_price_usd, usd_currency.name)
+
+                        elif column_name == "Barcode":
+
+                            barcode = str(row[sheet_columns.index("Barcode")]).strip()
+
+                            if barcode:
+
+                                # check if barcode already exists
+                                existing_barcode = self.database.env["product.template"].search([("barcode", "=", barcode)], limit=1)
+
+                                if existing_barcode.barcode == barcode:
+                                    _logger.info(
+                                        "updateProduct: Barcode already set and unchanged. No update needed for Product ID %s.",
+                                        barcode, product_id
+                                    )
+                                    # self.add_to_report("ERROR", f"Barcode '{barcode}' already exists for another product. Skipping update for Product ID {product_id}.")
+                                else:
+                                    product.sudo().write({"barcode": barcode})
+                                    updated_fields.append("barcode")
+                                    _logger.info("updateProduct: Updated barcode for Product ID %s to '%s'.", product_id, barcode)
                             
                 except Exception as e:
                     _logger.error(
@@ -437,103 +531,6 @@ class sync_pricelist:
                     )
                     self.add_to_report("ERROR", f"updateProduct: Error while updating field {odoo_field} for Product ID {product_id}: {str(e)}")
 
-            if "Barcode" in sheet_columns:
-                
-                barcode = str(row[sheet_columns.index("Barcode")]).strip()
-
-                if barcode:
-
-                    # check if barcode already exists
-                    existing_barcode = self.database.env["product.template"].search([("barcode", "=", barcode)], limit=1)
-
-                    if existing_barcode.barcode == barcode:
-                        _logger.info(
-                            "updateProduct: Barcode already set and unchanged. No update needed for Product ID %s.",
-                            barcode, product_id
-                        )
-                        # self.add_to_report("ERROR", f"Barcode '{barcode}' already exists for another product. Skipping update for Product ID {product_id}.")
-                    else:
-                        product.sudo().write({"barcode": barcode})
-                        updated_fields.append("barcode")
-                        _logger.info("updateProduct: Updated barcode for Product ID %s to '%s'.", product_id, barcode)
-
-            # special handling of margins (not available for all products/pricelists)
-            # if "DEALER DISCOUNT" in sheet_columns:
-            #     try:
-            #         # Get column index and value
-            #         column_index = sheet_columns.index("DEALER DISCOUNT")
-            #         sheet_value = str(row[column_index]).strip()
-
-            #         # Parse discount value
-            #         discount_percentage = float(sheet_value.rstrip('%')) / 100 if '%' in sheet_value else float(sheet_value)
-
-            #         # Check if the dealer discount needs updating
-            #         if product.dealer_discount != discount_percentage:
-            #             # Log the update
-            #             _logger.info(
-            #                 "updateProduct: Updating dealer discount for Product ID %s. Old Value: '%s', New Value: '%s'.",
-            #                 product_id, product.dealer_discount, discount_percentage
-            #             )
-
-            #             # Update dealer discount
-            #             product.sudo().write({"dealer_discount": discount_percentage})
-
-            #             # Update the cost price based on the new dealer discount
-            #             new_cost_price = product.list_price * (1 - discount_percentage)
-            #             product.sudo().write({"standard_price": new_cost_price})
-
-            #             # Update vendor price
-            #             vendor_name = "Leica Geosystems Ltd."
-            #             vendor = self.database.env['res.partner'].search([('name', '=', vendor_name)], limit=1)
-            #             if vendor:
-            #                 supplierinfo = self.database.env["product.supplierinfo"].search([
-            #                     ('product_tmpl_id', '=', product.id),
-            #                     ('partner_id', '=', vendor.id)
-            #                 ], limit=1)
-
-            #                 if supplierinfo:
-            #                     supplierinfo.write({'price': new_cost_price})
-            #                     _logger.info(
-            #                         "updateProduct: Updated vendor price for Product ID %s and Vendor '%s'. New Price: '%s'.",
-            #                         product_id, vendor.name, new_cost_price
-            #                     )
-            #                 else:
-            #                     # Create new supplier info if it doesn't exist
-            #                     self.database.env["product.supplierinfo"].sudo().create({
-            #                         'partner_id': vendor.id,
-            #                         'product_tmpl_id': product.id,
-            #                         'price': new_cost_price,
-            #                         'currency_id': product.currency_id.id,  # Use product's currency
-            #                     })
-            #                     _logger.info(
-            #                         "updateProduct: Created new vendor price for Product ID %s and Vendor '%s'. Price: '%s'.",
-            #                         product_id, vendor.name, new_cost_price
-            #                     )
-
-            #             # Log the cost price update
-            #             _logger.info(
-            #                 "updateProduct: Updated cost price for Product ID %s. New Cost Price: '%s'.",
-            #                 product_id, new_cost_price
-            #             )
-
-            #             # Add updated fields to the report
-            #             updated_fields.append("dealer_discount")
-            #             updated_fields.append("standard_price")
-                        
-            #     except ValueError as e:
-            #         _logger.error(
-            #             "updateProduct: Invalid DEALER DISCOUNT value '%s' for Product ID %s: %s",
-            #             sheet_value, product_id, str(e)
-            #         )
-            #         self.add_to_report("ERROR", f"Invalid DEALER DISCOUNT value '{sheet_value}' for Product ID {product_id}: {str(e)}")
-
-            #     except Exception as e:
-            #         _logger.error(
-            #             "updateProduct: Error while processing dealer discount for Product ID %s: %s",
-            #             product_id, str(e), exc_info=True
-            #         )
-            #         self.add_to_report("ERROR", f"Error while processing dealer discount for Product ID {product_id}: {str(e)}")
-        
         except Exception as e:
             _logger.error(
                 "updateProduct: Error while updating product ID %s: %s",
