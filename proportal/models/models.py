@@ -43,7 +43,7 @@ class productType(models.Model):
                 if response.status_code == 200:
                     product.image_1920 = base64.b64encode(response.content)
                     _logger.info(f"ProPortal: Uploaded image for {sku}")
-                    self.env.cr.commit()
+                    # self.env.cr.commit()
                 else:
                     _logger.warning(f"ProPortal: Image not found for {sku} (status {response.status_code})")
             except Exception as e:
