@@ -30,9 +30,9 @@
             # "proportal/static/src/CSS/homepage.css",
             # "proportal/static/src/CSS/calendar.css",
             # "proportal/static/src/CSS/projectPortal.css",
-            "proportal/static/src/CSS/productMiniMenu.css",
-            "proportal/static/src/CSS/header.css",
-            "proportal/static/src/CSS/footer.css",
+            # "proportal/static/src/CSS/productMiniMenu.css",
+            # "proportal/static/src/CSS/header.css",
+            # "proportal/static/src/CSS/footer.css",
             # "proportal/static/src/CSS/mobileWebsite.css",
             # "proportal/static/src/CSS/cart.css",
         ]
