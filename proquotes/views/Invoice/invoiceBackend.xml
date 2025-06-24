@@ -21,7 +21,8 @@
 			</xpath>
 			<!-- Payment receipt email send button -->
 			<xpath expr="//header" position="inside">
-				<button name="action_thank_you_email" type="object" string="Thank Customer" class="oe_highlight" modifiers="{'invisible': [('invoice_payment_state', 'not in', ['in_payment', 'paid'])]}"/>
+				<!-- modifiers="{'invisible': [('invoice_payment_state', 'not in', ['in_payment', 'paid'])]}" -->
+				<button name="action_thank_you_email" type="object" string="Thank Customer" class="oe_highlight" invisible="invoice_payment_state != 'in_payment' or 'paid'"/>
 			</xpath>
 		</field>
 	</record>
