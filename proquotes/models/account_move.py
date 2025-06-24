@@ -22,52 +22,12 @@ _logger = logging.getLogger(__name__)
 class invoice(models.Model):
     _inherit = "account.move"
 
-    customer_po_number = fields.Char(
-        compute="_compute_customer_po_number",
-        store=True
-    )
-
-    def action_thank_you_email(self):
-        """
-        Open the email compose wizard with our 'thank you' template
-        """
-        self.ensure_one()
-        template = self.env.ref('proquotes.email_template_invoice_thank_you')
-        # Use the built-in mail.compose.message wizard
-        compose_ctx = dict(
-            default_model='account.move',
-            default_res_ids=[self.id],
-            default_use_template=bool(template),
-            default_template_id=template and template.id or False,
-            default_composition_mode='comment',
-        )
-        return {
-            'name': _('Send Thank You'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'target': 'new',
-            'context': compose_ctx,
-        }
-
-    def message_subscribe(self, partner_ids=None, subtype_ids=None):
-        # Exclude the invoice's customer from being subscribed
-        partner_ids = [
-            pid for pid in (partner_ids or [])
-            if pid not in self.mapped('partner_id').ids
-        ]
-        if not partner_ids:
-            return
-        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
-
-    @api.depends('invoice_origin')
-    def _compute_customer_po_number(self):
-        for move in self:
-            order = self.env['sale.order'].search([('name', '=', move.invoice_origin)], limit=1)
-            move.customer_po_number = order.customer_po_number or ''
-
+    # payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
+    customer_po_number = fields.Char(compute="_compute_customer_po_number", store=True)
     email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
+    pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
 
+    footer_id = fields.Many2one("header.footer", required=True, default=_get_default_footer)
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -94,22 +54,72 @@ class invoice(models.Model):
         help="Footer selection field",
     )
 
-    def action_invoice_sent(self):
-        """ Open a window to compose an email, with the edi invoice template
-            message loaded by default
+    # 
+    # action to send a followup email thanking customer for payment
+    # 
+    def action_thank_you_email(self):
+        """
+        Open the email compose wizard with our 'thank you' template
         """
         self.ensure_one()
+        template = self.env.ref('proquotes.email_template_invoice_thank_you')
+        # Use the built-in mail.compose.message wizard
+        compose_ctx = dict(
+            default_model='account.move',
+            default_res_ids=[self.id],
+            default_use_template=bool(template),
+            default_template_id=template and template.id or False,
+            default_composition_mode='comment',
+        )
+        return {
+            'name': _('Send Thank You'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'target': 'new',
+            'context': compose_ctx,
+        }
 
-        if self.invoice_pdf_report_id:
-            self.invoice_pdf_report_id.unlink()
+    # 
+    # remove recipient company email from followers list
+    # 
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        partner_ids = [
+            pid for pid in (partner_ids or [])
+            if pid not in self.mapped('partner_id').ids
+        ]
+        if not partner_ids:
+            return
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
 
-        report_action = self.action_send_and_print()
-        if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get(
-                'discard_logo_check'):
-            return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
+    # 
+    # get the po number (if there is one) from the sale order
+    # 
+    @api.depends('invoice_origin')
+    def _compute_customer_po_number(self):
+        for move in self:
+            order = self.env['sale.order'].search([('name', '=', move.invoice_origin)], limit=1)
+            move.customer_po_number = order.customer_po_number or ''
 
-        return report_action
+    # 
+    # attempt to remove invoice pdf (not working)
+    # 
+    # def action_invoice_sent(self):
+    #     self.ensure_one()
 
+    #     if self.invoice_pdf_report_id:
+    #         self.invoice_pdf_report_id.unlink()
+
+    #     report_action = self.action_send_and_print()
+    #     if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get(
+    #             'discard_logo_check'):
+    #         return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
+
+    #     return report_action
+
+    # 
+    # get the translated term from the section title
+    #
     def get_translated_term(self, title, lang):
         if "translate" in title:
 
@@ -125,6 +135,9 @@ class invoice(models.Model):
                 else:
                     return english
 
+    # 
+    # parse the ccp label to get the product name and expiry date
+    # 
     def parse_ccp_label(self, label):
         try:
             if not label.startswith('#ccplabel+'):
@@ -167,35 +180,38 @@ class invoice(models.Model):
         except Exception:
             return label
 
+    # 
+    # set the default footer for the invoice based on company and user
+    # 
     @api.depends("company_id")
     def _get_default_footer(self):
-        # Get Company
+        # get company
         company = None
         if self.company_id == False or self.company_id == None:
             company = self.company_id
         else:
             company = self.env.company
 
-        # Get User
+        # get user
         user = None
         if self.user_id == False or self.user_id == None:
             user = self.user_id
         else:
             user = self.env.user
 
-        # Get Prefered Footers
+        # get prefered footers
         result_raw = user.prefered_quote_footers
 
         if result_raw != False:
             result = []
             for item in result_raw:
-                # Verify footers are applicable for company
+                # verify footers are applicable for company
                 if company in item.company_ids or len(item.company_ids) == 0:
                     result.append(item)
             if len(result) != 0:
                 return result[-1]
 
-        # Check for default footer that matches company
+        # check for default footer that matches company
         defaults = self.env["header.footer"].search(
             [
                 ("active", "=", True),
@@ -218,30 +234,29 @@ class invoice(models.Model):
             return defaults[-1]
         else:
             return False
-            raise UserError("No Default Footer Available")
 
-    footer_id = fields.Many2one(
-        "header.footer", required=True, default=_get_default_footer
-    )
-    
-    payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
-    
-    def _compute_payment_date(self):
-        for rec in self:
-            rec.payment_date = False
-            if rec.invoice_payments_widget:
-                data = rec.invoice_payments_widget
-                if data.get('content'):
-                    payment_dates = set()
-                    for payment in data['content']:
-                        payment_date = payment['date']
-                        formatted_date = payment_date.strftime('%d/%m/%Y')
-                        payment_dates.add(formatted_date)
-                    # For multi payment.
-                    rec.payment_date = ', '.join(sorted(payment_dates))
-                else:
-                    rec.payment_date = False
+    # 
+    # compute the payment date from the invoice payments widget
+    #
+    # def _compute_payment_date(self):
+    #     for rec in self:
+    #         rec.payment_date = False
+    #         if rec.invoice_payments_widget:
+    #             data = rec.invoice_payments_widget
+    #             if data.get('content'):
+    #                 payment_dates = set()
+    #                 for payment in data['content']:
+    #                     payment_date = payment['date']
+    #                     formatted_date = payment_date.strftime('%d/%m/%Y')
+    #                     payment_dates.add(formatted_date)
+    #                 # For multi payment.
+    #                 rec.payment_date = ', '.join(sorted(payment_dates))
+    #             else:
+    #                 rec.payment_date = False
 
+    # 
+    # replace invoice name prefix to differentiate between can and usa
+    # 
     def action_post(self):
         res = super().action_post()
         for move in self:
@@ -260,43 +275,46 @@ class invoice(models.Model):
                     move.name = new_name
         return res
 
+    # 
+    # inherit follower ids from sale order, remove company email, add sales@r-e-a-l.it
+    # remove invoice lines that are not selected in the sale order
+    # 
     @api.model
     def create(self, vals):
+
+        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
         invoice_object = super(invoice, self).create(vals)
 
+        # inherit follower ids from sale order, remove company email, add sales@r-e-a-l.it
         if invoice_object.move_type not in ['out_invoice', 'out_refund']:
             return invoice_object
-
-        # add sales@r-e-a-l.it as a follower of the document
-        if invoice_object.move_type in ['out_invoice', 'out_refund']:
+        else:
             partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
             if partner and partner.id not in invoice_object.message_partner_ids.ids:
                 invoice_object.message_subscribe(partner_ids=[partner.id])
 
-
-        # Find the related sale orders
-        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
-
+        # remove invoice lines that are not selected in the sale order
         for order in sale_orders:
             for line in invoice_object.invoice_line_ids:
-                # Get the corresponding sale order line
+                # get the corresponding sale order line
                 sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
 
-                # Remove the invoice line if the related sale line is not selected
+                # remove the invoice line if the related sale line is not selected
                 if sale_line and not sale_line.selected:
                     line.unlink()
 
         return invoice_object
 
-class InvoiceMain(models.Model):
-    _inherit = "account.move"
-    pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
-
-    # Setup Initilize Pricelist for Invoice
+    # 
+    # set the pricelist based on selected partner
+    # 
     @api.onchange("partner_id")
     def _setpricelist(self):
         self.pricelist_id = self.partner_id.property_product_pricelist
 
+    # 
+    # compute the tax amount for the invoice line (unneeded?)
+    # 
     def _calculate_tax(self, price, tax_obj):
         if tax_obj.amount_type != "group" :
             _logger.info("amount: " + str(tax_obj.amount))
