@@ -27,7 +27,6 @@ class invoice(models.Model):
     email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
     pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
 
-    footer_id = fields.Many2one("header.footer", required=True, default=_get_default_footer)
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
@@ -234,6 +233,8 @@ class invoice(models.Model):
             return defaults[-1]
         else:
             return False
+    footer_id = fields.Many2one("header.footer", required=True, default=_get_default_footer)
+    
 
     # 
     # compute the payment date from the invoice payments widget
