@@ -121,53 +121,6 @@
                     }
                 </script>
             </t>
-
-
-            <!-- temporary style fixes -->
-            <style>
-                .sale_tbody &gt; tr &gt; td {
-                padding: 0.01rem 0.01rem !important;
-                }
-                .quote-head &gt; td.text-left {
-                padding: 26px !important;
-                }
-                #sales_order_table &gt; tbody &gt; tr &gt; td:nth-child(3) {
-                text-align: center !important;
-                }
-                #quote_content {
-                padding: 0px !important;
-                }
-                #portal_sale_content {
-                padding: 30px !important;
-                padding-right: 40px !important;
-                padding-top: 0px !important;
-                }
-                #details &gt; div.quote-address &gt; video {
-                z-index: 1 !important;
-                width: 100vw !important;
-                background-color: black !important;
-                }
-                div.quote-address {
-                background-color: black !important;
-                }
-                #quote_content {
-                width: 100%
-                }
-                .quoteLineRowSection {
-                padding: 5px !important;
-                }
-                #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td &gt; div:nth-child(2) &gt; label {
-                padding: 5px !important;
-                }
-                td#subtotal {
-                padding-right: 5px !important;
-                }
-                .quoteLineRowSection &gt; td {
-                padding: 20px !important;
-                }
-            </style>
-
-
         </xpath>
 
 
@@ -267,8 +220,8 @@
             <!--  Keep for Backwards Compatibility-->
             <t t-if="line.name == '$rental_address'">
                 <t t-set="rental_estimate_display" t-value="False"/>
-                <tr>
-                    <td style="border-style: none;" colspan="100">
+                <tr style="padding: 0px !important;">
+                    <td style="border-style: none; padding: 0px !important;" colspan="100">
                         <t t-call="proquotes.rental_address_form"/>
                     </td>
                 </tr>
@@ -276,8 +229,8 @@
 
             <t t-if="line.name == '$rental_info'">
                 <t t-set="rental_estimate_display" t-value="True"/>
-                <tr>
-                    <td style="border-style: none;" colspan="100">
+                <tr style="padding: 0px !important;">
+                    <td style="border-style: none; padding: 0px !important;" colspan="100">
                         <t t-call="proquotes.rental_address_form"/>
                     </td>
                 </tr>
@@ -520,7 +473,7 @@
                 <div class="flex">
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
-                        <div width="10%"><t t-if="line.product_id.image_128">
+                        <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
                              <img t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''" alt="Product Image" style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
                         </t>
                         </div>

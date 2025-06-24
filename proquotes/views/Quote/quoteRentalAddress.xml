@@ -6,6 +6,11 @@
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
 			<form autocomplete="on">
+				<!-- Title -->
+				<div>
+					<h2 t-if="language == 'en_CA' or language == 'en_US'">Estimated rental costs</h2>
+					<h2 t-elif="language == 'fr_CA'">Estimations de coût de location</h2>
+				</div>
 				<!-- Dates -->
 				<div>
 					<label for="rental-start">
@@ -37,27 +42,29 @@
 
 					<br />
 					<t t-if="language == 'en_CA' or language == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span id="rental-estimate-total-english" /></span>
+						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
 					</t>
 					<t t-elif="language == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span id="rental-estimate-total-english" /></span>
+						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
 					</t>
 					<br />
 					<br />
 					<div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
-						<span t-if="language == 'en_CA' or language == 'en_US'"> Total Rental Value:&#160; <span id="total-rental-value-english" /></span>
+						<span t-if="language == 'en_CA' or language == 'en_US'">
+							Total Rental Value:&#160; <b style="color: #db0d0d;"><span id="total-rental-value-english"></span></b></span>
 						<br />
 						<span>
-							Please upload your proof of insurance for the total amount in the comments below:
+							Please upload your proof of insurance for the total amount in the comments below.
 						</span>
 						<br />
 					</div>
 					<div class=" rental_product_value" t-if=" language== 'fr_CA'">
-						<span>Valeur locative totale: &#160;<span id="total-rental-value-french"></span>
+						<span>
+							Valeur locative totale: &#160;<b style="color: #db0d0d;"><span id="total-rental-value-french"></span></b>
 						</span>
 						<br />
 						<span>
-							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous:
+							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
 						</span>
 						<br />
 					</div>
@@ -68,7 +75,7 @@
 					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
 					<input id="new-address" t-else="" type="checkbox" />
 					<t t-if="language == 'en_CA' or language == 'en_US'">
-						<span>Is the shipping address the same as the billing address?</span>
+						<span><b>Is the shipping address the same as the billing address?</b></span>
 						<label id="address_yes_label" for="new-address">
 							<span style="cursor: pointer;">Yes</span>
 						</label>
@@ -80,7 +87,7 @@
 						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
 					</t>
 					<t t-elif="language == 'fr_CA'">
-						<span>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</span>
+						<span><b>Est-ce que l'adresse de livraison est identique à l'adresse de facturation?</b></span>
 						<label id="address_yes_label" for="new-address">
 							<span style="cursor: pointer;">Oui</span>
 						</label>
