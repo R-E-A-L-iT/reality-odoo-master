@@ -16,10 +16,6 @@ class MailComposeMessage(models.TransientModel):
         domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
 
-    # this overrides the check that prevents emails from being sent if the partner_id has no email set
-    def _get_invalid_recipients(self):
-        return []
-
     # this clears the default recipients that are autofilled into the wizard. this is here because we don't want to send emails to the email address attatched to the company contact.
     @api.model
     def default_get(self, fields_list):
