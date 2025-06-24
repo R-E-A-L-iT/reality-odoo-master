@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 class invoice(models.Model):
     _inherit = "account.move"
 
-    # payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
+    payment_date = fields.Char(string="Date of Payment", compute="_compute_payment_date", copy=False)
     customer_po_number = fields.Char(compute="_compute_customer_po_number", store=True)
     email_partner_ids = fields.Many2many('res.partner', string="Email Recipients (from wizard)")
     pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
@@ -52,6 +52,22 @@ class invoice(models.Model):
         string="Footer OLD",
         help="Footer selection field",
     )
+
+    # 
+    # modify parameters so warning is displayed when no followers are set
+    # 
+    def action_invoice_sent(self):
+        self.ensure_one()
+        ctx = {
+            'check_invoice_recipients': True,
+        }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'target': 'new',
+            'context': ctx,
+        }
 
     # 
     # action to send a followup email thanking customer for payment
@@ -99,22 +115,6 @@ class invoice(models.Model):
         for move in self:
             order = self.env['sale.order'].search([('name', '=', move.invoice_origin)], limit=1)
             move.customer_po_number = order.customer_po_number or ''
-
-    # 
-    # attempt to remove invoice pdf (not working)
-    # 
-    # def action_invoice_sent(self):
-    #     self.ensure_one()
-
-    #     if self.invoice_pdf_report_id:
-    #         self.invoice_pdf_report_id.unlink()
-
-    #     report_action = self.action_send_and_print()
-    #     if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get(
-    #             'discard_logo_check'):
-    #         return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
-
-    #     return report_action
 
     # 
     # get the translated term from the section title
@@ -239,21 +239,21 @@ class invoice(models.Model):
     # 
     # compute the payment date from the invoice payments widget
     #
-    # def _compute_payment_date(self):
-    #     for rec in self:
-    #         rec.payment_date = False
-    #         if rec.invoice_payments_widget:
-    #             data = rec.invoice_payments_widget
-    #             if data.get('content'):
-    #                 payment_dates = set()
-    #                 for payment in data['content']:
-    #                     payment_date = payment['date']
-    #                     formatted_date = payment_date.strftime('%d/%m/%Y')
-    #                     payment_dates.add(formatted_date)
-    #                 # For multi payment.
-    #                 rec.payment_date = ', '.join(sorted(payment_dates))
-    #             else:
-    #                 rec.payment_date = False
+    def _compute_payment_date(self):
+        for rec in self:
+            rec.payment_date = False
+            if rec.invoice_payments_widget:
+                data = rec.invoice_payments_widget
+                if data.get('content'):
+                    payment_dates = set()
+                    for payment in data['content']:
+                        payment_date = payment['date']
+                        formatted_date = payment_date.strftime('%d/%m/%Y')
+                        payment_dates.add(formatted_date)
+                    # For multi payment.
+                    rec.payment_date = ', '.join(sorted(payment_dates))
+                else:
+                    rec.payment_date = False
 
     # 
     # replace invoice name prefix to differentiate between can and usa

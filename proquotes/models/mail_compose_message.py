@@ -24,6 +24,23 @@ class MailComposeMessage(models.TransientModel):
         model = self.env.context.get('default_model')
         template_model = self.env['mail.compose.message']
 
+        res_id = self.env.context.get('default_res_id')
+        check_needed = self.env.context.get('check_invoice_recipients')
+
+        if check_needed and model == 'account.move' and res_id:
+            move = self.env[model].browse(res_id)
+
+            # Get follower emails
+            valid_followers = move.message_partner_ids.filtered(
+                lambda p: p.email and not p.email.lower().endswith('@r-e-a-l.it')
+                          and not p.user_ids  # not internal user
+            )
+
+            if not valid_followers:
+                warning = ("⚠️ Warning: This invoice will only be sent to internal addresses "
+                           "like yourself or 'sales@r-e-a-l.it'. Make sure to add individual recipients.")
+                defaults['warning_message'] = warning
+
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
 
