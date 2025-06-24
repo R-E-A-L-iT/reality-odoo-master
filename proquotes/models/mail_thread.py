@@ -1,20 +1,7 @@
 # -*- coding: utf-8 -*-
-
-import ast
-import base64
-import re
-
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
 import logging
 
-from odoo import api, fields, models, SUPERUSER_ID, _, tools
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression
-from odoo.tools import float_is_zero, float_compare
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -22,70 +9,29 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = [
-            [
-                'user',
-                lambda pdata: pdata['type'] == 'user',
-                {
-                    'active': True,
-                    'has_button_access': self._is_thread_message(msg_vals=msg_vals),
-                }
-            ], [
-                'portal',
-                lambda pdata: pdata['type'] == 'portal',
-                {
-                    'active': False,  # activate only on demand if rights are enabled
-                    'has_button_access': False,
-                }
-            ], [
-                'follower',
-                lambda pdata: pdata['is_follower'],
-                {
-                    'active': False,  # activate only on demand if rights are enabled
-                    'has_button_access': False,
-                }
-            ], [
-                'customer',
-                lambda pdata: True,
-                {
-                    'active': True,
-                    'has_button_access': False,
-                }
-            ]
-        ]
+        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+
         if not self:
             return groups
 
-        portal_enabled = isinstance(self, self.env.registry['portal.mixin'])
-        if not portal_enabled:
+        self.ensure_one()
+
+        # Fetch access link (requires portal.mixin inheritance)
+        if not isinstance(self, self.env.registry['portal.mixin']):
             return groups
 
-        customer = self._mail_get_partners(introspect_fields=False)[self.id]
-        if customer:
-            access_token = self._portal_ensure_token()
-            local_msg_vals = dict(msg_vals or {})
-            local_msg_vals['access_token'] = access_token
-            local_msg_vals['pid'] = customer[0].id
-            local_msg_vals['hash'] = self._sign_token(customer[0].id)
-            local_msg_vals.update(customer[0].signup_get_auth_param()[customer[0].id])
-            access_link = self._notify_get_action_link('view', **local_msg_vals)
+        access_token = self._portal_ensure_token()
+        access_link = self.get_portal_url()
 
-            new_group = [
-                ('portal_customer', lambda pdata: pdata['id'] == customer[0].id, {
-                    'active': True,
-                    'button_access': {
-                        'url': access_link,
-                    },
-                    'has_button_access': True,
-                })
-            ]
-        else:
-            new_group = []
+        for group in groups:
+            group_name, match_func, options = group
 
-        # enable portal users that should have access through portal (if not access rights
-        # will do their duty)
-        portal_group = next(group for group in groups if group[0] == 'portal')
-        portal_group[2]['active'] = True
-        portal_group[2]['has_button_access'] = True
+            if group_name == 'follower':
+                options['active'] = True
+                options['has_button_access'] = True
+                options['button_access'] = {
+                    'url': access_link,
+                    'title': _('View Invoice') if self._name == 'account.move' else _('View Document')
+                }
 
-        return new_group + groups
+        return groups
