@@ -520,8 +520,8 @@
                 <div class="flex">
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
-                        <div width="10%"><t t-if="line.product_id.image_1920">
-                             <img t-att-src="'data:image/png;base64,' + line.product_id.image_1920.decode('utf-8') if line.product_id.image_1920 else ''" alt="Product Image" style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                        <div width="10%"><t t-if="line.product_id.image_128">
+                             <img t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''" alt="Product Image" style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
                         </t>
                         </div>
                         <div width="90%">
