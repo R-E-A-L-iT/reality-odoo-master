@@ -6,6 +6,27 @@
 	background-color: #fff !important;
 }
 
+/* quote lines */
+.quoteLineRowNote > td {
+	background-color: #db0d0d !important;
+	padding: 10px !important;
+	color: #fff;
+	font-style: italic;
+}
+
+#user-info {
+	background-color: #2f2f2f;
+	padding: 15px;
+}
+
+
+
+/* checkbox */
+#product_name > label {
+	display: flex;
+	align-items: center;
+}
+
 
 
 
@@ -196,10 +217,13 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 }
 
 .flex {
-	margin-left: 20px;
+	/* margin-left: 20px; */
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
+}
+.d-flex {
+	align-items: center;
 }
 
 td {
