@@ -132,7 +132,7 @@ class order(models.Model):
                 line.tax_id = [(5, 0, 0)]
 
     # this function opens the product bundle wizard when the button is clicked
-    def action_open_bundle_wizard(self):
+    def open_product_bundle_wizard(self):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'product.bundle.wizard',
