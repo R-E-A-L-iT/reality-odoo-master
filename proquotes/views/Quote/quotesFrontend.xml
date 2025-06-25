@@ -286,7 +286,6 @@
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
                     </td>
-                    <!-- <td t-else=""/> -->
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
