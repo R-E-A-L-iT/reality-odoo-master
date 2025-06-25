@@ -3,32 +3,31 @@
 
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         
-        <!-- variables -->
+        <!-- 
+        
+        variables 
 
-            <!-- 
+        -->
+        <xpath expr="//div[@id='introduction']" position="before">
             
-             important note: the langauge of the document can be set either to be
-             the language of the partner OR the language of the request (language of the website set by the actual user)
+            <t t-set="language" t-value="request.lang.code" />
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
-             request lang is better because then you can switch between freely. If it is the lang of the partner, it is stuck on that.
+            <t t-if="sale_order.header_id.url[-4:] == '.jpg'" t-set="header_image" t-value="sale_order.header_id.url" />
+            <t t-if="sale_order.header_id.url[-4:] == '.mp4'" t-set="header_video" t-value="sale_order.header_id.url" />
 
-             Request lang is request.lang.code and other option is sale_order.partner_id.lang
+            <t t-set="company_name" t-value="sale_order.company_id.name"/>
+        
+        </xpath>
 
-             however, using request lang does mean that you should have a system in place to email the link to the quote to the recipients with their native language code embedded, this is a wip
-             
-             
-             -->
-            <xpath expr="//div[@id='introduction']" position="before">
-                <t t-set="language" t-value="request.lang.code" />
-                <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
+        <!-- 
+        
+        quote header 
+        
+        -->
 
-                <t t-if="sale_order.header_id.url[-4:] == '.jpg'" t-set="header_image" t-value="sale_order.header_id.url" />
-                <t t-if="sale_order.header_id.url[-4:] == '.mp4'" t-set="header_video" t-value="sale_order.header_id.url" />
-
-                <t t-set="company_name" t-value="sale_order.company_id.name"/>
-            </xpath>
-
-        <!-- quote header -->
+        <!-- remove sidebar -->
+        <xpath expr="//span[@id='transaction_info']/div" position="replace" />
 
     </template>
 </odoo>
