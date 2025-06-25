@@ -728,11 +728,11 @@
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
             <div t-if="language == 'fr_CA'" id="customer-acceptance">
-                <h1 class="white-text">Acceptation du client</h1>
+                <h2 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
             </div>
             <div t-else="" id="customer-acceptance">
-                <h1 class="white-text">Customer Acceptance</h1>
+                <h2 class="white-text">Customer Acceptance</h1>
                 <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
             </div>
         </xpath>
@@ -769,7 +769,7 @@
         </xpath>
     </template>
 
-    <template id="User_Buttons" name="Client Side Buttons" priority="17"></template>
+    <!-- <template id="User_Buttons" name="Client Side Buttons" priority="17"></template> -->
 
     <template name="portal_footer" id="portal_footer" inherit_id="portal.portal_layout">
         <xpath expr="//div[@id=&quot;wrap&quot;]" position="after">
