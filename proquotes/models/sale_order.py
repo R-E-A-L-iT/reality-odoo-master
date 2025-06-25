@@ -94,7 +94,7 @@ class order(models.Model):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:
             self.header_id = self.sale_order_template_id.header_id
             # self.footer_id = self.sale_order_template_id.footer_id
-
+    
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
@@ -130,19 +130,6 @@ class order(models.Model):
                 self.is_rental = False
             for line in self.order_line:
                 line.tax_id = [(5, 0, 0)]
-
-    # this function opens the product bundle wizard when the button is clicked
-    def open_product_bundle_wizard(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'product.bundle.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_model': self._name,
-                'default_res_id': self.id,
-            }
-        }
 
 
     # @api.onchange('sale_order_template_id')
