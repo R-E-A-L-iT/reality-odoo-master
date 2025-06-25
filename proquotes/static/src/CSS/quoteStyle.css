@@ -1,3 +1,156 @@
+/* approve financing section styles */
+.approve_section {
+	padding: 7px;
+	background-color: #db0d0d;
+	border-radius: 35px;
+	box-shadow: 0 0 25px 5px rgba(255, 0, 0, 0.5);
+	/* border: 2px solid #ff6b6b;
+	border-bottom: 2px solid #ff6b6b !important; */
+	margin-bottom: 10px;
+	transition: transform 0.3s ease;
+}
+.approve_section_inner {
+	padding: 18px;
+	border: 1px solid #fff;
+	border-bottom: 1px solid #fff !important;;
+	border-radius: 28px;
+}
+.approve_section_header {
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: center;
+}
+.approve_section_header > img {
+	width: 25%;
+	height: auto;
+}
+
+.approve_section:hover {
+	transform: scale(1.01);
+}
+
+
+.approve_teaser_block {
+	text-align: center;
+	color: white;
+	margin: 25px 0;
+}
+
+.approve_teaser_header {
+	font-size: 1.3rem;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.approve_teaser_price {
+	font-size: 4rem;
+	font-weight: 700;
+}
+
+.approve_teaser_suffix {
+	font-size: 2rem;
+	font-weight: 600;
+	margin-left: 5px;
+}
+
+.approve_teaser_subtext {
+	font-size: 0.9rem;
+	margin-top: 5px;
+	color: #eee;
+}
+
+.approve_teaser_pitch {
+	font-size: 1rem;
+	font-weight: 500;
+	margin-top: 20px;
+	line-height: 1.4;
+}
+
+.approve_learn_more {
+	color: white;
+	text-decoration: underline;
+	font-weight: 600;
+}
+
+
+
+.approve_button_section {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.approve_button {
+	background-color: #fff;
+	width: 350px;
+	height: 75px;
+	border: 2px solid #ff6b6b;
+	border-radius: 5px;
+	font-weight: bold;
+	font-family: "Fira Sans", "Odoo Unicode Support Noto", sans-serif;
+}
+
+.approve_button:hover {
+	transform: scale(1.01);
+	transition: all 0.3s ease;
+}
+
+.flash-button {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+  /* border: 1px solid #000; */
+  -webkit-appearance: none;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+  font-family: "Fira Sans", sans-serif;
+  width: 200px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flash-button:focus {
+  outline: none;
+  box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+}
+
+.flash-button span {
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.flash-button::after {
+  content: '';
+  position: absolute;
+  top: -75%;             
+  left: -100%;
+  width: 40%;            
+  height: 250%;          
+  background: rgba(255, 162, 162, 0.3);  
+  transform: rotate(25deg);
+  pointer-events: none;
+  z-index: 0;
+  transition: left 0.6s ease;
+}
+
+
+.flash-button:hover::after {
+  left: 120%;
+}
+
+/* make livechat not appear over approve financing sidebar */
+.o-livechat-root {
+	z-index: 200 !important;
+}
+
 /* accept & sign window style corrections */
 #sign-dialog > p:nth-child(1) {
 	color: #000 !important;
