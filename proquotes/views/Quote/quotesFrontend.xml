@@ -279,11 +279,8 @@
             <t t-if="line.name == '$block' or line.name == '$block+'">
                 <tr class="quote-head">
                     <td class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead"
-                              style="padding-left: 20px !important;">Product
-                        </span>
-                        <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
-                        </span>
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead" style="padding-left: 20px !important;">Product</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit</span>
                     </td>
                     <td t-if="line.name == '$block+'" class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
@@ -379,7 +376,7 @@
                         <t t-if="'ccplabel' in line.name">
                             <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
                         </t>
-                        <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
+                        <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
                         <span t-elif="line.name.strip()[0] == '#'">
                             <t t-set="sname" t-value="line.name[1:].strip()"/>
                             <t t-call="proquotes.section_name_resolution"/>
