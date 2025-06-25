@@ -2,6 +2,7 @@
 
 import ast
 import base64
+import json
 from email.policy import default
 import re
 from math import ceil
@@ -96,6 +97,23 @@ class order(models.Model):
             self.header_id = self.sale_order_template_id.header_id
             # self.footer_id = self.sale_order_template_id.footer_id
     
+    # this function returns a json of the selected items on the quote for the approve plugin
+    def get_approve_items_json(self):
+        self.ensure_one()
+        items = []
+
+        selected_lines = self.order_line.filtered(lambda l: l.is_selected and not l.display_type)
+
+        for line in selected_lines:
+            items.append({
+                "model": line.product_id.name,
+                "price": line.price_unit,
+                "quantity": line.product_uom_qty,
+                "type": "new_product"
+            })
+
+        return json.dumps(items)
+
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):

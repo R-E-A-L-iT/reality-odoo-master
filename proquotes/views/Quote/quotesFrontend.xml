@@ -93,34 +93,6 @@
             <!-- <p>Language:
                 <t t-out="language"/>
             </p> -->
-
-            <t t-if="sale_order.approve_financing">
-                <script type="text/javascript" async="">
-                    window.kwipped_approve = window.kwipped_approve || {};
-                    window.kwipped_approve.url = "https://www.kwipped.com";
-                    window.kwipped_approve.approve_id = "eyJpdiI6InRpbngyN3dmTFNUMEsrd2FlMUpQM0E9PSIsInZhbHVlIjoiazhxcVZTakE5QVRtdWhCNlVFV1NoQT09IiwibWFjIjoiMjc4YzMzZTA1MGM2MzU2MDRmZTI1NGExNGJhY2ZlNTU2YTRiMTc5NzZiMzIwZmMzZjhjMGRkMDE2NjhlNzkxMyJ9";
-                    function init_kwipped_approve_snippet() {
-                        var b = document.getElementsByTagName('body')[0];
-                        var t = document.querySelector('approve-widget');
-                        if (!t) {
-                            t = document.createElement('approve-widget');
-                            t.setAttribute('autosubmission', 1);
-                            t.setAttribute('theme', 'custom');
-                            t.setAttribute('themestyle', '{"bgcolor":"#000000","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#000000","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#FFFFFF","headertext_color":"white"}');
-                            b.appendChild(t);
-                        }
-                        var s=document.createElement('script');
-                        s.type= 'text/javascript';
-                        s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php';
-                        b.appendChild(s);
-                    }
-                    if(document.readyState != 'loading'){
-                        init_kwipped_approve_snippet();
-                    } else{
-                        window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet);
-                    }
-                </script>
-            </t>
         </xpath>
 
 
@@ -723,6 +695,170 @@
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
         <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
+
+            <!-- approve financing section -->
+            <div class="approve_section" t-if="sale_order.approve_financing">
+                <div class="approve_section_inner">
+                    <!-- approve plugin install -->
+                    <script type="text/javascript" async=""> window.kwipped_approve = window.kwipped_approve || {}; window.kwipped_approve.url = "https://www.kwipped.com"; window.kwipped_approve.approve_id = "eyJpdiI6Im1aVVBERjFJQnl4MjkwVFo3ZjZtY0E9PSIsInZhbHVlIjoiZ3hIY243VWpXc05lY2VCc2N4N1Zmdz09IiwibWFjIjoiOGM3YzJhYzlhMzkxYjMyZWFkZjkyMjIxZTYyMWUwYWQyNjdjZmMxZGY5Y2FmZDNhYmU4ZTBhMTNkN2E0M2JjYyJ9"; function init_kwipped_approve_snippet() { var b = document.getElementsByTagName('body')[0]; var t = document.querySelector('approve-widget'); if (!t) { t = document.createElement('approve-widget'); t.setAttribute('autosubmission', 1); t.setAttribute('theme', 'custom'); t.setAttribute('themestyle', '{"bgcolor":"#FFFFFF","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#FFFFFF","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#000000","headertext_color":"#000000"}'); b.appendChild(t); } var s=document.createElement('script'); s.type= 'text/javascript'; s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php'; b.appendChild(s); } if(document.readyState != 'loading'){ init_kwipped_approve_snippet(); } else{ window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet); } </script>
+                    <span style="display:none;" id="approve_total_var" t-out="sale_order.amount_total"/>
+                    <span style="display:none;" id="approve_order_id" t-att-data-order-id="sale_order.id" t-out="sale_order.id"/>
+
+                    <!-- approve section header -->
+                    <div class="approve_section_header">
+                        <img src="https://cdn.r-e-a-l.it/images/misc/Approve-Logo-No-Kwipped.png" alt="KWIPPED APPROVE Logo"/>
+                    </div>
+
+                    <!-- approve section teaser -->
+                    <div class="approve_teaser_block">
+                        <div class="approve_teaser_header">Finance as low as</div>
+                        <div class="approve_teaser_price">
+                            $<span id="approve_teaser_rate" approve-function="teaser_rate" t-att-approve-total="sale_order.amount_total"></span>
+                            <span class="approve_teaser_suffix">/mo</span>
+                        </div>
+                        <div class="approve_teaser_subtext">*60 months</div>
+                        <div class="approve_teaser_pitch">
+                            Multiple Lenders. Competing Offers. <br />
+                            Smart Equipment Financing! <a href="#" class="approve_learn_more">Learn More.</a>
+                        </div>
+                    </div>
+
+                    
+                    <!-- approve section button -->
+                    <div class="approve_button_section">
+                        <button class="flash-button" t-att-data-order-id="sale_order.id" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-items="sale_order.get_approve_items_json()">
+                            <span>INQUIRE NOW</span>
+                        </button>
+                        <!-- <pre id="approve_json_display" style="background:#f9f9f9; padding:1em; border:1px solid #ccc; margin-top:1em; font-size:12px; overflow-x:auto;">
+                            (approve json will appear here)
+                        </pre> -->
+
+
+                    </div>
+
+                    <!-- 
+
+                    SCRIPTS 
+                    
+                    -->
+                    <!-- pass through json to button parameters -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const approveBtn = document.querySelector('.flash-button');
+
+                            if (approveBtn) {
+                                approveBtn.addEventListener('click', function () {
+
+                                    // approveBtn.setAttribute('approve-action', 'open_app');
+                                    // console.log("approve-action updated to open_app");
+
+                                    window.kwipped_approve.embedded_app.app_reference.clear_items();
+                                });
+                            }
+                        });
+                    </script>
+
+                    <!-- trigger internal log note when application submitted -->
+                    <script><![CDATA[
+                        window.kwipped_approve.add_listener = setInterval(function(){
+                            if(window.kwipped_approve && window.kwipped_approve.embedded_app && window.kwipped_approve.embedded_app.app_reference){
+                                clearInterval(window.kwipped_approve.add_listener);
+                                //Add listener here.
+                                window.kwipped_approve.embedded_app.app_reference.add_listener(function(message){
+                                    if(message.action=="app_submitted"){
+                                    console.log("This is a submitted application:",message.data);
+                                    
+                                    const orderId = document.querySelector('#approve_order_id')?.getAttribute('data-order-id');
+                                    if (!orderId) {
+                                        console.error("Order ID not found for APPROVE submission.");
+                                        return;
+                                    }
+
+                                    fetch(`/approve/application_submitted/${orderId}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(message.data)
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => console.log("Approve submission logged:", data))
+                                    .catch(err => console.error("Approve logging failed:", err));
+                                    }
+                                });
+
+                            }
+                        },100);]]>
+                    </script>
+
+                    <!-- teaser rate updating -->
+                    <!--<script><![CDATA[
+                        function fetchTeaserRate(totalUSD) {
+                            const teaserApiUrl = `https://www.kwipped.com/api/v2/approve/finance-teasers/${totalUSD}`;
+
+                            fetch(teaserApiUrl)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! Status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data.success && data.lease_teaser.length > 0) {
+                                        const teaser = data.lease_teaser[0];
+                                        console.log("Teaser Rate Details:", teaser);
+
+                                        // Example: Display monthly rate
+                                        document.getElementById("approve_teaser_rate").innerText =
+                                            `Estimated Monthly Payment: $${teaser.monthly_rate.toFixed(2)} for ${teaser.term} months`;
+                                    } else {
+                                        console.warn("No teaser rates found:", data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Failed to fetch teaser rates:", error);
+                                });
+                        }
+
+                        //const totalAmount = parseFloat(document.getElementById("approve_total_var")?.innerText);
+                        //if (totalAmount && totalAmount > 0) {
+                        //    console.log("Total: " + totalAmount.toString());
+                        //    fetchTeaserRate(totalAmount);
+                        //}
+
+                        function sanitizeTotal(rawText) {
+                            if (!rawText) return 0;
+                            return parseFloat(rawText.replace(/[^0-9.]/g, '')) || 0;
+                        }
+
+                        // const totalElement = document.querySelector('#total > div > table > tbody > tr:nth-child(2) > span');
+                        const approveVar = document.getElementById("approve_total_var");
+                        const totalWrapper = document.querySelector('#portalTotal');
+
+                        if (totalWrapper && approveVar) {
+                            const observer = new MutationObserver(() => {
+                                const newTotal = totalWrapper.querySelector('b')?.innerText;
+                                const sanitized = sanitizeTotal(newTotal);
+                                approveVar.innerText = sanitized;
+                                console.log("Updated approve_total_var to:", sanitized);
+                            });
+
+                            observer.observe(totalWrapper, {
+                                childList: true,
+                                subtree: true
+                            });
+
+                            // Initial population
+                            approveVar.innerText = sanitizeTotal(totalWrapper.querySelector('b')?.innerText);
+                        }
+
+
+                        ]]>
+                        
+                    </script>-->
+
+                </div>
+            </div>
 
             <t t-set="language" t-value="request.lang.code" />
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
