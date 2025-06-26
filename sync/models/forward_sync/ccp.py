@@ -247,7 +247,7 @@ class sync_ccp:
                                         eidsn, ccp.owner.company_nickname if ccp.owner else None, owner_nickname
                                     )
                                     ccp.sudo().write({'owner': owner})
-                                    _logger.info("updateCCP: Owner update double check. Current value after update:" + ccp.owner.name)
+                                    _logger.info("updateCCP: Owner update double check for EID/SN %s. Current value after update: %s" eidsn,ccp.owner.name)
                                 else:
                                     _logger.info(
                                         "updateCCP: Field 'owner' for CCP EID/SN %s is unchanged. No update needed. Owner [Odoo]: %s. Owner [Sheets]: %s. CCP ID: %s",
