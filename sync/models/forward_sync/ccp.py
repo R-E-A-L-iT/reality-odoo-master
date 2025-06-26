@@ -229,7 +229,7 @@ class sync_ccp:
                                 
                                 # find company owner in odoo
                                 owner = self.database.env["res.partner"].search(
-                                    [("company_nickname", "ilike", owner_nickname)], limit=1
+                                    [("company_nickname", "=", owner_nickname)], limit=1
                                 )
                                 
                                 # stop if not found
