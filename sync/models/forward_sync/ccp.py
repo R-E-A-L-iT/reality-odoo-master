@@ -252,6 +252,7 @@ class sync_ccp:
                                         "updateCCP: Field 'owner' for CCP EID/SN %s is unchanged. No update needed. Owner [Odoo]: %s. Owner [Sheets]: %s. CCP ID: %s",
                                         eidsn, ccp.owner.company_nickname if ccp.owner else "None", owner_nickname, ccp_id
                                     )
+                                    ccp.owner = owner.id
 
 
                         # directly update sku (char field in odoo)
