@@ -180,13 +180,7 @@
                     
                     <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button class="flash-button"
-                            approve-function="embedded_app"
-                            approve-action="add_to_app"
-                            t-att-approve-model="product.name"
-                            t-att-approve-qty="1"
-                            t-att-approve-price="product.list_price"
-                            t-att-approve-item-type="new_product">
+                        <button class="flash-button" type="button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-model="product.name" t-att-approve-qty="1" t-att-approve-price="product.list_price" t-att-approve-item-type="new_product">
                             <span>INQUIRE NOW</span>
                         </button>
 
@@ -204,10 +198,14 @@
 
                             if (approveBtn) {
                                 approveBtn.addEventListener('click', function () {
-                                    
                                     console.log("Click!");
 
-                                    window.kwipped_approve.embedded_app.app_reference.clear_items();
+                                    if (window.kwipped_approve?.embedded_app?.app_reference?.clear_items) {
+                                        window.kwipped_approve.embedded_app.app_reference.clear_items();
+                                        console.log("Cart cleared before adding item.");
+                                    } else {
+                                        console.warn("APPROVE embedded app not ready, cannot clear cart.");
+                                    }
                                 });
                             }
                         });
