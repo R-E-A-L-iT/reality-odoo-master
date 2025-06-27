@@ -4,7 +4,7 @@
 
         <!-- Insert your section after the terms and share block -->
         <xpath expr="//div[@id='o_product_terms_and_share']" position="before">
-            <section class="approve_section">
+            <section class="approve_section" t-if="product.approve_financing">
                 <div class="approve_section_inner">
 
                     <style>
