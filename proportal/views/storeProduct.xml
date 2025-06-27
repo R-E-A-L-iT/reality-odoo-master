@@ -3,14 +3,219 @@
     <template id="website_sale_product_add_section" inherit_id="website_sale.product">
 
         <!-- Insert your section after the terms and share block -->
-        <xpath expr="//div[@id='o_product_terms_and_share']" position="after">
-            <section id="approve_section" class="approve_product_financing">
-                <div class="row">
-                    <div class="col text-center">
-                        <h2>Discover More About This Product</h2>
-                        <p>Contact us for detailed specs, demo bookings, or to learn how this product fits your workflow.</p>
-                        <a href="/contactus" class="btn btn-primary mt-2">Contact Us</a>
+        <xpath expr="//div[@id='o_product_terms_and_share']" position="before">
+            <section class="approve_section">
+                <div class="approve_section_inner">
+
+                    <style>
+                        /* approve financing section styles */
+                        .approve_section {
+                            padding: 7px;
+                            background-color: #db0d0d;
+                            border-radius: 35px;
+                            box-shadow: 0 0 25px 5px rgba(255, 0, 0, 0.5);
+                            /* border: 2px solid #ff6b6b; */
+                            margin-bottom: 10px;
+                            transition: transform 0.3s ease;
+                        }
+                        .approve_section_inner {
+                            padding: 18px;
+                            border: 1px solid #fff;
+                            border-radius: 28px;
+                        }
+                        .approve_section_header {
+                            width: 100%;
+                            height: auto;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .approve_section_header > img {
+                            width: 25%;
+                            height: auto;
+                        }
+
+                        .approve_section:hover {
+                            transform: scale(1.01);
+                        }
+
+
+                        .approve_teaser_block {
+                            text-align: center;
+                            color: white;
+                            margin: 25px 0;
+                        }
+
+                        .approve_teaser_header {
+                            font-size: 1.3rem;
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                        }
+
+                        .approve_teaser_price {
+                            font-size: 4rem;
+                            font-weight: 700;
+                        }
+
+                        .approve_teaser_suffix {
+                            font-size: 2rem;
+                            font-weight: 600;
+                            margin-left: 5px;
+                        }
+
+                        .approve_teaser_subtext {
+                            font-size: 0.9rem;
+                            margin-top: 5px;
+                            color: #eee;
+                        }
+
+                        .approve_teaser_pitch {
+                            font-size: 1rem;
+                            font-weight: 500;
+                            margin-top: 20px;
+                            line-height: 1.4;
+                        }
+
+                        .approve_learn_more {
+                            color: white;
+                            text-decoration: underline;
+                            font-weight: 600;
+                        }
+
+
+
+                        .approve_button_section {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                        .approve_button {
+                            background-color: #fff;
+                            width: 350px;
+                            height: 75px;
+                            border: 2px solid #ff6b6b;
+                            border-radius: 5px;
+                            font-weight: bold;
+                            font-family: "Fira Sans", "Odoo Unicode Support Noto", sans-serif;
+                        }
+
+                        .approve_button:hover {
+                            transform: scale(1.01);
+                            transition: all 0.3s ease;
+                        }
+
+                        .flash-button {
+                        position: relative;
+                        overflow: hidden;
+                        box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+                        /* border: 1px solid #000; */
+                        -webkit-appearance: none;
+                        border-radius: 12px;
+                        background-color: #fff;
+                        color: #000;
+                        font-weight: bold;
+                        font-family: "Fira Sans", sans-serif;
+                        width: 200px;
+                        height: 50px;
+                        cursor: pointer;
+                        transition: transform 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        }
+
+                        .flash-button:focus {
+                        outline: none;
+                        box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+                        }
+
+                        .flash-button span {
+                        position: relative;
+                        z-index: 1;
+                        text-transform: uppercase;
+                        font-size: 16px;
+                        }
+
+                        .flash-button::after {
+                        content: '';
+                        position: absolute;
+                        top: -75%;             
+                        left: -100%;
+                        width: 40%;            
+                        height: 250%;          
+                        background: rgba(255, 162, 162, 0.3);  
+                        transform: rotate(25deg);
+                        pointer-events: none;
+                        z-index: 0;
+                        transition: left 0.6s ease;
+                        }
+
+
+                        .flash-button:hover::after {
+                        left: 120%;
+                        }
+                    </style>
+
+                    <!-- approve plugin install -->
+                    <script type="text/javascript" async=""> window.kwipped_approve = window.kwipped_approve || {}; window.kwipped_approve.url = "https://www.kwipped.com"; window.kwipped_approve.approve_id = "eyJpdiI6Ik5US0IxcDN5dnFNcW16amZXN28weWc9PSIsInZhbHVlIjoidGYxRzl2eml4MkNkTHIwbkE1OGdLZz09IiwibWFjIjoiZDVkMzEzODUzOTNmOTg0MTlmOWFmMmI3ZjRhODA2YjBmNzFiMzBhZGMwNTE0MjMwYTMwNzlmYjYzYWMwMGUyNiJ9"; function init_kwipped_approve_snippet() { var b = document.getElementsByTagName('body')[0]; var t = document.querySelector('approve-widget'); if (!t) { t = document.createElement('approve-widget'); t.setAttribute('autosubmission', 1); t.setAttribute('theme', 'custom'); t.setAttribute('themestyle', '{"bgcolor":"#DB0E0D","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#FFFFFF","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#000000","headertext_color":"#FFFFFF"}'); b.appendChild(t); } var s=document.createElement('script'); s.type= 'text/javascript'; s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php'; b.appendChild(s); } if(document.readyState != 'loading'){ init_kwipped_approve_snippet(); } else{ window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet); } </script>
+                    <span style="display:none;" id="approve_total_var" t-out="product.list_price"/>
+                    <!-- approve section header -->
+                    <div class="approve_section_header">
+                        <img src="https://cdn.r-e-a-l.it/images/misc/Approve-Logo-No-Kwipped.png" alt="KWIPPED APPROVE Logo"/>
                     </div>
+
+                    <!-- approve section teaser -->
+                    <div class="approve_teaser_block">
+                        <div class="approve_teaser_header">Finance as low as</div>
+                        <div class="approve_teaser_price">
+                            $<span id="approve_teaser_rate" approve-function="teaser_rate" t-att-approve-total="product.list_price"></span>
+                            <span class="approve_teaser_suffix">/mo</span>
+                        </div>
+                        <div class="approve_teaser_subtext">*60 months</div>
+                        <div class="approve_teaser_pitch">
+                            Multiple Lenders. Competing Offers. <br />
+                            Smart Equipment Financing! <a href="#" class="approve_learn_more">Learn More.</a>
+                        </div>
+                    </div>
+
+                    
+                    <!-- approve section button -->
+                    <div class="approve_button_section">
+                        <button class="flash-button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-item="'[{
+                            &quot;model&quot;: ' + product.name + ',
+                            &quot;price&quot;: ' + product.list_price ',
+                            &quot;quantity&quot;: 1,
+                            &quot;type&quot;: &quot;new_product&quot;
+                        }]'">
+                            <span>INQUIRE NOW</span>
+                        </button>
+                        <!-- <pre id="approve_json_display" style="background:#f9f9f9; padding:1em; border:1px solid #ccc; margin-top:1em; font-size:12px; overflow-x:auto;">
+                            (approve json will appear here)
+                        </pre> -->
+
+
+                    </div>
+
+                    <!-- 
+
+                    SCRIPTS 
+                    
+                    -->
+                    <!-- pass through json to button parameters -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const approveBtn = document.querySelector('.flash-button');
+
+                            if (approveBtn) {
+                                approveBtn.addEventListener('click', function () {
+
+                                    // approveBtn.setAttribute('approve-action', 'open_app');
+                                    // console.log("approve-action updated to open_app");
+
+                                    window.kwipped_approve.embedded_app.app_reference.clear_items();
+                                });
+                            }
+                        });
+                    </script>
                 </div>
             </section>
         </xpath>
