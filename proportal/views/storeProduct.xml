@@ -180,7 +180,7 @@
                     
                     <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button class="flash-button" 
+                        <button class="flash-button"
                             approve-function="embedded_app"
                             approve-action="add_to_app"
                             t-att-approve-model="product.name"
@@ -189,10 +189,6 @@
                             t-att-approve-item-type="new_product">
                             <span>INQUIRE NOW</span>
                         </button>
-                        <!-- <pre id="approve_json_display" style="background:#f9f9f9; padding:1em; border:1px solid #ccc; margin-top:1em; font-size:12px; overflow-x:auto;">
-                            (approve json will appear here)
-                        </pre> -->
-
 
                     </div>
 
@@ -208,9 +204,8 @@
 
                             if (approveBtn) {
                                 approveBtn.addEventListener('click', function () {
-
-                                    // approveBtn.setAttribute('approve-action', 'open_app');
-                                    // console.log("approve-action updated to open_app");
+                                    
+                                    console.log("Click!");
 
                                     window.kwipped_approve.embedded_app.app_reference.clear_items();
                                 });
