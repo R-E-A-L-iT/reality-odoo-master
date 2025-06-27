@@ -27,11 +27,11 @@
     "assets": {
         "web.assets_frontend": [
             "proportal/static/src/CSS/customWebsiteStyle.css",
-            "proportal/static/src/CSS/homepage.css",
-            "proportal/static/src/CSS/calendar.css",
+            # "proportal/static/src/CSS/homepage.css",
+            # "proportal/static/src/CSS/calendar.css",
             # "proportal/static/src/CSS/projectPortal.css",
-            "proportal/static/src/CSS/header.css",
-            "proportal/static/src/CSS/footer.css",
+            # "proportal/static/src/CSS/header.css",
+            # "proportal/static/src/CSS/footer.css",
             "proportal/static/src/CSS/mobileWebsite.css",
         ]
     },
