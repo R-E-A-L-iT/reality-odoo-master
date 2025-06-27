@@ -185,7 +185,7 @@
                         type="button"
                         approve-function="embedded_app"
                         approve-action="add_to_app"
-                        approve-model="Ford F150 White Truck"
+                        t-att-approve-model="product.name"
                         approve-qty="1" 
                         approve-price="30000.00"  
                         approve-item-type="new_product" 
