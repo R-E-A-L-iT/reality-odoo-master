@@ -201,24 +201,18 @@
                     
                     -->
                     <!-- pass through json to button parameters -->
-                    <!-- <script>
+                    <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             const approveBtn = document.querySelector('.flash-button');
-
                             if (approveBtn) {
                                 approveBtn.addEventListener('click', function () {
-                                    console.log("Click!");
-
                                     if (window.kwipped_approve?.embedded_app?.app_reference?.clear_items) {
-                                        // window.kwipped_approve.embedded_app.app_reference.clear_items();
-                                        console.log("Cart cleared before adding item.");
-                                    } else {
-                                        console.warn("APPROVE embedded app not ready, cannot clear cart.");
+                                        window.kwipped_approve.embedded_app.app_reference.clear_items();
                                     }
                                 });
                             }
                         });
-                    </script> -->
+                    </script>
                 </div>
             </section>
         </xpath>
