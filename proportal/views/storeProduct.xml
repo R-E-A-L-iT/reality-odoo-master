@@ -30,7 +30,7 @@
                             justify-content: center;
                         }
                         .approve_section_header > img {
-                            width: 25%;
+                            width: 40%;
                             height: auto;
                         }
 
