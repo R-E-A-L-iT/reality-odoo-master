@@ -187,7 +187,7 @@
                         approve-action="add_to_app"
                         t-att-approve-model="product.name"
                         approve-qty="1" 
-                        approve-price="30000.00"  
+                        t-att-approve-price="product.list_price"  
                         approve-item-type="new_product" 
                         style="display: none"  
                         >
