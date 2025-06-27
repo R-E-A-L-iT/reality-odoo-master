@@ -273,9 +273,18 @@ img.quoteFooterContactImage {
 }
 
 .quote-address-block {
-	top: 25%;
-	height: 50%;
+	top: 0px;
+	left: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	position: absolute;
+}
+
+.quote-address-block-inner {
+	width: 80%;
+	height: auto;
+	text-align: center;
 }
 
 #footer-img {
