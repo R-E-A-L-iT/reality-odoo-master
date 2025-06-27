@@ -180,12 +180,7 @@
                     
                     <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button class="flash-button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-item="'[{
-                            &quot;model&quot;: ' + product.name + ',
-                            &quot;price&quot;: ' + product.list_price ',
-                            &quot;quantity&quot;: 1,
-                            &quot;type&quot;: &quot;new_product&quot;
-                        }]'">
+                        <button class="flash-button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-item="product.get_approve_json()">
                             <span>INQUIRE NOW</span>
                         </button>
                         <!-- <pre id="approve_json_display" style="background:#f9f9f9; padding:1em; border:1px solid #ccc; margin-top:1em; font-size:12px; overflow-x:auto;">

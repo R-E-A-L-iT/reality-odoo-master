@@ -4,6 +4,7 @@ import ast
 import base64
 import requests
 import re
+# import json
 
 from datetime import datetime, timedelta
 from functools import partial
@@ -29,6 +30,22 @@ class productType(models.Model):
     storeCode = fields.Text(string="E-Commerce Store Code", default="")
     # ecom_folder = fields.Char(string="folder", required=True, default="")
     # ecom_media = fields.Char(string="Img Count", required=True, default="")
+
+    # this function returns a json of the selected items on the quote for the approve plugin
+    def get_approve_json(self):
+        self.ensure_one()
+
+        json = []
+        
+        json.append({
+            "model": self.name,
+            "price": self.list_price,
+            "quantity": 1,
+            "type": "new_product"
+        })
+
+        return json
+
 
     def import_images_from_url(self):
         for product in self:
