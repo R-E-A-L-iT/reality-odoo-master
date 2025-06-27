@@ -180,7 +180,17 @@
                     
                     <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button class="flash-button" type="button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-model="product.name" t-att-approve-qty="1" t-att-approve-price="product.list_price" t-att-approve-item-type="new_product">
+                        <button 
+                        class="flash-button"
+                        type="button"
+                        approve-function="embedded_app"
+                        approve-action="add_to_app"
+                        approve-model="Ford F150 White Truck"
+                        approve-qty="1" 
+                        approve-price="30000.00"  
+                        approve-item-type="new_product" 
+                        style="display: none"  
+                        >
                             <span>INQUIRE NOW</span>
                         </button>
                     </div>
