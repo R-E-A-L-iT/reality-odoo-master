@@ -44,7 +44,8 @@
         "views/customer_portal.xml",
         "views/portalProject.xml",
         "views/partner_internal.xml",
-        "views/productInstance.xml"
+        "views/productInstance.xml",
+        "views/storeProduct.xml",
     ],
     # only loaded in demonstration mode
     "demo": [

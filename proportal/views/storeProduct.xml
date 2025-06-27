@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="website_sale_product_add_section" inherit_id="website_sale.product">
+
+        <!-- Insert your section after the terms and share block -->
+        <xpath expr="//div[@id='o_product_terms_and_share']" position="after">
+            <section id="approve_section" class="approve_product_financing">
+                <div class="row">
+                    <div class="col text-center">
+                        <h2>Discover More About This Product</h2>
+                        <p>Contact us for detailed specs, demo bookings, or to learn how this product fits your workflow.</p>
+                        <a href="/contactus" class="btn btn-primary mt-2">Contact Us</a>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+
+    </template>
+</odoo>
