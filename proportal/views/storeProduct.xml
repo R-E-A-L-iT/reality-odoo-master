@@ -180,7 +180,13 @@
                     
                     <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button class="flash-button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-item="product.get_approve_json()">
+                        <button class="flash-button" 
+                            approve-function="embedded_app"
+                            approve-action="add_to_app"
+                            t-att-approve-model="product.name"
+                            t-att-approve-qty="1"
+                            t-att-approve-price="product.list_price"
+                            t-att-approve-item-type="new_product">
                             <span>INQUIRE NOW</span>
                         </button>
                         <!-- <pre id="approve_json_display" style="background:#f9f9f9; padding:1em; border:1px solid #ccc; margin-top:1em; font-size:12px; overflow-x:auto;">
