@@ -37,6 +37,7 @@
     },
     # always loaded
     "data": [
+        "views/productView.xml",
         "views/web_base.xml",
         "views/partnerView.xml",
         "views/stockView.xml",
