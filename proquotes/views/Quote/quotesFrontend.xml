@@ -130,42 +130,7 @@
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
             <!-- <t t-set="language" t-value="sale_order.partner_id.lang"/> -->
 
-            <t t-set="header_img" t-if="sale_order.header_id.url[-4:] == '.jpg'" t-value="sale_order.header_id.url"/>
-            <t t-set="header_video" t-if="sale_order.header_id.url[-4:] == '.mp4'" t-value="sale_order.header_id.url"/>
-
-            <!-- image header -->
-            <section class="s_cover bg-black-50 pt0 o_colored_level o_full_screen_height pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box"
-                t-if="sale_order.header_id.url[-4:] == '.jpg'"
-                data-scroll-background-ratio="0" 
-                data-snippet="s_cover" 
-                data-name="Cover" 
-                t-att-style="'background-image: url(&quot;' + str(sale_order.header_id.url) + '&quot;);'"
-            >
-                <div class="o_we_bg_filter bg-black-50"/>
-                <div class="s_allow_columns container">
-                    <h1 class="display-3" style="text-align: center; font-weight: bold;"><t t-out="company_name"></t></h1>
-                    <p class="lead" style="text-align: center;">REALiT Capture Solutions, Tailored for you.</p>
-                </div>
-            </section>
-
-            <!-- video header -->
-            <section class="s_cover bg-black-50 pt0 o_colored_level o_full_screen_height pb0 o_background_video s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" 
-                t-if="sale_order.header_id.url and sale_order.header_id.url[-4:] == '.mp4'"
-                data-scroll-background-ratio="0" 
-                data-snippet="s_cover" 
-                data-name="Cover"
-                style="background-image: url(&quot;https://i.redd.it/k1ac1xpb31wy.png&quot;);" 
-                t-att-data-bg-video-src="sale_order.header_id.url if sale_order.header_id and sale_order.header_id.url else ''"
-            >
-                <div class="o_we_bg_filter bg-black-50"/>
-                <div class="s_allow_columns container">
-                    <h1 class="display-3" style="text-align: center; font-weight: bold;"><t t-out="company_name"></t></h1>
-                    <p class="lead" style="text-align: center;">REALiT Capture Solutions, Tailored for you.</p>
-                </div>
-            </section>
-
-
-            <!-- <div class="quote-address">
+            <div class="quote-address">
                 <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
                      t-attf-src="{{sale_order.header_id.url}}"/>
                 <video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img"
@@ -177,7 +142,9 @@
                     <t t-else="">
                         <h1 class="title" t-field="sale_order.partner_id.name"/>
                     </t>
-                    <div class="hr"/><h2 class="subtitle" t-field="sale_order.partner_id.street"/>
+                    <div class="hr"/>
+                    <!--					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />-->
+                    <h2 class="subtitle" t-field="sale_order.partner_id.street"/>
                     <h2 class="subtitle">
                         <span t-if="sale_order.partner_id.city != False" t-raw="sale_order.partner_id.city + ','"/>
                         <span t-field="sale_order.partner_id.state_id.code"/>
@@ -185,7 +152,7 @@
                         <span t-field="sale_order.partner_id.country_id.name"/>
                     </h2>
                 </div>
-            </div> -->
+            </div>
         </t>
 
         <!-- Hide Total On Rental Quotes -->
