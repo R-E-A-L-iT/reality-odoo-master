@@ -1585,16 +1585,36 @@ class order(models.Model):
                 body=full_body,
                 **common_vals
             )
+            # new code
+            email_body = self.env['ir.qweb']._render(
+                'proquotes.mail_notification_layout_inherit',
+                {
+                    'message': message,
+                    'record': self,
+                    'body': full_body,
+                    'subtype': message.subtype_id,
+                    'subtype_internal': message.subtype_id.internal if message.subtype_id else False,
+                }
+            )
 
             mail_vals = {
                 'email_to': partner.email,
-                'subject':   message.subject,
-                'body_html': full_body,
+                'subject': message.subject,
+                'body_html': email_body,
                 'attachment_ids': message.attachment_ids.ids,
-                'email_layout_xmlid': 'proquotes.mail_notification_layout_inherit',
-                'reply_to':   message.email_from,
+                'reply_to': message.email_from,
                 'email_from': message.email_from,
             }
+            # old code
+            # mail_vals = {
+            #     'email_to': partner.email,
+            #     'subject':   message.subject,
+            #     'body_html': full_body,
+            #     'attachment_ids': message.attachment_ids.ids,
+            #     'email_layout_xmlid': 'proquotes.mail_notification_layout_inherit',
+            #     'reply_to':   message.email_from,
+            #     'email_from': message.email_from,
+            # }
             mail = self.env['mail.mail'].create(mail_vals)
             mail.send()
 
