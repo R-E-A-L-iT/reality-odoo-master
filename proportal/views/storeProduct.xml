@@ -183,7 +183,6 @@
                         <button class="flash-button" type="button" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-model="product.name" t-att-approve-qty="1" t-att-approve-price="product.list_price" t-att-approve-item-type="new_product">
                             <span>INQUIRE NOW</span>
                         </button>
-
                     </div>
 
                     <!-- 
@@ -192,7 +191,7 @@
                     
                     -->
                     <!-- pass through json to button parameters -->
-                    <script>
+                    <!-- <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             const approveBtn = document.querySelector('.flash-button');
 
@@ -201,7 +200,7 @@
                                     console.log("Click!");
 
                                     if (window.kwipped_approve?.embedded_app?.app_reference?.clear_items) {
-                                        window.kwipped_approve.embedded_app.app_reference.clear_items();
+                                        // window.kwipped_approve.embedded_app.app_reference.clear_items();
                                         console.log("Cart cleared before adding item.");
                                     } else {
                                         console.warn("APPROVE embedded app not ready, cannot clear cart.");
@@ -209,7 +208,7 @@
                                 });
                             }
                         });
-                    </script>
+                    </script> -->
                 </div>
             </section>
         </xpath>
