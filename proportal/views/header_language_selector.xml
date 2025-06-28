@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Replace the default language selector -->
-    <template id="header_language_selector_icon" inherit_id="website.placeholder_header_language_selector">
+    <template id="header_language_selector_icon" inherit_id="portal.language_selector">
         <xpath expr="//button[@type='button']" position="replace">
             <button t-attf-class="btn border-0 dropdown-toggle #{_btn_class or 'btn-sm btn-outline-secondary'}" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <t t-set="_icon_class" t-value="'fa fa-globe fa-lg'"/>
