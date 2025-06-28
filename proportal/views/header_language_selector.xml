@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Replace the default language selector text with a globe icon -->
-    <template id="header_language_selector_globe" inherit_id="website.header_language_selector">
-        <!-- Remove the inner text/arrow display -->
-        <xpath expr="//t[@id='header_language_selector_call']" position="replace">
-            <!-- <t t-call="portal.language_selector"> -->
-                <t t-set="_div_classes" t-value="(_div_classes or '') + ' dropdown'"/>
-                <t t-jquery="a.dropdown-toggle" t-operation="replace">
-                    <a role="button"
-                       class="nav-link dropdown-toggle d-flex align-items-center justify-content-center rounded-circle bg-dark text-white"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <i class="fa fa-globe fa-lg"/>
-                    </a>
-                <!-- </t> -->
-            </t>
+    <template id="portal_language_selector_globe" inherit_id="portal.language_selector">
+        <!-- Replace the dropdown toggle link with a rounded globe icon -->
+        <xpath expr="//a[@class='dropdown-toggle nav-link']" position="replace">
+            <a role="button"
+               class="nav-link dropdown-toggle d-flex align-items-center justify-content-center rounded-circle bg-dark text-white"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+                <i class="fa fa-globe fa-lg"/>
+            </a>
         </xpath>
     </template>
 </odoo>
