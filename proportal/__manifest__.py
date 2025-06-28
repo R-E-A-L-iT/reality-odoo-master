@@ -5,7 +5,7 @@
     "description": """
 		Module that allows expands Customer Portal
 	""",
-    "author": "Ty Cyr",
+    "author": "Ezekiel deBlois, Ty Cyr",
     "license": "LGPL-3",
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -26,27 +26,14 @@
     ],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
         "views/web_base.xml",
         "views/partnerView.xml",
-        # 'views/portalAccess.xml',
         "views/stockView.xml",
         "views/productView.xml",
         "views/customer_portal.xml",
         "views/portalProject.xml",
-        "views/navButton.xml",
-        "views/navbarCustom.xml",
-        # "views/cart.xml",
-        # "views/carousel.xml",
-        # "views/shopTile.xml",
-        "views/language_selector.xml",
-        "views/companyBackend.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
         "views/header_icons.xml",
-    ],
-    # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
     ],
 }
