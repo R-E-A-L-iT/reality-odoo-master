@@ -24,12 +24,6 @@
         "website_sale",
         "project",
     ],
-    "assets": {
-        "web.assets_frontend": [
-            # "proportal/static/src/CSS/customWebsiteStyle.css",
-            "proportal/static/src/CSS/mobileWebsite.css",
-        ]
-    },
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
