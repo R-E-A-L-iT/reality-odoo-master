@@ -39,7 +39,6 @@
             "proquotes/static/src/CSS/foldProducts.css",
             "proquotes/static/src/CSS/pdf.css",
             "proquotes/static/src/CSS/user-info.css",
-            "proquotes/static/src/CSS/login.css",
             "proquotes/static/src/CSS/quoteStyle.css",
             "proquotes/static/src/CSS/quoteHeaderText.css",
             "proquotes/static/src/CSS/rental_fold.css",
