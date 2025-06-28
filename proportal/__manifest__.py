@@ -27,7 +27,7 @@
     "assets": {
         "web.assets_frontend": [
             "proportal/static/src/CSS/customWebsiteStyle.css",
-            "proportal/static/src/CSS/calendar.css",
+            # "proportal/static/src/CSS/calendar.css",
             "proportal/static/src/CSS/productMiniMenu.css",
             "proportal/static/src/CSS/mobileWebsite.css",
             "proportal/static/src/CSS/cart.css",
