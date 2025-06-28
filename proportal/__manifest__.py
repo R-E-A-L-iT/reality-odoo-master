@@ -26,7 +26,7 @@
     ],
     "assets": {
         "web.assets_frontend": [
-            "proportal/static/src/CSS/customWebsiteStyle.css",
+            # "proportal/static/src/CSS/customWebsiteStyle.css",
             "proportal/static/src/CSS/mobileWebsite.css",
         ]
     },
