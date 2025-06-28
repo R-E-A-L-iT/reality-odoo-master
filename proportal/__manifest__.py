@@ -45,6 +45,7 @@
         "views/portalProject.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
+        "views/header_icons.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
