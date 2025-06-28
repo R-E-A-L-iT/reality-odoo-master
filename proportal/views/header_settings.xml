@@ -1,6 +1,6 @@
 <odoo>
 <template id="header_settings" inherit_id="website.layout" name="Header Settings for Buttons">
-    <xpath expr="//header//nav" position="replace">
+    <xpath expr="//t[@t-call'website.navbar']" position="replace">
         <t t-call="website.navbar">
             <t t-set="_navbar_classes" t-valuef="d-none d-lg-block shadow-sm"/>
 
@@ -71,7 +71,6 @@
                 </ul>
             </div>
         </t>
-        <t t-call="website.template_header_mobile"/>
     </xpath>
 </template>
 </odoo>
