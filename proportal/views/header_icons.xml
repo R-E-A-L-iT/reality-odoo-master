@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_language_selector_globe" inherit_id="portal.language_selector">
+        <xpath expr="//button" position="replace">
+            <button type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn border-0 dropdown-toggle rounded-circle text-reset o_navlink_background show">
+                <i data-oe-model="ir.ui.view" data-oe-id="4452" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/li[1]/a[1]/div[1]/i[1]" class="fa fa-1x fa-fw fa-globe fa-stack"></i>
+            </button>
+        </xpath>
+    </template>
+</odoo>

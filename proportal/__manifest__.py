@@ -42,10 +42,8 @@
         "views/language_selector.xml",
         "views/companyBackend.xml",
         "views/partner_internal.xml",
-        "views/notification_email.xml",
-        "views/storePage.xml",
-        "views/portalAppointment.xml",
-        "views/productInstance.xml"
+        "views/productInstance.xml",
+        "views/header_icons.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
