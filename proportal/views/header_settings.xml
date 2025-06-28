@@ -1,5 +1,5 @@
 <odoo>
-<data inherit_id="website.layout" name="Template Header Default Icon Buttons">
+<template id="header_settings" inherit_id="website.layout" name="Header Settings for Buttons">
     <xpath expr="//header//nav" position="replace">
         <t t-call="website.navbar">
             <t t-set="_navbar_classes" t-valuef="d-none d-lg-block shadow-sm"/>
@@ -73,5 +73,5 @@
         </t>
         <t t-call="website.template_header_mobile"/>
     </xpath>
-</data>
+</template>
 </odoo>
