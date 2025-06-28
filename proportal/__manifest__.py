@@ -45,7 +45,8 @@
         "views/portalProject.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
-        "views/header_language_selector.xml",
+        "views/header_settings.xml",
+        # "views/header_language_selector.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
