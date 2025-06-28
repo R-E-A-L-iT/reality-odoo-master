@@ -4,7 +4,7 @@
     <template id="header_language_selector_globe" inherit_id="website.header_language_selector">
         <!-- Remove the inner text/arrow display -->
         <xpath expr="//t[@id='header_language_selector_call']" position="replace">
-            <t t-call="portal.language_selector">
+            <!-- <t t-call="portal.language_selector"> -->
                 <t t-set="_div_classes" t-value="(_div_classes or '') + ' dropdown'"/>
                 <t t-jquery="a.dropdown-toggle" t-operation="replace">
                     <a role="button"
@@ -13,7 +13,7 @@
                        aria-expanded="false">
                         <i class="fa fa-globe fa-lg"/>
                     </a>
-                </t>
+                <!-- </t> -->
             </t>
         </xpath>
     </template>
