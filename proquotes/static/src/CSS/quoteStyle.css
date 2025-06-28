@@ -245,7 +245,7 @@ img.quoteFooterContactImage {
 	margin-bottom: 2vh;
 }
 
-button.btn.btn-success {
+/* button.btn.btn-success {
 	background-color: #db0d0d;
 	color: #fff;
 	border-color: #db0d0d;
@@ -253,11 +253,11 @@ button.btn.btn-success {
 
 a.btn.btn-primary {
 	background-color: #db0d0d;
-}
+} */
 
-a.btn.btn-danger {
+/* a.btn.btn-danger {
 	background-color: #db0d0d;
-}
+} */
 
 a.btn.btn-secondary[href="#discussion"] {
 	display: none;
