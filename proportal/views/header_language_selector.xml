@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Replace the default language selector text with a globe icon -->
-    <template id="header_language_selector_globe" inherit_id="website.header_language_selector">
-        <!-- Remove the inner text/arrow display -->
-        <xpath expr="//t[@id='header_language_selector_call']" position="replace">
-            <!-- <t t-call="portal.language_selector"> -->
-                <t t-set="_div_classes" t-value="(_div_classes or '') + ' dropdown'"/>
-                <t t-jquery="a.dropdown-toggle" t-operation="replace">
-                    <a role="button"
-                       class="nav-link dropdown-toggle d-flex align-items-center justify-content-center rounded-circle bg-dark text-white"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <i class="fa fa-globe fa-lg"/>
-                    </a>
-                </t>
-            <!-- </t> -->
+    <!-- Replace the default language selector -->
+    <template id="header_language_selector_icon" inherit_id="website.placeholder_header_language_selector">
+        <xpath expr="//button[@type='button']" position="replace">
+            <button t-attf-class="btn border-0 dropdown-toggle #{_btn_class or 'btn-sm btn-outline-secondary'}" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <t t-set="_icon_class" t-value="'fa fa-globe fa-lg'"/>
+                <t t-set="_icon_style" t-value="'padding: 0.4rem; width: 2rem; height: 2rem; text-align: center;'"/>
+                <i t-att-class="_icon_class" t-att-style="_icon_style"/>
+                <!--<span>GLOBE</span>-->
+                <!--<span t-if="not no_text" t-attf-class="align-middle #{_txt_class}" t-esc="active_lang[2].split('/').pop()"/>-->                    <!--<span t-elif="codes" class="align-middle" t-esc="active_lang[1].split('_').pop(0).upper()"/>-->
+            </button>
         </xpath>
     </template>
 </odoo>
+s
