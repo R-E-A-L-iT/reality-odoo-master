@@ -7,7 +7,8 @@
        <field name="inherit_id" ref="product.product_template_only_form_view" />
        <field name="arch" type="xml">
            <xpath expr="//field[@name='website_id']" position="after">
-               <field name="approve_financing" string="APPROVE Financing"/>
+                <field name="show_add_to_cart" string="Show Add to Cart Button"/>
+                <field name="approve_financing" string="APPROVE Financing"/>
            </xpath>
        </field>
    </record>
