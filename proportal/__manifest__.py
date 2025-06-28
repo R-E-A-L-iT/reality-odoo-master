@@ -45,9 +45,7 @@
         "views/notification_email.xml",
         "views/storePage.xml",
         "views/portalAppointment.xml",
-        "views/productInstance.xml",
-        "views/product_template_form.xml",
-        "views/website_sale_product.xml",
+        "views/productInstance.xml"
     ],
     # only loaded in demonstration mode
     "demo": [
