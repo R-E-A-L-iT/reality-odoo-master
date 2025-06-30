@@ -16,7 +16,7 @@
         "website_sale",
     ],
     "data": [
-        # "views/website_sale_product.xml",
+        "views/website_sale_product.xml",
         "views/product_template_form.xml",
     ],
 }
