@@ -2,6 +2,13 @@
 <odoo>
     <template id="website_sale_product_add_section" inherit_id="website_sale.product">
 
+        <!-- forcing parsing of html tags in sales description -->
+        <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+            <t t-if="product.description_sale">
+                <div t-raw="product.description_sale" class="text-muted my-2"/>
+            </t>
+        </xpath>
+
         <!-- toggle add to cart in backend -->
         <xpath expr="//div[@id='add_to_cart_wrap']" position="replace">
             <div id="add_to_cart_wrap" t-if="product.show_add_to_cart" t-attf-class="{{'d-none' if combination_info['prevent_zero_price_sale'] else 'd-inline-flex'}} align-items-center mb-2 me-auto">
