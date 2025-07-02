@@ -911,6 +911,8 @@ class order(models.Model):
     company_name = fields.Char(
         related="company_id.name", string="company_name", required=True
     )
+    partner_name = fields.Char(string="Partner Name")
+    rental_email = fields.Char(string="Email")
     manual_invoice_status = fields.Selection([
         ("full_invoice", "Fully Invoiced"),
         ("partially_invoiced", "Partially Invoiced"),
