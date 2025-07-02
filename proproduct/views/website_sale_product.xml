@@ -170,7 +170,7 @@
                     <span style="display:none;" id="approve_total_var" t-out="product.list_price"/>
                     <!-- approve section header -->
                     <div class="approve_section_header">
-                        <img src="https://cdn.r-e-a-l.it/images/misc/Approve-Logo-No-Kwipped.png" alt="KWIPPED APPROVE Logo"/>
+                        <img src="https://www.approvepayments.com/hubfs/approve_logo_white.png" alt="KWIPPED APPROVE Logo"/>
                     </div>
 
                     <!-- approve section teaser -->
