@@ -11,3 +11,11 @@ class ProductTemplate(models.Model):
     approve_financing = fields.Boolean("Approve Financing", default=False, help="If checked, the eCommerce page will show an APPROVE financing section.")
     show_add_to_cart = fields.Boolean("Show Add to Cart Button", default=False, help="If checked, the eCommerce page will show an Add To Cart button.")
 
+    is_us = fields.Boolean(string='Is Published in US')
+    is_ca = fields.Boolean(string='Is Published in CA')
+
+    def action_is_us_toggle(self):
+        self.is_us = not self.is_us
+
+    def action_is_ca_toggle(self):
+        self.is_ca = not self.is_ca
