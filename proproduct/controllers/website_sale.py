@@ -7,6 +7,8 @@ _logger = logging.getLogger(__name__)
 
 class WebsiteSalePricelistFilter(WebsiteSale):
 
+    _logger.info("[proproduct] Initializing WebsiteSalePricelistFilter")
+
     def _get_shop_domain(self, search, category, attrib_values):
         domain = super()._get_shop_domain(search, category, attrib_values)
 
