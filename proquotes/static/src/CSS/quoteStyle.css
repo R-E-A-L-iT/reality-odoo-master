@@ -375,9 +375,9 @@ button.o_portal_chatter_attachment_btn.btn.btn-secondary {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
-.d-flex {
+/* .d-flex {
 	align-items: center;
-}
+} */
 
 td {
 	vertical-align: middle;
