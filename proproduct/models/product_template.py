@@ -24,30 +24,33 @@ class ProductTemplate(models.Model):
     def _get_website_domain(self, website_id):
         domain = super()._get_website_domain(website_id)
 
-        # Only filter when on /shop requests
+        # Only filter on /shop pages
         if not http.request:
             return domain
         path = http.request.httprequest.path
         if not path.startswith('/shop'):
             return domain
 
-        # Determine current pricelist
-        website = http.request.env['website'].browse(website_id)
-        pricelist = website.get_current_pricelist()
-        
-        _logger.info(f"[proproduct] Filtering products for /shop, pricelist: {pricelist.name}, currency: {pricelist.currency_id.name}")
+        # Retrieve the active pricelist_id from session explicitly
+        pricelist_id = http.request.session.get('website_sale_current_pl')
+        pricelist = None
+        if pricelist_id:
+            pricelist = http.request.env['product.pricelist'].sudo().browse(pricelist_id)
 
-        # Apply is_us / is_ca filters
-        if pricelist.currency_id.name == 'USD':
-            _logger.info("[proproduct] Applying filter: ('is_us', '=', True)")
-            domain.append(('is_us', '=', True))
-        elif pricelist.currency_id.name == 'CAD':
-            _logger.info("[proproduct] Applying filter: ('is_ca', '=', True)")
-            domain.append(('is_ca', '=', True))
+        if pricelist:
+            _logger.info(f"[proproduct] Filtering products for /shop, pricelist: {pricelist.name}, currency: {pricelist.currency_id.name}")
+
+            if pricelist.currency_id.name == 'USD':
+                _logger.info("[proproduct] Applying filter: ('is_us', '=', True)")
+                domain.append(('is_us', '=', True))
+            elif pricelist.currency_id.name == 'CAD':
+                _logger.info("[proproduct] Applying filter: ('is_ca', '=', True)")
+                domain.append(('is_ca', '=', True))
+            else:
+                _logger.info("[proproduct] No is_us/is_ca filter applied for this currency.")
         else:
-            _logger.info("[proproduct] No is_us/is_ca filter applied for this currency.")
+            _logger.info("[proproduct] No active pricelist found in session; skipping is_us/is_ca filtering.")
 
         _logger.info(f"[proproduct] Final computed domain for shop: {domain}")
 
         return domain
-
