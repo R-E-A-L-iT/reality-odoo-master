@@ -34,9 +34,7 @@ class ProductTemplate(models.Model):
         # Determine current pricelist
         website = http.request.env['website'].browse(website_id)
         pricelist = website.get_current_pricelist()
-
-        import logging
-        _logger = logging.getLogger(__name__)
+        
         _logger.info(f"[proproduct] Filtering products for /shop, pricelist: {pricelist.name}, currency: {pricelist.currency_id.name}")
 
         # Apply is_us / is_ca filters
