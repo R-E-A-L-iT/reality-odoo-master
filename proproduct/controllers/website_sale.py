@@ -1,35 +1,24 @@
 # -*- coding: utf-8 -*-
-import logging
 from odoo import http
-from odoo.addons.website_sale.controllers import main as website_sale_main
+from odoo.http import request
+from odoo.addons.website_sale.controllers.main import WebsiteSale
 
-_logger = logging.getLogger(__name__)
+class WebsiteSaleInherit(WebsiteSale):
 
-_logger.info("[proproduct] Patching website_sale_main.WebsiteSale._get_shop_domain")
+    def _get_search_domain(self, search, category, attrib_values, **kwargs):
+        
+        # get default domain
+        domain = super(WebsiteSaleInherit, self)._get_search_domain(search, category, attrib_values, **kwargs)
+        
+        # get current pricelist
+        pricelist = request.website.get_current_pricelist()
+        if pricelist.currency_id: 
+            currency = pricelist.currency_id
 
-# Save the original method for reference if needed
-_original_get_shop_domain = website_sale_main.WebsiteSale._get_shop_domain
-
-def patched_get_shop_domain(self, search, category, attrib_values):
-    domain = _original_get_shop_domain(self, search, category, attrib_values)
-
-    website = http.request.env['website'].get_current_website()
-    pricelist = website.get_current_pricelist()
-
-    _logger.info(f"[proproduct] Current pricelist: {pricelist.name} (currency: {pricelist.currency_id.name})")
-
-    if pricelist.currency_id.name == 'USD':
-        _logger.info("[proproduct] Adding filter: ('is_us', '=', True)")
-        domain.append(('is_us', '=', True))
-    elif pricelist.currency_id.name == 'CAD':
-        _logger.info("[proproduct] Adding filter: ('is_ca', '=', True)")
-        domain.append(('is_ca', '=', True))
-    else:
-        _logger.info("[proproduct] No filter applied for this pricelist.")
-
-    _logger.info(f"[proproduct] Final shop domain: {domain}")
-
-    return domain
-
-# Apply the patch
-website_sale_main.WebsiteSale._get_shop_domain = patched_get_shop_domain
+            # append filters
+            if currency.name == 'USD':
+                domain += [('is_us', '=', True)]
+            elif currency.name == 'CAD':
+                domain += [('is_ca', '=', True)]
+                
+        return domain
