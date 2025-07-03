@@ -37,24 +37,6 @@ class WebsiteSale(main.WebsiteSale):
     ], type='http', auth="public", website=True, sitemap=sitemap_shop)
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, **post):
         
-        add_qty = int(post.get('add_qty', 1))
-        try:
-            min_price = float(min_price)
-        except ValueError:
-            min_price = 0
-        try:
-            max_price = float(max_price)
-        except ValueError:
-            max_price = 0
-
-        Category = request.env['product.public.category']
-        if category:
-            category = Category.search([('id', '=', int(category))], limit=1)
-            if not category or not category.can_access_from_current_website():
-                raise NotFound()
-        else:
-            category = Category
-
         website = request.env['website'].get_current_website()
         website_domain = website.website_domain()
 
@@ -82,6 +64,24 @@ class WebsiteSale(main.WebsiteSale):
                 _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
 
             request.session['pricelist_region_initialized'] = True
+        
+        add_qty = int(post.get('add_qty', 1))
+        try:
+            min_price = float(min_price)
+        except ValueError:
+            min_price = 0
+        try:
+            max_price = float(max_price)
+        except ValueError:
+            max_price = 0
+
+        Category = request.env['product.public.category']
+        if category:
+            category = Category.search([('id', '=', int(category))], limit=1)
+            if not category or not category.can_access_from_current_website():
+                raise NotFound()
+        else:
+            category = Category
 
         if ppg:
             try:
