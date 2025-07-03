@@ -131,13 +131,23 @@ class WebsiteSale(main.WebsiteSale):
         # No limit because attributes are obtained from complete product list
         fuzzy_search_term, product_count, search_product = self._shop_lookup_products(attrib_set, options, post, search, website)
 
-        tst = requests.get("https://ipapi.co/json").json()
-        if tst['country_code'] == 'US':
-            search_product = search_product.filtered(lambda e: e.is_us == True)
-            product_count = len(search_product)
-        if tst['country_code'] == 'CA':
-            search_product = search_product.filtered(lambda e: e.is_ca == True)
-            product_count = len(search_product)
+        if pricelist.currency_id:
+            currency = pricelist.currency_id.name
+            if currency == 'USD':
+                search_product = search_product.filtered(lambda e: e.is_us == True)
+                product_count = len(search_product)
+            elif currency == 'CAD':
+                search_product = search_product.filtered(lambda e: e.is_ca == True)
+                product_count = len(search_product)
+        else:
+            tst = requests.get("https://ipapi.co/json").json()
+            if tst['country_code'] == 'US':
+                search_product = search_product.filtered(lambda e: e.is_us == True)
+                product_count = len(search_product)
+            elif tst['country_code'] == 'CA':
+                search_product = search_product.filtered(lambda e: e.is_ca == True)
+                product_count = len(search_product)
+
 
         filter_by_price_enabled = request.website.is_view_active('website_sale.filter_products_price')
         if filter_by_price_enabled:
