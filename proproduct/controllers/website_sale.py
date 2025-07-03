@@ -36,6 +36,32 @@ class WebsiteSale(main.WebsiteSale):
         '''/shop/category/<model("product.public.category"):category>/page/<int:page>'''
     ], type='http', auth="public", website=True, sitemap=sitemap_shop)
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, **post):
+        
+        # autoselect pricelist by region if not manually set
+        if not request.session.get('pricelist_region_initialized'):
+            try:
+                geo = requests.get("https://ipapi.co/json").json()
+                country_code = geo.get('country_code')
+
+                Pricelist = request.env['product.pricelist'].sudo()
+
+                if country_code == 'US':
+                    us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
+                    if us_pricelist and website.is_pricelist_available(us_pricelist.id):
+                        request.session['website_sale_current_pl'] = us_pricelist.id
+                        request.website.sale_get_order(update_pricelist=True)
+                        _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
+                elif country_code == 'CA':
+                    ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
+                    if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
+                        request.session['website_sale_current_pl'] = ca_pricelist.id
+                        request.website.sale_get_order(update_pricelist=True)
+                        _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
+            except Exception as e:
+                _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
+
+            request.session['pricelist_region_initialized'] = True
+        
         add_qty = int(post.get('add_qty', 1))
         try:
             min_price = float(min_price)
