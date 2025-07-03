@@ -10,6 +10,7 @@ from werkzeug.exceptions import Forbidden, NotFound
 import requests
 from datetime import datetime
 from odoo.tools import lazy, str2bool
+from odoo.addons.proproduct.controllers.table_compute import TableCompute
 
 import logging
 _logger = logging.getLogger(__name__)
