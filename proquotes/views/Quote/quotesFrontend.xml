@@ -789,7 +789,8 @@
     <!--Sign Page-->
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
-        <xpath expr="//div[@t-if=&quot;sale_order._has_to_be_signed() or sale_order._has_to_be_paid()&quot;]" position="before">
+        <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
+            
 
             <!-- approve financing section -->
             <div class="approve_section" t-if="sale_order.approve_financing">
@@ -885,73 +886,6 @@
                             }
                         },100);]]>
                     </script>
-
-                    <!-- teaser rate updating -->
-                    <!--<script><![CDATA[
-                        function fetchTeaserRate(totalUSD) {
-                            const teaserApiUrl = `https://www.kwipped.com/api/v2/approve/finance-teasers/${totalUSD}`;
-
-                            fetch(teaserApiUrl)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`HTTP error! Status: ${response.status}`);
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    if (data.success && data.lease_teaser.length > 0) {
-                                        const teaser = data.lease_teaser[0];
-                                        console.log("Teaser Rate Details:", teaser);
-
-                                        // Example: Display monthly rate
-                                        document.getElementById("approve_teaser_rate").innerText =
-                                            `Estimated Monthly Payment: $${teaser.monthly_rate.toFixed(2)} for ${teaser.term} months`;
-                                    } else {
-                                        console.warn("No teaser rates found:", data.message);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error("Failed to fetch teaser rates:", error);
-                                });
-                        }
-
-                        //const totalAmount = parseFloat(document.getElementById("approve_total_var")?.innerText);
-                        //if (totalAmount && totalAmount > 0) {
-                        //    console.log("Total: " + totalAmount.toString());
-                        //    fetchTeaserRate(totalAmount);
-                        //}
-
-                        function sanitizeTotal(rawText) {
-                            if (!rawText) return 0;
-                            return parseFloat(rawText.replace(/[^0-9.]/g, '')) || 0;
-                        }
-
-                        // const totalElement = document.querySelector('#total > div > table > tbody > tr:nth-child(2) > span');
-                        const approveVar = document.getElementById("approve_total_var");
-                        const totalWrapper = document.querySelector('#portalTotal');
-
-                        if (totalWrapper && approveVar) {
-                            const observer = new MutationObserver(() => {
-                                const newTotal = totalWrapper.querySelector('b')?.innerText;
-                                const sanitized = sanitizeTotal(newTotal);
-                                approveVar.innerText = sanitized;
-                                console.log("Updated approve_total_var to:", sanitized);
-                            });
-
-                            observer.observe(totalWrapper, {
-                                childList: true,
-                                subtree: true
-                            });
-
-                            // Initial population
-                            approveVar.innerText = sanitizeTotal(totalWrapper.querySelector('b')?.innerText);
-                        }
-
-
-                        ]]>
-                        
-                    </script>-->
-
                 </div>
             </div>
 
@@ -966,10 +900,8 @@
                 <h1 class="white-text">Customer Acceptance</h1>
                 <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
             </div>
-        </xpath>
 
-        <!-- bottom actions with unified button appearance -->
-        <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
+            <!-- bottom actions with unified button appearance -->
             <div t-if="sale_order._has_to_be_signed() or sale_order._has_to_be_paid()" class="d-flex flex-wrap justify-content-center gap-2 d-print-none mt-4">
 
                 <t t-if="sale_order._has_to_be_signed()">
@@ -1000,6 +932,7 @@
                 </t>
                 
             </div>
+
         </xpath>
 
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
