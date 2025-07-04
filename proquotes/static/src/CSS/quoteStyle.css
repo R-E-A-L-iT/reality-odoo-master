@@ -4,7 +4,6 @@
 	background-color: #db0d0d;
 	border-radius: 35px;
 	box-shadow: 0 0 25px 5px rgba(255, 0, 0, 0.5);
-	/* border: 2px solid #ff6b6b; */
 	margin-bottom: 10px;
 	transition: transform 0.3s ease;
 }
@@ -27,7 +26,6 @@
 .approve_section:hover {
 	transform: scale(1.01);
 }
-
 
 .approve_teaser_block {
 	text-align: center;
@@ -71,8 +69,6 @@
 	font-weight: 600;
 }
 
-
-
 .approve_button_section {
 	display: flex;
 	justify-content: center;
@@ -97,7 +93,6 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
-  /* border: 1px solid #000; */
   -webkit-appearance: none;
   border-radius: 12px;
   background-color: #fff;

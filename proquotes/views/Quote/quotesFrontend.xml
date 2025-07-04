@@ -968,6 +968,40 @@
             </div>
         </xpath>
 
+        <!-- bottom actions with unified button appearance -->
+        <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
+            <div t-if="sale_order._has_to_be_signed() or sale_order._has_to_be_paid()" class="d-flex flex-wrap justify-content-center gap-2 d-print-none mt-4">
+
+                <t t-if="sale_order._has_to_be_signed()">
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
+                        <i class="fa fa-check me-1"/> Accept &amp; Sign
+                    </a>
+                    <a role="button" class="btn btn-primary" href="#discussion">
+                        <i class="fa fa-comment me-1"/> Feedback
+                    </a>
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modaldecline" href="#">
+                        <i class="fa fa-times me-1"/> Reject
+                    </a>
+                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
+                        <i class="fa fa-download me-1"/> Download
+                    </a>
+                </t>
+
+                <t t-elif="sale_order._has_to_be_paid()">
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
+                        <i class="fa fa-check me-1"/> <t t-if="not sale_order.signature">Accept &amp; Pay</t><t t-else="">Pay Now</t>
+                    </a>
+                    <a role="button" class="btn btn-primary" href="#discussion">
+                        <i class="fa fa-comment me-1"/> Feedback
+                    </a>
+                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
+                        <i class="fa fa-download me-1"/> Download
+                    </a>
+                </t>
+                
+            </div>
+        </xpath>
+
         <xpath expr="//div[@id=&quot;quote_content&quot;]//b[1]" position="replace">
             <span>
                 <strong t-field="sale_order.partner_id.name"/>
