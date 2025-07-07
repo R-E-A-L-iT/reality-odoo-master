@@ -9,6 +9,9 @@
             <xpath expr="//field[@name='title']" position="after">
                 <field name="company_nickname" invisible="not is_company" />
             </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="portal_companies_ids" widget="many2many_tags"/>
+            </xpath>
         </field>
     </record>
 </odoo>
