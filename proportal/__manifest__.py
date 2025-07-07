@@ -36,5 +36,6 @@
         "views/productInstance.xml",
         "views/header_icons.xml",
         "views/backend_internal.xml",
+        "views/portal_templates.xml",
     ],
 }

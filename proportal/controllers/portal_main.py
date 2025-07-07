@@ -1,36 +1,3 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#    Copyright (C) 2015 - Present, Braincrew Apps (<http://www.braincrewapps.com>). All Rights Reserved
-
-# Odoo Proprietary License v1.0
-#
-# This software and associated files (the "Software") may only be used (executed,
-# modified, executed after modifications) if you have purchased a valid license
-# from the authors, typically via Odoo Apps,  braincrewapps.com, or if you have received a written
-# agreement from the authors of the Software.
-#
-# You may develop Odoo modules that use the Software as a library (typically
-# by depending on it, importing it and using its resources), but without copying
-# any source code or material from the Software. You may distribute those
-# modules under the license of your choice, provided that this license is
-# compatible with the terms of the Odoo Proprietary License (For example:
-# LGPL, MIT, or proprietary licenses similar to this one).
-#
-# It is forbidden to publish, distribute, sublicense, or sell copies of the Software
-# or modified copies of the Software.
-#
-# The above copyright notice and this permission notice must be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-
-##############################################################################
 from operator import itemgetter
 from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError
@@ -48,81 +15,6 @@ from odoo.tools import groupby as groupbyelem
 
 
 class CustomerPortalReal(CustomerPortal):
-    # @route(['/my', '/my/home'], type='http', auth="user", website=True)
-    # def home(self, **kw):
-    #     values = {}
-    #     #companies = request.env['res.company'].sudo().search([])
-    #     partner = request.env.user.partner_id
-    #     SaleOrder = request.env['sale.order']
-    #     companies = partner.sudo().portal_companies
-    #
-    #     if companies:
-    #         companies_all_data = []
-    #         for company in companies:
-    #             print(company)
-    #             company_data = []
-    #
-    #             # Quotation block
-    #             quotation_count = SaleOrder.sudo().search_count(self._prepare_quotations_domain_companywise(partner, company)) \
-    #                 if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Quotations',
-    #                 'url': _('/my/quotes/company/%s') % int(company.id),
-    #                 'placeholder_count': quotation_count,
-    #             })
-    #
-    #             # Sale order block
-    #             order_count = SaleOrder.sudo().search_count(self._prepare_orders_domain_companywise(partner, company)) \
-    #                 if SaleOrder.check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Sales Orders',
-    #                 'url': _('/my/orders/company/%s') % int(company.id),
-    #                 'placeholder_count': order_count,
-    #             })
-    #
-    #             # Invoice block
-    #             invoice_count = request.env['account.move'].sudo().search_count(self._get_invoices_domain_companywise(company)) \
-    #                 if request.env['account.move'].check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Invoices',
-    #                 'url': _('/my/invoices/company/%s') % int(company.id),
-    #                 'placeholder_count': invoice_count,
-    #             })
-    #
-    #             # Tickets Block
-    #             ticket_count = request.env['helpdesk.ticket'].sudo().search_count(self._prepare_helpdesk_tickets_domain_companywise(company)) \
-    #                 if request.env['helpdesk.ticket'].check_access_rights('read', raise_exception=False) else 0
-    #             company_data.append({
-    #                 'title': 'Tickets',
-    #                 'url': _('/my/tickets/company/%s') % int(company.id),
-    #                 'placeholder_count': ticket_count,
-    #             })
-    #
-    #             # Rental Products
-    #             # rental_orders = request.env['sale.order'].sudo().search(self._prepare_rental_orders_domain_companywise(partner, company))
-    #             #     # if request.env['sale.order'].check_access_rights('read', raise_exception=False) else 0
-    #             # if rental_orders:
-    #             #     rental_product_count = len(rental_orders.mapped('order_line').mapped('product_id').ids)
-    #             # else:
-    #             #     rental_product_count = 0
-    #             # company_data.append({
-    #             #     'title': 'Rental Products',
-    #             #     'url': _('/my/rental/products/company/%s') % int(company.id),
-    #             #     'placeholder_count': rental_product_count,
-    #             # })
-    #
-    #             # Pass all blocks to list of that company
-    #             companies_all_data.append({
-    #                 'company_name': company.name,
-    #                 'company_data': company_data
-    #             })
-    #         values['companies'] = companies_all_data
-    #     else:
-    #         values['companies'] = False
-    #
-    #     print('>>>>>>>>>>>>>>>> deduct 01 ?????????????????????',request.render("ba_customer_portal_extension.portal_my_home_company_wise", values))
-    #     return request.render("ba_customer_portal_extension.portal_my_home_company_wise", values)
-
     @route(['/my', '/my/home'], type='http', auth="user", website=True)
     def home(self, **kw):
         values = {}
@@ -212,8 +104,8 @@ class CustomerPortalReal(CustomerPortal):
             values['companies'] = False
 
         # print('>>>>>>>>>>>>>>... sdddds ???????????????????',
-        #       request.render("ba_customer_portal_extension.portal_my_home_company_wise", values))
-        return request.render("ba_customer_portal_extension.portal_my_home_company_wise", values)
+        #       request.render("proportal_portal_extension.portal_my_home_company_wise", values))
+        return request.render("proportal.portal_my_home_company_wise", values)
 
     @http.route(['/my/quotes', '/my/quotes/company/<int:partner_company_id>', '/my/quotes/company/<int:partner_company_id>/page/<int:page>', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_quotes(self, partner_company_id=None, page=1, date_begin=None, date_end=None, sortby=None, **kw):
@@ -699,7 +591,7 @@ class CustomerPortalReal(CustomerPortal):
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
         })
-        return request.render("ba_customer_portal_extension.portal_my_rental_products", values)
+        return request.render("proportal.portal_my_rental_products", values)
 
     def _prepare_quotations_domain_companywise(self, partner, company):
         return [
