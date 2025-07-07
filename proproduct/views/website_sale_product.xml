@@ -17,6 +17,12 @@
                     Add to cart
                 </a>
             </div>
+            <div id="add_to_cart_wrap" t-else="" class="d-inline-flex align-items-center mb-2 me-auto">
+                <a role="button" t-attf-class="btn btn-primary flex-grow-1" href="/contact">
+                    <i class="fa fa-envelope me-2"/>
+                    Contact us
+                </a>
+            </div>
         </xpath>
 
         <!-- approve financing section -->
