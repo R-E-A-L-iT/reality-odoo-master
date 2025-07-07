@@ -6,11 +6,11 @@
     "license": "LGPL-3",
     'summary': 'Adds features and automation for leads in odoo.',
     'description': """Features added by this module:
-    1. More opportunity fields
-    2. Visible stages for leads
-    3. Automation of lead registration with Leica
-    4. More features for generating leads from website visits
-    5. etc...
+        1. More opportunity fields
+        2. Visible stages for leads
+        3. Automation of lead registration with Leica
+        4. More features for generating leads from website visits
+        5. etc...
     """,
     'depends': ['base', 'crm'],
     "data": [

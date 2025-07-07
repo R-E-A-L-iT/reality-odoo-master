@@ -2,17 +2,16 @@
     "name": "ProPortal",
     "summary": """
 		Portal Upgrade Module that adds Advanced Features""",
-    "description": """
-		Module that allows expands Customer Portal
-	""",
+    "description": """Features added by this module:
+        1. Integrated Company and Employee portals
+        2. More documents available in portal
+        3. Small website updates
+        4. etc...
+    """,
     "author": "Ezekiel deBlois, Ty Cyr",
     "license": "LGPL-3",
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
     "category": "Sales",
     "version": "17.0",
-    # any module necessary for this one to work correctly
     "depends": [
         "base",
         "website",
@@ -24,7 +23,6 @@
         "website_sale",
         "project",
     ],
-    # always loaded
     "data": [
         "views/web_base.xml",
         "views/partnerView.xml",
