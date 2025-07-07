@@ -29,7 +29,7 @@
 
         <!-- approve financing section -->
         <xpath expr="//div[@id='o_product_terms_and_share']" position="before">
-            <section class="approve_section" t-if="product.approve_financing">
+            <section class="approve_section" t-if="product.approve_financing and pricelist and pricelist.currency_id and pricelist.currency_id.name == 'USD'">
                 <div class="approve_section_inner">
 
                     <style>
