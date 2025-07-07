@@ -1,6 +1,6 @@
 from odoo import fields, models, api, tools
 
-class opportunity(models.Model):
+class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
     opportunity_source = fields.Selection([

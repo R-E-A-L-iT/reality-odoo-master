@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- crm.reveal.view FORM Inherit -->
+  <record id="view_crm_reveal_view_form_inherit" model="ir.ui.view">
+    <field name="name">crm.reveal.view.form.inherit.custom</field>
+    <field name="model">crm.reveal.view</field>
+    <field name="inherit_id" ref="website_crm_iap_reveal.crm_reveal_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='reveal_ip']" position="before">
+        <field name="id"/>
+      </xpath>
+      <xpath expr="//field[@name='create_date']" position="after">
+        <field name="x_studio_visitor_ids" widget="many2many_checkboxes" domain="[('ip_address', '=', reveal_ip)]"/>
+        <field name="x_studio_visitor_ids"/>
+        <field name="x_studio_create_date_integer" options="{'enable_formatting': false}"/>
+        <field name="x_studio_visitors_count_by_timestamp"/>
+        <field name="x_studio_website_visitor_id" options="{'enable_formatting': false}"/>
+        <field name="visitor_id"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- crm.reveal.view TREE Inherit -->
+  <record id="view_crm_reveal_view_tree_inherit" model="ir.ui.view">
+    <field name="name">crm.reveal.view.tree.inherit.custom</field>
+    <field name="model">crm.reveal.view</field>
+    <field name="inherit_id" ref="website_crm_iap_reveal.crm_reveal_view_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//tree[1]" position="attributes">
+        <attribute name="multi_edit">true</attribute>
+      </xpath>
+      <xpath expr="//field[@name='reveal_ip']" position="before">
+        <field name="id" optional="show"/>
+        <xpath expr="//field[@name='create_date']" position="move"/>
+      </xpath>
+      <xpath expr="//field[@name='reveal_ip']" position="after">
+        <field optional="show" name="x_studio_reveal_view_ip_related_visitors" string="IP Visitors"/>
+        <field name="x_studio_visitor_ids" optional="show" string="Linked Visitors"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- website.track TREE Inherit -->
+  <record id="view_website_track_tree_inherit" model="ir.ui.view">
+    <field name="name">website.track.tree.inherit.custom</field>
+    <field name="model">website.track</field>
+    <field name="inherit_id" ref="website.website_track_view_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='visitor_id']" position="before">
+        <field name="id" optional="show"/>
+      </xpath>
+      <xpath expr="//field[@name='page_id']" position="attributes">
+        <attribute name="optional">show</attribute>
+      </xpath>
+      <xpath expr="//field[@name='url']" position="attributes">
+        <attribute name="widget">text</attribute>
+      </xpath>
+      <xpath expr="//tree[1]" position="attributes">
+        <attribute name="edit">true</attribute>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- website.visitor FORM Inherit -->
+  <record id="view_website_visitor_form_inherit" model="ir.ui.view">
+    <field name="name">website.visitor.form.inherit.custom</field>
+    <field name="model">website.visitor</field>
+    <field name="inherit_id" ref="website.website_visitor_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='partner_id']" position="before">
+        <field name="access_token"/>
+        <field name="id"/>
+        <xpath expr="//field[@name='ip_address']" position="move"/>
+        <field name="x_studio_create_date_integer" options="{'enable_formatting': false}"/>
+        <field name="last_visited_page_id"/>
+      </xpath>
+      <xpath expr="//field[@name='country_id']" position="attributes">
+        <attribute name="invisible">False</attribute>
+      </xpath>
+      <xpath expr="//form[1]/sheet[1]/group[2]/group[1]/field[@name='has_push_notifications']" position="after">
+        <field name="x_studio_visitor_duration"/>
+        <field name="page_count"/>
+        <field name="product_count"/>
+        <field name="x_studio_interaction_rate"/>
+        <field name="x_visitor_ids_crm_lead_count" widget="statinfo" string=" # Leads related by IP"/>
+        <field name="x_studio_reveal_views_related_by_ip" widget="statinfo" string=" # Reveal Views related by IP"/>
+        <field name="x_studio_reveal_views_by_timestamp_int"/>
+      </xpath>
+      <xpath expr="//field[@name='website_id']" position="before">
+        <xpath expr="//field[@name='is_connected']" position="move"/>
+      </xpath>
+      <xpath expr="//field[@name='website_id']" position="after">
+        <field name="time_since_last_action"/>
+      </xpath>
+      <xpath expr="//field[@name='create_date']" position="attributes">
+        <attribute name="options">{'rounding': 1}</attribute>
+      </xpath>
+      <xpath expr="//field[@name='last_connection_datetime']" position="after">
+        <field name="x_studio_create_date_raw"/>
+        <field name="x_studio_create_date_range_start" invisible="False" options="{'rounding': 1}"/>
+        <field name="x_studio_create_date_range_end" invisible="False" options="{'rounding': 1}"/>
+      </xpath>
+      <xpath expr="//field[@name='product_ids']" position="after">
+        <field name="x_studio_utm_term"/>
+        <field name="lead_ids" widget="many2many_checkboxes" domain="[('|', ('id', 'in', lead_ids), '&amp;', ('reveal_ip', '!=', False), ('reveal_ip', '=', ip_address))]"/>
+        <field name="x_studio_revealview_ids" widget="many2many_checkboxes" domain="[('reveal_ip', '=', ip_address)]"/>
+      </xpath>
+      <xpath expr="//form[1]/sheet[1]/group[2]" position="after">
+        <notebook name="studio_notebook_4a6_1iu5okcnp">
+          <page string="Leads and Reveal Views" name="studio_page_4a6">
+            <group name="studio_group_4a6">
+              <field name="lead_ids" widget="many2many" domain="[('|', ('id', 'in', lead_ids), '&amp;', ('reveal_ip', '!=', False), ('reveal_ip', '=', ip_address))]"/>
+              <field name="x_studio_revealview_ids"
+                     context="{'search_default_studio_filter_4gc_1itvnubui': 1, 'start_date': x_studio_create_date_range_start, 'end_date': x_studio_create_date_range_end}"
+                     widget="many2many"
+                     domain="[('reveal_ip', '=', ip_address)]"/>
+            </group>
+          </page>
+          <page string="Page Views" name="studio_page_8s2_1iu5oo20a">
+            <group name="studio_group_8s2">
+              <field name="website_track_ids">
+                <tree string="Visitor Page Views History" create="0">
+                  <field name="id" optional="show"/>
+                  <field name="visit_datetime"/>
+                  <field name="url"/>
+                  <field name="visitor_id" column_invisible="False" invisible="False"/>
+                  <field name="page_id" optional="hide"/>
+                </tree>
+                <form>
+                  <sheet string="Visited Pages">
+                    <group>
+                      <group>
+                        <field name="visitor_id"/>
+                      </group>
+                      <group>
+                        <field name="page_id"/>
+                      </group>
+                    </group>
+                    <group>
+                      <field name="url"/>
+                    </group>
+                    <group>
+                      <group>
+                        <field name="visit_datetime"/>
+                        <field name="x_studio_interaction_priority"/>
+                      </group>
+                      <group>
+                        <field name="product_id"/>
+                      </group>
+                    </group>
+                  </sheet>
+                </form>
+              </field>
+            </group>
+          </page>
+          <page string="Related Visitors" name="studio_page_873_1iv4r6e69">
+            <group name="studio_group_873">
+              <field name="x_studio_leads_for_visitors_by_ip"/>
+            </group>
+          </page>
+        </notebook>
+      </xpath>
+      <xpath expr="//field[@name='is_connected']" position="attributes">
+        <attribute name="invisible">False</attribute>
+      </xpath>
+      <xpath expr="//field[@name='ip_address']" position="attributes">
+        <attribute name="widget">char</attribute>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- crm.lead FORM Inherit -->
+  <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+    <field name="name">crm.lead.form.inherit.custom</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//button[@name='action_redirect_to_livechat_sessions']" position="attributes">
+        <attribute name="invisible">False</attribute>
+      </xpath>
+      <xpath expr="//field[@name='visitor_sessions_count']" position="attributes">
+        <attribute name="string">Chats</attribute>
+      </xpath>
+      <xpath expr="//button[@name='action_show_potential_duplicates']" position="attributes">
+        <attribute name="invisible">False</attribute>
+      </xpath>
+      <xpath expr="//field[@name='is_partner_visible']" position="after">
+        <field name="id"/>
+        <field name="display_name"/>
+      </xpath>
+      <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='lead_partner']/field[@name='lang_id']" position="after">
+        <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='extra']/group[1]/group[not(@name)][3]/field[@name='reveal_ip']" position="move"/>
+        <field name="reveal_id" options="{'dynamic_placeholder': false}"/>
+      </xpath>
+      <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='lead_info']/div[4]" position="after">
+        <field name="visitor_ids" domain="[('|', ('id', 'in', visitor_ids), '&amp;', ('ip_address', '!=', False), ('ip_address', '=', reveal_ip))]" widget="many2many_checkboxes">
+          <tree string="Web Visitors" decoration-success="is_connected" sample="1">
+          </tree>
+        </field>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- crm.lead TREE Inherit -->
+  <record id="view_crm_lead_tree_inherit" model="ir.ui.view">
+    <field name="name">crm.lead.tree.inherit.custom</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='date_deadline']" position="after">
+        <field name="id" optional="show"/>
+      </xpath>
+      <xpath expr="//field[@name='create_date']" position="attributes">
+        <attribute name="optional">show</attribute>
+      </xpath>
+      <xpath expr="//tree[1]/field[@name='name']" position="after">
+        <field name="reveal_rule_id" optional="hide"/>
+        <xpath expr="//field[@name='city']" position="move"/>
+        <xpath expr="//field[@name='state_id']" position="move"/>
+        <xpath expr="//field[@name='country_id']" position="move"/>
+        <xpath expr="//field[@name='tag_ids']" position="move"/>
+        <field name="reveal_ip" optional="show"/>
+        <field name="reveal_id" optional="hide"/>
+        <field name="iap_enrich_done" optional="hide"/>
+        <field name="x_lead_ids_website_visitor_count" optional="show" options="{'enable_formatting': false}"/>
+        <field name="display_name" optional="hide"/>
+        <field name="visitor_sessions_count" optional="hide" options="{'enable_formatting': true}"/>
+        <field name="visitor_ids" optional="show" domain="[]" string="Linked Visitors"/>
+        <field name="visitor_page_count" optional="show"/>
+      </xpath>
+      <xpath expr="//field[@name='email_from']" position="attributes">
+        <attribute name="optional">hide</attribute>
+      </xpath>
+      <xpath expr="//field[@name='state_id']" position="attributes">
+        <attribute name="optional">show</attribute>
+      </xpath>
+      <xpath expr="//field[@name='country_id']" position="attributes">
+        <attribute name="optional">hide</attribute>
+      </xpath>
+      <xpath expr="//field[@name='tag_ids']" position="attributes">
+        <attribute name="optional">show</attribute>
+      </xpath>
+    </field>
+  </record>
+</odoo>
