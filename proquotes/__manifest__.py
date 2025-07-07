@@ -32,6 +32,7 @@
         "sale_project",
         "website_sale",
         "sale_timesheet",
+        "purchase",
     ],
     # "product",
     "assets": {
@@ -101,14 +102,7 @@
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",
         "data/thanks_for_payment.xml",
-        # "views/Other/mail_templates.xml",
-        # "views/Other/translated_terms.xml",
-        # "views/Invoice/invoicePayment.xml",
-        # "views/Other/product_backend.xml",
-        #         'models/quoteNotify.py'
+        "views/Quote/sale_order_templates.xml",
+        # "Views/PO/purchase_order_templates.xml",
     ],
-    # only loaded in demonstration mode
-    # "demo": [
-    #     "demo/demo.xml",
-    # ],
 }
