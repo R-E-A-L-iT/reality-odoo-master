@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="0">
+    <!-- Notify Email template  -->
+    <record id="email_template_taxcloud_notify" model="mail.template">
+        <field name="name">TaxCloud: Send Notify</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">taxcloudupdates@sodexis.com</field>
+        <field
+            name="subject"
+        >Subscribe to Notifications for TaxCloud App Version Updates</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html">
+                <![CDATA[
+<p>
+Hello Team,
+</p>
+<p>
+I am happy to confirm that I would like to receive notifications regarding the major/latest version updates for TaxCloud Apps. Please feel free to send any relevant information, updates, or bug fixes as they become available.
+</p>
+<p>
+Thanks!
+</p>
+
+    ]]>
+        </field>
+    </record>
+</odoo>
