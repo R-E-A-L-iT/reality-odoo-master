@@ -26,14 +26,18 @@
     ],
     # always loaded
     "data": [
+        "views/productView.xml",
         "views/web_base.xml",
         "views/partnerView.xml",
         "views/stockView.xml",
-        "views/productView.xml",
         "views/customer_portal.xml",
         "views/portalProject.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
         "views/header_icons.xml",
+    ],
+    # only loaded in demonstration mode
+    "demo": [
+        "demo/demo.xml",
     ],
 }
