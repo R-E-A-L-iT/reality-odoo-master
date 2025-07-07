@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_management.model_sale_order" model="ir.model">
+        <field name="website_form_key">create_rental_quote</field>
+        <field name="website_form_access">True</field>
+        <field name="website_form_label">Create Rental Quote</field>
+    </record>
+    <function model="ir.model.fields" name="formbuilder_whitelist">
+        <value>sale.order</value>
+        <value eval="[
+            'rental_start',
+            'rental_end',
+            'partner_name',
+            'company_name',
+            'rental_email',
+            'sale_order_template_id',
+            'user_id',
+            'team_id'
+        ]"/>
+    </function>
+</odoo>
