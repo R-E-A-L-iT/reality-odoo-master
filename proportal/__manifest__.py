@@ -35,5 +35,6 @@
         "views/partner_internal.xml",
         "views/productInstance.xml",
         "views/header_icons.xml",
+        "views/backend_internal.xml",
     ],
 }
