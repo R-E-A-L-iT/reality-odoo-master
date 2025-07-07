@@ -60,6 +60,9 @@
         'web.assets_backend': [
             "proquotes/static/src/JS/website_preview.js",
         ],
+        'website.assets_wysiwyg': [
+            'proquotes/static/src/JS/rental_quote_form_editor.js',
+        ],
     },
 
     "version": "17.0",
@@ -67,6 +70,7 @@
     # always loaded
     "data": [
         "security/ir.model.access.csv",
+        "data/rental_quote_data.xml",
         "views/Other/tax.xml",
         "views/Quote/quotesBackend.xml",
         "views/Quote/quotesFrontend.xml",
