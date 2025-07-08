@@ -22,5 +22,7 @@ class CrmRevealRule(models.Model):
             view.visitor_id.sudo().write({
                 'lead_ids': [(4, lead.id)]
             })
-
+            lead.sudo().write({
+                'visitor_ids': [(4, view.visitor_id.id)]
+            })
         return lead
