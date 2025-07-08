@@ -38,7 +38,8 @@ class CrmRevealView(models.Model):
 
     def _create_reveal_view(self, website_id, url, ip_address, country_code, state_code, rules_excluded):
         rules = self.env['crm.reveal.rule']._match_url(website_id, url, country_code, state_code, rules_excluded)
-
+        
+        _logger.info("inside create reveal view ---------------------------------")
         if rules:
             visitor_id = None
             try:
@@ -60,7 +61,8 @@ class CrmRevealView(models.Model):
                 self.env.cr.execute(query, params)
 
                 rules_excluded.append(str(rule['id']))
-
+                _logger.info("rules added :::::::::::::: ", rules_excluded)
+                                
             return rules_excluded
 
         return False
