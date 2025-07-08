@@ -37,9 +37,10 @@ class CrmRevealView(models.Model):
         return super().create(vals_list)
 
     def _create_reveal_view(self, website_id, url, ip_address, country_code, state_code, rules_excluded):
-        rules = self.env['crm.reveal.rule']._match_url(website_id, url, country_code, state_code, rules_excluded)
-        
         _logger.info("inside create reveal view ---------------------------------")
+        rules = self.env['crm.reveal.rule']._match_url(website_id, url, country_code, state_code, rules_excluded)
+        _logger.info("Matched rules: %s", rules)
+
         if rules:
             visitor_id = None
             try:
@@ -48,10 +49,14 @@ class CrmRevealView(models.Model):
             except Exception as e:
                 _logger.debug("Unable to get visitor in _create_reveal_view: %s", e)
 
+            _logger.info("Visitor: %s | visitor_id: %s", visitor, visitor_id)
+
             for rule in rules:
                 if str(rule['id']) in rules_excluded:
+                    _logger.info("Skipping rule %s as it's already in excluded", rule['id'])
                     continue
 
+                _logger.info("Inserting reveal view for rule %s and IP %s", rule['id'], ip_address)
                 query = """
                     INSERT INTO crm_reveal_view (reveal_ip, reveal_rule_id, reveal_state, create_date, visitor_id)
                     VALUES (%s, %s, 'to_process', now() at time zone 'UTC', %s)
@@ -61,8 +66,8 @@ class CrmRevealView(models.Model):
                 self.env.cr.execute(query, params)
 
                 rules_excluded.append(str(rule['id']))
-                _logger.info("rules added :::::::::::::: ", rules_excluded)
-                                
+                _logger.info("rules_excluded updated: %s", rules_excluded)
+
             return rules_excluded
 
         return False
