@@ -126,14 +126,32 @@ class order(models.Model):
         if sales_email:
             order.message_subscribe(partner_ids=[sales_email.id])
 
+        # execute extra behaviour for store automatically generated quotes
+        if order.website_id:
+            order.store_behaviour()
+        
+        return order
+
+    def store_behaviour(self):
+
         # Add non-company partners to subscribers (automatic quotes from store)
         partner = order.partner_id
         if partner and not partner.is_company:
             if partner.id not in order.message_partner_ids.ids:
                 order.message_subscribe(partner_ids=[partner.id])
-        
-        return order
 
+        # add $block section to beginning of quote
+        existing = self.order_line.filtered(
+            lambda l: l.display_type == 'line_section' and l.name.strip() == '$block'
+        )
+        if existing:
+            return
+        self.env['sale.order.line'].create({
+            'order_id': self.id,
+            'display_type': 'line_section',
+            'name': '$block',
+            'sequence': 0,
+        })
 
     @api.model
     def default_get(self, fields_list):
