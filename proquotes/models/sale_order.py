@@ -233,6 +233,32 @@ class order(models.Model):
                     'pricelist_id': [('name', 'ilike', 'rental')]
                 }
             }
+    
+    # force ecommerce template use instead if quote created from ecommerce order
+    def action_quotation_send(self):
+        self.ensure_one()
+
+        action = super().action_quotation_send()
+
+        if self.website_id:
+            ecommerce_template = self.env['mail.template'].search([
+                ('name', '=', 'eCommerce Quote Send')
+            ], limit=1)
+
+            if ecommerce_template:
+                if action.get('context'):
+                    action['context'].update({
+                        'default_template_id': ecommerce_template.id,
+                        'default_use_template': bool(ecommerce_template.id),
+                    })
+                else:
+                    action['context'] = {
+                        'default_template_id': ecommerce_template.id,
+                        'default_use_template': bool(ecommerce_template.id),
+                    }
+                _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
+
+        return action
             
     def _action_confirm(self):
         selected_lines = self.order_line.sudo().filtered(
@@ -742,20 +768,6 @@ class order(models.Model):
 
         # return the modified recipient groups with the updated access options
         return groups
-
-    # if the email is sent automatically by store order, set the default template to eCommerce one
-    def _notify_get_mail_template(self, message_type=None, **kwargs):
-        template = super()._notify_get_mail_template(message_type=message_type, **kwargs)
-
-        if message_type == 'email':
-            if self.website_id:
-                ecommerce_template = self.env['mail.template'].search([
-                    ('name', '=', 'eCommerce Quote Send')
-                ], limit=1)
-                if ecommerce_template:
-                    return ecommerce_template
-
-        return template
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
