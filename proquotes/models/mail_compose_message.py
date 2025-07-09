@@ -25,7 +25,7 @@ class MailComposeMessage(models.TransientModel):
     template_id = fields.Many2one(
         'mail.template',
         string='Use Template',
-        domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
+        # domain=lambda self: [('name', 'in', ['General Sales', 'Rental', 'Renewal'])]
     )
 
     # this clears the default recipients that are autofilled into the wizard. this is here because we don't want to send emails to the email address attatched to the company contact.
@@ -34,18 +34,35 @@ class MailComposeMessage(models.TransientModel):
         defaults = super().default_get(fields_list)
 
         model = self.env.context.get('default_model')
+        res_id = self.env.context.get('default_res_id') or self.env.context.get('active_id')
         template_model = self.env['mail.compose.message']
 
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
 
-            template = self.env['mail.template'].search([
-                ('name', '=', 'General Sales')
-            ], limit=1)
+            order = self.env['sale.order'].browse(res_id)
             
-            if template:
-                defaults['template_id'] = template.id
-                # defaults['use_template'] = True
+            if order:
+                _logger.info("Order found: " + order.name)
+
+            if order.website_id:
+                template = self.env['mail.template'].search([
+                    ('name', '=', 'eCommerce Quote Send')
+                ], limit=1)
+
+                if template:
+                    defaults['template_id'] = template.id
+                    _logger.info("Applied eCommerce Quote Send template")
+            else:
+                template = self.env['mail.template'].search([
+                    ('name', '=', 'General Sales')
+                ], limit=1)
+                
+                if template:
+                    defaults['template_id'] = template.id
+                    _logger.info("Applied General Sales template")
+                    # defaults['use_template'] = True
+
 
         elif model in ['account.move']:
             if 'partner_ids' in template_model._fields:
@@ -68,14 +85,3 @@ class MailComposeMessage(models.TransientModel):
                 defaults['attachment_ids'] = [(5, 0, 0)]
 
         return defaults
-
-class mail(models.TransientModel):
-    _inherit = "mail.compose.message"
-
-    def get_mail_values(self, res_ids):
-        # Force 'reply_to' to be the same as 'email_from'
-        result = super().get_mail_values(res_ids)
-        for key in result:
-            result[key]["reply_to"] = result[key]["email_from"]
-            result[key]["reply_to_force_new"] = True
-        return result
