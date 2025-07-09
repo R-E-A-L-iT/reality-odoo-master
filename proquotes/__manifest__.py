@@ -75,7 +75,7 @@
         "views/Quote/quotesPDF.xml",
         "views/Quote/rentalTerms.xml",
         "views/Quote/quotesTemplates.xml",
-        "views/Quote/quoteLogo.xml",
+        # "views/Quote/quoteLogo.xml",
         "views/Quote/renewalText.xml",
         "views/Quote/quoteRentalAddress.xml",
         "views/Quote/table-align.xml",
