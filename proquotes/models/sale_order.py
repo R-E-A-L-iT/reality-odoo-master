@@ -122,9 +122,16 @@ class order(models.Model):
         order = super().create(vals)
 
         # Find or create the partner with email sales@r-e-a-l.it
-        partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-        if partner:
-            order.message_subscribe(partner_ids=[partner.id])
+        sales_email = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        if sales_email:
+            order.message_subscribe(partner_ids=[sales_email.id])
+
+        # Add non-company partners to subscribers (automatic quotes from store)
+        partner = order.partner_id
+        if partner and not partner.is_company:
+            if partner.id not in order.message_partner_ids.ids:
+                order.message_subscribe(partner_ids=[partner.id])
+        
         return order
 
 
@@ -213,14 +220,19 @@ class order(models.Model):
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
 
+
+    # this overrides the subscribe method to not allow the partner_id to be subscribed, since their company email is not where the quote should go
+    # leaves an exception for non-company contacts, to allow quotes created by the store to be sent out
     def message_subscribe(self, partner_ids=None, subtype_ids=None):
-        # Always exclude the customer (partner_id) from being subscribed
         partner_ids = [
             pid for pid in (partner_ids or [])
-            if pid not in self.mapped('partner_id').ids
+            if pid not in [
+                p.id for p in self.mapped('partner_id')
+                if p.is_company
+            ]
         ]
         if not partner_ids:
-            return  # no one left to subscribe
+            return
         return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
     
     @api.depends('rental_start', 'rental_end')
