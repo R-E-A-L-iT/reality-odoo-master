@@ -444,9 +444,6 @@ class WebsiteForm(form.WebsiteForm):
 
 
     def insert_record(self, request, model, values, custom, meta=None):
-
-        individual_partner = None
-
         if model.model == 'sale.order':
             _logger.info('Processing sale.order form submission: %s', values)
             _logger.info('Processing  form custom: %s', custom)
