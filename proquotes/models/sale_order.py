@@ -722,20 +722,6 @@ class order(models.Model):
         # return the modified recipient groups with the updated access options
         return groups
 
-    # if the email is sent automatically by store order, set the default template to eCommerce one
-    def _notify_get_mail_template(self, message_type=None, **kwargs):
-        template = super()._notify_get_mail_template(message_type=message_type, **kwargs)
-
-        if message_type == 'email':
-            if self.website_id:
-                ecommerce_template = self.env['mail.template'].search([
-                    ('name', '=', 'eCommerce Quote Send')
-                ], limit=1)
-                if ecommerce_template:
-                    return ecommerce_template
-
-        return template
-
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
         for order in self:
