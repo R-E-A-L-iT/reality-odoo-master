@@ -133,12 +133,13 @@ class order(models.Model):
         return order
 
     def store_behaviour(self):
+        self.ensure_one()
 
         # Add non-company partners to subscribers (automatic quotes from store)
-        partner = order.partner_id
+        partner = self.partner_id
         if partner and not partner.is_company:
-            if partner.id not in order.message_partner_ids.ids:
-                order.message_subscribe(partner_ids=[partner.id])
+            if partner.id not in self.message_partner_ids.ids:
+                self.message_subscribe(partner_ids=[partner.id])
 
         # add $block section to beginning of quote
         existing = self.order_line.filtered(
