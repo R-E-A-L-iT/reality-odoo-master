@@ -127,33 +127,49 @@
                 <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
                 <t t-set="language" t-value="request.lang.code" />
                 <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
-                <!-- <t t-set="language" t-value="sale_order.partner_id.lang"/> -->
+                <t t-set="partner" t-value="sale_order.partner_id"/>
+                <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
+                <t t-set="address" t-value="str(partner.street + ', ' + partner.city + ' ' + partner.state_id.code + ', ' + partner.country_id.name)"/>
 
-                <div class="quote-address">
-                    <img t-if="sale_order.header_id.url[-4:] == '.jpg'" alt="Header Img"
-                        t-attf-src="{{sale_order.header_id.url}}"/>
-                    <video t-if="sale_order.header_id.url[-4:] == '.mp4'" autoplay="true" loop="" alt="Header Img"
-                        t-attf-src="{{sale_order.header_id.url}}"/>
-                    <div class="quote-address-block">
-                        <div class="quote-address-block-inner">
-                            <t t-if="sale_order.partner_id.parent_id">
-                                <h1 class="title" t-field="sale_order.partner_id.parent_id.name"/>
-                            </t>
-                            <t t-else="">
-                                <h1 class="title" t-field="sale_order.partner_id.name"/>
-                            </t>
-                            <div class="hr"/>
-                            <!--					<h2 class="subtitle" t-if="sale_order.partner_id.parent_id != False" t-field="sale_order.partner_id.parent_id.name" />-->
-                            <h2 class="subtitle" t-field="sale_order.partner_id.street"/>
-                            <h2 class="subtitle">
-                                <span t-if="sale_order.partner_id.city != False" t-raw="sale_order.partner_id.city + ','"/>
-                                <span t-field="sale_order.partner_id.state_id.code"/>
-                                <span t-field="sale_order.partner_id.zip"/>
-                                <span t-field="sale_order.partner_id.country_id.name"/>
-                            </h2>
+                <section t-if="'vimeo' in sale_order.header_id.url" class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level o_background_video s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" style="background-image: url(&quot;/web/image/4527-redirect/blk2gocolored.png&quot;); min-height: 606.625px !important;" data-bg-video-src="https://player.vimeo.com/video/951537329?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1" data-oe-model="ir.ui.view" data-oe-id="8160" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/section[1]">
+                    <div class="o_bg_video_container">
+                        <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_5" t-att-src="sale_order.header_id.url + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" style="width: 100%; height: 113.589532%; inset-inline-start: 0px; inset-block-start: -6.794766%;"></iframe>
+                    </div>  
+                    <div class="o_we_bg_filter bg-black-25"></div>
+                    <div class="container s_allow_columns">
+                        <div class="row o_grid_mode" data-row-count="6">
+                            <div class="o_colored_level o_grid_item g-height-5 g-col-lg-12 col-lg-12 o_anim_fade_in o_animate o_visible o_animated" style="z-index: 1; grid-row-start: 2; grid-column-start: 1; grid-row-end: 7; grid-column-end: 13; animation-name: o_anim_fade_in; animation-play-state: running; visibility: visible;">
+                                <h1 style="text-align: center;">
+                                    <span class="display-1-fs">
+                                        <strong>
+                                            <font class="text-o-color-5"><t t-out="title"/></font>
+                                        </strong>
+                                    </span>
+                                    <br/>
+                                </h1>
+                                <p class="lead" style="text-align: center;">
+                                    <span class="h3-fs">
+                                        <font class="text-o-color-5"><t t-out="address"/></font>
+                                    </span>
+                                </p>
+                                <br/>
+                                <!-- button, if needed later -->
+                                <!-- <p style="text-align: center;">
+                                    <a class="btn btn-primary btn-lg" href="/contact" data-bs-original-title="" title="">Contact us</a>
+                                </p> -->
+                            </div>
                         </div>
                     </div>
-                </div>
+                </section>
+                <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + sale_order.header_id.url + '); min-height: 606.625px !important;'">
+                    <div class="o_we_bg_filter bg-black-50"></div>
+                    <div class="container s_allow_columns">
+                        <h1 class="display-3" style="text-align: center; font-weight: bold;">
+                            <t t-out="title"/>
+                        </h1>
+                        <p class="lead" style="text-align: center;"><t t-out="address"/></p>
+                    </div>
+                </section>
         </xpath>
 
         <!-- Hide Total On Rental Quotes -->
