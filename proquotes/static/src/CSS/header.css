@@ -25,6 +25,6 @@
 /* update border for mega menu */
 .o_mega_menu {
     border: 0px !important;
-    border-bottom: 0.5px solid #6C757D !important;
+    border-bottom: 0.5px solid rgb(52, 58, 64) !important;
     margin-top: 20px !important;
 }
