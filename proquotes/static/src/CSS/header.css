@@ -21,3 +21,9 @@
 #top_menu > li > a::after {
     display: none !important;
 }
+
+/* update border for mega menu */
+.o_mega_menu {
+    border: 0px !important;
+    border-bottom: 0.5px solid rgb(108, 117, 125);
+}
