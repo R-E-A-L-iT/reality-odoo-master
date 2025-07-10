@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="wishlist_page_add_to_cart" inherit_id="website_sale_wishlist.product_wishlist">
+    
+        <xpath expr="//button[@id='add_to_cart_button']" position="replace">
+            <t t-set="is_sold_out" t-value="not wish.product_id.allow_out_of_stock_order and wish.product_id._is_sold_out()"/>
+            <button t-if="not combination_info['prevent_zero_price_sale'] and wish.product_id.show_add_to_cart" id="add_to_cart_button" class="btn btn-secondary btn-block o_wish_add mb4" t-att-disabled="is_sold_out">
+                Add
+                <span class="d-none d-md-inline">to Cart</span>
+            </button>
+        </xpath>
+
+    </template>
+</odoo>
