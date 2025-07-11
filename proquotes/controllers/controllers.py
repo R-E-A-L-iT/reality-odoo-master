@@ -7,6 +7,7 @@ import binascii
 
 from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError, UserError
+from odoo.addons.website.controllers import form
 from odoo.http import request
 from odoo.http import Response
 from odoo.addons.portal.controllers.mail import _message_post_helper
