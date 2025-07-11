@@ -239,14 +239,14 @@
                     </td>
                 </tr>
             </t>
-            <t t-if="line.name == '#rental_subscription'">
+            <!-- <t t-if="line.name == '#rental_subscription'">
                 <span t-if="language == 'fr_CA'">Abonnement de location</span>
                 <span>Rental Subscription</span>
             </t>
             <t t-if="line.name == '#rental_software'">
                 <span t-if="language == 'fr_CA'">Logiciel de location</span>
                 <span>Rental Software</span>
-            </t>
+            </t> -->
             <!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
             <t t-if="line.name == '$rental_pricenote'">
                 <tr>
@@ -771,17 +771,32 @@
                 </t>
             </div>
             <t t-if="sale_order.is_rental == True">
+                <br/><br/>
                 <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
                 <label for="rental-terms-checkbox">
-                    <h1>
+                    <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
                         <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
-                    </h1>
+                    </h3>
                 </label>
                 <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
+            </t>
+            <t t-else="">
+                <br/><br/>
+                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="rental-terms-checkbox">
+                    <h3>
+                        <strong class="white-text" id="terms_hidden">+</strong>
+                        <strong class="white-text" id="terms_open">×</strong>
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                        </strong>
+                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                    </h3>
+                </label>
+                <div id="rentalTerms" t-call="proquotes.normal_terms"/>
             </t>
             <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
