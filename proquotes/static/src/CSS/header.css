@@ -26,9 +26,8 @@
 .o_mega_menu {
     border: 0px !important;
     border-bottom: 0.5px solid rgb(52, 58, 64) !important;
-    margin-top: 20px !important;
+    margin-top: 5px !important;
 }
-
 
 /* TEMPORARY STYLE FIX */
 /* switch to turn share options on products on/off isn't working so hiding here */
