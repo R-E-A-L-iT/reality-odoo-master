@@ -665,10 +665,22 @@ class invoice(models.Model):
 
     def action_send_and_print(self):
         template = self.env.ref(self._get_mail_template(), raise_if_not_found=False)
-
+        report_template_ids = template.report_template_ids
         if any(not x.is_sale_document(include_receipts=True) for x in self):
             raise UserError(_("You can only send sales documents"))
         partner = self.partner_id if self.partner_id.email else False
+        attachment_widget_data = False
+        if template.report_template_ids:
+            attachment_widget_data = [
+                {
+                    'id': report.id,
+                    'name': report.name,
+                    'type': 'binary',
+                    'mimetype': 'application/pdf',
+                }
+                for report in template.report_template_ids
+            ]
+    
         return {
             'name': _("Send"),
             'type': 'ir.actions.act_window',
@@ -680,6 +692,7 @@ class invoice(models.Model):
                 'active_ids': self.ids,
                 'default_mail_template_id': template.id,
                 'default_mail_partner_ids': [partner.id] if partner else False,
+                'default_mail_attachments_widget': attachment_widget_data
             },
         }
 
