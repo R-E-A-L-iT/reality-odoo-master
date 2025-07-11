@@ -31,6 +31,9 @@ class order(models.Model):
         required=True
     )
 
+    partner_name = fields.Char(string="Partner Name")
+    rental_email = fields.Char(string="Email")
+
     pricelist_id = fields.Many2one(
         'product.pricelist',
         string='Pricelist',
