@@ -14,55 +14,64 @@
                     <h4>
                         <strong>Payment Terms</strong>
                     </h4>
-                    <p>Payment is due in accordance with the schedule specified on the quote. If not specified, payment is due by the due date indicated on the invoice.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">Payment is due according to the schedule stated on the quotation. If no schedule is specified, payment is due by the due date indicated on the invoice.</p>
+                    <p t-else="">Payment is due in accordance with the schedule specified on the quote. If not specified, payment is due by the due date indicated on the invoice.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Late Payment Charges</strong>
                     </h4>
-                    <p>A late payment charge of 2% per month (24% annually) will be applied to overdue balances.The client is responsible for all legal fees and recovery costs incurred as a result of late or unpaid invoices.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">A finance charge of 2% per month (24% annually) will apply to all overdue balances. The client is responsible for all legal fees, collection agency fees, and any recovery costs incurred due to late or unpaid invoices.</p>
+                    <p t-else="">A late payment charge of 2% per month (24% annually) will be applied to overdue balances.The client is responsible for all legal fees and recovery costs incurred as a result of late or unpaid invoices.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Non-Cancelable and Final Sale</strong>
                     </h4>
-                    <p>All accepted quotations are <b>non-cancelable</b> and <b>final</b>, unless otherwise agreed in writing.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">All accepted quotations are non-cancelable and final, unless otherwise agreed to in writing by the seller.</p>
+                    <p t-else="">All accepted quotations are <b>non-cancelable</b> and <b>final</b>, unless otherwise agreed in writing.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>No Returns or Refunds</strong>
                     </h4>
-                    <p>All sales are final. We do not accept returns or provide refunds.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">All sales are final. No returns or refunds will be accepted under any circumstances unless otherwise agreed to in writing.</p>
+                    <p t-else="">All sales are final. We do not accept returns or provide refunds.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Warranty</strong>
                     </h4>
-                    <p>No warranties are expressed or implied by the seller. Only the <b>original manufacturer’s warranties</b> apply. The client is responsible for registering and managing warranty claims directly with the manufacturer unless otherwise specified.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">No warranties are expressed or implied by the seller. Any applicable warranties are solely those of the original manufacturer. The client is responsible for registering products and handling warranty claims directly with the manufacturer, unless otherwise specified.</p>
+                    <p t-else="">No warranties are expressed or implied by the seller. Only the <b>original manufacturer’s warranties</b> apply. The client is responsible for registering and managing warranty claims directly with the manufacturer unless otherwise specified.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Software and Custom Solutions</strong>
                     </h4>
-                    <p>Software licenses and custom-developed solutions are non-refundable. Changes outside the agreed scope may be subject to additional charges.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">All software licenses and custom-developed solutions are non-refundable. Any changes outside the originally agreed-upon scope of work may incur additional charges.</p>
+                    <p t-else="">Software licenses and custom-developed solutions are non-refundable. Changes outside the agreed scope may be subject to additional charges.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Ownership and Risk</strong>
                     </h4>
-                    <p>Ownership of goods remains with the seller until full payment is received. Risk transfers to the buyer upon delivery.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">Title to all goods remains with the seller until full payment is received. Risk of loss or damage transfers to the buyer upon delivery.</p>
+                    <p t-else="">Ownership of goods remains with the seller until full payment is received. Risk transfers to the buyer upon delivery.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Limitation of Liability for Errors</strong>
                     </h4>
-                    <p>The seller is not responsible for any technical or human error, omission, or miscalculation contained in the invoice or quotation. If such an error is identified, the seller reserves the right to correct and reissue the document.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">The seller is not liable for any technical, typographical, or clerical errors or omissions in quotations, invoices, or other documents. The seller reserves the right to correct such errors and reissue documents as necessary.</p>
+                    <p t-else="">The seller is not responsible for any technical or human error, omission, or miscalculation contained in the invoice or quotation. If such an error is identified, the seller reserves the right to correct and reissue the document.</p><br/>
                 </li>
                 <li>
                     <h4>
                         <strong>Governing Law</strong>
                     </h4>
-                    <p>This agreement shall be governed by the laws of the Province of Quebec.</p><br/>
+                    <p t-if="sale_order.partner_id.country_id.code == 'US'">This agreement shall be governed by and interpreted in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions. The parties consent to the exclusive jurisdiction of the courts located in the State of Delaware for the resolution of any legal disputes.</p>
+                    <p t-else="">This agreement shall be governed by the laws of the Province of Quebec.</p><br/>
                 </li>
             </ol>
         </div>
