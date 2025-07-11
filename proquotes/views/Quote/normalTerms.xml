@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template name="Normal Terms" id="normal_terms">
+        <div id="rental-terms" t-if="language == 'en_CA' or language == 'en_US'">
+            <ol>
+                <li>
+                    <h4>
+                        <strong>Acceptance of Terms</strong>
+                    </h4>
+                    <p>By signing this quotation, the client agrees to the prices, specifications, and terms outlined herein, and authorizes the seller to proceed with order fulfillment.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Payment Terms</strong>
+                    </h4>
+                    <p>Payment is due in accordance with the schedule specified on the quote. If not specified, payment is due by the due date indicated on the invoice.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Late Payment Charges</strong>
+                    </h4>
+                    <p>A late payment charge of 2% per month (24% annually) will be applied to overdue balances.The client is responsible for all legal fees and recovery costs incurred as a result of late or unpaid invoices.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Non-Cancelable and Final Sale</strong>
+                    </h4>
+                    <p>All accepted quotations are <b>non-cancelable</b> and <b>final</b>, unless otherwise agreed in writing.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>No Returns or Refunds</strong>
+                    </h4>
+                    <p>All sales are final. We do not accept returns or provide refunds.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Warranty</strong>
+                    </h4>
+                    <p>No warranties are expressed or implied by the seller. Only the <b>original manufacturer’s warranties</b> apply. The client is responsible for registering and managing warranty claims directly with the manufacturer unless otherwise specified.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Software and Custom Solutions</strong>
+                    </h4>
+                    <p>Software licenses and custom-developed solutions are non-refundable. Changes outside the agreed scope may be subject to additional charges.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Ownership and Risk</strong>
+                    </h4>
+                    <p>Ownership of goods remains with the seller until full payment is received. Risk transfers to the buyer upon delivery.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Limitation of Liability for Errors</strong>
+                    </h4>
+                    <p>The seller is not responsible for any technical or human error, omission, or miscalculation contained in the invoice or quotation. If such an error is identified, the seller reserves the right to correct and reissue the document.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Governing Law</strong>
+                    </h4>
+                    <p>This agreement shall be governed by the laws of the Province of Quebec.</p><br/>
+                </li>
+            </ol>
+        </div>
+
+        <div id="rental-terms" t-if="language == 'fr_CA'">
+            <ol>
+                <li>
+                    <h4>
+                        <strong>Acceptation des conditions</strong>
+                    </h4>
+                    <p>En signant ce devis, le client accepte les prix, les spécifications et les modalités indiqués, et autorise le vendeur à procéder à l’exécution de la commande.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Modalités de paiement</strong>
+                    </h4>
+                    <p>Le paiement doit être effectué selon l’échéancier indiqué sur la quotation. À défaut d’indication, le paiement est exigible à la date d’échéance figurant sur la facture.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Frais de retard</strong>
+                    </h4>
+                    <p>Des frais de retard de 2 % par mois (24 % par année) s’appliqueront à tout solde impayé. Le client est responsable de tous les frais juridiques et de recouvrement engagés en raison de factures en retard ou impayées.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Vente ferme et non annulable</strong>
+                    </h4>
+                    <p>Tous les devis acceptés sont <b>fermes et non annulables</b>, sauf entente écrite contraire.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Aucun retour ni remboursement</strong>
+                    </h4>
+                    <p>Toutes les ventes sont finales. Aucun retour ni remboursement ne sera accepté.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Garantie</strong>
+                    </h4>
+                    <p>Aucune garantie n’est offerte par le vendeur. Seules les <b>garanties du fabricant</b> s’appliquent. Le client est responsable de l’enregistrement et de la gestion de toute réclamation auprès du fabricant, sauf indication contraire.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Logiciels et solutions personnalisées</strong>
+                    </h4>
+                    <p>Les licences logicielles et les solutions personnalisées sont non remboursables. Toute modification en dehors de la portée convenue peut entraîner des frais supplémentaires.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Propriété et risques</strong>
+                    </h4>
+                    <p>La propriété des biens demeure au vendeur jusqu’à réception du paiement complet. Le risque est transféré à l’acheteur lors de la livraison.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Limitation de responsabilité pour erreurs</strong>
+                    </h4>
+                    <p>Le vendeur n’est pas responsable de toute erreur technique ou humaine, omission ou erreur de calcul contenue dans la facture ou le devis. En cas d’erreur, le vendeur se réserve le droit de corriger et de réémettre le document.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Droit applicable</strong>
+                    </h4>
+                    <p>La présente entente est régie par les lois de la province de Québec.</p><br/>
+                </li>
+            </ol>
+        </div>
+    </template>
+</odoo>

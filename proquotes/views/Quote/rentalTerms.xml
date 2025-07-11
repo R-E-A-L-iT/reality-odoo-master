@@ -29,15 +29,15 @@
         <div id="rental-terms" t-if="language == 'en_CA' or language == 'en_US'">
             <ol>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>Rental, Effective Date and Term</strong>
-                    </h3>
+                    </h4>
                     <p> The Customer hereby rents Equipment from <t t-esc="company_name + ','" /> for the period indicated in the preamble of this Agreement, following the terms and conditions established hereinafter. The Agreement comes into effect on the date it is signed by the Customer and expires at the end of the Equipment rental period indicated in the preamble of this Agreement. </p>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>Considerations</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -60,10 +60,10 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>
                             <t t-esc="company_name + '\'s'" /> COMMITMENTS </strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -82,9 +82,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>CUSTOMERS COMMITMENTS</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -98,25 +98,25 @@
                             <p> The Customer agrees to return the Equipment to in the same operating and clean condition as at the time of delivery, and to the same location as the original point of delivery, or failing that to any <t t-esc="company_name" /> branch. In such case, the Customer agrees to wash the Equipment prior to its pickup by <t t-esc="company_name + '.'" /> The Customer agrees to immediately notify <t t-esc="company_name" /> of any damages caused to the Equipment. In such case, the Customer must reimburse <t t-esc="company_name" /> for any repairs required as a result of the damages, alterations or stemming from the abusive use of the Equipment, for both aesthetic and technical aspects, whether or not such damage, alteration or abusive use was intentional by the Customer. Such repairs must be carried out exclusively by <t t-esc="company_name" /> or its authorized supplier. Under no circumstances is the Customer authorized or would be authorized to carry out any repair or have any repair carried out on the Equipment. </p>
                         </li>
                         <li>
-                            <h3>Insurance</h3>
+                            <h4>Insurance</h4>
                             <p> The Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to <t t-esc="company_name" /> should <t t-esc="company_name" /> so request it. </p>
                             <p> For all rentals involving Remotely Piloted Aircraft Systems (RPAS), the Customer hereby agrees to hold general liability insurance covering any third-party liability incumbent upon it (including renter's insurance) under the terms of this Agreement, that also covers RPAS operations, with minimum coverage of two million dollars ($2,000,000) and to provide a copy of the policy to R-E-A-L.iT Solutions should R-E-A-L.iT Solutions so request it.
                             </p>
                         </li>
                         <li>
-                            <h3>Standards, Policies and Others</h3>
+                            <h4>Standards, Policies and Others</h4>
                             <p> The Customer hereby agrees to respect and comply with any standard, policy or regulation issued by <t t-esc="company_name + ','" /> particularly in regards to the use and safety of the Equipment. </p>
                         </li>
                         <li>
-                            <h3>Aircraft Procedures</h3>
+                            <h4>Aircraft Procedures</h4>
                             <p> For any rental involving Remotely Piloted Aircraft Systems (RPAS), the Customer must conduct all flight operations in compliance with Canadian Aviation Regulations (CARs) Part IX – Remotely Piloted Aircraft Systems. </p>
                         </li>
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>INDEMNIFICATION</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>Non-Liability</h4>
@@ -130,9 +130,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>END OF AGREEMENT</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>Termination as of Right</h4>
@@ -153,9 +153,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>GENERAL PROVISIONS</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -210,15 +210,15 @@
         <div id="rental-terms" t-if="language == 'fr_CA'">
             <ol>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>LOCATION, ENTRÉE EN VIGUEUR ET DURÉE</strong>
-                    </h3>
+                    </h4>
                     <p> Le Client loue, par les présentes, les Équipements de <t t-esc="company_name + ','" /> pour la période de temps indiquée au préambule de la présente entente, suivant les termes et conditions ci-après établis. <br /> L'entente entre en vigueur à la date de sa signature par le Client et se termine à la fin de la période de location des Équipements indiquée au préambule de la présente entente. </p>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>CONTREPARTIES</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -241,10 +241,10 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong> ENGAGEMENTS DE <t t-esc="company_name" />
                         </strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -263,9 +263,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>ENGAGEMENT DU CLIENT</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>
@@ -279,13 +279,13 @@
                             <p> Le Client s'engage à retourner les Équipements à <t t-esc="company_name" /> dans le même état de fonctionnement et de propreté qu'au moment de leur livraison, et ce, au même emplacement que leur point de livraison original, ou à défaut dans toute succursale d' <t t-esc="company_name + '.'" /> À cet effet, le Client s'engage à laver les Équipements préalablement à leur cueillette par <t t-esc="company_name + '.'" /> Le Client s'engage à aviser immédiatement <t t-esc="company_name" /> de tout dommage causé aux Équipements. À cet effet, le Client devra rembourser <t t-esc="company_name" /> pour toute réparation rendue nécessaire suite à des dommages, altérations ou découlant d'un usage abusif des Équipements, tant sur le plan esthétique que technique, que cela soit intentionnel ou non de la part du Client. Ces réparations devront être effectuées exclusivement par <t t-esc="company_name" /> ou son fournisseur autorisé. En aucun cas, le Client n'est ou ne sera autorisé à effectuer ou faire effectuer quelque réparation que ce soit sur les Équipements. </p>
                         </li>
                         <li>
-                            <h3>Assurances</h3>
+                            <h4>Assurances</h4>
                             <p> Le Client s'engage, par les présentes, à détenir une assurance de responsabilité civile générale le couvrant notamment à l'égard de toute responsabilité civile lui incombant (incluant sa responsabilité en tant que locataire) aux termes des présentes, d'une couverture minimale de deux millions de dollars (2 000 000 $) et à remettre, à <t t-esc="company_name + ','" /> une copie de la police si celle-ci en fait la demande, ladite police doit également inclure une couverture en cas de feu, vol, bris ou vandalisme eu égard aux Équipements. </p>
                             <p> Pour toutes les locations impliquant des systèmes d'aéronefs télépilotés (SATP), le Client s'engage par la présente à détenir une assurance responsabilité civile générale couvrant toute responsabilité civile envers les tiers qui lui incombe (y compris l'assurance locataire) aux termes du présent Contrat, qui couvre également les opérations RPAS, avec une couverture minimale de deux millions de dollars (2 000 000 $) et à fournir une copie de la police à Solutions R-E-A-L.iT si Solutions R-E-A-L.iT le demande.
                             </p>
                         </li>
                         <li>
-                            <h3>Normes, politiques et autres</h3>
+                            <h4>Normes, politiques et autres</h4>
                             <p> Le Client s'engage, par les présentes, à respecter et à se conformer à toute norme, politique ou règlement édicté par <t t-esc="company_name" /> eu égard notamment à l'utilisation et la sécurité des Équipements. </p>
                         </li>
                         <li>
@@ -295,9 +295,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>INDEMNISATION</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>Non-responsabilité</h4>
@@ -312,9 +312,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>FIN DE L'ENTENTE</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>Résiliation de plein droit</h4>
@@ -335,9 +335,9 @@
                     </ol>
                 </li>
                 <li>
-                    <h3>
+                    <h4>
                         <strong>DISPOSITIONS GÉNÉRALES</strong>
-                    </h3>
+                    </h4>
                     <ol>
                         <li>
                             <h4>

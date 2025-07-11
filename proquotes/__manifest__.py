@@ -78,6 +78,7 @@
         "views/Quote/quotesFrontend.xml",
         "views/Quote/quotesPDF.xml",
         "views/Quote/rentalTerms.xml",
+        "views/Quote/normalTerms.xml",
         "views/Quote/quotesTemplates.xml",
         "views/Quote/quoteLogo.xml",
         "views/Quote/renewalText.xml",
