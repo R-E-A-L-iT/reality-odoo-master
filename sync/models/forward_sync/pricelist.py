@@ -468,7 +468,7 @@ class sync_pricelist:
                                     updated_fields.append(f'supplier_price_{cad_partner.name}')
                                     _logger.info("Created vendor price for %s on Product %s: %.2f %s", cad_partner.name, product.id, purchase_price_cad, cad_currency.name)
 
-                        elif column_name == "Purhcase Price USD":
+                        elif column_name == "Purchase Price USD":
 
                             purchase_price_usd = str(row[sheet_columns.index("Purchase Price USD")]).strip()
                             usd_currency = self.database.env['res.currency'].search([('name', '=', 'USD')], limit=1)
