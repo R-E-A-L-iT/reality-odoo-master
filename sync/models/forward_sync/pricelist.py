@@ -440,8 +440,9 @@ class sync_pricelist:
                                 [('name', '=', 'Leica Geosystems Ltd.'), ('is_company', '=', True)],
                                 limit=1
                             )
+                            cad_company = self.database.env['res.company'].search([('name', '=', 'R-E-A-L.iT Solutions')], limit=1)
 
-                            if purchase_price_cad and cad_currency and cad_partner:
+                            if purchase_price_cad and cad_currency and cad_partner and cad_company:
 
                                 supplier_info = self.database.env['product.supplierinfo'].search([
                                     ('product_tmpl_id', '=', product.id),
@@ -462,6 +463,7 @@ class sync_pricelist:
                                         'currency_id': cad_currency.id,
                                         'price': purchase_price_cad,
                                         'product_tmpl_id': product.id,
+                                        'company_id': cad_company.id,
                                         # optionally set minimum_qty, sequence, delay, etc
                                     }
                                     self.database.env['product.supplierinfo'].sudo().create(vals)
@@ -476,8 +478,9 @@ class sync_pricelist:
                                 [('name', '=', 'Leica Geosystems Inc'), ('is_company', '=', True)],
                                 limit=1
                             )
+                            usd_company = self.database.env['res.company'].search([('name', '=', 'R-E-A-L.iT U.S. Inc.')], limit=1)
 
-                            if purchase_price_usd and usd_currency and usd_partner:
+                            if purchase_price_usd and usd_currency and usd_partner and usd_company:
 
                                 supplier_info = self.database.env['product.supplierinfo'].search([
                                     ('product_tmpl_id', '=', product.id),
@@ -498,6 +501,7 @@ class sync_pricelist:
                                         'currency_id': usd_currency.id,
                                         'price': purchase_price_usd,
                                         'product_tmpl_id': product.id,
+                                        'company_id': usd_company.id,
                                         # optionally set minimum_qty, sequence, delay, etc
                                     }
                                     self.database.env['product.supplierinfo'].sudo().create(vals)
