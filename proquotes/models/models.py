@@ -890,7 +890,7 @@ class AccountMoveSend(models.TransientModel):
             if not (invoices_without_mail_data and wizard.checkbox_send_mail):
                 wizard.send_mail_warning_message = False
             else:
-                wizard.send_mail_warning_message = Fals
+                wizard.send_mail_warning_message = False
 
     # def write(self, vals):
     #     res = super().write(vals)
