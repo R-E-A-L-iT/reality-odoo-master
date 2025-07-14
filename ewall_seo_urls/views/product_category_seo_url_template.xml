@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Product Page Breadcrumb href Values Changes -->
+	<template id="product_inherit" inherit_id="website_sale.product" name="Product">
+		<xpath expr="//ol[@class='breadcrumb p-0 mb-2 m-lg-0']/li[@class='breadcrumb-item']" position="replace">
+			 <li t-if="category" class="breadcrumb-item">
+                <t t-if="category.seo_url">
+                    <a t-att-href="keep('/shop/category/%s' % (category.seo_url), category=0)" t-field="category.name" />
+                </t>
+                <t t-else="">
+                    <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)" t-field="category.name" />
+                </t>
+            </li>
+		</xpath>
+	</template>
+    <!-- Products page Breadcrumb href Values Changes -->
+	<template id="products_breadcrumb_inherit" inherit_id="website_sale.products_breadcrumb" name="Products Breadcrumb">
+		 <xpath expr="//t[@t-foreach='category.parents_and_self']" position="replace">
+		 	<t t-foreach="category.parents_and_self" t-as="cat">
+                <li t-if="cat == category" class="breadcrumb-item">
+                    <span class="d-inline-block" t-field="cat.name"/>
+                </li>
+                <li t-else="" class="breadcrumb-item">
+                    <t t-if="cat.seo_url">
+                        <a t-att-href="keep('/shop/category/%s' % (cat.seo_url), category=0)" t-field="cat.name"/>
+                    </t>
+                    <t t-else=''>
+                        <a t-att-href="keep('/shop/category/%s' % slug(cat), category=0)" t-field="cat.name"/>
+                    </t>
+                </li>
+            </t>
+		 </xpath>
+	</template>
+    <!-- category Listing Values href Values Changes -->
+	<template id="website_sale_filmstrip_categories" inherit_id="website_sale.filmstrip_categories" name="Categories Filmstrip">
+    <xpath expr="//li[@t-foreach='entries']" position="attributes">
+        <attribute name="t-att-data-link-href">keep('/shop/category/' + (c.seo_url), category=0) if c.seo_url else keep('/shop/category/' + slug(c), category=0)</attribute>
+    </xpath>
+    </template>
+    <!-- Product Attributes href Values Changes -->
+    <template id="products_attributes_inherits" inherit_id="website_sale.products_attributes" active="True" name="Attributes &amp; Variants filters">
+    	<xpath expr="//a[@t-if='attrib_values or tags']" position="replace">
+            <t t-if="category.seo_url">
+                <a t-if="attrib_values or tags" t-att-href="keep('/shop'+ ('/category/'+(category.seo_url)) if category else None, attrib=0, tags=0)" t-attf-class="btn btn-{{navClass}} d-flex py-1 mb-2">
+                    <small class="mx-auto"><b>Clear Filters</b></small>
+                        <i class="oi oi-close"/>
+                </a>
+
+            </t>
+            <t t-else="">
+                <a t-if="attrib_values or tags" t-att-href="keep('/shop'+ ('/category/'+slug(category)) if category else None, attrib=0, tags=0)" t-attf-class="btn btn-{{navClass}} d-flex py-1 mb-2">
+                    <small class="mx-auto"><b>Clear Filters</b></small>
+                        <i class="oi oi-close"/>
+                </a>
+            </t>
+    	</xpath>
+    	<xpath expr="//input[@t-if='category']" position="attributes">
+    		<attribute name="t-att-value">category.seo_url if category.seo_url else category.id</attribute>
+    	</xpath>
+    </template>
+</odoo>
