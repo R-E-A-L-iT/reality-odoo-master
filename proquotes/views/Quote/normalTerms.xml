@@ -73,6 +73,12 @@
                     <p t-if="sale_order.partner_id.country_id.code == 'US'">This agreement shall be governed by and interpreted in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions. The parties consent to the exclusive jurisdiction of the courts located in the State of Delaware for the resolution of any legal disputes.</p>
                     <p t-else="">This agreement shall be governed by the laws of the Province of Quebec.</p><br/>
                 </li>
+                <li>
+                    <h4>
+                        <strong>Quote Confidentiality</strong>
+                    </h4>
+                    <p>All quotes are confidential and intended only for the organization it is addressed to. Sharing of quote documents outside your organization is prohibited except with written permission.</p>
+                </li>
             </ol>
         </div>
 
@@ -137,6 +143,12 @@
                         <strong>Droit applicable</strong>
                     </h4>
                     <p>La présente entente est régie par les lois de la province de Québec.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Confidentialité des soumissions</strong>
+                    </h4>
+                    <p>Toutes les soumissions sont confidentielles et sont destinées uniquement à l'organisation à laquelle elles sont adressées. Le partage des documents de soumission à l'extérieur de votre organisation est interdite, sauf avec autorisation écrite.</p>
                 </li>
             </ol>
         </div>
