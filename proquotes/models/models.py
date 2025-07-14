@@ -877,6 +877,21 @@ class invoice(models.Model):
 class AccountMoveSend(models.TransientModel):
     _inherit = 'account.move.send'
 
+
+    send_mail_readonly = fields.Boolean(compute='_compute_send_mail_extra_fields', readonly=False)
+
+
+    @api.depends('checkbox_send_mail')
+    def _compute_send_mail_extra_fields(self):
+        for wizard in self:
+            wizard.display_mail_composer = wizard.mode == 'invoice_single'
+            invoices_without_mail_data = wizard.move_ids.filtered(lambda x: not x.partner_id.email)
+            # wizard.send_mail_readonly = invoices_without_mail_data == wizard.move_ids
+            if not (invoices_without_mail_data and wizard.checkbox_send_mail):
+                wizard.send_mail_warning_message = False
+            else:
+                wizard.send_mail_warning_message = Fals
+
     # def write(self, vals):
     #     res = super().write(vals)
 
