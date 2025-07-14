@@ -8,7 +8,7 @@
 }
 
 /* account icon */
-#o_main_nav > div > ul.o_header_sales_one_right_col.navbar-nav.align-items-center.gap-1.flex-grow-1.justify-content-end > li:nth-child(4) > a {
+#o_main_nav > div > ul.o_header_sales_one_right_col.navbar-nav.align-items-center.gap-1.flex-grow-1.justify-content-end > li.dropdown.o_no_autohide_item > a {
     padding-left: 4px !important;
     padding-right: 4px !important;
 }
