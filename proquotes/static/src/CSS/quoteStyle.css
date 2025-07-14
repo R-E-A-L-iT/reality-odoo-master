@@ -378,6 +378,11 @@ span.qtySpan {
 }
 
 
+/* quote lines padding */
+.quoteLineRow > td.text-left {
+	padding: 20px !important;
+}
+
 /* terms and conditions */
 #rental-terms > ol > li > p, #rental-terms > ol > li > ol > li > p {
 	color: rgba(255, 255, 255, 0.7) !important;;
