@@ -51,6 +51,7 @@
         ],
         'web.assets_frontend': [
             "proquotes/static/src/CSS/header.css",
+            "proquotes/static/src/CSS/store.css",
             "proquotes/static/src/JS/price.js",
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/poNumber.js",
