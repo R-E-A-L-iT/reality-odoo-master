@@ -14,16 +14,25 @@ _logger = logging.getLogger(__name__)
 
 # 3. Normalization functions
 
+# 
+# Normalize char data
+#
 def normalize_char(value):
     if value is None:
         return ''
     return str(value).strip()
 
+# 
+# Normalize text data
+#
 def normalize_text(value):
     if value is None:
         return ''
     return str(value).strip()
 
+# 
+# Normalize float data
+#
 def normalize_float(value):
     if value is None or str(value).strip() == '':
         return 0.0
@@ -32,6 +41,9 @@ def normalize_float(value):
     except ValueError:
         return 0.0
 
+# 
+# Normalize integer data
+#
 def normalize_integer(value):
     if value is None or str(value).strip() == '':
         return 0
@@ -40,6 +52,9 @@ def normalize_integer(value):
     except ValueError:
         return 0
 
+# 
+# Normalize boolean data
+#
 def normalize_bool(value):
     if isinstance(value, bool):
         return value
@@ -56,6 +71,9 @@ def normalize_bool(value):
         return False
     return False
 
+# 
+# Normalize date data
+#
 def normalize_date(value):
     if not value or not str(value).strip():
         return None
@@ -65,6 +83,9 @@ def normalize_date(value):
     except (ValueError, TypeError):
         return None
 
+# 
+# Normalize binary data
+#
 def normalize_binary(value):
     if not value or not str(value).strip():
         return None
@@ -81,6 +102,9 @@ def normalize_binary(value):
     
     return None
 
+# 
+# Normalize selection data
+#
 def normalize_selection(value, field_name, model_fields):
     if not value or not str(value).strip():
         return None
@@ -106,6 +130,9 @@ def normalize_selection(value, field_name, model_fields):
 
     return None
 
+# 
+# Normalize Many2One data
+#
 def normalize_many2one(value, field_name, model_fields, env):
     if value is None or str(value).strip() == "":
         return None
@@ -127,6 +154,9 @@ def normalize_many2one(value, field_name, model_fields, env):
     _logger.warning(f"ProSync: Many2one match not found for '{value_clean}' in field '{field_name}'")
     return 'not_found'
 
+# 
+# Normalize Many2Many data
+#
 def normalize_many2many(value, field_name, model_fields, env):
     if not value or not str(value).strip():
         return []
@@ -152,6 +182,9 @@ def normalize_many2many(value, field_name, model_fields, env):
 
     return [(6, 0, ids)] if ids else []
 
+# 
+# Update a product field with language context
+#
 def update_with_lang_context(product, column_name, value, all_fields, env, row_index, col_index):
     cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
     _logger = logging.getLogger(__name__)
@@ -217,3 +250,110 @@ def update_with_lang_context(product, column_name, value, all_fields, env, row_i
         _logger.info(f"ProSync: Updated translation of '{base_field}' for lang '{lang_code}' at cell {cell_ref}")
     except Exception as e:
         _logger.error(f"ProSync: Error updating translated field '{base_field}' at cell {cell_ref}: {e}")
+
+# 
+# Update a product's pricing rules and handle storage of past pricing rules
+# 
+def update_with_price_context(product, column_name, value, env, row_index, col_index):
+    cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
+
+    match = re.match(r'^price\[pricelist=(.+?)\]$', column_name.strip().lower())
+    if not match:
+        _logger.warning(f"ProSync: Invalid pricelist field format at cell {cell_ref}: {column_name}")
+        return
+
+    currency_code = match.group(1).upper()
+
+    currency_flag_map = {
+        "USD": "🇺🇸",
+        "CAD": "🇨🇦"
+    }
+
+    pricelist_name = currency_flag_map.get(currency_code)
+    if not pricelist_name:
+        _logger.warning(f"ProSync: Unsupported or unmapped currency '{currency_code}' at cell {cell_ref}")
+        return
+
+    pricelist_model = env["product.pricelist"]
+    priceitem_model = env["product.pricelist.item"]
+    currency_model = env["res.currency"]
+
+    currency = currency_model.search([("name", "=", currency_code)], limit=1)
+    if not currency:
+        _logger.warning(f"ProSync: Currency '{currency_code}' not found in system (cell {cell_ref})")
+        return
+
+    main_pricelist = pricelist_model.search([
+        ("name", "=", pricelist_name),
+        ("currency_id", "=", currency.id),
+        ("active", "=", True),
+    ], limit=1)
+
+    if not main_pricelist:
+        _logger.warning(f"ProSync: Main pricelist for '{currency_code}' not found (cell {cell_ref})")
+        return
+
+    try:
+        new_price = float(value)
+    except (ValueError, TypeError):
+        _logger.warning(f"ProSync: Invalid price value '{value}' at cell {cell_ref}")
+        return
+
+    existing_main_item = priceitem_model.search([
+        ("pricelist_id", "=", main_pricelist.id),
+        ("applied_on", "=", "1_product"),
+        ("product_tmpl_id", "=", product.id)
+    ], limit=1)
+
+    today_str = fields.Date.today().strftime("%Y-%m-%d")
+    today_pricelist = pricelist_model.search([
+        ("name", "=", today_str),
+        ("currency_id", "=", currency.id),
+        ("active", "=", True),
+    ], limit=1)
+
+    if not today_pricelist:
+        today_pricelist = pricelist_model.create({
+            "name": today_str,
+            "currency_id": currency.id,
+            "active": True,
+        })
+        _logger.info(f"ProSync: Created new dated pricelist '{today_str}' (cell {cell_ref})")
+
+    if existing_main_item:
+        existing_main_item.write({"fixed_price": new_price})
+        _logger.info(f"ProSync: Updated main pricelist '{main_pricelist.name}' for product {product.name} with new price {new_price} (cell {cell_ref})")
+
+        existing_today_item = priceitem_model.search([
+            ("pricelist_id", "=", today_pricelist.id),
+            ("applied_on", "=", "1_product"),
+            ("product_tmpl_id", "=", product.id)
+        ], limit=1)
+
+        if existing_today_item:
+            existing_today_item.write({"fixed_price": new_price})
+            _logger.info(f"ProSync: Updated today's pricelist '{today_str}' for product {product.name} (cell {cell_ref})")
+        else:
+            priceitem_model.create({
+                "pricelist_id": today_pricelist.id,
+                "applied_on": "1_product",
+                "product_tmpl_id": product.id,
+                "fixed_price": new_price,
+            })
+            _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
+    else:
+        priceitem_model.create({
+            "pricelist_id": main_pricelist.id,
+            "applied_on": "1_product",
+            "product_tmpl_id": product.id,
+            "fixed_price": new_price,
+        })
+        _logger.info(f"ProSync: Created new main pricelist rule for product {product.name} (cell {cell_ref})")
+
+        priceitem_model.create({
+            "pricelist_id": today_pricelist.id,
+            "applied_on": "1_product",
+            "product_tmpl_id": product.id,
+            "fixed_price": new_price,
+        })
+        _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
