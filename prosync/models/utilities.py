@@ -271,6 +271,21 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
         "CAD": "🇨🇦"
     }
 
+    company_map = {
+        "USD": "R-E-A-L.iT U.S. Inc.",
+        "CAD": "R-E-A-L.iT Solutions Inc."
+    }
+
+    company_name = company_map.get(currency_code)
+    if not company_name:
+        _logger.warning(f"ProSync: No company mapping defined for currency '{currency_code}'")
+        return
+
+    company = env["res.company"].search([("name", "=", company_name)], limit=1)
+    if not company:
+        _logger.warning(f"ProSync: Company '{company_name}' not found in system for currency '{currency_code}'")
+        return
+
     pricelist_name = currency_flag_map.get(currency_code)
     if not pricelist_name:
         _logger.warning(f"ProSync: Unsupported or unmapped currency '{currency_code}' at cell {cell_ref}")
@@ -319,6 +334,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
             "name": today_str,
             "currency_id": currency.id,
             "active": True,
+            "company_id": company.id,
         })
         _logger.info(f"ProSync: Created new dated pricelist '{today_str}' (cell {cell_ref})")
 
@@ -341,6 +357,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
                 "applied_on": "1_product",
                 "product_tmpl_id": product.id,
                 "fixed_price": new_price,
+                "company_id": company.id,
             })
             _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
     else:
@@ -349,6 +366,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
             "applied_on": "1_product",
             "product_tmpl_id": product.id,
             "fixed_price": new_price,
+            "company_id": company.id,
         })
         _logger.info(f"ProSync: Created new main pricelist rule for product {product.name} (cell {cell_ref})")
 
@@ -357,5 +375,6 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
             "applied_on": "1_product",
             "product_tmpl_id": product.id,
             "fixed_price": new_price,
+            "company_id": company.id,
         })
         _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
