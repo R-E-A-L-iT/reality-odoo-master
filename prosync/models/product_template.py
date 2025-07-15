@@ -124,3 +124,57 @@ class product_template_sync:
                 _logger.info(f"ProSync: Row {row_index} — Found product with SKU: {sku} (ID: {product.id})")
             else:
                 _logger.info(f"ProSync: Row {row_index} — No product found with SKU: {sku}")
+
+    def create_product_template(self, row_index, row):
+        _logger.info(f"ProSync: Row {row_index} — Creating new product.template (not yet implemented)")
+
+    def update_product_template(self, product, row_index, row, column_indices):
+        product_model = self.database['product.template']
+        all_fields = product_model.fields_get()
+
+        for col_idx, column_name in enumerate(self.sheet[0]):
+            field_name = column_name.strip().lower()
+
+            # Skip special control columns
+            if field_name in {'sku', 'valid', 'continue'}:
+                continue
+
+            # Skip bracketed fields for now (e.g., language/pricelist variants)
+            if '[' in field_name and not field_name.startswith("price[pricelist="):
+                continue
+
+            # Strip [bracket] metadata
+            base_field = field_name.split('[')[0]
+
+            # Skip if not a valid field
+            if base_field not in all_fields:
+                continue
+
+            field_type = all_fields[base_field]['type']
+            raw_value = row[col_idx]
+
+            try:
+                # Normalize value by field type
+                if field_type == 'char':
+                    value = normalize_char(raw_value)
+                elif field_type == 'float' or field_type == 'monetary':
+                    value = normalize_float(raw_value)
+                elif field_type == 'integer':
+                    value = normalize_integer(raw_value)
+                elif field_type == 'boolean':
+                    value = normalize_bool(raw_value)
+                elif field_type in {'date', 'datetime'}:
+                    value = normalize_date(raw_value)
+                else:
+                    _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
+                    continue
+
+                # Write value to product
+                product.write({base_field: value})
+
+            except Exception as e:
+                col_letter = chr(65 + col_idx)  # A = 65
+                cell_id = f"{row_index}{col_letter}"
+                _logger.error(f"ProSync: Error updating field '{base_field}' at cell {cell_id}: {str(e)}")
+
+
