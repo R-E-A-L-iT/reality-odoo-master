@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 import base64
 import requests
 
@@ -142,11 +143,14 @@ class product_template_sync:
         for col_idx, column_name in enumerate(self.sheet[0]):
             field_name = column_name.strip().lower()
 
-            # Skip special control columns
+            # skip columns already processed
             if field_name in {'sku', 'valid', 'continue'}:
                 continue
 
-            # Skip bracketed fields for now (e.g., language/pricelist variants)
+            # deal with columns using parametres
+            if "[language=" in column_name:
+                update_with_lang_context(product, column_name, raw_value, all_fields, self.database.env, row_index, col_index)
+                continue
             if '[' in field_name and not field_name.startswith("price[pricelist="):
                 continue
 

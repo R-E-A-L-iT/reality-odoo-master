@@ -151,3 +151,42 @@ def normalize_many2many(value, field_name, model_fields, env):
                 _logger.warning(f"ProSync: Many2many match not found for '{val}' in field '{field_name}'")
 
     return [(6, 0, ids)] if ids else []
+
+def update_with_lang_context(product, column_name, value, all_fields, env, row_index, col_index):
+
+    cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
+    _logger = logging.getLogger(__name__)
+
+    lang_match = re.match(r"^(.+?)\[language=(.+?)\]$", column_name)
+    if not lang_match:
+        _logger.warning(f"ProSync: Invalid translation format at cell {cell_ref}")
+        return
+
+    base_field = lang_match.group(1)
+    lang_code = lang_match.group(2)
+
+    if base_field not in all_fields:
+        _logger.warning(f"ProSync: Unknown field '{base_field}' at cell {cell_ref}")
+        return
+
+    if not all_fields[base_field].get('translate', False):
+        _logger.warning(f"ProSync: Field '{base_field}' does not support translation (cell {cell_ref})")
+        return
+
+    lang_exists = env['res.lang'].sudo().search([('code', '=', lang_code)], limit=1)
+    if not lang_exists:
+        _logger.warning(f"ProSync: Language '{lang_code}' not installed. Skipping cell {cell_ref}")
+        return
+
+    field_type = all_fields[base_field]['type']
+    normalized_value = normalize_field_by_type(field_type, value, base_field, all_fields, env)
+
+    if normalized_value is None or normalized_value == MANY2ONE_NOT_FOUND:
+        _logger.warning(f"ProSync: Could not normalize value at cell {cell_ref}")
+        return
+
+    try:
+        product.with_context(lang=lang_code).sudo().write({base_field: normalized_value})
+        _logger.info(f"ProSync: Updated translation of '{base_field}' for lang '{lang_code}' at cell {cell_ref}")
+    except Exception as e:
+        _logger.error(f"ProSync: Error updating translated field '{base_field}' at cell {cell_ref}: {e}")
