@@ -148,6 +148,7 @@ class product_template_sync:
             if field_name in {'sku', 'valid', 'continue'}:
                 continue
 
+            raw_value = row[col_idx]
             # deal with columns using parametres
             if "[language=" in column_name:
                 update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
