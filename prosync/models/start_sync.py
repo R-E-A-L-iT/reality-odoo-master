@@ -18,7 +18,7 @@ class ProsyncSync(models.Model):
     _description = "Sync model for ProSync"
 
     # - Retrieve Sheet ID stored in system parametres
-    def get_master_database_template_id(_db_name):
+    def get_master_database_template_id(self, _db_name):
 
         config = self.env['ir.config_parameter'].sudo()
         prod_id = config.get_param('prosync.production_sheet_id')
