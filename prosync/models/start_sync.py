@@ -61,7 +61,14 @@ class ProsyncSync(models.Model):
             configuration_tab = self.establish_sheets_connection(pw, template_id, 0)
 
             # Loop throw configuration sheet rows
-            while True:
+            while line_index < len(configuration_tab):
+
+                row = configuration_tab[line_index]
+                if len(row) < 6:
+                    _logger.info("ProSync: Skipping incomplete or empty row.")
+                    line_index += 1
+                    continue
+
                 sheet_name = str(configuration_tab[line_index][0])
                 sheet_index = str(configuration_tab[line_index][1])
                 sheet_type = str(configuration_tab[line_index][2])
