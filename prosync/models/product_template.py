@@ -122,8 +122,10 @@ class product_template_sync:
             product = self.database['product.template'].search([('sku', '=', sku)], limit=1)
             if product:
                 _logger.info(f"ProSync: Row {row_index} — Found product with SKU: {sku} (ID: {product.id})")
+                self.update_product_template(product, row_index, row, column_indices)
             else:
                 _logger.info(f"ProSync: Row {row_index} — No product found with SKU: {sku}")
+                self.create_product_template(row_index, row)
 
     def create_product_template(self, row_index, row):
         _logger.info(f"ProSync: Row {row_index} — Creating new product.template (not yet implemented)")
