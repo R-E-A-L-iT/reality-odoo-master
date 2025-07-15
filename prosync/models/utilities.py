@@ -153,7 +153,6 @@ def normalize_many2many(value, field_name, model_fields, env):
     return [(6, 0, ids)] if ids else []
 
 def update_with_lang_context(product, column_name, value, all_fields, env, row_index, col_index):
-
     cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
     _logger = logging.getLogger(__name__)
 
@@ -169,7 +168,8 @@ def update_with_lang_context(product, column_name, value, all_fields, env, row_i
         _logger.warning(f"ProSync: Unknown field '{base_field}' at cell {cell_ref}")
         return
 
-    if not all_fields[base_field].get('translate', False):
+    field_info = all_fields[base_field]
+    if not field_info.get('translate', False):
         _logger.warning(f"ProSync: Field '{base_field}' does not support translation (cell {cell_ref})")
         return
 
@@ -178,11 +178,38 @@ def update_with_lang_context(product, column_name, value, all_fields, env, row_i
         _logger.warning(f"ProSync: Language '{lang_code}' not installed. Skipping cell {cell_ref}")
         return
 
-    field_type = all_fields[base_field]['type']
-    normalized_value = normalize_field_by_type(field_type, value, base_field, all_fields, env)
+    field_type = field_info['type']
+    normalized_value = None
 
-    if normalized_value is None or normalized_value == MANY2ONE_NOT_FOUND:
-        _logger.warning(f"ProSync: Could not normalize value at cell {cell_ref}")
+    try:
+        if field_type == 'char':
+            normalized_value = normalize_char(value)
+        elif field_type == 'text':
+            normalized_value = normalize_text(value)
+        elif field_type in ('float', 'monetary'):
+            normalized_value = normalize_float(value)
+        elif field_type == 'integer':
+            normalized_value = normalize_integer(value)
+        elif field_type == 'boolean':
+            normalized_value = normalize_bool(value)
+        elif field_type in ('date', 'datetime'):
+            normalized_value = normalize_date(value)
+        elif field_type == 'binary':
+            normalized_value = normalize_binary(value)
+        elif field_type == 'selection':
+            normalized_value = normalize_selection(value, base_field, all_fields)
+        elif field_type == 'many2one':
+            normalized_value = normalize_many2one(value, base_field, all_fields, env)
+            if normalized_value == 'not_found':
+                _logger.warning(f"ProSync: Could not find many2one value for '{base_field}' at cell {cell_ref}")
+                return
+        elif field_type == 'many2many':
+            normalized_value = normalize_many2many(value, base_field, all_fields, env)
+        else:
+            _logger.warning(f"ProSync: Unsupported field type '{field_type}' for '{base_field}' at cell {cell_ref}")
+            return
+    except Exception as e:
+        _logger.error(f"ProSync: Normalization error at cell {cell_ref} ({base_field}): {e}")
         return
 
     try:
