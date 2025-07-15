@@ -69,14 +69,21 @@ class ProsyncSync(models.Model):
                 sheet_valid = (str(configuration_tab[line_index][4]).upper() == "TRUE")
                 sheet_continue = (str(configuration_tab[line_index][5]).upper() == "TRUE")
 
-                _logger.info("ProSync: " + sheet_name)
-                _logger.info("ProSync: " + sheet_index)
-                _logger.info("ProSync: " + sheet_type)
-                _logger.info("ProSync: " + sheet_date.strftime("%Y-%m-%d"))
-                _logger.info("ProSync: " + str(sheet_valid))
-                _logger.info("ProSync: " + str(sheet_continue))
+                if sheet_valid:
+                    if sheet_date.date() > datetime.today().date():
+                        _logger.info("ProSync: Skipping scheduled sheet.")
+                        line_index += 1
+                        continue
 
-                line_index += 1
+                    _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
+
+                elif sheet_continue:
+                    _logger.info("ProSync: Invalid row but CONTINUE is TRUE. Skipping to next.")
+                    line_index += 1
+                    continue
+                else:
+                    _logger.info("ProSync: Invalid row and CONTINUE is FALSE. Ending sync.")
+                    break
 
         finally:
             _logger.info("\n-----------------\nProSync\nEnding sync process\n-----------------")
