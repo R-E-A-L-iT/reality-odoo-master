@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
+import base64
+import requests
 from datetime import datetime
 import dateutil.parser
+
+import logging
+_logger = logging.getLogger(__name__)
 
 # 1. Add to report function
 
@@ -10,6 +15,11 @@ import dateutil.parser
 # 3. Normalization functions
 
 def normalize_char(value):
+    if value is None:
+        return ''
+    return str(value).strip()
+
+def normalize_text(value):
     if value is None:
         return ''
     return str(value).strip()
@@ -54,3 +64,19 @@ def normalize_date(value):
         return dateutil.parser.parse(str(value), dayfirst=True, fuzzy=True)
     except (ValueError, TypeError):
         return None
+
+def normalize_binary(value):
+    if not value or not str(value).strip():
+        return None
+
+    url = str(value).strip()
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            return base64.b64encode(response.content)
+        else:
+            _logger.warning(f"ProSync: Failed to fetch image from {url} — Status {response.status_code}")
+    except Exception as e:
+        _logger.warning(f"ProSync: Exception fetching image from {url}: {str(e)}")
+    
+    return None

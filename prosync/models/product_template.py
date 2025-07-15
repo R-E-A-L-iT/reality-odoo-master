@@ -159,6 +159,8 @@ class product_template_sync:
                 # Normalize value by field type
                 if field_type == 'char':
                     value = normalize_char(raw_value)
+                elif field_type == 'text':
+                    value = normalize_text(raw_value)
                 elif field_type == 'float' or field_type == 'monetary':
                     value = normalize_float(raw_value)
                 elif field_type == 'integer':
@@ -167,6 +169,8 @@ class product_template_sync:
                     value = normalize_bool(raw_value)
                 elif field_type in {'date', 'datetime'}:
                     value = normalize_date(raw_value)
+                elif field_type == 'binary':
+                    value = normalize_binary(raw_value)
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue
