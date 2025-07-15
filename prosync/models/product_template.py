@@ -16,6 +16,7 @@ from .utilities import (
     normalize_many2one,
     normalize_many2many,
     update_with_lang_context,
+    update_with_price_context,
 )
 
 import logging
