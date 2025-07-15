@@ -73,8 +73,8 @@ class ProsyncSync(models.Model):
                 _logger.info("ProSync: " + sheet_index)
                 _logger.info("ProSync: " + sheet_type)
                 _logger.info("ProSync: " + sheet_date.strftime("%Y-%m-%d"))
-                _logger.info("ProSync: " + sheet_valid)
-                _logger.info("ProSync: " + sheet_continue)
+                _logger.info("ProSync: " + str(sheet_valid))
+                _logger.info("ProSync: " + str(sheet_continue))
 
                 line_index += 1
 
