@@ -57,6 +57,8 @@ class ProsyncSync(models.Model):
     def start_sync_process(self, pw=None):
         try:
             line_index = 1
+            db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            template_id = self.get_master_database_template_id(db_name)
             configuration_tab = self.establish_sheets_connection(pw, template_id, 0)
 
             # Loop throw configuration sheet rows
