@@ -5,10 +5,12 @@ import requests
 
 from .utilities import (
     normalize_char,
+    normalize_text,
     normalize_date,
     normalize_float,
     normalize_integer,
     normalize_bool,
+    normalize_binary,
 )
 
 import logging
