@@ -105,3 +105,49 @@ def normalize_selection(value, field_name, model_fields):
             return tech_value
 
     return None
+
+def normalize_many2one(value, field_name, model_fields, env):
+    if not value or not str(value).strip():
+        return None
+
+    value_clean = str(value).strip()
+    field_info = model_fields.get(field_name)
+
+    if not field_info or field_info['type'] != 'many2one':
+        return None
+
+    related_model = field_info.get('relation')
+    if not related_model:
+        return None
+
+    match = env[related_model].search([('name', '=', value_clean)], limit=1)
+    if match:
+        return match.id
+
+    _logger.warning(f"ProSync: Many2one match not found for '{value_clean}' in field '{field_name}'")
+    return None
+
+def normalize_many2many(value, field_name, model_fields, env):
+    if not value or not str(value).strip():
+        return []
+
+    field_info = model_fields.get(field_name)
+    if not field_info or field_info['type'] != 'many2many':
+        return []
+
+    related_model = field_info.get('relation')
+    if not related_model:
+        return []
+
+    # Split values by comma and space
+    values = [v.strip() for v in value.split(',')]
+    ids = []
+    for val in values:
+        if val:
+            match = env[related_model].search([('name', '=', val)], limit=1)
+            if match:
+                ids.append(match.id)
+            else:
+                _logger.warning(f"ProSync: Many2many match not found for '{val}' in field '{field_name}'")
+
+    return [(6, 0, ids)] if ids else []

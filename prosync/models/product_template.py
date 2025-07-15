@@ -12,6 +12,8 @@ from .utilities import (
     normalize_bool,
     normalize_binary,
     normalize_selection,
+    normalize_many2one,
+    normalize_many2many,
 )
 
 import logging
@@ -176,6 +178,10 @@ class product_template_sync:
                     value = normalize_binary(raw_value)
                 elif field_type == 'selection':
                     value = normalize_selection(raw_value, base_field, all_fields)
+                elif field_type == 'many2one':
+                    value = normalize_many2one(raw_value, base_field, all_fields, self.database)
+                elif field_type == 'many2many':
+                    value = normalize_many2many(raw_value, base_field, all_fields, self.database)
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue
