@@ -5,6 +5,8 @@ import requests
 from datetime import datetime
 import dateutil.parser
 
+from odoo import fields
+
 import logging
 _logger = logging.getLogger(__name__)
 
