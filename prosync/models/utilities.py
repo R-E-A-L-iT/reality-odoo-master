@@ -107,7 +107,7 @@ def normalize_selection(value, field_name, model_fields):
     return None
 
 def normalize_many2one(value, field_name, model_fields, env):
-    if not value or not str(value).strip():
+    if value is None or str(value).strip() == "":
         return None
 
     value_clean = str(value).strip()
@@ -125,7 +125,7 @@ def normalize_many2one(value, field_name, model_fields, env):
         return match.id
 
     _logger.warning(f"ProSync: Many2one match not found for '{value_clean}' in field '{field_name}'")
-    return None
+    return 'not_found'
 
 def normalize_many2many(value, field_name, model_fields, env):
     if not value or not str(value).strip():
