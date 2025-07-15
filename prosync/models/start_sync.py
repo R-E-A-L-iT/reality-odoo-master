@@ -27,10 +27,10 @@ class ProsyncSync(models.Model):
         _db_name_prod = "https://www.r-e-a-l.it"
 
         if "dev" in _db_name:
-            _logger.info("-----------------\nProSync\nStarting sync on development data\n-----------------")
+            _logger.info("\n-----------------\nProSync\nStarting sync on development data\n-----------------")
             return dev_id
         else:
-            _logger.info("-----------------\nProSync\nStarting sync on production data\n-----------------")
+            _logger.info("\n-----------------\nProSync\nStarting sync on production data\n-----------------")
             return prod_id
 
     # - Retrieve API Key stored in system parametres and establish connection
@@ -72,11 +72,11 @@ class ProsyncSync(models.Model):
                 _logger.info("ProSync: " + sheet_name)
                 _logger.info("ProSync: " + sheet_index)
                 _logger.info("ProSync: " + sheet_type)
-                _logger.info("ProSync: " + sheet_date)
+                _logger.info("ProSync: " + sheet_date.strftime("%Y-%m-%d"))
                 _logger.info("ProSync: " + sheet_valid)
                 _logger.info("ProSync: " + sheet_continue)
 
                 line_index += 1
 
         finally:
-            _logger.info("-----------------\nProSync\nEnding sync process\n-----------------")
+            _logger.info("\n-----------------\nProSync\nEnding sync process\n-----------------")
