@@ -76,6 +76,8 @@ class ProsyncSync(models.Model):
                         continue
 
                     _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
+                    line_index += 1
+                    continue
 
                 elif sheet_continue:
                     _logger.info("ProSync: Invalid row but CONTINUE is TRUE. Skipping to next.")
@@ -84,8 +86,6 @@ class ProsyncSync(models.Model):
                 else:
                     _logger.info("ProSync: Invalid row and CONTINUE is FALSE. Ending sync.")
                     break
-
-            line_index += 1
 
         finally:
             _logger.info("\n-----------------\nProSync\nEnding sync process\n-----------------")
