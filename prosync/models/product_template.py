@@ -180,7 +180,7 @@ class product_template_sync:
                     value = normalize_selection(raw_value, base_field, all_fields)
                 elif field_type == 'many2one':
                     value = normalize_many2one(raw_value, base_field, all_fields, self.database)
-                    if value == '__not_found__':
+                    if value == 'not_found':
                         continue
                 elif field_type == 'many2many':
                     value = normalize_many2many(raw_value, base_field, all_fields, self.database)
