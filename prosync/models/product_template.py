@@ -150,7 +150,7 @@ class product_template_sync:
 
             # deal with columns using parametres
             if "[language=" in column_name:
-                update_with_lang_context(product, column_name, raw_value, all_fields, self.database.env, row_index, col_index)
+                update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_index)
                 continue
             if '[' in field_name and not field_name.startswith("price[pricelist="):
                 continue
