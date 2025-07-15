@@ -5,6 +5,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
+from .product_template import product_template_sync
+
 from datetime import datetime
 
 _logger = logging.getLogger(__name__)
@@ -82,7 +84,16 @@ class ProsyncSync(models.Model):
                         line_index += 1
                         continue
 
-                    _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
+                    if sheet_type == "product_template":
+                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
+                        
+                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+
+                        syncer = product_template_sync(name=sheet_name, sheet=sheet_data, database=self.env)
+                        syncer.sync_product_template()
+                    else:
+                        _logger.error(f"ProSync: Given sheet type is not supported by ProSync: {sheet_type}")
+
                     line_index += 1
                     continue
 
