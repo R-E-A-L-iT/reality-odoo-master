@@ -3,6 +3,14 @@
 import base64
 import requests
 
+from .utilities import (
+    normalize_char,
+    normalize_date,
+    normalize_float,
+    normalize_integer,
+    normalize_bool,
+)
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -17,6 +25,12 @@ class product_template_sync:
 
     def sync_product_template(self):
         _logger.info("ProSync: Starting PRODUCT_TEMPLATE sync process.")
+
+
+        # --------------------
+        # PROCESS COLUMNS
+        # --------------------
+
 
         required_fields = [
             "sku",
@@ -66,3 +80,47 @@ class product_template_sync:
                 _logger.warning(f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on product.template.")
 
         _logger.info("ProSync: Sheet format has been validated.")
+
+        column_indices = {col.strip().lower(): idx for idx, col in enumerate(sheet_columns)}
+
+
+        # --------------------
+        # PROCESS ROWS
+        # --------------------
+
+
+        for row_index, row in enumerate(self.sheet[1:], start=2):  # start=2 for logging row number
+            # Defensive: skip completely empty rows
+            if not any(row):
+                _logger.info(f"ProSync: Skipping empty row {row_index}")
+                continue
+
+            # Normalize 'valid' and 'continue' values
+            valid_raw = row[column_indices.get("valid", -1)] if "valid" in column_indices else ''
+            continue_raw = row[column_indices.get("continue", -1)] if "continue" in column_indices else ''
+
+            is_valid = normalize_bool(valid_raw)
+            should_continue = normalize_bool(continue_raw)
+
+            if not is_valid:
+                if should_continue:
+                    _logger.info(f"ProSync: Skipping row {row_index} (VALID is False, CONTINUE is True)")
+                    continue
+                else:
+                    _logger.info(f"ProSync: Ending sheet sync at row {row_index} (VALID is False, CONTINUE is False)")
+                    break
+
+            # VALID is true — get and normalize SKU
+            sku_raw = row[column_indices.get("sku", -1)] if "sku" in column_indices else ''
+            sku = normalize_char(sku_raw)
+
+            if not sku:
+                _logger.warning(f"ProSync: Row {row_index} is missing a valid SKU. Skipping.")
+                continue
+
+            # Search for matching product.template
+            product = self.database['product.template'].search([('sku', '=', sku)], limit=1)
+            if product:
+                _logger.info(f"ProSync: Row {row_index} — Found product with SKU: {sku} (ID: {product.id})")
+            else:
+                _logger.info(f"ProSync: Row {row_index} — No product found with SKU: {sku}")
