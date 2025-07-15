@@ -21,6 +21,8 @@ class product_template_sync:
         required_fields = [
             "sku",
             "name",
+            "valid",
+            "continue",
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
@@ -36,13 +38,31 @@ class product_template_sync:
 
         # Check if each column maps to a real field on product.template
         product_template_model = self.database['product.template']
-        all_fields = product_template_model.fields_get().keys()  # includes inherited/custom fields
+        all_fields = product_template_model.fields_get().keys()
+
+        # Define always-allowed column names (not actual model fields)
+        allowed_special_fields = {"valid", "continue"}
 
         for column in sheet_columns:
             column_cleaned = column.strip().lower()
-            if column_cleaned in all_fields:
-                _logger.info(f"ProSync: Field '{column}' exists on product.template")
+
+            # Skip always-allowed special fields
+            if column_cleaned in allowed_special_fields:
+                _logger.info(f"ProSync: Special field '{column}' is accepted (not in model).")
+                continue
+
+            # Skip price fields like "price[pricelist=CAD]"
+            if column_cleaned.startswith("price[pricelist="):
+                _logger.info(f"ProSync: Field '{column}' is a recognized pricelist field.")
+                continue
+
+            # Strip any [bracketed] metadata (like [language=fr_CA])
+            base_field = column_cleaned.split("[")[0]
+
+            # Validate against actual fields
+            if base_field in all_fields:
+                _logger.info(f"ProSync: Field '{column}' (base: '{base_field}') exists on product.template.")
             else:
-                _logger.error(f"ProSync: Field '{column}' does NOT exist on product.template")
+                _logger.warning(f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on product.template.")
 
         _logger.info("ProSync: Sheet format has been validated.")
