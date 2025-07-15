@@ -11,6 +11,7 @@ from .utilities import (
     normalize_integer,
     normalize_bool,
     normalize_binary,
+    normalize_selection,
 )
 
 import logging
@@ -173,6 +174,8 @@ class product_template_sync:
                     value = normalize_date(raw_value)
                 elif field_type == 'binary':
                     value = normalize_binary(raw_value)
+                elif field_type == 'selection':
+                    value = normalize_selection(raw_value, base_field, all_fields)
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue

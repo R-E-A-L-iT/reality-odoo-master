@@ -80,3 +80,28 @@ def normalize_binary(value):
         _logger.warning(f"ProSync: Exception fetching image from {url}: {str(e)}")
     
     return None
+
+def normalize_selection(value, field_name, model_fields):
+    if not value or not str(value).strip():
+        return None
+
+    value_clean = str(value).strip().lower()
+    field_info = model_fields.get(field_name)
+
+    if not field_info or field_info['type'] != 'selection':
+        return None
+
+    # Extract selection options as (technical_value, label) pairs
+    options = field_info.get('selection', [])
+
+    # Try to match directly to technical value
+    for tech_value, _ in options:
+        if value_clean == str(tech_value).strip().lower():
+            return tech_value
+
+    # Try to match by label (case-insensitive)
+    for tech_value, label in options:
+        if value_clean == str(label).strip().lower():
+            return tech_value
+
+    return None
