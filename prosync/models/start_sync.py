@@ -85,5 +85,7 @@ class ProsyncSync(models.Model):
                     _logger.info("ProSync: Invalid row and CONTINUE is FALSE. Ending sync.")
                     break
 
+            line_index += 1
+
         finally:
             _logger.info("\n-----------------\nProSync\nEnding sync process\n-----------------")
