@@ -41,10 +41,12 @@
 
     <menuitem id="menu_prosync_root" name="ProSync" sequence="10" groups="base.group_system"/>
 
-    <menuitem id="menu_prosync_reports"
-              name="Sync Reports"
-              parent="menu_prosync_root"
-              action="prosync_report_action"
-              sequence="1"
-              groups="base.group_system"/>
+    <!-- app dashboard menu -->
+    <menuitem
+        id="menu_prosync_reports"
+        name="Sync Reports"
+        sequence="1"
+        action="prosync_report_action"
+        parent=""
+        groups="base.group_system" />
 </odoo>
