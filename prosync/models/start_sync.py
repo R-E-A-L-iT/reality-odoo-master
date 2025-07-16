@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 from .sync.product_template import product_template_sync
+from .sync.stock_lot import stock_lot_sync
 
 from datetime import datetime
 
@@ -91,6 +92,12 @@ class ProsyncSync(models.Model):
 
                         syncer = product_template_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_product_template()
+                    elif sheet_type == "stock_lot":
+                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
+
+                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        syncer = stock_lot_sync(name=sheet_name, sheet=sheet_data, database=self.env)
+                        syncer.sync_stock_lot()
                     else:
                         _logger.error(f"ProSync: Given sheet type is not supported by ProSync: {sheet_type}")
 
