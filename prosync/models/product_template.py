@@ -136,7 +136,30 @@ class product_template_sync:
                 self.create_product_template(row_index, row)
 
     def create_product_template(self, row_index, row):
-        _logger.info(f"ProSync: Row {row_index} — Creating new product.template (not yet implemented)")
+        column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
+
+        sku_raw = row[column_indices.get("sku", -1)] if "sku" in column_indices else ''
+        name_raw = row[column_indices.get("name", -1)] if "name" in column_indices else ''
+
+        sku = normalize_char(sku_raw)
+        name = normalize_char(name_raw)
+
+        if not sku or not name:
+            _logger.warning(f"ProSync: Row {row_index} — Cannot create product without valid SKU and Name. Skipping.")
+            return
+
+        product_model = self.database['product.template']
+
+        product = product_model.create({
+            "sku": sku,
+            "name": name,
+        })
+
+        _logger.info(f"ProSync: Row {row_index} — Created new product.template with SKU: {sku}, ID: {product.id}")
+
+        # Call update logic to populate remaining fields
+        self.update_product_template(product, row_index, row, column_indices)
+
 
     def update_product_template(self, product, row_index, row, column_indices):
         product_model = self.database['product.template']
