@@ -153,7 +153,6 @@ class product_template_sync:
         product = product_model.create({
             "sku": sku,
             "name": name,
-            "company_id": False,
         })
 
         _logger.info(f"ProSync: Row {row_index} — Created new product.template with SKU: {sku}, ID: {product.id}")
