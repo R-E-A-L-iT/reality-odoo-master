@@ -22,5 +22,6 @@
         "data/schedule.xml",
         "views/res_partner.xml",
         "views/stock_lot.xml",
+        "views/report_views.xml",
     ],
 }
