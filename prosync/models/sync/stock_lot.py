@@ -96,7 +96,8 @@ class stock_lot_sync:
 
             lot = self.database['stock.lot'].search([
                 ('name', '=', name),
-                ('product_id', '=', product.id)
+                ('product_id', '=', product.id),
+                ('company_id', '=', 1)
             ], limit=1)
 
             if lot:
