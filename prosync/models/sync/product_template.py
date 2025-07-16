@@ -178,7 +178,7 @@ class product_template_sync:
                 update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
             elif "[related=" in column_name:
-                update_with_related_context(record, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                update_with_related_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
             elif field_name.startswith("price[pricelist="):
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)

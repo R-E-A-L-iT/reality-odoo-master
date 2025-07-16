@@ -139,10 +139,10 @@ class stock_lot_sync:
 
             raw_value = row[col_idx]
             if "[language=" in column_name:
-                update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                update_with_lang_context(lot, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
             elif "[related=" in column_name:
-                update_with_related_context(record, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                update_with_related_context(lot, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
             elif '[' in field_name:
                 continue
