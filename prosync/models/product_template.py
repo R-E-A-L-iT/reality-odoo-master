@@ -2,10 +2,9 @@
 
 import re
 import base64
-import logging
 import requests
 
-from ..utilities import (
+from .utilities import (
     normalize_char,
     normalize_text,
     normalize_date,
@@ -19,6 +18,8 @@ from ..utilities import (
     update_with_lang_context,
     update_with_price_context,
 )
+
+import logging
 
 _logger = logging.getLogger(__name__)
 
