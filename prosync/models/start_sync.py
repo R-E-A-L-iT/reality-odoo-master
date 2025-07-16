@@ -5,7 +5,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
-from .product_template import product_template_sync
+from .sync.product_template import product_template_sync
 
 from datetime import datetime
 
