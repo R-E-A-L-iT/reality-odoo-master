@@ -86,6 +86,9 @@ class stock_lot_sync:
                 _logger.warning(f"ProSync: Row {row_index} is missing a valid Name or Product SKU. Skipping.")
                 continue
 
+            # technically product.product record, not product.template, because all product.template records have 
+            # a default variant product.product record, and serial number instances are of a product variant.
+            # e.g. you would have a serial number instances of a brown ikea table, not just a general ikea table with no colour
             product = self.database['product.product'].search([('sku', '=', product_sku)], limit=1)
             if not product:
                 _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.")
