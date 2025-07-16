@@ -116,6 +116,10 @@ class stock_lot_sync:
             "product_id": product.id,
         })
 
+        if not stock_lot or not stock_lot.id:
+            _logger.warning(f"ProSync: Row {row_index} — Failed to create stock.lot for Name: {name}")
+            return
+
         _logger.info(f"ProSync: Row {row_index} — Created new stock.lot with Name: {name}, ID: {stock_lot.id}")
         self.update_stock_lot(stock_lot, row_index, row, column_indices)
 
