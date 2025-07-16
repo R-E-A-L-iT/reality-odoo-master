@@ -13,8 +13,6 @@ from ..utilities import (
     normalize_bool,
     normalize_binary,
     normalize_selection,
-    normalize_many2one,
-    normalize_many2many,
     update_with_lang_context,
     update_with_related_context,
 )
@@ -94,6 +92,7 @@ class stock_lot_sync:
                 _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.")
                 continue
 
+            # company_id filter should probably be eventually removed
             lot = self.database['stock.lot'].search([
                 ('name', '=', name),
                 ('product_id', '=', product.id),
@@ -170,12 +169,10 @@ class stock_lot_sync:
                     value = normalize_binary(raw_value)
                 elif field_type == 'selection':
                     value = normalize_selection(raw_value, base_field, all_fields)
-                # elif field_type == 'many2one':
-                #     value = normalize_many2one(raw_value, base_field, all_fields, self.database)
-                #     if value == 'not_found':
-                #         continue
-                # elif field_type == 'many2many':
-                #     value = normalize_many2many(raw_value, base_field, all_fields, self.database)
+                elif field_type == 'many2one':
+                    _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.")
+                elif field_type == 'many2many':
+                    _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.")
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue
