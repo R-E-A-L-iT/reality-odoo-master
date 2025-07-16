@@ -10,6 +10,7 @@
     "license": "LGPL-3",
     "category": "Technical",
     "version": "0.1",
+    'application': True,
     "depends": [
         "base",
         "proportal",
