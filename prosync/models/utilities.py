@@ -273,7 +273,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
 
     company_map = {
         "USD": "R-E-A-L.iT U.S. Inc.",
-        "CAD": "R-E-A-L.iT Solutions Inc."
+        "CAD": "R-E-A-L.iT Solutions"
     }
 
     company_name = company_map.get(currency_code)
