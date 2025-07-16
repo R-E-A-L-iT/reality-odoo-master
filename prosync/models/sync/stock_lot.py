@@ -16,9 +16,11 @@ from ..utilities import (
     normalize_many2one,
     normalize_many2many,
     update_with_lang_context,
+    update_with_related_context,
 )
 
 _logger = logging.getLogger(__name__)
+
 
 class stock_lot_sync:
 
@@ -79,30 +81,34 @@ class stock_lot_sync:
                     break
 
             name = normalize_char(row[column_indices.get("name", -1)])
-            if not name:
-                _logger.warning(f"ProSync: Row {row_index} is missing a valid Name. Skipping.")
+            product_sku = normalize_char(row[column_indices.get("product_id", -1)])
+            if not name or not product_sku:
+                _logger.warning(f"ProSync: Row {row_index} is missing a valid Name or Product SKU. Skipping.")
                 continue
 
-            lot = self.database['stock.lot'].search([('name', '=', name)], limit=1)
+            product = self.database['product.template'].search([('sku', '=', product_sku)], limit=1)
+            if not product:
+                _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.")
+                continue
+
+            lot = self.database['stock.lot'].search([
+                ('name', '=', name),
+                ('product_id', '=', product.id)
+            ], limit=1)
+
             if lot:
-                _logger.info(f"ProSync: Row {row_index} — Found stock.lot with Name: {name} (ID: {lot.id})")
+                _logger.info(f"ProSync: Row {row_index} — Found stock.lot with Name: {name} and Product SKU: {product_sku} (ID: {lot.id})")
                 self.update_stock_lot(lot, row_index, row, column_indices)
             else:
-                _logger.info(f"ProSync: Row {row_index} — No stock.lot found with Name: {name}")
-                self.create_stock_lot(row_index, row)
+                _logger.info(f"ProSync: Row {row_index} — No stock.lot found with Name: {name} and Product SKU: {product_sku}")
+                self.create_stock_lot(row_index, row, product)
 
-    def create_stock_lot(self, row_index, row):
+    def create_stock_lot(self, row_index, row, product):
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
         name = normalize_char(row[column_indices.get("name", -1)])
-        product_sku = normalize_char(row[column_indices.get("product_id", -1)])
 
-        if not name or not product_sku:
-            _logger.warning(f"ProSync: Row {row_index} — Cannot create stock.lot without valid Name and Product SKU. Skipping.")
-            return
-
-        product = self.database['product.template'].search([('sku', '=', product_sku)], limit=1)
-        if not product:
-            _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Cannot create stock.lot.")
+        if not name:
+            _logger.warning(f"ProSync: Row {row_index} — Cannot create stock.lot without valid Name. Skipping.")
             return
 
         stock_lot = self.database['stock.lot'].create({
@@ -120,14 +126,18 @@ class stock_lot_sync:
         for col_idx, column_name in enumerate(self.sheet[0]):
             field_name = column_name.strip().lower()
 
-            if field_name in {'name', 'valid', 'continue'}:
+            # Never update name or product_id since they are part of the unique identifier
+            if field_name in {'name', 'product_id', 'valid', 'continue'}:
                 continue
 
             raw_value = row[col_idx]
             if "[language=" in column_name:
-                update_with_lang_context(lot, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
-            if "[" in field_name:
+            elif "[related=" in column_name:
+                update_with_related_context(record, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                continue
+            elif '[' in field_name:
                 continue
 
             base_field = field_name.split('[')[0]
@@ -152,18 +162,12 @@ class stock_lot_sync:
                     value = normalize_binary(raw_value)
                 elif field_type == 'selection':
                     value = normalize_selection(raw_value, base_field, all_fields)
-                elif field_type == 'many2one':
-                    if base_field == 'product_id':
-                        product = self.database['product.template'].search([('sku', '=', raw_value)], limit=1)
-                        if not product:
-                            continue
-                        value = product.id
-                    else:
-                        value = normalize_many2one(raw_value, base_field, all_fields, self.database)
-                        if value == 'not_found':
-                            continue
-                elif field_type == 'many2many':
-                    value = normalize_many2many(raw_value, base_field, all_fields, self.database)
+                # elif field_type == 'many2one':
+                #     value = normalize_many2one(raw_value, base_field, all_fields, self.database)
+                #     if value == 'not_found':
+                #         continue
+                # elif field_type == 'many2many':
+                #     value = normalize_many2many(raw_value, base_field, all_fields, self.database)
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue

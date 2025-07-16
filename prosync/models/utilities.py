@@ -378,3 +378,63 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
             "company_id": company.id,
         })
         _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
+
+# 
+# Update a many2one, many2many, or one2many field using a specified search
+# 
+def update_with_related_context(record, column_name, raw_value, all_fields, database, row_index, col_idx):
+    try:
+        # Step 1: Parse field name and parameter
+        field_name, param_part = column_name.strip().split('[', 1)
+        field_name = field_name.strip().lower()
+        param_content = param_part.strip(']')
+
+        if not param_content.startswith("related="):
+            raise ValueError("Missing or malformed [related=...] parameter")
+
+        related_field = param_content.split('=', 1)[1].strip()
+
+        # Step 2: Validate base field
+        if field_name not in all_fields:
+            _logger.warning(f"ProSync: Row {row_index} — Field '{field_name}' not found on model. Skipping.")
+            return
+
+        field_info = all_fields[field_name]
+        field_type = field_info['type']
+
+        if field_type not in {'many2one', 'many2many'}:
+            _logger.warning(f"ProSync: Row {row_index} — Field '{field_name}' is not a relation field. Skipping.")
+            return
+
+        related_model_name = field_info.get('relation')
+        if not related_model_name:
+            _logger.warning(f"ProSync: Row {row_index} — No relation model found for field '{field_name}'. Skipping.")
+            return
+
+        # Step 3: Search in related model
+        related_model = database[related_model_name]
+        search_domain = [(related_field, '=', raw_value.strip())]
+
+        if field_type == 'many2one':
+            match = related_model.search(search_domain, limit=1)
+            if match:
+                record.write({field_name: match.id})
+            else:
+                _logger.warning(f"ProSync: Row {row_index} — No match found in {related_model_name} for {related_field} = '{raw_value}'")
+
+        elif field_type == 'many2many':
+            values = [v.strip() for v in raw_value.split(',') if v.strip()]
+            ids = []
+            for val in values:
+                match = related_model.search([(related_field, '=', val)], limit=1)
+                if match:
+                    ids.append(match.id)
+                else:
+                    _logger.warning(f"ProSync: Row {row_index} — No match found in {related_model_name} for many2many value '{val}'")
+            if ids:
+                record.write({field_name: [(6, 0, ids)]})
+
+    except Exception as e:
+        col_letter = chr(65 + col_idx)
+        cell_id = f"{row_index}{col_letter}"
+        _logger.error(f"ProSync: Error updating field '{column_name}' at cell {cell_id}: {str(e)}")

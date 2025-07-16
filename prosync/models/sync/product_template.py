@@ -18,6 +18,7 @@ from ..utilities import (
     normalize_many2many,
     update_with_lang_context,
     update_with_price_context,
+    update_with_related_context,
 )
 
 _logger = logging.getLogger(__name__)
@@ -176,10 +177,13 @@ class product_template_sync:
             if "[language=" in column_name:
                 update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
+            elif "[related=" in column_name:
+                update_with_related_context(record, column_name, raw_value, all_fields, self.database, row_index, col_idx)
+                continue
             elif field_name.startswith("price[pricelist="):
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
-            if '[' in field_name and not field_name.startswith("price[pricelist="):
+            elif '[' in field_name:
                 continue
 
             # Strip [bracket] metadata
@@ -210,12 +214,12 @@ class product_template_sync:
                     value = normalize_binary(raw_value)
                 elif field_type == 'selection':
                     value = normalize_selection(raw_value, base_field, all_fields)
-                elif field_type == 'many2one':
-                    value = normalize_many2one(raw_value, base_field, all_fields, self.database)
-                    if value == 'not_found':
-                        continue
-                elif field_type == 'many2many':
-                    value = normalize_many2many(raw_value, base_field, all_fields, self.database)
+                # elif field_type == 'many2one':
+                #     value = normalize_many2one(raw_value, base_field, all_fields, self.database)
+                #     if value == 'not_found':
+                #         continue
+                # elif field_type == 'many2many':
+                #     value = normalize_many2many(raw_value, base_field, all_fields, self.database)
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue
