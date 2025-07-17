@@ -24,9 +24,9 @@ class ProsyncReport(models.Model):
         for record in self:
             if record.start_time and record.end_time:
                 delta = record.end_time - record.start_time
-                record.sync_duration = delta.total_seconds() / 60.0
+                record.duration = delta.total_seconds() / 60.0
             else:
-                record.sync_duration = 0.0
+                record.duration = 0.0
 
     @api.model
     def manual_trigger_prosync_schedule(self):
