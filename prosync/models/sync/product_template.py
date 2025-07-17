@@ -144,11 +144,17 @@ class product_template_sync:
                 self.create_product_template(row_index, row)
 
         end_time = datetime.now()
-        self.report_id.write({
-            'end_time': end_time,
-            'report_text': "\n".join(self.updated_items) or "No changes detected.",
-            'status': 'success' if self.updated_items else 'warning',
-        })
+        
+        if not self.updated_items:
+            _logger.info("ProSync: No changes detected. Deleting sync report.")
+            self.report_id.unlink()
+        else:
+            self.report_id.write({
+                'end_time': end_time,
+                'report_text': "\n".join(self.updated_items) or "No changes detected.",
+                'status': 'success' if self.updated_items else 'warning',
+            })
+        
 
 
     def create_product_template(self, row_index, row):
