@@ -49,7 +49,7 @@
         <field name="model">prosync.report</field>
         <field name="inherit_id" ref="prosync.view_sync_report_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="after">
+            <xpath expr="//tree" position="inside">
                 <header>
                     <button name="manual_trigger_prosync_schedule"
                             type="object"
