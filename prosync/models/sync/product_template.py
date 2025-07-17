@@ -30,6 +30,8 @@ class product_template_sync:
         self.sheet = sheet
         self.database = database
         self.updated_items = []
+        self.warning_items = []
+        self.error_items = []
         self.report_id = None
 
     def sync_product_template(self):
@@ -65,6 +67,9 @@ class product_template_sync:
         if missing_columns:
             error_msg = f"Sheet validation failed. Missing columns for fields: {missing_columns}."
             _logger.error(f"ProSync: {error_msg}")
+            self.error_items.append(
+                f'ProSync: {error_msg}<br/><br/>'
+            )
 
         # Check if each column maps to a real field on product.template
         product_template_model = self.database['product.template']
@@ -94,6 +99,9 @@ class product_template_sync:
                 _logger.info(f"ProSync: Field '{column}' (base: '{base_field}') exists on product.template.")
             else:
                 _logger.warning(f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on product.template.")
+                self.warning_items.append(
+                    f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on product.template.<br/><br/>"
+                )
 
         _logger.info("ProSync: Sheet format has been validated.")
 
@@ -132,6 +140,9 @@ class product_template_sync:
 
             if not sku:
                 _logger.warning(f"ProSync: Row {row_index} is missing a valid SKU. Skipping.")
+                self.warning_items.append(
+                    f"ProSync: Row {row_index} is missing a valid SKU. Skipping.<br/><br/>"
+                )
                 continue
 
             # Search for matching product.template
@@ -152,7 +163,9 @@ class product_template_sync:
             self.report_id.write({
                 'end_time': end_time,
                 'report_text': "\n".join(self.updated_items) or "No changes detected.",
-                'status': 'success' if self.updated_items else 'warning',
+                'warning_text': "\n".join(self.warning_items) or "No warnings to display",
+                'error_text': "\n".join(self.error_items) or "No errors to display",
+                'status': 'success' if self.updated_items,
             })
         
 
@@ -168,6 +181,9 @@ class product_template_sync:
 
         if not sku or not name:
             _logger.warning(f"ProSync: Row {row_index} — Cannot create product without valid SKU and Name. Skipping.")
+            self.warning_items.append(
+                f"ProSync: Row {row_index} — Cannot create product without valid SKU and Name. Skipping.<br/><br/>"
+            )
             return
 
         product_model = self.database['product.template']
@@ -238,10 +254,19 @@ class product_template_sync:
                     value = normalize_selection(raw_value, base_field, all_fields)
                 elif field_type == 'many2one':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 elif field_type == 'many2many':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.<br/><br/>"
+                    )
                     continue
                 
                 existing_value = product[base_field]
@@ -263,5 +288,9 @@ class product_template_sync:
                 col_letter = chr(65 + col_idx)  # A = 65
                 cell_id = f"{row_index}{col_letter}"
                 _logger.error(f"ProSync: Error updating field '{base_field}' at cell {cell_id}: {str(e)}")
+                self.error_items.append(
+                    f'<b>{cell_id}</b>, {product.sku}<br/>'
+                    f'Error updating <u>{base_field}</u>: {str(e)}<br/><br/>'
+                )
 
 
