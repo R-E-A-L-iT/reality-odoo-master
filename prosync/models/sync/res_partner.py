@@ -22,9 +22,20 @@ class res_partner_sync:
         self.name = name
         self.sheet = sheet
         self.database = database
+        self.updated_items = []
+        self.warning_items = []
+        self.error_items = []
+        self.report_id = None
 
     def sync_res_partner(self):
         _logger.info("ProSync: Starting RES_PARTNER sync process.")
+
+        self.report_id = self.database['prosync.report'].create({
+            'name': f"Contact Sync: {self.name}",
+            'status': 'success',
+            'sync_type': 'res_partner',
+            'start_time': datetime.now(),
+        })
 
         required_fields = ["name", "valid", "continue"]
         sheet_columns = self.sheet[0] if self.sheet else []
@@ -33,6 +44,7 @@ class res_partner_sync:
         missing_columns = [header for header in required_fields if header not in sheet_columns]
         if missing_columns:
             _logger.error(f"ProSync: Sheet validation failed. Missing columns for fields: {missing_columns}")
+            self.error_items.append(f"ProSync: Sheet validation failed. Missing columns for fields: {missing_columns}<br/><br/>")
             return
 
         partner_model = self.database['res.partner']
@@ -48,6 +60,9 @@ class res_partner_sync:
                 _logger.info(f"ProSync: Field '{column}' (base: '{base_field}') exists on res.partner.")
             else:
                 _logger.warning(f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on res.partner.")
+                self.warning_items.append(
+                    f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on res.partner.<br/><br/>"
+                )
 
         for row_index, row in enumerate(self.sheet[1:], start=2):
             if not any(row):
@@ -68,6 +83,9 @@ class res_partner_sync:
             name = normalize_char(row[column_indices.get("name", -1)])
             if not name:
                 _logger.warning(f"ProSync: Row {row_index} missing Name. Skipping.")
+                self.warning_items.append(
+                    f"ProSync: Row {row_index} missing Name. Skipping.<br/><br/>"
+                )
                 continue
 
             partner = partner_model.search([('name', '=', name)], limit=1)
@@ -77,6 +95,19 @@ class res_partner_sync:
             else:
                 _logger.info(f"ProSync: Row {row_index} — No partner found. Creating new partner '{name}'")
                 self.create_res_partner(row_index, row)
+
+        if not self.updated_items and not self.warning_items and not self.error_items:
+            _logger.info("ProSync: No changes detected. Deleting sync report.")
+            self.report_id.unlink()
+        else:
+            self.report_id.write({
+                'end_time': end_time,
+                'report_text': "\n".join(self.updated_items) or "No changes detected.",
+                'warning_text': "\n".join(self.warning_items) or "No warnings to display",
+                'error_text': "\n".join(self.error_items) or "No errors to display",
+                'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
+            })
+
 
     def create_res_partner(self, row_index, row):
         name = normalize_char(row[self.sheet[0].index("name")])
@@ -127,13 +158,33 @@ class res_partner_sync:
                     value = normalize_selection(raw_value, base_field, all_fields)
                 elif field_type == 'many2one':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 elif field_type == 'many2many':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Unsupported field type '{field_type}' for '{base_field}'")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} — Unsupported field type '{field_type}' for '{base_field}'<br/><br/>"
+                    )
                     continue
 
                 partner.write({base_field: value})
+
+                col_letter = chr(65 + col_idx)
+                cell_id = f"{row_index}{col_letter}"
+                self.updated_items.append(
+                    f"<b>{cell_id}</b>, {partner.name}<br/>"
+                    f"Field <u>{base_field}</u> updated to: \"{value}\"<br/><br/>"
+                )
+
             except Exception as e:
                 col_letter = chr(65 + col_idx)
                 _logger.error(f"ProSync: Error at cell {row_index}{col_letter} updating field '{base_field}': {str(e)}")
+                self.error_items.append(
+                    f"Error at cell {row_index}{col_letter} updating field '{base_field}': {str(e)}<br/>"
+                )
