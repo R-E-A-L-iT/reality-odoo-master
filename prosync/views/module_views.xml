@@ -49,17 +49,18 @@
         <field name="model">prosync.report</field>
         <field name="inherit_id" ref="prosync.view_sync_report_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="inside">
-                <header>
+            <xpath expr="//tree" position="before">
+                <div class="o_list_buttons">
                     <button name="manual_trigger_prosync_schedule"
                             type="object"
                             string="Start a Sync"
-                            class="btn-primary"
+                            class="btn btn-primary"
                             icon="fa-refresh"/>
-                </header>
+                </div>
             </xpath>
         </field>
     </record>
+
 
     <!-- report record view -->
     <record id="view_sync_report_form" model="ir.ui.view">
