@@ -28,7 +28,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="type"/>
+                        <field name="sync_type"/>
                         <field name="start_time"/>
                         <field name="end_time"/>
                     </group>
