@@ -5,6 +5,7 @@
         <field name="name">Sync Reports</field>
         <field name="res_model">prosync.report</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by': 'sync_date'}</field>
     </record>
 
     <!-- app dashboard menu -->
@@ -20,12 +21,14 @@
     <record id="view_sync_report_tree" model="ir.ui.view">
         <field name="name">prosync.report.tree</field>
         <field name="model">prosync.report</field>
+        <field name="context">{'group_by': 'sync_date'}</field>
         <field name="arch" type="xml">
             <tree decoration-success="status == 'success'" 
                   decoration-warning="status == 'warning'" 
                   decoration-danger="status == 'failure'">
                 <field name="name" string="Report Name"/>
                 <field name="status" string="Status"/>
+                <field name="sync_date" string="Sync Date" />
                 <field name="start_time" string="Start Date &amp; Time"/>
                 <field name="end_time" string="End Date &amp; Time"/>
                 <field name="duration" string="Sync Duration (minutes)"/>

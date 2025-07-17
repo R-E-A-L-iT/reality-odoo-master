@@ -18,6 +18,7 @@ class ProsyncReport(models.Model):
     start_time = fields.Datetime(string='Start Time')
     end_time = fields.Datetime(string='End Time')
     duration = fields.Float(string="Sync Duration (minutes)", compute="_compute_sync_duration", store=True)
+    sync_date = fields.Date(string="Sync Date", compute="_compute_sync_date", store=True)
 
     @api.depends('start_time', 'end_time')
     def _compute_sync_duration(self):
@@ -27,6 +28,11 @@ class ProsyncReport(models.Model):
                 record.duration = delta.total_seconds() / 60.0
             else:
                 record.duration = 0.0
+
+    @api.depends('start_time')
+    def _compute_sync_date(self):
+        for record in self:
+            record.sync_date = record.start_time.date() if record.start_time else None
 
     @api.model
     def manual_trigger_prosync_schedule(self):
