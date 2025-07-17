@@ -177,6 +177,10 @@ class res_partner_sync:
                     )
                     continue
 
+                existing_value = product[base_field]
+                if value == existing_value:
+                    continue
+
                 partner.write({base_field: value})
 
                 col_letter = chr(65 + col_idx)
