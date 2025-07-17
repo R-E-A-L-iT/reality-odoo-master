@@ -5,6 +5,8 @@ import base64
 import logging
 import requests
 
+from datetime import datetime
+
 from ..utilities import (
     normalize_char,
     normalize_text,
@@ -27,10 +29,18 @@ class product_template_sync:
         self.name = name
         self.sheet = sheet
         self.database = database
-        # self.sync_report = []
+        self.updated_items = []
+        self.report_id = None
 
     def sync_product_template(self):
         _logger.info("ProSync: Starting PRODUCT_TEMPLATE sync process.")
+
+        self.report_id = self.database['prosync.report'].create({
+            'name': f"Product Template Sync: {self.name}",
+            'status': 'success',
+            'sync_type': 'product_template',
+            'start_time': datetime.now(),
+        })
 
 
         # --------------------
@@ -133,6 +143,14 @@ class product_template_sync:
                 _logger.info(f"ProSync: Row {row_index} — No product found with SKU: {sku}")
                 self.create_product_template(row_index, row)
 
+        end_time = datetime.now()
+        self.report_id.write({
+            'end_time': end_time,
+            'report_text': "\n".join(self.updated_items) or "No changes detected.",
+            'status': 'success' if self.updated_items else 'warning',
+        })
+
+
     def create_product_template(self, row_index, row):
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
 
@@ -219,9 +237,18 @@ class product_template_sync:
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
                     continue
+                
+                existing_value = product[base_field]
+                if value == existing_value:
+                    continue
 
                 # Write value to product
                 product.write({base_field: value})
+
+                col_letter = chr(65 + col_idx)
+                cell_id = f"{row_index}{col_letter}"
+                change_summary = f'{cell_id}, field {base_field} updated from "{existing_value}" to "{value}"'
+                self.updated_items.append(change_summary)
 
             except Exception as e:
                 col_letter = chr(65 + col_idx)  # A = 65
