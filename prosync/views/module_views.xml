@@ -21,10 +21,10 @@
         <field name="name">prosync.report.tree</field>
         <field name="model">prosync.report</field>
         <field name="arch" type="xml">
-        <!-- decoration-success="status == 'success'" 
+            <tree>
+                <!-- decoration-success="status == 'success'" 
                   decoration-warning="status == 'warning'" 
                   decoration-danger="status == 'error'" -->
-            <tree>
                 <field name="name" string="Report Name"/>
                 <!-- <field name="status" string="Status"/>
                 <field name="start_datetime" string="Start Date &amp; Time"/>
