@@ -21,7 +21,7 @@ class WebsiteVisitor(models.Model):
             # Not in a request (e.g. shell, cron); nothing to do
             return visitor
         
-        if ip and visitor.ip_address != ip:
+        if visitor and ip and visitor.ip_address != ip:
             try:
                 # sudo in case public user can’t write to visitor
                 visitor.sudo().write({'ip_address': ip})
