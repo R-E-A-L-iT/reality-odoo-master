@@ -19,7 +19,7 @@ class ProsyncReport(models.Model):
     end_time = fields.Datetime(string='End Time')
     duration = fields.Float(string="Sync Duration (minutes)", compute="_compute_sync_duration", store=True)
 
-     @api.depends('start_time', 'end_time')
+    @api.depends('start_time', 'end_time')
     def _compute_sync_duration(self):
         for record in self:
             if record.start_time and record.end_time:
