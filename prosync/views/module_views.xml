@@ -18,10 +18,25 @@
         <field name="model">prosync.report</field>
         <field name="arch" type="xml">
             <form string="Sync Report">
-                <sheet/>
+                <header>
+                    <button name="manual_trigger_prosync_schedule"
+                            type="object"
+                            string="Start a Sync"
+                            class="btn-primary"
+                            context="{}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="start_time"/>
+                        <field name="end_time"/>
+                    </group>
+                </sheet>
             </form>
         </field>
     </record>
+
 
     <!-- Server Action that triggers the scheduled action -->
     <record id="action_start_sync_schedule" model="ir.actions.server">
@@ -44,9 +59,6 @@
         <field name="view_id" ref="view_sync_report_tree"/>
         <field name="context">{}</field>
         <field name="binding_model_id" ref="model_prosync_report"/>
-        <field name="toolbar" eval="{
-            'action': [(ref('prosync.action_start_sync_schedule'), 'Start a Sync')]
-        }"/>
     </record>
 
     <!-- Menu (Visible to devs only for now) -->
