@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from datetime import datetime
+
 from ..utilities import (
     normalize_char,
     normalize_text,
