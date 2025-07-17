@@ -98,6 +98,8 @@ class res_partner_sync:
                 _logger.info(f"ProSync: Row {row_index} — No partner found. Creating new partner '{name}'")
                 self.create_res_partner(row_index, row)
 
+        end_time = datetime.now()
+
         if not self.updated_items and not self.warning_items and not self.error_items:
             _logger.info("ProSync: No changes detected. Deleting sync report.")
             self.report_id.unlink()
