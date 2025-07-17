@@ -19,6 +19,7 @@
         <field name="arch" type="xml">
             <form string="Sync Report">
                 <header>
+                    <button name="dummy_button" string="Test Button" type="object" class="btn-primary"/>
                     <button name="manual_trigger_prosync_schedule"
                             type="object"
                             string="Start a Sync"

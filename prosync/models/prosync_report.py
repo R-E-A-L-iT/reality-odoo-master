@@ -19,3 +19,7 @@ class ProsyncReport(models.Model):
         if cron:
             cron.method_direct_trigger()
         return True
+
+    def dummy_button(self):
+        _logger.info("Dummy button clicked.")
+        return True
