@@ -165,7 +165,7 @@ class product_template_sync:
                 'report_text': "\n".join(self.updated_items) or "No changes detected.",
                 'warning_text': "\n".join(self.warning_items) or "No warnings to display",
                 'error_text': "\n".join(self.error_items) or "No errors to display",
-                'status': 'success' if self.updated_items,
+                'status': 'success',
             })
         
 
