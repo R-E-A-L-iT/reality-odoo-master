@@ -156,7 +156,7 @@ class product_template_sync:
 
         end_time = datetime.now()
         
-        if not self.updated_items and not self.error_items:
+        if not self.updated_items and not self.warning_items and not self.error_items:
             _logger.info("ProSync: No changes detected. Deleting sync report.")
             self.report_id.unlink()
         else:
@@ -165,7 +165,7 @@ class product_template_sync:
                 'report_text': "\n".join(self.updated_items) or "No changes detected.",
                 'warning_text': "\n".join(self.warning_items) or "No warnings to display",
                 'error_text': "\n".join(self.error_items) or "No errors to display",
-                'status': 'success',
+                'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
             })
         
 
