@@ -26,6 +26,7 @@
             <tree decoration-success="status == 'success'" 
                   decoration-warning="status == 'warning'" 
                   decoration-danger="status == 'failure'">
+                <field name="sync_type" string="Type"/>
                 <field name="name" string="Report Name"/>
                 <field name="status" string="Status"/>
                 <field name="sync_date" string="Sync Date" />
