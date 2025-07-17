@@ -1,74 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- action -->
+    <record id="action_sync_report_tree" model="ir.actions.act_window">
+        <field name="name">Sync Reports</field>
+        <field name="res_model">prosync.report</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-    <!-- Tree View -->
+    <!-- app dashboard menu -->
+    <menuitem
+        id="menu_sync_reports"
+        name="Sync Reports"
+        sequence="10"
+        action="action_sync_report_tree"
+        parent=""
+        groups="base.group_no_one" /> <!-- Visible in developer mode only -->
+
+    <!-- report list view -->
     <record id="view_sync_report_tree" model="ir.ui.view">
         <field name="name">prosync.report.tree</field>
         <field name="model">prosync.report</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-success="status == 'success'" 
+                  decoration-warning="status == 'warning'" 
+                  decoration-danger="status == 'failure'">
                 <field name="name" string="Report Name"/>
+                <field name="status" string="Status"/>
+                <field name="start_time" string="Start Date &amp; Time"/>
+                <field name="end_time" string="End Date &amp; Time"/>
+                <field name="duration" string="Sync Duration (minutes)"/>
             </tree>
         </field>
     </record>
 
-    <!-- Form View -->
+    <!-- report record view -->
     <record id="view_sync_report_form" model="ir.ui.view">
         <field name="name">prosync.report.form</field>
         <field name="model">prosync.report</field>
         <field name="arch" type="xml">
             <form string="Sync Report">
-                <header>
-                    <button name="dummy_button" string="Test Button" type="object" class="btn-primary"/>
-                    <button name="manual_trigger_prosync_schedule"
-                            type="object"
-                            string="Start a Sync"
-                            class="btn-primary"
-                            context="{}"/>
-                </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="sync_type"/>
-                        <field name="start_time"/>
-                        <field name="end_time"/>
+                        <field name="name" />
+                        <field name="status" />
+                        <field name="start_time" />
+                        <field name="end_time" />
+                        <field name="duration" />
                     </group>
+                    <notebook>
+                        <!-- <page string="Error Report">
+                            <field name="error_report" 
+                                widget="text_area" 
+                                style="width: 100%; height: 200px;" 
+                                placeholder="No errors yet..." />
+                        </page>
+                        <page string="Items Updated">
+                            <field name="items_updated" 
+                                widget="text_area" 
+                                style="width: 100%; height: 200px;" 
+                                placeholder="No items updated..." />
+                        </page> -->
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
-
-
-    <!-- Server Action that triggers the scheduled action -->
-    <record id="action_start_sync_schedule" model="ir.actions.server">
-        <field name="name">Start a Sync</field>
-        <field name="model_id" ref="model_prosync_report"/>
-        <field name="binding_model_id" ref="model_prosync_report"/>
-        <field name="binding_type">action</field>
-        <field name="state">code</field>
-        <field name="code">
-            if env.ref('prosync.ir_cron_prosync_schedule', raise_if_not_found=False):
-                env.ref('prosync.ir_cron_prosync_schedule').method_direct_trigger()
-        </field>
-    </record>
-
-    <!-- Tree + Form Action -->
-    <record id="action_prosync_report" model="ir.actions.act_window">
-        <field name="name">Sync Reports</field>
-        <field name="res_model">prosync.report</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_sync_report_tree"/>
-        <field name="context">{}</field>
-        <field name="binding_model_id" ref="model_prosync_report"/>
-    </record>
-
-    <!-- Menu (Visible to devs only for now) -->
-    <menuitem
-        id="menu_sync_reports"
-        name="Sync Reports"
-        sequence="10"
-        action="action_prosync_report"
-        parent=""
-        groups="base.group_no_one" />
-
 </odoo>

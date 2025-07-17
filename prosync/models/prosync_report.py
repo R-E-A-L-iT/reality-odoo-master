@@ -5,6 +5,11 @@ class ProsyncReport(models.Model):
     _description = 'ProSync Sync Report'
 
     name = fields.Char(string='Name', required=True)
+    status = fields.Selection([
+        ('success', "Success"),
+        ('warning', "Warning"),
+        ('failure', "Errors"),
+    ], string="Status", required=True)
     sync_type = fields.Selection([
         ('product_template', 'Product Template'),
         ('stock_lot', 'Stock/Lot'),
@@ -12,6 +17,16 @@ class ProsyncReport(models.Model):
     ], string='Type', required=True)
     start_time = fields.Datetime(string='Start Time')
     end_time = fields.Datetime(string='End Time')
+    duration = fields.Float(string="Sync Duration (minutes)", compute="_compute_sync_duration", store=True)
+
+     @api.depends('start_time', 'end_time')
+    def _compute_sync_duration(self):
+        for record in self:
+            if record.start_time and record.end_time:
+                delta = record.end_time - record.start_time
+                record.sync_duration = delta.total_seconds() / 60.0
+            else:
+                record.sync_duration = 0.0
 
     @api.model
     def manual_trigger_prosync_schedule(self):
