@@ -248,8 +248,8 @@ class product_template_sync:
                 col_letter = chr(65 + col_idx)
                 cell_id = f"{row_index}{col_letter}"
                 change_summary = (
-                    f'{cell_id}, {product.sku}<br/>'
-                    f'Field {base_field} updated: "{existing_value}" → "{value}"<br/><br/>'
+                    f'<b>{cell_id}</b>, {product.sku}<br/>'
+                    f'Field <u>{base_field}</u> updated: "{existing_value}" <b>→</b> "{value}"<br/><br/>'
                 )
                 self.updated_items.append(change_summary)
 
