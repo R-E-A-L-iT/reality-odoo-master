@@ -90,7 +90,10 @@ def normalize_date(value):
 #
 def normalize_binary(value):
     if not value or not str(value).strip():
-        return None
+        return False
+        
+    if value in [None, False, 'False', '', 'none', 'None']:
+        return False
 
     url = str(value).strip()
     try:
@@ -102,7 +105,7 @@ def normalize_binary(value):
     except Exception as e:
         _logger.warning(f"ProSync: Exception fetching image from {url}: {str(e)}")
     
-    return None
+    return False
 
 # 
 # Normalize selection data
