@@ -19,7 +19,7 @@
         "proquotes",
     ],
     "data": [
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
         "data/schedule.xml",
         "views/res_partner.xml",
         "views/stock_lot.xml",
