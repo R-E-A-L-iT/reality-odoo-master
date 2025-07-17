@@ -17,20 +17,47 @@
         groups="base.group_no_one" /> <!-- Visible in developer mode only -->
 
     <!-- report list view -->
+    <record id="action_sync_report_tree" model="ir.actions.act_window">
+        <field name="name">Sync Reports</field>
+        <field name="res_model">prosync.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
     <record id="view_sync_report_tree" model="ir.ui.view">
         <field name="name">prosync.report.tree</field>
         <field name="model">prosync.report</field>
         <field name="arch" type="xml">
             <tree>
-                <!-- decoration-success="status == 'success'" 
-                  decoration-warning="status == 'warning'" 
-                  decoration-danger="status == 'error'" -->
                 <field name="name" string="Report Name"/>
-                <!-- <field name="status" string="Status"/>
-                <field name="start_datetime" string="Start Date &amp; Time"/>
-                <field name="end_datetime" string="End Date &amp; Time"/>
-                <field name="sync_duration" string="Sync Duration (minutes)"/> -->
             </tree>
+        </field>
+    </record>
+
+    <!-- Add this -->
+    <record id="action_sync_report_tree_with_button" model="ir.actions.act_window">
+        <field name="name">Sync Reports</field>
+        <field name="res_model">prosync.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="prosync.model_prosync_report"/>
+    </record>
+
+    <!-- Toolbar button -->
+    <record id="prosync_report_tree_button_view" model="ir.ui.view">
+        <field name="name">prosync.report.tree.button</field>
+        <field name="model">prosync.report</field>
+        <field name="inherit_id" ref="prosync.view_sync_report_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="after">
+                <header>
+                    <button name="manual_trigger_prosync_schedule"
+                            type="object"
+                            string="Start a Sync"
+                            class="btn-primary"
+                            icon="fa-refresh"/>
+                </header>
+            </xpath>
         </field>
     </record>
 
