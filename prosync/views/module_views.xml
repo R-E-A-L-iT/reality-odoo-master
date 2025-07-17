@@ -23,6 +23,19 @@
         </field>
     </record>
 
+    <!-- Server Action that triggers the scheduled action -->
+    <record id="action_start_sync_schedule" model="ir.actions.server">
+        <field name="name">Start a Sync</field>
+        <field name="model_id" ref="model_prosync_report"/>
+        <field name="binding_model_id" ref="model_prosync_report"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+            if env.ref('prosync.ir_cron_prosync_schedule', raise_if_not_found=False):
+                env.ref('prosync.ir_cron_prosync_schedule').method_direct_trigger()
+        </field>
+    </record>
+
     <!-- Tree + Form Action -->
     <record id="action_prosync_report" model="ir.actions.act_window">
         <field name="name">Sync Reports</field>
@@ -44,18 +57,5 @@
         action="action_prosync_report"
         parent=""
         groups="base.group_no_one" />
-
-    <!-- Server Action that triggers the scheduled action -->
-    <record id="action_start_sync_schedule" model="ir.actions.server">
-        <field name="name">Start a Sync</field>
-        <field name="model_id" ref="model_prosync_report"/>
-        <field name="binding_model_id" ref="model_prosync_report"/>
-        <field name="binding_type">action</field>
-        <field name="state">code</field>
-        <field name="code">
-            if env.ref('prosync.ir_cron_prosync_schedule', raise_if_not_found=False):
-                env.ref('prosync.ir_cron_prosync_schedule').method_direct_trigger()
-        </field>
-    </record>
 
 </odoo>
