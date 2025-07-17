@@ -247,7 +247,10 @@ class product_template_sync:
 
                 col_letter = chr(65 + col_idx)
                 cell_id = f"{row_index}{col_letter}"
-                change_summary = f'{cell_id}, {product.name}\nField {base_field} updated: "{existing_value}" → "{value}"\n\n'
+                change_summary = (
+                    f'{cell_id}, {product.name}<br/>'
+                    f'Field {base_field} updated: "{existing_value}" → "{value}"<br/><br/>'
+                )
                 self.updated_items.append(change_summary)
 
             except Exception as e:
