@@ -34,32 +34,36 @@
         </field>
     </record>
 
-    <!-- Add this -->
-    <record id="action_sync_report_tree_with_button" model="ir.actions.act_window">
+    <record id="action_start_sync_schedule" model="ir.actions.server">
+        <field name="name">Start a Sync</field>
+        <field name="model_id" ref="prosync.model_prosync_report"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = env.ref('prosync.ir_cron_prosync_schedule')
+            if action:
+                action._trigger()
+        </field>
+    </record>
+
+    <record id="action_prosync_report" model="ir.actions.act_window">
         <field name="name">Sync Reports</field>
         <field name="res_model">prosync.report</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="prosync.view_sync_report_tree"/>
         <field name="context">{}</field>
         <field name="binding_model_id" ref="prosync.model_prosync_report"/>
+        <field name="toolbar" eval="{
+            'action': [ (ref('prosync.action_start_sync_schedule'), 'Start a Sync') ]
+        }"/>
     </record>
 
-    <!-- Toolbar button -->
-    <record id="prosync_report_tree_button_view" model="ir.ui.view">
-        <field name="name">prosync.report.tree.button</field>
+    <record id="action_start_sync_schedule_binding" model="ir.values">
+        <field name="key">action</field>
         <field name="model">prosync.report</field>
-        <field name="inherit_id" ref="prosync.view_sync_report_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//tree" position="before">
-                <div class="o_list_buttons">
-                    <button name="manual_trigger_prosync_schedule"
-                            type="object"
-                            string="Start a Sync"
-                            class="btn btn-primary"
-                            icon="fa-refresh"/>
-                </div>
-            </xpath>
-        </field>
+        <field name="name">Start a Sync</field>
+        <field name="value" eval="'ir.actions.server,%d' % ref('prosync.action_start_sync_schedule')"/>
     </record>
+
 
 
     <!-- report record view -->
