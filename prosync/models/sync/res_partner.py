@@ -177,7 +177,7 @@ class res_partner_sync:
                     )
                     continue
 
-                existing_value = product[base_field]
+                existing_value = partner[base_field]
                 if value == existing_value:
                     continue
 
