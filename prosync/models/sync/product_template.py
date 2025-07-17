@@ -156,7 +156,7 @@ class product_template_sync:
 
         end_time = datetime.now()
         
-        if not self.updated_items:
+        if not self.updated_items and not self.error_items:
             _logger.info("ProSync: No changes detected. Deleting sync report.")
             self.report_id.unlink()
         else:
