@@ -3,7 +3,7 @@
     <!-- action -->
     <record id="action_sync_report_tree" model="ir.actions.act_window">
         <field name="name">Sync Reports</field>
-        <field name="res_model">sync.report</field>
+        <field name="res_model">prosync.report</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -18,8 +18,8 @@
 
     <!-- report list view -->
     <record id="view_sync_report_tree" model="ir.ui.view">
-        <field name="name">sync.report.tree</field>
-        <field name="model">sync.report</field>
+        <field name="name">prosync.report.tree</field>
+        <field name="model">prosync.report</field>
         <field name="arch" type="xml">
             <tree decoration-success="status == 'success'" 
                   decoration-warning="status == 'warning'" 
@@ -35,8 +35,8 @@
 
     <!-- report record view -->
     <record id="view_sync_report_form" model="ir.ui.view">
-        <field name="name">sync.report.form</field>
-        <field name="model">sync.report</field>
+        <field name="name">prosync.report.form</field>
+        <field name="model">prosync.report</field>
         <field name="arch" type="xml">
             <form string="Sync Report">
                 <sheet>
