@@ -199,13 +199,13 @@
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
-                                        <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
+                                        <td t-if="line.name == '#rental_accessories'" name="td_section_line" colspan="99">
                                             <span>Rental Accessories</span>
                                         </td>
-                                        <td t-elif="line.name  == '$block+'" name="td_section_line" colspan="99">
+                                        <td t-elif="line.name == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
-                                        <td t-elif="(line.name  == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
+                                        <td t-elif="(line.name == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
                                             <t t-if="language == 'en_CA' or language == 'en_US'">
                                                 <p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
                                                 <p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
