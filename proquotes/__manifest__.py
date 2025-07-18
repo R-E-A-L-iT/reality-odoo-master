@@ -62,7 +62,6 @@
     # always loaded
     "data": [
         "security/ir.model.access.csv",
-        "data/rental_quote_data.xml",
         # quotes
         "views/Quote/quote_report.xml",
         "views/Quote/quote_preview.xml",
