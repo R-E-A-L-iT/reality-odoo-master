@@ -869,16 +869,49 @@ class AccountMoveSend(models.TransientModel):
     send_mail_readonly = fields.Boolean(compute='_compute_send_mail_extra_fields', readonly=False)
 
 
-    @api.depends('checkbox_send_mail')
     def _compute_send_mail_extra_fields(self):
         for wizard in self:
             wizard.display_mail_composer = wizard.mode == 'invoice_single'
+            wizard.send_mail_warning_message = False
+
             invoices_without_mail_data = wizard.move_ids.filtered(lambda x: not x.partner_id.email)
-            # wizard.send_mail_readonly = invoices_without_mail_data == wizard.move_ids
-            if not (invoices_without_mail_data and wizard.checkbox_send_mail):
-                wizard.send_mail_warning_message = False
-            else:
-                wizard.send_mail_warning_message = False
+            wizard.send_mail_readonly = invoices_without_mail_data == wizard.move_ids
+
+            if wizard.mode == 'invoice_multi' and wizard.checkbox_send_mail and invoices_without_mail_data:
+                wizard.send_mail_warning_message = _(
+                    "The partners on the following invoices have no email address, "
+                    "so those invoices will not be sent: %s",
+                    ", ".join(invoices_without_mail_data.mapped('name')))
+
+    @api.model
+    def _send_mails(self, moves_data):
+        subtype = self.env.ref('mail.mt_comment')
+        _logger.info('>>>>>>>>>>>>>>>584.subtype: %s,', subtype)
+        self._generate_dynamic_reports(moves_data)
+        
+        for move, move_data in [(move, move_data) for move, move_data in moves_data.items()]:
+            _logger.info('>>>>>>>>>>>>>>>588.move: %s,', move)
+            mail_template = move_data['mail_template_id']
+            mail_lang = move_data['mail_lang']
+            mail_params = self._get_mail_params(move, move_data)
+            if not mail_params:
+                continue
+
+            if move_data.get('proforma_pdf_attachment'):
+                attachment = move_data['proforma_pdf_attachment']
+                mail_params['attachments'].append((attachment.name, attachment.raw))
+
+            email_from = self._get_mail_default_field_value_from_template(mail_template, mail_lang, move, 'email_from')
+            model_description = move.with_context(lang=mail_lang).type_name
+
+            self._send_mail(
+                move,
+                mail_template,
+                subtype_id=subtype.id,
+                model_description=model_description,
+                email_from=email_from,
+                **mail_params,
+            )
 
     # def write(self, vals):
     #     res = super().write(vals)
