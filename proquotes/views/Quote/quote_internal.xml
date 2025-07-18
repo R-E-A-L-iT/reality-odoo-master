@@ -11,6 +11,12 @@
                 <attribute name="string">Business</attribute>
             </xpath>
 
+            <!-- pricelist filter -->
+            <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                <!-- Default domain for regular orders (not rental) -->
+                <attribute name="domain">[('name', 'ilike', '')]</attribute>
+            </xpath>
+
             <xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
                 <field name="is_renewal" invisible="1"/>
                 <!-- Renewal Quotes Added Products -->
