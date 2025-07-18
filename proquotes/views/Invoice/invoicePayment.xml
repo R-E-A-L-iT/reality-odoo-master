@@ -1,59 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page">
-        <!-- <xpath expr="//t[@t-call='portal.portal_record_sidebar']//h2[1]" position="after"> -->
-        <xpath expr="//div[@id='invoice_communication']" position="before">
-
-            <style>
-                /* #invoice_content > div.o_portal_html_view.shadow.p-3 {
-                    width: 90vw !important;
-                }
-
-                #portalTotal > div {
-                    width: 100vw !important;
-                    padding: 4vw !important;
-                    justify-content: center !important;
-                }
-
-                #invoice_content {
-                    width: 100% !important;
-                }
-
-                #invoice_content > a {
-                    width: 50vw !important;
-                    margin: 25px auto !important;
-                } */
-
-                #sidebar_content > div.position-relative.d-flex.align-items-center.justify-content-md-center.justify-content-lg-between.flex-wrap.gap-2 {
-
-                    padding: 10px !important;
-
-                }
-
-                #sidebar_content > div.d-flex.flex-column.gap-4 > div.flex-grow-1 {
-
-                    padding: 10px !important;
-
-                }
-
-                #sidebar_content > div.d-flex.flex-column.gap-4 > div.flex-grow-1 > h6 > small {
-
-                    color: white !important;
-
-                }
-
-                #sidebar_content > div.position-relative.d-flex.align-items-center.justify-content-md-center.justify-content-lg-between.flex-wrap.gap-2 {
-
-                    border-radius: 10px !important;
-
-                }
-
-                #o_payment_methods > ul > li {
-                    background-color: #212529 !important;
-                }
-
-            </style>
-        </xpath>
 
         <xpath expr="//div[@t-field='invoice.invoice_user_id']" position="replace">
             <div t-field="invoice.invoice_user_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;city&quot;]}"/>
