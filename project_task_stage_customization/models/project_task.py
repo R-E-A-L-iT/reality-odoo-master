@@ -6,5 +6,5 @@ class ProjectTask(models.Model):
     _inherit = 'project.task'
 
 
-    state = fields.Selection(selection_add=[('011_not_started', 'Not started')])
+    state = fields.Selection(selection_add=[('011_not_started', 'Not started')],ondelete={'011_not_started': 'cascade'})
 
