@@ -199,8 +199,6 @@
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
-
-                                        <!-- this is probably where to edit section titles -->
                                         <td t-if="line.name  == '#rental_accessories'" name="td_section_line" colspan="99">
                                             <span>Rental Accessories</span>
                                         </td>

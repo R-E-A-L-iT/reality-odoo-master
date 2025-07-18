@@ -181,7 +181,7 @@
                     </b>
                 </p>
             </t>
-            <t t-elif="lang ==  'fr_CA'">
+            <t t-elif="lang == 'fr_CA'">
                 <p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference"
                    name="payment_communication">Merci d'utiliser la communication suivante pour votre paiement:
                     <b>
