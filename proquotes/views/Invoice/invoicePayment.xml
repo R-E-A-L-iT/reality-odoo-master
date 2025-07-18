@@ -3,7 +3,7 @@
     <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page">
 
         <xpath expr="//div[@t-field='invoice.invoice_user_id']" position="replace">
-            <div t-field="invoice.invoice_user_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: []}"/>
+            <div t-field="invoice.invoice_user_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;email&quot;]}"/>
         </xpath>
 
     </template>
