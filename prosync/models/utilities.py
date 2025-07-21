@@ -410,6 +410,9 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         company_name = "R-E-A-L.iT U.S. Inc."
     else:
         _logger.warning(f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.")
+        warning_items.append(
+            f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.<br/><br/>"
+        )
         return
 
     # Parse price
@@ -417,6 +420,9 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         price = float(value_str)
     except ValueError:
         _logger.warning(f"ProSync: Row {row_index} — Invalid price '{value_str}' in {column_name_clean}. Skipping.")
+        warning_items.append(
+            f"ProSync: Row {row_index} — Invalid price '{value_str}' in {column_name_clean}. Skipping.<br/><br/>"
+        )
         return
 
     # Look up related records
@@ -426,11 +432,13 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
 
     if not (currency and partner and company):
         _logger.warning(f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.")
+        warning_items.append(
+            f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.<br/><br/>"
+        )
         return
 
-    supplierinfo_env = database['product.supplierinfo'].with_company(company.id).sudo()
 
-    supplier_info = supplierinfo_env.search([
+    supplier_info = database.env['product.supplierinfo'].sudo().search([
         ('product_tmpl_id', '=', product.id),
         ('partner_id', '=', partner.id),
         ('currency_id', '=', currency.id),
@@ -441,7 +449,7 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
 
     if supplier_info:
         if supplier_info.price != price:
-            supplier_info.write({'price': price})
+            supplier_info.sudo().write({'price': price})
             _logger.info("Updated %s price for Product %s to %.2f %s", partner.name, product.id, price, currency.name)
             updated_items.append(
                 f"<b>{cell_id}</b>, {product.sku}<br/>"
@@ -450,7 +458,7 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         else:
             _logger.info("No change to %s price for Product %s (still %.2f)", partner.name, product.id, price)
     else:
-        supplierinfo_env.create({
+        database['product.supplierinfo'].with_company(company.id).sudo().create({
             'partner_id': partner.id,
             'currency_id': currency.id,
             'price': price,
