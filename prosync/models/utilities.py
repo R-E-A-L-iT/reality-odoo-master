@@ -428,7 +428,7 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         _logger.warning(f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.")
         return
 
-    supplierinfo_env = database['product.supplierinfo'].with_context(force_company=company.id).sudo()
+    supplierinfo_env = database['product.supplierinfo'].with_company(company.id).sudo()
 
     supplier_info = supplierinfo_env.search([
         ('product_tmpl_id', '=', product.id),
