@@ -19,6 +19,7 @@ from ..utilities import (
     update_with_lang_context,
     update_with_price_context,
     update_with_related_context,
+    update_with_special_context,
 )
 
 _logger = logging.getLogger(__name__)

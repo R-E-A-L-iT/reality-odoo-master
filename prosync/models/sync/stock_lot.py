@@ -128,20 +128,19 @@ class stock_lot_sync:
                 _logger.info(f"ProSync: Row {row_index} — No stock.lot found with Name: {name} and Product SKU: {product_sku}")
                 self.create_stock_lot(row_index, row, product)
 
+        end_time = datetime.now()
 
-            end_time = datetime.now()
-
-            if not self.updated_items and not self.warning_items and not self.error_items:
-                _logger.info("ProSync: No changes/errors/warnings detected. Deleting sync report.")
-                self.report_id.unlink()
-            else:
-                self.report_id.write({
-                    'end_time': end_time,
-                    'report_text': "\n".join(self.updated_items) or "No changes detected.",
-                    'warning_text': "\n".join(self.warning_items) or "No warnings to display",
-                    'error_text': "\n".join(self.error_items) or "No errors to display",
-                    'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
-                })
+        if not self.updated_items and not self.warning_items and not self.error_items:
+            _logger.info("ProSync: No changes/errors/warnings detected. Deleting sync report.")
+            self.report_id.unlink()
+        else:
+            self.report_id.write({
+                'end_time': end_time,
+                'report_text': "\n".join(self.updated_items) or "No changes detected.",
+                'warning_text': "\n".join(self.warning_items) or "No warnings to display",
+                'error_text': "\n".join(self.error_items) or "No errors to display",
+                'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
+            })
 
     def create_stock_lot(self, row_index, row, product):
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
