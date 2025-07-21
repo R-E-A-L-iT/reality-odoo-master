@@ -21,8 +21,8 @@ class ProsyncReport(models.Model):
     sync_date = fields.Date(string="Sync Date", compute="_compute_sync_date", store=True)
 
     report_text = fields.Html(string="Sync Report", readonly=True)
-    warning_text = fields.Text(string="Warnings", readonly=True)
-    error_text = fields.Text(string="Errors", readonly=True)
+    warning_text = fields.Html(string="Warnings", readonly=True)
+    error_text = fields.Html(string="Errors", readonly=True)
 
     @api.depends('start_time', 'end_time')
     def _compute_sync_duration(self):
