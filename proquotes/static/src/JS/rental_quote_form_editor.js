@@ -44,6 +44,7 @@ FormEditorRegistry.add('create_rental_quote', {
         name: 'user_id',
         type: 'many2one',
         relation: 'res.users',
+        domain: [['share', '=', false]],
         string: _t('Saleperson'),
     }, {
         name: 'team_id',
