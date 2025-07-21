@@ -385,3 +385,77 @@ def update_with_related_context(record, column_name, raw_value, all_fields, data
         col_letter = chr(65 + col_idx)
         cell_id = f"{row_index}{col_letter}"
         _logger.error(f"ProSync: Error updating field '{column_name}' at cell {cell_id}: {str(e)}")
+
+# 
+# Handle special exceptions usually for one2many fields which can't be directly supported by the sync
+# Currently only used for updating vendor prices
+# 
+def update_with_special_context(product, column_name, raw_value, database, row_index, col_idx, updated_items):
+    column_name_clean = column_name.lower().strip()
+    value_str = str(raw_value).strip()
+    if not value_str or value_str.lower() == "false":
+        return  # Treat empty/false as no update needed
+
+    # Match special keys
+    if "[special=purchase_cad]" in column_name_clean:
+        currency_code = "CAD"
+        vendor_name = "Leica Geosystems Ltd."
+        company_name = "R-E-A-L.iT Solutions"
+    elif "[special=purchase_usd]" in column_name_clean:
+        currency_code = "USD"
+        vendor_name = "Leica Geosystems Inc"
+        company_name = "R-E-A-L.iT U.S. Inc."
+    else:
+        _logger.warning(f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.")
+        return
+
+    # Parse price
+    try:
+        price = float(value_str)
+    except ValueError:
+        _logger.warning(f"ProSync: Row {row_index} — Invalid price '{value_str}' in {column_name_clean}. Skipping.")
+        return
+
+    # Look up related records
+    currency = database.env['res.currency'].search([('name', '=', currency_code)], limit=1)
+    partner = database.env['res.partner'].search([('name', '=', vendor_name), ('is_company', '=', True)], limit=1)
+    company = database.env['res.company'].search([('name', '=', company_name)], limit=1)
+
+    if not (currency and partner and company):
+        _logger.warning(f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.")
+        return
+
+    supplierinfo_env = database.env['product.supplierinfo'].with_context(force_company=company.id).sudo()
+
+    supplier_info = supplierinfo_env.search([
+        ('product_tmpl_id', '=', product.id),
+        ('partner_id', '=', partner.id),
+        ('currency_id', '=', currency.id),
+    ], limit=1)
+
+    col_letter = chr(65 + col_idx)
+    cell_id = f"{row_index}{col_letter}"
+
+    if supplier_info:
+        if supplier_info.price != price:
+            supplier_info.write({'price': price})
+            _logger.info("Updated %s price for Product %s to %.2f %s", partner.name, product.id, price, currency.name)
+            updated_items.append(
+                f"<b>{cell_id}</b>, {product.sku}<br/>"
+                f"Updated vendor <u>{partner.name}</u> price: {price:.2f} {currency.name}<br/><br/>"
+            )
+        else:
+            _logger.info("No change to %s price for Product %s (still %.2f)", partner.name, product.id, price)
+    else:
+        supplierinfo_env.create({
+            'partner_id': partner.id,
+            'currency_id': currency.id,
+            'price': price,
+            'product_tmpl_id': product.id,
+            'company_id': company.id,
+        })
+        _logger.info("Created vendor price for %s on Product %s: %.2f %s", partner.name, product.id, price, currency.name)
+        updated_items.append(
+            f"<b>{cell_id}</b>, {product.sku}<br/>"
+            f"Created vendor <u>{partner.name}</u> price: {price:.2f} {currency.name}<br/><br/>"
+        )

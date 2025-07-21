@@ -221,6 +221,9 @@ class product_template_sync:
             elif field_name.startswith("price[pricelist="):
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
+            elif "[special=" in column_name:
+                update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
+                continue
             elif '[' in field_name:
                 continue
 
