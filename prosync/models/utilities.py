@@ -417,15 +417,15 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         return
 
     # Look up related records
-    currency = database.env['res.currency'].search([('name', '=', currency_code)], limit=1)
-    partner = database.env['res.partner'].search([('name', '=', vendor_name), ('is_company', '=', True)], limit=1)
-    company = database.env['res.company'].search([('name', '=', company_name)], limit=1)
+    currency = database['res.currency'].search([('name', '=', currency_code)], limit=1)
+    partner = database['res.partner'].search([('name', '=', vendor_name), ('is_company', '=', True)], limit=1)
+    company = database['res.company'].search([('name', '=', company_name)], limit=1)
 
     if not (currency and partner and company):
         _logger.warning(f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.")
         return
 
-    supplierinfo_env = database.env['product.supplierinfo'].with_context(force_company=company.id).sudo()
+    supplierinfo_env = database['product.supplierinfo'].with_context(force_company=company.id).sudo()
 
     supplier_info = supplierinfo_env.search([
         ('product_tmpl_id', '=', product.id),
