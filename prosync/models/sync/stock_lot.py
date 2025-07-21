@@ -39,7 +39,7 @@ class stock_lot_sync:
         self.report_id = self.database['prosync.report'].create({
             'name': f"Lot/Serial Number Sync: {self.name}",
             'status': 'success',
-            'sync_type': 'res_partner',
+            'sync_type': 'stock_lot',
             'start_time': datetime.now(),
         })
 
