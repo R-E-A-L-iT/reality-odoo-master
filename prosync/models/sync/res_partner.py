@@ -155,7 +155,7 @@ class res_partner_sync:
                 elif field_type == 'boolean':
                     value = normalize_bool(raw_value)
                 elif field_type in {'date', 'datetime'}:
-                    value = normalize_date(raw_value)
+                    value = normalize_date(raw_value, field_type=field_type)
                 elif field_type == 'binary':
                     value = normalize_binary(raw_value)
                 elif field_type == 'selection':

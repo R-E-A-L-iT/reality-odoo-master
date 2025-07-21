@@ -10,12 +10,6 @@ from odoo import fields
 import logging
 _logger = logging.getLogger(__name__)
 
-# 1. Add to report function
-
-# 2. Throw error function
-
-# 3. Normalization functions
-
 # 
 # Normalize char data
 #
@@ -76,12 +70,12 @@ def normalize_bool(value):
 # 
 # Normalize date data
 #
-def normalize_date(value):
+def normalize_date(value, field_type='date'):
     if not value or not str(value).strip():
         return None
     try:
-        # assuming canadian dating convention
-        return dateutil.parser.parse(str(value), dayfirst=True, fuzzy=True)
+        dt = dateutil.parser.parse(str(value), dayfirst=True, fuzzy=True)
+        return dt if field_type == 'datetime' else dt.date()
     except (ValueError, TypeError):
         return None
 
