@@ -107,7 +107,7 @@ class stock_lot_sync:
             product = self.database['product.product'].search([('sku', '=', product_sku)], limit=1)
             if not product:
                 _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.")
-                 self.warning_items.append(
+                self.warning_items.append(
                     f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.<br/><br/>"
                 )
                 continue
@@ -216,7 +216,7 @@ class stock_lot_sync:
                     )
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
-                     self.warning_items.append(
+                    self.warning_items.append(
                         f"ProSync: Row {row_index} — Unsupported field type '{field_type}' for '{base_field}'<br/><br/>"
                     )
                     continue
