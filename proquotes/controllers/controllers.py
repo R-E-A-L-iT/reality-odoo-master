@@ -511,7 +511,7 @@ class WebsiteForm(form.WebsiteForm):
         sale_order_result = super().insert_record(request, model, values, custom, meta=meta)
         _logger.info('Created sale_order_result: %s', sale_order_result)
     
-        if sale_order_result:
+        if sale_order_result and model.model == 'sale.order':
             sale_order = request.env['sale.order'].browse(sale_order_result)
     
             # Add individual contact as follower
