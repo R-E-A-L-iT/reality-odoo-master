@@ -365,7 +365,10 @@ def update_with_related_context(record, column_name, raw_value, all_fields, data
         if field_type == 'many2one':
             match = related_model.search(search_domain, limit=1)
             if match:
-                record.write({field_name: match.id})
+                try:
+                    record.write({field_name: match.id})
+                except:
+                    _logger.error(f"ProSync: Row {row_index} — Error updating many2one field '{field_name}' with value '{raw_value}'")
             else:
                 _logger.warning(f"ProSync: Row {row_index} — No match found in {related_model_name} for {related_field} = '{raw_value}'")
 
