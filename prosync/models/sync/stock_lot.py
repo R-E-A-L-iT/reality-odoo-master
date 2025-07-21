@@ -233,7 +233,7 @@ class stock_lot_sync:
                 cell_id = f"{row_index}{col_letter}"
                 self.updated_items.append(
                     f"<b>{cell_id}</b>, {lot.name}<br/>"
-                    f"Field <u>{base_field}</u> updated to: \"{value}\"<br/><br/>"
+                    f"Field <u>{base_field}</u> updated: \"{existing_value}\" <b>→</b> \"{value}\"<br/><br/>"
                 )
 
             except Exception as e:
