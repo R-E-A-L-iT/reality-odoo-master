@@ -26,9 +26,20 @@ class stock_lot_sync:
         self.name = name
         self.sheet = sheet
         self.database = database
+        self.updated_items = []
+        self.warning_items = []
+        self.error_items = []
+        self.report_id = None
 
     def sync_stock_lot(self):
         _logger.info("ProSync: Starting STOCK_LOT sync process.")
+
+        self.report_id = self.database['prosync.report'].create({
+            'name': f"Lot/Serial Number Sync: {self.name}",
+            'status': 'success',
+            'sync_type': 'res_partner',
+            'start_time': datetime.now(),
+        })
 
         required_fields = [
             "name",
@@ -59,6 +70,9 @@ class stock_lot_sync:
                 _logger.info(f"ProSync: Field '{column}' (base: '{base_field}') exists on stock.lot.")
             else:
                 _logger.warning(f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on stock.lot.")
+                self.warning_items.append(
+                    f"ProSync: Field '{column}' (base: '{base_field}') does NOT exist on stock.lot.<br/><br/>"
+                )
 
         for row_index, row in enumerate(self.sheet[1:], start=2):
             if not any(row):
@@ -82,6 +96,9 @@ class stock_lot_sync:
             product_sku = normalize_char(row[column_indices.get("product_id", -1)])
             if not name or not product_sku:
                 _logger.warning(f"ProSync: Row {row_index} is missing a valid Name or Product SKU. Skipping.")
+                self.warning_items.append(
+                    f"ProSync: Row {row_index} is missing a valid Name or Product SKU. Skipping.<br/><br/>"
+                )
                 continue
 
             # technically product.product record, not product.template, because all product.template records have 
@@ -90,6 +107,9 @@ class stock_lot_sync:
             product = self.database['product.product'].search([('sku', '=', product_sku)], limit=1)
             if not product:
                 _logger.warning(f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.")
+                 self.warning_items.append(
+                    f"ProSync: Row {row_index} — No product found with SKU: {product_sku}. Skipping.<br/><br/>"
+                )
                 continue
 
             # company_id filter should probably be eventually removed
@@ -105,6 +125,21 @@ class stock_lot_sync:
             else:
                 _logger.info(f"ProSync: Row {row_index} — No stock.lot found with Name: {name} and Product SKU: {product_sku}")
                 self.create_stock_lot(row_index, row, product)
+
+
+            end_time = datetime.now()
+
+            if not self.updated_items and not self.warning_items and not self.error_items:
+                _logger.info("ProSync: No changes/errors/warnings detected. Deleting sync report.")
+                self.report_id.unlink()
+            else:
+                self.report_id.write({
+                    'end_time': end_time,
+                    'report_text': "\n".join(self.updated_items) or "No changes detected.",
+                    'warning_text': "\n".join(self.warning_items) or "No warnings to display",
+                    'error_text': "\n".join(self.error_items) or "No errors to display",
+                    'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
+                })
 
     def create_stock_lot(self, row_index, row, product):
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
@@ -171,13 +206,33 @@ class stock_lot_sync:
                     value = normalize_selection(raw_value, base_field, all_fields)
                 elif field_type == 'many2one':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2one field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 elif field_type == 'many2many':
                     _logger.warning(f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.")
+                    self.warning_items.append(
+                        f"ProSync: Row {row_index} Field '{base_field}' not updated because it is a many2many field and missing the [related=] tag. See documentation for more information.<br/><br/>"
+                    )
                 else:
                     _logger.warning(f"ProSync: Row {row_index} — Field '{base_field}' has unsupported type '{field_type}'. Skipping.")
+                     self.warning_items.append(
+                        f"ProSync: Row {row_index} — Unsupported field type '{field_type}' for '{base_field}'<br/><br/>"
+                    )
+                    continue
+
+                existing_value = lot[base_field]
+                if value == existing_value:
                     continue
 
                 lot.write({base_field: value})
+
+                col_letter = chr(65 + col_idx)
+                cell_id = f"{row_index}{col_letter}"
+                self.updated_items.append(
+                    f"<b>{cell_id}</b>, {lot.name}<br/>"
+                    f"Field <u>{base_field}</u> updated to: \"{value}\"<br/><br/>"
+                )
 
             except Exception as e:
                 col_letter = chr(65 + col_idx)

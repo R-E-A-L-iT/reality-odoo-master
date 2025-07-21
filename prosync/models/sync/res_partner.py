@@ -132,10 +132,10 @@ class res_partner_sync:
             if "[language=" in column_name:
                 update_with_lang_context(partner, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
-            if "[related=" in column_name:
+            elif "[related=" in column_name:
                 update_with_related_context(partner, column_name, raw_value, all_fields, self.database, row_index, col_idx)
                 continue
-            if "[" in column_name:
+            elif "[" in column_name:
                 continue
 
             base_field = field.split('[')[0]
