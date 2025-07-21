@@ -224,7 +224,7 @@ class stock_lot_sync:
                     continue
 
                 existing_value = lot[base_field]
-                if value == existing_value:
+                if value == existing_value or (value is None and existing_value is False):
                     continue
 
                 lot.write({base_field: value})
