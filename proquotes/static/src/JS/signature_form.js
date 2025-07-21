@@ -9,13 +9,11 @@ import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
 
 /**
- * This Component is a signature request form. It uses
- * @see NameAndSignature for the input fields, adds a submit
- * button, and handles the RPC to save the result.
+ * Signature Form Component for portal quote signing.
  */
 class SignatureForm extends Component {
-    static template = "portal.SignatureForm"
-    static components = { NameAndSignature }
+    static template = "portal.SignatureForm";
+    static components = { NameAndSignature };
 
     setup() {
         this.rootRef = useRef("root");
@@ -25,13 +23,16 @@ class SignatureForm extends Component {
         this.state = useState({
             error: false,
             success: false,
+            submitting: false,
         });
+
         this.signature = useState({ name: this.props.defaultName });
+
         this.nameAndSignatureProps = {
             signature: this.signature,
             fontColor: this.props.fontColor || "black",
         };
-        console.log('setup')
+
         if (this.props.signatureRatio) {
             this.nameAndSignatureProps.displaySignatureRatio = this.props.signatureRatio;
         }
@@ -42,12 +43,14 @@ class SignatureForm extends Component {
             this.nameAndSignatureProps.mode = this.props.mode;
         }
 
-
-        // Correctly set up the signature area if it is inside a modal
+        // Reset signature if inside modal
         onMounted(() => {
-            this.rootRef.el.closest('.modal').addEventListener('shown.bs.modal', () => {
-                this.signature.resetSignature();
-            });
+            const modal = this.rootRef.el.closest(".modal");
+            if (modal) {
+                modal.addEventListener("shown.bs.modal", () => {
+                    this.signature.resetSignature();
+                });
+            }
         });
     }
 
@@ -55,48 +58,57 @@ class SignatureForm extends Component {
         return this.props.sendLabel || _t("Accept & Sign");
     }
 
-     /**
-     * Handles click on the submit button.
-     *
-     * This will get the current name and signature and validate them.
-     * If they are valid, they are sent to the server, and the reponse is
-     * handled. If they are invalid, it will display the errors to the user.
-     *
-     * @returns {Promise}
-     */
     async onClickSubmit() {
         const name = this.signature.name;
-        if (
-            (name === 'Public User' ||
-            name.toLowerCase().includes('public user')) && this.signature.signMode === "auto"
 
+        if (
+            (name === "Public User" || name.toLowerCase().includes("public user")) &&
+            this.signature.signMode === "auto"
         ) {
             alert("You must input your own name to automatically sign the document.");
             return;
         }
+
+        this.state.submitting = true;
         const signature = this.signature.getSignatureImage()[1];
-        const data = await this.rpc(this.props.callUrl, { name, signature });
-        if (data.force_refresh) {
-            if (data.redirect_url) {
-                redirect(data.redirect_url);
-            } else {
-                window.location.reload();
+
+        console.time("signature_rpc");
+        try {
+            const data = await this.rpc(this.props.callUrl, { name, signature });
+            console.timeEnd("signature_rpc");
+
+            if (data.force_refresh) {
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    window.location.reload();
+                }
+                return;
             }
-            // do not resolve if we reload the page
-            return new Promise(() => {});
+
+            this.state.error = data.error || false;
+            this.state.success =
+                !data.error && {
+                    message: data.message,
+                    redirectUrl: data.redirect_url,
+                    redirectMessage: data.redirect_message,
+                };
+        } catch (error) {
+            console.error("Signature submission failed:", error);
+            alert("An error occurred while submitting your signature.");
+            this.state.error = true;
+        } finally {
+            this.state.submitting = false;
         }
-        this.state.error = data.error || false;
-        this.state.success = !data.error && {
-            message: data.message,
-            redirectUrl: data.redirect_url,
-            redirectMessage: data.redirect_message,
-        };
     }
 }
+
+// Patch to track signature mode (auto/manual)
 patch(NameAndSignature.prototype, {
     async setMode(mode, reset) {
         await super.setMode(mode, reset);
         this.props.signature.signMode = this.state.signMode;
-    }
-})
+    },
+});
+
 registry.category("public_components").add("portal.signature_form", SignatureForm);
