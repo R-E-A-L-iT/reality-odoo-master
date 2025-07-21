@@ -202,7 +202,7 @@
                                         <td t-if="line.name == '#rental_accessories'" name="td_section_line" colspan="99">
                                             <span>Rental Accessories</span>
                                         </td>
-                                        <td t-elif="line.name == '$block+'" name="td_section_line" colspan="99">
+                                        <td t-if="line.name  == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
                                         <td t-elif="(line.name == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
