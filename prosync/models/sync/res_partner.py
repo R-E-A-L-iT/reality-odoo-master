@@ -90,7 +90,12 @@ class res_partner_sync:
                 )
                 continue
 
-            partner = partner_model.search([('name', '=', name)], limit=1)
+            if "email" in column_indices:
+                email = normalize_char(row[column_indices["email"]])
+                partner = partner_model.search([('email', '=', email)], limit=1)
+            else:
+                partner = partner_model.search([('name', '=', name)], limit=1)
+
             if partner:
                 _logger.info(f"ProSync: Row {row_index} — Found partner '{name}' (ID: {partner.id})")
                 self.update_res_partner(partner, row_index, row, column_indices)
