@@ -55,6 +55,9 @@
         'web.assets_backend': [
             "proquotes/static/src/JS/website_preview.js",
         ],
+        'website.assets_wysiwyg': [
+            'proquotes/static/src/JS/rental_quote_form_editor.js',
+        ],
     },
 
     "version": "17.0",

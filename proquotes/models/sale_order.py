@@ -55,6 +55,8 @@ class order(models.Model):
         ("partially_invoiced", "Partially Invoiced"),
         ("not_invoiced", "Not Invoiced"),
     ], )
+    partner_name = fields.Char(string="Partner Name")
+    rental_email = fields.Char(string="Email")
     financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
