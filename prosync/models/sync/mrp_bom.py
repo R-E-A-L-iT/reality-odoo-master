@@ -135,24 +135,24 @@ class mrp_bom_sync:
                     _logger.info(f"ProSync: Ending sheet sync at row {row_index} (VALID is False, CONTINUE is False)")
                     break
 
-            # VALID is true — get and normalize SKU
-            sku_raw = row[column_indices.get("sku", -1)] if "sku" in column_indices else ''
-            sku = normalize_char(sku_raw)
+            # VALID is true — get and normalize CODE
+            code_raw = row[column_indices.get("code", -1)] if "code" in column_indices else ''
+            code = normalize_char(code_raw)
 
-            if not sku:
-                _logger.warning(f"ProSync: Row {row_index} is missing a valid SKU. Skipping.")
+            if not code:
+                _logger.warning(f"ProSync: Row {row_index} is missing a valid CODE. Skipping.")
                 self.warning_items.append(
-                    f"ProSync: Row {row_index} is missing a valid SKU. Skipping.<br/><br/>"
+                    f"ProSync: Row {row_index} is missing a valid CODE. Skipping.<br/><br/>"
                 )
                 continue
 
             # Search for matching mrp.bom
             bom = self.database['mrp.bom'].search([('code', '=', code)], limit=1)
             if bom:
-                _logger.info(f"ProSync: Row {row_index} — Found bom with SKU: {sku} (ID: {bom.id})")
+                _logger.info(f"ProSync: Row {row_index} — Found bom with CODE: {code} (ID: {bom.id})")
                 self.update_mrp_bom(bom, row_index, row, column_indices)
             else:
-                _logger.info(f"ProSync: Row {row_index} — No bom found with SKU: {sku}")
+                _logger.info(f"ProSync: Row {row_index} — No bom found with CODE: {code}")
                 self.create_mrp_bom(row_index, row)
 
         end_time = datetime.now()
@@ -177,8 +177,8 @@ class mrp_bom_sync:
         code_raw = row[column_indices.get("code", -1)] if "code" in column_indices else ''
         product_tmpl_id_raw = row[column_indices.get("product_tmpl_id", -1)] if "product_tmpl_id" in column_indices else ''
 
-        code = normalize_char(sku_raw)
-        product_tmpl_id = self.database['product.template'].sudo().search([('sku', '=', normalize_char(product_tmpl_id_raw))], limit=1)
+        code = normalize_char(code_raw)
+        product_tmpl_id = self.database['product.template'].sudo().search([('code', '=', normalize_char(product_tmpl_id_raw))], limit=1)
 
         if not code or not product_tmpl_id:
             _logger.warning(f"ProSync: Row {row_index} — Cannot create bom without valid Code and Product Template ID. Skipping.")
@@ -194,7 +194,7 @@ class mrp_bom_sync:
             "product_tmpl_id": name,
         })
 
-        _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom with SKU: {sku}, ID: {bom.id}")
+        _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom with CODE: {code}, ID: {bom.id}")
 
         # Call update logic to populate remaining fields
         self.update_mrp_bom(bom, row_index, row, column_indices)
