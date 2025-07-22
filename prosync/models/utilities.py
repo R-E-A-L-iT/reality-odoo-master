@@ -438,7 +438,7 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         return
 
 
-    supplier_info = database.env['product.supplierinfo'].sudo().search([
+    supplier_info = database['product.supplierinfo'].sudo().search([
         ('product_tmpl_id', '=', product.id),
         ('partner_id', '=', partner.id),
         ('currency_id', '=', currency.id),
