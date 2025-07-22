@@ -92,6 +92,10 @@ class mrp_bom_sync:
                 _logger.info(f"ProSync: Field '{column}' is a recognized pricelist field.")
                 continue
 
+            if "[special=products]" in column_cleaned:
+                _logger.info(f"ProSync: Field '{column}' is a special field for products.")
+                continue
+
             # Strip any [bracketed] metadata (like [language=fr_CA])
             base_field = column_cleaned.split("[")[0]
 
