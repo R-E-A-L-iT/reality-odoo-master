@@ -15,6 +15,7 @@
         "base",
         "proportal",
         "product",
+        "mrp",
         "google_account",
         "proquotes",
     ],
