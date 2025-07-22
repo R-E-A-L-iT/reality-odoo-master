@@ -20,7 +20,7 @@ export class ProjectTaskStateSelection extends StateSelectionField {
         });
         this.icons = {
             "011_not_started": "o_status",
-            "01_in_progress": "o_status bg-primary",
+            "01_in_progress": "o_status bg-info",
             "03_approved": "o_status o_status_green",
             "02_changes_requested": "fa fa-lg fa-exclamation-circle",
             "1_done": "fa fa-lg fa-check-circle",
@@ -29,7 +29,7 @@ export class ProjectTaskStateSelection extends StateSelectionField {
         };
         this.colorIcons = {
             "011_not_started": "",
-            "01_in_progress": "text-secondary",
+            "01_in_progress": "text-primary",
             "03_approved": "text-success",
             "02_changes_requested": "o_status_changes_requested",
             "1_done": "text-success",
@@ -38,7 +38,7 @@ export class ProjectTaskStateSelection extends StateSelectionField {
         };
         this.colorButton = {
             "011_not_started": "btn-outline-secondary",
-            "01_in_progress": "btn-outline-primary",
+            "01_in_progress": "btn-outline-info",
             "03_approved": "btn-outline-success",
             "02_changes_requested": "btn-outline-warning",
             "1_done": "btn-outline-success",
