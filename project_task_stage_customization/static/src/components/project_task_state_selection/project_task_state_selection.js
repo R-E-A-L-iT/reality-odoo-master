@@ -20,7 +20,7 @@ export class ProjectTaskStateSelection extends StateSelectionField {
         });
         this.icons = {
             "011_not_started": "o_status",
-            "01_in_progress": "o_status text-primary",
+            "01_in_progress": "o_status bg-primary",
             "03_approved": "o_status o_status_green",
             "02_changes_requested": "fa fa-lg fa-exclamation-circle",
             "1_done": "fa fa-lg fa-check-circle",
