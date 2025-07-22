@@ -14,6 +14,8 @@ class ProsyncReport(models.Model):
         ('product_template', 'Product Template'),
         ('stock_lot', 'Stock/Lot'),
         ('res_partner', 'Contact'),
+        ('mrp_bom', 'Bill of Materials'),
+        ('product_product', 'Product Variant'),
     ], string='Type', required=True)
     start_time = fields.Datetime(string='Start Time')
     end_time = fields.Datetime(string='End Time')
