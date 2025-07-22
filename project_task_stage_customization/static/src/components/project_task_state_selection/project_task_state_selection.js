@@ -29,7 +29,7 @@ export class ProjectTaskStateSelection extends StateSelectionField {
         };
         this.colorIcons = {
             "011_not_started": "",
-            "01_in_progress": "text-primary",
+            "01_in_progress": "text-info",
             "03_approved": "text-success",
             "02_changes_requested": "o_status_changes_requested",
             "1_done": "text-success",
