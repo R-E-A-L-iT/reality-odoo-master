@@ -403,11 +403,11 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
     if "[special=purchase_cad]" in column_name_clean:
         currency_code = "CAD"
         vendor_name = "Leica Geosystems Ltd."
-        company_name = "R-E-A-L.iT Solutions"
+        company_name = "R-E-A-L.iT"
     elif "[special=purchase_usd]" in column_name_clean:
         currency_code = "USD"
         vendor_name = "Leica Geosystems Inc"
-        company_name = "R-E-A-L.iT U.S. Inc."
+        company_name = "R-E-A-L.iT"
     else:
         _logger.warning(f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.")
         warning_items.append(
