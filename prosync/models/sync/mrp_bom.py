@@ -52,7 +52,7 @@ class mrp_bom_sync:
 
 
         required_fields = [
-            "product_tmpl_id",
+            "product_tmpl_id[special=sku]",
             "code",
             "valid",
             "continue",
