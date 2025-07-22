@@ -14,6 +14,7 @@
     'author': '',
     'depends': ['project', 'web'],
     'data': [
+        "views/filter_inherit.xml",
     ],
     'assets': {
         'web.assets_backend': [

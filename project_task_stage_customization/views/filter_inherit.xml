@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_task_search_custom" model="ir.ui.view">
+        <field name="name">project.task.search.inherit.open_tasks</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form_base"/>
+        <field name="arch" type="xml">
+            <!-- Replace the Open Tasks filter -->
+            <xpath expr="//filter[@name='open_tasks']" position="replace">
+                <filter string="Open Tasks" name="open_tasks" domain="[('state', 'in', ['011_not_started', '01_in_progress', '02_changes_requested', '03_approved', '04_waiting_normal'])]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
