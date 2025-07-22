@@ -107,7 +107,7 @@ class ProsyncSync(models.Model):
                         syncer = res_partner_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_res_partner()
                     elif sheet_type == "mrp_bom":
-                        _logger.error(f"ProSync: Processing sheet of type: {sheet_type}")
+                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
 
                         sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
                         syncer = mrp_bom_sync(name=sheet_name, sheet=sheet_data, database=self.env)

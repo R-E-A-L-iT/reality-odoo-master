@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import json
 import base64
 import requests
 from datetime import datetime
@@ -404,7 +405,60 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
     if not value_str or value_str.lower() == "false":
         return  # Treat empty/false as no update needed
 
-    # Match special keys
+    col_letter = chr(65 + col_idx)
+    cell_id = f"{row_index}{col_letter}"
+
+    # MRP BOM products special handling
+    if "[special=products]" in column_name_clean:
+        try:
+            # Parse JSON-style string
+            parsed_products = json.loads(value_str)
+            if not isinstance(parsed_products, list):
+                raise ValueError("Parsed value is not a list of products")
+
+            # Delete existing BOM lines
+            product.bom_line_ids.unlink()
+
+            created_lines = []
+            for entry in parsed_products:
+                sku = entry.get("product_id", "").strip()
+                qty = entry.get("product_qty", "").strip()
+                uom_name = entry.get("product_uom_id", "").strip()
+
+                if not sku or not qty or not uom_name:
+                    continue  # skip incomplete entries
+
+                product_id = database['product.product'].search([('sku', '=', sku)], limit=1)
+                if not product_id:
+                    _logger.warning(f"ProSync: Row {row_index} — Could not find product with SKU '{sku}'")
+                    continue
+
+                uom = database['uom.uom'].search([('name', '=', uom_name)], limit=1)
+                if not uom:
+                    _logger.warning(f"ProSync: Row {row_index} — Could not find UOM '{uom_name}'")
+                    continue
+
+                line_vals = {
+                    'product_id': product_id.id,
+                    'product_qty': float(qty),
+                    'product_uom_id': uom.id,
+                    'bom_id': product.id,
+                }
+                created_lines.append(line_vals)
+
+            if created_lines:
+                database['mrp.bom.line'].create(created_lines)
+                updated_items.append(
+                    f"<b>{cell_id}</b>, {product.product_tmpl_id.name}<br/>"
+                    f"Updated <u>{len(created_lines)}</u> BOM lines.<br/><br/>"
+                )
+                _logger.info(f"ProSync: Row {row_index} — Updated {len(created_lines)} BOM lines.")
+
+        except Exception as e:
+            _logger.warning(f"ProSync: Row {row_index} — Error parsing [special=products]: {str(e)}")
+        return
+
+    # Purchase vendor pricing logic (default)
     if "[special=purchase_cad]" in column_name_clean:
         currency_code = "CAD"
         vendor_name = "Leica Geosystems Ltd."
@@ -415,9 +469,6 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         company_name = "R-E-A-L.iT"
     else:
         _logger.warning(f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.")
-        warning_items.append(
-            f"ProSync: Row {row_index} — Unrecognized special column '{column_name_clean}'. Skipping.<br/><br/>"
-        )
         return
 
     # Parse price
@@ -425,9 +476,6 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
         price = float(value_str)
     except ValueError:
         _logger.warning(f"ProSync: Row {row_index} — Invalid price '{value_str}' in {column_name_clean}. Skipping.")
-        warning_items.append(
-            f"ProSync: Row {row_index} — Invalid price '{value_str}' in {column_name_clean}. Skipping.<br/><br/>"
-        )
         return
 
     # Look up related records
@@ -437,20 +485,13 @@ def update_with_special_context(product, column_name, raw_value, database, row_i
 
     if not (currency and partner and company):
         _logger.warning(f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.")
-        warning_items.append(
-            f"ProSync: Row {row_index} — Missing currency, partner, or company for {column_name_clean}.<br/><br/>"
-        )
         return
-
 
     supplier_info = database['product.supplierinfo'].sudo().search([
         ('product_tmpl_id', '=', product.id),
         ('partner_id', '=', partner.id),
         ('currency_id', '=', currency.id),
     ], limit=1)
-
-    col_letter = chr(65 + col_idx)
-    cell_id = f"{row_index}{col_letter}"
 
     if supplier_info:
         if supplier_info.price != price:
