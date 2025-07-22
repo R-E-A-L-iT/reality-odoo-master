@@ -199,9 +199,6 @@
                                         </td>
                                     </t>
                                     <t t-elif="line.display_type == 'line_section'">
-                                        <td t-if="line.name == '#rental_accessories'" name="td_section_line" colspan="99">
-                                            <span>Rental Accessories</span>
-                                        </td>
                                         <td t-if="line.name  == '$block+'" name="td_section_line" colspan="99">
                                             <span></span>
                                         </td>
@@ -277,6 +274,10 @@
                                         <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
                                             <span t-if="language == 'fr_CA'">Location de logiciels: choisissez les logiciels souhaités ainsi que les quantités (en semaines)</span>
                                             <span t-else="">Software rental: choose desired software along with quantities (in weeks)</span>
+                                        </td>
+                                        <td t-elif="line.name == '#rental_accessories'" name="td_section_line" colspan="99">
+                                            <span t-if="language == 'fr_CA'">Accessoires de Location</span>
+                                            <span t-else="">Rental Accessories</span>
                                         </td>
                                         <td t-elif="line.name  == '$subscription'" name="td_section_line" colspan="99">
                                             <span t-if="language == 'fr_CA'">Abonnement</span>
