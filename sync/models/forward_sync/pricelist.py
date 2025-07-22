@@ -554,14 +554,7 @@ class sync_pricelist:
         # todo: add price rules creation for this function instead of having to run sync twice
 
         try:
-            # Set company and default responsible user
-            company_id = 1 # R-E-A-L.iT in the system
-            user_id = 2 # Ezekiel deBlois in the system
-            responsible_user = self.database.env["res.users"].search([("id", "=", user_id)], limit=1)
-            if not responsible_user:
-                raise ValueError("No valid responsible user found for company ID %s." % company_id)
-
-            # Check for existing external ID in ir.model.data
+            company_id = 1
             existing_ext_id = self.database.env["ir.model.data"].search(
                 [("model", "=", "product.template"), ("name", "=", product_id)], limit=1
             )
@@ -605,7 +598,7 @@ class sync_pricelist:
                 "sale_ok": True,
                 "rent_ok": False,
                 "company_id": company_id,
-                "responsible_id": responsible_user.id,
+                "responsible_id": False,
                 "name": "Unnamed Product %s" % product_id,  # Fallback name
                 "detailed_type": 'product',
             }
