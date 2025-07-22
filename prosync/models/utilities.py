@@ -4,6 +4,7 @@ import base64
 import requests
 from datetime import datetime
 import dateutil.parser
+import unicodedata
 
 from odoo import fields
 
@@ -14,6 +15,10 @@ _logger = logging.getLogger(__name__)
 # Normalize char data
 #
 def normalize_char(value):
+    if isinstance(value, str):
+        value = unicodedata.normalize('NFKC', value)  # Normalize form
+        value = ''.join(c for c in value if unicodedata.category(c)[0] != 'C')  # Remove control characters
+        value = value.strip()
     if value is None:
         return ''
     return str(value).strip()
