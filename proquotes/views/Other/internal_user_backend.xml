@@ -12,4 +12,15 @@
             </xpath>
         </field>
     </record>
+    <record id="proquotes_internal_user_profile_backend" model="ir.ui.view">
+        <field name="name">Internal User Profile Backend</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="after">
+                <field name="signature_can" />
+                <field name="signature_usa" />
+            </xpath>
+        </field>
+    </record>
 </odoo>
