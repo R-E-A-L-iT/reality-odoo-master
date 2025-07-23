@@ -98,15 +98,19 @@
                             </li>
                         </t>
                     </ul>
+                    <t t-if="message.author_id and message.author_id.user_ids">
+                        <t t-set="email_user" t-value="message.author_id.user_ids[0]"/>
+                    </t>
                     <t class="o_signature">
-                        <div t-if="email_add_signature and not is_html_empty(signature)" t-out="signature"
-                             style="font-size: 13px;"/>
+                        <div t-if="company and company.country_id and company.country_id.code == 'US' and email_add_signature and not is_html_empty(email_user.signature_usa) and email_user" t-out="email_user.signature_usa" style="font-size: 13px;"/>
+                        <div t-elif="company and company.country_id and company.country_id.code == 'CA' and email_add_signature and not is_html_empty(email_user.signature_can) and email_user" t-out="email_user.signature_can" style="font-size: 13px;"/>
+                        <div t-else="email_add_signature and not is_html_empty(signature)" t-out="signature" style="font-size: 13px;"/>
                     </t>
                     <!-- FOOTER -->
                     <div style="margin-top:32px;">
                         <hr width="100%"
                             style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
-                        <b t-out="company.name" style="font-size:11px;"/>
+                        <!-- <b t-out="company.name" style="font-size:11px;"/>
                         <br/>
                         <p style="color: #999999; margin-top:2px; font-size:11px;">
                             <t t-out="company.phone"/>
@@ -116,7 +120,7 @@
                             <t t-if="company.website and (company.phone or company.email)">|</t>
                             <a t-if="company.website" t-att-href="'%s' % company.website"
                                style="text-decoration:none; color: #999999;" t-out="company.website"/>
-                        </p>
+                        </p> -->
                     </div>
                     <div class="d-none" style="color: #555555; font-size:11px;display: none !important;">
                         Powered by
