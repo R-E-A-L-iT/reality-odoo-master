@@ -26,3 +26,8 @@ class partner(models.Model):
     prefered_quote_footers = fields.Many2many(
         "header.footer", string="Prefered Footers"
     )
+
+    signature_can = fields.Html(string="Canadian Signature")
+    signature_usa = fields.Html(string="American Signature")
+
+
