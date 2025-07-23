@@ -36,3 +36,14 @@ class MailThread(models.AbstractModel):
                 }
 
         return groups
+
+    @api.model
+    def _notify_prepare_template_context(self, message):
+        ctx = super()._notify_prepare_template_context(message)
+        user = message.author_id.user_ids and message.author_id.user_ids[0] or self.env.user
+
+        ctx.update({
+            'signature_can': user.signature_can or '',
+            'signature_usa': user.signature_usa or '',
+        })
+        return ctx
