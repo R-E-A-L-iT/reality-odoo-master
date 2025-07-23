@@ -96,7 +96,7 @@
         "views/Other/renewal.xml",
         "views/Other/header_footer.xml",
         "views/Invoice/invoice_lot.xml",
-        "views/Other/quoteEmailFooter.xml",
+        # "views/Other/quoteEmailFooter.xml",
         "views/Other/helpdeskTicket.xml",
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",
