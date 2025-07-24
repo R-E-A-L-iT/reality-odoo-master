@@ -46,8 +46,6 @@
             "proquotes/static/src/JS/price.js",
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/poNumber.js",
-            "proquotes/static/src/JS/rental.js",
-            "proquotes/static/src/JS/website_preview.js",
             ('replace', 'portal/static/src/signature_form/signature_form.js',
              'proquotes/static/src/JS/signature_form.js'),
         ],

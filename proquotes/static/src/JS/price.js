@@ -15,8 +15,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			"change .optionalSectionCheckbox": "_updateSectionSelectionEvent",
 			"change .priceChange": "_updatePriceTotalsEvent",
 			"change .quantityChange": "_updateQuantityEvent",
-			"change #rental-start": "_updatePriceTotalsEvent",
-			"change #rental-end": "_updatePriceTotalsEvent",
 		},
 
 		async start() {
@@ -27,7 +25,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 		_onLoad: function () {
 			this._updatePriceTotalsEvent();
-			this._rentalValueTotal();
 		},
 
 		_updateQuantityEvent: function (t) {
@@ -94,132 +91,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
     			}
     			this._updatePriceTotals(targetsChecked, line_ids);
              }, 800);
-		},
-
-
-		_rentalValueTotal: function () {
-			var totalLandingEnglish = document.getElementById("total-rental-value-english");
-			var totalLandingFrench = document.getElementById("total-rental-value-french");
-			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
-				return;
-			}
-			var total = 0;
-			var items = document.getElementsByClassName("quoteLineRow");
-			for (var i = 0; i < items.length; i++) {
-				var input = items[i].getElementsByTagName("input");
-				var include = true;
-				if (input.length > 0) {
-					if (input[0].type == "checkbox") {
-						if (input[0].checked != true) {
-							include = false;
-						}
-					}
-				}
-
-				if (include) {
-					if (
-						items[i].getElementsByClassName("itemValue").length > 0
-
-
-					) {
-
-						total += parseInt(
-							items[i].getElementsByClassName("itemValue")[0]
-								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
-						);
-					}
-				}
-			}
-			if (totalLandingEnglish != undefined) {
-				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
-			}
-
-			if (totalLandingFrench != undefined) {
-				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
-			}
-
-			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
-			var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
-			var startDate = document.getElementById("rental-start");
-			var endDate = document.getElementById("rental-end");
-
-			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
-				return;
-			}
-
-			if (startDate.value == "" || endDate.value == "") {
-				if (rentalEstimateEnglish != undefined) {
-					rentalEstimateEnglish.innerHTML = "$ 0.00"
-				} else if (rentalEstimateFrench != undefined) {
-					rentalEstimateFrench.innerHTML = "0.00 $"
-				}
-				return;
-			}
-
-			var startDateDate = new Date(startDate.value);
-			var endDateDate = new Date(endDate.value);
-
-			let milliInSeconds = 1000
-			let secondsInMinute = 60
-			let minuteInHour = 60
-			let hourInDay = 24
-			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
-			var months = 0;
-			var weeks = 0;
-			var days = 0;
-
-			while (rentalLength >= 30) {
-				months += 1
-				rentalLength -= 30;
-			}
-			while (rentalLength >= 7) {
-				weeks += 1
-				rentalLength -= 7
-			}
-			while (rentalLength >= 1) {
-				days += 1;
-				rentalLength -= 1;
-			}
-
-			var rentalEstimateTotal = 0
-			var productPrices = document.getElementsByClassName("rental_rate_calc")
-			for (var i = 0; i < productPrices.length; i++) {
-				var node = productPrices[i]
-				while (node.classList.contains("quoteLineRow") == false) {
-					node = node.parentNode;
-				}
-				var inputs = node.getElementsByTagName("input");
-				if (inputs.length > 0) {
-					if (inputs[0].type == "checkbox") {
-						if (inputs[0].checked != true) {
-							continue;
-						}
-					}
-				}
-                var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-                
-				// removed because caused a bug when it could not find the price span that resulted in product prices being set to zero when signed.
-				// const match = productPrices[i].innerHTML.match(/<span class="oe_currency_value">(.*?)<\/span>/);
-                // const priceStr = match ? match[1] : '0.0';
-                // const price = parseFloat(priceStr.replace(/,/g, ''));
-
-				var rentalEstimateSubTotal = 0;
-				rentalEstimateSubTotal += 1 * days * price;
-				if(rentalEstimateSubTotal > 4 * price) {
-					rentalEstimateSubTotal = 4 * price
-				}
-				rentalEstimateSubTotal += 4 * weeks * price;
-				if(rentalEstimateSubTotal > 12 * price) {
-					rentalEstimateSubTotal = 12 * price
-				}
-				rentalEstimateSubTotal += 12 * months * price;
-				rentalEstimateTotal += rentalEstimateSubTotal
-			}
-			if (rentalEstimateEnglish != undefined) {
-				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
-			} else if (rentalEstimateFrench != undefined) {
-				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
-			}
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
@@ -459,7 +330,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			this._multipleChoiceView();
 			this._optionalView();
 			this._updateFoldDisplay();
-			this._rentalValueTotal();
 			this._updateTotal(total);
 		},
 	});

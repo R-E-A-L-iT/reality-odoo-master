@@ -5,13 +5,13 @@
 		<t t-elif="doc != undefined" t-set="source" t-value="doc" />
 		<t t-elif="o != undefined" t-set="source" t-value="o" />
 		<section id="user-info">
-			<form autocomplete="on">
-				<!-- Title -->
+			<h1>This rental feature is no longer supported.</h1>
+			<p>Thank you for understanding.</p>
+			<!-- <form autocomplete="on">
 				<div>
 					<h2 t-if="language == 'en_CA' or language == 'en_US'">Estimated rental costs</h2>
 					<h2 t-elif="language == 'fr_CA'">Estimations de coût de location</h2>
 				</div>
-				<!-- Dates -->
 				<div>
 					<label for="rental-start">
 						<span t-if="language == 'en_CA' or language == 'en_US'">Start of the rental:</span>
@@ -26,7 +26,6 @@
 					</label>
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
-				<!-- Rental Hardware Estimate -->
 				<t t-if="rental_estimate_display == True">
 					<br />
 					<p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
@@ -70,7 +69,6 @@
 					</div>
 				</t>
 				<br />
-				<!-- New Address Prompt -->
 				<div>
 					<input id="new-address" t-if="source.rental_diff_add" type="checkbox" checked="true" />
 					<input id="new-address" t-else="" type="checkbox" />
@@ -99,7 +97,6 @@
 						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
 					</t>
 					<br />
-					<!-- Rental Address -->
 					<div id="rental-address" class="rental-address">
 						<label for="street">
 							<span t-if="language == 'en_CA' or language == 'en_US'">Street</span>
@@ -117,9 +114,6 @@
 							<span t-if="language == 'en_CA' or language == 'en_US'">State/Province</span>
 							<span t-elif="language == 'fr_CA'">Province/État</span>
 						</label>
-						<!-- States and Provinces -->
-
-						<!-- Canada -->
 						<select id="state">
 							<option t-if="source.rental_state.id == False" id="state-select" value="Select">Select</option>
 							<option t-else="" style="display: none;" id="state-select" value="Select">Select</option>
@@ -150,7 +144,6 @@
 							<option t-if="source.rental_state.id == 545" selected="selected" t-attf-class="{{source.rental_country.name}} can-op">Yukon</option>
 							<option t-else="" t-attf-class="{{source.rental_country.name}} can-op">Yukon</option>
 
-							<!-- USA -->
 							<option t-if="source.rental_state.id == 9" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Alabama</option>
 							<option t-else="" t-attf-class="{{source.rental_country.name}} us-op">Alabama</option>
 							<option t-if="source.rental_state.id == 10" selected="selected" t-attf-class="{{source.rental_country.name}} us-op">Alaska</option>
@@ -275,7 +268,7 @@
 						<input id="zip" type="text" t-attf-value="{{source.rental_zip}}" />
 					</div>
 				</div>
-			</form>
+			</form> -->
 		</section>
 	</template>
 </odoo>
