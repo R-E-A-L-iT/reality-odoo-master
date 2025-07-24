@@ -56,6 +56,9 @@ class stock_lot_sync:
         missing_columns = [header for header in required_fields if header not in sheet_columns]
         if missing_columns:
             _logger.error(f"ProSync: Sheet validation failed. Missing columns for fields: {missing_columns}.")
+            self.error_items.append(
+                f"ProSync: Sheet validation failed. Missing columns for fields: {missing_columns}<br/><br/>"
+            )
             return
 
         stock_lot_model = self.database['stock.lot']
@@ -148,15 +151,22 @@ class stock_lot_sync:
 
         if not name:
             _logger.warning(f"ProSync: Row {row_index} — Cannot create stock.lot without valid Name. Skipping.")
+            self.warning_items.append(
+                f"ProSync: Row {row_index} — Cannot create stock.lot without valid Name. Skipping.<br/><br/>"
+            )
             return
 
         stock_lot = self.database['stock.lot'].create({
             "name": name,
             "product_id": product.id,
+            "company_id": 1,
         })
 
         if not stock_lot or not stock_lot.id:
             _logger.warning(f"ProSync: Row {row_index} — Failed to create stock.lot for Name: {name}")
+            self.warning_items.append(
+                f"ProSync: Row {row_index} — Failed to create stock.lot for Name: {name}<br/><br/>"
+            )
             return
 
         _logger.info(f"ProSync: Row {row_index} — Created new stock.lot with Name: {name}, ID: {stock_lot.id}")
@@ -239,3 +249,6 @@ class stock_lot_sync:
                 col_letter = chr(65 + col_idx)
                 cell_id = f"{row_index}{col_letter}"
                 _logger.error(f"ProSync: Error updating field '{base_field}' at cell {cell_id}: {str(e)}")
+                self.error_items.append(
+                    f"ProSync: Error updating field '{base_field}' at cell {cell_id}: {str(e)}<br/><br/>"
+                )
