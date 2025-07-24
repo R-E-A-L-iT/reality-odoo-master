@@ -499,8 +499,8 @@ class WebsiteForm(form.WebsiteForm):
             values['partner_id'] = company_partner.id
             values['is_rental'] = True
             values['is_rental_order'] = True
-            values['rental_start'] = values.get('rental_start')
-            values['rental_end'] = values.get('rental_end')
+            # values['rental_start'] = values.get('rental_start')
+            # values['rental_end'] = values.get('rental_end')
     
             if 'company_id' not in values:
                 values['company_id'] = request.website.company_id.id

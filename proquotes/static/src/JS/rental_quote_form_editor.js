@@ -4,19 +4,21 @@ import { _t } from "@web/core/l10n/translation";
 import FormEditorRegistry from "@website/js/form_editor_registry";
 
 FormEditorRegistry.add('create_rental_quote', {
-    formFields: [{
-        type: 'date',
-        modelRequired: true,
-        name: 'rental_start',
-        fillWith: 'rental_start',
-        string: _t('Start of Rental period'),
-    }, {
-        type: 'date',
-        required: true,
-        fillWith: 'rental_end',
-        name: 'rental_end',
-        string: _t('End of Rental period'),
-    }, {
+    formFields: [
+    //     {
+    //     type: 'date',
+    //     modelRequired: true,
+    //     name: 'rental_start',
+    //     fillWith: 'rental_start',
+    //     string: _t('Start of Rental period'),
+    // }, {
+    //     type: 'date',
+    //     required: true,
+    //     fillWith: 'rental_end',
+    //     name: 'rental_end',
+    //     string: _t('End of Rental period'),
+    // }, 
+    {
         type: 'char',
         required: true,
         fillWith: 'company_name',

@@ -7,9 +7,10 @@
     </record>
     <function model="ir.model.fields" name="formbuilder_whitelist">
         <value>sale.order</value>
-        <value eval="[
+        <!-- 
             'rental_start',
-            'rental_end',
+            'rental_end', -->
+        <value eval="[
             'partner_name',
             'company_name',
             'rental_email',
