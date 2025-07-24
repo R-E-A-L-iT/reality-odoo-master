@@ -448,12 +448,13 @@ class WebsiteForm(form.WebsiteForm):
             _logger.info('Processing sale.order form submission: %s', values)
             _logger.info('Processing  form custom: %s', custom)
     
-            partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
-            partner_name = values.get('partner_name') or partner_email or 'Website Customer'
+            # partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
+            #  or partner_email
+            partner_name = values.get('partner_name') or 'Website Customer'
             company_name = custom.split(":", 1)[-1].strip()
             _logger.info('Processing  form company_name>>>>>>>>>>>: %s', company_name)
-            if not partner_email:
-                raise UserError(_("Email is required for creating quotations."))
+            # if not partner_email:
+            #     raise UserError(_("Email is required for creating quotations."))
     
             # Find or create/update company contact
             company_partner = request.env['res.partner'].sudo().search([
@@ -480,14 +481,13 @@ class WebsiteForm(form.WebsiteForm):
     
             # Find or create individual contact
             individual_partner = request.env['res.partner'].sudo().search([
-                ('email', '=', partner_email),
+                ('name', '=', partner_name),
                 ('is_company', '=', False)
             ], limit=1)
     
             if not individual_partner:
                 individual_partner = request.env['res.partner'].sudo().create({
                     'name': partner_name,
-                    'email': partner_email,
                     'phone': values.get('phone'),
                     'parent_id': company_partner.id,  # Link to company
                     'is_company': False,
@@ -497,7 +497,7 @@ class WebsiteForm(form.WebsiteForm):
     
             # Update values for the sale order
             values['partner_id'] = company_partner.id
-            values['is_rental'] = True
+            # values['is_rental'] = True
             values['is_rental_order'] = True
             # values['rental_start'] = values.get('rental_start')
             # values['rental_end'] = values.get('rental_end')

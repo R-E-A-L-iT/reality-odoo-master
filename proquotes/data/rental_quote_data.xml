@@ -9,11 +9,11 @@
         <value>sale.order</value>
         <!-- 
             'rental_start',
-            'rental_end', -->
+            'rental_end',
+            'rental_email', -->
         <value eval="[
             'partner_name',
             'company_name',
-            'rental_email',
             'sale_order_template_id',
             'user_id',
             'team_id'
