@@ -448,13 +448,12 @@ class WebsiteForm(form.WebsiteForm):
             _logger.info('Processing sale.order form submission: %s', values)
             _logger.info('Processing  form custom: %s', custom)
     
-            # partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
-            #  or partner_email
-            partner_name = values.get('partner_name') or 'Website Customer'
+            partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
+            partner_name = values.get('partner_name') or partner_email or 'Website Customer'
             company_name = custom.split(":", 1)[-1].strip()
             _logger.info('Processing  form company_name>>>>>>>>>>>: %s', company_name)
-            # if not partner_email:
-            #     raise UserError(_("Email is required for creating quotations."))
+            if not partner_email:
+                raise UserError(_("Email is required for creating quotations."))
     
             # Find or create/update company contact
             company_partner = request.env['res.partner'].sudo().search([
@@ -482,6 +481,7 @@ class WebsiteForm(form.WebsiteForm):
             # Find or create individual contact
             individual_partner = request.env['res.partner'].sudo().search([
                 ('name', '=', partner_name),
+                ('email', '=', partner_email),
                 ('is_company', '=', False)
             ], limit=1)
     
