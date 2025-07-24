@@ -32,6 +32,19 @@ class MailComposeMessage(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
+        res_id_target = None 
+        if 'res_ids' in defaults and defaults['res_ids']:
+            try:
+                parsed_res_ids = ast.literal_eval(defaults['res_ids'])
+                
+                if isinstance(parsed_res_ids, list) and parsed_res_ids:
+                    res_id_target = parsed_res_ids[0]
+                elif isinstance(parsed_res_ids, int):
+                    res_id_target = parsed_res_ids
+                else:
+                    _logger.warning("defaults['res_ids'] contained unhandled format: %s", defaults['res_ids'])
+            except (ValueError, SyntaxError) as e:
+                _logger.error("Failed to parse defaults['res_ids'] string '%s': %s", defaults['res_ids'], e)
 
         model = self.env.context.get('default_model')
         res_id = self.env.context.get('default_res_id') or self.env.context.get('active_id')
@@ -40,7 +53,7 @@ class MailComposeMessage(models.TransientModel):
         if model in ['sale.order']:
             defaults['partner_ids'] = [(5, 0, 0)]
 
-            order = self.env['sale.order'].browse(res_id)
+            order = self.env['sale.order'].browse(res_id_target)
             
             if order:
                 _logger.info("Order found: " + order.name)
