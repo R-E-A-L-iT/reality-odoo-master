@@ -106,12 +106,6 @@ class ProsyncSync(models.Model):
                         sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
                         syncer = res_partner_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_res_partner()
-                    elif sheet_type == "mrp_bom":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
-                        syncer = mrp_bom_sync(name=sheet_name, sheet=sheet_data, database=self.env)
-                        syncer.sync_mrp_bom()
                     else:
                         _logger.error(f"ProSync: Given sheet type is not supported by ProSync: {sheet_type}")
 
