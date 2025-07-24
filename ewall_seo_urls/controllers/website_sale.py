@@ -8,10 +8,10 @@ from odoo import fields, http, SUPERUSER_ID, tools, _
 class WebsiteSaleCategory(WebsiteSale):
 
     # Shop Attributes SEO URL Name Added
-    def _shop_get_query_url_kwargs(self, category, search, min_price, max_price, attrib=None, order=None, **post):
+    def _shop_get_query_url_kwargs(self, category, search, min_price, max_price, attrib=None, order=None, tags=None, **post):
         category_id = request.env['product.public.category'].sudo().browse(category)
         category = category_id.seo_url if category_id.seo_url else category
-        return super()._shop_get_query_url_kwargs(category, search, min_price, max_price, attrib, order, **post)
+        return super()._shop_get_query_url_kwargs(category, search, min_price, max_price, attrib, order, tags, **post)
 
     # Product Page SEO URL Name Added
     def _prepare_product_values(self, product, category, search, **kwargs):
