@@ -498,7 +498,7 @@ class WebsiteForm(form.WebsiteForm):
             # Update values for the sale order
             values['partner_id'] = company_partner.id
             values['is_rental_order'] = True
-            values['rental_start_date'] = values.get('rental_start')
+            values['rental_start_date'] = values.get('rental_start_date')
             values['rental_return_date'] = values.get('rental_return_date')
     
             if 'company_id' not in values:
