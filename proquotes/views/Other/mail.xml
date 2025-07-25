@@ -102,8 +102,8 @@
                         <t t-set="email_user" t-value="message.author_id.user_ids[0]"/>
                     </t>
                     <t class="o_signature">
-                        <div t-if="company and company.country_id and company.country_id.code == 'US' and email_add_signature and not is_html_empty(email_user.signature_usa) and email_user" t-out="email_user.signature_usa" style="font-size: 13px;"/>
-                        <div t-elif="company and company.country_id and company.country_id.code == 'CA' and email_add_signature and not is_html_empty(email_user.signature_can) and email_user" t-out="email_user.signature_can" style="font-size: 13px;"/>
+                        <div t-if="email_user and company and company.country_id and company.country_id.code == 'US' and email_add_signature and not is_html_empty(email_user.signature_usa)" t-out="email_user.signature_usa" style="font-size: 13px;"/>
+                        <div t-elif="email_user and company and company.country_id and company.country_id.code == 'CA' and email_add_signature and not is_html_empty(email_user.signature_can)" t-out="email_user.signature_can" style="font-size: 13px;"/>
                         <div t-else="email_add_signature and not is_html_empty(signature)" t-out="signature" style="font-size: 13px;"/>
                     </t>
                     <!-- FOOTER -->
