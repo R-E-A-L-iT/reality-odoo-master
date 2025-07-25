@@ -485,39 +485,68 @@ class variant(models.Model):
     rule = fields.Char(string="Variant Rule", required=True, default="None")
 
 
-class invoice(models.Model):
-    _inherit = "account.move"
+class AccountMoveSend(models.TransientModel):
+    _inherit = 'account.move.send'
 
+    def _get_placeholder_mail_attachments_data(self, move):
+        """Override to only show placeholder when template has invoice reports configured."""
+        # If no mail template is selected, use default behavior
+        if not hasattr(self, 'mail_template_id') or not self.mail_template_id:
+            return super()._get_placeholder_mail_attachments_data(move)
+        
+        # Check if the mail template has invoice reports configured
+        if not self._should_attach_invoice_pdf(self.mail_template_id):
+            return []
+        
+        # Use original behavior if reports are configured
+        return super()._get_placeholder_mail_attachments_data(move)
 
-    def action_send_and_print(self):
-        template = self.env.ref(self._get_mail_template(), raise_if_not_found=False)
-        report_template_ids = template.report_template_ids
-        if any(not x.is_sale_document(include_receipts=True) for x in self):
-            raise UserError(_("You can only send sales documents"))
-        partner = self.partner_id if self.partner_id.email else False
-        attachment_widget_data = False
-        if template.report_template_ids:
-            attachment_widget_data = [
-                {
-                    'id': report.id,
-                    'name': report.name,
-                    'type': 'binary',
-                    'mimetype': 'application/pdf',
-                }
-                for report in template.report_template_ids
-            ]
-    
-        return {
-            'name': _("Send"),
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'account.move.send',
-            'target': 'new',
-            'context': {
-                'active_ids': self.ids,
-                'default_mail_template_id': template.id,
-                'default_mail_partner_ids': [partner.id] if partner else False,
-                'default_mail_attachments_widget': attachment_widget_data
-            },
-        }
+    @api.model
+    def _get_invoice_extra_attachments_data(self, move):
+        """Override to only include PDF when mail template has reports configured."""
+        # For single invoice mode, check the current wizard's template
+        if hasattr(self, 'mode') and self.mode == 'invoice_single' and hasattr(self, 'mail_template_id'):
+            if not self._should_attach_invoice_pdf(self.mail_template_id):
+                return []
+        # For multi invoice mode or cron processing, check the move's stored template
+        elif move.send_and_print_values and move.send_and_print_values.get('mail_template_id'):
+            mail_template = self.env['mail.template'].browse(move.send_and_print_values.get('mail_template_id'))
+            if not self._should_attach_invoice_pdf(mail_template):
+                return []
+        
+        # Use original behavior if reports are configured or no template context
+        return super()._get_invoice_extra_attachments_data(move)
+
+    def _should_attach_invoice_pdf(self, mail_template):
+        """
+        Check if the mail template has invoice reports configured in Dynamic Reports field.
+        
+        :param mail_template: mail.template record
+        :return: True if invoice reports are configured, False otherwise
+        """
+        if not mail_template:
+            return False
+        
+        # Check if the template has any reports configured in report_template_ids (Dynamic Reports)
+        if mail_template.report_template_ids:
+            # Check if any of the configured reports are invoice reports
+            invoice_reports = mail_template.report_template_ids.filtered(
+                lambda r: r.model == 'account.move' and 'invoice' in r.report_name.lower()
+            )
+            return bool(invoice_reports)
+        
+        return False
+
+    def _get_mail_move_values(self, move, wizard=None):
+        """Override to handle template-based attachment logic for background processing."""
+        result = super()._get_mail_move_values(move, wizard)
+        
+        # For background processing (when wizard is None), we need to check the stored template
+        if not wizard and move.send_and_print_values:
+            mail_template_id = move.send_and_print_values.get('mail_template_id')
+            if mail_template_id:
+                mail_template = self.env['mail.template'].browse(mail_template_id)
+                # Rebuild attachment widget based on template configuration
+                result['mail_attachments_widget'] = self._get_default_mail_attachments_widget(move, mail_template)
+        
+        return result
