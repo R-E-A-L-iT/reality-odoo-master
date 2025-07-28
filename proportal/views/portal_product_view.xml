@@ -1,0 +1,44 @@
+<odoo>
+    <template id="portal_my_products" name="My Products">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Products</t>
+            </t>
+
+            <t t-if="not products">
+                <p>No products found for your associated companies.</p>
+            </t>
+
+            <t t-if="products" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>SKU</th>
+                        <th>Serial Number</th>
+                        <th>Expiration</th>
+                    </tr>
+                </thead>
+                <t t-foreach="products" t-as="product">
+                    <tr>
+                        <td><t t-esc="product.product_id.name"/></td>
+                        <td><t t-esc="product.sku"/></td>
+                        <td><t t-esc="product.name"/></td>
+                        <td><t t-esc="product.expire"/></td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_home_menu_products" inherit_id="portal.portal_my_home" priority="99">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-set="product_count" t-value="product_count or 0"/>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Products</t>
+                <t t-set="url" t-value="'/my/products'"/>
+                <t t-set="placeholder_count" t-value="product_count"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>
