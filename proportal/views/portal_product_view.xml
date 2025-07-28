@@ -31,24 +31,18 @@
         </t>
     </template>
 
-    <template id="portal_my_home_products" inherit_id="portal.portal_my_home" priority="20">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Products</t>
-                <t t-set="url" t-value="'/my/products'"/>
-                <t t-set="icon" t-value="'fa fa-clipboard'"/>
-                <t t-set="placeholder_count" t-value="product_count or 0"/>
-            </t>
+    <template id="portal_my_home_products_card" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
         </xpath>
-    </template>
 
-    <template id="portal_my_home_menu_products" inherit_id="portal.portal_my_home" priority="99">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-set="product_count" t-value="product_count or 0"/>
+        <xpath expr="//div[@id='portal_client_category']" position="inside">
             <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/portal/static/src/img/portal-quotation.svg'"/>
                 <t t-set="title">Products</t>
                 <t t-set="url" t-value="'/my/products'"/>
-                <t t-set="placeholder_count" t-value="product_count"/>
+                <t t-set="text">View all your company products</t>
+                <t t-set="placeholder_count" t-value="product_count or 0"/>
             </t>
         </xpath>
     </template>
