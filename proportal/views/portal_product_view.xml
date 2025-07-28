@@ -31,19 +31,18 @@
         </t>
     </template>
 
-    <template id="portal_my_home_products_card" inherit_id="portal.portal_my_home" priority="40">
+    <data name="Show Products" inherit_id="proportal.portal_products_show" customize_show="True" priority="30">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
             <t t-set="portal_client_category_enable" t-value="True"/>
         </xpath>
-
-        <xpath expr="//div[@id='portal_client_category']" position="inside">
+        <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/portal/static/src/img/portal-quotation.svg'"/>
+                <t t-set="icon" t-value="'/purchase/static/src/img/rfq.svg'"/>
+                <t t-set="text">View all your company products</t>
                 <t t-set="title">Products</t>
                 <t t-set="url" t-value="'/my/products'"/>
-                <t t-set="text">View all your company products</t>
-                <t t-set="placeholder_count" t-value="product_count or 0"/>
+                <t t-set="placeholder_count" t-value="'product_count'"/>
             </t>
-        </xpath>
-    </template>
+        </div>
+    </data>
 </odoo>
