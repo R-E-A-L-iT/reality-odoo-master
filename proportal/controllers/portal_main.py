@@ -11,10 +11,11 @@ class CustomCustomerPortal(CustomerPortal):
         if partner.parent_id:
             company_ids.append(partner.parent_id.id)
 
-        product_count = request.env['stock.lot'].sudo().search_count([
-            ('owner', 'in', company_ids)
+        product_count = request.env['product.instance'].sudo().search_count([
+            ('owner_id', 'in', company_ids)
         ])
-        values['product_count'] = product_count
+        # values['product_count'] = product_count
+        values['product_count'] = 3
         return values
 
 
