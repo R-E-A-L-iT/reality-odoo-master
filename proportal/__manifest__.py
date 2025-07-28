@@ -26,16 +26,16 @@
     ],
     # always loaded
     "data": [
-        "views/web_base.xml",
+        # "views/web_base.xml",
         "views/partnerView.xml",
-        "views/stockView.xml",
+        # "views/stockView.xml",
         "views/productView.xml",
-        "views/customer_portal.xml",
-        "views/portalProject.xml",
+        # "views/customer_portal.xml",
+        # "views/portalProject.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
         "views/header_icons.xml",
         "views/backend_internal.xml",
-        "views/portal_templates.xml",
+        # "views/portal_templates.xml",
     ],
 }
