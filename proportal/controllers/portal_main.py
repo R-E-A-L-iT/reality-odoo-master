@@ -5,7 +5,10 @@ from odoo.exceptions import AccessError
 
 class CustomPortalOrders(CustomerPortal):
 
-    @http.route([ '/my/orders/<int:order_id>', '/my/orders/company/<int:order_id>/<int:partner_company_id>' ], type='http', auth="user", website=True)
+    @http.route([
+        '/my/orders/company/<int:order_id>',
+        '/my/orders/company/<int:order_id>/<int:partner_company_id>'
+    ], type='http', auth="user", website=True)
     def portal_order_company_page(self, order_id, partner_company_id=None, **kw):
         order_sudo = request.env['sale.order'].sudo().browse(order_id)
         partner = request.env.user.partner_id
