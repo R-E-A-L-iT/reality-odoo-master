@@ -1,4 +1,3 @@
-# your_module/controllers/portal_sale.py
 from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
