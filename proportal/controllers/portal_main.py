@@ -22,6 +22,7 @@ class CustomPortalOrders(CustomerPortal):
 
         values = {
             'sale_order': order_sudo,
+            'object': order_sudo,
             'partner_company_id': partner_company_id,
             'message': False,
             'bootstrap_formatting': True,
