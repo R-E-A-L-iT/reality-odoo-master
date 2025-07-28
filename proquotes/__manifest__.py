@@ -61,6 +61,8 @@
 
     # always loaded
     "data": [
+        "data/sale_order_follower_rule.xml",
+        "data/account_move_follower_rule.xml",
         "security/ir.model.access.csv",
         "data/rental_quote_data.xml",
         # quotes
