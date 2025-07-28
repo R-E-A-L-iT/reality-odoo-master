@@ -12,7 +12,7 @@ class CustomerPortalProduct(CustomerPortal):
             company_ids.append(partner.parent_id.id)
 
         products = request.env['stock.lot'].sudo().search([
-            ('owner_id', 'in', company_ids),
+            ('owner', 'in', company_ids)
         ])
 
         values = self._prepare_portal_layout_values()
@@ -21,3 +21,4 @@ class CustomerPortalProduct(CustomerPortal):
             'page_name': 'products',
         })
         return request.render("proportal.portal_my_products", values)
+
