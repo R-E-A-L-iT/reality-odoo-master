@@ -31,7 +31,7 @@
         </t>
     </template>
 
-    <template id="portal_my_home_products_card" inherit_id="portal.portal_my_home" priority="40">
+    <template id="Show Products" inherit_id="portal.portal_my_home" priority="40">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
             <t t-set="portal_client_category_enable" t-value="True"/>
         </xpath>
@@ -41,7 +41,7 @@
                 <t t-set="text">View all your company products</t>
                 <t t-set="title">Products</t>
                 <t t-set="url" t-value="'/my/products'"/>
-                <t t-set="placeholder_count" t-value="'product_count'"/>
+                <t t-set="placeholder_count" t-value="'2'"/>
             </t>
         </div>
     </template>
