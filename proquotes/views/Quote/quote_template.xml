@@ -44,4 +44,16 @@
 
     </record>
 
+
+    <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.simple.email</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <field name="tag_ids" position="after">
+                <field name="simple_email_layout"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>

@@ -550,3 +550,13 @@ class AccountMoveSend(models.TransientModel):
                 result['mail_attachments_widget'] = self._get_default_mail_attachments_widget(move, mail_template)
         
         return result
+
+
+
+class CrmLead(models.Model):
+    _inherit = 'crm.lead'
+
+    simple_email_layout = fields.Boolean(
+        string='Send Gmail Message',
+        default=False,
+    )
