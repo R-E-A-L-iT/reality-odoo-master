@@ -21,7 +21,7 @@
                 </thead>
                 <t t-foreach="products" t-as="product">
                     <tr>
-                        <td><t t-esc="product.product_id.name"/></td>
+                        <td><img class="portal_product_image" t-att-src="product.product_id.image_256"/><t t-esc="product.product_id.name"/></td>
                         <td><t t-esc="product.sku"/></td>
                         <td><t t-esc="product.name"/></td>
                         <td><t t-esc="product.expire"/></td>
