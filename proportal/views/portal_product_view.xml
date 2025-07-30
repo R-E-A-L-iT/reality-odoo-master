@@ -22,7 +22,7 @@
                 <t t-foreach="products" t-as="product">
                     <tr>
                         <td>
-                            <img class="portal_product_image" t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"/>
+                            <img class="portal_product_image" t-att-src="'data:image/png;base64,' + product.product_id.image_128.decode('utf-8') if product.product_id.image_128 else ''"/>
                             <t t-esc="product.product_id.name"/>
                         </td>
                         <td><t t-esc="product.sku"/></td>
