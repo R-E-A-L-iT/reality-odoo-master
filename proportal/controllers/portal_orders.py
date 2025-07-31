@@ -11,11 +11,50 @@ class CustomCustomerPortal(CustomerPortal):
         domain = super()._get_orders_domain(partner)
         return ['|'] + domain + [('message_partner_ids', 'in', [partner.id])]
 
-        @http.route(['/my/order/<int:order_id>'], type='http', auth='user', website=True)
-        def show_verified_order(self, order_id, **kwargs):
-            if not request.session.get(f'quote_verified_{order_id}'):
-                return http.redirect_with_hash(f'/my/orders/{order_id}')
-            return super().portal_my_order(order_id, **kwargs)
+        @http.route(['/my/orders/<int:order_id>'], type='http', auth="user", website=True)
+        def portal_my_order(self, order_id=None, code=None, **kwargs):
+            order = request.env['sale.order'].sudo().browse(order_id)
+            partner = request.env.user.partner_id
+
+            # Validate access
+            allowed_partner_ids = [partner.id]
+            if partner.parent_id:
+                allowed_partner_ids.append(partner.parent_id.id)
+            allowed_partner_ids += partner.portal_companies_ids.ids
+
+            if order.partner_id.id not in allowed_partner_ids and \
+            not order.message_partner_ids.filtered(lambda p: p.id in allowed_partner_ids):
+                return request.render('website.404')
+
+            # If already verified, proceed to original behavior
+            if request.session.get(f'quote_verified_{order_id}') is True:
+                return super().portal_my_order(order_id=order_id, **kwargs)
+
+            # Check submitted code
+            if code:
+                expected = request.session.get(f'quote_code_{order_id}')
+                expiry = request.session.get(f'quote_code_expiry_{order_id}')
+                if expected and code == expected and expiry and datetime.fromisoformat(expiry) > datetime.now():
+                    request.session[f'quote_verified_{order_id}'] = True
+                    return super().portal_my_order(order_id=order_id, **kwargs)
+                else:
+                    return request.render("proportal.portal_verify_quote_code", {
+                        'order': order,
+                        'error': "Invalid or expired code.",
+                    })
+
+            # No code submitted yet — generate & email one
+            new_code = ''.join(random.choices(string.digits, k=4))
+            request.session[f'quote_code_{order_id}'] = new_code
+            request.session[f'quote_code_expiry_{order_id}'] = (datetime.now() + timedelta(minutes=10)).isoformat()
+
+            request.env['mail.mail'].sudo().create({
+                'subject': "Quote Verification Code",
+                'body_html': f"<p>Your 4-digit verification code is: <strong>{new_code}</strong></p>",
+                'email_to': partner.email,
+            }).send()
+
+            return request.render("proportal.portal_verify_quote_code", {'order': order})
 
 class CustomQuoteAccess(http.Controller):
 
