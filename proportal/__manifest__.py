@@ -33,6 +33,7 @@
         "views/productInstance.xml",
         "views/header_icons.xml",
         "views/backend_internal.xml",
+        "views/portal_quote_verify.xml",
         # "views/portal_view.xml",
         "views/portal_product_view.xml",
         "views/portal_courses_view.xml",
