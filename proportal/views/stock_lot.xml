@@ -13,6 +13,11 @@
                 <field name="equipment_number" string="Equipment Number" />
                 <field name="expire" string="Expiration Date" />
             </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="firmware_version"/>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>
