@@ -160,36 +160,42 @@ class orderLineProquotes(models.Model):
 
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
 
-    def _get_rental_price_from_template(self):
-        """Override rental price computation with custom logic if applicable"""
+    def _get_pricelist_price(self):
         self.ensure_one()
-        product = self.product_id.product_tmpl_id
+        if self.is_rental and not self.product_id.product_tmpl_id.default_rental_behaviour:
+            product = self.product_id.product_tmpl_id
+            start_date = self.start_date
+            return_date = self.return_date
+            if not (start_date and return_date):
+                return 0.0
 
-        if product.default_rental_behaviour:
-            return super()._get_rental_price_from_template()
+            daily_rate = product.rental_base
+            duration_days = (return_date - start_date).days
 
-        if not self.start_date or not self.return_date:
-            return 0.0
-
-        # Your custom pricing logic
-        daily_rate = product.rental_base
-        duration_days = (self.return_date - self.start_date).days
-
-        if duration_days <= 4:
-            return daily_rate * duration_days
-        elif duration_days <= 7:
-            return daily_rate * 4
-        elif duration_days <= 11:
-            return daily_rate * 4 + daily_rate * (duration_days - 7)
-        elif duration_days <= 30:
-            return daily_rate * 12
-        else:
-            remaining_days = duration_days - 30
-            price = daily_rate * 12
-            if remaining_days <= 7:
-                price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
+            if duration_days <= 4:
+                price = daily_rate * duration_days
+            elif duration_days <= 7:
+                price = daily_rate * 4
+            elif duration_days <= 11:
+                price = daily_rate * 4 + daily_rate * (duration_days - 7)
+            elif duration_days <= 30:
+                price = daily_rate * 12
             else:
-                full_weeks = remaining_days // 7
-                extra_days = remaining_days % 7
-                price += full_weeks * 4 * daily_rate + extra_days * daily_rate
+                remaining_days = duration_days - 30
+                price = daily_rate * 12
+                if remaining_days <= 7:
+                    price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
+                else:
+                    full_weeks = remaining_days // 7
+                    extra_days = remaining_days % 7
+                    price += full_weeks * 4 * daily_rate + extra_days * daily_rate
+
             return price
+
+        # Fallback to standard behavior
+        return super()._get_pricelist_price()
+
+    @api.onchange('start_date', 'return_date')
+    def _onchange_rental_dates(self):
+        if self.is_rental:
+            self.price_unit = self._get_pricelist_price()
