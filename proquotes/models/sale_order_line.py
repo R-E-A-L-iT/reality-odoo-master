@@ -158,7 +158,42 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-class PreconfigSaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+
+    @api.depends('product_id', 'start_date', 'return_date')
+    def _compute_rental_price(self):
+        super()._compute_rental_price()  # compute default first
+        
+        for line in self:
+            product = line.product_id.product_tmpl_id
+            if not line.is_rental or product.default_rental_behaviour:
+                continue
+
+            if not line.start_date or not line.return_date:
+                continue
+
+            # Compute custom price
+            daily_rate = product.rental_base
+            duration_days = (line.return_date - line.start_date).days
+
+            if duration_days <= 4:
+                price = daily_rate * duration_days
+            elif duration_days <= 7:
+                price = daily_rate * 4
+            elif duration_days <= 11:
+                price = daily_rate * 4 + daily_rate * (duration_days - 7)
+            elif duration_days <= 30:
+                price = daily_rate * 12
+            else:
+                # Over 30 days: monthly cap + weekly/daily overflow
+                remaining_days = duration_days - 30
+                price = daily_rate * 12
+                if remaining_days <= 7:
+                    price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
+                else:
+                    # Add full weeks and any extra days
+                    full_weeks = remaining_days // 7
+                    extra_days = remaining_days % 7
+                    price += full_weeks * 4 * daily_rate + extra_days * daily_rate
+
+            line.price_unit = price
