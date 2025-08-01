@@ -365,7 +365,7 @@
 
                     <!-- DOWN ARROW THING -->
                     <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                    <span t-else="" class="quote-folding-arrow">+</span>
+                    <span t-elif="line.name != '#rental_software'" class="quote-folding-arrow">+</span>
 
 
                     <t t-if="line.special == 'optional'">
@@ -373,19 +373,14 @@
                                checked="true"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
                     </t>
-                    <!-- <t t-if="'translate' in line.name">
-                        <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
-                    </t>
-                    <t t-if="'ccplabel' in line.name">
-                        <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
-                    </t> -->
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
-                    <span t-elif="line.name == '#rental_software'">
+                    <span t-elif="line.name == '#rental_software'" class="rental_software_section_outermost">
                         <t t-if="language == 'en_CA' or language == 'en_US'" class="rental_software_section_outer">
                             <span>Get Rental Software</span>
                             <div class="rental_software_section">
                                 <span>Rental software is self serve. Please click the following button to order a temporary license for your desired length of time.</span>
-                                <button class="btn btn-primary btn-sm mt-2">Order Rental Software</button>
+                                <br />
+                                <a class="btn btn-primary btn-sm mt-2" href="/rental/software/">Order Rental Software</button>
                             </div>
                         </t>
                     </span>
@@ -415,7 +410,7 @@
                 </t>
             </div>
 
-            <div style="width: 25%; float: right">
+            <div style="width: 25%; float: right" t-if="line.name != '#rental_software'">
                 <label class="subtotal-label" t-att-data-sec-line="line.id" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
