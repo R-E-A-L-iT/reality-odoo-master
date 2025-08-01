@@ -380,6 +380,15 @@
                         <span t-esc="sale_order.parse_ccp_label(line.name)" class="section-header"/>
                     </t> -->
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
+                    <span t-elif="line.name == 'get_rental_software'">
+                        <t t-if="language == 'en_CA' or language == 'en_US'" class="rental_software_section_outer">
+                            <span>Get Rental Software</span>
+                            <div class="rental_software_section">
+                                <span>Rental software is self serve. Please click the following button to order a temporary license for your desired length of time.</span>
+                                <button class="btn btn-primary btn-sm mt-2">Order Rental Software</button>
+                            </div>
+                        </t>
+                    </span>
                     <span t-elif="line.name.strip()[0] == '#'">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
                         <t t-call="proquotes.section_name_resolution"/>
