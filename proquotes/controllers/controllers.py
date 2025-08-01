@@ -406,24 +406,24 @@ class WebsiteForm(form.WebsiteForm):
     def insert_record(self, request, model, values, custom, meta=None):
         if model.model == 'sale.order':
             _logger.info('Processing sale.order form submission: %s', values)
-            _logger.info('Processing  form custom: %s', custom)
-    
+            _logger.info('Processing form custom: %s', custom)
+
             partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
             partner_name = values.get('partner_name') or partner_email or 'Website Customer'
             company_name = custom.split(":", 1)[-1].strip()
-            _logger.info('Processing  form company_name>>>>>>>>>>>: %s', company_name)
+            _logger.info('Processing form company_name: %s', company_name)
+
             if not partner_email:
                 raise UserError(_("Email is required for creating quotations."))
-    
+
             # Find or create/update company contact
             company_partner = request.env['res.partner'].sudo().search([
                 ('name', '=', company_name),
                 ('is_company', '=', True)
             ], limit=1)
-    
+
             if company_partner:
                 _logger.info('Found existing company partner: %s', company_partner.id)
-                # Update phone or other details if needed
                 company_partner.write({
                     'phone': values.get('company_phone') or company_partner.phone,
                     'email': values.get('company_email') or company_partner.email,
@@ -437,54 +437,58 @@ class WebsiteForm(form.WebsiteForm):
                     'lang': request.context.get('lang', 'en_US'),
                 })
                 _logger.info('Created new company partner: %s', company_partner.id)
-    
+
             # Find or create individual contact
-            if partner_email:
-                individual_partner = request.env['res.partner'].sudo().search([
-                    ('email', '=', partner_email),
-                    ('is_company', '=', False)
-                ], limit=1)
-            else:
-                individual_partner = request.env['res.partner'].sudo().search([
-                    ('name', '=', partner_name),
-                    ('is_company', '=', False)
-                ], limit=1)
-    
+            individual_partner = request.env['res.partner'].sudo().search([
+                ('email', '=', partner_email),
+                ('is_company', '=', False)
+            ], limit=1) or request.env['res.partner'].sudo().search([
+                ('name', '=', partner_name),
+                ('is_company', '=', False)
+            ], limit=1)
+
             if not individual_partner:
                 individual_partner = request.env['res.partner'].sudo().create({
                     'name': partner_name,
                     'phone': values.get('phone'),
-                    'parent_id': company_partner.id,  # Link to company
+                    'parent_id': company_partner.id,
                     'is_company': False,
                     'lang': request.context.get('lang', 'en_US'),
                 })
                 _logger.info('Created new individual partner: %s', individual_partner.id)
-    
-            # Update values for the sale order
+
+            # Set required base fields
             values['partner_id'] = company_partner.id
-            values['is_rental_order'] = True
-            values['rental_start_date'] = values.get('rental_start_date')
-            values['rental_return_date'] = values.get('rental_return_date')
-    
+
             if 'company_id' not in values:
                 values['company_id'] = request.website.company_id.id
-    
+
+            # Check if this is a rental order
+            is_rental = values.get('is_rental_order') in [True, 'True', 'true', 1, '1']
+
+            if is_rental:
+                values['is_rental_order'] = True
+                values['rental_start_date'] = values.get('rental_start_date')
+                values['rental_return_date'] = values.get('rental_return_date')
+            else:
+                values['is_rental_order'] = False
+                values.pop('rental_start_date', None)
+                values.pop('rental_return_date', None)
+
             _logger.info('Final sale order values: %s', values)
-    
-        # Create the sale order
+
+        # Create the record
         sale_order_result = super().insert_record(request, model, values, custom, meta=meta)
         _logger.info('Created sale_order_result: %s', sale_order_result)
-    
+
         if sale_order_result and model.model == 'sale.order':
             sale_order = request.env['sale.order'].browse(sale_order_result)
-    
-            # Add individual contact as follower
+
             if individual_partner and sale_order:
                 sale_order.message_subscribe(partner_ids=[individual_partner.id])
                 _logger.info('Subscribed individual partner as follower: %s', individual_partner.id)
-    
-            # Trigger template logic if needed
+
             if sale_order and sale_order.sale_order_template_id:
                 sale_order._onchange_sale_order_template_id()
-    
+
         return sale_order_result

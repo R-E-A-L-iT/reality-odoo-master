@@ -3,20 +3,8 @@
 import { _t } from "@web/core/l10n/translation";
 import FormEditorRegistry from "@website/js/form_editor_registry";
 
-FormEditorRegistry.add('create_rental_quote', {
+FormEditorRegistry.add('create_sales_quote', {
     formFields: [{
-        type: 'date',
-        modelRequired: true,
-        name: 'rental_start_date',
-        fillWith: 'rental_start_date',
-        string: _t('Start of Rental period'),
-    }, {
-        type: 'date',
-        required: true,
-        fillWith: 'rental_return_date',
-        name: 'rental_return_date',
-        string: _t('End of Rental period'),
-    }, {
         type: 'char',
         required: true,
         fillWith: 'company_name',

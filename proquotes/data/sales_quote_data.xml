@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="sale_management.model_sale_order" model="ir.model">
-        <field name="website_form_key">create_rental_quote</field>
+        <field name="website_form_key">create_sales_quote</field>
         <field name="website_form_access">True</field>
-        <field name="website_form_label">Create Rental Quote</field>
+        <field name="website_form_label">Create Sales Quote</field>
     </record>
     <function model="ir.model.fields" name="formbuilder_whitelist">
         <value>sale.order</value>
         <value eval="[ 
             'is_rental_order',
-            'rental_start_date',
-            'rental_return_date',
             'rental_email',
             'partner_name',
             'company_name',
