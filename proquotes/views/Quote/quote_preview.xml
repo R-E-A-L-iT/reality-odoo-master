@@ -368,6 +368,10 @@
                         <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
                         <span t-else="" class="quote-folding-arrow">+</span>
                     </t>
+                    <t t-else="">
+                        <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
+                        <span t-else="" class="quote-folding-arrow">+</span>
+                    </t>
 
 
                     <t t-if="line.special == 'optional'">
