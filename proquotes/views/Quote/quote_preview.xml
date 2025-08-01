@@ -380,7 +380,7 @@
                             <div class="rental_software_section">
                                 <span>Rental software is self serve. Please click the following button to order a temporary license for your desired length of time.</span>
                                 <br />
-                                <a class="btn btn-primary btn-sm mt-2" href="/rental/software/">Order Rental Software</button>
+                                <a class="btn btn-primary btn-sm mt-2" href="/rental/software/">Order Rental Software</a>
                             </div>
                         </t>
                     </span>
