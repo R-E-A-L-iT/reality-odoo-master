@@ -8,7 +8,6 @@
     <function model="ir.model.fields" name="formbuilder_whitelist">
         <value>sale.order</value>
         <value eval="[ 
-            'is_rental_order',
             'rental_start_date',
             'rental_return_date',
             'rental_email',

@@ -34,13 +34,7 @@ FormEditorRegistry.add('create_rental_quote', {
         fillWith: 'rental_email',
         name: 'rental_email',
         string: _t('Email'),
-    }, {
-        type: 'boolean',
-        required: true,
-        fillWith: 'is_rental_order',
-        name: 'is_rental_order',
-        string: _t('Is rental order'),
-    }],
+    },],
     fields: [{
         name: 'sale_order_template_id',
         type: 'many2one',
