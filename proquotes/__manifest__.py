@@ -80,6 +80,7 @@
         "views/Purchase/purchase_preview.xml",
         "views/Purchase/purchase_internal.xml",
         # other
+        "views/Other/product_template.xml",
         "views/Other/tax.xml",
         "views/Other/rentalTerms.xml",
         "views/Other/normalTerms.xml",
