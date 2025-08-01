@@ -54,6 +54,7 @@
         ],
         'website.assets_wysiwyg': [
             'proquotes/static/src/JS/rental_quote_form_editor.js',
+            'proquotes/static/src/JS/sales_quote_form_editor.js',
         ],
     },
 
@@ -65,6 +66,7 @@
         "data/account_move_follower_rule.xml",
         "security/ir.model.access.csv",
         "data/rental_quote_data.xml",
+        "data/sales_quote_data.xml",
         # quotes
         "views/Quote/quote_report.xml",
         "views/Quote/quote_preview.xml",
