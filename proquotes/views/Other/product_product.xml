@@ -1,0 +1,13 @@
+<record id="view_product_product_form_inherit_proquotes" model="ir.ui.view">
+    <field name="name">product.product.form.inherit.proquotes</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_normal_form_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//sheet" position="inside">
+            <group string="Rental Pricing (Template)">
+                <field name="product_tmpl_id.default_rental_behaviour" readonly="1"/>
+                <field name="product_tmpl_id.rental_base" readonly="1"/>
+            </group>
+        </xpath>
+    </field>
+</record>

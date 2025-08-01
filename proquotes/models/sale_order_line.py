@@ -160,40 +160,36 @@ class orderLineProquotes(models.Model):
 
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
 
-    @api.depends('product_id', 'start_date', 'return_date')
-    def _compute_rental_price(self):
-        super()._compute_rental_price()  # compute default first
-        
-        for line in self:
-            product = line.product_id.product_tmpl_id
-            if not line.is_rental or product.default_rental_behaviour:
-                continue
+    def _get_rental_price_from_template(self):
+        """Override rental price computation with custom logic if applicable"""
+        self.ensure_one()
+        product = self.product_id.product_tmpl_id
 
-            if not line.start_date or not line.return_date:
-                continue
+        if product.default_rental_behaviour:
+            return super()._get_rental_price_from_template()
 
-            # Compute custom price
-            daily_rate = product.rental_base
-            duration_days = (line.return_date - line.start_date).days
+        if not self.start_date or not self.return_date:
+            return 0.0
 
-            if duration_days <= 4:
-                price = daily_rate * duration_days
-            elif duration_days <= 7:
-                price = daily_rate * 4
-            elif duration_days <= 11:
-                price = daily_rate * 4 + daily_rate * (duration_days - 7)
-            elif duration_days <= 30:
-                price = daily_rate * 12
+        # Your custom pricing logic
+        daily_rate = product.rental_base
+        duration_days = (self.return_date - self.start_date).days
+
+        if duration_days <= 4:
+            return daily_rate * duration_days
+        elif duration_days <= 7:
+            return daily_rate * 4
+        elif duration_days <= 11:
+            return daily_rate * 4 + daily_rate * (duration_days - 7)
+        elif duration_days <= 30:
+            return daily_rate * 12
+        else:
+            remaining_days = duration_days - 30
+            price = daily_rate * 12
+            if remaining_days <= 7:
+                price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
             else:
-                # Over 30 days: monthly cap + weekly/daily overflow
-                remaining_days = duration_days - 30
-                price = daily_rate * 12
-                if remaining_days <= 7:
-                    price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
-                else:
-                    # Add full weeks and any extra days
-                    full_weeks = remaining_days // 7
-                    extra_days = remaining_days % 7
-                    price += full_weeks * 4 * daily_rate + extra_days * daily_rate
-
-            line.price_unit = price
+                full_weeks = remaining_days // 7
+                extra_days = remaining_days % 7
+                price += full_weeks * 4 * daily_rate + extra_days * daily_rate
+            return price
