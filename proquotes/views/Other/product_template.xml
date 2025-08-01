@@ -10,9 +10,9 @@
                 <group name="pricing" string="Pricing">
                     <field name="default_rental_behaviour"/>
                     
-                    <field name="product_pricing_ids" nolabel="1" colspan="2" invisible="['default_rental_behaviour', '=', False]"/>
+                    <field name="product_pricing_ids" nolabel="1" colspan="2"/>
                     
-                    <field name="rental_base" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="['default_rental_behaviour', '=', True]"/>
+                    <field name="rental_base" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 </group>
             </xpath>
         </field>
