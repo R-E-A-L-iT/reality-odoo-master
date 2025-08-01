@@ -376,7 +376,7 @@
                     <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
                     <span t-elif="line.name == '#rental_software'" class="rental_software_section_outermost">
                         <t t-if="language == 'en_CA' or language == 'en_US'" class="rental_software_section_outer">
-                            <span>Get Rental Software</span>
+                            <span><b>Get Rental Software</b></span>
                             <div class="rental_software_section">
                                 <span>Rental software is self serve. Please click the following button to order a temporary license for your desired length of time.</span>
                                 <br />
