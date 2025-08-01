@@ -25,6 +25,9 @@ class product(models.Model):
         ('delivered_timesheet', 'Based on Timesheets')
     ]
 
+    default_rental_behaviour = fields.Boolean(string="Use default rental behaviour over custom", default=True, help="If checked, the product will use the default rental pricing rules of odoo. If unchecked, it will use the custom rental pricing formula")
+    rental_base = fields.Monetary(string="Rental base value used to dynamically calculate the rental price", default=0.0)
+
     cadVal = fields.Monetary(string="Canadian Product Value")
     usdVal = fields.Monetary(string="United States Product Value")
     type_selection = fields.Selection(
