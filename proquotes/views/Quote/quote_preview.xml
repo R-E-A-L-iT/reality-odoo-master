@@ -357,15 +357,17 @@
 
         <!--Add Check Box to control fold Section-->
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_section'&quot;]/td/span" position="replace">
-            <div style="width: 75%; float: left;" t-if="line.name != '#rental_software'">
+            <div style="width: 75%; float: left;">
                 <t t-set="line_section_id" t-value="line.id"/>
                 <label t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%;">
 
 
                     <!-- DOWN ARROW THING -->
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                    <span t-elif="line.name != '#rental_software'" class="quote-folding-arrow">+</span>
+                    <t t-if="line.name != '#rental_software'">
+                        <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
+                        <span t-else="" class="quote-folding-arrow">+</span>
+                    </t>
 
 
                     <t t-if="line.special == 'optional'">
