@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from . import product_template
-from . import res_partner
-from . import stock_lot
-from . import website_visitor
+from . import models
+from . import internal_client_company

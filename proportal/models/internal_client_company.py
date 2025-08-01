@@ -20,17 +20,10 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class ResPartner(models.Model):
+class Partner(models.Model):
     _inherit = "res.partner"
 
     portal_companies_ids = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
-
-    products = fields.One2many(
-        "stock.lot", "owner", string="Products", readonly=True
-    )
-    parentProducts = fields.One2many(
-        related="parent_id.products", string="Company Products", readonly=True
-    )
 
     def _calc_nick(self):
         if self.is_company == True:
