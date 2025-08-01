@@ -364,7 +364,7 @@
 
 
                     <!-- DOWN ARROW THING -->
-                    <t t-if="line.name = '#rental_software'">
+                    <t t-if="line.name == '#rental_software'">
                         <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow" style="display: none;">×</span>
                         <span t-else="" class="quote-folding-arrow" style="display: none;">+</span>
                     </t>
