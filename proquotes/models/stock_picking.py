@@ -79,7 +79,6 @@ class StockPicking(models.Model):
         "header.footer", required=True, default=_get_default_footer
     )
 
-    @api.multi
     def button_validate(self):
         res = super(StockPicking, self).button_validate()
 
