@@ -82,6 +82,7 @@
         "views/Purchase/purchase_preview.xml",
         "views/Purchase/purchase_internal.xml",
         # other
+        "views/Other/stock_picking.xml",
         "views/Other/stock_lot.xml",
         "views/Other/product_template.xml",
         "views/Other/tax.xml",
