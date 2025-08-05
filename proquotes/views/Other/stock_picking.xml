@@ -9,7 +9,7 @@
                         type="object"
                         string="Add PDF Licenses"
                         class="btn-secondary"
-                        invisible="[('picking_type_code', '!=', 'incoming')]"/>
+                        attrs="{'invisible': [('picking_type_code', '!=', 'incoming')]}"/>
             </xpath>
         </field>
     </record>
