@@ -23,4 +23,5 @@ from . import sale_order_template_line
 from . import sale_order_template
 from . import sale_order
 from . import stock_lot
+from . import stock_move_line
 from . import stock_picking
