@@ -22,6 +22,34 @@ _logger = logging.getLogger(__name__)
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    def action_open_related_lots(self):
+        self.ensure_one()
+
+        # Get all lot_ids from move lines (those actually used in receipt)
+        lots = self.move_line_ids.lot_id.filtered(lambda l: l)
+
+        if not lots:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'No Lots Found',
+                'view_mode': 'form',
+                'res_model': 'stock.picking',
+                'target': 'new',
+                'views': [(False, 'form')],
+                'res_id': self.id,
+                'context': {'default_note': 'No lots found on this receipt.'},
+            }
+
+        action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Edit Lot PDFs',
+            'view_mode': 'tree,form',
+            'res_model': 'stock.lot',
+            'domain': [('id', 'in', lots.ids)],
+            'target': 'current',
+        }
+        return action
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
