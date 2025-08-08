@@ -713,7 +713,10 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to all users and portal customers to view the quote in the portal. """
+        """ 
+        Give access button to all users and portal customers to view the quote in the portal.
+        This method now includes dynamic user_id in URLs for better tracking.
+        """
         
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
@@ -727,6 +730,7 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
+            recipients = group[1]
 
             # enable the access button for all groups
             group[2]['has_button_access'] = True
@@ -744,8 +748,21 @@ class order(models.Model):
                 else:
                     access_opt['title'] = _("View Order")
             
-            # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            # For email templates, we'll use the basic URL and let the mail composer
+            # add the user_id dynamically based on recipients
+            base_quotation_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            
+            # If we can determine a specific recipient (single recipient group), add user_id
+            if len(recipients) == 1 and hasattr(recipients[0], 'partner_id'):
+                recipient_partner = recipients[0].partner_id
+                if recipient_partner:
+                    access_opt['url'] = f"{base_quotation_url}?user_id={recipient_partner.id}"
+                else:
+                    access_opt['url'] = base_quotation_url
+            else:
+                # For multiple recipients or when we can't determine specific recipient,
+                # use base URL - the mail composer will handle adding user_id per recipient
+                access_opt['url'] = base_quotation_url
 
         # return the modified recipient groups with the updated access options
         return groups
