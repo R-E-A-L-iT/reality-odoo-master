@@ -61,7 +61,7 @@
                                 <strong t-else="">Quotation Date:</strong>
                             </div>
                             <div t-else="">
-                                <strong t-if="language == 'fr_CA'">Date de Order:</strong>
+                                <strong t-if="language == 'fr_CA'">Date de commande:</strong>
                                 <strong t-else="">Order Date:</strong>
                             </div>
                             <span class="m-0" t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</span>
