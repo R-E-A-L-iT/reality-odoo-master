@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="software_license_email_body">
+    <t t-set="so" t-value="sale_order"/>
+    <t t-set="picking" t-value="picking"/>
+
+    <p>Hello <t t-esc="so.partner_id.display_name"/>.</p>
+    <p>
+      Attached are your software license document(s) from delivery
+      <b t-esc="picking.name"/> for order <b t-esc="so.name"/>.
+    </p>
+
+    <t t-if="lots">
+      <p>Included serials:</p>
+      <ul>
+        <t t-foreach="lots" t-as="lot">
+          <li>
+            <t t-esc="lot[0]"/>
+            — <t t-esc="lot[1]"/>
+          </li>
+        </t>
+      </ul>
+    </t>
+
+    <p>If you have any questions, just reply to this email.</p>
+  </template>
+</odoo>
