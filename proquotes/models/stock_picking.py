@@ -84,10 +84,11 @@ class StockPicking(models.Model):
 
         for picking in self:
             if picking.picking_type_code != 'outgoing':
-                continue  # Only deliveries
+                continue
 
-            # collect PDFs from lots used on this delivery
             attachment_ids = []
+            lots_for_body = []
+
             for ml in picking.move_line_ids:
                 lot = ml.lot_id
                 if lot and lot.document_pdf:
@@ -100,37 +101,41 @@ class StockPicking(models.Model):
                         'mimetype': 'application/pdf',
                     })
                     attachment_ids.append(att.id)
+                    lots_for_body.append((ml.product_id.display_name, lot.name))
 
-            if not attachment_ids:
+            if not attachment_ids or not picking.sale_id:
                 continue
 
             sale_order = picking.sale_id
-            if not sale_order:
+
+            partners = sale_order.message_follower_ids.mapped('partner_id').filtered(lambda p: p.email)
+            if not partners:
                 continue
 
-            # who to notify: followers with an email
-            follower_partners = sale_order.message_follower_ids.mapped('partner_id')
-            partner_ids = follower_partners.filtered(lambda p: p.email).ids
-            if not partner_ids:
-                continue
-
-            # nice, minimal body (you can make this richer if you want)
-            inner_body = (
-                "<p>Attached are your software license document(s) corresponding to this delivery.</p>"
-                "<p>If you have any questions, just reply to this email.</p>"
+            body_html = self.env['ir.qweb']._render(
+                'proquotes.software_license_email_body',
+                {
+                    'sale_order': sale_order,
+                    'picking': picking,
+                    'lots': lots_for_body,
+                },
             )
 
-            # send a formatted, branded email via chatter notification
-            sale_order.with_context(mail_notify_force_send=True).message_notify(
-                partner_ids=partner_ids,
-                subject="Your Software License(s)",
-                body=inner_body,
-                subtype_xmlid="mail.mt_comment",
-                email_layout_xmlid="mail.mail_notification_light",  # or your custom layout xmlid
+            sale_order.with_context(
+                lang=sale_order.partner_id.lang,
+                mail_notify_force_send=True,
+            ).message_post(
+                partner_ids=partners.ids,
+                subject=f"Software Licenses for {sale_order.name}",
+                body=body_html,
+                message_type='comment',
+                subtype_xmlid='mail.mt_comment',
+                email_layout_xmlid='proquotes.mail_notification_layout_inherit',
                 attachment_ids=attachment_ids,
             )
 
         return res
+
 
 class stock(models.Model):
     _inherit = "stock.picking"
