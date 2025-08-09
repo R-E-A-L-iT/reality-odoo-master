@@ -19,7 +19,7 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
-class delivery(models.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     @api.depends("company_id")
@@ -78,6 +78,64 @@ class delivery(models.Model):
     footer_id = fields.Many2one(
         "header.footer", required=True, default=_get_default_footer
     )
+
+    def button_validate(self):
+        res = super(StockPicking, self).button_validate()
+
+        for picking in self:
+            if picking.picking_type_code != 'outgoing':
+                continue
+
+            attachment_ids = []
+            lots_for_body = []
+
+            for ml in picking.move_line_ids:
+                lot = ml.lot_id
+                if lot and lot.document_pdf:
+                    att = self.env['ir.attachment'].create({
+                        'name': lot.document_pdf_filename or f'{lot.name}.pdf',
+                        'type': 'binary',
+                        'datas': lot.document_pdf,
+                        'res_model': 'sale.order',
+                        'res_id': picking.sale_id.id if picking.sale_id else False,
+                        'mimetype': 'application/pdf',
+                    })
+                    attachment_ids.append(att.id)
+                    lots_for_body.append((ml.product_id.display_name, lot.name))
+
+            if not attachment_ids or not picking.sale_id:
+                continue
+
+            sale_order = picking.sale_id
+
+            partners = sale_order.message_follower_ids.mapped('partner_id').filtered(lambda p: p.email)
+            if not partners:
+                continue
+
+            body_html = self.env['ir.qweb']._render(
+                'proquotes.software_license_email_body',
+                {
+                    'sale_order': sale_order,
+                    'picking': picking,
+                    'lots': lots_for_body,
+                },
+            )
+
+            sale_order.with_context(
+                lang=sale_order.partner_id.lang,
+                mail_notify_force_send=True,
+            ).message_post(
+                partner_ids=partners.ids,
+                subject=f"Software Licenses for {sale_order.name}",
+                body=body_html,
+                message_type='comment',
+                subtype_xmlid='mail.mt_comment',
+                email_layout_xmlid='mail.mail_notification_light',
+                attachment_ids=attachment_ids,
+            )
+
+        return res
+
 
 class stock(models.Model):
     _inherit = "stock.picking"
