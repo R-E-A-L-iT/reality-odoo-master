@@ -130,7 +130,7 @@ class StockPicking(models.Model):
                 body=body_html,
                 message_type='comment',
                 subtype_xmlid='mail.mt_comment',
-                email_layout_xmlid='proquotes.mail_notification_layout_inherit',
+                email_layout_xmlid='mail.mail_notification_light',
                 attachment_ids=attachment_ids,
             )
 
