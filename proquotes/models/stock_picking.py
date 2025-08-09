@@ -86,43 +86,50 @@ class StockPicking(models.Model):
             if picking.picking_type_code != 'outgoing':
                 continue  # Only deliveries
 
-            pdf_attachments = []
-
-            for move_line in picking.move_line_ids:
-                lot = move_line.lot_id
+            # collect PDFs from lots used on this delivery
+            attachment_ids = []
+            for ml in picking.move_line_ids:
+                lot = ml.lot_id
                 if lot and lot.document_pdf:
-                    pdf_attachments.append({
+                    att = self.env['ir.attachment'].create({
                         'name': lot.document_pdf_filename or f'{lot.name}.pdf',
-                        'datas': lot.document_pdf,
                         'type': 'binary',
+                        'datas': lot.document_pdf,
+                        'res_model': 'sale.order',
+                        'res_id': picking.sale_id.id if picking.sale_id else False,
                         'mimetype': 'application/pdf',
                     })
+                    attachment_ids.append(att.id)
 
-            if pdf_attachments:
-                sale_order = picking.sale_id
-                if sale_order:
-                    followers = sale_order.message_follower_ids.mapped('partner_id.email')
-                    if followers:
-                        mail_values = {
-                            'subject': 'Your Software License(s)',
-                            'body_html': "<p>Attached is your software license document.</p>",
-                            'email_to': ", ".join(followers),
-                            'attachment_ids': [],
-                            'auto_delete': True,
-                        }
-                        attachment_ids = []
-                        for pdf_att in pdf_attachments:
-                            attachment = self.env['ir.attachment'].create({
-                                'name': pdf_att['name'],
-                                'type': 'binary',
-                                'datas': pdf_att['datas'],
-                                'res_model': 'sale.order',
-                                'res_id': sale_order.id,
-                                'mimetype': 'application/pdf',
-                            })
-                            attachment_ids.append(attachment.id)
-                        mail_values['attachment_ids'] = [(6, 0, attachment_ids)]
-                        self.env['mail.mail'].create(mail_values).send()
+            if not attachment_ids:
+                continue
+
+            sale_order = picking.sale_id
+            if not sale_order:
+                continue
+
+            # who to notify: followers with an email
+            follower_partners = sale_order.message_follower_ids.mapped('partner_id')
+            partner_ids = follower_partners.filtered(lambda p: p.email).ids
+            if not partner_ids:
+                continue
+
+            # nice, minimal body (you can make this richer if you want)
+            inner_body = (
+                "<p>Attached are your software license document(s) corresponding to this delivery.</p>"
+                "<p>If you have any questions, just reply to this email.</p>"
+            )
+
+            # send a formatted, branded email via chatter notification
+            sale_order.with_context(mail_notify_force_send=True).message_notify(
+                partner_ids=partner_ids,
+                subject="Your Software License(s)",
+                body=inner_body,
+                subtype_xmlid="mail.mt_comment",
+                email_layout_xmlid="mail.mail_notification_light",  # or your custom layout xmlid
+                attachment_ids=attachment_ids,
+            )
+
         return res
 
 class stock(models.Model):
