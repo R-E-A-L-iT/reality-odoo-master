@@ -184,25 +184,47 @@
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
             <div class="rental_info" t-if="sale_order.is_rental_order">
-                <style>
-                    .rental_info {
-                        background-color: #1a1c1d;
-                        padding: 25px;
-                        border: 1px solid #777;
-                        border-radius: 15px;
-                        color: white;
-                        margin-bottom: 15px;
-                    }
-                    .rental_info > h2 {
-                        color: white;
-                    }
-                    .actions > button {
-                        height: 42px;
-                        width: 100px;
-                    }
-                </style>
                 <t t-if="language == 'fr_CA'">
+                    <h3>Coûts de location estimés</h3>
+                    <p>
+                        Voici une estimation des coûts de location du matériel et des accessoires que vous avez sélectionnés.
+                        <br/>
+                        Veuillez noter que le coût final de la location sera calculé une fois le matériel restitué.
+                        Le coût de la location hebdomadaire équivaut à 4 fois le coût de la location journalière.
+                        Le coût de la location mensuelle (30 jours) équivaut à 12 fois le coût de la location journalière.
+                    </p>
+                    <div class="rental_dates" id="rental-dates"
+                        t-att-data-order-id="sale_order.id"
+                        t-att-data-access-token="sale_order.access_token">
+                        <style>
+                            .rental_dates {margin: 14px 0 8px 0;}
+                            .rental_dates .fld {display:inline-block; margin-right:18px;}
+                            .rental_dates label {font-weight:600; margin-right:6px;}
+                            .rental_dates input[type="date"] {padding:6px 8px;}
+                            .rental_dates .hint {display:block; font-size:.9rem; color:#666; margin-top:6px;}
+                            .rental_dates .actions {display:inline-block; vertical-align:bottom;}
+                        </style>
 
+                        <div class="fld">
+                            <label for="rental_start_date">Date de début</label>
+                            <input type="date" id="rental_start_date"
+                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''"/>
+                        </div>
+
+                        <div class="fld">
+                            <label for="rental_return_date">Date de retour</label>
+                            <input type="date" id="rental_return_date"
+                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''"/>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Appliquer les dates</button>
+                        </div>
+
+                        <!-- <small class="hint" color:>
+                            Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
+                        </small> -->
+                    </div>
                 </t>
                 <t t-else="">
                     <h3>Estimated Rental Costs</h3>
@@ -245,8 +267,9 @@
                         <!-- <small class="hint" color:>
                             Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
                         </small> -->
-
-                        <script><![CDATA[
+                    </div>
+                </t>
+                <script><![CDATA[
                             (function () {
                                 function postJSON(url, payload) {
                                     return fetch(url, {
@@ -318,9 +341,7 @@
                                 document.addEventListener('DOMContentLoaded', window.location.reload);
                             })();
                             ]]>
-                        </script>
-                    </div>
-                </t>
+                </script>
             </div>
         </xpath>
 

@@ -3,6 +3,20 @@
 	padding-left: 20px;
 }
 
+/* rental dates section */
+.rental_info {
+    background-color: #1a1c1d;
+    padding: 25px;
+    border: 1px solid #777;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 15px;
+}
+.actions > button {
+    height: 42px;
+    width: 100px;
+}
+
 /* approve financing section styles */
 .approve_section {
 	padding: 7px;
