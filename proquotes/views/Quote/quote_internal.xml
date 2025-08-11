@@ -49,7 +49,6 @@
 
                     <field name="customer_po_number" invisible="0"/>
                     <field name="manual_invoice_status"/>
-                    <field name="financing_available"/>
                     <!--  invisible="['|', ('partner_id.country_id.code', '!=', 'US')]" -->
                     <field name="approve_financing"/>
                     <field name="header_id" invisible="0"

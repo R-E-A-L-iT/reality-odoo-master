@@ -57,7 +57,6 @@ class order(models.Model):
     ], )
     partner_name = fields.Char(string="Partner Name")
     rental_email = fields.Char(string="Email")
-    financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
