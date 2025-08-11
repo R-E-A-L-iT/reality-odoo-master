@@ -106,9 +106,10 @@ class PortalRentalDates(http.Controller):
 
 class PortalPONumber(http.Controller):
 
-    @http.route('/my/orders/<int:order_id>/set_po_number',
+    @http.route(['/my/orders/<int:order_id>/set_customer_po_number',
+         '/my/orders/<int:order_id>/set_customer_po_number/'],
                 type='json', auth='public', website=True, csrf=False, methods=['POST'])
-    def set_po_number(self, order_id, **kw):
+    def set_customer_po_number(self, order_id, **kw):
         Order = request.env['sale.order'].sudo()
         order = Order.browse(order_id)
         if not order.exists():
@@ -125,7 +126,7 @@ class PortalPONumber(http.Controller):
         _logger.info("PO number payload for SO %s: %s", order_id, data)
 
         access_token = data.get('access_token') or data.get('token') or kw.get('access_token')
-        po_number    = (data.get('po_number') or '').strip()
+        customer_po_number    = (data.get('customer_po_number') or '').strip()
 
         # -------- Access control (token OR logged-in user with access) --------
         user = request.env.user
@@ -154,9 +155,9 @@ class PortalPONumber(http.Controller):
             return {'ok': False, 'error': 'unauthorized'}
 
         # Optional: enforce max length similar to the field definition
-        if len(po_number) > 64:
-            po_number = po_number[:64]
+        if len(customer_po_number) > 64:
+            customer_po_number = customer_po_number[:64]
 
-        order.write({'po_number': po_number or False})
-        _logger.info("PO number updated on SO %s: %s", order.id, po_number)
-        return {'ok': True, 'po_number': po_number}
+        order.write({'customer_po_number': customer_po_number or False})
+        _logger.info("PO number updated on SO %s: %s", order.id, customer_po_number)
+        return {'ok': True, 'customer_po_number': customer_po_number}
