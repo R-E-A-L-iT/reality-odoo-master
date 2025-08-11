@@ -172,10 +172,8 @@
                 </section>
         </xpath>
 
-        <!-- Hide Total On Rental Quotes -->
-        <xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
-            <attribute name="t-if">sale_order.is_rental_order != True</attribute>
-        </xpath>
+        <!-- Remove taxes column -->
+        <xpath expr="//td[@id='taxes']" position="replace" />
 
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
