@@ -176,7 +176,7 @@
         <xpath expr="//td[@id='taxes']" position="replace" />
 
         <!-- Remove Taxes data cell (6th td) on every non-section/non-note row -->
-        <xpath expr="//t[@t-if='not line.display_type']/td[6]" position="replace"/>
+        <!-- <xpath expr="//t[@t-if='not line.display_type']/td[6]" position="replace"/> -->
 
         <!-- Line Total (Amount) Alignment: was td[7], now td[6] after removing taxes -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
