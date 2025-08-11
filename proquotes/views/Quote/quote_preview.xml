@@ -269,35 +269,43 @@
                         </small> -->
                     </div>
                 </t>
-                <script><![CDATA[
-                            (function () {
-                                function postJSON(url, payload) {
-                                    return fetch(url, {
-                                        method: 'POST',
-                                        headers: {'Content-Type': 'application/json'},
-                                        body: JSON.stringify(payload)
-                                    })
-                                    .then(r => r.json())
-                                    // unwrap JSON-RPC envelopes from Odoo: {result: {...}}
-                                    .then(data => (data && typeof data === 'object' && 'result' in data) ? data.result : data);
-                                }
+                <script>
+                    <![CDATA[
+                        (function () {
+                            function postJSON(url, payload) {
+                                return fetch(url, {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify(payload)
+                                })
+                                .then(r => r.json())
+                                // unwrap JSON-RPC envelopes from Odoo: {result: {...}}
+                                .then(data => (data && typeof data === 'object' && 'result' in data) ? data.result : data);
+                            }
 
+                            const isFr = (document.documentElement.getAttribute('lang') || '').startsWith('fr');
+
+                            // ---------------------------
+                            // RENTAL DATES (if present)
+                            // ---------------------------
+                            (function setupRental() {
                                 const wrap = document.getElementById('rental-dates');
                                 if (!wrap) return;
 
                                 const orderId = wrap.getAttribute('data-order-id');
                                 const token   = wrap.getAttribute('data-access-token') || '';
-                                const locale  = (document.documentElement.getAttribute('lang') || 'en-CA'); // or pass from QWeb if you prefer
-                                const currency = (wrap.getAttribute('data-currency') || 'CAD');             // optional: set via QWeb
 
                                 const startEl = document.getElementById('rental_start_date');
                                 const returnEl = document.getElementById('rental_return_date');
                                 const applyBtn = document.getElementById('apply_rental_dates');
 
+                                const labelIdle   = isFr ? 'Appliquer les dates' : 'Apply dates';
+                                const labelBusy   = isFr ? 'Enregistrement…'     : 'Saving…';
+
                                 function setBusy(busy) {
                                     if (!applyBtn) return;
                                     applyBtn.disabled = busy;
-                                    applyBtn.textContent = busy ? 'Saving…' : 'Apply dates';
+                                    applyBtn.textContent = busy ? labelBusy : labelIdle;
                                 }
 
                                 function isValidRange(a, b) {
@@ -306,11 +314,13 @@
                                 }
 
                                 async function applyDates() {
-                                    const start_date = startEl.value || null;
-                                    const return_date = returnEl.value || null;
+                                    const start_date  = startEl?.value || null;
+                                    const return_date = returnEl?.value || null;
 
                                     if (!isValidRange(start_date, return_date)) {
-                                        alert('Please select a start date and a return date, with the return date on or after the start date.');
+                                        alert(isFr
+                                            ? 'Veuillez sélectionner une date de début et une date de retour, avec la date de retour le même jour ou après la date de début.'
+                                            : 'Please select a start date and a return date, with the return date on or after the start date.');
                                         return;
                                     }
 
@@ -325,23 +335,113 @@
                                             window.location.reload();
                                         } else {
                                             console.error('Rental date update failed', res);
-                                            alert('Could not save rental dates. Please try again.');
+                                            alert(isFr ? "Impossible d'enregistrer les dates de location. Veuillez réessayer."
+                                                    : 'Could not save rental dates. Please try again.');
                                         }
                                     } catch (e) {
                                         console.error('Rental date update error', e);
-                                        alert('Network error while saving dates. Please try again.');
+                                        alert(isFr ? 'Erreur réseau lors de la sauvegarde des dates. Veuillez réessayer.'
+                                                : 'Network error while saving dates. Please try again.');
                                     } finally {
                                         setBusy(false);
                                     }
                                 }
 
                                 applyBtn && applyBtn.addEventListener('click', applyDates);
-
-                                // Recalculate on page load if dates are already present
-                                document.addEventListener('DOMContentLoaded', window.location.reload);
                             })();
-                            ]]>
+
+                            // ---------------------------
+                            // PO NUMBER (if present)
+                            // ---------------------------
+                            (function setupPO() {
+                                const poWrap = document.getElementById('po-section'); // container div for PO field
+                                if (!poWrap) return;
+
+                                const orderId = poWrap.getAttribute('data-order-id');
+                                const token   = poWrap.getAttribute('data-access-token') || '';
+
+                                const poInput = document.getElementById('po_number');
+                                const poBtn   = document.getElementById('apply_po_number');
+
+                                const labelIdle = isFr ? 'Enregistrer' : 'Save';
+                                const labelBusy = isFr ? 'Enregistrement…' : 'Saving…';
+
+                                function setPoBusy(b) {
+                                    if (!poBtn) return;
+                                    poBtn.disabled = b;
+                                    poBtn.textContent = b ? labelBusy : labelIdle;
+                                }
+
+                                async function applyPO() {
+                                    setPoBusy(true);
+                                    try {
+                                        const payload = { po_number: (poInput?.value || '').trim() };
+                                        if (token) payload.access_token = token;
+
+                                        const res = await postJSON(`/my/orders/${orderId}/set_po_number`, payload);
+
+                                        if (res && res.ok) {
+                                            window.location.reload();
+                                        } else {
+                                            console.error('PO number update failed', res);
+                                            alert(isFr ? "Impossible d'enregistrer le numéro de bon de commande."
+                                                    : 'Could not save the PO number.');
+                                        }
+                                    } catch (e) {
+                                        console.error('PO number update error', e);
+                                        alert(isFr ? "Erreur réseau lors de l'enregistrement."
+                                                : 'Network error while saving.');
+                                    } finally {
+                                        setPoBusy(false);
+                                    }
+                                }
+
+                                poBtn && poBtn.addEventListener('click', applyPO);
+                            })();
+
+                        })();
+                    ]]>
                 </script>
+            </div>
+            <div class="fields_select" t-else="">
+                <t t-if="language == 'fr_CA'">
+                    <h3>Informations supplémentaires</h3>
+                    <p>
+                        Si vous avez un numéro de bon de commande que vous souhaitez conserver, veuillez le saisir ici.
+                    </p>
+                </t>
+                <t t-else="">
+                    <h3>Extra information</h3>
+                    <p>
+                        If you have a PO number you would like to keep on record, please enter it here.
+                    </p>
+                </t>
+
+                <div class="po_box" id="po-section"
+                    t-att-data-order-id="sale_order.id"
+                    t-att-data-access-token="sale_order.access_token">
+                    <style>
+                        .po_box { margin: 10px 0 6px 0; }
+                        .po_box label { font-weight:600; margin-right:6px; }
+                        .po_box input[type="text"] { padding:6px 8px; min-width: 280px; }
+                        .po_box .actions { display:inline-block; vertical-align:bottom; margin-left:10px; }
+                    </style>
+
+                    <label for="po_number">
+                        <t t-if="language == 'fr_CA'">Numéro de bon de commande</t>
+                        <t t-else="">PO number</t>
+                    </label>
+                    <input type="text" id="po_number"
+                        maxlength="64"
+                        t-att-value="sale_order.po_number or ''"/>
+
+                    <span class="actions">
+                        <button type="button" id="apply_po_number" class="btn btn-primary btn-sm">
+                            <t t-if="language == 'fr_CA'">Enregistrer</t>
+                            <t t-else="">Save</t>
+                        </button>
+                    </span>
+                </div>
             </div>
         </xpath>
 

@@ -2,4 +2,4 @@
 
 from . import controllers
 from . import approve
-from . import rental
+from . import sale_order

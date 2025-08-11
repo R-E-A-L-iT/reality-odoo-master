@@ -103,3 +103,60 @@ class PortalRentalDates(http.Controller):
         except Exception as e:
             _logger.exception("Unexpected error updating rental dates for SO %s", order_id)
             return {'ok': False, 'error': 'exception', 'message': str(e)}
+
+class PortalPONumber(http.Controller):
+
+    @http.route('/my/orders/<int:order_id>/set_po_number',
+                type='json', auth='public', website=True, csrf=False, methods=['POST'])
+    def set_po_number(self, order_id, **kw):
+        Order = request.env['sale.order'].sudo()
+        order = Order.browse(order_id)
+        if not order.exists():
+            return {'ok': False, 'error': 'not_found'}
+
+        # Parse payload safely
+        data = getattr(request, 'jsonrequest', None) or {}
+        if not data:
+            try:
+                raw = request.httprequest.data or request.httprequest.get_data()
+                data = json.loads(raw.decode('utf-8') or '{}') if raw else {}
+            except Exception:
+                data = {}
+        _logger.info("PO number payload for SO %s: %s", order_id, data)
+
+        access_token = data.get('access_token') or data.get('token') or kw.get('access_token')
+        po_number    = (data.get('po_number') or '').strip()
+
+        # -------- Access control (token OR logged-in user with access) --------
+        user = request.env.user
+        has_access = False
+
+        if access_token:
+            try:
+                CustomerPortal()._document_check_access('sale.order', order_id, access_token=access_token)
+                has_access = True
+            except (AccessError, MissingError):
+                has_access = False
+
+        if not has_access:
+            if user.has_group('base.group_user'):
+                has_access = True
+            else:
+                partner = user.partner_id.commercial_partner_id
+                has_access = bool(
+                    partner and (
+                        order.partner_id.commercial_partner_id == partner
+                        or partner.id in order.sudo().message_partner_ids.ids
+                    )
+                )
+
+        if not has_access:
+            return {'ok': False, 'error': 'unauthorized'}
+
+        # Optional: enforce max length similar to the field definition
+        if len(po_number) > 64:
+            po_number = po_number[:64]
+
+        order.write({'po_number': po_number or False})
+        _logger.info("PO number updated on SO %s: %s", order.id, po_number)
+        return {'ok': True, 'po_number': po_number}

@@ -17,6 +17,16 @@
     width: 100px;
 }
 
+/* fields select section */
+.fields_select {
+	background-color: #1a1c1d;
+    padding: 25px;
+    border: 1px solid #777;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 15px;
+}
+
 /* approve financing section styles */
 .approve_section {
 	padding: 7px;
