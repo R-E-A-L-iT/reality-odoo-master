@@ -397,9 +397,11 @@
                             <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Apply dates</button>
                         </div>
 
-                        <!-- <small class="hint" color:>
-                            Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
-                        </small> -->
+                        <small class="hint" style="color: #777;">
+                            <i t-if="language == 'fr_CA'">Veuillez télécharger votre preuve d'assurance pour le montant total dans les
+                                commentaires ci-dessous:</i>
+                            <i t-else="">Please upload your proof of insurance for the total amount in the comments below:</i>
+                        </small>
                     </div>
                 </t>
             </div>
@@ -475,77 +477,6 @@
                 <tr>
                     <td style="border-style: none;" colspan="100">
                         <t t-call="proquotes.renewal-subscription"/>
-                    </td>
-                </tr>
-            </t>
-            <!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
-            <t t-if="line.name == '$rental_pricenote'">
-                <tr>
-                    <td style="border-style: none;" colspan="100">
-                        <p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
-                            * The final rental cost will be calculated once the equipement is returned.
-                            Weekly rental cost is equivalent to 4x the indicated daily rental rate (above).
-                            Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
-                        </p>
-                        <p class="rental_price_explain" t-elif="language == 'fr_CA'">
-                            * Le coût final sera calculé lorsque l'équipement sera retourné.
-                            Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
-                            Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
-                        </p>
-                        <br/>
-
-                        <t t-if="language == 'en_CA' or language == 'en_US'">
-                            <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories:
-                                <span id="rental-estimate-total-english"/>
-                            </span>
-                        </t>
-                        <t t-elif="language == 'fr_CA'">
-                            <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
-                                accessoires:
-                                <span id="rental-estimate-total-english"/>
-                            </span>
-                        </t>
-                        <br/>
-                        <br/>
-                        <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
-                            <span t-if="language == 'en_CA' or language == 'en_US'">Total Rental Value: 
-                                <span id="total-rental-value-english"/>
-                            </span>
-                            <br/>
-                            <span>
-                                Please upload your proof of insurance for the total amount in the comments below:
-                            </span>
-                            <br/>
-                        </div>
-                        <div class=" rental_product_value" t-if=" language== 'fr_CA'">
-                            <span>Valeur locative totale:  
-                                <span id="total-rental-value-french"/>
-                            </span>
-                            <br/>
-                            <span>
-                                Veuillez télécharger votre preuve d'assurance pour le montant total dans les
-                                commentaires ci-dessous:
-                            </span>
-                            <br/>
-                        </div>
-                    </td>
-                </tr>
-            </t>
-            <!--  Keep for Backwards Compatibility-->
-            <t t-if="line.name == '$rental_address'">
-                <t t-set="rental_estimate_display" t-value="False"/>
-                <tr style="padding: 0px !important;">
-                    <td style="border-style: none; padding: 0px !important;" colspan="100">
-                        <t t-call="proquotes.rental_address_form"/>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '$rental_info'">
-                <t t-set="rental_estimate_display" t-value="True"/>
-                <tr style="padding: 0px !important;">
-                    <td style="border-style: none; padding: 0px !important;" colspan="100">
-                        <t t-call="proquotes.rental_address_form"/>
                     </td>
                 </tr>
             </t>
