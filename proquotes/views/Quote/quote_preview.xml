@@ -172,6 +172,11 @@
                 </section>
         </xpath>
 
+        <!-- Hide Total On Rental Quotes -->
+        <xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
+            <attribute name="t-if">sale_order.is_rental_order != True</attribute>
+        </xpath>
+
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
             <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
@@ -208,8 +213,8 @@
                         selected.
                         <br/>
                         Please note that the final rental cost will be calculated once the equipment is returned.
-                        Weekly rental cost is equivalent to 4x the indicated daily rental rate.
-                        Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate indicated in the price column for each item.
+                        Weekly rental cost is equivalent to 4x the daily rental rate.
+                        Monthly (30 days) rental cost is equivalent to 12x the daily rental rate.
                     </p>
                     <div class="rental_dates" id="rental-dates"
                         t-att-data-order-id="sale_order.id"
