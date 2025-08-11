@@ -172,17 +172,6 @@
                 </section>
         </xpath>
 
-        <!-- Remove taxes column -->
-        <xpath expr="//td[@id='taxes']" position="replace" />
-
-        <!-- Remove Taxes data cell (6th td) on every non-section/non-note row -->
-        <!-- <xpath expr="//t[@t-if='not line.display_type']/td[6]" position="replace"/> -->
-
-        <!-- Line Total (Amount) Alignment: was td[7], now td[6] after removing taxes -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
-            <attribute name="class">text-left</attribute>
-        </xpath>
-
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
             <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
