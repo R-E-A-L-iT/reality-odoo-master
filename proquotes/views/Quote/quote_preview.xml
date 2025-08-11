@@ -173,7 +173,7 @@
         </xpath>
 
         <!-- Remove taxes column -->
-        <!-- <xpath expr="//td[@id='taxes']" position="replace" /> -->
+        <xpath expr="//td[@id='taxes']" position="replace" />
 
         <!-- Remove Taxes data cell (6th td) on every non-section/non-note row -->
         <xpath expr="//t[@t-if='not line.display_type']/td[6]" position="replace"/>
