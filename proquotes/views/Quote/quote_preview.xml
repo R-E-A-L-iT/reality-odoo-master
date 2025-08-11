@@ -183,6 +183,97 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+            <div class="rental_info" t-if="sale_order.is_rental_order">
+                <t t-if="language == 'fr_CA'">
+
+                </t>
+                <t t-else="">
+                    <h2>Estimated Rental Costs</h2>
+                    <p>
+                        The following is an estimate of the rental costs for the hardware and accessories you have
+                        selected.
+                        <br/>
+                        Please note that the final rental cost will be calculated once the equipment is returned.
+                        Weekly rental cost is equivalent to 4x the indicated daily rental rate.
+                        Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate indicated in the price column for each item.
+                    </p>
+                    <div class="rental_dates" id="rental-dates"
+                        t-att-data-order-id="sale_order.id"
+                        t-att-data-access-token="sale_order.access_token">
+                        <style>
+                            .rental_dates {margin: 14px 0 8px 0;}
+                            .rental_dates .fld {display:inline-block; margin-right:18px;}
+                            .rental_dates label {font-weight:600; margin-right:6px;}
+                            .rental_dates input[type="date"] {padding:6px 8px;}
+                            .rental_dates .hint {display:block; font-size:.9rem; color:#666; margin-top:6px;}
+                        </style>
+
+                        <div class="fld">
+                            <label for="rental_start_date">Start date</label>
+                            <input type="date" id="rental_start_date"
+                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''">
+                        </div>
+
+                        <div class="fld">
+                            <label for="rental_return_date">Return date</label>
+                            <input type="date" id="rental_return_date"
+                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''">
+                        </div>
+
+                        <small class="hint">
+                            Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
+                        </small>
+
+                        <script>
+                            (function () {
+                                function postJSON(url, payload) {
+                                    return fetch(url, {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify(payload)
+                                    }).then(r => r.json());
+                                }
+
+                                const wrap = document.getElementById('rental-dates');
+                                if (!wrap) return;
+
+                                const orderId = wrap.getAttribute('data-order-id');
+                                const token = wrap.getAttribute('data-access-token') || '';
+
+                                const startEl = document.getElementById('rental_start_date');
+                                const returnEl = document.getElementById('rental_return_date');
+
+                                async function pushDates() {
+                                    const start_date = startEl.value || null;
+                                    const return_date = returnEl.value || null;
+
+                                    // basic guard: require both to compute reliably
+                                    if (!start_date || !return_date) return;
+
+                                    try {
+                                        const res = await postJSON(`/my/orders/${orderId}/set_rental_dates`, {
+                                            access_token: token,
+                                            start_date,
+                                            return_date
+                                        });
+                                        if (res && res.ok) {
+                                            // simplest: reload to let your totals/sections recompute server-side
+                                            window.location.reload();
+                                        } else {
+                                            console.error('Rental date update failed', res);
+                                        }
+                                    } catch (e) {
+                                        console.error('Rental date update error', e);
+                                    }
+                                }
+
+                                startEl && startEl.addEventListener('change', pushDates);
+                                returnEl && returnEl.addEventListener('change', pushDates);
+                            })();
+                        </script>
+                    </div>
+                </t>
+            </div>
         </xpath>
 
 

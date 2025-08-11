@@ -2,3 +2,4 @@
 
 from . import controllers
 from . import approve
+from . import rental
