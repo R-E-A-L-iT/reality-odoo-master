@@ -186,12 +186,15 @@
             <div class="rental_info" t-if="sale_order.is_rental_order">
                 <style>
                     .rental_info {
-                        background-color: red;
+                        background-color: #1a1c1d;
                         padding: 25px;
-                        border: 1px solid #fff;
+                        border: 1px solid #777;
                         border-radius: 15px;
                         color: white;
                         margin-bottom: 15px;
+                    }
+                    .rental_info > h2 {
+                        color: white;
                     }
                     .actions > button {
                         height: 42px;
