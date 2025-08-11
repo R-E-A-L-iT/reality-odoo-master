@@ -11,39 +11,40 @@ _logger = logging.getLogger(__name__)
 
 class PortalRentalDates(http.Controller):
 
-    @http.route(['/my/orders/<int:order_id>/set_rental_dates'],
-                type='json', auth='public', website=True, csrf=False, methods=['POST'])
-    def set_rental_dates(self, order_id, start_date=None, return_date=None, access_token=None, **kw):
+    @http.route('/my/orders/<int:order_id>/set_rental_dates', type='json', auth='public', website=True, csrf=False, methods=['POST'])
+    def set_rental_dates(self, order_id, **kw):
         Order = request.env['sale.order'].sudo()
         order = Order.browse(order_id)
         if not order.exists():
             return {'ok': False, 'error': 'not_found'}
 
-        user = request.env.user
+        # Read raw JSON body robustly
+        data = request.jsonrequest or {}
+        _logger.info("Rental date update payload for SO %s: %s", order_id, data)
 
-        # 1) If a token was supplied, use the standard portal helper (works for public/portal links)
+        # Support multiple key names just in case
+        access_token = data.get('access_token') or data.get('token') or kw.get('access_token')
+        start_date   = data.get('start_date')   or data.get('start')   or kw.get('start_date')
+        return_date  = data.get('return_date')  or data.get('end')     or kw.get('return_date')
+
+        # -------- Access control (token OR logged-in user with access) --------
+        user = request.env.user
+        has_access = False
+
         if access_token:
             try:
-                # Raises on failure; also returns a sudoed record
                 CustomerPortal()._document_check_access('sale.order', order_id, access_token=access_token)
                 has_access = True
             except (AccessError, MissingError):
                 has_access = False
-        else:
-            has_access = False
 
-        # 2) If no valid token, allow logged-in users with access:
         if not has_access:
-            # Internal users always allowed (they have regular ACLs; we still write with sudo for simplicity)
             if user.has_group('base.group_user'):
                 has_access = True
             else:
-                # Portal users: allow if they can see the order in portal
-                # (same logic the portal uses: partner is owner or follower)
                 partner = user.partner_id.commercial_partner_id
                 has_access = bool(
-                    partner
-                    and (
+                    partner and (
                         order.partner_id.commercial_partner_id == partner
                         or partner.id in order.sudo().message_partner_ids.ids
                     )
@@ -52,7 +53,7 @@ class PortalRentalDates(http.Controller):
         if not has_access:
             return {'ok': False, 'error': 'unauthorized'}
 
-        # Parse dates 'YYYY-MM-DD' -> datetimes (start at 00:00, return at 23:59:59)
+        # -------- Parse and write --------
         def _to_dt(d, end=False):
             if not d:
                 return False
@@ -64,19 +65,16 @@ class PortalRentalDates(http.Controller):
             return fields.Datetime.to_string(base)
 
         vals = {}
-        if start_date:
-            vals['rental_start_date'] = _to_dt(start_date, end=False)
-        if return_date:
-            vals['rental_return_date'] = _to_dt(return_date, end=True)
+        if start_date is not None:   # allow explicit clearing later if you wish
+            dt = _to_dt(start_date, end=False)
+            if dt: vals['rental_start_date'] = dt
+        if return_date is not None:
+            dt = _to_dt(return_date, end=True)
+            if dt: vals['rental_return_date'] = dt
 
         if not vals:
             return {'ok': False, 'error': 'no_values'}
 
-        try:
-            order.write(vals)
-            _logger.info("Rental dates updated on SO %s: %s", order.id, vals)
-        except Exception as e:
-            _logger.exception("Failed writing rental dates on SO %s", order.id)
-            return {'ok': False, 'error': 'write_failed'}
-
-        return {'ok': True, 'start_date': vals.get('rental_start_date'), 'return_date': vals.get('rental_return_date')}
+        order.write(vals)
+        _logger.info("Rental dates updated on SO %s: %s", order.id, vals)
+        return {'ok': True, **vals}

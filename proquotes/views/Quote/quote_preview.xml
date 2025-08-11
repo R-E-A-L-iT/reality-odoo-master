@@ -272,11 +272,11 @@
 
                                     setBusy(true);
                                     try {
-                                        const res = await postJSON(`/my/orders/${orderId}/set_rental_dates`, {
-                                            access_token: token,
-                                            start_date,
-                                            return_date
-                                        });
+                                        const payload = { start_date, return_date };
+                                        if (token) payload.access_token = token;
+
+                                        const res = await postJSON(`/my/orders/${orderId}/set_rental_dates`, payload);
+
                                         if (res && res.ok) {
                                             // Full reload so both backend and frontend reflect changes
                                             window.location.reload();
