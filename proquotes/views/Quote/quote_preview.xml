@@ -206,18 +206,23 @@
                             .rental_dates label {font-weight:600; margin-right:6px;}
                             .rental_dates input[type="date"] {padding:6px 8px;}
                             .rental_dates .hint {display:block; font-size:.9rem; color:#666; margin-top:6px;}
+                            .rental_dates .actions {display:inline-block; vertical-align:bottom;}
                         </style>
 
                         <div class="fld">
                             <label for="rental_start_date">Start date</label>
                             <input type="date" id="rental_start_date"
-                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''" />
+                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''"/>
                         </div>
 
                         <div class="fld">
                             <label for="rental_return_date">Return date</label>
                             <input type="date" id="rental_return_date"
-                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''" />
+                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''"/>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Apply dates</button>
                         </div>
 
                         <small class="hint">
@@ -242,14 +247,30 @@
 
                                 const startEl = document.getElementById('rental_start_date');
                                 const returnEl = document.getElementById('rental_return_date');
+                                const applyBtn = document.getElementById('apply_rental_dates');
 
-                                async function pushDates() {
+                                function setBusy(busy) {
+                                    if (!applyBtn) return;
+                                    applyBtn.disabled = busy;
+                                    applyBtn.textContent = busy ? 'Saving…' : 'Apply dates';
+                                }
+
+                                function isValidRange(a, b) {
+                                    if (!a || !b) return false;
+                                    // Simple YYYY-MM-DD compare is OK lexicographically
+                                    return a <= b;
+                                }
+
+                                async function applyDates() {
                                     const start_date = startEl.value || null;
                                     const return_date = returnEl.value || null;
 
-                                    // basic guard: require both to compute reliably
-                                    if (!start_date || !return_date) return;
+                                    if (!isValidRange(start_date, return_date)) {
+                                        alert('Please select a start date and a return date, with the return date on or after the start date.');
+                                        return;
+                                    }
 
+                                    setBusy(true);
                                     try {
                                         const res = await postJSON(`/my/orders/${orderId}/set_rental_dates`, {
                                             access_token: token,
@@ -257,22 +278,25 @@
                                             return_date
                                         });
                                         if (res && res.ok) {
-                                            // simplest: reload to let your totals/sections recompute server-side
+                                            // Full reload so both backend and frontend reflect changes
                                             window.location.reload();
                                         } else {
                                             console.error('Rental date update failed', res);
+                                            alert('Could not save rental dates. Please try again.');
                                         }
                                     } catch (e) {
                                         console.error('Rental date update error', e);
+                                        alert('Network error while saving dates. Please try again.');
+                                    } finally {
+                                        setBusy(false);
                                     }
                                 }
 
-                                startEl && startEl.addEventListener('change', pushDates);
-                                returnEl && returnEl.addEventListener('change', pushDates);
+                                applyBtn && applyBtn.addEventListener('click', applyDates);
                             })();
                         ]]></script>
-
                     </div>
+
                 </t>
             </div>
         </xpath>
