@@ -58,7 +58,6 @@ class order(models.Model):
         ("partially_invoiced", "Partially Invoiced"),
         ("not_invoiced", "Not Invoiced"),
     ], )
-    financing_available = fields.Boolean(string="Financing Available")
     footer = fields.Selection(
         [
             ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
