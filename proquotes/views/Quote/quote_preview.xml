@@ -543,6 +543,23 @@
             </t> -->
         </xpath>
 
+        <!-- taxes removal -->
+        <xpath expr="//table[@id='sales_order_table']//th[@id='taxes_header'] | //table[@id='sales_order_table']//td[@id='taxes']" position="replace"/>
+        <!-- Qty TD -->
+        <xpath expr="//span[@t-field='line.product_uom_qty']/ancestor::td[1]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
+
+        <!-- Price TD -->
+        <xpath expr="//div[@t-field='line.price_unit']/ancestor::td[1]" position="attributes">
+            <attribute name="class">text-left nowrap</attribute>
+        </xpath>
+
+        <!-- Amount TD -->
+        <xpath expr="//span[@t-field='line.price_subtotal']/ancestor::td[1]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
+
         <!-- Handle Special Sections Seperatly -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="attributes">
             <attribute name="t-if">line.name[0] != '$'</attribute>
