@@ -184,11 +184,25 @@
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
             <div class="rental_info" t-if="sale_order.is_rental_order">
+                <style>
+                    .rental_info {
+                        background-color: red;
+                        padding: 25px;
+                        border: 1px solid #fff;
+                        border-radius: 15px;
+                        color: white;
+                        margin-bottom: 15px;
+                    }
+                    .actions > button {
+                        height: 42px;
+                        width: 100px;
+                    }
+                </style>
                 <t t-if="language == 'fr_CA'">
 
                 </t>
                 <t t-else="">
-                    <h2>Estimated Rental Costs</h2>
+                    <h3>Estimated Rental Costs</h3>
                     <p>
                         The following is an estimate of the rental costs for the hardware and accessories you have
                         selected.
@@ -225,9 +239,9 @@
                             <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Apply dates</button>
                         </div>
 
-                        <small class="hint">
+                        <!-- <small class="hint" color:>
                             Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
-                        </small>
+                        </small> -->
 
                         <script><![CDATA[
                             (function () {
@@ -236,14 +250,19 @@
                                         method: 'POST',
                                         headers: {'Content-Type': 'application/json'},
                                         body: JSON.stringify(payload)
-                                    }).then(r => r.json());
+                                    })
+                                    .then(r => r.json())
+                                    // unwrap JSON-RPC envelopes from Odoo: {result: {...}}
+                                    .then(data => (data && typeof data === 'object' && 'result' in data) ? data.result : data);
                                 }
 
                                 const wrap = document.getElementById('rental-dates');
                                 if (!wrap) return;
 
                                 const orderId = wrap.getAttribute('data-order-id');
-                                const token = wrap.getAttribute('data-access-token') || '';
+                                const token   = wrap.getAttribute('data-access-token') || '';
+                                const locale  = (document.documentElement.getAttribute('lang') || 'en-CA'); // or pass from QWeb if you prefer
+                                const currency = (wrap.getAttribute('data-currency') || 'CAD');             // optional: set via QWeb
 
                                 const startEl = document.getElementById('rental_start_date');
                                 const returnEl = document.getElementById('rental_return_date');
@@ -257,8 +276,74 @@
 
                                 function isValidRange(a, b) {
                                     if (!a || !b) return false;
-                                    // Simple YYYY-MM-DD compare is OK lexicographically
-                                    return a <= b;
+                                    return a <= b; // YYYY-MM-DD strings compare lexicographically
+                                }
+
+                                // ——— Front-end recompute: multiply daily amounts by months/weeks/days rule ———
+                                function computeMultiplier(a, b) {
+                                    // a, b are 'YYYY-MM-DD'
+                                    const sd = new Date(a + 'T00:00:00');
+                                    const ed = new Date(b + 'T00:00:00');
+                                    const days = Math.max(1, Math.round((ed - sd) / 86400000) + 1);
+                                    const months = Math.floor(days / 30);
+                                    const rem1 = days % 30;
+                                    const weeks = Math.floor(rem1 / 7);
+                                    const remDays = rem1 % 7;
+                                    return months * 12 + weeks * 4 + remDays;
+                                }
+
+                                function parseMoney(text) {
+                                    // keep only digits, commas, dots, minus
+                                    let s = (text || '').replace(/[^\d.,-]/g, '');
+                                    // if both separators exist, assume dot as decimal; otherwise if only comma, treat comma as decimal
+                                    if (s.indexOf('.') >= 0 && s.indexOf(',') >= 0) {
+                                        s = s.replace(/,/g, '');
+                                    } else if (s.indexOf(',') >= 0 && s.indexOf('.') < 0) {
+                                        s = s.replace(',', '.');
+                                    }
+                                    const v = parseFloat(s);
+                                    return isNaN(v) ? 0 : v;
+                                }
+
+                                function formatMoney(v) {
+                                    try {
+                                        return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(v);
+                                    } catch (e) {
+                                        // fallback
+                                        return (Math.round(v * 100) / 100).toFixed(2);
+                                    }
+                                }
+
+                                function recalcRental() {
+                                    const a = startEl.value;
+                                    const b = returnEl.value;
+                                    if (!isValidRange(a, b)) return;
+
+                                    const mult = computeMultiplier(a, b);
+
+                                    // Update every visible daily-amount cell (we tagged them with .rental_rate_calc)
+                                    let grand = 0;
+                                    document.querySelectorAll('.rental_rate_calc').forEach(el => {
+                                        // cache original daily in data attribute the first time we see it
+                                        if (!el.dataset.daily) {
+                                            el.dataset.daily = String(parseMoney(el.textContent));
+                                        }
+                                        const daily = parseFloat(el.dataset.daily) || 0;
+                                        const newVal = daily * mult;
+                                        el.textContent = formatMoney(newVal);
+                                        grand += newVal;
+                                    });
+
+                                    // Optional: show an estimated grand total in your "Estimated Rental Costs" section
+                                    let grandEl = document.getElementById('rental-estimate-grand');
+                                    if (!grandEl) {
+                                        const hint = document.createElement('div');
+                                        hint.className = 'rental_estimate_total';
+                                        hint.innerHTML = 'Estimated total for selected items: <strong id="rental-estimate-grand"></strong>';
+                                        wrap.parentNode.appendChild(hint);
+                                        grandEl = document.getElementById('rental-estimate-grand');
+                                    }
+                                    grandEl.textContent = formatMoney(grand);
                                 }
 
                                 async function applyDates() {
@@ -278,8 +363,10 @@
                                         const res = await postJSON(`/my/orders/${orderId}/set_rental_dates`, payload);
 
                                         if (res && res.ok) {
-                                            // Full reload so both backend and frontend reflect changes
-                                            window.location.reload();
+                                            // Dates are saved in backend ✓; update the visible numbers client-side
+                                            recalcRental();
+                                            // (If you still want a full reload, uncomment the next line)
+                                            // window.location.reload();
                                         } else {
                                             console.error('Rental date update failed', res);
                                             alert('Could not save rental dates. Please try again.');
@@ -293,10 +380,13 @@
                                 }
 
                                 applyBtn && applyBtn.addEventListener('click', applyDates);
-                            })();
-                        ]]></script>
-                    </div>
 
+                                // Recalculate on page load if dates are already present
+                                document.addEventListener('DOMContentLoaded', recalcRental);
+                            })();
+                            ]]>
+                        </script>
+                    </div>
                 </t>
             </div>
         </xpath>
