@@ -224,7 +224,7 @@
                             Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
                         </small>
 
-                        <script>
+                        <script><![CDATA[
                             (function () {
                                 function postJSON(url, payload) {
                                     return fetch(url, {
@@ -270,7 +270,8 @@
                                 startEl && startEl.addEventListener('change', pushDates);
                                 returnEl && returnEl.addEventListener('change', pushDates);
                             })();
-                        </script>
+                        ]]></script>
+
                     </div>
                 </t>
             </div>
