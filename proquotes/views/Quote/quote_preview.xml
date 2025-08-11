@@ -360,8 +360,8 @@
                                 const orderId = poWrap.getAttribute('data-order-id');
                                 const token   = poWrap.getAttribute('data-access-token') || '';
 
-                                const poInput = document.getElementById('po_number');
-                                const poBtn   = document.getElementById('apply_po_number');
+                                const poInput = document.getElementById('customer_po_number');
+                                const poBtn   = document.getElementById('apply_customer_po_number');
 
                                 const labelIdle = isFr ? 'Enregistrer' : 'Save';
                                 const labelBusy = isFr ? 'Enregistrement…' : 'Saving…';
@@ -375,10 +375,10 @@
                                 async function applyPO() {
                                     setPoBusy(true);
                                     try {
-                                        const payload = { po_number: (poInput?.value || '').trim() };
+                                        const payload = { customer_po_number: (poInput?.value || '').trim() };
                                         if (token) payload.access_token = token;
 
-                                        const res = await postJSON(`/my/orders/${orderId}/set_po_number`, payload);
+                                        const res = await postJSON(`/my/orders/${orderId}/set_customer_po_number`, payload);
 
                                         if (res && res.ok) {
                                             window.location.reload();
@@ -427,16 +427,16 @@
                         .po_box .actions { display:inline-block; vertical-align:bottom; margin-left:10px; }
                     </style>
 
-                    <label for="po_number">
+                    <label for="customer_po_number">
                         <t t-if="language == 'fr_CA'">Numéro de bon de commande</t>
                         <t t-else="">PO number</t>
                     </label>
-                    <input type="text" id="po_number"
+                    <input type="text" id="customer_po_number"
                         maxlength="64"
-                        t-att-value="sale_order.po_number or ''"/>
+                        t-att-value="sale_order.customer_po_number or ''"/>
 
                     <span class="actions">
-                        <button type="button" id="apply_po_number" class="btn btn-primary btn-sm">
+                        <button type="button" id="apply_customer_po_number" class="btn btn-primary btn-sm">
                             <t t-if="language == 'fr_CA'">Enregistrer</t>
                             <t t-else="">Save</t>
                         </button>
