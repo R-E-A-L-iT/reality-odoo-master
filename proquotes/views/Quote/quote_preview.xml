@@ -211,13 +211,13 @@
                         <div class="fld">
                             <label for="rental_start_date">Start date</label>
                             <input type="date" id="rental_start_date"
-                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''">
+                                t-att-value="(sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d')) or ''" />
                         </div>
 
                         <div class="fld">
                             <label for="rental_return_date">Return date</label>
                             <input type="date" id="rental_return_date"
-                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''">
+                                t-att-value="(sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d')) or ''" />
                         </div>
 
                         <small class="hint">
