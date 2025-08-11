@@ -167,6 +167,23 @@ class order(models.Model):
                 lines.discount = 0.0
         lines_to_recompute._compute_discount()
         self.show_update_pricelist = False
+
+    def action_recompute_rental_prices(self):
+        for order in self:
+            start = order.rental_start_date
+            end = order.rental_return_date
+            lines = order.order_line.filtered(lambda l: not l.display_type and getattr(l, 'is_rental', False))
+            for line in lines:
+                vals = {}
+                # ensure line dates mirror the order (if your UI sets them only on order)
+                if 'start_date' in line._fields:
+                    vals['start_date'] = start
+                if 'return_date' in line._fields:
+                    vals['return_date'] = end
+                # core: same price logic used by onchange
+                vals['price_unit'] = line._get_pricelist_price()
+                line.sudo().write(vals)
+        return True
     
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):

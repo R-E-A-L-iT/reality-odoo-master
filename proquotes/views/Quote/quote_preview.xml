@@ -364,9 +364,9 @@
 
                                         if (res && res.ok) {
                                             // Dates are saved in backend ✓; update the visible numbers client-side
-                                            recalcRental();
+                                            // recalcRental();
                                             // (If you still want a full reload, uncomment the next line)
-                                            // window.location.reload();
+                                            window.location.reload();
                                         } else {
                                             console.error('Rental date update failed', res);
                                             alert('Could not save rental dates. Please try again.');
@@ -382,7 +382,7 @@
                                 applyBtn && applyBtn.addEventListener('click', applyDates);
 
                                 // Recalculate on page load if dates are already present
-                                document.addEventListener('DOMContentLoaded', recalcRental);
+                                document.addEventListener('DOMContentLoaded', window.location.reload);
                             })();
                             ]]>
                         </script>

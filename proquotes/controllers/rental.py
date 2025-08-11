@@ -94,8 +94,11 @@ class PortalRentalDates(http.Controller):
                     return {'ok': False, 'error': f'field_missing:{f}'}
 
             order.write(vals)
+            order.sudo().action_recompute_rental_prices()
+
             _logger.info("Rental dates updated on SO %s: %s", order.id, vals)
-            return {'ok': True, **vals}
+
+            return {'ok': True}
 
         except Exception as e:
             _logger.exception("Unexpected error updating rental dates for SO %s", order_id)
