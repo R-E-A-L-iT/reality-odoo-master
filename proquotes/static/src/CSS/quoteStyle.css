@@ -1,3 +1,8 @@
+/* quote header */
+.quote-head > td.text-left {
+	padding-left: 20px;
+}
+
 /* approve financing section styles */
 .approve_section {
 	padding: 7px;
