@@ -11,6 +11,7 @@ from itertools import groupby
 from urllib import request
 from dateutil.relativedelta import relativedelta
 from datetime import date, datetime
+from odoo.tools import format_date
 import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
@@ -88,6 +89,94 @@ class person(models.Model):
         related="parent_id.products", string="Company Products", readonly=True
     )
 
+    type = fields.Selection(
+        selection_add=[("renewal", "Renewal contact")],
+        ondelete={"renewal": "set default"},  # fallback if removed
+    )
+
+    def action_open_create_renewal_contact(self):
+        """Open the child partner creation dialog prefilled as a Renewal contact."""
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id("base.action_partner_form")
+        
+        action.update({
+            "view_mode": "form",
+            "views": [(self.env.ref("base.view_partner_form").id, "form")],
+            "target": "current",
+            "context": {
+                **self._context,
+                "default_parent_id": self.id,
+                "default_type": "renewal",
+                "default_is_company": False,
+            },
+        })
+        return action
+
+    @api.model
+    def cron_send_ccp_renewal_reminders(self):
+        env = self.env
+        Lot = env["stock.lot"].sudo()
+
+        owner_field = "owner" if "owner" in Lot._fields else "owner_id"
+
+        companies = self.sudo().search([
+            ("is_company", "=", True),
+            ("child_ids.type", "=", "renewal"),
+            ("child_ids.email", "!=", False),
+            ("active", "=", True),
+        ])
+        if not companies:
+            return
+
+        sent_total = 0
+        for company in companies:
+            renewal_contacts = company.child_ids.filtered(
+                lambda p: p.type == "renewal" and p.email
+            )
+            if not renewal_contacts:
+                continue
+
+            lots = Lot.search([
+                (owner_field, "=", company.id),
+                ("expire", "!=", False),
+                ("ccp_renewal_reminder_sent", "=", False),
+            ])
+            if not lots:
+                continue
+
+            expiring = lots.filtered(lambda l: l.ccp_status == "expiring")
+            if not expiring:
+                continue
+
+            items = []
+            for l in expiring:
+                prod = l.product_id.display_name or ""
+                sku = getattr(l, "sku", False) or getattr(l.product_id, "default_code", False)
+                sku_part = f" ({sku})" if sku else ""
+                exp_str = format_date(env, l.expire)
+                items.append(f"<li>{prod}{sku_part} — SN: {l.name} — Expires {exp_str}</li>")
+
+            email_to = ",".join(sorted(set(renewal_contacts.mapped("email"))))
+            email_from = company.email or env.company.email or False
+
+            email_values = {"email_to": email_to}
+            if email_from:
+                email_values["email_from"] = email_from
+
+            template = self.env.ref("proportal.tmpl_ccp_renewal_reminder")
+            items_html = "<ul>" + "".join(items) + "</ul>"
+            template.with_context(items_html=items_html).send_mail(
+                company.id, force_send=True, email_values={"email_to": email_to, "email_from": email_from}
+            )
+
+            expiring.write({
+                "ccp_renewal_reminder_sent": True,
+                "ccp_renewal_reminder_sent_on": fields.Datetime.now(),
+            })
+            sent_total += len(expiring)
+
+        _logger.info("CCP renewal reminders sent for %s lots", sent_total)
+
 
 class productInstance(models.Model):
     _inherit = "stock.lot"
@@ -117,6 +206,13 @@ class productInstance(models.Model):
     )
 
     firmware_version = fields.Text(string='Firmware Version', help='Firmware version associated with this lot.')
+
+    ccp_renewal_reminder_sent = fields.Boolean(
+        string="CCP Renewal Reminder Sent", default=False, index=True
+    )
+    ccp_renewal_reminder_sent_on = fields.Datetime(
+        string="CCP Reminder Sent On"
+    )
 
     @api.depends("expire")
     def _compute_ccp_status(self):
@@ -159,89 +255,3 @@ class productInstance(models.Model):
             if i.expire != False:
                 r = r + "+" + str(i.expire) 
             i.formated_label = r
-
-            #return
-
-
-# class PurchaseOrder(models.Model):
-#     _inherit = "purchase.order"
-
-#     def init(self):
-#         internal_group = self.env.ref("base.group_user")
-#         portal_purchase_order_user_rule = self.env.ref(
-#             "purchase.portal_purchase_order_user_rule"
-#         )
-#         if portal_purchase_order_user_rule:
-#             portal_purchase_order_user_rule.sudo().write(
-#                 {
-#                     "domain_force": "['|', ('message_partner_ids','child_of',[user.partner_id.id]),('partner_id', 'child_of', [user.partner_id.id])]"
-#                 }
-#             )
-#         portal_purchase_order_line_rule = self.env.ref(
-#             "purchase.portal_purchase_order_line_rule"
-#         )
-#         if portal_purchase_order_line_rule:
-#             portal_purchase_order_line_rule.sudo().write(
-#                 {
-#                     "domain_force": "['|',('order_id.message_partner_ids','child_of',[user.partner_id.id]),('order_id.partner_id','child_of',[user.partner_id.id])]"
-#                 }
-#             )
-#         portal_purchase_order_comp_rule = self.env.ref(
-#             "purchase.purchase_order_comp_rule"
-#         )
-#         if portal_purchase_order_comp_rule and internal_group:
-#             portal_purchase_order_comp_rule.sudo().write(
-#                 {"groups": [(4, internal_group.id)]}
-#             )
-#         portal_purchase_order_line_comp_rule = self.env.ref(
-#             "purchase.purchase_order_line_comp_rule"
-#         )
-#         if portal_purchase_order_line_comp_rule and internal_group:
-#             portal_purchase_order_line_comp_rule.sudo().write(
-#                 {"groups": [(4, internal_group.id)]}
-#             )
-#         portal_project_comp_rule = self.env.ref("project.project_comp_rule")
-#         if portal_project_comp_rule and internal_group:
-#             portal_project_comp_rule.sudo().write({"groups": [(4, internal_group.id)]})
-#         portal_project_project_rule_portal = self.env.ref(
-#             "project.project_project_rule_portal"
-#         )
-#         if portal_project_project_rule_portal:
-#             portal_project_project_rule_portal.sudo().write(
-#                 {
-#                     "domain_force": "['&', ('privacy_visibility', '=', 'portal'), ('partner_id', 'child_of', [user.partner_id.id])]"
-#                 }
-#             )
-#         portal_task_comp_rule = self.env.ref("project.task_comp_rule")
-#         if portal_task_comp_rule and internal_group:
-#             portal_task_comp_rule.sudo().write({"groups": [(4, internal_group.id)]})
-#         portal_project_task_rule_portal = self.env.ref(
-#             "project.project_task_rule_portal"
-#         )
-#         if portal_project_task_rule_portal:
-#             portal_project_task_rule_portal.sudo().write(
-#                 {
-#                     "domain_force": """[
-# 		('project_id.privacy_visibility', '=', 'portal'),
-# 		('active', '=', True),
-# 		'|',
-# 			('project_id.partner_id', 'child_of', [user.partner_id.id]),
-# 			('partner_id', 'child_of', [user.partner_id.id]),
-# 		]"""
-#                 }
-#             )
-#         portal_account_move_comp_rule = self.env.ref("account.account_move_comp_rule")
-#         if portal_account_move_comp_rule and internal_group:
-#             portal_account_move_comp_rule.sudo().write(
-#                 {"groups": [(4, internal_group.id)]}
-#             )
-#         portal_account_invoice_rule_portal = self.env.ref(
-#             "account.account_invoice_rule_portal"
-#         )
-#         if portal_account_invoice_rule_portal:
-#             portal_account_invoice_rule_portal.sudo().write(
-#                 {
-#                     "domain_force": "[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('partner_id','child_of',[user.partner_id.id])]"
-#                 }
-#             )
-

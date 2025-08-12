@@ -23,9 +23,11 @@
         "portal",
         "website_sale",
         "project",
+        "mail",
     ],
     # always loaded
     "data": [
+        "data/renewal_template.xml",
         "views/partnerView.xml",
         "views/stockView.xml",
         "views/productView.xml",
