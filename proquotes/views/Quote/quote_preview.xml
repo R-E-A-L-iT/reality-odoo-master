@@ -399,8 +399,8 @@
 
                         <small class="hint" style="color: #777;">
                             <i t-if="language == 'fr_CA'">Veuillez télécharger votre preuve d'assurance pour le montant total dans les
-                                commentaires ci-dessous:</i>
-                            <i t-else="">Please upload your proof of insurance for the total amount in the comments below:</i>
+                                commentaires ci-dessous.</i>
+                            <i t-else="">Please upload your proof of insurance for the total amount in the comments below.</i>
                         </small>
                     </div>
                 </t>
