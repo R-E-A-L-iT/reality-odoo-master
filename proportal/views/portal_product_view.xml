@@ -30,7 +30,11 @@
                         <td><t t-esc="product.name"/></td>
                         <td><t t-esc="product.expire"/></td>
                         <td t-if="product.expire">
+                            <style>
+                                .badge.bg-grace { background-color: #6f42c1; }
+                            </style>
                             <span t-if="product.ccp_status == 'expired'"  class="badge bg-danger">Expired</span>
+                            <span t-elif="product.ccp_status == 'grace'" class="badge bg-grace text-dark">Grace period</span>
                             <span t-elif="product.ccp_status == 'expiring'" class="badge bg-warning text-dark">Expiring soon</span>
                             <span t-elif="product.ccp_status == 'active'"   class="badge bg-success">Active</span>
                         </td>
