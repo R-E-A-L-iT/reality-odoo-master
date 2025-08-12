@@ -17,6 +17,7 @@
                         <th>SKU</th>
                         <th>Serial Number</th>
                         <th>Expiration</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <t t-foreach="products" t-as="product">
@@ -28,6 +29,11 @@
                         <td><t t-esc="product.sku"/></td>
                         <td><t t-esc="product.name"/></td>
                         <td><t t-esc="product.expire"/></td>
+                        <td t-if="product.expire">
+                            <span t-if="product.ccp_status == 'expired'"  class="badge bg-danger">Expired</span>
+                            <span t-elif="product.ccp_status == 'expiring'" class="badge bg-warning text-dark">Expiring soon</span>
+                            <span t-elif="product.ccp_status == 'active'"   class="badge bg-success">Active</span>
+                        </td>
                     </tr>
                 </t>
             </t>

@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from urllib import request
+from dateutil.relativedelta import relativedelta
+from datetime import date, datetime
 import logging
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
@@ -102,7 +104,45 @@ class productInstance(models.Model):
     formated_label = fields.Char(compute="_label")
     publish = fields.Boolean(string="publish", default="True")
 
+    ccp_status = fields.Selection(
+        selection=[
+            ("active", "Active"),
+            ("expiring", "Expiring soon"),
+            ("expired", "Expired"),
+        ],
+        string="Status",
+        compute="_compute_ccp_status",
+        store=False,
+        readonly=True,
+    )
+
     firmware_version = fields.Text(string='Firmware Version', help='Firmware version associated with this lot.')
+
+    @api.depends("expire")
+    def _compute_ccp_status(self):
+        today = fields.Date.context_today(self)
+        one_month = today + relativedelta(months=1)
+
+        def _to_date(v):
+            if not v:
+                return None
+            if isinstance(v, date):
+                return v
+            if isinstance(v, datetime):
+                return v.date()
+            # strings / anything else
+            return fields.Date.to_date(v)
+
+        for lot in self:
+            lot.ccp_status = False
+            exp = _to_date(lot.expire)
+            if exp:
+                if exp <= today:
+                    lot.ccp_status = "expired"
+                elif exp <= one_month:
+                    lot.ccp_status = "expiring"
+                else:
+                    lot.ccp_status = "active"
 
     # Automate formated_label
     def _label(self):
