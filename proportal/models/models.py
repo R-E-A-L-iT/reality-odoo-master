@@ -197,6 +197,7 @@ class productInstance(models.Model):
         selection=[
             ("active", "Active"),
             ("expiring", "Expiring soon"),
+            ("grace", "Grace period"),
             ("expired", "Expired"),
         ],
         string="Status",
@@ -226,19 +227,21 @@ class productInstance(models.Model):
                 return v
             if isinstance(v, datetime):
                 return v.date()
-            # strings / anything else
             return fields.Date.to_date(v)
 
         for lot in self:
             lot.ccp_status = False
             exp = _to_date(lot.expire)
-            if exp:
-                if exp <= today:
-                    lot.ccp_status = "expired"
-                elif exp <= one_month:
-                    lot.ccp_status = "expiring"
-                else:
-                    lot.ccp_status = "active"
+            if not exp:
+                continue
+
+            if exp <= today:
+                days_past = (today - exp).days
+                lot.ccp_status = "grace" if days_past <= 7 else "expired"
+            elif exp <= one_month:
+                lot.ccp_status = "expiring"
+            else:
+                lot.ccp_status = "active"
 
     # Automate formated_label
     def _label(self):
