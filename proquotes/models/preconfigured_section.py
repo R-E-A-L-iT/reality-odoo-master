@@ -29,10 +29,13 @@ class PreconfiguredSectionLine(models.Model):
     selected = fields.Boolean(string='Selected', default=True)
     quantity_locked = fields.Boolean(string='Quantity Locked')
     price_unit = fields.Float(string='Unit Price')
+    discount = fields.Float(string='Disc. (%)', default=0.0)
 
     @api.onchange('product_id')
     def _onchange_product_name(self):
         if self.product_id:
             self.product_name = self.product_id.name
+            self.price_unit = self.product_id.lst_price
         else:
             self.product_name = False
+            self.price_unit = 0.0

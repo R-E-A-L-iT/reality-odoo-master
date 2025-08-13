@@ -50,12 +50,14 @@
                             <field name="selected"/>
                             <field name="quantity_locked"/>
                             <field name="price_unit"/>
+                            <field name="discount"/>
                         </tree>
                         <form>
                             <group>
                                 <field name="product_id"/>
                                 <field name="product_name"/>
                                 <field name="price_unit"/>
+                                <field name="discount"/>
                             </group>
                             <group>
                                 <field name="optional"/>
