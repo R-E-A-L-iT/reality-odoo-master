@@ -838,10 +838,11 @@ class PreconfigSaleOrder(models.Model):
                         'order_id': self.id,
                         'product_id': line.product_id.id,
                         'name': line.product_name,
-                        'is_optional': line.optional,
-                        'is_selected': line.selected,
-                        'is_quantityLocked': line.quantity_locked,
+                        'optional': 'yes' if line.optional else 'no',
+                        'selected': 'true' if line.selected else 'false',
+                        'quantityLocked': 'yes' if line.quantity_locked else 'no',
                         'price_unit': line.price_unit,
+                        'discount': line.discount,
                         'product_uom_qty': 1,
                     }))
             if new_lines:
