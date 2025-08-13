@@ -173,12 +173,12 @@
                                         </td>
                                         <td t-elif="(line.name == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
                                             <t t-if="language == 'en_CA' or language == 'en_US'">
-                                                <p t-out="'Start of the Rental" />
-                                                <p t-out="'End of the Rental" />
+                                                <p t-out="Start of the Rental" />
+                                                <p t-out="End of the Rental" />
                                             </t>
                                             <t t-elif="language == 'fr_CA'">
-                                                <p t-out="'Début de la Location" />
-                                                <p t-out="'Fin estimée de la Location" />
+                                                <p t-out="Début de la Location" />
+                                                <p t-out="Fin estimée de la Location" />
                                             </t>
                                             <p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
                                                 * The final rental cost will be calculated once the equipement is returned.
