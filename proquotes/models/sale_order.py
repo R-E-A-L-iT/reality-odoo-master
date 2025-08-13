@@ -215,36 +215,6 @@ class order(models.Model):
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
 
-    # this checks if the product name has parantheses in it, and if so, can the contents be used to find a matching stock.lot record
-    # if so, it adds the product template of the product the stock.lot is for, not the original product (which is for display purposes)
-    def _prepare_invoice_line(self, **optional_values):
-        vals = super()._prepare_invoice_line(**optional_values)
-
-        if self.display_type:
-            return vals
-
-        line_text = (self.name or self.product_id.display_name or "")
-
-        groups = re.findall(r'\(([^()]*)\)', line_text)
-        if not groups:
-            return vals
-
-        token = groups[-1].strip()
-        if not token:
-            return vals
-        
-        owner_partner = self.order_id.partner_id.commercial_partner_id
-        lot = self.env['stock.lot'].sudo().search([
-            ('name', '=', token),
-            ('owner', '=', owner_partner.id),
-        ], limit=1)
-
-        if lot and lot.product_id:
-            vals['product_id'] = lot.product_id.id
-
-        return vals
-
-
     # this overrides the subscribe method to not allow the partner_id to be subscribed, since their company email is not where the quote should go
     # leaves an exception for non-company contacts, to allow quotes created by the store to be sent out
     def message_subscribe(self, partner_ids=None, subtype_ids=None):

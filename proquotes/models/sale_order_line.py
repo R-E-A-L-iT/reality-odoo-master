@@ -199,3 +199,33 @@ class orderLineProquotes(models.Model):
     def _onchange_rental_dates(self):
         if self.is_rental:
             self.price_unit = self._get_pricelist_price()
+
+    
+    # this checks if the product name has parantheses in it, and if so, can the contents be used to find a matching stock.lot record
+    # if so, it adds the product template of the product the stock.lot is for, not the original product (which is for display purposes)
+    def _prepare_invoice_line(self, **optional_values):
+        vals = super()._prepare_invoice_line(**optional_values)
+
+        if self.display_type:
+            return vals
+
+        line_text = (self.name or self.product_id.display_name or "")
+
+        groups = re.findall(r'\(([^()]*)\)', line_text)
+        if not groups:
+            return vals
+
+        token = groups[-1].strip()
+        if not token:
+            return vals
+
+        owner_partner = self.order_id.partner_id.commercial_partner_id
+        lot = self.env['stock.lot'].sudo().search([
+            ('name', '=', token),
+            ('owner', '=', owner_partner.id),
+        ], limit=1)
+
+        if lot and lot.product_id:
+            vals['product_id'] = lot.product_id.id
+
+        return vals
