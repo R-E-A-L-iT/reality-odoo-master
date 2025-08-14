@@ -213,10 +213,12 @@ class orderLineProquotes(models.Model):
 
         groups = re.findall(r'\(([^()]*)\)', line_text)
         if not groups:
+            _logger.info('No parentheses found in line text: %s', line_text)
             return vals
 
         token = groups[-1].strip()
         if not token:
+            _logger.info('No serial number found within parentheses in line text: %s', line_text)
             return vals
 
         owner_partner = self.order_id.partner_id.commercial_partner_id
@@ -226,6 +228,9 @@ class orderLineProquotes(models.Model):
         ], limit=1)
 
         if lot and lot.product_id:
+            _logger.info('Matching stock.lot found for token: %s, using product: %s', token, lot.product_id.display_name)
             vals['product_id'] = lot.product_id.id
+        else:
+            _logger.info('No matching stock.lot found for token: %s', token)
 
         return vals
