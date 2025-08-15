@@ -42,10 +42,10 @@
 
 					<br />
 					<t t-if="language == 'en_CA' or language == 'en_US'">
-						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
+						<span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <b style="color: #db0d0d;"><span id="rental-estimate-total-english" style="display: none;"/><span t-out="sale_order.amount_total"/></b></span>
 					</t>
 					<t t-elif="language == 'fr_CA'">
-						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
+						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <b style="color: #db0d0d;"><span id="rental-estimate-total-english" style="display: none;"/><span t-out="sale_order.amount_total"/></b></span>
 					</t>
 					<br />
 					<br />
