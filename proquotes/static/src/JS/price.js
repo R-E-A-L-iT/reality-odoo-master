@@ -101,21 +101,44 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			const totalLandingEnglish = document.getElementById("total-rental-value-english");
 			const totalLandingFrench  = document.getElementById("total-rental-value-french");
 
-			// Helper: robust numeric parser from a DOM node
+			// robust number parser from a node's text
 			const toNumber = (node) => {
 				if (!node) return 0;
-				const raw = (node.textContent || "")
-					.replace(/\u00A0/g, "");            // remove NBSP
+				const raw = (node.textContent || "").replace(/\u00A0/g, ""); // NBSP
 				const cleaned = raw.replace(/[^0-9.-]/g, ""); // keep digits, dot, minus
 				const n = Number(cleaned);
 				return Number.isFinite(n) ? n : 0;
 			};
 
-			// 1) Sum of selected line values (.itemValue)
-			if (!totalLandingEnglish && !totalLandingFrench) {
-				// totals display not present; still continue to rental estimate section
-				// (old code returned early; we won't)
-			}
+			// prefer .oe_currency_value if present (Odoo), else whole node text
+			const getDailyPrice = (rateNode) => {
+				if (!rateNode) return 0;
+				// If your markup ever sets data-daily, prefer it:
+				const dataDaily = rateNode.getAttribute && rateNode.getAttribute("data-daily");
+				if (dataDaily) {
+					const n = Number(String(dataDaily).replace(/[^0-9.-]/g, ""));
+					if (Number.isFinite(n)) return n;
+				}
+				const currencyNode = rateNode.querySelector && rateNode.querySelector(".oe_currency_value");
+				let price = toNumber(currencyNode || rateNode);
+				return Number.isFinite(price) ? price : 0;
+			};
+
+			// exact cap rule: 30-day blocks = 12×daily; 7-day blocks = 4×daily; leftover days min(days×daily, 4×daily)
+			const chargeForDays = (days, daily) => {
+				if (!daily || days <= 0) return 0;
+				let remaining = Math.floor(days);
+				let total = 0;
+
+				while (remaining >= 30) { total += 12 * daily; remaining -= 30; }
+				while (remaining >= 7)  { total +=  4 * daily; remaining -= 7;  }
+
+				// leftover (0..6) days capped at 4×daily
+				total += Math.min(remaining * daily, 4 * daily);
+				return total;
+			};
+
+			// ---- 1) Sum of selected line "itemValue" (unchanged logic, but safer parsing)
 			let total = 0;
 			const rows = document.getElementsByClassName("quoteLineRow");
 			for (let i = 0; i < rows.length; i++) {
@@ -134,7 +157,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				totalLandingFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			// 2) Rental estimate
+			// ---- 2) Rental estimate using tiered caps
 			const rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
 			const rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
 			const startDateEl = document.getElementById("rental-start");
@@ -148,20 +171,17 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				return;
 			}
 
-			const startDate = new Date(startDateEl.value);
-			const endDate   = new Date(endDateEl.value);
+			// timezone-safe day count (ignore time-of-day/DST)
+			const vStart = startDateEl.valueAsDate || new Date(startDateEl.value);
+			const vEnd   = endDateEl.valueAsDate   || new Date(endDateEl.value);
+			const startUTC = Date.UTC(vStart.getFullYear(), vStart.getMonth(), vStart.getDate());
+			const endUTC   = Date.UTC(vEnd.getFullYear(),   vEnd.getMonth(),   vEnd.getDate());
 			const dayMs = 24 * 60 * 60 * 1000;
 
-			let durationDays = Math.floor((endDate.getTime() - startDate.getTime()) / dayMs) + 1;
+			let durationDays = Math.floor((endUTC - startUTC) / dayMs) + 1; // inclusive
 			if (!Number.isFinite(durationDays) || durationDays < 0) durationDays = 0;
 
-			let months = Math.floor(durationDays / 30);
-			durationDays %= 30;
-			let weeks = Math.floor(durationDays / 7);
-			durationDays %= 7;
-			let days = durationDays;
-
-			// 3) Sum rental estimate using .rental_rate_calc (price per line)
+			// Sum each selected line's daily rate with the capped formula
 			let rentalEstimateTotal = 0;
 			const rates = document.getElementsByClassName("rental_rate_calc");
 			for (let i = 0; i < rates.length; i++) {
@@ -170,20 +190,10 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				const checkbox = row ? row.querySelector('input[type="checkbox"]') : null;
 				if (checkbox && !checkbox.checked) continue;
 
-				// Prefer the inner currency value span if present; otherwise whole node text
-				const currencyNode = rateNode.querySelector(".oe_currency_value") || rateNode;
-				const price = toNumber(currencyNode);
-				if (!price) continue; // nothing to add
+				const dailyPrice = getDailyPrice(rateNode); // DAILY rate expected here
+				if (!dailyPrice) continue;
 
-				let sub = days * price;
-				if (sub > 4 * price) sub = 4 * price;
-
-				sub += weeks * 4 * price;
-				if (sub > 12 * price) sub = 12 * price;
-
-				sub += months * 12 * price;
-
-				rentalEstimateTotal += sub;
+				rentalEstimateTotal += chargeForDays(durationDays, dailyPrice);
 			}
 
 			if (rentalEstimateEnglish) {
@@ -193,6 +203,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				rentalEstimateFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
 			}
 		},
+
 
 
 		_updateSectionSelectionEvent: function (ev) {
