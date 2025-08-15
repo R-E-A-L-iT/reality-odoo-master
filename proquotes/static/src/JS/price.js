@@ -98,129 +98,102 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 
 		_rentalValueTotal: function () {
-			var totalLandingEnglish = document.getElementById("total-rental-value-english");
-			var totalLandingFrench = document.getElementById("total-rental-value-french");
-			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
-				return;
+			const totalLandingEnglish = document.getElementById("total-rental-value-english");
+			const totalLandingFrench  = document.getElementById("total-rental-value-french");
+
+			// Helper: robust numeric parser from a DOM node
+			const toNumber = (node) => {
+				if (!node) return 0;
+				const raw = (node.textContent || "")
+					.replace(/\u00A0/g, "");            // remove NBSP
+				const cleaned = raw.replace(/[^0-9.-]/g, ""); // keep digits, dot, minus
+				const n = Number(cleaned);
+				return Number.isFinite(n) ? n : 0;
+			};
+
+			// 1) Sum of selected line values (.itemValue)
+			if (!totalLandingEnglish && !totalLandingFrench) {
+				// totals display not present; still continue to rental estimate section
+				// (old code returned early; we won't)
 			}
-			var total = 0;
-			var items = document.getElementsByClassName("quoteLineRow");
-			for (var i = 0; i < items.length; i++) {
-				var input = items[i].getElementsByTagName("input");
-				var include = true;
-				if (input.length > 0) {
-					if (input[0].type == "checkbox") {
-						if (input[0].checked != true) {
-							include = false;
-						}
-					}
-				}
+			let total = 0;
+			const rows = document.getElementsByClassName("quoteLineRow");
+			for (let i = 0; i < rows.length; i++) {
+				const row = rows[i];
+				const checkbox = row.querySelector('input[type="checkbox"]');
+				if (checkbox && !checkbox.checked) continue;
 
-				if (include) {
-					if (
-						items[i].getElementsByClassName("itemValue").length > 0
-
-
-					) {
-
-						total += parseInt(
-							items[i].getElementsByClassName("itemValue")[0]
-								.innerHTML.replace(",", "").replace("$", "").replace(" ", "")
-						);
-					}
-				}
-			}
-			if (totalLandingEnglish != undefined) {
-				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
+				const valueNode = row.getElementsByClassName("itemValue")[0];
+				total += toNumber(valueNode);
 			}
 
-			if (totalLandingFrench != undefined) {
-				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
+			if (totalLandingEnglish) {
+				totalLandingEnglish.textContent = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
+			}
+			if (totalLandingFrench) {
+				totalLandingFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english")
-			var rentalEstimateFrench = document.getElementById("rental-estimate-total-french")
-			var startDate = document.getElementById("rental-start");
-			var endDate = document.getElementById("rental-end");
+			// 2) Rental estimate
+			const rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
+			const rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
+			const startDateEl = document.getElementById("rental-start");
+			const endDateEl   = document.getElementById("rental-end");
 
-			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
-				return;
-			}
+			if (!rentalEstimateEnglish && !rentalEstimateFrench) return;
 
-			if (startDate.value == "" || endDate.value == "") {
-				if (rentalEstimateEnglish != undefined) {
-					rentalEstimateEnglish.innerHTML = "$ 0.00"
-				} else if (rentalEstimateFrench != undefined) {
-					rentalEstimateFrench.innerHTML = "0.00 $"
-				}
+			if (!startDateEl || !endDateEl || !startDateEl.value || !endDateEl.value) {
+				if (rentalEstimateEnglish) rentalEstimateEnglish.textContent = "$ 0.00";
+				if (rentalEstimateFrench)  rentalEstimateFrench.textContent  = "0.00 $";
 				return;
 			}
 
-			var startDateDate = new Date(startDate.value);
-			var endDateDate = new Date(endDate.value);
+			const startDate = new Date(startDateEl.value);
+			const endDate   = new Date(endDateEl.value);
+			const dayMs = 24 * 60 * 60 * 1000;
 
-			let milliInSeconds = 1000
-			let secondsInMinute = 60
-			let minuteInHour = 60
-			let hourInDay = 24
-			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
-			var months = 0;
-			var weeks = 0;
-			var days = 0;
+			let durationDays = Math.floor((endDate.getTime() - startDate.getTime()) / dayMs) + 1;
+			if (!Number.isFinite(durationDays) || durationDays < 0) durationDays = 0;
 
-			while (rentalLength >= 30) {
-				months += 1
-				rentalLength -= 30;
-			}
-			while (rentalLength >= 7) {
-				weeks += 1
-				rentalLength -= 7
-			}
-			while (rentalLength >= 1) {
-				days += 1;
-				rentalLength -= 1;
+			let months = Math.floor(durationDays / 30);
+			durationDays %= 30;
+			let weeks = Math.floor(durationDays / 7);
+			durationDays %= 7;
+			let days = durationDays;
+
+			// 3) Sum rental estimate using .rental_rate_calc (price per line)
+			let rentalEstimateTotal = 0;
+			const rates = document.getElementsByClassName("rental_rate_calc");
+			for (let i = 0; i < rates.length; i++) {
+				const rateNode = rates[i];
+				const row = rateNode.closest(".quoteLineRow") || rateNode.parentNode;
+				const checkbox = row ? row.querySelector('input[type="checkbox"]') : null;
+				if (checkbox && !checkbox.checked) continue;
+
+				// Prefer the inner currency value span if present; otherwise whole node text
+				const currencyNode = rateNode.querySelector(".oe_currency_value") || rateNode;
+				const price = toNumber(currencyNode);
+				if (!price) continue; // nothing to add
+
+				let sub = days * price;
+				if (sub > 4 * price) sub = 4 * price;
+
+				sub += weeks * 4 * price;
+				if (sub > 12 * price) sub = 12 * price;
+
+				sub += months * 12 * price;
+
+				rentalEstimateTotal += sub;
 			}
 
-			var rentalEstimateTotal = 0
-			var productPrices = document.getElementsByClassName("rental_rate_calc")
-			for (var i = 0; i < productPrices.length; i++) {
-				var node = productPrices[i]
-				while (node.classList.contains("quoteLineRow") == false) {
-					node = node.parentNode;
-				}
-				var inputs = node.getElementsByTagName("input");
-				if (inputs.length > 0) {
-					if (inputs[0].type == "checkbox") {
-						if (inputs[0].checked != true) {
-							continue;
-						}
-					}
-				}
-                var price = productPrices[i].innerHTML.replace(",", "").replace("$", "").replace(" ", "");
-                
-				// removed because caused a bug when it could not find the price span that resulted in product prices being set to zero when signed.
-				// const match = productPrices[i].innerHTML.match(/<span class="oe_currency_value">(.*?)<\/span>/);
-                // const priceStr = match ? match[1] : '0.0';
-                // const price = parseFloat(priceStr.replace(/,/g, ''));
-
-				var rentalEstimateSubTotal = 0;
-				rentalEstimateSubTotal += 1 * days * price;
-				if(rentalEstimateSubTotal > 4 * price) {
-					rentalEstimateSubTotal = 4 * price
-				}
-				rentalEstimateSubTotal += 4 * weeks * price;
-				if(rentalEstimateSubTotal > 12 * price) {
-					rentalEstimateSubTotal = 12 * price
-				}
-				rentalEstimateSubTotal += 12 * months * price;
-				rentalEstimateTotal += rentalEstimateSubTotal
+			if (rentalEstimateEnglish) {
+				rentalEstimateEnglish.textContent = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
 			}
-			if (rentalEstimateEnglish != undefined) {
-				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
-			} else if (rentalEstimateFrench != undefined) {
-				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
+			if (rentalEstimateFrench) {
+				rentalEstimateFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
 			}
 		},
+
 
 		_updateSectionSelectionEvent: function (ev) {
 			var target = ev.currentTarget;
