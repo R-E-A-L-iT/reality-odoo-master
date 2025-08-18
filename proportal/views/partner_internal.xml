@@ -10,7 +10,10 @@
                 <field name="company_nickname" invisible="not is_company" />
             </xpath>
             <xpath expr="//field[@name='category_id']" position="after">
-                <field name="portal_companies_ids" widget="many2many_tags"/>
+                <group string="Portal Administration">
+                    <field name="portal_administrator"/>
+                    <field name="portal_companies_ids" widget="many2many_tags"/>
+                </group>
             </xpath>
         </field>
     </record>

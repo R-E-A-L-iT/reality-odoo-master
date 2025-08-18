@@ -1,0 +1,56 @@
+<odoo>
+  <!-- Company Settings page -->
+  <template id="portal_company_settings" name="Company Settings">
+    <t t-call="portal.portal_layout">
+      <t t-set="breadcrumbs_searchbar" t-value="True"/>
+      <t t-call="portal.portal_searchbar">
+        <t t-set="title">Company Settings</t>
+      </t>
+
+      <t t-if="not companies">
+        <p>No companies found.</p>
+      </t>
+
+      <t t-if="companies" t-call="portal.portal_table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <t t-foreach="companies" t-as="c">
+          <tr>
+            <td><t t-esc="c.name"/></td>
+            <td><t t-esc="c.email or ''"/></td>
+            <td><t t-esc="c.phone or ''"/></td>
+            <td><t t-esc="c.street or ''"/></td>
+            <td><t t-esc="c.city or ''"/></td>
+            <td><t t-esc="c.country_id and c.country_id.name or ''"/></td>
+          </tr>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <template id="portal_my_home_company_settings_card" inherit_id="portal.portal_my_home" priority="40">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+      <t t-set="portal_client_category_enable" t-value="True"/>
+    </xpath>
+    <div id="portal_client_category" position="inside">
+      <t t-if="request.env.user.partner_id.portal_administrator">
+        <t t-call="portal.portal_docs_entry">
+          <t t-set="icon" t-value="'/base/static/description/icon.png'"/>
+          <t t-set="text">Manage your company access &amp; info</t>
+          <t t-set="title">Company Settings</t>
+          <t t-set="url" t-value="'/my/company-settings'"/>
+          <t t-set="placeholder_count" t-value="'-'" />
+          <t t-set="config_card" t-value="True"/>
+        </t>
+      </t>
+    </div>
+  </template>
+</odoo>

@@ -23,6 +23,10 @@ _logger = logging.getLogger(__name__)
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    portal_administrator = fields.Boolean(
+        string="Portal Administrative User",
+        help="If enabled on this contact, the associated portal user sees Company Settings."
+    )
     portal_companies_ids = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
 
     products = fields.One2many(
@@ -37,8 +41,13 @@ class ResPartner(models.Model):
         ondelete={"renewal": "set default"},  # fallback if removed
     )
 
+    def get_portal_company_ids(self):
+        self.ensure_one()
+        main_company = self.commercial_partner_id
+        companies = (main_company | self.portal_company_ids)
+        return companies.ids
+
     def action_open_create_renewal_contact(self):
-        """Open the child partner creation dialog prefilled as a Renewal contact."""
         self.ensure_one()
         action = self.env["ir.actions.act_window"]._for_xml_id("base.action_partner_form")
         
