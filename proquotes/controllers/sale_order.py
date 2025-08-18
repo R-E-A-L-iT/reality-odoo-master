@@ -91,39 +91,69 @@ class PortalOrderAddressController(http.Controller):
                 return {'ok': False, 'message': 'Order not found or access denied.'}
 
             def _apply(which, vals):
+
                 if not vals:
                     return None, 'skipped'
 
                 country_id = _resolve_country(vals.get('country'))
                 state_id   = _resolve_state(country_id, vals.get('state')) if country_id else False
 
-                company_partner = order_sudo.partner_id.commercial_partner_id
+                def _norm(s): return (s or '').strip()
                 target_write = {
-                    'name': vals.get('name') or '',
-                    'street': vals.get('street') or '',
-                    'street2': vals.get('street2') or '',
-                    'city': vals.get('city') or '',
-                    'zip': vals.get('zip') or '',
+                    'name': _norm(vals.get('name')) or '',
+                    'street': _norm(vals.get('street')) or '',
+                    'street2': _norm(vals.get('street2')) or '',
+                    'city': _norm(vals.get('city')) or '',
+                    'zip': _norm(vals.get('zip')) or '',
                     'country_id': country_id or False,
                     'state_id': state_id or False,
                 }
 
                 addr_type = 'invoice' if which == 'invoice' else 'delivery'
+                company_partner = order_sudo.partner_id.commercial_partner_id
+
+                current = (order_sudo.partner_invoice_id if which == 'invoice' else order_sudo.partner_shipping_id).sudo()
+
                 match = _best_existing_child_match(company_partner, vals, addr_type)
 
-                if which == 'invoice':
-                    current = order_sudo.partner_invoice_id.sudo()
-                else:
-                    current = order_sudo.partner_shipping_id.sudo()
+                def _changed(cur, payload):
+                    return any([
+                        _norm(cur.name)   != payload['name'],
+                        _norm(cur.street) != payload['street'],
+                        _norm(cur.street2)!= payload['street2'],
+                        _norm(cur.city)   != payload['city'],
+                        _norm(cur.zip)    != payload['zip'],
+                        (cur.country_id.id or False) != (payload['country_id'] or False),
+                        (cur.state_id.id or False)   != (payload['state_id'] or False),
+                    ])
 
                 if match and match.id != current.id:
                     order_sudo.sudo().write({
                         'partner_invoice_id' if which == 'invoice' else 'partner_shipping_id': match.id
                     })
                     return 'switched', f'{which.title()} → existing #{match.id}'
-                else:
-                    current.write(target_write)
-                    return 'updated', f'{which.title()} address updated (#{current.id})'
+
+                if current.parent_id:
+                    if _changed(current, target_write):
+                        current.write(target_write)
+                        return 'updated', f'{which.title()} address updated (#{current.id})'
+                    return 'unchanged', f'{which.title()} unchanged'
+
+                create_vals = dict(target_write)
+                if not create_vals['name']:
+                    create_vals['name'] = company_partner.name or 'Address'
+                create_vals.update({
+                    'parent_id': company_partner.id,
+                    'commercial_partner_id': company_partner.id,
+                    'type': addr_type,
+                    'is_company': False,
+                })
+                child = request.env['res.partner'].sudo().create(create_vals)
+
+                order_sudo.sudo().write({
+                    'partner_invoice_id' if which == 'invoice' else 'partner_shipping_id': child.id
+                })
+                return 'created', f'{which.title()} child created #{child.id} and set on order'
 
             inv_status, inv_info = _apply('invoice', invoice or {})
             del_status, del_info = _apply('delivery', delivery or {})
