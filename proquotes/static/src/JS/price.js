@@ -98,20 +98,33 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 
 		_rentalValueTotal: function () {
-			// --- helpers: sanitize numbers & safe DOM text
 			const text = (el) => el ? (el.textContent || el.innerText || el.innerHTML || "") : "";
-			// Strip NBSPs, then remove anything not digit, dot or minus (keeps original numeric intent)
-			const cleanNum = (s) => {
-				const raw = String(s).replace(/\u00A0/g, "");
-				const cleaned = raw.replace(/[^0-9.\-]/g, "");
-				return cleaned;
+
+			const normalizeNumeric = (s) => {
+				let raw = String(s).trim().replace(/\u00A0/g, "");
+				raw = raw.replace(/[^\d,.\-]/g, "");
+
+				const comma = raw.indexOf(",") !== -1;
+				const dot   = raw.indexOf(".") !== -1;
+
+				if (comma && dot) {
+					if (raw.lastIndexOf(",") > raw.lastIndexOf(".")) {
+						raw = raw.replace(/\./g, "").replace(",", ".");
+					} else {
+						raw = raw.replace(/,/g, "");
+					}
+				} else if (comma && !dot) {
+					raw = raw.replace(",", ".");
+				}
+				return raw;
 			};
+
 			const toIntOr0 = (s) => {
-				const n = parseInt(cleanNum(s), 10);
+				const n = parseInt(normalizeNumeric(s), 10);
 				return Number.isFinite(n) ? n : 0;
 			};
 			const toNumOr0 = (s) => {
-				const n = Number(cleanNum(s));
+				const n = Number(normalizeNumeric(s));
 				return Number.isFinite(n) ? n : 0;
 			};
 
@@ -121,7 +134,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				return;
 			}
 
-			// ---- 1) Sum of selected line "itemValue" (same logic; still truncates cents like original)
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
@@ -133,7 +145,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				if (include) {
 					var vals = items[i].getElementsByClassName("itemValue");
 					if (vals.length > 0) {
-						// use text() and safe int parse; fallback to 0 instead of NaN
 						total += toIntOr0(text(vals[0]));
 					}
 				}
@@ -142,10 +153,10 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
 			}
 			if (totalLandingFrench != undefined) {
+				Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 })
 				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			// ---- 2) Rental estimate (same math & caps)
 			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
 			var rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
 			var startDate = document.getElementById("rental-start");
@@ -166,7 +177,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 			var startDateDate = new Date(startDate.value);
 			var endDateDate   = new Date(endDate.value);
-			// Guard invalid dates (keep original flow: show 0.00 if unusable)
 			if (!Number.isFinite(startDateDate.getTime()) || !Number.isFinite(endDateDate.getTime())) {
 				if (rentalEstimateEnglish != undefined) {
 					rentalEstimateEnglish.innerHTML = "$ 0.00";
@@ -178,7 +188,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 			let milliInSeconds = 1000, secondsInMinute = 60, minuteInHour = 60, hourInDay = 24;
 			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
-			// if something still went off (DST quirks), normalize to non-negative finite
 			if (!Number.isFinite(rentalLength) || rentalLength < 0) rentalLength = 0;
 
 			var months = 0, weeks = 0, days = 0;
@@ -189,18 +198,15 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			var rentalEstimateTotal = 0;
 			var productPrices = document.getElementsByClassName("rental_rate_calc");
 			for (var j = 0; j < productPrices.length; j++) {
-				// Find enclosing .quoteLineRow (same walk-up)
 				var node = productPrices[j];
 				while (node && node.classList && node.classList.contains("quoteLineRow") == false) {
 					node = node.parentNode;
 				}
-				// Skip if row has an unchecked checkbox (same behavior)
 				var inputs = node ? node.getElementsByTagName("input") : [];
 				if (inputs.length > 0 && inputs[0].type == "checkbox" && inputs[0].checked != true) {
 					continue;
 				}
 
-				// Parse price robustly from text; fallback to 0 instead of NaN
 				var price = toNumOr0(text(productPrices[j]));
 
 				var rentalEstimateSubTotal = 0;
@@ -222,7 +228,6 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
 			}
 		},
-
 
 
 		_updateSectionSelectionEvent: function (ev) {
