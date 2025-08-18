@@ -12,6 +12,7 @@ from functools import partial
 from itertools import groupby
 import logging
 
+from odoo.fields import Command
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
@@ -20,6 +21,50 @@ from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
+
+PROVINCE_TAX_BY_CODE = {
+    # code -> tax name in that company's chart
+    "QC": "GST + QST for sales",
+    "AB": "GST for sales - 5%",
+    "BC": "GST + PST for sales (BC)",
+    "ON": "HST for sales - 13%",
+    "MB": "GST + PST for sales (MB)",
+    "NB": "HST for sales - 15%",
+    "NL": "HST for sales - 15%",
+    "NT": "GST for sales - 5%",
+    "NS": "HST for sales - 15%",
+    "NU": "GST for sales - 5%",
+    "PE": "HST for sales - 15%",
+    "SK": "GST + PST for sales (SK)",
+    "YT": "GST for sales - 5%",
+}
+
+def _code_from_state(state):
+    if not state:
+        return False
+    code = (state.code or "").upper()
+    name = (state.display_name or state.name or "").upper()
+
+    # 1) trust code if it matches a known one
+    if code in PROVINCE_TAX_BY_CODE:
+        return code
+
+    # 2) fuzzy name contains, matching your original behavior
+    contains = lambda s: s in name
+    if contains("QUEBEC") or contains("QUÉBEC"): return "QC"
+    if contains("ALBERTA"): return "AB"
+    if contains("BRITISH"): return "BC"
+    if contains("ONTARIO"): return "ON"
+    if contains("MANITOBA"): return "MB"
+    if contains("BRUNSWICK"): return "NB"
+    if contains("NEWFOUNDLAND"): return "NL"
+    if contains("NORTHWEST"): return "NT"
+    if contains("SCOTIA"): return "NS"
+    if contains("NUNAVUT"): return "NU"
+    if contains("PRINCE"): return "PE"
+    if contains("SASKATCHEWAN"): return "SK"
+    if contains("YUKON"): return "YT"
+    return False
 
 class order(models.Model):
     _inherit = "sale.order"
@@ -93,6 +138,85 @@ class order(models.Model):
         help="Header selection field",
     )
 
+
+
+
+
+    # 
+    # 
+    # TAXES AUTOMATIONS
+    # 
+    # 
+
+    def _is_ca_company_scope(self):
+        """Limit to your Canadian company, same condition as your rule."""
+        # Keep your business rule as-is:
+        return self.company_id and self.company_id.name == "R-E-A-L.iT Solutions"
+
+    def _get_province_tax(self, province_code):
+        """Return the account.tax record for the province under the order's company."""
+        self.ensure_one()
+        if not (province_code and self._is_ca_company_scope()):
+            return self.env["account.tax"]
+        tax_name = PROVINCE_TAX_BY_CODE.get(province_code)
+        if not tax_name:
+            return self.env["account.tax"]
+        # Search inside the order's company context
+        return (
+            self.env["account.tax"]
+            .with_company(self.company_id)
+            .search([("name", "=", tax_name)], limit=1)
+        )
+
+    def _apply_canadian_province_taxes(self):
+        """Clear and apply taxes to order lines based on shipping province."""
+        for order in self:
+            # Only run for your Canadian company and when a shipping state exists
+            state = order.partner_shipping_id.state_id
+            if not order._is_ca_company_scope() or not state:
+                # Clear taxes if we’re not in scope (so you don't accidentally retain old taxes)
+                for line in order.order_line:
+                    if not line.display_type and line.product_id:
+                        line.tax_id = [Command.clear()]
+                continue
+
+            province_code = _code_from_state(state)
+            province_tax = order._get_province_tax(province_code)
+
+            for line in order.order_line:
+                # skip sections/notes and empty lines
+                if line.display_type or not line.product_id or line.product_uom_qty <= 0:
+                    continue
+                if province_tax:
+                    # Clear-and-set (ensures nothing else sticks)
+                    line.tax_id = [Command.set(province_tax.ids)]
+                else:
+                    # No match: clear taxes to avoid stale values
+                    line.tax_id = [Command.clear()]
+
+    # ---------- Triggers to (re)apply ----------
+    @api.onchange("partner_id", "partner_shipping_id", "company_id", "pricelist_id", "sale_order_template_id")
+    def _onchange_reapply_province_taxes(self):
+        self._apply_canadian_province_taxes()
+
+    def write(self, vals):
+        res = super().write(vals)
+        # If any of these change, recompute taxes
+        if {"partner_id", "partner_shipping_id", "company_id", "pricelist_id"} & set(vals.keys()):
+            self._apply_canadian_province_taxes()
+        return res
+
+
+    # 
+    # 
+    # 
+    # 
+    # 
+
+
+
+
+
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id_set_header_footer(self):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:
@@ -117,22 +241,27 @@ class order(models.Model):
         return json.dumps(items)
 
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
-    @api.model
-    def create(self, vals):
-        order = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        orders = super().create(vals_list)
+
+        # apply taxes if canadian quote
+        orders._apply_canadian_province_taxes()
 
         # Find or create the partner with email sales@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
-        if sales_email:
-            order.message_subscribe(partner_ids=[sales_email.id])
+        for order in orders:
+            if sales_email:
+                order.message_subscribe(partner_ids=[sales_email.id])
 
         # Add non-company partners to subscribers (automatic quotes from store)
-        partner = order.partner_id
-        if partner and not partner.is_company:
-            if partner.id not in order.message_partner_ids.ids:
-                order.message_subscribe(partner_ids=[partner.id])
+        for order in orders:
+            partner = order.partner_id
+            if partner and not partner.is_company:
+                if partner.id not in order.message_partner_ids.ids:
+                    order.message_subscribe(partner_ids=[partner.id])
         
-        return order
+        return orders
 
 
     @api.model
