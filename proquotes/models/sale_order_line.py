@@ -168,7 +168,95 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-class PreconfigSaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+
+    def _get_pricelist_price(self):
+        self.ensure_one()
+        if self.is_rental and not self.product_id.product_tmpl_id.default_rental_behaviour:
+            product = self.product_id.product_tmpl_id
+            start_date = self.start_date
+            return_date = self.return_date
+            if not (start_date and return_date):
+                return 0.0
+
+            daily_rate = product.rental_base
+            duration_days = (return_date - start_date).days
+
+            if duration_days <= 4:
+                price = daily_rate * duration_days
+            elif duration_days <= 7:
+                price = daily_rate * 4
+            elif duration_days <= 11:
+                price = daily_rate * 4 + daily_rate * (duration_days - 7)
+            elif duration_days <= 30:
+                price = daily_rate * 12
+            else:
+                remaining_days = duration_days - 30
+                price = daily_rate * 12
+                if remaining_days <= 7:
+                    price += min(remaining_days, 4) * daily_rate if remaining_days <= 4 else 4 * daily_rate
+                else:
+                    full_weeks = remaining_days // 7
+                    extra_days = remaining_days % 7
+                    price += full_weeks * 4 * daily_rate + extra_days * daily_rate
+
+            return price
+
+        # Fallback to standard behavior
+        return super()._get_pricelist_price()
+
+    @api.onchange('start_date', 'return_date')
+    def _onchange_rental_dates(self):
+        if self.is_rental:
+            self.price_unit = self._get_pricelist_price()
+
+    
+    # this checks if the product name has parantheses in it, and if so, can the contents be used to find a matching stock.lot record
+    # if so, it adds the product template of the product the stock.lot is for, not the original product (which is for display purposes)
+    def _prepare_invoice_line(self, **optional_values):
+        vals = super()._prepare_invoice_line(**optional_values)
+
+        if self.display_type:
+            return vals
+
+        line_text = (self.name or self.product_id.display_name or "")
+
+        groups = re.findall(r'\(([^()]*)\)', line_text)
+        if not groups:
+            _logger.info('No parentheses found in line text: %s', line_text)
+            return vals
+
+        token = groups[-1].strip()
+        if not token:
+            _logger.info('No serial number found within parentheses in line text: %s', line_text)
+            return vals
+
+        owner_partner = self.order_id.partner_id.commercial_partner_id
+        lot = self.env['stock.lot'].sudo().search([
+            ('name', '=', token),
+            ('owner', '=', owner_partner.id),
+        ], limit=1)
+
+        if lot and lot.product_id:
+            _logger.info('Matching stock.lot found for token: %s, using product: %s', token, lot.product_id.display_name)
+            vals['product_id'] = lot.product_id.id
+        else:
+            _logger.info('No matching stock.lot found for token: %s', token)
+
+        return vals
+
+    # tax applying code
+    @api.onchange("product_id", "product_uom_qty")
+    def _onchange_line_reapply_province_taxes(self):
+        # Delegate to the order to keep logic in one place
+        if self.order_id:
+            self.order_id._apply_canadian_province_taxes()
+
+    def write(self, vals):
+        res = super().write(vals)
+        # If product or qty changed, re-apply
+        if {"product_id", "product_uom_qty"} & set(vals.keys()):
+            for line in self:
+                if line.order_id:
+                    line.order_id._apply_canadian_province_taxes()
+        return res
