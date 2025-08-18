@@ -168,7 +168,20 @@ class orderLineProquotes(models.Model):
                 'price_total': amount_untaxed + amount_tax,
             })
 
-class PreconfigSaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+
+    # tax applying code
+    @api.onchange("product_id", "product_uom_qty")
+    def _onchange_line_reapply_province_taxes(self):
+        # Delegate to the order to keep logic in one place
+        if self.order_id:
+            self.order_id._apply_canadian_province_taxes()
+
+    def write(self, vals):
+        res = super().write(vals)
+        # If product or qty changed, re-apply
+        if {"product_id", "product_uom_qty"} & set(vals.keys()):
+            for line in self:
+                if line.order_id:
+                    line.order_id._apply_canadian_province_taxes()
+        return res
