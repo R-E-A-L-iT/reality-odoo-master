@@ -1,0 +1,293 @@
+<odoo>
+  <!-- Company settings DETAIL page -->
+  <template id="portal_company_settings_detail" name="Company Settings Detail">
+    <t t-call="portal.portal_layout">
+      <t t-set="breadcrumbs_searchbar" t-value="True"/>
+      <t t-call="portal.portal_searchbar">
+        <t t-set="title">Company Settings</t>
+      </t>
+
+      <div class="d-flex align-items-center mb-3">
+        <a class="btn btn-light me-2" href="/my/company-settings">← Back</a>
+        <h3 class="m-0">
+          <t t-esc="company.name"/> — Contact Settings
+        </h3>
+      </div>
+
+      <!-- <div class="alert alert-info mb-4">
+        These forms are for preview/UX only right now. Submissions are disabled and do not update data yet.
+      </div> -->
+
+      <div class="row gy-4">
+        <!-- 1) Invoice Address -->
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header fw-bold">Invoice Address</div>
+            <div class="card-body">
+              <form onsubmit="return false;">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Name</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.name) or (company and company.name) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email"
+                      t-att-value="(invoice_partner and invoice_partner.email) or (company and company.email) or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.phone) or (company and company.phone) or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Street</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.street) or (company and company.street) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Street 2</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.street2) or (company and company.street2) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.city) or (company and company.city) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">State/Province</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.state_id and invoice_partner.state_id.name) or (company and company.state_id and company.state_id.name) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">ZIP/Postal Code</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.zip) or (company and company.zip) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Country</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(invoice_partner and invoice_partner.country_id and invoice_partner.country_id.name) or (company and company.country_id and company.country_id.name) or ''"/>
+                  </div>
+                </div>
+                <div class="mt-3 text-end">
+                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2) Delivery Address -->
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header fw-bold">Delivery Address</div>
+            <div class="card-body">
+              <form onsubmit="return false;">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Name</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.name) or (company and company.name) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email"
+                      t-att-value="(delivery_partner and delivery_partner.email) or (company and company.email) or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.phone) or (company and company.phone) or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Street</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.street) or (company and company.street) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Street 2</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.street2) or (company and company.street2) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.city) or (company and company.city) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">State/Province</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.state_id and delivery_partner.state_id.name) or (company and company.state_id and company.state_id.name) or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">ZIP/Postal Code</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.zip) or (company and company.zip) or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Country</label>
+                    <input class="form-control" type="text"
+                      t-att-value="(delivery_partner and delivery_partner.country_id and delivery_partner.country_id.name) or (company and company.country_id and company.country_id.name) or ''"/>
+                  </div>
+                </div>
+                <div class="mt-3 text-end">
+                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3) Follow-up Address -->
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header fw-bold">Follow-up Address</div>
+            <div class="card-body">
+              <form onsubmit="return false;">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Name</label>
+                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Street</label>
+                    <input class="form-control" type="text" t-att-value="company.street or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Street 2</label>
+                    <input class="form-control" type="text" t-att-value="company.street2 or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    <input class="form-control" type="text" t-att-value="company.city or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">State/Province</label>
+                    <input class="form-control" type="text"
+                      t-att-value="company.state_id and company.state_id.name or ''"/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">ZIP/Postal Code</label>
+                    <input class="form-control" type="text" t-att-value="company.zip or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Country</label>
+                    <input class="form-control" type="text"
+                      t-att-value="company.country_id and company.country_id.name or ''"/>
+                  </div>
+                </div>
+                <div class="mt-3 text-end">
+                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4) Renewal Contact -->
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header fw-bold">Renewal Contact</div>
+            <div class="card-body">
+              <form onsubmit="return false;">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Name</label>
+                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
+                  </div>
+                </div>
+                <div class="mt-3 text-end">
+                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </t>
+  </template>
+  <!-- Company Settings page -->
+  <template id="portal_company_settings" name="Company Settings">
+    <t t-call="portal.portal_layout">
+      <t t-set="breadcrumbs_searchbar" t-value="True"/>
+      <t t-call="portal.portal_searchbar">
+        <t t-set="title">Company Settings</t>
+      </t>
+
+      <t t-if="not companies">
+        <p>No companies found.</p>
+      </t>
+
+      <t t-if="companies" t-call="portal.portal_table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <t t-foreach="companies" t-as="c">
+          <tr>
+            <td>
+                <a t-attf-href="/my/company-settings/#{c.id}">
+                    <t t-esc="c.name"/>
+                </a>
+            </td>
+            <td><t t-esc="c.email or ''"/></td>
+            <td><t t-esc="c.phone or ''"/></td>
+            <td><t t-esc="c.street or ''"/></td>
+            <td><t t-esc="c.city or ''"/></td>
+            <td><t t-esc="c.country_id and c.country_id.name or ''"/></td>
+          </tr>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <template id="portal_my_home_company_settings_card" inherit_id="portal.portal_my_home" priority="40">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+      <t t-set="portal_client_category_enable" t-value="True"/>
+    </xpath>
+    <div id="portal_client_category" position="inside">
+      <t t-if="request.env.user.partner_id.portal_administrator">
+        <t t-call="portal.portal_docs_entry">
+          <t t-set="icon" t-value="'/base/static/description/icon.png'"/>
+          <t t-set="text">Manage your company access &amp; info</t>
+          <t t-set="title">Company Settings</t>
+          <t t-set="url" t-value="'/my/company-settings'"/>
+          <t t-set="placeholder_count" t-value="'-'" />
+          <t t-set="config_card" t-value="True"/>
+        </t>
+      </t>
+    </div>
+  </template>
+</odoo>
