@@ -98,112 +98,73 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 
 		_rentalValueTotal: function () {
-			const totalLandingEnglish = document.getElementById("total-rental-value-english");
-			const totalLandingFrench  = document.getElementById("total-rental-value-french");
+			const totalEN = document.getElementById("total-rental-value-english");
+			const totalFR = document.getElementById("total-rental-value-french");
+			if (totalEN == undefined && totalFR == undefined) return;
 
-			// robust number parser from a node's text
-			const toNumber = (node) => {
-				if (!node) return 0;
-				const raw = (node.textContent || "").replace(/\u00A0/g, ""); // NBSP
-				const cleaned = raw.replace(/[^0-9.-]/g, ""); // keep digits, dot, minus
-				const n = Number(cleaned);
-				return Number.isFinite(n) ? n : 0;
+			const fmt = (n) => Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(n);
+			const clean = (s) => String(s).replace(",", "").replace("$", "").replace(" ", ""); // keep original single-replace behavior
+			const included = (row) => {
+				const input = row.getElementsByTagName("input");
+				return !(input.length && input[0].type === "checkbox" && input[0].checked !== true);
 			};
 
-			// prefer .oe_currency_value if present (Odoo), else whole node text
-			const getDailyPrice = (rateNode) => {
-				if (!rateNode) return 0;
-				// If your markup ever sets data-daily, prefer it:
-				const dataDaily = rateNode.getAttribute && rateNode.getAttribute("data-daily");
-				if (dataDaily) {
-					const n = Number(String(dataDaily).replace(/[^0-9.-]/g, ""));
-					if (Number.isFinite(n)) return n;
-				}
-				const currencyNode = rateNode.querySelector && rateNode.querySelector(".oe_currency_value");
-				let price = toNumber(currencyNode || rateNode);
-				return Number.isFinite(price) ? price : 0;
-			};
-
-			// exact cap rule: 30-day blocks = 12×daily; 7-day blocks = 4×daily; leftover days min(days×daily, 4×daily)
-			const chargeForDays = (days, daily) => {
-				if (!daily || days <= 0) return 0;
-				let remaining = Math.floor(days);
-				let total = 0;
-
-				while (remaining >= 30) { total += 12 * daily; remaining -= 30; }
-				while (remaining >= 7)  { total +=  4 * daily; remaining -= 7;  }
-
-				// leftover (0..6) days capped at 4×daily
-				total += Math.min(remaining * daily, 4 * daily);
-				return total;
-			};
-
-			// ---- 1) Sum of selected line "itemValue" (unchanged logic, but safer parsing)
+			// ---- Grand total (sum of .itemValue for included rows; cents truncated like original)
 			let total = 0;
 			const rows = document.getElementsByClassName("quoteLineRow");
 			for (let i = 0; i < rows.length; i++) {
-				const row = rows[i];
-				const checkbox = row.querySelector('input[type="checkbox"]');
-				if (checkbox && !checkbox.checked) continue;
-
-				const valueNode = row.getElementsByClassName("itemValue")[0];
-				total += toNumber(valueNode);
+				if (!included(rows[i])) continue;
+				const v = rows[i].getElementsByClassName("itemValue");
+				if (v.length) total += parseInt(clean(v[0].innerHTML));
 			}
+			if (totalEN != undefined) totalEN.innerHTML = '$ ' + fmt(total);
+			if (totalFR != undefined) totalFR.innerHTML = fmt(total) + ' $';
 
-			if (totalLandingEnglish) {
-				totalLandingEnglish.textContent = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
-			}
-			if (totalLandingFrench) {
-				totalLandingFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
-			}
+			// ---- Rental estimate
+			const estEN = document.getElementById("rental-estimate-total-english");
+			const estFR = document.getElementById("rental-estimate-total-french");
+			const startEl = document.getElementById("rental-start");
+			const endEl   = document.getElementById("rental-end");
+			if (estEN == undefined && estFR == undefined) return;
 
-			// ---- 2) Rental estimate using tiered caps
-			const rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
-			const rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
-			const startDateEl = document.getElementById("rental-start");
-			const endDateEl = document.getElementById("rental-end");
-
-			if (!rentalEstimateEnglish && !rentalEstimateFrench) return;
-
-			if (!startDateEl || !endDateEl || !startDateEl.value || !endDateEl.value) {
-				if (rentalEstimateEnglish) rentalEstimateEnglish.textContent = "$ 0.00";
-				if (rentalEstimateFrench)  rentalEstimateFrench.textContent  = "0.00 $";
+			if (!startEl.value || !endEl.value) {
+				if (estEN != undefined)      estEN.innerHTML = "$ 0.00";
+				else if (estFR != undefined) estFR.innerHTML = "0.00 $";
 				return;
 			}
 
-			// timezone-safe day count (ignore time-of-day/DST)
-			const vStart = startDateEl.valueAsDate || new Date(startDateEl.value);
-			const vEnd = endDateEl.valueAsDate   || new Date(endDateEl.value);
-			const startUTC = Date.UTC(vStart.getFullYear(), vStart.getMonth(), vStart.getDate());
-			const endUTC = Date.UTC(vEnd.getFullYear(), vEnd.getMonth(), vEnd.getDate());
-			const dayMs = 24 * 60 * 60 * 1000;
+			const start = new Date(startEl.value), end = new Date(endEl.value);
+			const dayMs = 1000 * 60 * 60 * 24;
+			let rentalLength = (end.getTime() - start.getTime()) / dayMs + 1; // inclusive
+			let months = Math.floor(rentalLength / 30); rentalLength %= 30;
+			let weeks  = Math.floor(rentalLength / 7);  rentalLength %= 7;
+			let days   = Math.floor(rentalLength);
 
-			let durationDays = Math.floor((endUTC - startUTC) / dayMs) + 1; // inclusive
-			if (!Number.isFinite(durationDays) || durationDays < 0) durationDays = 0;
+			let estimate = 0;
+			const prices = document.getElementsByClassName("rental_rate_calc");
+			for (let i = 0; i < prices.length; i++) {
+				// find parent .quoteLineRow (original walk-up behavior)
+				let node = prices[i];
+				while (node && node.classList && !node.classList.contains("quoteLineRow")) node = node.parentNode;
 
-			// Sum each selected line's daily rate with the capped formula
-			let rentalEstimateTotal = 0;
-			const rates = document.getElementsByClassName("rental_rate_calc");
-			for (let i = 0; i < rates.length; i++) {
-				const rateNode = rates[i];
-				const row = rateNode.closest(".quoteLineRow") || rateNode.parentNode;
-				const checkbox = row ? row.querySelector('input[type="checkbox"]') : null;
-				if (checkbox && !checkbox.checked) continue;
+				// skip if row has an unchecked checkbox (same as original)
+				const inputs = node ? node.getElementsByTagName("input") : [];
+				if (inputs.length && inputs[0].type === "checkbox" && inputs[0].checked !== true) continue;
 
-				const dailyPrice = getDailyPrice(rateNode); // DAILY rate expected here
-				if (!dailyPrice) continue;
+				const price = clean(prices[i].innerHTML); // string; coerces to number in math like original
 
-				rentalEstimateTotal += chargeForDays(durationDays, dailyPrice);
+				let sub = 0;
+				sub += 1 * days * price;                      // days
+				if (sub > 4 * price) sub = 4 * price;        // cap week-equivalent
+				sub += 4 * weeks * price;                     // weeks
+				if (sub > 12 * price) sub = 12 * price;      // cap month-equivalent
+				sub += 12 * months * price;                   // months
+				estimate += sub;
 			}
 
-			if (rentalEstimateEnglish) {
-				rentalEstimateEnglish.textContent = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
-			}
-			if (rentalEstimateFrench) {
-				rentalEstimateFrench.textContent = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
-			}
+			if (estEN != undefined)      estEN.innerHTML = '$ ' + fmt(estimate);
+			else if (estFR != undefined) estFR.innerHTML = fmt(estimate) + ' $';
 		},
-
 
 
 		_updateSectionSelectionEvent: function (ev) {
