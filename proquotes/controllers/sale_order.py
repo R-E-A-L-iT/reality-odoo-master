@@ -95,7 +95,7 @@ class PortalOrderAddressController(http.Controller):
                     return None, 'skipped'
 
                 country_id = _resolve_country(vals.get('country'))
-                state_id = _resolve_state(country_id, vals.get('state')) if country_id else False
+                state_id   = _resolve_state(country_id, vals.get('state')) if country_id else False
 
                 company_partner = order_sudo.partner_id.commercial_partner_id
                 target_write = {
@@ -108,26 +108,22 @@ class PortalOrderAddressController(http.Controller):
                     'state_id': state_id or False,
                 }
 
-                match = _best_existing_child_match(
-                    company_partner, vals, 'invoice' if which == 'invoice' else 'delivery'
-                )
+                addr_type = 'invoice' if which == 'invoice' else 'delivery'
+                match = _best_existing_child_match(company_partner, vals, addr_type)
 
                 if which == 'invoice':
                     current = order_sudo.partner_invoice_id.sudo()
-                    if match:
-                        order_sudo.sudo().write({'partner_invoice_id': match.id})
-                        return 'switched', f'Invoice → existing #{match.id}'
-                    else:
-                        current.write(target_write)
-                        return 'updated', f'Invoice address updated (#{current.id})'
                 else:
                     current = order_sudo.partner_shipping_id.sudo()
-                    if match:
-                        order_sudo.sudo().write({'partner_shipping_id': match.id})
-                        return 'switched', f'Delivery → existing #{match.id}'
-                    else:
-                        current.write(target_write)
-                        return 'updated', f'Delivery address updated (#{current.id})'
+
+                if match and match.id != current.id:
+                    order_sudo.sudo().write({
+                        'partner_invoice_id' if which == 'invoice' else 'partner_shipping_id': match.id
+                    })
+                    return 'switched', f'{which.title()} → existing #{match.id}'
+                else:
+                    current.write(target_write)
+                    return 'updated', f'{which.title()} address updated (#{current.id})'
 
             inv_status, inv_info = _apply('invoice', invoice or {})
             del_status, del_info = _apply('delivery', delivery or {})
