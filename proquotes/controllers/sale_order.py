@@ -21,8 +21,8 @@ def _resolve_country(name_or_code):
     if not name_or_code:
         return False
     Country = request.env['res.country'].sudo()
-    # try code first, then name (case-insensitive)
-    c = Country.search([('code', '=', name_or_code.strip().upper())], limit=1)
+    code = name_or_code.strip().upper()
+    c = Country.search([('code', '=', code)], limit=1)
     if c:
         return c.id
     c = Country.search([('name', '=ilike', name_or_code.strip())], limit=1)
@@ -33,25 +33,20 @@ def _resolve_state(country_id, name_or_code):
         return False
     State = request.env['res.country.state'].sudo()
     norm = name_or_code.strip().upper()
-    # match by code for the country
     st = State.search([('country_id', '=', country_id), ('code', '=', norm)], limit=1)
     if st:
         return st.id
-    # match by name (ilike)
     st = State.search([('country_id', '=', country_id), ('name', '=ilike', name_or_code.strip())], limit=1)
     return st.id or False
 
 def _best_existing_child_match(company_partner, target_vals, address_type):
-    """Return an existing child contact (invoice/delivery/other) that 'matches' the target address, else False."""
     Partner = request.env['res.partner'].sudo()
-    # Candidates: any child of the commercial partner (use commercial_partner_id tree) with type or not
-    dom = [('commercial_partner_id', '=', company_partner.commercial_partner_id.id), ('parent_id', '!=', False)]
-    # Prefer same type if present
+    dom = [('commercial_partner_id', '=', company_partner.commercial_partner_id.id),
+           ('parent_id', '!=', False)]
     if address_type in ('invoice', 'delivery'):
         dom = ['|', ('type', '=', address_type), ('type', '=', False)] + dom
     candidates = Partner.search(dom, limit=200)
 
-    # Precompute normalized target
     t_street  = _normalize(target_vals.get('street'))
     t_street2 = _normalize(target_vals.get('street2'))
     t_city    = _normalize(target_vals.get('city'))
@@ -69,7 +64,6 @@ def _best_existing_child_match(company_partner, target_vals, address_type):
         country = _normalize(c.country_id and c.country_id.name or '')
         state = _normalize((c.state_id and c.state_id.code) or (c.state_id and c.state_id.name) or '')
 
-        # simple scoring: zip and city weigh more; street/region help
         score = 0
         if zipc and t_zip and zipc == t_zip: score += 3
         if city and t_city and city == t_city: score += 3
@@ -77,78 +71,72 @@ def _best_existing_child_match(company_partner, target_vals, address_type):
         if s2 and t_street2 and s2 == t_street2: score += 1
         if country and t_country and country == t_country: score += 1
         if state and t_state and state == t_state: score += 1
-
-        # small bonus if type matches exactly
         if address_type and (c.type == address_type): score += 1
 
         if score > best_score:
             best = c
             best_score = score
 
-    # Accept the match if confidently similar
     return best if best and best_score >= 6 else False
 
 class PortalOrderAddressController(http.Controller):
 
     @http.route(['/my/orders/<int:order_id>/update_addresses'], type='json', auth='public', website=True, csrf=False)
     def update_addresses(self, order_id, access_token=None, invoice=None, delivery=None, **kw):
-        """
-        Payload:
-        {
-          "invoice":  {"name","street","street2","city","state","zip","country"},
-          "delivery": {"name","street","street2","city","state","zip","country"},
-          "access_token": "<optional token>"
-        }
-        """
-        # Load order with token awareness
-        Order = request.env['sale.order'].sudo()
-        order_sudo = Order._document_check_access(order_id, access_token=access_token)[0]
+        try:
+            Order = request.env['sale.order'].sudo()
+            # Be tolerant to return type of _document_check_access (record vs tuple)
+            rec = Order._document_check_access(order_id, access_token=access_token)
+            order_sudo = rec[0] if isinstance(rec, (list, tuple)) else rec
+            if not order_sudo or not order_sudo.exists():
+                return {'ok': False, 'message': 'Order not found or access denied.'}
 
-        # Helper to apply one address block
-        def _apply(which, vals):
-            if not vals:
-                return None, 'skipped'
+            def _apply(which, vals):
+                if not vals:
+                    return None, 'skipped'
 
-            # Resolve country/state ids (state depends on country)
-            country_id = _resolve_country(vals.get('country'))
-            state_id = _resolve_state(country_id, vals.get('state')) if country_id else False
+                country_id = _resolve_country(vals.get('country'))
+                state_id = _resolve_state(country_id, vals.get('state')) if country_id else False
 
-            # Try to match an existing child address under the company
-            company_partner = order_sudo.partner_id.commercial_partner_id
-            target = {
-                'name': vals.get('name') or '',
-                'street': vals.get('street') or '',
-                'street2': vals.get('street2') or '',
-                'city': vals.get('city') or '',
-                'zip': vals.get('zip') or '',
-                'country_id': country_id,
-                'state_id': state_id,
-            }
-            match = _best_existing_child_match(company_partner, vals, 'invoice' if which=='invoice' else 'delivery')
+                company_partner = order_sudo.partner_id.commercial_partner_id
+                target_write = {
+                    'name': vals.get('name') or '',
+                    'street': vals.get('street') or '',
+                    'street2': vals.get('street2') or '',
+                    'city': vals.get('city') or '',
+                    'zip': vals.get('zip') or '',
+                    'country_id': country_id or False,
+                    'state_id': state_id or False,
+                }
 
-            if which == 'invoice':
-                current = order_sudo.partner_invoice_id
-                if match:
-                    order_sudo.write({'partner_invoice_id': match.id})
-                    return 'switched', f'Invoice → existing #{match.id}'
+                match = _best_existing_child_match(
+                    company_partner, vals, 'invoice' if which == 'invoice' else 'delivery'
+                )
+
+                if which == 'invoice':
+                    current = order_sudo.partner_invoice_id.sudo()
+                    if match:
+                        order_sudo.sudo().write({'partner_invoice_id': match.id})
+                        return 'switched', f'Invoice → existing #{match.id}'
+                    else:
+                        current.write(target_write)
+                        return 'updated', f'Invoice address updated (#{current.id})'
                 else:
-                    # update the currently selected record in place
-                    current.sudo().write(target)
-                    return 'updated', f'Invoice address updated (#{current.id})'
+                    current = order_sudo.partner_shipping_id.sudo()
+                    if match:
+                        order_sudo.sudo().write({'partner_shipping_id': match.id})
+                        return 'switched', f'Delivery → existing #{match.id}'
+                    else:
+                        current.write(target_write)
+                        return 'updated', f'Delivery address updated (#{current.id})'
 
-            else:  # delivery
-                current = order_sudo.partner_shipping_id
-                if match:
-                    order_sudo.write({'partner_shipping_id': match.id})
-                    return 'switched', f'Delivery → existing #{match.id}'
-                else:
-                    current.sudo().write(target)
-                    return 'updated', f'Delivery address updated (#{current.id})'
+            inv_status, inv_info = _apply('invoice', invoice or {})
+            del_status, del_info = _apply('delivery', delivery or {})
 
-        inv_status, inv_info = _apply('invoice', invoice or {})
-        del_status, del_info = _apply('delivery', delivery or {})
+            return {'ok': True, 'info': f'{inv_status or ""} {inv_info or ""} | {del_status or ""} {del_info or ""}'.strip()}
 
-        return {'ok': True, 'info': f'{inv_status or ""} {inv_info or ""} | {del_status or ""} {del_info or ""}'.strip()}
+        except Exception as e:
+            return {'ok': False, 'message': _('Failed to update addresses.'), 'details': str(e)}
 
 class PortalRentalDates(http.Controller):
 
