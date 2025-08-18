@@ -313,6 +313,66 @@
                                 poBtn && poBtn.addEventListener('click', applyPO);
                             })();
 
+                            (function setupAddresses() {
+                                const wrap = document.getElementById('address-section');
+                                if (!wrap) return;
+
+                                const orderId = (wrap.getAttribute('data-order-id') || '').trim();
+                                const token   = wrap.getAttribute('data-access-token') || '';
+                                const btn     = document.getElementById('apply_addresses');
+
+                                const labelIdle = isFr ? 'Enregistrer les adresses' : 'Save Addresses';
+                                const labelBusy = isFr ? 'Enregistrement…'         : 'Saving…';
+
+                                function setBusy(b) {
+                                    if (!btn) return;
+                                    btn.disabled = b;
+                                    btn.textContent = b ? labelBusy : labelIdle;
+                                }
+
+                                function collect(prefix) {
+                                    const get = (id) => document.getElementById(prefix + '_' + id)?.value?.trim() || '';
+                                    return {
+                                        name:    get('name'),
+                                        street:  get('street'),
+                                        street2: get('street2'),
+                                        city:    get('city'),
+                                        state:   get('state'),
+                                        zip:     get('zip'),
+                                        country: get('country'),
+                                    };
+                                }
+
+                                async function apply() {
+                                    setBusy(true);
+                                    try {
+                                        const payload = {
+                                            invoice:  collect('inv'),
+                                            delivery: collect('del'),
+                                        };
+                                        if (token) payload.access_token = token;
+
+                                        const res = await postJSON(`/my/orders/${orderId}/update_addresses`, payload);
+
+                                        if (res && res.ok) {
+                                            // Optionally surface what happened
+                                            // alert((isFr ? 'Adresses mises à jour.' : 'Addresses updated.') + (res.info ? '\n' + res.info : ''));
+                                            window.location.reload();
+                                        } else {
+                                            console.error('Address update failed', res);
+                                            alert(isFr ? "Impossible d'enregistrer les adresses." : 'Could not save addresses.');
+                                        }
+                                    } catch (e) {
+                                        console.error('Address update error', e);
+                                        alert(isFr ? "Erreur réseau lors de l'enregistrement." : 'Network error while saving.');
+                                    } finally {
+                                        setBusy(false);
+                                    }
+                                }
+
+                                btn && btn.addEventListener('click', apply);
+                            })();
+
                         })();
                     ]]>
                 </script>
@@ -353,6 +413,105 @@
                         <div class="actions">
                             <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Appliquer les dates</button>
                         </div>
+
+                        <div class="addresses" id="address-section"
+                            t-att-data-order-id="sale_order.id"
+                            t-att-data-access-token="sale_order.access_token">
+                            <style>
+                                .addr_editor { margin: 18px 0; padding: 14px; background:#f7f7f7; border-radius:8px; }
+                                .addr_editor .cols { display:flex; flex-wrap:wrap; gap:18px; }
+                                .addr_editor fieldset { min-width:320px; flex:1 1 420px; border:1px solid #e1e1e1; border-radius:8px; padding:12px 12px 6px; background:#fff; }
+                                .addr_editor legend { font-weight:700; font-size:1rem; padding:0 6px; }
+                                .addr_editor .row { display:flex; gap:10px; margin:6px 0; }
+                                .addr_editor label { min-width:110px; font-weight:600; }
+                                .addr_editor input { flex:1; padding:6px 8px; }
+                                .addr_editor .actions { margin-top:10px; text-align:right; }
+                            </style>
+
+                            <div class="addr_editor" id="addr-editor">
+                                <div class="cols">
+                                    <!-- INVOICE -->
+                                    <fieldset>
+                                        <legend>
+                                            <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                                            <t t-else="">Invoice Address</t>
+                                        </legend>
+                                        <div class="row"><label>Name</label>
+                                            <input type="text" id="inv_name"
+                                                t-att-value="sale_order.partner_invoice_id.name or ''"/>
+                                        </div>
+                                        <div class="row"><label>Street</label>
+                                            <input type="text" id="inv_street"
+                                                t-att-value="sale_order.partner_invoice_id.street or ''"/>
+                                        </div>
+                                        <div class="row"><label>Street 2</label>
+                                            <input type="text" id="inv_street2"
+                                                t-att-value="sale_order.partner_invoice_id.street2 or ''"/>
+                                        </div>
+                                        <div class="row"><label>City</label>
+                                            <input type="text" id="inv_city"
+                                                t-att-value="sale_order.partner_invoice_id.city or ''"/>
+                                        </div>
+                                        <div class="row"><label>State/Prov.</label>
+                                            <input type="text" id="inv_state"
+                                                t-att-value="(sale_order.partner_invoice_id.state_id and (sale_order.partner_invoice_id.state_id.code or sale_order.partner_invoice_id.state_id.name)) or ''"/>
+                                        </div>
+                                        <div class="row"><label>Postal/Zip</label>
+                                            <input type="text" id="inv_zip"
+                                                t-att-value="sale_order.partner_invoice_id.zip or ''"/>
+                                        </div>
+                                        <div class="row"><label>Country</label>
+                                            <input type="text" id="inv_country"
+                                                t-att-value="(sale_order.partner_invoice_id.country_id and sale_order.partner_invoice_id.country_id.name) or ''"/>
+                                        </div>
+                                    </fieldset>
+
+                                    <!-- DELIVERY -->
+                                    <fieldset>
+                                        <legend>
+                                            <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                                            <t t-else="">Delivery Address</t>
+                                        </legend>
+                                        <div class="row"><label>Name</label>
+                                            <input type="text" id="del_name"
+                                                t-att-value="sale_order.partner_shipping_id.name or ''"/>
+                                        </div>
+                                        <div class="row"><label>Street</label>
+                                            <input type="text" id="del_street"
+                                                t-att-value="sale_order.partner_shipping_id.street or ''"/>
+                                        </div>
+                                        <div class="row"><label>Street 2</label>
+                                            <input type="text" id="del_street2"
+                                                t-att-value="sale_order.partner_shipping_id.street2 or ''"/>
+                                        </div>
+                                        <div class="row"><label>City</label>
+                                            <input type="text" id="del_city"
+                                                t-att-value="sale_order.partner_shipping_id.city or ''"/>
+                                        </div>
+                                        <div class="row"><label>State/Prov.</label>
+                                            <input type="text" id="del_state"
+                                                t-att-value="(sale_order.partner_shipping_id.state_id and (sale_order.partner_shipping_id.state_id.code or sale_order.partner_shipping_id.state_id.name)) or ''"/>
+                                        </div>
+                                        <div class="row"><label>Postal/Zip</label>
+                                            <input type="text" id="del_zip"
+                                                t-att-value="sale_order.partner_shipping_id.zip or ''"/>
+                                        </div>
+                                        <div class="row"><label>Country</label>
+                                            <input type="text" id="del_country"
+                                                t-att-value="(sale_order.partner_shipping_id.country_id and sale_order.partner_shipping_id.country_id.name) or ''"/>
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="actions">
+                                    <button type="button" id="apply_addresses" class="btn btn-primary btn-sm">
+                                        <t t-if="language == 'fr_CA'">Enregistrer les adresses</t>
+                                        <t t-else="">Save Addresses</t>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <!-- <small class="hint" color:>
                             Changing dates updates estimated totals. Months bill as 12× daily; weeks as 4× daily.
@@ -444,6 +603,116 @@
                         </button>
                     </span>
                 </div>
+
+                <t t-if="language == 'fr_CA'">
+                    <p>
+                        Mettez vos addresses ici
+                    </p>
+                </t>
+                <t t-else="">
+                    <p>
+                        Put your addresses here
+                    </p>
+                </t>
+
+                <div class="addresses" id="address-section"
+                    t-att-data-order-id="sale_order.id"
+                    t-att-data-access-token="sale_order.access_token">
+                    <style>
+                        .addr_editor { margin: 18px 0; padding: 14px; background:#f7f7f7; border-radius:8px; }
+                        .addr_editor .cols { display:flex; flex-wrap:wrap; gap:18px; }
+                        .addr_editor fieldset { min-width:320px; flex:1 1 420px; border:1px solid #e1e1e1; border-radius:8px; padding:12px 12px 6px; background:#fff; }
+                        .addr_editor legend { font-weight:700; font-size:1rem; padding:0 6px; }
+                        .addr_editor .row { display:flex; gap:10px; margin:6px 0; }
+                        .addr_editor label { min-width:110px; font-weight:600; }
+                        .addr_editor input { flex:1; padding:6px 8px; }
+                        .addr_editor .actions { margin-top:10px; text-align:right; }
+                    </style>
+
+                    <div class="addr_editor" id="addr-editor">
+                        <div class="cols">
+                            <!-- INVOICE -->
+                            <fieldset>
+                                <legend>
+                                    <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                                    <t t-else="">Invoice Address</t>
+                                </legend>
+                                <div class="row"><label>Name</label>
+                                    <input type="text" id="inv_name"
+                                        t-att-value="sale_order.partner_invoice_id.name or ''"/>
+                                </div>
+                                <div class="row"><label>Street</label>
+                                    <input type="text" id="inv_street"
+                                        t-att-value="sale_order.partner_invoice_id.street or ''"/>
+                                </div>
+                                <div class="row"><label>Street 2</label>
+                                    <input type="text" id="inv_street2"
+                                        t-att-value="sale_order.partner_invoice_id.street2 or ''"/>
+                                </div>
+                                <div class="row"><label>City</label>
+                                    <input type="text" id="inv_city"
+                                        t-att-value="sale_order.partner_invoice_id.city or ''"/>
+                                </div>
+                                <div class="row"><label>State/Prov.</label>
+                                    <input type="text" id="inv_state"
+                                        t-att-value="(sale_order.partner_invoice_id.state_id and (sale_order.partner_invoice_id.state_id.code or sale_order.partner_invoice_id.state_id.name)) or ''"/>
+                                </div>
+                                <div class="row"><label>Postal/Zip</label>
+                                    <input type="text" id="inv_zip"
+                                        t-att-value="sale_order.partner_invoice_id.zip or ''"/>
+                                </div>
+                                <div class="row"><label>Country</label>
+                                    <input type="text" id="inv_country"
+                                        t-att-value="(sale_order.partner_invoice_id.country_id and sale_order.partner_invoice_id.country_id.name) or ''"/>
+                                </div>
+                            </fieldset>
+
+                            <!-- DELIVERY -->
+                            <fieldset>
+                                <legend>
+                                    <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                                    <t t-else="">Delivery Address</t>
+                                </legend>
+                                <div class="row"><label>Name</label>
+                                    <input type="text" id="del_name"
+                                        t-att-value="sale_order.partner_shipping_id.name or ''"/>
+                                </div>
+                                <div class="row"><label>Street</label>
+                                    <input type="text" id="del_street"
+                                        t-att-value="sale_order.partner_shipping_id.street or ''"/>
+                                </div>
+                                <div class="row"><label>Street 2</label>
+                                    <input type="text" id="del_street2"
+                                        t-att-value="sale_order.partner_shipping_id.street2 or ''"/>
+                                </div>
+                                <div class="row"><label>City</label>
+                                    <input type="text" id="del_city"
+                                        t-att-value="sale_order.partner_shipping_id.city or ''"/>
+                                </div>
+                                <div class="row"><label>State/Prov.</label>
+                                    <input type="text" id="del_state"
+                                        t-att-value="(sale_order.partner_shipping_id.state_id and (sale_order.partner_shipping_id.state_id.code or sale_order.partner_shipping_id.state_id.name)) or ''"/>
+                                </div>
+                                <div class="row"><label>Postal/Zip</label>
+                                    <input type="text" id="del_zip"
+                                        t-att-value="sale_order.partner_shipping_id.zip or ''"/>
+                                </div>
+                                <div class="row"><label>Country</label>
+                                    <input type="text" id="del_country"
+                                        t-att-value="(sale_order.partner_shipping_id.country_id and sale_order.partner_shipping_id.country_id.name) or ''"/>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" id="apply_addresses" class="btn btn-primary btn-sm">
+                                <t t-if="language == 'fr_CA'">Enregistrer les adresses</t>
+                                <t t-else="">Save Addresses</t>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </xpath>
 
@@ -673,34 +942,13 @@
             </div>
         </xpath>
         <xpath expr="//tr[hasclass('is-subtotal')]/td" position="inside">
-            <!-- <span class="is-section-subtotal d-none" t-att-data-section_id="line_section_id"> -->
             <span t-out="current_subtotal" class="is-section-subtotal d-none" t-att-data-section_id="line_section_id"
                   t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'
             />
-            <!-- <t t-esc="current_subtotal"/><t t-esc="sale_order.currency_id.symbol"/> -->
-            <!-- </span> -->
         </xpath>
         <xpath expr="//t[@t-if=&quot;line.display_type == 'line_note'&quot;]/td" position="inside">
             <span class="line_id" t-attf-id="{{line}}"/>
         </xpath>
-
-        <!--		commented due to the temporary issue-->
-        <!--		&lt;!&ndash;No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">-->
-        <!--			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>-->
-        <!--		</xpath>-->
-        <!--		&lt;!&ndash; Hide Default Subtotal&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
-
-        <!--		&lt;!&ndash;Mark Original Subtotal locations&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">-->
-        <!--			<attribute name="class">subtotal-source</attribute>-->
-        <!--		</xpath>-->
 
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
