@@ -3,6 +3,73 @@
 	padding-left: 20px;
 }
 
+/* address editor */
+.addresses .addr_editor {
+    margin: 18px 0;
+	padding: 14px;
+    background: #14171c;
+    border-radius: 12px;
+    border: 1px solid #23272f;
+    color: #e6edf3;
+}
+.addresses .addr_editor .cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+}
+.addresses .addr_editor fieldset {
+      min-width: 320px;
+      flex: 1 1 420px;
+      border: 1px solid #2b3139;
+      border-radius: 10px;
+      padding: 12px 12px 6px;
+      background: #0f1318;
+}
+.addresses .addr_editor legend {
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0 6px;
+      color: #e6edf3;
+}
+.addresses .addr_editor .row {
+      display: flex;
+      gap: 10px;
+      margin: 8px 0;
+      align-items: center;
+}
+.addresses .addr_editor label {
+      min-width: 110px;
+      font-weight: 600;
+      color: #c9d1d9;
+}
+.addresses .addr_editor input[type="text"],
+.addresses .addr_editor input[type="date"],
+.addresses .addr_editor input:not([type]) {
+    flex: 1;
+    padding: 8px 10px;
+    background: #0a0d11;
+    color: #e6edf3;
+    border: 1px solid #2b3139;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: none;
+}
+.addresses .addr_editor input::placeholder {
+    color: #8b949e;
+    opacity: 1;
+}
+.addresses .addr_editor input:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.25);
+}
+.addresses .addr_editor .actions {
+    margin-top: 12px;
+    text-align: right;
+}
+.addresses .addr_editor .btn.btn-primary.btn-sm {
+    color: #ffffff;
+}
+
 /* rental dates section */
 .rental_info {
     background-color: #1a1c1d;
