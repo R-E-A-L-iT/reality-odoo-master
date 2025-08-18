@@ -161,7 +161,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			const rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
 			const rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
 			const startDateEl = document.getElementById("rental-start");
-			const endDateEl   = document.getElementById("rental-end");
+			const endDateEl = document.getElementById("rental-end");
 
 			if (!rentalEstimateEnglish && !rentalEstimateFrench) return;
 
@@ -173,9 +173,9 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 			// timezone-safe day count (ignore time-of-day/DST)
 			const vStart = startDateEl.valueAsDate || new Date(startDateEl.value);
-			const vEnd   = endDateEl.valueAsDate   || new Date(endDateEl.value);
+			const vEnd = endDateEl.valueAsDate   || new Date(endDateEl.value);
 			const startUTC = Date.UTC(vStart.getFullYear(), vStart.getMonth(), vStart.getDate());
-			const endUTC   = Date.UTC(vEnd.getFullYear(),   vEnd.getMonth(),   vEnd.getDate());
+			const endUTC = Date.UTC(vEnd.getFullYear(), vEnd.getMonth(), vEnd.getDate());
 			const dayMs = 24 * 60 * 60 * 1000;
 
 			let durationDays = Math.floor((endUTC - startUTC) / dayMs) + 1; // inclusive
