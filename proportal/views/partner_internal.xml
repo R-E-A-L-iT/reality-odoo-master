@@ -10,7 +10,7 @@
                 <field name="company_nickname" invisible="not is_company" />
             </xpath>
             <xpath expr="//notebook" position="inside">
-                <page name="products" string="Products">
+                <page name="portal" string="Portal Settings">
                     <sheet>
                         <group string="Portal Administration">
                     <field name="portal_administrator"/>
