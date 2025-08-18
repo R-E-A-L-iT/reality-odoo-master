@@ -44,7 +44,7 @@ class ResPartner(models.Model):
     def get_portal_company_ids(self):
         self.ensure_one()
         main_company = self.commercial_partner_id
-        companies = (main_company | self.portal_company_ids)
+        companies = (main_company | self.portal_companies_ids)
         return companies.ids
 
     def action_open_create_renewal_contact(self):
