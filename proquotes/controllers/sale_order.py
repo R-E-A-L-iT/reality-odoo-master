@@ -84,9 +84,8 @@ class PortalOrderAddressController(http.Controller):
     @http.route(['/my/orders/<int:order_id>/update_addresses'], type='json', auth='public', website=True, csrf=False)
     def update_addresses(self, order_id, access_token=None, invoice=None, delivery=None, **kw):
         try:
-            Order = request.env['sale.order'].sudo()
-            # Be tolerant to return type of _document_check_access (record vs tuple)
-            rec = Order._document_check_access(order_id, access_token=access_token)
+            portal = CustomerPortal()
+            rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
             order_sudo = rec[0] if isinstance(rec, (list, tuple)) else rec
             if not order_sudo or not order_sudo.exists():
                 return {'ok': False, 'message': 'Order not found or access denied.'}
