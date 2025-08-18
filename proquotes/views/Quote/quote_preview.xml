@@ -691,6 +691,14 @@
             </style>
         </xpath>
 
+        <xpath expr="//div[@id='total']" position="replace">
+            <div t-if="sale_order.is_rental == False" id="total" name="total" style="page-break-inside: avoid;">
+                <div class="col-xs-7 col-md-5 ms-auto">
+                    <t t-call="sale.sale_order_portal_content_totals_table"/>
+                </div>
+            </div>
+        </xpath>
+
         <!--			this will commented and deprecated due to price_total field have no more-->
         <!--		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">-->
         <!--			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>-->
