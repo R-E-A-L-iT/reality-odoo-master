@@ -98,73 +98,131 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 
 		_rentalValueTotal: function () {
-			const totalEN = document.getElementById("total-rental-value-english");
-			const totalFR = document.getElementById("total-rental-value-french");
-			if (totalEN == undefined && totalFR == undefined) return;
-
-			const fmt = (n) => Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(n);
-			const clean = (s) => String(s).replace(",", "").replace("$", "").replace(" ", ""); // keep original single-replace behavior
-			const included = (row) => {
-				const input = row.getElementsByTagName("input");
-				return !(input.length && input[0].type === "checkbox" && input[0].checked !== true);
+			// --- helpers: sanitize numbers & safe DOM text
+			const text = (el) => el ? (el.textContent || el.innerText || el.innerHTML || "") : "";
+			// Strip NBSPs, then remove anything not digit, dot or minus (keeps original numeric intent)
+			const cleanNum = (s) => {
+				const raw = String(s).replace(/\u00A0/g, "");
+				const cleaned = raw.replace(/[^0-9.\-]/g, "");
+				return cleaned;
+			};
+			const toIntOr0 = (s) => {
+				const n = parseInt(cleanNum(s), 10);
+				return Number.isFinite(n) ? n : 0;
+			};
+			const toNumOr0 = (s) => {
+				const n = Number(cleanNum(s));
+				return Number.isFinite(n) ? n : 0;
 			};
 
-			// ---- Grand total (sum of .itemValue for included rows; cents truncated like original)
-			let total = 0;
-			const rows = document.getElementsByClassName("quoteLineRow");
-			for (let i = 0; i < rows.length; i++) {
-				if (!included(rows[i])) continue;
-				const v = rows[i].getElementsByClassName("itemValue");
-				if (v.length) total += parseInt(clean(v[0].innerHTML));
-			}
-			if (totalEN != undefined) totalEN.innerHTML = '$ ' + fmt(total);
-			if (totalFR != undefined) totalFR.innerHTML = fmt(total) + ' $';
-
-			// ---- Rental estimate
-			const estEN = document.getElementById("rental-estimate-total-english");
-			const estFR = document.getElementById("rental-estimate-total-french");
-			const startEl = document.getElementById("rental-start");
-			const endEl   = document.getElementById("rental-end");
-			if (estEN == undefined && estFR == undefined) return;
-
-			if (!startEl.value || !endEl.value) {
-				if (estEN != undefined)      estEN.innerHTML = "$ 0.00";
-				else if (estFR != undefined) estFR.innerHTML = "0.00 $";
+			var totalLandingEnglish = document.getElementById("total-rental-value-english");
+			var totalLandingFrench  = document.getElementById("total-rental-value-french");
+			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
 				return;
 			}
 
-			const start = new Date(startEl.value), end = new Date(endEl.value);
-			const dayMs = 1000 * 60 * 60 * 24;
-			let rentalLength = (end.getTime() - start.getTime()) / dayMs + 1; // inclusive
-			let months = Math.floor(rentalLength / 30); rentalLength %= 30;
-			let weeks  = Math.floor(rentalLength / 7);  rentalLength %= 7;
-			let days   = Math.floor(rentalLength);
-
-			let estimate = 0;
-			const prices = document.getElementsByClassName("rental_rate_calc");
-			for (let i = 0; i < prices.length; i++) {
-				// find parent .quoteLineRow (original walk-up behavior)
-				let node = prices[i];
-				while (node && node.classList && !node.classList.contains("quoteLineRow")) node = node.parentNode;
-
-				// skip if row has an unchecked checkbox (same as original)
-				const inputs = node ? node.getElementsByTagName("input") : [];
-				if (inputs.length && inputs[0].type === "checkbox" && inputs[0].checked !== true) continue;
-
-				const price = clean(prices[i].innerHTML); // string; coerces to number in math like original
-
-				let sub = 0;
-				sub += 1 * days * price;                      // days
-				if (sub > 4 * price) sub = 4 * price;        // cap week-equivalent
-				sub += 4 * weeks * price;                     // weeks
-				if (sub > 12 * price) sub = 12 * price;      // cap month-equivalent
-				sub += 12 * months * price;                   // months
-				estimate += sub;
+			// ---- 1) Sum of selected line "itemValue" (same logic; still truncates cents like original)
+			var total = 0;
+			var items = document.getElementsByClassName("quoteLineRow");
+			for (var i = 0; i < items.length; i++) {
+				var input = items[i].getElementsByTagName("input");
+				var include = true;
+				if (input.length > 0 && input[0].type == "checkbox" && input[0].checked != true) {
+					include = false;
+				}
+				if (include) {
+					var vals = items[i].getElementsByClassName("itemValue");
+					if (vals.length > 0) {
+						// use text() and safe int parse; fallback to 0 instead of NaN
+						total += toIntOr0(text(vals[0]));
+					}
+				}
+			}
+			if (totalLandingEnglish != undefined) {
+				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
+			}
+			if (totalLandingFrench != undefined) {
+				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
-			if (estEN != undefined)      estEN.innerHTML = '$ ' + fmt(estimate);
-			else if (estFR != undefined) estFR.innerHTML = fmt(estimate) + ' $';
+			// ---- 2) Rental estimate (same math & caps)
+			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
+			var rentalEstimateFrench  = document.getElementById("rental-estimate-total-french");
+			var startDate = document.getElementById("rental-start");
+			var endDate   = document.getElementById("rental-end");
+
+			if (rentalEstimateEnglish == undefined && rentalEstimateFrench == undefined) {
+				return;
+			}
+
+			if (!startDate || !endDate || startDate.value == "" || endDate.value == "") {
+				if (rentalEstimateEnglish != undefined) {
+					rentalEstimateEnglish.innerHTML = "$ 0.00";
+				} else if (rentalEstimateFrench != undefined) {
+					rentalEstimateFrench.innerHTML = "0.00 $";
+				}
+				return;
+			}
+
+			var startDateDate = new Date(startDate.value);
+			var endDateDate   = new Date(endDate.value);
+			// Guard invalid dates (keep original flow: show 0.00 if unusable)
+			if (!Number.isFinite(startDateDate.getTime()) || !Number.isFinite(endDateDate.getTime())) {
+				if (rentalEstimateEnglish != undefined) {
+					rentalEstimateEnglish.innerHTML = "$ 0.00";
+				} else if (rentalEstimateFrench != undefined) {
+					rentalEstimateFrench.innerHTML = "0.00 $";
+				}
+				return;
+			}
+
+			let milliInSeconds = 1000, secondsInMinute = 60, minuteInHour = 60, hourInDay = 24;
+			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
+			// if something still went off (DST quirks), normalize to non-negative finite
+			if (!Number.isFinite(rentalLength) || rentalLength < 0) rentalLength = 0;
+
+			var months = 0, weeks = 0, days = 0;
+			while (rentalLength >= 30) { months += 1; rentalLength -= 30; }
+			while (rentalLength >= 7)  { weeks  += 1; rentalLength -= 7;  }
+			while (rentalLength >= 1)  { days   += 1; rentalLength -= 1;  }
+
+			var rentalEstimateTotal = 0;
+			var productPrices = document.getElementsByClassName("rental_rate_calc");
+			for (var j = 0; j < productPrices.length; j++) {
+				// Find enclosing .quoteLineRow (same walk-up)
+				var node = productPrices[j];
+				while (node && node.classList && node.classList.contains("quoteLineRow") == false) {
+					node = node.parentNode;
+				}
+				// Skip if row has an unchecked checkbox (same behavior)
+				var inputs = node ? node.getElementsByTagName("input") : [];
+				if (inputs.length > 0 && inputs[0].type == "checkbox" && inputs[0].checked != true) {
+					continue;
+				}
+
+				// Parse price robustly from text; fallback to 0 instead of NaN
+				var price = toNumOr0(text(productPrices[j]));
+
+				var rentalEstimateSubTotal = 0;
+				rentalEstimateSubTotal += 1 * days * price;
+				if (rentalEstimateSubTotal > 4 * price) {
+					rentalEstimateSubTotal = 4 * price;
+				}
+				rentalEstimateSubTotal += 4 * weeks * price;
+				if (rentalEstimateSubTotal > 12 * price) {
+					rentalEstimateSubTotal = 12 * price;
+				}
+				rentalEstimateSubTotal += 12 * months * price;
+				rentalEstimateTotal += rentalEstimateSubTotal;
+			}
+
+			if (rentalEstimateEnglish != undefined) {
+				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
+			} else if (rentalEstimateFrench != undefined) {
+				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
+			}
 		},
+
 
 
 		_updateSectionSelectionEvent: function (ev) {
