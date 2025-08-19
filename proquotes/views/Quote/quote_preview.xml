@@ -354,103 +354,167 @@
                             <button type="button" id="apply_rental_dates" class="btn btn-primary btn-sm">Appliquer les dates</button>
                         </div>
 
-                        <div class="addresses" id="address-section"
+                        <div class="addresses address-section"
                             t-att-data-order-id="sale_order.id"
                             t-att-data-access-token="sale_order.access_token">
-                            <style>
-                                .addr_editor { margin: 18px 0; padding: 14px; background:#f7f7f7; border-radius:8px; }
-                                .addr_editor .cols { display:flex; flex-wrap:wrap; gap:18px; }
-                                .addr_editor fieldset { min-width:320px; flex:1 1 420px; border:1px solid #e1e1e1; border-radius:8px; padding:12px 12px 6px; background:#fff; }
-                                .addr_editor legend { font-weight:700; font-size:1rem; padding:0 6px; }
-                                .addr_editor .row { display:flex; gap:10px; margin:6px 0; }
-                                .addr_editor label { min-width:110px; font-weight:600; }
-                                .addr_editor input { flex:1; padding:6px 8px; }
-                                .addr_editor .actions { margin-top:10px; text-align:right; }
-                            </style>
+                        <style>
+                            /* Dark theme matrix */
+                            .addr_matrix { margin: 18px 0; padding: 14px; background:#14171c; border:1px solid #23272f; border-radius:12px; color:#e6edf3; }
+                            .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
+                            .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
+                            .addr_row { margin-top: 14px; }
+                            .addr_row_title { font-weight:700; color:#c9d1d9; margin-bottom:8px; }
+                            .addr_cards { display:flex; flex-wrap:wrap; gap:14px; }
+                            .addr_card {
+                            background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
+                            min-width:300px; max-width:400px; flex: 1 1 320px; position:relative;
+                            }
+                            .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
+                            .addr_card .name { font-weight:700; margin-bottom:4px; color:#e6edf3; }
+                            .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
+                            .addr_card.current { outline: 2px solid #3f8cff; }
+                            .addr_badge { display:inline-block; font-size:.75rem; padding:2px 6px; border-radius:999px; border:1px solid #2b3139; color:#8b949e; }
+                            .addr_legend { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+                            .addr_note { font-size:.85rem; color:#8b949e; margin-top:6px; }
+                        </style>
 
-                            <div class="addr_editor" id="addr-editor">
-                                <div class="cols">
-                                    <!-- INVOICE -->
-                                    <fieldset>
-                                        <legend>
-                                            <t t-if="language == 'fr_CA'">Adresse de facturation</t>
-                                            <t t-else="">Invoice Address</t>
-                                        </legend>
-                                        <div class="row"><label>Name</label>
-                                            <input type="text" id="inv_name"
-                                                t-att-value="sale_order.partner_invoice_id.name or ''"/>
-                                        </div>
-                                        <div class="row"><label>Street</label>
-                                            <input type="text" id="inv_street"
-                                                t-att-value="sale_order.partner_invoice_id.street or ''"/>
-                                        </div>
-                                        <div class="row"><label>Street 2</label>
-                                            <input type="text" id="inv_street2"
-                                                t-att-value="sale_order.partner_invoice_id.street2 or ''"/>
-                                        </div>
-                                        <div class="row"><label>City</label>
-                                            <input type="text" id="inv_city"
-                                                t-att-value="sale_order.partner_invoice_id.city or ''"/>
-                                        </div>
-                                        <div class="row"><label>State/Prov.</label>
-                                            <input type="text" id="inv_state"
-                                                t-att-value="(sale_order.partner_invoice_id.state_id and (sale_order.partner_invoice_id.state_id.code or sale_order.partner_invoice_id.state_id.name)) or ''"/>
-                                        </div>
-                                        <div class="row"><label>Postal/Zip</label>
-                                            <input type="text" id="inv_zip"
-                                                t-att-value="sale_order.partner_invoice_id.zip or ''"/>
-                                        </div>
-                                        <div class="row"><label>Country</label>
-                                            <input type="text" id="inv_country"
-                                                t-att-value="(sale_order.partner_invoice_id.country_id and sale_order.partner_invoice_id.country_id.name) or ''"/>
-                                        </div>
-                                    </fieldset>
+                        <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
+                        <t t-set="curr_inv" t-value="sale_order.partner_invoice_id"/>
+                        <t t-set="curr_del" t-value="sale_order.partner_shipping_id"/>
+                        <t t-set="inv_children" t-value="company.child_ids.filtered(lambda p: (p.type == 'invoice') or (not p.type))"/>
+                        <t t-set="del_children" t-value="company.child_ids.filtered(lambda p: (p.type == 'delivery') or (not p.type))"/>
 
-                                    <!-- DELIVERY -->
-                                    <fieldset>
-                                        <legend>
-                                            <t t-if="language == 'fr_CA'">Adresse de livraison</t>
-                                            <t t-else="">Delivery Address</t>
-                                        </legend>
-                                        <div class="row"><label>Name</label>
-                                            <input type="text" id="del_name"
-                                                t-att-value="sale_order.partner_shipping_id.name or ''"/>
-                                        </div>
-                                        <div class="row"><label>Street</label>
-                                            <input type="text" id="del_street"
-                                                t-att-value="sale_order.partner_shipping_id.street or ''"/>
-                                        </div>
-                                        <div class="row"><label>Street 2</label>
-                                            <input type="text" id="del_street2"
-                                                t-att-value="sale_order.partner_shipping_id.street2 or ''"/>
-                                        </div>
-                                        <div class="row"><label>City</label>
-                                            <input type="text" id="del_city"
-                                                t-att-value="sale_order.partner_shipping_id.city or ''"/>
-                                        </div>
-                                        <div class="row"><label>State/Prov.</label>
-                                            <input type="text" id="del_state"
-                                                t-att-value="(sale_order.partner_shipping_id.state_id and (sale_order.partner_shipping_id.state_id.code or sale_order.partner_shipping_id.state_id.name)) or ''"/>
-                                        </div>
-                                        <div class="row"><label>Postal/Zip</label>
-                                            <input type="text" id="del_zip"
-                                                t-att-value="sale_order.partner_shipping_id.zip or ''"/>
-                                        </div>
-                                        <div class="row"><label>Country</label>
-                                            <input type="text" id="del_country"
-                                                t-att-value="(sale_order.partner_shipping_id.country_id and sale_order.partner_shipping_id.country_id.name) or ''"/>
-                                        </div>
-                                    </fieldset>
+                        <div class="addr_matrix">
+                            <div class="addr_hdr">
+                            <h4>
+                                <t t-if="language == 'fr_CA'">Adresses de la société</t>
+                                <t t-else="">Company Addresses</t>
+                            </h4>
+                            <span class="addr_badge">
+                                <t t-esc="company.display_name"/>
+                            </span>
+                            </div>
+
+                            <!-- INVOICE ROW -->
+                            <div class="addr_row">
+                            <div class="addr_row_title">
+                                <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                                <t t-else="">Invoice Address</t>
+                            </div>
+                            <div class="addr_cards">
+
+                                <!-- Existing invoice children -->
+                                <t t-foreach="inv_children" t-as="p">
+                                <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_radio">
+                                    <input type="radio" name="inv_choice" t-att-value="p.id"
+                                            t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
+                                    </div>
+                                    <div class="addr_legend">
+                                    <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                    <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                    </div>
+                                    <div class="lines">
+                                    <t t-esc="p.street or ''"/><br/>
+                                    <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                                    <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                                    <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                    </div>
                                 </div>
+                                </t>
 
-                                <div class="actions">
-                                    <button type="button" id="apply_addresses" class="btn btn-primary btn-sm">
-                                        <t t-if="language == 'fr_CA'">Enregistrer les adresses</t>
-                                        <t t-else="">Save Addresses</t>
-                                    </button>
+                                <!-- Include the main company address if there are no children or current is the company -->
+                                <t t-if="(not inv_children) or (curr_inv and not curr_inv.parent_id)">
+                                <t t-set="p" t-value="company"/>
+                                <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_radio">
+                                    <input type="radio" name="inv_choice" t-att-value="p.id"
+                                            t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
+                                    </div>
+                                    <div class="addr_legend">
+                                    <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                    <span class="name">
+                                        <t t-if="language == 'fr_CA'">Adresse principale (Société)</t>
+                                        <t t-else="">Main Company Address</t>
+                                    </span>
+                                    </div>
+                                    <div class="lines">
+                                    <t t-esc="p.street or ''"/><br/>
+                                    <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                                    <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                                    <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                    </div>
                                 </div>
+                                </t>
+
+                            </div>
+                            <div class="addr_note">
+                                <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                                <t t-else="">Visual selection only for now.</t>
+                            </div>
+                            </div>
+
+                            <!-- DELIVERY ROW -->
+                            <div class="addr_row">
+                            <div class="addr_row_title">
+                                <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                                <t t-else="">Delivery Address</t>
+                            </div>
+                            <div class="addr_cards">
+
+                                <!-- Existing delivery children -->
+                                <t t-foreach="del_children" t-as="p">
+                                <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_radio">
+                                    <input type="radio" name="del_choice" t-att-value="p.id"
+                                            t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
+                                    </div>
+                                    <div class="addr_legend">
+                                    <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                    <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                    </div>
+                                    <div class="lines">
+                                    <t t-esc="p.street or ''"/><br/>
+                                    <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                                    <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                                    <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                    </div>
+                                </div>
+                                </t>
+
+                                <!-- Include the main company address if there are no children or current is the company -->
+                                <t t-if="(not del_children) or (curr_del and not curr_del.parent_id)">
+                                <t t-set="p" t-value="company"/>
+                                <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_radio">
+                                    <input type="radio" name="del_choice" t-att-value="p.id"
+                                            t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
+                                    </div>
+                                    <div class="addr_legend">
+                                    <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                    <span class="name">
+                                        <t t-if="language == 'fr_CA'">Adresse principale (Société)</t>
+                                        <t t-else="">Main Company Address</t>
+                                    </span>
+                                    </div>
+                                    <div class="lines">
+                                    <t t-esc="p.street or ''"/><br/>
+                                    <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                                    <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                                    <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                    </div>
+                                </div>
+                                </t>
+
+                            </div>
+                            <div class="addr_note">
+                                <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                                <t t-else="">Visual selection only for now.</t>
+                            </div>
                             </div>
                         </div>
+                        </div>
+
 
 
                         <!-- <small class="hint" color:>
@@ -555,103 +619,167 @@
                     </p>
                 </t>
 
-                <div class="addresses" id="address-section"
+                <div class="addresses address-section"
                     t-att-data-order-id="sale_order.id"
                     t-att-data-access-token="sale_order.access_token">
-                    <style>
-                        .addr_editor { margin: 18px 0; padding: 14px; background:#f7f7f7; border-radius:8px; }
-                        .addr_editor .cols { display:flex; flex-wrap:wrap; gap:18px; }
-                        .addr_editor fieldset { min-width:320px; flex:1 1 420px; border:1px solid #e1e1e1; border-radius:8px; padding:12px 12px 6px; background:#fff; }
-                        .addr_editor legend { font-weight:700; font-size:1rem; padding:0 6px; }
-                        .addr_editor .row { display:flex; gap:10px; margin:6px 0; }
-                        .addr_editor label { min-width:110px; font-weight:600; }
-                        .addr_editor input { flex:1; padding:6px 8px; }
-                        .addr_editor .actions { margin-top:10px; text-align:right; }
-                    </style>
+                <style>
+                    /* Dark theme matrix */
+                    .addr_matrix { margin: 18px 0; padding: 14px; background:#14171c; border:1px solid #23272f; border-radius:12px; color:#e6edf3; }
+                    .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
+                    .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
+                    .addr_row { margin-top: 14px; }
+                    .addr_row_title { font-weight:700; color:#c9d1d9; margin-bottom:8px; }
+                    .addr_cards { display:flex; flex-wrap:wrap; gap:14px; }
+                    .addr_card {
+                    background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
+                    min-width:300px; max-width:400px; flex: 1 1 320px; position:relative;
+                    }
+                    .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
+                    .addr_card .name { font-weight:700; margin-bottom:4px; color:#e6edf3; }
+                    .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
+                    .addr_card.current { outline: 2px solid #3f8cff; }
+                    .addr_badge { display:inline-block; font-size:.75rem; padding:2px 6px; border-radius:999px; border:1px solid #2b3139; color:#8b949e; }
+                    .addr_legend { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+                    .addr_note { font-size:.85rem; color:#8b949e; margin-top:6px; }
+                </style>
 
-                    <div class="addr_editor" id="addr-editor">
-                        <div class="cols">
-                            <!-- INVOICE -->
-                            <fieldset>
-                                <legend>
-                                    <t t-if="language == 'fr_CA'">Adresse de facturation</t>
-                                    <t t-else="">Invoice Address</t>
-                                </legend>
-                                <div class="row"><label>Name</label>
-                                    <input type="text" id="inv_name"
-                                        t-att-value="sale_order.partner_invoice_id.name or ''"/>
-                                </div>
-                                <div class="row"><label>Street</label>
-                                    <input type="text" id="inv_street"
-                                        t-att-value="sale_order.partner_invoice_id.street or ''"/>
-                                </div>
-                                <div class="row"><label>Street 2</label>
-                                    <input type="text" id="inv_street2"
-                                        t-att-value="sale_order.partner_invoice_id.street2 or ''"/>
-                                </div>
-                                <div class="row"><label>City</label>
-                                    <input type="text" id="inv_city"
-                                        t-att-value="sale_order.partner_invoice_id.city or ''"/>
-                                </div>
-                                <div class="row"><label>State/Prov.</label>
-                                    <input type="text" id="inv_state"
-                                        t-att-value="(sale_order.partner_invoice_id.state_id and (sale_order.partner_invoice_id.state_id.code or sale_order.partner_invoice_id.state_id.name)) or ''"/>
-                                </div>
-                                <div class="row"><label>Postal/Zip</label>
-                                    <input type="text" id="inv_zip"
-                                        t-att-value="sale_order.partner_invoice_id.zip or ''"/>
-                                </div>
-                                <div class="row"><label>Country</label>
-                                    <input type="text" id="inv_country"
-                                        t-att-value="(sale_order.partner_invoice_id.country_id and sale_order.partner_invoice_id.country_id.name) or ''"/>
-                                </div>
-                            </fieldset>
+                <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
+                <t t-set="curr_inv" t-value="sale_order.partner_invoice_id"/>
+                <t t-set="curr_del" t-value="sale_order.partner_shipping_id"/>
+                <t t-set="inv_children" t-value="company.child_ids.filtered(lambda p: (p.type == 'invoice') or (not p.type))"/>
+                <t t-set="del_children" t-value="company.child_ids.filtered(lambda p: (p.type == 'delivery') or (not p.type))"/>
 
-                            <!-- DELIVERY -->
-                            <fieldset>
-                                <legend>
-                                    <t t-if="language == 'fr_CA'">Adresse de livraison</t>
-                                    <t t-else="">Delivery Address</t>
-                                </legend>
-                                <div class="row"><label>Name</label>
-                                    <input type="text" id="del_name"
-                                        t-att-value="sale_order.partner_shipping_id.name or ''"/>
-                                </div>
-                                <div class="row"><label>Street</label>
-                                    <input type="text" id="del_street"
-                                        t-att-value="sale_order.partner_shipping_id.street or ''"/>
-                                </div>
-                                <div class="row"><label>Street 2</label>
-                                    <input type="text" id="del_street2"
-                                        t-att-value="sale_order.partner_shipping_id.street2 or ''"/>
-                                </div>
-                                <div class="row"><label>City</label>
-                                    <input type="text" id="del_city"
-                                        t-att-value="sale_order.partner_shipping_id.city or ''"/>
-                                </div>
-                                <div class="row"><label>State/Prov.</label>
-                                    <input type="text" id="del_state"
-                                        t-att-value="(sale_order.partner_shipping_id.state_id and (sale_order.partner_shipping_id.state_id.code or sale_order.partner_shipping_id.state_id.name)) or ''"/>
-                                </div>
-                                <div class="row"><label>Postal/Zip</label>
-                                    <input type="text" id="del_zip"
-                                        t-att-value="sale_order.partner_shipping_id.zip or ''"/>
-                                </div>
-                                <div class="row"><label>Country</label>
-                                    <input type="text" id="del_country"
-                                        t-att-value="(sale_order.partner_shipping_id.country_id and sale_order.partner_shipping_id.country_id.name) or ''"/>
-                                </div>
-                            </fieldset>
+                <div class="addr_matrix">
+                    <div class="addr_hdr">
+                    <h4>
+                        <t t-if="language == 'fr_CA'">Adresses de la société</t>
+                        <t t-else="">Company Addresses</t>
+                    </h4>
+                    <span class="addr_badge">
+                        <t t-esc="company.display_name"/>
+                    </span>
+                    </div>
+
+                    <!-- INVOICE ROW -->
+                    <div class="addr_row">
+                    <div class="addr_row_title">
+                        <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                        <t t-else="">Invoice Address</t>
+                    </div>
+                    <div class="addr_cards">
+
+                        <!-- Existing invoice children -->
+                        <t t-foreach="inv_children" t-as="p">
+                        <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                            <div class="addr_radio">
+                            <input type="radio" name="inv_choice" t-att-value="p.id"
+                                    t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
+                            </div>
+                            <div class="addr_legend">
+                            <span class="addr_badge">#<t t-esc="p.id"/></span>
+                            <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                            </div>
+                            <div class="lines">
+                            <t t-esc="p.street or ''"/><br/>
+                            <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                            <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                            <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                            </div>
                         </div>
+                        </t>
 
-                        <div class="actions">
-                            <button type="button" id="apply_addresses" class="btn btn-primary btn-sm">
-                                <t t-if="language == 'fr_CA'">Enregistrer les adresses</t>
-                                <t t-else="">Save Addresses</t>
-                            </button>
+                        <!-- Include the main company address if there are no children or current is the company -->
+                        <t t-if="(not inv_children) or (curr_inv and not curr_inv.parent_id)">
+                        <t t-set="p" t-value="company"/>
+                        <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                            <div class="addr_radio">
+                            <input type="radio" name="inv_choice" t-att-value="p.id"
+                                    t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
+                            </div>
+                            <div class="addr_legend">
+                            <span class="addr_badge">#<t t-esc="p.id"/></span>
+                            <span class="name">
+                                <t t-if="language == 'fr_CA'">Adresse principale (Société)</t>
+                                <t t-else="">Main Company Address</t>
+                            </span>
+                            </div>
+                            <div class="lines">
+                            <t t-esc="p.street or ''"/><br/>
+                            <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                            <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                            <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                            </div>
                         </div>
+                        </t>
+
+                    </div>
+                    <div class="addr_note">
+                        <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                        <t t-else="">Visual selection only for now.</t>
+                    </div>
+                    </div>
+
+                    <!-- DELIVERY ROW -->
+                    <div class="addr_row">
+                    <div class="addr_row_title">
+                        <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                        <t t-else="">Delivery Address</t>
+                    </div>
+                    <div class="addr_cards">
+
+                        <!-- Existing delivery children -->
+                        <t t-foreach="del_children" t-as="p">
+                        <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                            <div class="addr_radio">
+                            <input type="radio" name="del_choice" t-att-value="p.id"
+                                    t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
+                            </div>
+                            <div class="addr_legend">
+                            <span class="addr_badge">#<t t-esc="p.id"/></span>
+                            <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                            </div>
+                            <div class="lines">
+                            <t t-esc="p.street or ''"/><br/>
+                            <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                            <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                            <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                            </div>
+                        </div>
+                        </t>
+
+                        <!-- Include the main company address if there are no children or current is the company -->
+                        <t t-if="(not del_children) or (curr_del and not curr_del.parent_id)">
+                        <t t-set="p" t-value="company"/>
+                        <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                            <div class="addr_radio">
+                            <input type="radio" name="del_choice" t-att-value="p.id"
+                                    t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
+                            </div>
+                            <div class="addr_legend">
+                            <span class="addr_badge">#<t t-esc="p.id"/></span>
+                            <span class="name">
+                                <t t-if="language == 'fr_CA'">Adresse principale (Société)</t>
+                                <t t-else="">Main Company Address</t>
+                            </span>
+                            </div>
+                            <div class="lines">
+                            <t t-esc="p.street or ''"/><br/>
+                            <t t-esc="p.street2 or ''"/><t t-if="p.street2"><br/></t>
+                            <t t-esc="p.city or ''"/> <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t> <t t-esc="p.zip or ''"/><br/>
+                            <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                            </div>
+                        </div>
+                        </t>
+
+                    </div>
+                    <div class="addr_note">
+                        <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                        <t t-else="">Visual selection only for now.</t>
+                    </div>
                     </div>
                 </div>
+                </div>
+
 
             </div>
         </xpath>
