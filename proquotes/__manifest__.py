@@ -7,6 +7,7 @@
     "license": "LGPL-3",
     "category": "Sales",
     "depends": [
+        "sale_stock",
         "base",
         "web",
         "mail",

@@ -19,7 +19,7 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
-class orderLineProquotes(models.Model):
+class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     variant = fields.Many2one("proquotes.variant", string="Variant Group")
@@ -87,6 +87,51 @@ class orderLineProquotes(models.Model):
     demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
+
+    def _extract_move_ids_from_commands(self, cmds):
+        ids = []
+        if not cmds:
+            return ids
+        for c in cmds:
+            if isinstance(c, (list, tuple)) and len(c) >= 2 and c[0] == 4:
+                ids.append(c[1])
+            elif isinstance(c, Command) and getattr(c, "command", None) == 4:
+                ids.append(c.id)
+        return ids
+
+    # if line is being created retroactively by stock.picking (delivery), override creation
+    def create(self, vals_list):
+        
+        ctx = self.env.context
+        if not ctx.get("skip_procurement"):
+            return super().create(vals_list)
+
+        allowed = []
+        for vals in vals_list:
+            move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
+            if not move_ids:
+                allowed.append(vals)
+                continue
+
+            order = self.env["sale.order"].browse(vals.get("order_id"))
+            product = self.env["product.product"].browse(vals.get("product_id"))
+            moves = self.env["stock.move"].browse(move_ids)
+
+            existing = order.order_line.filtered(lambda l: l.product_id.id == product.id)
+            if existing:
+                moves.write({"sale_line_id": existing[0].id})
+            else:
+                moves.write({"sale_line_id": False})
+
+            _logger.info(
+                "Blocked retro SO line creation for %s (product %s) from moves %s",
+                order.display_name, product.display_name, moves.ids
+            )
+
+        created = self.browse()
+        if allowed:
+            created |= super(SaleOrderLine, self).create(allowed)
+        return created
 
     @api.onchange('product_id')
     def _onchange_product_id(self):

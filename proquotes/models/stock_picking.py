@@ -22,6 +22,29 @@ _logger = logging.getLogger(__name__)
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    footer = fields.Selection([
+        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
+        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
+        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
+        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
+        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
+        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
+        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
+        ('GeoplusFooterCanada', "Geoplus_Canada"),
+        ('GeoplusFooterUS', "Geoplus_America"),
+        ('Leica_Footer_Ali', "Leica Ali"),
+        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
+        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
+        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
+        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
+        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
+    ], default='REALiTFooter_Derek', required=True, help="Footer selection field", string="Footer OLD")
+
+    footer_id = fields.Many2one(
+        'header.footer')
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company
@@ -135,30 +158,3 @@ class StockPicking(models.Model):
             )
 
         return res
-
-
-class stock(models.Model):
-    _inherit = "stock.picking"
-
-    footer = fields.Selection([
-        ('ABtechFooter_Atlantic_Derek', "Abtech_Atlantic_Derek"),
-        ('ABtechFooter_Atlantic_Ryan', "Abtech_Atlantic_Ryan"),
-        ('ABtechFooter_Ontario_Derek', "Abtech_Ontario_Derek"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Ontario_Phil', "Abtech_Ontario_Phil"),
-        ('ABtechFooter_Ontario_Justin', "Abtech_Ontario_Justin"),
-        ('ABtechFooter_Quebec_Alexandre', "Abtech_Quebec_Alexandre"),
-        ('ABtechFooter_Quebec_Benoit_Carl', "ABtechFooter_Quebec_Benoit_Carl"),
-        ('ABtechFooter_Quebec_Derek', "Abtech_Quebec_Derek"),
-        ('GeoplusFooterCanada', "Geoplus_Canada"),
-        ('GeoplusFooterUS', "Geoplus_America"),
-        ('Leica_Footer_Ali', "Leica Ali"),
-        ('REALiTFooter_Derek_US', "REALiTFooter_Derek_US"),
-        ('REALiTFooter_Martin', "REALiTFooter_Martin"),
-        ('REALiTSOLUTIONSLLCFooter_Derek_US', "R-E-A-L.iT Solutions Derek"),
-        ('REALiTFooter_Derek', "REALiTFooter_Derek"),
-        ('REALiTFooter_Derek_Transcanada', "REALiTFooter_Derek_Transcanada"),
-    ], default='REALiTFooter_Derek', required=True, help="Footer selection field", string="Footer OLD")
-
-    footer_id = fields.Many2one(
-        'header.footer')
