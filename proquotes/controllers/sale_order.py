@@ -14,8 +14,7 @@ _logger = logging.getLogger(__name__)
 def _normalize(s):
     if not s:
         return ''
-    s = re.sub(r'[^A-Za-z0-9]', '', s).upper()
-    return s
+    return re.sub(r'[^A-Za-z0-9]', '', s).upper()
 
 def _resolve_country(name_or_code):
     if not name_or_code:
@@ -41,6 +40,7 @@ def _resolve_state(country_id, name_or_code):
 
 def _best_existing_child_match(company_partner, target_vals, address_type):
     Partner = request.env['res.partner'].sudo()
+    # child contacts only
     dom = [('commercial_partner_id', '=', company_partner.commercial_partner_id.id),
            ('parent_id', '!=', False)]
     if address_type in ('invoice', 'delivery'):
@@ -81,25 +81,45 @@ def _best_existing_child_match(company_partner, target_vals, address_type):
 
 class PortalOrderAddressController(http.Controller):
 
-    @http.route(['/my/orders/<int:order_id>/update_addresses'], type='json', auth='public', website=True, csrf=False)
+    @http.route(['/my/orders/<int:order_id>/update_addresses'],
+                type='json', auth='public', website=True, csrf=False, methods=['POST'])
     def update_addresses(self, order_id, access_token=None, invoice=None, delivery=None, **kw):
         try:
+            # Access
             portal = CustomerPortal()
             rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
-            order_sudo = rec[0] if isinstance(rec, (list, tuple)) else rec
-            if not order_sudo or not order_sudo.exists():
+            order = rec[0] if isinstance(rec, (tuple, list)) else rec
+            if not order or not order.exists():
                 return {'ok': False, 'message': 'Order not found or access denied.'}
 
+            def _snapshot(partner):
+                return {
+                    'id': partner.id,
+                    'parent_id': partner.parent_id.id or False,
+                    'type': partner.type or False,
+                    'name': partner.name or '',
+                    'street': partner.street or '',
+                    'street2': partner.street2 or '',
+                    'city': partner.city or '',
+                    'zip': partner.zip or '',
+                    'country_id': partner.country_id.id or False,
+                    'country': partner.country_id.name or '',
+                    'state_id': partner.state_id.id or False,
+                    'state': (partner.state_id.code or partner.state_id.name or '') if partner.state_id else '',
+                }
+
+            debug = {'before': {}, 'after': {}, 'actions': {}}
+
             def _apply(which, vals):
+                addr_type = 'invoice' if which == 'invoice' else 'delivery'
+                current = (order.partner_invoice_id if which == 'invoice' else order.partner_shipping_id).sudo()
+                debug['before'][which] = _snapshot(current)
 
-                if not vals:
-                    return None, 'skipped'
-
-                country_id = _resolve_country(vals.get('country'))
-                state_id   = _resolve_state(country_id, vals.get('state')) if country_id else False
-
+                # Build target payload
                 def _norm(s): return (s or '').strip()
-                target_write = {
+                country_id = _resolve_country(vals.get('country'))
+                state_id = _resolve_state(country_id, vals.get('state')) if country_id else False
+                write_vals = {
                     'name': _norm(vals.get('name')) or '',
                     'street': _norm(vals.get('street')) or '',
                     'street2': _norm(vals.get('street2')) or '',
@@ -108,13 +128,6 @@ class PortalOrderAddressController(http.Controller):
                     'country_id': country_id or False,
                     'state_id': state_id or False,
                 }
-
-                addr_type = 'invoice' if which == 'invoice' else 'delivery'
-                company_partner = order_sudo.partner_id.commercial_partner_id
-
-                current = (order_sudo.partner_invoice_id if which == 'invoice' else order_sudo.partner_shipping_id).sudo()
-
-                match = _best_existing_child_match(company_partner, vals, addr_type)
 
                 def _changed(cur, payload):
                     return any([
@@ -127,40 +140,57 @@ class PortalOrderAddressController(http.Controller):
                         (cur.state_id.id or False)   != (payload['state_id'] or False),
                     ])
 
+                company = order.partner_id.commercial_partner_id.sudo()
+                match = _best_existing_child_match(company, vals, addr_type)
+
+                # Case A: switch to a different existing child
                 if match and match.id != current.id:
-                    order_sudo.sudo().write({
+                    order.sudo().write({
                         'partner_invoice_id' if which == 'invoice' else 'partner_shipping_id': match.id
                     })
-                    return 'switched', f'{which.title()} → existing #{match.id}'
+                    debug['actions'][which] = f'switched_to_existing:{match.id}'
+                    debug['after'][which] = _snapshot(match.sudo())
+                    return
 
+                # Case B: update current if it is a child
                 if current.parent_id:
-                    if _changed(current, target_write):
-                        current.write(target_write)
-                        return 'updated', f'{which.title()} address updated (#{current.id})'
-                    return 'unchanged', f'{which.title()} unchanged'
+                    if _changed(current, write_vals):
+                        current.write(write_vals)
+                        debug['actions'][which] = f'updated_current:{current.id}'
+                    else:
+                        debug['actions'][which] = 'unchanged_current'
+                    debug['after'][which] = _snapshot(current)
+                    return
 
-                create_vals = dict(target_write)
+                # Case C: current is the company → create child and switch
+                create_vals = dict(write_vals)
                 if not create_vals['name']:
-                    create_vals['name'] = company_partner.name or 'Address'
+                    create_vals['name'] = company.name or 'Address'
                 create_vals.update({
-                    'parent_id': company_partner.id,
-                    'commercial_partner_id': company_partner.id,
+                    'parent_id': company.id,
+                    'commercial_partner_id': company.id,
                     'type': addr_type,
                     'is_company': False,
                 })
                 child = request.env['res.partner'].sudo().create(create_vals)
-
-                order_sudo.sudo().write({
+                order.sudo().write({
                     'partner_invoice_id' if which == 'invoice' else 'partner_shipping_id': child.id
                 })
-                return 'created', f'{which.title()} child created #{child.id} and set on order'
+                debug['actions'][which] = f'created_child_and_set:{child.id}'
+                debug['after'][which] = _snapshot(child.sudo())
 
-            inv_status, inv_info = _apply('invoice', invoice or {})
-            del_status, del_info = _apply('delivery', delivery or {})
+            # Apply both sides
+            _apply('invoice', invoice or {})
+            _apply('delivery', delivery or {})
 
-            return {'ok': True, 'info': f'{inv_status or ""} {inv_info or ""} | {del_status or ""} {del_info or ""}'.strip()}
+            # Ensure the write is flushed to DB before we return
+            request.env.cr.flush_all()
+
+            _logger.info("Portal address update on SO %s → %s", order.id, debug)
+            return {'ok': True, 'info': 'addresses processed', 'debug': debug}
 
         except Exception as e:
+            _logger.exception("Failed to update addresses on SO %s", order_id)
             return {'ok': False, 'message': _('Failed to update addresses.'), 'details': str(e)}
 
 class PortalRentalDates(http.Controller):
