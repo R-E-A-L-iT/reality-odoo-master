@@ -313,65 +313,6 @@
                                 poBtn && poBtn.addEventListener('click', applyPO);
                             })();
 
-                            (function setupAddresses() {
-                                const wrap = document.getElementById('address-section');
-                                if (!wrap) return;
-
-                                const orderId = (wrap.getAttribute('data-order-id') || '').trim();
-                                const token   = wrap.getAttribute('data-access-token') || '';
-                                const btn     = document.getElementById('apply_addresses');
-
-                                const labelIdle = isFr ? 'Enregistrer les adresses' : 'Save Addresses';
-                                const labelBusy = isFr ? 'Enregistrement…'         : 'Saving…';
-
-                                function setBusy(b) {
-                                    if (!btn) return;
-                                    btn.disabled = b;
-                                    btn.textContent = b ? labelBusy : labelIdle;
-                                }
-
-                                function collect(prefix) {
-                                    const get = (id) => document.getElementById(prefix + '_' + id)?.value?.trim() || '';
-                                    return {
-                                        name:    get('name'),
-                                        street:  get('street'),
-                                        street2: get('street2'),
-                                        city:    get('city'),
-                                        state:   get('state'),
-                                        zip:     get('zip'),
-                                        country: get('country'),
-                                    };
-                                }
-
-                                async function apply() {
-                                    setBusy(true);
-                                    try {
-                                        const payload = {
-                                            invoice:  collect('inv'),
-                                            delivery: collect('del'),
-                                        };
-                                        if (token) payload.access_token = token;
-
-                                        const res = await postJSON(`/my/orders/${orderId}/update_addresses`, payload);
-
-                                        if (res && res.ok) {
-                                            if (res.info) console.log('[Addresses] ' + res.info);
-                                            window.location.reload();
-                                        } else {
-                                            console.error('Address update failed', res);
-                                            alert((isFr ? "Impossible d'enregistrer les adresses." : "Could not save addresses.") + (res && res.details ? ("\n" + res.details) : ""));
-                                        }
-                                    } catch (e) {
-                                        console.error('Address update error', e);
-                                        alert(isFr ? "Erreur réseau lors de l'enregistrement." : 'Network error while saving.');
-                                    } finally {
-                                        setBusy(false);
-                                    }
-                                }
-
-                                btn && btn.addEventListener('click', apply);
-                            })();
-
                         })();
                     ]]>
                 </script>
