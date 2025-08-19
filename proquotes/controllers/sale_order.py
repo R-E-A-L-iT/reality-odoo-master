@@ -184,7 +184,7 @@ class PortalOrderAddressController(http.Controller):
             _apply('delivery', delivery or {})
 
             # Ensure the write is flushed to DB before we return
-            request.env.cr.flush_all()
+            request.env.flush_all()
 
             _logger.info("Portal address update on SO %s → %s", order.id, debug)
             return {'ok': True, 'info': 'addresses processed', 'debug': debug}
