@@ -11,7 +11,7 @@
     'author': 'RealIT Custom',
     'depends': ['mail', 'crm'],
     'data': [
-        # 'views/res_users_extend.xml',
+        'views/res_users_extend.xml',
     ],
     "assets": {
         'web.assets_backend': [
