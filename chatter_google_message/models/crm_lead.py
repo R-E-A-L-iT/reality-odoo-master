@@ -6,12 +6,6 @@ from odoo import api, fields, models, _
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-
-    # simple_email_layout = fields.Boolean(
-    #     string='Send Gmail Message',
-    #     default=False,
-    # )
-
     def prepare_google_message(self):
         """
         Prepare lead for Google message by setting simple_email_layout to True
@@ -30,3 +24,9 @@ class CrmLead(models.Model):
         """
         if self.simple_email_layout != original_value:
             self.write({'simple_email_layout': original_value})
+
+
+class ResUsers(models.Model):
+    _inherit = 'res.users'
+
+    ba_mass_signature = fields.Html(string='Mass Signature')

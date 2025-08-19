@@ -9,8 +9,10 @@
         are sent without headers and footers.
     ''',
     'author': 'RealIT Custom',
-    'depends': ['mail', 'crm','proquotes'],
-    'data': [],
+    'depends': ['mail', 'crm'],
+    'data': [
+        'views/res_users_extend.xml',
+    ],
     "assets": {
         'web.assets_backend': [
             "chatter_google_message/static/src/xml/chatter_templates.xml",
