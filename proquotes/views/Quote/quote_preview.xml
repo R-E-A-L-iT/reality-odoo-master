@@ -426,7 +426,7 @@
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
-                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
                                         <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
@@ -473,7 +473,7 @@
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
-                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
                                         <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
@@ -681,7 +681,7 @@
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
-                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
                                         <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
@@ -728,7 +728,7 @@
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
-                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
                                         <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
