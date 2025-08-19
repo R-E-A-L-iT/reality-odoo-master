@@ -355,12 +355,11 @@
                                         const res = await postJSON(`/my/orders/${orderId}/update_addresses`, payload);
 
                                         if (res && res.ok) {
-                                            // Optionally surface what happened
-                                            // alert((isFr ? 'Adresses mises à jour.' : 'Addresses updated.') + (res.info ? '\n' + res.info : ''));
+                                            if (res.info) console.log('[Addresses] ' + res.info);
                                             window.location.reload();
                                         } else {
                                             console.error('Address update failed', res);
-                                            alert(isFr ? "Impossible d'enregistrer les adresses." : 'Could not save addresses.');
+                                            alert((isFr ? "Impossible d'enregistrer les adresses." : "Could not save addresses.") + (res && res.details ? ("\n" + res.details) : ""));
                                         }
                                     } catch (e) {
                                         console.error('Address update error', e);
