@@ -451,10 +451,6 @@
                                     </div>
                                     </div>
                                 </div>
-                                <div class="addr_note" style="font-size:.85rem;color:#8b949e;margin-top:6px;">
-                                    <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
-                                    <t t-else="">Visual selection only for now.</t>
-                                </div>
                                 </div>
 
                                 <!-- DELIVERY ROW -->
@@ -497,10 +493,6 @@
                                         </div>
                                     </div>
                                     </div>
-                                </div>
-                                <div class="addr_note" style="font-size:.85rem;color:#8b949e;margin-top:6px;">
-                                    <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
-                                    <t t-else="">Visual selection only for now.</t>
                                 </div>
                                 </div>
                             </div>
@@ -705,10 +697,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="addr_note" style="font-size:.85rem;color:#8b949e;margin-top:6px;">
-                                <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
-                                <t t-else="">Visual selection only for now.</t>
                             </div>
                         </div>
 
