@@ -609,7 +609,157 @@
                 </t>
 
                 <!-- put address section here later -->
+                <div class="addresses address-section"
+                    t-att-data-order-id="sale_order.id"
+                    t-att-data-access-token="sale_order.access_token">
+                    <style>
+                        /* Dark theme matrix */
+                        .addr_matrix { margin: 18px 0; padding: 14px; background:#14171c; border:1px solid #23272f; border-radius:12px; color:#e6edf3; }
+                        .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
+                        .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
+                        .addr_row { margin-top: 14px; }
+                        .addr_row_title { font-weight:700; color:#c9d1d9; margin-bottom:8px; }
+                        .addr_cards { display:flex; flex-wrap:wrap; gap:14px; }
 
+                        .addr_card {
+                            background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
+                            min-width:300px; max-width:420px; flex: 1 1 320px; position:relative;
+                        }
+                        .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
+                        .addr_card .name { font-weight:700; margin-bottom:6px; color:#e6edf3; }
+                        .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
+                        .addr_card.current { outline: 2px solid #3f8cff; }
+
+                        /* “Add address” tile */
+                        .addr_card.add_card {
+                            background:#18202a; border:1px dashed #3a4352;
+                            display:flex; align-items:center; justify-content:center; text-align:center;
+                            min-height: 160px; color:#c9d1d9;
+                        }
+                        .add_inner { display:flex; flex-direction:column; align-items:center; gap:8px; }
+                        .add_plus { font-size:32px; line-height:1; opacity:.9; }
+                        .add_label { font-weight:600; }
+
+                        .addr_badge { display:inline-block; font-size:.75rem; padding:2px 6px; border-radius:999px; border:1px solid #2b3139; color:#8b949e; }
+                        .addr_legend { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+                        @media (max-width: 520px) {
+                            .addr_card { min-width:100%; }
+                        }
+                    </style>
+
+                    <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
+                    <t t-set="curr_inv" t-value="sale_order.partner_invoice_id"/>
+                    <t t-set="curr_del" t-value="sale_order.partner_shipping_id"/>
+                    <!-- Only typed children now -->
+                    <t t-set="inv_children" t-value="company.child_ids.filtered(lambda p: p.type == 'invoice')"/>
+                    <t t-set="del_children" t-value="company.child_ids.filtered(lambda p: p.type == 'delivery')"/>
+
+                    <div class="addr_matrix">
+                        <div class="addr_hdr">
+                            <h4>
+                                <t t-if="language == 'fr_CA'">Adresses de la société</t>
+                                <t t-else="">Company Addresses</t>
+                            </h4>
+                            <span class="addr_badge">
+                                <t t-esc="company.display_name"/>
+                            </span>
+                        </div>
+
+                        <!-- INVOICE ROW -->
+                        <div class="addr_row">
+                            <div class="addr_row_title">
+                                <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                                <t t-else="">Invoice Address</t>
+                            </div>
+                            <div class="addr_cards">
+
+                                <!-- Invoice address cards (only typed children) -->
+                                <t t-foreach="inv_children" t-as="p">
+                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                        <div class="addr_radio">
+                                        <input type="radio" name="inv_choice" t-att-value="p.id"
+                                                t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
+                                        </div>
+                                        <div class="addr_legend">
+                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                        </div>
+                                        <div class="lines">
+                                        <t t-if="p.street"><t t-esc="p.street"/><br/></t>
+                                        <t t-if="p.street2"><t t-esc="p.street2"/><br/></t>
+                                        <t t-if="p.city"><t t-esc="p.city"/></t>
+                                        <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t>
+                                        <t t-if="p.zip"> <t t-esc="p.zip"/></t><br/>
+                                        <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Add invoice address tile (always present; if none exist, it will be the only card) -->
+                                <div class="addr_card add_card">
+                                    <div class="add_inner">
+                                        <div class="add_plus">＋</div>
+                                        <div class="add_label">
+                                        <t t-if="language == 'fr_CA'">Ajouter une adresse de facturation</t>
+                                        <t t-else="">Add invoice address</t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="addr_note" style="font-size:.85rem;color:#8b949e;margin-top:6px;">
+                                <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                                <t t-else="">Visual selection only for now.</t>
+                            </div>
+                        </div>
+
+                        <!-- DELIVERY ROW -->
+                        <div class="addr_row">
+                            <div class="addr_row_title">
+                                <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                                <t t-else="">Delivery Address</t>
+                            </div>
+                            <div class="addr_cards">
+
+                                <!-- Delivery address cards (only typed children) -->
+                                <t t-foreach="del_children" t-as="p">
+                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                        <div class="addr_radio">
+                                        <input type="radio" name="del_choice" t-att-value="p.id"
+                                                t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
+                                        </div>
+                                        <div class="addr_legend">
+                                        <span class="addr_badge">#<t t-esc="p.id"/></span>
+                                        <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                        </div>
+                                        <div class="lines">
+                                        <t t-if="p.street"><t t-esc="p.street"/><br/></t>
+                                        <t t-if="p.street2"><t t-esc="p.street2"/><br/></t>
+                                        <t t-if="p.city"><t t-esc="p.city"/></t>
+                                        <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t>
+                                        <t t-if="p.zip"> <t t-esc="p.zip"/></t><br/>
+                                        <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Add delivery address tile (always present; if none exist, it will be the only card) -->
+                                <div class="addr_card add_card">
+                                    <div class="add_inner">
+                                        <div class="add_plus">＋</div>
+                                        <div class="add_label">
+                                        <t t-if="language == 'fr_CA'">Ajouter une adresse de livraison</t>
+                                        <t t-else="">Add delivery address</t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="addr_note" style="font-size:.85rem;color:#8b949e;margin-top:6px;">
+                                <t t-if="language == 'fr_CA'">Sélection visuelle uniquement pour l’instant.</t>
+                                <t t-else="">Visual selection only for now.</t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </xpath>
 
