@@ -1,9 +1,3 @@
-                                            
-/* import */
-                                    
-@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
-                
-
 /* quote header */
 .quote-head > td.text-left {
 	padding-left: 20px;
@@ -489,5 +483,3 @@ span.qtySpan {
 #rental-terms > ol > li > p, #rental-terms > ol > li > ol > li > p {
 	color: rgba(255, 255, 255, 0.7) !important;;
 }
-
-
