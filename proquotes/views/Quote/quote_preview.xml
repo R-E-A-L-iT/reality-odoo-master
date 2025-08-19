@@ -373,7 +373,7 @@
                                 .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
                                 .addr_card .name { font-weight:700; margin-bottom:6px; color:#e6edf3; }
                                 .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
-                                .addr_card.current { outline: 2px solid #3f8cff; }
+                                .addr_card.current { outline: 2px solid #db0d0d; }
 
                                 /* “Add address” tile */
                                 .addr_card.add_card {
