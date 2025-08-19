@@ -677,12 +677,11 @@
                                         <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
-                                        <t t-if="p.street"><t t-esc="p.street"/><br/></t>
-                                        <t t-if="p.street2"><t t-esc="p.street2"/><br/></t>
-                                        <t t-if="p.city"><t t-esc="p.city"/></t>
-                                        <t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t>
-                                        <t t-if="p.zip"> <t t-esc="p.zip"/></t><br/>
-                                        <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
+                                            <t t-if="p.street"><t t-esc="p.street"/></t>
+                                            <t t-if="p.street2"><t t-esc="p.street2"/></t>
+                                            <t t-if="p.city"><t t-esc="p.city"/></t><t t-if="p.state_id">, <t t-esc="p.state_id.code or p.state_id.name"/></t>
+                                            <t t-if="p.zip"> <t t-esc="p.zip"/></t>
+                                            <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
                                         </div>
                                     </div>
                                 </t>
