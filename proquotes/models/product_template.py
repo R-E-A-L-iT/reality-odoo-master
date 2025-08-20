@@ -25,8 +25,8 @@ class product(models.Model):
         ('delivered_timesheet', 'Based on Timesheets')
     ]
 
-    cadVal = fields.Monetary(string="Canadian Product Value")
-    usdVal = fields.Monetary(string="United States Product Value")
+    cad_val = fields.Monetary(string="Canadian Product Value")
+    usd_val = fields.Monetary(string="United States Product Value")
     type_selection = fields.Selection(
         [("H", "H"), ("S", "S"), ("SS", "SS")], string="Type (H/S/SS)", default=False
     )
