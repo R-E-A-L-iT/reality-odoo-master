@@ -370,7 +370,7 @@
                                 background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
                                 min-width:300px; max-width:420px; flex: 1 1 320px; position:relative;
                                 }
-                                .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
+                                .addr_card .addr_radio { display: none !important; }
                                 .addr_card .name { font-weight:700; margin-bottom:6px; color:#e6edf3; }
                                 .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
                                 .addr_card.current { outline: 2px solid #db0d0d; }
@@ -390,6 +390,19 @@
                                 @media (max-width: 520px) {
                                 .addr_card { min-width:100%; }
                                 }
+
+                                .addr_edit {
+                                    position: absolute; top: 10px; right: 10px;
+                                    width: 22px; height: 22px;
+                                    border: 1px solid #4b1f1f; border-radius: 999px;
+                                    background: #231314;
+                                    display: flex; align-items: center; justify-content: center;
+                                    color: #db0d0d;           /* pencil color */
+                                    opacity: .9; cursor: default;
+                                    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+                                }
+                                .addr_card:hover .addr_edit { opacity: 1; box-shadow: 0 0 0 2px rgba(219,13,13,.15) inset; }
+                                .addr_edit svg { width: 12px; height: 12px; display: block; }
                             </style>
 
                             <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
@@ -602,40 +615,6 @@
                 <div class="addresses address-section"
                     t-att-data-order-id="sale_order.id"
                     t-att-data-access-token="sale_order.access_token">
-                    <style>
-                        /* Dark theme matrix */
-                        .addr_matrix { margin: 18px 0; padding: 14px; background:#14171c; border:1px solid #23272f; border-radius:12px; color:#e6edf3; }
-                        .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
-                        .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
-                        .addr_row { margin-top: 14px; }
-                        .addr_row_title { font-weight:700; color:#c9d1d9; margin-bottom:8px; }
-                        .addr_cards { display:flex; flex-wrap:wrap; gap:14px; }
-
-                        .addr_card {
-                            background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
-                            min-width:300px; max-width:420px; flex: 1 1 320px; position:relative;
-                        }
-                        .addr_card .addr_radio { position:absolute; top:10px; right:10px; }
-                        .addr_card .name { font-weight:700; margin-bottom:6px; color:#e6edf3; }
-                        .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
-                        .addr_card.current { outline: 2px solid #db0d0d; }
-
-                        /* “Add address” tile */
-                        .addr_card.add_card {
-                            background:#18202a; border:1px dashed #3a4352;
-                            display:flex; align-items:center; justify-content:center; text-align:center;
-                            min-height: 160px; color:#c9d1d9;
-                        }
-                        .add_inner { display:flex; flex-direction:column; align-items:center; gap:8px; }
-                        .add_plus { font-size:32px; line-height:1; opacity:.9; }
-                        .add_label { font-weight:600; }
-
-                        .addr_badge { display:inline-block; font-size:.75rem; padding:2px 6px; border-radius:999px; border:1px solid #2b3139; color:#8b949e; }
-                        .addr_legend { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
-                        @media (max-width: 520px) {
-                            .addr_card { min-width:100%; }
-                        }
-                    </style>
 
                     <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
                     <t t-set="curr_inv" t-value="sale_order.partner_invoice_id"/>
