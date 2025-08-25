@@ -833,6 +833,7 @@
             </div>
             <script>
                 <![CDATA[
+                window.odooPostJSON = postJSON;
                 (function setupAddressSelect(){
                     // init every address section present (rental / non-rental)
                     document.querySelectorAll('.address-section').forEach(function(root){
