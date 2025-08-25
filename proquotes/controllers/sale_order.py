@@ -162,3 +162,69 @@ class PortalPONumber(http.Controller):
         order.write({'customer_po_number': customer_po_number or False})
         _logger.info("PO number updated on SO %s: %s", order.id, customer_po_number)
         return {'ok': True, 'customer_po_number': customer_po_number}
+
+class PortalOrderAddressSwitch(http.Controller):
+
+    @http.route(['/my/orders/<int:order_id>/set_addresses'],
+                type='json', auth='public', website=True, csrf=False, methods=['POST'])
+    def set_addresses(self, order_id, access_token=None, invoice_id=None, delivery_id=None, **kw):
+        try:
+            portal = CustomerPortal()
+            rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
+            order = rec[0] if isinstance(rec, (tuple, list)) else rec
+            if not order or not order.exists():
+                return {'ok': False, 'message': 'Order not found or access denied.'}
+
+            order_sudo = order.sudo()
+            company = order_sudo.partner_id.commercial_partner_id.sudo()
+
+            def _clean_int(v):
+                try:
+                    return int(v)
+                except Exception:
+                    return None
+
+            def _assert_child(partner_id, expected_type):
+                if not partner_id:
+                    return None
+                Partner = request.env['res.partner'].sudo()
+                p = Partner.browse(partner_id)
+                if not p.exists():
+                    raise ValueError(_("Address not found."))
+                if p.commercial_partner_id.id != company.id:
+                    raise ValueError(_("Address does not belong to this company."))
+                if not p.parent_id:
+                    raise ValueError(_("Please pick a child address, not the main company."))
+                if p.type != expected_type:
+                    raise ValueError(_("Address must be of type ‘%s’.") % expected_type)
+                return p
+
+            changed = {}
+
+            inv_id = _clean_int(invoice_id)
+            if inv_id:
+                inv = _assert_child(inv_id, 'invoice')
+                if inv.id != order_sudo.partner_invoice_id.id:
+                    order_sudo.write({'partner_invoice_id': inv.id})
+                    changed['invoice_id'] = inv.id
+
+            deliv_id = _clean_int(delivery_id)
+            if deliv_id:
+                shp = _assert_child(deliv_id, 'delivery')
+                if shp.id != order_sudo.partner_shipping_id.id:
+                    order_sudo.write({'partner_shipping_id': shp.id})
+                    changed['delivery_id'] = shp.id
+
+            # ensure values flushed before returning (commit is optional)
+            request.env.flush_all()
+
+            return {
+                'ok': True,
+                'changed': changed,
+                'new_invoice_id': order_sudo.partner_invoice_id.id,
+                'new_delivery_id': order_sudo.partner_shipping_id.id,
+            }
+
+        except Exception as e:
+            # Don’t expose internals to the browser; return a friendly message + brief detail for console
+            return {'ok': False, 'message': _('Could not change the address.'), 'details': str(e)}

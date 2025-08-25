@@ -403,6 +403,8 @@
                                 }
                                 .addr_card:hover .addr_edit { opacity: 1; box-shadow: 0 0 0 2px rgba(219,13,13,.15) inset; }
                                 .addr_edit svg { width: 12px; height: 12px; display: block; }
+                                .addr_card.clickable { cursor: pointer; }
+                                .addr_card.clickable:focus { outline: 2px solid rgba(219,13,13,.35); outline-offset: 2px; }
                             </style>
 
                             <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
@@ -433,9 +435,13 @@
 
                                     <!-- Invoice address cards (only typed children) -->
                                     <t t-foreach="inv_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_card clickable"
+                                        t-attf-class="addr_card clickable #{'current' if p.id == curr_inv.id else ''}"
+                                        data-type="invoice"
+                                        t-att-data-partner-id="p.id"
+                                        tabindex="0" role="button" aria-label="Select invoice address">
                                         <div class="addr_radio">
-                                        <input type="radio" name="inv_choice" t-att-value="p.id"
+                                            <input type="radio" name="inv_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
@@ -475,7 +481,11 @@
 
                                     <!-- Delivery address cards (only typed children) -->
                                     <t t-foreach="del_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_card clickable"
+                                        t-attf-class="addr_card clickable #{'current' if p.id == curr_del.id else ''}"
+                                        data-type="delivery"
+                                        t-att-data-partner-id="p.id"
+                                        tabindex="0" role="button" aria-label="Select delivery address">
                                         <div class="addr_radio">
                                         <input type="radio" name="del_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
@@ -645,9 +655,13 @@
 
                                 <!-- Invoice address cards (only typed children) -->
                                 <t t-foreach="inv_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_card clickable"
+                                        t-attf-class="addr_card clickable #{'current' if p.id == curr_inv.id else ''}"
+                                        data-type="invoice"
+                                        t-att-data-partner-id="p.id"
+                                        tabindex="0" role="button" aria-label="Select invoice address">
                                         <div class="addr_radio">
-                                        <input type="radio" name="inv_choice" t-att-value="p.id"
+                                            <input type="radio" name="inv_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
                                         </div>
                                         <div class="addr_legend">
@@ -687,7 +701,11 @@
 
                                 <!-- Delivery address cards (only typed children) -->
                                 <t t-foreach="del_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_card clickable"
+                                        t-attf-class="addr_card clickable #{'current' if p.id == curr_del.id else ''}"
+                                        data-type="delivery"
+                                        t-att-data-partner-id="p.id"
+                                        tabindex="0" role="button" aria-label="Select delivery address">
                                         <div class="addr_radio">
                                         <input type="radio" name="del_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
@@ -813,6 +831,80 @@
                     </t>
                 </div>
             </div>
+            <script>
+                <![CDATA[
+                (function setupAddressSelect(){
+                    // handle every address section on the page (rental/non-rental)
+                    document.querySelectorAll('.address-section').forEach(function(root){
+                    var orderId = root.getAttribute('data-order-id');
+                    var token   = root.getAttribute('data-access-token') || '';
+
+                    if (!orderId) return;
+
+                    // click / keyboard select
+                    function applySelection(card){
+                        if (!card || card.classList.contains('add_card')) return;
+
+                        var type = card.getAttribute('data-type');        // 'invoice' | 'delivery'
+                        var pid  = card.getAttribute('data-partner-id');  // partner id
+
+                        if (!type || !pid) return;
+
+                        // Build payload for server
+                        var payload = {};
+                        if (token) payload.access_token = token;
+                        if (type === 'invoice')  payload.invoice_id  = Number(pid);
+                        if (type === 'delivery') payload.delivery_id = Number(pid);
+
+                        // POST to controller
+                        fetch(`/my/orders/${orderId}/set_addresses`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                        })
+                        .then(r => r.json())
+                        .then(function(res){
+                        if (res && res.ok) {
+                            // highlight selected card (remove from siblings of same type)
+                            root.querySelectorAll('.addr_card.clickable[data-type="'+type+'"]').forEach(function(c){
+                            c.classList.remove('current');
+                            });
+                            card.classList.add('current');
+                        } else {
+                            console.error('Address switch failed:', res);
+                            alert((document.documentElement.lang || '').startsWith('fr')
+                            ? "Impossible de changer l'adresse."
+                            : 'Could not change the address.');
+                        }
+                        })
+                        .catch(function(e){
+                        console.error('Address switch error:', e);
+                        alert((document.documentElement.lang || '').startsWith('fr')
+                            ? "Erreur réseau lors de la mise à jour de l'adresse."
+                            : 'Network error while updating address.');
+                        });
+                    }
+
+                    // Delegate clicks (and ignore clicks on any future edit icon)
+                    root.addEventListener('click', function(e){
+                        var card = e.target.closest('.addr_card.clickable');
+                        if (!card || !root.contains(card)) return;
+                        // ignore clicks on .addr_edit if you add it later
+                        if (e.target.closest('.addr_edit')) return;
+                        applySelection(card);
+                    });
+
+                    // Keyboard selection: Enter/Space when focused on a card
+                    root.addEventListener('keydown', function(e){
+                        if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.addr_card.clickable')) {
+                        e.preventDefault();
+                        applySelection(e.target.closest('.addr_card.clickable'));
+                        }
+                    });
+                    });
+                })();
+                ]]>
+            </script>
         </xpath>
 
 
