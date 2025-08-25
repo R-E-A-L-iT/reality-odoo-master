@@ -524,6 +524,7 @@
                         Weekly rental cost is equivalent to 4x the daily rental rate.
                         Monthly (30 days) rental cost is equivalent to 12x the daily rental rate.
                     </p>
+                    <!-- test -->
                     <div class="rental_dates" id="rental-dates"
                         t-att-data-order-id="sale_order.id"
                         t-att-data-access-token="sale_order.access_token">
