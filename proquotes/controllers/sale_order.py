@@ -166,56 +166,69 @@ class PortalPONumber(http.Controller):
 class PortalOrderAddressSwitch(http.Controller):
 
     @http.route(['/my/orders/<int:order_id>/set_addresses'],
-                type='json', auth='public', website=True, csrf=False, methods=['POST'])
+                type='http', auth='public', website=True, csrf=False, methods=['POST'])
     def set_addresses(self, order_id, **kw):
+        # --- parse JSON body safely ---
+        payload = {}
         try:
-            data = request.jsonrequest or {}  # already unwrapped from JSON-RPC if needed
-            access_token = data.get('access_token') or kw.get('access_token')
-            inv_raw = data.get('invoice_id', kw.get('invoice_id'))
-            del_raw = data.get('delivery_id', kw.get('delivery_id'))
+            raw = request.httprequest.get_data(cache=False, as_text=True)
+            if raw:
+                payload = json.loads(raw)
+        except Exception:
+            payload = {}
+        # merge form-style kw if any
+        if kw:
+            payload.update(kw)
 
-            # Access check via portal helper
+        access_token = payload.get('access_token')
+        inv_raw = payload.get('invoice_id')
+        del_raw = payload.get('delivery_id')
+
+        # --- portal access check ---
+        try:
             portal = CustomerPortal()
             rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
             order = rec[0] if isinstance(rec, (tuple, list)) else rec
             if not order or not order.exists():
-                return {'ok': False, 'message': 'Order not found or access denied.'}
+                return request.make_json_response({'ok': False, 'message': 'Order not found or access denied.'})
+        except Exception:
+            return request.make_json_response({'ok': False, 'message': 'Order not found or access denied.'})
 
-            order_sudo = order.sudo()
-            company = order_sudo.partner_id.commercial_partner_id.sudo()
-            Partner = request.env['res.partner'].sudo()
+        order_sudo = order.sudo()
+        company = order_sudo.partner_id.commercial_partner_id.sudo()
+        Partner = request.env['res.partner'].sudo()
 
-            def _to_int(v):
-                try:
-                    # Handles int, numeric str, and None/'' safely
-                    return int(v) if v not in (None, '', False) else None
-                except Exception:
-                    return None
+        def _to_int(v):
+            try:
+                return int(v) if v not in (None, '', False) else None
+            except Exception:
+                return None
 
-            def _validate_child(pid, expected_type):
-                if not pid:
-                    return None
-                p = Partner.browse(pid)
-                if not p.exists():
-                    raise ValueError(_("Address not found."))
-                if p.commercial_partner_id.id != company.id:
-                    raise ValueError(_("Address does not belong to this company."))
-                if not p.parent_id:
-                    raise ValueError(_("Select a child address (not the main company)."))
-                if p.type != expected_type:
-                    raise ValueError(_("Address must be of type ‘%s’.") % expected_type)
-                return p
+        def _validate_child(pid, expected_type):
+            if not pid:
+                return None
+            p = Partner.browse(pid)
+            if not p.exists():
+                raise ValueError(_("Address not found."))
+            if p.commercial_partner_id.id != company.id:
+                raise ValueError(_("Address does not belong to this company."))
+            if not p.parent_id:
+                raise ValueError(_("Select a child address (not the main company)."))
+            if p.type != expected_type:
+                raise ValueError(_("Address must be of type ‘%s’.") % expected_type)
+            return p
 
-            inv_pid = _to_int(inv_raw)
-            del_pid = _to_int(del_raw)
+        inv_pid = _to_int(inv_raw)
+        del_pid = _to_int(del_raw)
 
-            changed = {}
-            vals = {}
+        changed, vals = {}, {}
+        try:
             if inv_pid:
                 inv = _validate_child(inv_pid, 'invoice')
                 if inv and inv.id != order_sudo.partner_invoice_id.id:
                     vals['partner_invoice_id'] = inv.id
                     changed['invoice_id'] = inv.id
+
             if del_pid:
                 shp = _validate_child(del_pid, 'delivery')
                 if shp and shp.id != order_sudo.partner_shipping_id.id:
@@ -224,22 +237,21 @@ class PortalOrderAddressSwitch(http.Controller):
 
             if vals:
                 order_sudo.write(vals)
+                request.env.cr.commit()
 
-            # Commit so it persists immediately
-            request.env.cr.commit()
+            _logger.info("SO %s address switch: raw=%s -> changed=%s",
+                         order_sudo.name, {'invoice_id': inv_raw, 'delivery_id': del_raw}, changed)
 
-            _logger.info(
-                "SO %s address switch: raw=%s -> changed=%s",
-                order_sudo.name, {'invoice_id': inv_raw, 'delivery_id': del_raw}, changed
-            )
-
-            return {
+            return request.make_json_response({
                 'ok': True,
                 'changed': changed,
                 'new_invoice_id': order_sudo.partner_invoice_id.id,
                 'new_delivery_id': order_sudo.partner_shipping_id.id,
-            }
-
+            })
         except Exception as e:
             _logger.exception("Address switch failed for SO %s", order_id)
-            return {'ok': False, 'message': _('Could not change the address.'), 'details': str(e)}
+            return request.make_json_response({
+                'ok': False,
+                'message': _('Could not change the address.'),
+                'details': str(e),
+            })
