@@ -167,9 +167,14 @@ class PortalOrderAddressSwitch(http.Controller):
 
     @http.route(['/my/orders/<int:order_id>/set_addresses'],
                 type='json', auth='public', website=True, csrf=False, methods=['POST'])
-    def set_addresses(self, order_id, access_token=None, invoice_id=None, delivery_id=None, **kw):
+    def set_addresses(self, order_id, **kw):
         try:
-            # Access check using the portal helper (resolves both token + ACL)
+            data = request.jsonrequest or {}  # already unwrapped from JSON-RPC if needed
+            access_token = data.get('access_token') or kw.get('access_token')
+            inv_raw = data.get('invoice_id', kw.get('invoice_id'))
+            del_raw = data.get('delivery_id', kw.get('delivery_id'))
+
+            # Access check via portal helper
             portal = CustomerPortal()
             rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
             order = rec[0] if isinstance(rec, (tuple, list)) else rec
@@ -180,9 +185,10 @@ class PortalOrderAddressSwitch(http.Controller):
             company = order_sudo.partner_id.commercial_partner_id.sudo()
             Partner = request.env['res.partner'].sudo()
 
-            def _coerce_int(v):
+            def _to_int(v):
                 try:
-                    return int(v) if v is not None and v != '' else None
+                    # Handles int, numeric str, and None/'' safely
+                    return int(v) if v not in (None, '', False) else None
                 except Exception:
                     return None
 
@@ -196,34 +202,36 @@ class PortalOrderAddressSwitch(http.Controller):
                     raise ValueError(_("Address does not belong to this company."))
                 if not p.parent_id:
                     raise ValueError(_("Select a child address (not the main company)."))
-                # Strict by default; relax here if you later want to accept blank 'type'
                 if p.type != expected_type:
                     raise ValueError(_("Address must be of type ‘%s’.") % expected_type)
                 return p
 
-            inv_pid = _coerce_int(invoice_id)
-            del_pid = _coerce_int(delivery_id)
+            inv_pid = _to_int(inv_raw)
+            del_pid = _to_int(del_raw)
 
             changed = {}
-
+            vals = {}
             if inv_pid:
                 inv = _validate_child(inv_pid, 'invoice')
                 if inv and inv.id != order_sudo.partner_invoice_id.id:
-                    order_sudo.write({'partner_invoice_id': inv.id})
+                    vals['partner_invoice_id'] = inv.id
                     changed['invoice_id'] = inv.id
-
             if del_pid:
                 shp = _validate_child(del_pid, 'delivery')
                 if shp and shp.id != order_sudo.partner_shipping_id.id:
-                    order_sudo.write({'partner_shipping_id': shp.id})
+                    vals['partner_shipping_id'] = shp.id
                     changed['delivery_id'] = shp.id
 
-            # Force database commit so changes persist immediately after the request
+            if vals:
+                order_sudo.write(vals)
+
+            # Commit so it persists immediately
             request.env.cr.commit()
 
-            # Useful diagnostics if you ever need them
-            _logger.info("SO %s address switch: payload(inv=%s, del=%s) -> changed=%s",
-                         order_sudo.name, inv_pid, del_pid, changed)
+            _logger.info(
+                "SO %s address switch: raw=%s -> changed=%s",
+                order_sudo.name, {'invoice_id': inv_raw, 'delivery_id': del_raw}, changed
+            )
 
             return {
                 'ok': True,
