@@ -316,6 +316,49 @@
                         })();
                     ]]>
                 </script>
+                <script>
+                    <![CDATA[
+                        (function () {
+                            // Scope to this address section only (handles rental/non-rental branches safely)
+                            var root = (function() {
+                            try { return document.currentScript.closest('.address-section'); } catch (_) {}
+                            return document.querySelector('.address-section');
+                            })();
+                            if (!root) return;
+
+                            var editBtns = root.querySelectorAll('.addr_edit');
+                            editBtns.forEach(function(btn){ btn.addEventListener('click', function(e){ e.stopPropagation(); }); });
+
+                            var invHidden = root.querySelector('#inv_choice');
+                            var delHidden = root.querySelector('#del_choice');
+
+                            function handleSelect(card) {
+                            if (card.classList.contains('add_card')) return; // ignore "Add…" tile
+                            var type = card.getAttribute('data-type');
+                            var pid  = card.getAttribute('data-partner-id');
+
+                            // remove highlight from siblings in the same row/type
+                            root.querySelectorAll('.addr_card.clickable[data-type="'+ type +'"]').forEach(function(c){
+                                c.classList.remove('current');
+                            });
+                            // add highlight to clicked card
+                            card.classList.add('current');
+
+                            // stash for later (so wiring a Save is trivial)
+                            if (type === 'invoice' && invHidden) invHidden.value = pid;
+                            if (type === 'delivery' && delHidden) delHidden.value = pid;
+                            }
+
+                            // Click + keyboard selection
+                            root.querySelectorAll('.addr_card.clickable').forEach(function(card){
+                            card.addEventListener('click', function(){ handleSelect(card); });
+                            card.addEventListener('keydown', function(e){
+                                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(card); }
+                            });
+                            });
+                        })();
+                    ]]>
+                </script>
             <div class="rental_info" t-if="sale_order.is_rental_order">
                 <t t-if="language == 'fr_CA'">
                     <h3>Coûts de location estimés</h3>
@@ -391,6 +434,10 @@
                                 .addr_card { min-width:100%; }
                                 }
 
+                                .addr_card.clickable { cursor: pointer; }
+                                .addr_card.clickable:focus { outline: 2px solid rgba(219,13,13,.35); }
+                                .addr_card .addr_radio { display:none !important; }
+
                                 .addr_edit {
                                     position: absolute; top: 10px; right: 10px;
                                     width: 22px; height: 22px;
@@ -414,14 +461,17 @@
 
                             <div class="addr_matrix">
                                 <div class="addr_hdr">
-                                <h4>
-                                    <t t-if="language == 'fr_CA'">Adresses de la société</t>
-                                    <t t-else="">Company Addresses</t>
-                                </h4>
-                                <span class="addr_badge">
-                                    <t t-esc="company.display_name"/>
-                                </span>
+                                    <h4>
+                                        <t t-if="language == 'fr_CA'">Adresses de la société</t>
+                                        <t t-else="">Company Addresses</t>
+                                    </h4>
+                                    <span class="addr_badge">
+                                        <t t-esc="company.display_name"/>
+                                    </span>
                                 </div>
+                                <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''">
+                                <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''">
+
 
                                 <!-- INVOICE ROW -->
                                 <div class="addr_row">
@@ -433,7 +483,11 @@
 
                                     <!-- Invoice address cards (only typed children) -->
                                     <t t-foreach="inv_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_card clickable" 
+                                      t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}"
+                                      t-att-data-type="'invoice'"
+                                      t-att-data-partner-id="p.id"
+                                      tabindex="0" role="button">
                                         <div class="addr_radio">
                                         <input type="radio" name="inv_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
@@ -475,7 +529,12 @@
 
                                     <!-- Delivery address cards (only typed children) -->
                                     <t t-foreach="del_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_card clickable" 
+                                      t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}"
+                                      t-att-data-type="'delivery'"
+                                      t-att-data-partner-id="p.id"
+                                      tabindex="0" 
+                                      role="button">
                                         <div class="addr_radio">
                                         <input type="radio" name="del_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
@@ -633,6 +692,8 @@
                                 <t t-esc="company.display_name"/>
                             </span>
                         </div>
+                        <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''">
+                        <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''">
 
                         <!-- INVOICE ROW -->
                         <div class="addr_row">
@@ -644,7 +705,11 @@
 
                                 <!-- Invoice address cards (only typed children) -->
                                 <t t-foreach="inv_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}">
+                                    <div class="addr_card clickable" 
+                                      t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}"
+                                      t-att-data-type="'invoice'"
+                                      t-att-data-partner-id="p.id"
+                                      tabindex="0" role="button">
                                         <div class="addr_radio">
                                         <input type="radio" name="inv_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
@@ -686,7 +751,12 @@
 
                                 <!-- Delivery address cards (only typed children) -->
                                 <t t-foreach="del_children" t-as="p">
-                                    <div class="addr_card" t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}">
+                                    <div class="addr_card clickable" 
+                                      t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}"
+                                      t-att-data-type="'delivery'"
+                                      t-att-data-partner-id="p.id"
+                                      tabindex="0" 
+                                      role="button">
                                         <div class="addr_radio">
                                         <input type="radio" name="del_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
