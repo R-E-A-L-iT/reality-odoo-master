@@ -469,8 +469,8 @@
                                         <t t-esc="company.display_name"/>
                                     </span>
                                 </div>
-                                <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''">
-                                <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''">
+                                <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''"/>
+                                <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''"/>
 
 
                                 <!-- INVOICE ROW -->
@@ -692,8 +692,8 @@
                                 <t t-esc="company.display_name"/>
                             </span>
                         </div>
-                        <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''">
-                        <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''">
+                        <input type="hidden" id="inv_choice" t-att-value="curr_inv and curr_inv.id or ''"/>
+                        <input type="hidden" id="del_choice" t-att-value="curr_del and curr_del.id or ''"/>
 
                         <!-- INVOICE ROW -->
                         <div class="addr_row">
