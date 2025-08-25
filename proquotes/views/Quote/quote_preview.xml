@@ -834,67 +834,58 @@
             <script>
                 <![CDATA[
                 (function setupAddressSelect(){
-                    // handle every address section on the page (rental/non-rental)
+                    // init every address section present (rental / non-rental)
                     document.querySelectorAll('.address-section').forEach(function(root){
                     var orderId = root.getAttribute('data-order-id');
                     var token   = root.getAttribute('data-access-token') || '';
-
                     if (!orderId) return;
 
-                    // click / keyboard select
                     function applySelection(card){
                         if (!card || card.classList.contains('add_card')) return;
 
-                        var type = card.getAttribute('data-type');        // 'invoice' | 'delivery'
-                        var pid  = card.getAttribute('data-partner-id');  // partner id
-
+                        var type = card.getAttribute('data-type');          // 'invoice' | 'delivery'
+                        var pid  = card.getAttribute('data-partner-id');    // partner id
                         if (!type || !pid) return;
 
-                        // Build payload for server
                         var payload = {};
                         if (token) payload.access_token = token;
                         if (type === 'invoice')  payload.invoice_id  = Number(pid);
                         if (type === 'delivery') payload.delivery_id = Number(pid);
 
-                        // POST to controller
-                        fetch(`/my/orders/${orderId}/set_addresses`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(payload)
-                        })
-                        .then(r => r.json())
+                        // IMPORTANT: use postJSON so JSON-RPC envelopes are unwrapped (res = res.result)
+                        postJSON(`/my/orders/${orderId}/set_addresses`, payload)
                         .then(function(res){
-                        if (res && res.ok) {
-                            // highlight selected card (remove from siblings of same type)
-                            root.querySelectorAll('.addr_card.clickable[data-type="'+type+'"]').forEach(function(c){
-                            c.classList.remove('current');
+                            if (res && res.ok) {
+                            // highlight selected, unhighlight siblings of same type
+                            root.querySelectorAll('.addr_card.clickable[data-type="'+ type +'"]').forEach(function(c){
+                                c.classList.remove('current');
                             });
                             card.classList.add('current');
-                        } else {
-                            console.error('Address switch failed:', res);
+
+                            // (optional) update hidden radio if you keep it around
+                            var input = card.querySelector('input[type="radio"]');
+                            if (input) input.checked = true;
+                            } else {
+                            console.error('Address switch failed –', res);
                             alert((document.documentElement.lang || '').startsWith('fr')
-                            ? "Impossible de changer l'adresse."
-                            : 'Could not change the address.');
-                        }
+                                ? "Impossible de changer l'adresse."
+                                : 'Could not change the address.');
+                            }
                         })
                         .catch(function(e){
-                        console.error('Address switch error:', e);
-                        alert((document.documentElement.lang || '').startsWith('fr')
+                            console.error('Address switch error:', e);
+                            alert((document.documentElement.lang || '').startsWith('fr')
                             ? "Erreur réseau lors de la mise à jour de l'adresse."
                             : 'Network error while updating address.');
                         });
                     }
 
-                    // Delegate clicks (and ignore clicks on any future edit icon)
+                    // Click + keyboard delegation (ignore future edit pencil)
                     root.addEventListener('click', function(e){
-                        var card = e.target.closest('.addr_card.clickable');
-                        if (!card || !root.contains(card)) return;
-                        // ignore clicks on .addr_edit if you add it later
                         if (e.target.closest('.addr_edit')) return;
-                        applySelection(card);
+                        var card = e.target.closest('.addr_card.clickable');
+                        if (card && root.contains(card)) applySelection(card);
                     });
-
-                    // Keyboard selection: Enter/Space when focused on a card
                     root.addEventListener('keydown', function(e){
                         if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.addr_card.clickable')) {
                         e.preventDefault();
