@@ -833,19 +833,61 @@
             </div>
             <script>
                 <![CDATA[
-                window.odooPostJSON = postJSON;
-                (function setupAddressSelect(){
-                    // init every address section present (rental / non-rental)
-                    document.querySelectorAll('.address-section').forEach(function(root){
+                (function () {
+                    // ---------- helper: JSON POST with Odoo JSON-RPC unwrapping ----------
+                    function localPost(url, payload) {
+                    return fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload || {})
+                    })
+                    .then(function (r) { return r.json(); })
+                    // unwrap JSON-RPC envelopes {jsonrpc:"2.0", result:{...}}
+                    .then(function (data) { return (data && typeof data === 'object' && 'result' in data) ? data.result : data; });
+                    }
+                    // Prefer your earlier helper if exposed; otherwise use fallback
+                    var post = (window.odooPostJSON || window.postJSON || localPost);
+
+                    // Simple i18n check
+                    var isFr = (document.documentElement.getAttribute('lang') || '').toLowerCase().startsWith('fr');
+
+                    function initAddressSection(root) {
                     var orderId = root.getAttribute('data-order-id');
                     var token   = root.getAttribute('data-access-token') || '';
                     if (!orderId) return;
 
-                    function applySelection(card){
+                    // Determine row types (invoice / delivery) per section
+                    var rows = Array.prototype.slice.call(root.querySelectorAll('.addr_row'));
+                    rows.forEach(function (row, idx) {
+                        var title = (row.querySelector('.addr_row_title')?.textContent || '').toLowerCase();
+                        var type  = null;
+                        if (title.includes('invoice') || title.includes('facturation')) type = 'invoice';
+                        else if (title.includes('delivery') || title.includes('livraison')) type = 'delivery';
+                        else type = (idx === 0 ? 'invoice' : 'delivery'); // fallback by order
+
+                        // Tag each real card as clickable and attach IDs/types
+                        row.querySelectorAll('.addr_card:not(.add_card)').forEach(function (card) {
+                        card.classList.add('clickable');
+                        card.setAttribute('data-type', type);
+                        if (!card.hasAttribute('data-partner-id')) {
+                            var radio = card.querySelector('input[type="radio"]');
+                            var pid = radio ? (radio.value || radio.getAttribute('value')) : null;
+                            if (pid) card.setAttribute('data-partner-id', pid);
+                        }
+                        // keyboard accessibility
+                        if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
+                        if (!card.hasAttribute('role'))     card.setAttribute('role', 'button');
+                        card.setAttribute('aria-label', (type === 'invoice' ?
+                            (isFr ? 'Sélectionner adresse de facturation' : 'Select invoice address') :
+                            (isFr ? 'Sélectionner adresse de livraison'   : 'Select delivery address')));
+                        });
+                    });
+
+                    function applySelection(card) {
                         if (!card || card.classList.contains('add_card')) return;
 
-                        var type = card.getAttribute('data-type');          // 'invoice' | 'delivery'
-                        var pid  = card.getAttribute('data-partner-id');    // partner id
+                        var type = card.getAttribute('data-type');         // 'invoice' | 'delivery'
+                        var pid  = card.getAttribute('data-partner-id');   // partner id
                         if (!type || !pid) return;
 
                         var payload = {};
@@ -853,50 +895,60 @@
                         if (type === 'invoice')  payload.invoice_id  = Number(pid);
                         if (type === 'delivery') payload.delivery_id = Number(pid);
 
-                        // IMPORTANT: use postJSON so JSON-RPC envelopes are unwrapped (res = res.result)
-                        postJSON(`/my/orders/${orderId}/set_addresses`, payload)
-                        .then(function(res){
+                        post('/my/orders/' + orderId + '/set_addresses', payload)
+                        .then(function (res) {
                             if (res && res.ok) {
-                            // highlight selected, unhighlight siblings of same type
-                            root.querySelectorAll('.addr_card.clickable[data-type="'+ type +'"]').forEach(function(c){
-                                c.classList.remove('current');
-                            });
+                            // Move red border to the selected card (within same type)
+                            root.querySelectorAll('.addr_card.clickable[data-type="' + type + '"]')
+                                .forEach(function (c) { c.classList.remove('current'); });
                             card.classList.add('current');
 
-                            // (optional) update hidden radio if you keep it around
+                            // If the legacy hidden radio exists, keep it visually in sync
                             var input = card.querySelector('input[type="radio"]');
                             if (input) input.checked = true;
+
+                            // If you prefer a full refresh instead of just styling, uncomment:
+                            // window.location.reload();
                             } else {
                             console.error('Address switch failed –', res);
-                            alert((document.documentElement.lang || '').startsWith('fr')
-                                ? "Impossible de changer l'adresse."
-                                : 'Could not change the address.');
+                            alert(isFr ? "Impossible de changer l'adresse." : 'Could not change the address.');
                             }
                         })
-                        .catch(function(e){
-                            console.error('Address switch error:', e);
-                            alert((document.documentElement.lang || '').startsWith('fr')
-                            ? "Erreur réseau lors de la mise à jour de l'adresse."
-                            : 'Network error while updating address.');
+                        .catch(function (err) {
+                            console.error('Address switch error –', err);
+                            alert(isFr ? "Erreur réseau lors de la mise à jour de l'adresse."
+                                    : 'Network error while updating address.');
                         });
                     }
 
-                    // Click + keyboard delegation (ignore future edit pencil)
-                    root.addEventListener('click', function(e){
+                    // Click & keyboard delegation (ignore future edit pencil .addr_edit)
+                    root.addEventListener('click', function (e) {
                         if (e.target.closest('.addr_edit')) return;
                         var card = e.target.closest('.addr_card.clickable');
                         if (card && root.contains(card)) applySelection(card);
                     });
-                    root.addEventListener('keydown', function(e){
+                    root.addEventListener('keydown', function (e) {
                         if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.addr_card.clickable')) {
                         e.preventDefault();
                         applySelection(e.target.closest('.addr_card.clickable'));
                         }
                     });
-                    });
+                    }
+
+                    function initAll() {
+                    document.querySelectorAll('.address-section').forEach(initAddressSection);
+                    }
+
+                    // Run when DOM is ready (works whether this <script> is before/after the cards)
+                    if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initAll);
+                    } else {
+                    initAll();
+                    }
                 })();
                 ]]>
             </script>
+
         </xpath>
 
 
