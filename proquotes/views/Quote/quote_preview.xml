@@ -484,7 +484,7 @@
                                     <!-- Invoice address cards (only typed children) -->
                                     <t t-foreach="inv_children" t-as="p">
                                     <div class="addr_card clickable" 
-                                      t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}"
+                                      t-attf-class="addr_card clickable #{'current' if p.id == curr_inv.id else ''}"
                                       t-att-data-type="'invoice'"
                                       t-att-data-partner-id="p.id"
                                       tabindex="0" role="button">
@@ -530,7 +530,7 @@
                                     <!-- Delivery address cards (only typed children) -->
                                     <t t-foreach="del_children" t-as="p">
                                     <div class="addr_card clickable" 
-                                      t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}"
+                                      t-attf-class="addr_card clickable #{'current' if p.id == curr_del.id else ''}"
                                       t-att-data-type="'delivery'"
                                       t-att-data-partner-id="p.id"
                                       tabindex="0" 
@@ -706,7 +706,7 @@
                                 <!-- Invoice address cards (only typed children) -->
                                 <t t-foreach="inv_children" t-as="p">
                                     <div class="addr_card clickable" 
-                                      t-attf-class="addr_card #{'current' if p.id == curr_inv.id else ''}"
+                                      t-attf-class="addr_card clickable #{'current' if p.id == curr_inv.id else ''}"
                                       t-att-data-type="'invoice'"
                                       t-att-data-partner-id="p.id"
                                       tabindex="0" role="button">
@@ -752,7 +752,7 @@
                                 <!-- Delivery address cards (only typed children) -->
                                 <t t-foreach="del_children" t-as="p">
                                     <div class="addr_card clickable" 
-                                      t-attf-class="addr_card #{'current' if p.id == curr_del.id else ''}"
+                                      t-attf-class="addr_card clickable #{'current' if p.id == curr_del.id else ''}"
                                       t-att-data-type="'delivery'"
                                       t-att-data-partner-id="p.id"
                                       tabindex="0" 
