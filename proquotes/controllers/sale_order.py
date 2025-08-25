@@ -169,6 +169,7 @@ class PortalOrderAddressSwitch(http.Controller):
                 type='json', auth='public', website=True, csrf=False, methods=['POST'])
     def set_addresses(self, order_id, access_token=None, invoice_id=None, delivery_id=None, **kw):
         try:
+            # Access check using the portal helper (resolves both token + ACL)
             portal = CustomerPortal()
             rec = portal._document_check_access('sale.order', order_id, access_token=access_token)
             order = rec[0] if isinstance(rec, (tuple, list)) else rec
@@ -177,46 +178,52 @@ class PortalOrderAddressSwitch(http.Controller):
 
             order_sudo = order.sudo()
             company = order_sudo.partner_id.commercial_partner_id.sudo()
+            Partner = request.env['res.partner'].sudo()
 
-            def _clean_int(v):
+            def _coerce_int(v):
                 try:
-                    return int(v)
+                    return int(v) if v is not None and v != '' else None
                 except Exception:
                     return None
 
-            def _assert_child(partner_id, expected_type):
-                if not partner_id:
+            def _validate_child(pid, expected_type):
+                if not pid:
                     return None
-                Partner = request.env['res.partner'].sudo()
-                p = Partner.browse(partner_id)
+                p = Partner.browse(pid)
                 if not p.exists():
                     raise ValueError(_("Address not found."))
                 if p.commercial_partner_id.id != company.id:
                     raise ValueError(_("Address does not belong to this company."))
                 if not p.parent_id:
-                    raise ValueError(_("Please pick a child address, not the main company."))
+                    raise ValueError(_("Select a child address (not the main company)."))
+                # Strict by default; relax here if you later want to accept blank 'type'
                 if p.type != expected_type:
                     raise ValueError(_("Address must be of type ‘%s’.") % expected_type)
                 return p
 
+            inv_pid = _coerce_int(invoice_id)
+            del_pid = _coerce_int(delivery_id)
+
             changed = {}
 
-            inv_id = _clean_int(invoice_id)
-            if inv_id:
-                inv = _assert_child(inv_id, 'invoice')
-                if inv.id != order_sudo.partner_invoice_id.id:
+            if inv_pid:
+                inv = _validate_child(inv_pid, 'invoice')
+                if inv and inv.id != order_sudo.partner_invoice_id.id:
                     order_sudo.write({'partner_invoice_id': inv.id})
                     changed['invoice_id'] = inv.id
 
-            deliv_id = _clean_int(delivery_id)
-            if deliv_id:
-                shp = _assert_child(deliv_id, 'delivery')
-                if shp.id != order_sudo.partner_shipping_id.id:
+            if del_pid:
+                shp = _validate_child(del_pid, 'delivery')
+                if shp and shp.id != order_sudo.partner_shipping_id.id:
                     order_sudo.write({'partner_shipping_id': shp.id})
                     changed['delivery_id'] = shp.id
 
-            # ensure values flushed before returning (commit is optional)
-            request.env.flush_all()
+            # Force database commit so changes persist immediately after the request
+            request.env.cr.commit()
+
+            # Useful diagnostics if you ever need them
+            _logger.info("SO %s address switch: payload(inv=%s, del=%s) -> changed=%s",
+                         order_sudo.name, inv_pid, del_pid, changed)
 
             return {
                 'ok': True,
@@ -226,5 +233,5 @@ class PortalOrderAddressSwitch(http.Controller):
             }
 
         except Exception as e:
-            # Don’t expose internals to the browser; return a friendly message + brief detail for console
+            _logger.exception("Address switch failed for SO %s", order_id)
             return {'ok': False, 'message': _('Could not change the address.'), 'details': str(e)}
