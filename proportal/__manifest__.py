@@ -39,5 +39,6 @@
         "views/portal_companies_view.xml",
         "views/portal_product_view.xml",
         "views/portal_courses_view.xml",
+        "views/portal_tasks_view.xml",
     ],
 }

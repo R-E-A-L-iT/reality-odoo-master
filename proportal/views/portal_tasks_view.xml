@@ -1,0 +1,19 @@
+<odoo>
+  <template id="portal_my_project_use_tasks" inherit_id="project.portal_my_project">
+    <!-- Replace any stock empty-message guard with our task_count -->
+    <xpath expr="//t[@t-if='not tasks']" position="attributes">
+      <attribute name="t-if">not task_count</attribute>
+    </xpath>
+
+    <!-- If the template loops something else, inject a fallback loop -->
+    <xpath expr="//div[contains(@class,'o_portal_project_tasks')]" position="inside">
+      <t t-if="tasks">
+        <ul class="list-unstyled mt-3">
+          <li t-foreach="tasks" t-as="t">
+            <a t-att-href="'/my/task/%s' % t.id"><t t-esc="t.name"/></a>
+          </li>
+        </ul>
+      </t>
+    </xpath>
+  </template>
+</odoo>
