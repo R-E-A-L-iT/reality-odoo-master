@@ -834,21 +834,31 @@
             <script>
                 <![CDATA[
                 (function () {
-                    // ---------- helper: JSON POST with Odoo JSON-RPC unwrapping ----------
+                    // ---------- helper: JSON POST (handles both JSON-RPC and plain JSON) ----------
                     function localPost(url, payload) {
                     return fetch(url, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(payload || {})
-                    })
-                    .then(function (r) { return r.json(); })
-                    // unwrap JSON-RPC envelopes {jsonrpc:"2.0", result:{...}}
-                    .then(function (data) { return (data && typeof data === 'object' && 'result' in data) ? data.result : data; });
+                    }).then(function (r) { return r.json(); });
                     }
-                    // Prefer your earlier helper if exposed; otherwise use fallback
-                    var post = (window.odooPostJSON || window.postJSON || localPost);
 
-                    // Simple i18n check
+                    // Prefer any existing global helper (if you’ve exposed it), else fallback
+                    var rawPost = (window.odooPostJSON || window.postJSON || localPost);
+
+                    // Normalize any response into a simple object with .ok when possible
+                    function normalize(data) {
+                    // unwrap JSON-RPC envelopes {jsonrpc:"2.0", result:{...}}
+                    var inner = (data && typeof data === 'object' && 'result' in data) ? data.result : data;
+
+                    // If there's no explicit `ok`, infer success if we see new ids or a `changed` key
+                    if (inner && typeof inner.ok === 'undefined') {
+                        var inferredOk = ('new_invoice_id' in inner) || ('new_delivery_id' in inner) || ('changed' in inner);
+                        if (inferredOk) inner.ok = true;
+                    }
+                    return inner || {};
+                    }
+
                     var isFr = (document.documentElement.getAttribute('lang') || '').toLowerCase().startsWith('fr');
 
                     function initAddressSection(root) {
@@ -856,16 +866,14 @@
                     var token   = root.getAttribute('data-access-token') || '';
                     if (!orderId) return;
 
-                    // Determine row types (invoice / delivery) per section
+                    // Tag cards as clickable and attach type/ids (derived from headings & hidden radios)
                     var rows = Array.prototype.slice.call(root.querySelectorAll('.addr_row'));
                     rows.forEach(function (row, idx) {
                         var title = (row.querySelector('.addr_row_title')?.textContent || '').toLowerCase();
-                        var type  = null;
-                        if (title.includes('invoice') || title.includes('facturation')) type = 'invoice';
-                        else if (title.includes('delivery') || title.includes('livraison')) type = 'delivery';
-                        else type = (idx === 0 ? 'invoice' : 'delivery'); // fallback by order
+                        var type  = title.includes('invoice') || title.includes('facturation') ? 'invoice'
+                                : title.includes('delivery') || title.includes('livraison')   ? 'delivery'
+                                : (idx === 0 ? 'invoice' : 'delivery'); // fallback
 
-                        // Tag each real card as clickable and attach IDs/types
                         row.querySelectorAll('.addr_card:not(.add_card)').forEach(function (card) {
                         card.classList.add('clickable');
                         card.setAttribute('data-type', type);
@@ -874,50 +882,72 @@
                             var pid = radio ? (radio.value || radio.getAttribute('value')) : null;
                             if (pid) card.setAttribute('data-partner-id', pid);
                         }
-                        // keyboard accessibility
                         if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
                         if (!card.hasAttribute('role'))     card.setAttribute('role', 'button');
-                        card.setAttribute('aria-label', (type === 'invoice' ?
-                            (isFr ? 'Sélectionner adresse de facturation' : 'Select invoice address') :
-                            (isFr ? 'Sélectionner adresse de livraison'   : 'Select delivery address')));
+                        card.setAttribute('aria-label', (type === 'invoice'
+                            ? (isFr ? 'Sélectionner adresse de facturation' : 'Select invoice address')
+                            : (isFr ? 'Sélectionner adresse de livraison'   : 'Select delivery address')));
                         });
                     });
+
+                    // Prevent quick double submits per type (invoice/delivery)
+                    var busyByType = { invoice: false, delivery: false };
 
                     function applySelection(card) {
                         if (!card || card.classList.contains('add_card')) return;
 
-                        var type = card.getAttribute('data-type');         // 'invoice' | 'delivery'
-                        var pid  = card.getAttribute('data-partner-id');   // partner id
+                        var type = card.getAttribute('data-type');       // 'invoice' | 'delivery'
+                        var pid  = card.getAttribute('data-partner-id'); // partner id
                         if (!type || !pid) return;
+
+                        // No-op if the card is already selected
+                        if (card.classList.contains('current')) return;
+
+                        if (busyByType[type]) return;  // guard against double clicks
+                        busyByType[type] = true;
+
+                        // Optimistic UI: move the red border immediately; revert on error
+                        var prev = root.querySelector('.addr_card.clickable.current[data-type="'+type+'"]');
+                        if (prev) prev.classList.remove('current');
+                        card.classList.add('current');
 
                         var payload = {};
                         if (token) payload.access_token = token;
                         if (type === 'invoice')  payload.invoice_id  = Number(pid);
                         if (type === 'delivery') payload.delivery_id = Number(pid);
 
-                        post('/my/orders/' + orderId + '/set_addresses', payload)
+                        rawPost('/my/orders/' + orderId + '/set_addresses', payload)
+                        .then(normalize)
                         .then(function (res) {
                             if (res && res.ok) {
-                            // Move red border to the selected card (within same type)
-                            root.querySelectorAll('.addr_card.clickable[data-type="' + type + '"]')
-                                .forEach(function (c) { c.classList.remove('current'); });
-                            card.classList.add('current');
-
-                            // If the legacy hidden radio exists, keep it visually in sync
+                            // keep optimistic highlight; sync radios if present
                             var input = card.querySelector('input[type="radio"]');
                             if (input) input.checked = true;
 
-                            // If you prefer a full refresh instead of just styling, uncomment:
+                            // If you want a hard refresh (e.g., to update totals tied to addresses), uncomment:
                             // window.location.reload();
+
                             } else {
+                            // Revert optimistic highlight on real failure
+                            card.classList.remove('current');
+                            if (prev) prev.classList.add('current');
+
+                            var msg = (res && res.message) || (isFr ? "Impossible de changer l'adresse." : 'Could not change the address.');
                             console.error('Address switch failed –', res);
-                            alert(isFr ? "Impossible de changer l'adresse." : 'Could not change the address.');
+                            alert(msg);
                             }
                         })
                         .catch(function (err) {
+                            // Revert optimistic highlight on network error
+                            card.classList.remove('current');
+                            if (prev) prev.classList.add('current');
+
                             console.error('Address switch error –', err);
                             alert(isFr ? "Erreur réseau lors de la mise à jour de l'adresse."
                                     : 'Network error while updating address.');
+                        })
+                        .finally(function () {
+                            busyByType[type] = false;
                         });
                     }
 
@@ -925,7 +955,10 @@
                     root.addEventListener('click', function (e) {
                         if (e.target.closest('.addr_edit')) return;
                         var card = e.target.closest('.addr_card.clickable');
-                        if (card && root.contains(card)) applySelection(card);
+                        if (card && root.contains(card)) {
+                        e.preventDefault();
+                        applySelection(card);
+                        }
                     });
                     root.addEventListener('keydown', function (e) {
                         if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.addr_card.clickable')) {
@@ -939,7 +972,7 @@
                     document.querySelectorAll('.address-section').forEach(initAddressSection);
                     }
 
-                    // Run when DOM is ready (works whether this <script> is before/after the cards)
+                    // Run when DOM is ready
                     if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', initAll);
                     } else {
@@ -948,6 +981,7 @@
                 })();
                 ]]>
             </script>
+
 
         </xpath>
 
