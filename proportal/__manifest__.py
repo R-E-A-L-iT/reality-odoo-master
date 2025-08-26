@@ -25,7 +25,6 @@
         "project",
         "mail",
     ],
-    "post_init_hook": "post_init_hook",
     # always loaded
     "data": [
         "data/renewal_template.xml",
