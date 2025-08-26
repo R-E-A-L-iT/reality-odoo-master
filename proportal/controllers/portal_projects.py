@@ -1,8 +1,8 @@
 from odoo import http
 from odoo.http import request
+from collections import defaultdict
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.project.controllers.portal import CustomerPortal as ProjectPortal
-
 
 def _project_collab_domain_for_user(user):
     partner = user.partner_id
@@ -26,25 +26,24 @@ def _task_access_domain_for_user(user):
     partner_ids = [commercial.id] + commercial.child_ids.ids
     proj_fields = request.env['project.project']._fields
 
-    cond1 = ('project_id.message_partner_ids', 'child_of', commercial.id)   # follower of project
-    cond2 = ('message_partner_ids', 'child_of', commercial.id)              # follower of task
-    if 'collaborator_ids' in proj_fields:                                   # collaborators as partners
+    cond1 = ('project_id.message_partner_ids', 'child_of', commercial.id)
+    cond2 = ('message_partner_ids', 'child_of', commercial.id)
+    if 'collaborator_ids' in proj_fields:
         cond3 = ('project_id.collaborator_ids', 'in', partner_ids)
-    elif 'collaborator_user_ids' in proj_fields:                            # collaborators as users
+    elif 'collaborator_user_ids' in proj_fields:
         cond3 = ('project_id.collaborator_user_ids', 'in', user.id)
     else:
         cond3 = ('id', '=', 0)
 
-    return ['|', '|', cond1, cond2, cond3]
+    return ['|','|', cond1, cond2, cond3]
 
 class CustomerPortal(ProjectPortal):
 
-    @http.route(
+     @http.route(
         ["/my/project/<int:project_id>", "/my/projects/<int:project_id>"],
         type="http", auth="user", website=True)
     def portal_my_project(self, project_id, access_token=None, page=1, sortby=None, **kw):
         Project = request.env["project.project"].sudo()
-        # Allow if (a) access_token is present OR (b) collaborator/follower/customer
         allowed = bool(access_token)
         if not allowed:
             dom = ['&', ('id', '=', project_id)] + _project_collab_domain_for_user(request.env.user)
@@ -54,8 +53,10 @@ class CustomerPortal(ProjectPortal):
 
         project = Project.browse(project_id)
 
-        # Tasks listing (basic parity with Odoo’s defaults)
+        # --- Tasks (collaborator-aware) ---
         Task = request.env["project.task"].sudo()
+        task_dom = ['&', ('project_id', '=', project_id)] + _task_access_domain_for_user(request.env.user)
+
         searchbar_sortings = {
             "date": {"label": "Newest", "order": "create_date desc"},
             "name": {"label": "Name", "order": "name asc"},
@@ -64,8 +65,7 @@ class CustomerPortal(ProjectPortal):
         order = searchbar_sortings[sortby]["order"]
 
         items_per_page = getattr(self, "_items_per_page", 20)
-        task_domain = [('project_id', '=', project_id)]
-        task_count = Task.search_count(task_domain)
+        task_count = Task.search_count(task_dom)
         pager = portal_pager(
             url=f"/my/project/{project_id}",
             url_args={"sortby": sortby},
@@ -73,19 +73,28 @@ class CustomerPortal(ProjectPortal):
             page=page,
             step=items_per_page,
         )
-        tasks = Task.search(task_domain, order=order, limit=items_per_page, offset=pager["offset"])
+        tasks = Task.search(task_dom, order=order, limit=items_per_page, offset=pager["offset"])
+
+        # Group by stage (covers templates expecting grouped_tasks)
+        grouped = defaultdict(lambda: request.env['project.task'])
+        for t in tasks:
+            grouped[t.stage_id] |= t
+        grouped_tasks = [{'stage': s, 'tasks': rs} for s, rs in grouped.items()]
 
         values = self._prepare_portal_layout_values()
         values.update({
             "project": project,
             "tasks": tasks,
+            "grouped_tasks": grouped_tasks,
+            "task_count": task_count,
             "pager": pager,
             "page_name": "project",
             "default_url": f"/my/project/{project_id}",
             "searchbar_sortings": searchbar_sortings,
             "sortby": sortby,
+            # optional: a canonical URL root some templates look for when building links
+            "task_url": f"/my/project/{project_id}/task",
         })
-        # stock template for project detail:
         return request.render("project.portal_my_project", values)
 
     @http.route(
