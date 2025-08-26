@@ -3,33 +3,33 @@ from odoo.http import request
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.project.controllers.portal import CustomerPortal as ProjectPortal
 
-# allow invited collaborators to see projects in the portal
+
 def _project_collab_domain_for_user(user):
     partner = user.partner_id
     commercial = partner.commercial_partner_id
     partner_ids = [commercial.id] + commercial.child_ids.ids
 
     Project = request.env["project.project"]
-    fields = Project.fields_get(keys=["collaborator_ids", "collaborator_user_ids"])
+    model_fields = Project._fields
 
-    dom = ['|', '|',
-           ('message_partner_ids', 'child_of', commercial.id),
-           ('partner_id', 'child_of', commercial.id),
-           ('id', '=', 0)]
+    cond1 = ('message_partner_ids', 'child_of', commercial.id)
+    cond2 = ('partner_id', 'child_of', commercial.id)
 
-    if "collaborator_ids" in fields:
-        dom[-3:] = [('collaborator_ids', 'in', partner_ids)]
-    elif "collaborator_user_ids" in fields:
-        dom[-3:] = [('collaborator_user_ids', 'in', user.id)]
+    if 'collaborator_ids' in model_fields:
+        cond3 = ('collaborator_ids', 'in', partner_ids)
+    elif 'collaborator_user_ids' in model_fields:
+        cond3 = ('collaborator_user_ids', 'in', user.id)
     else:
-        dom[-3:] = [('id', '=', 0)]
+        cond3 = ('id', '=', 0)
+
+    dom = ['|', '|', cond1, cond2, cond3]
 
     return dom
 
 
 class CustomerPortal(ProjectPortal):
 
-    # --- Count for the portal navbar / tiles ---
+    # Count for the portal tiles/navbar
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         if "project_count" in counters:
@@ -38,9 +38,9 @@ class CustomerPortal(ProjectPortal):
             values["project_count"] = Project.search_count(dom)
         return values
 
+    # List page: /my/projects
     @http.route(["/my/projects"], type="http", auth="user", website=True)
     def portal_my_projects(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
-        # Sorting (match Odoo’s defaults)
         searchbar_sortings = {
             "date": {"label": "Newest", "order": "create_date desc"},
             "name": {"label": "Name", "order": "name asc"},
@@ -49,16 +49,12 @@ class CustomerPortal(ProjectPortal):
             sortby = "date"
         order = searchbar_sortings[sortby]["order"]
 
-        # Domain including collaborators
         dom = _project_collab_domain_for_user(request.env.user)
 
-        Project = request.env["project.project"].sudo()
-
-        # Date filter (keep parity with upstream behavior)
         if date_begin and date_end:
             dom = ['&', ('create_date', '>=', date_begin), ('create_date', '<=', date_end)] + dom
 
-        # Pager
+        Project = request.env["project.project"].sudo()
         project_count = Project.search_count(dom)
         pager = portal_pager(
             url="/my/projects",
@@ -67,7 +63,6 @@ class CustomerPortal(ProjectPortal):
             page=page,
             step=20,
         )
-
         projects = Project.search(dom, order=order, limit=pager["step"], offset=pager["offset"])
 
         values = self._prepare_portal_layout_values()
@@ -78,7 +73,7 @@ class CustomerPortal(ProjectPortal):
             "default_url": "/my/projects",
             "searchbar_sortings": searchbar_sortings,
             "sortby": sortby,
-            "project_count": project_count,  # keep templates happy
+            "project_count": project_count,
             "date_begin": date_begin,
             "date_end": date_end,
         })
