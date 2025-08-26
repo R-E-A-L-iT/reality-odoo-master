@@ -20,6 +20,22 @@ def _project_collab_domain_for_user(user):
         f3 = ('id', '=', 0)
     return ['|','|', f1, f2, f3]
 
+def _task_access_domain_for_user(user):
+    partner = user.partner_id
+    commercial = partner.commercial_partner_id
+    partner_ids = [commercial.id] + commercial.child_ids.ids
+    proj_fields = request.env['project.project']._fields
+
+    cond1 = ('project_id.message_partner_ids', 'child_of', commercial.id)   # follower of project
+    cond2 = ('message_partner_ids', 'child_of', commercial.id)              # follower of task
+    if 'collaborator_ids' in proj_fields:                                   # collaborators as partners
+        cond3 = ('project_id.collaborator_ids', 'in', partner_ids)
+    elif 'collaborator_user_ids' in proj_fields:                            # collaborators as users
+        cond3 = ('project_id.collaborator_user_ids', 'in', user.id)
+    else:
+        cond3 = ('id', '=', 0)
+
+    return ['|', '|', cond1, cond2, cond3]
 
 class CustomerPortal(ProjectPortal):
 
@@ -71,6 +87,32 @@ class CustomerPortal(ProjectPortal):
         })
         # stock template for project detail:
         return request.render("project.portal_my_project", values)
+
+    @http.route(
+        ["/my/task/<int:task_id>",
+         "/my/tasks/<int:task_id>",
+         "/my/project/<int:project_id>/task/<int:task_id>"],
+        type="http", auth="user", website=True)
+    def portal_my_task(self, task_id, project_id=None, access_token=None, **kw):
+        Task = request.env['project.task'].sudo()
+
+        allowed = bool(access_token)
+        if not allowed:
+            dom = ['&', ('id', '=', task_id)] + _task_access_domain_for_user(request.env.user)
+            allowed = bool(Task.search_count(dom))
+
+        if not allowed:
+            return request.redirect("/my")
+
+        task = Task.browse(task_id)
+        values = self._prepare_portal_layout_values()
+        values.update({
+            "task": task,
+            "page_name": "task",
+            "default_url": f"/my/task/{task_id}",
+        })
+        # stock template id for a single task in portal:
+        return request.render("project.portal_my_task", values)
 
     # Count for the portal tiles/navbar
     def _prepare_home_portal_values(self, counters):
