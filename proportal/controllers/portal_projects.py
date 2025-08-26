@@ -89,29 +89,37 @@ class CustomerPortal(ProjectPortal):
         return request.render("project.portal_my_project", values)
 
     @http.route(
-        ["/my/task/<int:task_id>",
-         "/my/tasks/<int:task_id>",
-         "/my/project/<int:project_id>/task/<int:task_id>"],
-        type="http", auth="user", website=True)
+    ["/my/task/<int:task_id>",
+     "/my/tasks/<int:task_id>",
+     "/my/project/<int:project_id>/task/<int:task_id>"],
+    type="http", auth="user", website=True)
     def portal_my_task(self, task_id, project_id=None, access_token=None, **kw):
         Task = request.env['project.task'].sudo()
-
-        allowed = bool(access_token)
-        if not allowed:
-            dom = ['&', ('id', '=', task_id)] + _task_access_domain_for_user(request.env.user)
-            allowed = bool(Task.search_count(dom))
-
-        if not allowed:
-            return request.redirect("/my")
+        Project = request.env['project.project'].sudo()
 
         task = Task.browse(task_id)
+        if not task.exists():
+            return request.redirect("/my")
+
+        # Resolve project_id from task if not provided
+        pid = project_id or (task.project_id.id or 0)
+
+        # Allow if access token is present OR the project itself is accessible by our collaborator-aware rule
+        allowed = bool(access_token)
+        if not allowed and pid:
+            dom = ['&', ('id', '=', pid)] + _project_collab_domain_for_user(request.env.user)
+            allowed = bool(Project.search_count(dom))
+
+        # Also ensure the task belongs to that project
+        if not allowed or task.project_id.id != pid:
+            return request.redirect("/my")
+
         values = self._prepare_portal_layout_values()
         values.update({
             "task": task,
             "page_name": "task",
             "default_url": f"/my/task/{task_id}",
         })
-        # stock template id for a single task in portal:
         return request.render("project.portal_my_task", values)
 
     # Count for the portal tiles/navbar
