@@ -55,15 +55,20 @@ class CustomerPortal(ProjectPortal):
             dom = ['&', ('create_date', '>=', date_begin), ('create_date', '<=', date_end)] + dom
 
         Project = request.env["project.project"].sudo()
+
+        # Use the controller's standard page size (same as core controllers)
+        items_per_page = getattr(self, "_items_per_page", 20)
+
         project_count = Project.search_count(dom)
         pager = portal_pager(
             url="/my/projects",
             url_args={"date_begin": date_begin, "date_end": date_end, "sortby": sortby},
             total=project_count,
             page=page,
-            step=20,
+            step=items_per_page,          # pass the step here
         )
-        projects = Project.search(dom, order=order, limit=pager["step"], offset=pager["offset"])
+
+        projects = Project.search(dom, order=order, limit=items_per_page, offset=pager["offset"])
 
         values = self._prepare_portal_layout_values()
         values.update({
