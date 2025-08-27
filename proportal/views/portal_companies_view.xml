@@ -14,6 +14,20 @@
         </h3>
       </div>
 
+      <!-- Success/Error Messages -->
+      <t t-if="request.session.get('portal_success_message')">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <t t-raw="request.session.pop('portal_success_message')"/>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      </t>
+      <t t-if="request.session.get('portal_error_message')">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <t t-raw="request.session.pop('portal_error_message')"/>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      </t>
+
       <!-- <div class="alert alert-info mb-4">
         These forms are for preview/UX only right now. Submissions are disabled and do not update data yet.
       </div> -->
@@ -24,58 +38,72 @@
           <div class="card shadow-sm">
             <div class="card-header fw-bold">Invoice Address</div>
             <div class="card-body">
-              <form onsubmit="return false;">
+              <form method="post" t-attf-action="/my/company-settings/#{company.id}/save-address" class="address-form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="address_type" value="invoice"/>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="name"
                       t-att-value="(invoice_partner and invoice_partner.name) or (company and company.name) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="email"
+                    <input class="form-control" type="email" name="email"
                       t-att-value="(invoice_partner and invoice_partner.email) or (company and company.email) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="phone"
                       t-att-value="(invoice_partner and invoice_partner.phone) or (company and company.phone) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Street</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="street"
                       t-att-value="(invoice_partner and invoice_partner.street) or (company and company.street) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Street 2</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="street2"
                       t-att-value="(invoice_partner and invoice_partner.street2) or (company and company.street2) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">City</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="city"
                       t-att-value="(invoice_partner and invoice_partner.city) or (company and company.city) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">State/Province</label>
-                    <input class="form-control" type="text"
-                      t-att-value="(invoice_partner and invoice_partner.state_id and invoice_partner.state_id.name) or (company and company.state_id and company.state_id.name) or ''"/>
+                    <select class="form-control" name="state_id">
+                      <option value="">Select State</option>
+                      <t t-foreach="states" t-as="state">
+                        <option t-att-value="state.id" t-att-selected="(invoice_partner and invoice_partner.state_id and invoice_partner.state_id.id == state.id) or (company and company.state_id and company.state_id.id == state.id) or False">
+                          <t t-esc="state.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">ZIP/Postal Code</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="zip"
                       t-att-value="(invoice_partner and invoice_partner.zip) or (company and company.zip) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Country</label>
-                    <input class="form-control" type="text"
-                      t-att-value="(invoice_partner and invoice_partner.country_id and invoice_partner.country_id.name) or (company and company.country_id and company.country_id.name) or ''"/>
+                    <select class="form-control" name="country_id">
+                      <option value="">Select Country</option>
+                      <t t-foreach="countries" t-as="country">
+                        <option t-att-value="country.id" t-att-selected="(invoice_partner and invoice_partner.country_id and invoice_partner.country_id.id == country.id) or (company and company.country_id and company.country_id.id == country.id) or False">
+                          <t t-esc="country.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                 </div>
                 <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                  <button type="submit" class="btn btn-primary">Save Invoice Address</button>
                 </div>
               </form>
             </div>
@@ -87,58 +115,72 @@
           <div class="card shadow-sm">
             <div class="card-header fw-bold">Delivery Address</div>
             <div class="card-body">
-              <form onsubmit="return false;">
+              <form method="post" t-attf-action="/my/company-settings/#{company.id}/save-address" class="address-form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="address_type" value="delivery"/>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="name"
                       t-att-value="(delivery_partner and delivery_partner.name) or (company and company.name) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="email"
+                    <input class="form-control" type="email" name="email"
                       t-att-value="(delivery_partner and delivery_partner.email) or (company and company.email) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="phone"
                       t-att-value="(delivery_partner and delivery_partner.phone) or (company and company.phone) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Street</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="street"
                       t-att-value="(delivery_partner and delivery_partner.street) or (company and company.street) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Street 2</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="street2"
                       t-att-value="(delivery_partner and delivery_partner.street2) or (company and company.street2) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">City</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="city"
                       t-att-value="(delivery_partner and delivery_partner.city) or (company and company.city) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">State/Province</label>
-                    <input class="form-control" type="text"
-                      t-att-value="(delivery_partner and delivery_partner.state_id and delivery_partner.state_id.name) or (company and company.state_id and company.state_id.name) or ''"/>
+                    <select class="form-control" name="state_id">
+                      <option value="">Select State</option>
+                      <t t-foreach="states" t-as="state">
+                        <option t-att-value="state.id" t-att-selected="(delivery_partner and delivery_partner.state_id and delivery_partner.state_id.id == state.id) or (company and company.state_id and company.state_id.id == state.id) or False">
+                          <t t-esc="state.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">ZIP/Postal Code</label>
-                    <input class="form-control" type="text"
+                    <input class="form-control" type="text" name="zip"
                       t-att-value="(delivery_partner and delivery_partner.zip) or (company and company.zip) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Country</label>
-                    <input class="form-control" type="text"
-                      t-att-value="(delivery_partner and delivery_partner.country_id and delivery_partner.country_id.name) or (company and company.country_id and company.country_id.name) or ''"/>
+                    <select class="form-control" name="country_id">
+                      <option value="">Select Country</option>
+                      <t t-foreach="countries" t-as="country">
+                        <option t-att-value="country.id" t-att-selected="(delivery_partner and delivery_partner.country_id and delivery_partner.country_id.id == country.id) or (company and company.country_id and company.country_id.id == country.id) or False">
+                          <t t-esc="country.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                 </div>
                 <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                  <button type="submit" class="btn btn-primary">Save Delivery Address</button>
                 </div>
               </form>
             </div>
@@ -150,51 +192,65 @@
           <div class="card shadow-sm">
             <div class="card-header fw-bold">Follow-up Address</div>
             <div class="card-body">
-              <form onsubmit="return false;">
+              <form method="post" t-attf-action="/my/company-settings/#{company.id}/save-address" class="address-form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="address_type" value="other"/>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
+                    <input class="form-control" type="text" name="name" t-att-value="company.name or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
+                    <input class="form-control" type="email" name="email" t-att-value="company.email or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
+                    <input class="form-control" type="text" name="phone" t-att-value="company.phone or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Street</label>
-                    <input class="form-control" type="text" t-att-value="company.street or ''"/>
+                    <input class="form-control" type="text" name="street" t-att-value="company.street or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Street 2</label>
-                    <input class="form-control" type="text" t-att-value="company.street2 or ''"/>
+                    <input class="form-control" type="text" name="street2" t-att-value="company.street2 or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">City</label>
-                    <input class="form-control" type="text" t-att-value="company.city or ''"/>
+                    <input class="form-control" type="text" name="city" t-att-value="company.city or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">State/Province</label>
-                    <input class="form-control" type="text"
-                      t-att-value="company.state_id and company.state_id.name or ''"/>
+                    <select class="form-control" name="state_id">
+                      <option value="">Select State</option>
+                      <t t-foreach="states" t-as="state">
+                        <option t-att-value="state.id" t-att-selected="company.state_id and company.state_id.id == state.id or False">
+                          <t t-esc="state.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">ZIP/Postal Code</label>
-                    <input class="form-control" type="text" t-att-value="company.zip or ''"/>
+                    <input class="form-control" type="text" name="zip" t-att-value="company.zip or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Country</label>
-                    <input class="form-control" type="text"
-                      t-att-value="company.country_id and company.country_id.name or ''"/>
+                    <select class="form-control" name="country_id">
+                      <option value="">Select Country</option>
+                      <t t-foreach="countries" t-as="country">
+                        <option t-att-value="country.id" t-att-selected="company.country_id and company.country_id.id == country.id or False">
+                          <t t-esc="country.name"/>
+                        </option>
+                      </t>
+                    </select>
                   </div>
                 </div>
                 <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                  <button type="submit" class="btn btn-primary">Save Follow-up Address</button>
                 </div>
               </form>
             </div>
@@ -206,23 +262,25 @@
           <div class="card shadow-sm">
             <div class="card-header fw-bold">Renewal Contact</div>
             <div class="card-body">
-              <form onsubmit="return false;">
+              <form method="post" t-attf-action="/my/company-settings/#{company.id}/save-address" class="address-form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="address_type" value="renewal"/>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
+                    <input class="form-control" type="text" name="name" t-att-value="renewal_partner.name or company.name or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
+                    <input class="form-control" type="email" name="email" t-att-value="renewal_partner.email or company.email or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
+                    <input class="form-control" type="text" name="phone" t-att-value="renewal_partner.phone or company.phone or ''"/>
                   </div>
                 </div>
                 <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                  <button type="submit" class="btn btn-primary">Save Renewal Contact</button>
                 </div>
               </form>
             </div>
