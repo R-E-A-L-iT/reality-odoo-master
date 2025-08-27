@@ -173,8 +173,8 @@
                                         </td>
                                         <td t-elif="(line.name == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
                                             <t t-if="language == 'en_CA' or language == 'en_US'">
-                                                <p t-out="'Start of the Rental: ' + doc.rental_start_date" />
-                                                <p t-out="'End of the Rental: ' + doc.rental_return_date" />
+                                                <p t-out="'Start of the Rental: ' + str(doc.rental_start_date)" />
+                                                <p t-out="'End of the Rental: ' + str(doc.rental_return_date)" />
                                             </t>
                                             <t t-elif="language == 'fr_CA'">
                                                 <p t-out="'Début de la Location'" />
