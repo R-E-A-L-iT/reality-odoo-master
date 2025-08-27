@@ -315,7 +315,7 @@
 
                         })();
                     ]]>
-                </script>
+            </script>
             <div class="rental_info" t-if="sale_order.is_rental_order">
                 <t t-if="language == 'fr_CA'">
                     <h3>Coûts de location estimés</h3>
@@ -571,7 +571,7 @@
                     </div>
                 </t>
             </div>
-            <div class="fields_select" t-else="">
+            <!-- <div class="fields_select" t-else="">
                 <t t-if="language == 'fr_CA'">
                     <h3>Informations supplémentaires</h3>
                     <p>
@@ -620,17 +620,16 @@
                     <p>
                         Put your addresses here
                     </p>
-                </t>
+                </t> -->
 
                 <!-- put address section here later -->
-                <div class="addresses address-section"
+                <!-- <div class="addresses address-section"
                     t-att-data-order-id="sale_order.id"
                     t-att-data-access-token="sale_order.access_token">
 
                     <t t-set="company" t-value="sale_order.partner_id.commercial_partner_id"/>
                     <t t-set="curr_inv" t-value="sale_order.partner_invoice_id"/>
                     <t t-set="curr_del" t-value="sale_order.partner_shipping_id"/>
-                    <!-- Only typed children now -->
                     <t t-set="inv_children" t-value="company.child_ids.filtered(lambda p: p.type == 'invoice')"/>
                     <t t-set="del_children" t-value="company.child_ids.filtered(lambda p: p.type == 'delivery')"/>
 
@@ -643,17 +642,16 @@
                             <span class="addr_badge">
                                 <t t-esc="company.display_name"/>
                             </span>
-                        </div>
+                        </div> -->
 
                         <!-- INVOICE ROW -->
-                        <div class="addr_row">
+                        <!-- <div class="addr_row">
                             <div class="addr_row_title">
                                 <t t-if="language == 'fr_CA'">Adresse de facturation</t>
                                 <t t-else="">Invoice Address</t>
                             </div>
                             <div class="addr_cards">
 
-                                <!-- Invoice address cards (only typed children) -->
                                 <t t-foreach="inv_children" t-as="p">
                                     <div class="addr_card clickable"
                                         t-attf-class="addr_card clickable #{'current' if p.id == curr_inv.id else ''}"
@@ -664,9 +662,9 @@
                                             <input type="radio" name="inv_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_inv.id and 'checked' or False" disabled="disabled"/>
                                         </div>
-                                        <div class="addr_legend">
+                                        <div class="addr_legend"> -->
                                         <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
-                                        <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                        <!-- <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
                                             <t t-if="p.street"><t t-esc="p.street"/></t>
@@ -676,10 +674,10 @@
                                             <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
                                         </div>
                                     </div>
-                                </t>
+                                </t> -->
 
                                 <!-- Add invoice address tile (always present; if none exist, it will be the only card) -->
-                                <div class="addr_card add_card">
+                                <!-- <div class="addr_card add_card">
                                     <div class="add_inner">
                                         <div class="add_plus">＋</div>
                                         <div class="add_label">
@@ -689,18 +687,18 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- DELIVERY ROW -->
-                        <div class="addr_row">
+                        <!-- <div class="addr_row">
                             <div class="addr_row_title">
                                 <t t-if="language == 'fr_CA'">Adresse de livraison</t>
                                 <t t-else="">Delivery Address</t>
                             </div>
-                            <div class="addr_cards">
+                            <div class="addr_cards"> -->
 
                                 <!-- Delivery address cards (only typed children) -->
-                                <t t-foreach="del_children" t-as="p">
+                                <!-- <t t-foreach="del_children" t-as="p">
                                     <div class="addr_card clickable"
                                         t-attf-class="addr_card clickable #{'current' if p.id == curr_del.id else ''}"
                                         data-type="delivery"
@@ -710,9 +708,9 @@
                                         <input type="radio" name="del_choice" t-att-value="p.id"
                                                 t-att-checked="p.id == curr_del.id and 'checked' or False" disabled="disabled"/>
                                         </div>
-                                        <div class="addr_legend">
+                                        <div class="addr_legend"> -->
                                         <!-- <span class="addr_badge">#<t t-esc="p.id"/></span> -->
-                                        <span class="name"><t t-esc="p.name or p.display_name"/></span>
+                                        <!-- <span class="name"><t t-esc="p.name or p.display_name"/></span>
                                         </div>
                                         <div class="lines">
                                             <t t-if="p.street"><t t-esc="p.street"/></t>
@@ -722,10 +720,10 @@
                                             <t t-if="p.country_id"><t t-esc="p.country_id.name"/></t>
                                         </div>
                                     </div>
-                                </t>
+                                </t> -->
 
                                 <!-- Add delivery address tile (always present; if none exist, it will be the only card) -->
-                                <div class="addr_card add_card">
+                                <!-- <div class="addr_card add_card">
                                     <div class="add_inner">
                                         <div class="add_plus">＋</div>
                                         <div class="add_label">
@@ -738,7 +736,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="delivery-section">
                 <t t-set="delivery_orders" t-value="sale_order.picking_ids.filtered(lambda picking: picking.picking_type_id.code == 'outgoing').sorted('date', reverse=True)[:3]"/>
                 <div t-if="delivery_orders" class="col-12 col-lg-6 mb-4">
@@ -831,10 +829,10 @@
                     </t>
                 </div>
             </div>
-            <script>
+            <!--<script>
                 <![CDATA[
                 (function () {
-                    // ---------- helper: JSON POST (handles both JSON-RPC and plain JSON) ----------
+                    // helper: JSON POST (handles both JSON-RPC and plain JSON)
                     function localPost(url, payload) {
                     return fetch(url, {
                         method: 'POST',
@@ -980,7 +978,7 @@
                     }
                 })();
                 ]]>
-            </script>
+            </script>-->
 
 
         </xpath>
