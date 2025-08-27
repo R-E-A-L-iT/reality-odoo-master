@@ -198,36 +198,42 @@
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text" name="name" t-att-value="company.name or ''"/>
+                    <input class="form-control" type="text" name="name"
+                      t-att-value="(followup_partner and followup_partner.name) or (company and company.name) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="email" name="email" t-att-value="company.email or ''"/>
+                    <input class="form-control" type="email" name="email"
+                      t-att-value="(followup_partner and followup_partner.email) or (company and company.email) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" name="phone" t-att-value="company.phone or ''"/>
+                    <input class="form-control" type="text" name="phone"
+                      t-att-value="(followup_partner and followup_partner.phone) or (company and company.phone) or ''"/>
                   </div>
 
                   <div class="col-md-6">
                     <label class="form-label">Street</label>
-                    <input class="form-control" type="text" name="street" t-att-value="company.street or ''"/>
+                    <input class="form-control" type="text" name="street"
+                      t-att-value="(followup_partner and followup_partner.street) or (company and company.street) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Street 2</label>
-                    <input class="form-control" type="text" name="street2" t-att-value="company.street2 or ''"/>
+                    <input class="form-control" type="text" name="street2"
+                      t-att-value="(followup_partner and followup_partner.street2) or (company and company.street2) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">City</label>
-                    <input class="form-control" type="text" name="city" t-att-value="company.city or ''"/>
+                    <input class="form-control" type="text" name="city"
+                      t-att-value="(followup_partner and followup_partner.city) or (company and company.city) or ''"/>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">State/Province</label>
                     <select class="form-control" name="state_id">
                       <option value="">Select State</option>
                       <t t-foreach="states" t-as="state">
-                        <option t-att-value="state.id" t-att-selected="company.state_id and company.state_id.id == state.id or False">
+                        <option t-att-value="state.id" t-att-selected="(followup_partner and followup_partner.state_id and followup_partner.state_id.id == state.id) or (company and company.state_id and company.state_id.id == state.id) or False">
                           <t t-esc="state.name"/>
                         </option>
                       </t>
@@ -235,14 +241,14 @@
                   </div>
                   <div class="col-md-4">
                     <label class="form-label">ZIP/Postal Code</label>
-                    <input class="form-control" type="text" name="zip" t-att-value="company.zip or ''"/>
+                    <input class="form-control" type="text" name="zip" t-att-value="(followup_partner and followup_partner.zip) or (company and company.zip) or ''"/>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Country</label>
                     <select class="form-control" name="country_id">
                       <option value="">Select Country</option>
                       <t t-foreach="countries" t-as="country">
-                        <option t-att-value="country.id" t-att-selected="company.country_id and company.country_id.id == country.id or False">
+                        <option t-att-value="country.id" t-att-selected="(followup_partner and followup_partner.country_id and followup_partner.country_id.id == country.id) or (company and company.country_id and company.country_id.id == country.id) or False">
                           <t t-esc="country.name"/>
                         </option>
                       </t>
