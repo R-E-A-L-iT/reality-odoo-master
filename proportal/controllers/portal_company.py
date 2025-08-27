@@ -49,6 +49,7 @@ class ProportalCompanySettings(CustomerPortal):
             return rec.child_ids.filtered(lambda r: r.type == t)[:1] if rec.child_ids else request.env['res.partner']
         invoice_partner = _first_child_of_type(company, 'invoice')
         delivery_partner = _first_child_of_type(company, 'delivery')
+        followup_partner = _first_child_of_type(company, 'followup')
         renewal_partner = _first_child_of_type(company, 'renewal')
         
         # Get countries and states for dropdowns
@@ -60,6 +61,7 @@ class ProportalCompanySettings(CustomerPortal):
             'page_name': 'company_settings_detail',
             'company': company,
             'invoice_partner': invoice_partner,
+            'followup_partner': followup_partner,
             'delivery_partner': delivery_partner,
             'renewal_partner': renewal_partner or company,
             'countries': countries,

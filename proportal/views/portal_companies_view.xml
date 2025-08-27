@@ -194,7 +194,7 @@
             <div class="card-body">
               <form method="post" t-attf-action="/my/company-settings/#{company.id}/save-address" class="address-form">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <input type="hidden" name="address_type" value="other"/>
+                <input type="hidden" name="address_type" value="followup"/>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Contact Name</label>
