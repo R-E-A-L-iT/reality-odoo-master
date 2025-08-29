@@ -355,9 +355,11 @@ class QuoteCustomerPortal(cPortal):
                 website=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
         if not request.env.user._is_public():
+            # Internal user - redirect to backend
             url = f"/web#id={order_id}&model=sale.order&view_type=form"
+            return redirect(url)
         else:
-
+            # Portal/public user - handle portal view
             order = request.env['sale.order'].sudo().browse(order_id)
 
             if order and order.access_token == access_token:
@@ -366,27 +368,42 @@ class QuoteCustomerPortal(cPortal):
                 url = '/my'
 
             user_id = kwargs.get('user_id')
-            partner = request.env['res.partner'].sudo().browse(int(user_id))
+            partner = None
+            redirect_url = url
 
             if user_id:
-                sep = '&' if '?' in url else '?'
-                url = f"{url}{sep}user_id={int(user_id)}"
-
-                partner = request.env['res.partner'].sudo().browse(int(user_id))
-                if partner.exists():
-                    order.message_post(
-                        body=_("Quotation viewed by %s") % partner.name,
-                        message_type='notification',
-                        subtype_xmlid='sale.mt_quote_viewed',
-                        author_id=partner.id,
-                    )
-
-            if partner and partner.lang == 'fr_CA':
-                redirect_url = f"/fr_CA{url}"
+                try:
+                    partner = request.env['res.partner'].sudo().browse(int(user_id))
+                    if partner.exists():
+                        # Add user_id parameter to the URL
+                        sep = '&' if '?' in url else '?'
+                        url = f"{url}{sep}user_id={int(user_id)}"
+                        
+                        # Log the quotation view
+                        order.message_post(
+                            body=_("Quotation viewed by %s") % partner.name,
+                            message_type='notification',
+                            subtype_xmlid='sale.mt_quote_viewed',
+                            author_id=partner.id,
+                        )
+                        
+                        # Set redirect URL with language prefix if needed
+                        if partner.lang == 'fr_CA':
+                            redirect_url = f"/fr_CA{url}"
+                        else:
+                            redirect_url = url
+                    else:
+                        # Partner doesn't exist, use default URL
+                        redirect_url = url
+                        
+                except (ValueError, TypeError):
+                    # Invalid user_id, use default URL
+                    redirect_url = url
             else:
+                # No user_id provided, use default URL
                 redirect_url = url
 
-        return redirect(redirect_url)
+            return redirect(redirect_url)
     
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)

@@ -721,34 +721,56 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
-        # Get the base URL for the portal
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        portal_url = self.get_portal_url()
 
         for group in groups:
             group_name = group[0]
-
             # enable the access button for all groups
             group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
             
-            # set the title for the access button based on the state of the order
+        return groups
+
+    def _notify_get_recipients_groups_fillup(self, groups, model_description, msg_vals=None):
+        """ Override to customize button access with recipient-specific URLs. """
+        
+        # Call parent method to get default setup
+        groups = super()._notify_get_recipients_groups_fillup(groups, model_description, msg_vals=msg_vals)
+        
+        if not self:
+            return groups
+        self.ensure_one()
+
+        # Process each group to customize button access
+        for group_name, _group_func, group_data in groups:
+            access_opt = group_data.setdefault('button_access', {})
+            
+            # Set the title based on the state of the order
             if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
+                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
                     access_opt['title'] = _("Voir le devis")
                 else:
                     access_opt['title'] = _("View Quotation")
             else:
-                if self.partner_id.lang == 'fr_CA':
+                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
                     access_opt['title'] = _("Voir la commande")
                 else:
                     access_opt['title'] = _("View Order")
-            
-            # set the portal access URL for the button
+                
+            # Override URL to use our custom redirect
             access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
-        # return the modified recipient groups with the updated access options
         return groups
+    
+    def _notify_get_action_link(self, link_type, **kwargs):
+        """ Override to generate recipient-specific URLs when available. """
+        
+        # If we have recipient info, generate recipient-specific URL
+        if kwargs.get('pid'):  # portal user ID is available
+            partner_id = kwargs['pid']
+            base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            return f"{base_url}?user_id={partner_id}"
+        
+        # Fall back to parent method for other cases
+        return super()._notify_get_action_link(link_type, **kwargs)
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
