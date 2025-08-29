@@ -823,7 +823,7 @@ class order(models.Model):
             order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        """ Give access button to all users and portal customers to view the quote in the portal. """
+        """ Create individual recipient groups with partner-specific tracking URLs, avoiding duplicates. """
         
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
@@ -831,33 +831,123 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
-        # Get the base URL for the portal
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        portal_url = self.get_portal_url()
 
-        for group in groups:
-            group_name = group[0]
 
-            # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
+        # Get all potential recipients from various sources
+        all_recipients = set()
+        
+        # From message partner_ids (when composing email)
+        if msg_vals and msg_vals.get('partner_ids'):
+            all_recipients.update(msg_vals['partner_ids'])
+        
+        # From message followers
+        if hasattr(self, 'message_partner_ids'):
+            all_recipients.update(self.message_partner_ids.ids)
             
-            # set the title for the access button based on the state of the order
+        # From email_contacts field if it exists
+        if hasattr(self, 'email_contacts') and self.email_contacts:
+            all_recipients.update(self.email_contacts.ids)
+
+
+        # Create new groups to insert BEFORE the original groups so they take precedence
+        new_groups = []
+        
+        for partner_id in all_recipients:
+            if not partner_id:
+                continue
+                
+            partner = self.env['res.partner'].sudo().browse(partner_id)
+            if not partner.exists():
+                continue
+                
+            # Determine button title based on order state and partner language
             if self.state in ('draft', 'sent'):
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
+                if partner.lang == 'fr_CA':
+                    button_title = _("Voir le devis")
                 else:
-                    access_opt['title'] = _("View Quotation")
+                    button_title = _("View Quotation")
             else:
-                if self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
+                if partner.lang == 'fr_CA':
+                    button_title = _("Voir la commande")
                 else:
-                    access_opt['title'] = _("View Order")
+                    button_title = _("View Order")
             
-            # set the portal access URL for the button
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            # Generate partner-specific URL with their partner ID
+            tracking_url = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner_id}"
+            
+            _logger.info('>>>>>>>Creating group for partner %s with URL: %s', partner_id, tracking_url)
+            
+            # Create individual group for this partner that takes precedence
+            new_groups.append([
+                f'quote_recipient_{partner_id}',  # Unique group name
+                lambda pdata, pid=partner_id: pdata['id'] == pid,  # Match only this partner
+                {
+                    'active': True,
+                    'has_button_access': True,
+                    'button_access': {
+                        'url': tracking_url,
+                        'title': button_title
+                    },
+                    'notification_group_name': f'quote_recipient_{partner_id}',
+                    'recipients': []  # Will be populated during classification
+                }
+            ])
 
-        # return the modified recipient groups with the updated access options
+        # Disable original groups to prevent duplicates by setting them inactive
+        for group in groups:
+            group_name = group[0] 
+            group_data = group[2]
+            group_data['active'] = False  # Disable original groups
+        
+        
+        # Return new groups + original groups (new groups take precedence due to order)
+        return new_groups + groups
+    
+    def _notify_get_action_link(self, link_type, **kwargs):
+        """ Override to add partner-specific user_id parameter to tracking URLs. """
+        _logger.info('>>>>>>>_notify_get_action_link called with link_type: %s, kwargs: %s', link_type, kwargs)
+        
+        if link_type == 'view' and hasattr(self, 'access_token'):
+            # Get the partner ID from kwargs - try different possible keys
+            partner_id = kwargs.get('pid') or kwargs.get('partner_id') or kwargs.get('res_partner_id')
+            _logger.info('>>>>>>>Found partner_id in _notify_get_action_link: %s', partner_id)
+            
+            if partner_id:
+                # Generate partner-specific tracking URL
+                url = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner_id}"
+                _logger.info('>>>>>>>Generated partner-specific URL in _notify_get_action_link: %s', url)
+                return url
+            else:
+                # Fallback to default URL without user_id parameter
+                url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+                _logger.info('>>>>>>>Generated default URL in _notify_get_action_link: %s', url)
+                return url
+        
+        # For other link types, use the parent implementation
+        result = super()._notify_get_action_link(link_type, **kwargs)
+        _logger.info('>>>>>>>Parent _notify_get_action_link returned: %s', result)
+        return result
+
+    def _notify_get_recipients_classify(self, message, recipients_data, model_description, msg_vals=None):
+        """ Override to ensure each recipient gets partner-specific URL in their notification. """
+        # Get the classified groups first
+        groups = super()._notify_get_recipients_classify(message, recipients_data, model_description, msg_vals=msg_vals)
+        
+        _logger.info('>>>>>>>_notify_get_recipients_classify called with %s groups', len(groups))
+        
+        # Modify each group to ensure partner-specific URLs
+        for group_data in groups:
+            if 'button_access' in group_data and 'recipients' in group_data:
+                recipients = group_data['recipients']
+                _logger.info('>>>>>>>Processing group with recipients: %s', recipients)
+                
+                # If this group has exactly one recipient, update the URL to be partner-specific
+                if len(recipients) == 1:
+                    partner_id = recipients[0]
+                    partner_url = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner_id}"
+                    group_data['button_access']['url'] = partner_url
+                    _logger.info('>>>>>>>Updated group URL for partner %s: %s', partner_id, partner_url)
+        
         return groups
 
     def _amount_all(self):
