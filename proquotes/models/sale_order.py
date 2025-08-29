@@ -729,48 +729,78 @@ class order(models.Model):
             
         return groups
 
-    def _notify_get_recipients_groups_fillup(self, groups, model_description, msg_vals=None):
-        """ Override to customize button access with recipient-specific URLs. """
+    def _notify_get_recipients_classify(self, message, recipients_data, model_description, msg_vals=None):
+        """ Override to create recipient-specific groups with unique URLs. """
         
-        # Call parent method to get default setup
-        groups = super()._notify_get_recipients_groups_fillup(groups, model_description, msg_vals=msg_vals)
+        # Get default classification
+        groups, recipients = super()._notify_get_recipients_classify(
+            message, recipients_data, model_description, msg_vals=msg_vals
+        )
         
         if not self:
-            return groups
+            return groups, recipients
         self.ensure_one()
-
-        # Process each group to customize button access
-        for group_name, _group_func, group_data in groups:
-            access_opt = group_data.setdefault('button_access', {})
+        
+        # Create new groups with recipient-specific URLs
+        new_groups = []
+        for group_name, group_func, group_data in groups:
+            # Get recipients for this group
+            group_recipients = [r for r in recipients if r in group_data.get('recipients', [])]
             
-            # Set the title based on the state of the order
-            if self.state in ('draft', 'sent'):
-                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir le devis")
-                else:
-                    access_opt['title'] = _("View Quotation")
+            if group_recipients and group_name in ['portal', 'customer']:
+                # Create individual groups for each recipient in portal/customer groups
+                for recipient in group_recipients:
+                    partner_id = recipient.get('id')
+                    if partner_id:
+                        # Generate recipient-specific URL
+                        recipient_url = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner_id}"
+                        
+                        # Get partner for language detection
+                        partner = self.env['res.partner'].browse(partner_id)
+                        
+                        # Set title based on order state and partner language
+                        if self.state in ('draft', 'sent'):
+                            if partner.lang == 'fr_CA':
+                                title = _("Voir le devis")
+                            else:
+                                title = _("View Quotation")
+                        else:
+                            if partner.lang == 'fr_CA':
+                                title = _("Voir la commande") 
+                            else:
+                                title = _("View Order")
+                        
+                        # Create recipient-specific group
+                        recipient_group_data = group_data.copy()
+                        recipient_group_data['recipients'] = [recipient]
+                        recipient_group_data['button_access'] = {
+                            'url': recipient_url,
+                            'title': title
+                        }
+                        recipient_group_data['has_button_access'] = True
+                        
+                        new_groups.append([
+                            f"{group_name}_recipient_{partner_id}",
+                            lambda pdata, pid=partner_id: pdata['id'] == pid,
+                            recipient_group_data
+                        ])
             else:
-                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
-                    access_opt['title'] = _("Voir la commande")
-                else:
-                    access_opt['title'] = _("View Order")
+                # Keep other groups as-is but update button access
+                if group_data.get('has_button_access'):
+                    access_opt = group_data.setdefault('button_access', {})
+                    
+                    # Set title based on order state
+                    if self.state in ('draft', 'sent'):
+                        access_opt['title'] = _("View Quotation")
+                    else:
+                        access_opt['title'] = _("View Order")
+                    
+                    # Set URL to custom redirect
+                    access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
                 
-            # Override URL to use our custom redirect
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-
-        return groups
-    
-    def _notify_get_action_link(self, link_type, **kwargs):
-        """ Override to generate recipient-specific URLs when available. """
+                new_groups.append([group_name, group_func, group_data])
         
-        # If we have recipient info, generate recipient-specific URL
-        if kwargs.get('pid'):  # portal user ID is available
-            partner_id = kwargs['pid']
-            base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-            return f"{base_url}?user_id={partner_id}"
-        
-        # Fall back to parent method for other cases
-        return super()._notify_get_action_link(link_type, **kwargs)
+        return new_groups, recipients
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
