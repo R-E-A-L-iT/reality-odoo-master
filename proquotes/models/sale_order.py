@@ -732,25 +732,39 @@ class order(models.Model):
     def _notify_get_recipients_classify(self, message, recipients_data, model_description, msg_vals=None):
         """ Override to create recipient-specific groups with unique URLs. """
         
-        # Get default classification
-        groups, recipients = super()._notify_get_recipients_classify(
+        # Get default classification - this returns only a list of group_data dicts
+        groups_data = super()._notify_get_recipients_classify(
             message, recipients_data, model_description, msg_vals=msg_vals
         )
         
         if not self:
-            return groups, recipients
+            return groups_data
         self.ensure_one()
+        
+        # We need to get the original groups structure to work with
+        # Let's use the internal methods to rebuild the groups structure
+        local_msg_vals = dict(msg_vals) if msg_vals else {}
+        groups = self._notify_get_recipients_groups_fillup(
+            self._notify_get_recipients_groups(
+                message, model_description, msg_vals=local_msg_vals
+            ),
+            model_description,
+            msg_vals=local_msg_vals
+        )
         
         # Create new groups with recipient-specific URLs
         new_groups = []
         for group_name, group_func, group_data in groups:
-            # Get recipients for this group
-            group_recipients = [r for r in recipients if r in group_data.get('recipients', [])]
+            # Get recipients for this group from recipients_data
+            group_recipients = []
+            for recipient_data in recipients_data:
+                if group_data['active'] and group_func(recipient_data):
+                    group_recipients.append(recipient_data)
             
             if group_recipients and group_name in ['portal', 'customer']:
                 # Create individual groups for each recipient in portal/customer groups
-                for recipient in group_recipients:
-                    partner_id = recipient.get('id')
+                for recipient_data in group_recipients:
+                    partner_id = recipient_data.get('id')
                     if partner_id:
                         # Generate recipient-specific URL
                         recipient_url = f"/check_quotation_redirect/{self.id}/{self.access_token}?user_id={partner_id}"
@@ -770,22 +784,20 @@ class order(models.Model):
                             else:
                                 title = _("View Order")
                         
-                        # Create recipient-specific group
+                        # Create recipient-specific group data
                         recipient_group_data = group_data.copy()
-                        recipient_group_data['recipients'] = [recipient]
+                        recipient_group_data['recipients'] = [partner_id]
                         recipient_group_data['button_access'] = {
                             'url': recipient_url,
                             'title': title
                         }
                         recipient_group_data['has_button_access'] = True
+                        recipient_group_data['notification_group_name'] = f"{group_name}_recipient_{partner_id}"
                         
-                        new_groups.append([
-                            f"{group_name}_recipient_{partner_id}",
-                            lambda pdata, pid=partner_id: pdata['id'] == pid,
-                            recipient_group_data
-                        ])
-            else:
+                        new_groups.append(recipient_group_data)
+            elif group_recipients:
                 # Keep other groups as-is but update button access
+                group_data['recipients'] = [r['id'] for r in group_recipients]
                 if group_data.get('has_button_access'):
                     access_opt = group_data.setdefault('button_access', {})
                     
@@ -798,9 +810,10 @@ class order(models.Model):
                     # Set URL to custom redirect
                     access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
                 
-                new_groups.append([group_name, group_func, group_data])
+                new_groups.append(group_data)
         
-        return new_groups, recipients
+        # Filter out groups without recipients
+        return [group for group in new_groups if group.get('recipients')]
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
