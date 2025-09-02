@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//page[@name='preferences']/group" position="inside">
                 <group string="Leica">
-                    <field name="leica_lead_reminder"/>
+                    <!-- <field name="leica_lead_reminder"/> -->
                 </group>
             </xpath>
         </field>
