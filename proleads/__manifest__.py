@@ -8,7 +8,9 @@
     'description': ' ',
     'depends': ['base', 'crm'],
     "data": [
-        "views/leadsBackend.xml"
+        "data/mail_template_data.xml",
+        "views/res_users_form.xml",
+        "views/crm_lead_form.xml"
     ],
     'installable': True,
     'application': True,
