@@ -754,7 +754,7 @@ class order(models.Model):
                 else:
                     access_opt['title'] = _("View Order")
                 
-            # Override URL to use our custom redirect
+            # Store base URL - we'll personalize this per recipient in _notify_compute_recipients
             access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
         return groups
@@ -771,30 +771,59 @@ class order(models.Model):
         # Fall back to parent method for other cases
         return super()._notify_get_action_link(link_type, **kwargs)
     
-    def _notify_compute_recipients(self, message, msg_vals):
-        """ Override to customize email content with recipient-specific URLs. """
+    def _message_notification_recipients(self, message, msg_vals, done_ids, using_ids, access_link=None):
+        """ Override to generate personalized access links for each recipient. """
         
-        # Get recipients from parent method
-        recipients_data = super()._notify_compute_recipients(message, msg_vals)
+        # First get the recipient groups 
+        groups = self._notify_get_recipients_groups(message, msg_vals.get('model_description'), msg_vals=msg_vals)
+        groups = self._notify_get_recipients_groups_fillup(groups, msg_vals.get('model_description'), msg_vals=msg_vals)
         
-        # Process each recipient to add personalized URLs
-        for recipient_data in recipients_data:
-            recipient = recipient_data['recipient']
-            notif_values = recipient_data.get('notif_values', {})
+        recipients_info = []
+        base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+        
+        # Process each group and its recipients
+        for group_name, _group_func, group_data in groups:
+            recipients = group_data.get('recipients', [])
             
-            # Add personalized URL to notification values
-            if recipient and recipient.partner_id:
-                base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-                personalized_url = f"{base_url}?user_id={recipient.partner_id.id}"
-                
-                # Store the personalized URL for template rendering
-                notif_values['access_url'] = personalized_url
-                notif_values['has_button_access'] = True
-                
-                # Update the recipient data
-                recipient_data['notif_values'] = notif_values
+            # Create personalized data for each recipient
+            for recipient in recipients:
+                if hasattr(recipient, 'partner_id') and recipient.partner_id:
+                    # Create a copy of group_data for this specific recipient
+                    recipient_group_data = dict(group_data)
+                    
+                    # Personalize the button access URL with recipient's partner ID
+                    if 'button_access' in recipient_group_data:
+                        button_access = dict(recipient_group_data['button_access'])
+                        personalized_url = f"{base_url}?user_id={recipient.partner_id.id}"
+                        button_access['url'] = personalized_url
+                        recipient_group_data['button_access'] = button_access
+                    
+                    # Set recipients to contain only this specific recipient
+                    recipient_group_data['recipients'] = [recipient]
+                    
+                    recipients_info.append((group_name, _group_func, recipient_group_data))
+                else:
+                    # Fallback for recipients without partner_id
+                    recipient_group_data = dict(group_data)
+                    recipient_group_data['recipients'] = [recipient]
+                    recipients_info.append((group_name, _group_func, recipient_group_data))
         
-        return recipients_data
+        # Now call the parent method with our personalized recipient groups
+        # We need to temporarily replace the groups to use our personalized version
+        original_notify_get_recipients_groups_fillup = self._notify_get_recipients_groups_fillup
+        
+        def personalized_fillup(groups, model_description, msg_vals=None):
+            return recipients_info
+        
+        self._notify_get_recipients_groups_fillup = personalized_fillup
+        
+        try:
+            result = super()._message_notification_recipients(message, msg_vals, done_ids, using_ids, access_link=access_link)
+        finally:
+            # Restore original method
+            self._notify_get_recipients_groups_fillup = original_notify_get_recipients_groups_fillup
+        
+        return result
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
