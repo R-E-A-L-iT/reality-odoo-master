@@ -8,7 +8,7 @@
     'description': ' ',
     'depends': ['base', 'crm'],
     "data": [
-        "data/lead_log_reminder.xml",
+        # "data/lead_log_reminder.xml",
         "views/res_users_form.xml",
         "views/crm_lead_form.xml"
     ],
