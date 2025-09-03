@@ -734,7 +734,6 @@ class order(models.Model):
         
         # Call parent method to get default setup
         groups = super()._notify_get_recipients_groups_fillup(groups, model_description, msg_vals=msg_vals)
-        
         if not self:
             return groups
         self.ensure_one()
@@ -771,6 +770,31 @@ class order(models.Model):
         
         # Fall back to parent method for other cases
         return super()._notify_get_action_link(link_type, **kwargs)
+    
+    def _notify_compute_recipients(self, message, msg_vals):
+        """ Override to customize email content with recipient-specific URLs. """
+        
+        # Get recipients from parent method
+        recipients_data = super()._notify_compute_recipients(message, msg_vals)
+        
+        # Process each recipient to add personalized URLs
+        for recipient_data in recipients_data:
+            recipient = recipient_data['recipient']
+            notif_values = recipient_data.get('notif_values', {})
+            
+            # Add personalized URL to notification values
+            if recipient and recipient.partner_id:
+                base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+                personalized_url = f"{base_url}?user_id={recipient.partner_id.id}"
+                
+                # Store the personalized URL for template rendering
+                notif_values['access_url'] = personalized_url
+                notif_values['has_button_access'] = True
+                
+                # Update the recipient data
+                recipient_data['notif_values'] = notif_values
+        
+        return recipients_data
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
