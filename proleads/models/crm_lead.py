@@ -47,34 +47,26 @@ class CrmLead(models.Model):
     def create(self, vals_list):
         leads = super().create(vals_list)
 
-        # Current user (creator)
         creator = self.env.user
-
-        # Only for internal users who opted in, and who have a valid email
         is_internal = creator.has_group("base.group_user")
-        if is_internal and creator.leica_lead_reminder and creator.email:
-            template = self.env.ref(
-                "pro_crm_lead_leica_reminder.mail_template_crm_lead_leica_reminder",
-                raise_if_not_found=False,
-            )
-            if template:
-                # Send one email per lead created, to the creator’s email only
-                for lead in leads:
-                    # Ensure no follower/partner leakage: override recipients completely
-                    email_values = {
-                        "email_to": creator.email,
-                        "recipient_ids": [],       # do not send to partners/followers
-                        "partner_ids": [],         # do not auto-add partners
-                    }
-                    # Respect user language if set
-                    ctx = {
-                        "lang": creator.lang or self.env.lang,
-                        "default_email_layout_xmlid": "mail.mail_notification_paynow",  # optional; Odoo still applies default layout without this
-                    }
-                    template.with_context(ctx).send_mail(
-                        lead.id,
-                        email_values=email_values,
-                        force_send=True,
-                    )
+
+        if is_internal and creator.leica_lead_reminder and creator.email and creator.partner_id:
+            lang = creator.lang or self.env.lang
+            for lead in leads:
+                subject = f"Reminder: Log “{lead.name}” in the Leica portal"
+                body = (
+                    "<p>Hello,</p>"
+                    f"<p>This is a reminder to log the lead "
+                    f"<strong>{tools.html_escape(lead.name or '')}</strong> in the Leica portal.</p>"
+                    "<p>Thanks.</p>"
+                )
+                
+                lead.with_context(lang=lang).message_notify(
+                    subject=subject,
+                    body=body,
+                    partner_ids=[creator.partner_id.id],
+                    email_layout_xmlid="mail.mail_notification_light",
+                    email_add_signature=False,
+                )
 
         return leads
