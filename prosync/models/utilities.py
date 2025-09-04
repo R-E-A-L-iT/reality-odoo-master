@@ -81,7 +81,7 @@ def normalize_date(value, field_type='date'):
     if not s or s.lower() == 'false':
         return None
     try:
-        dt = dateutil.parser.parse(s, dayfirst=True, fuzzy=True)
+        dt = dateutil.parser.parse(s, dayfirst=False, fuzzy=True)
         return dt if field_type == 'datetime' else dt.date()
     except (ValueError, TypeError):
         return None
