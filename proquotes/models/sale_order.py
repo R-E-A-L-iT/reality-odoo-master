@@ -727,11 +727,11 @@ class order(models.Model):
 
         for group in groups:
             group_name = group[0]
-            recipients = group[1]
+            group_data = group[2]
 
             # enable the access button for all groups
-            group[2]['has_button_access'] = True
-            access_opt = group[2].setdefault('button_access', {})
+            group_data['has_button_access'] = True
+            access_opt = group_data.setdefault('button_access', {})
             
             # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
@@ -747,17 +747,15 @@ class order(models.Model):
             
             # Get user_id for this recipient group
             user_id = None
-            if recipients:
-                # Try to get user_id from the first recipient in the group
-                for recipient in recipients:
-                    if hasattr(recipient, 'user_ids') and recipient.user_ids:
-                        # For portal customers - get from partner's user
-                        user_id = recipient.user_ids[0].id
-                        break
-                    elif hasattr(recipient, 'id') and self.env['res.users'].sudo().search([('partner_id', '=', recipient.id)], limit=1):
+            recipient_partner_ids = group_data.get('recipients', [])
+            
+            if recipient_partner_ids:
+                # Convert partner IDs to partner objects and try to get user_id
+                partners = self.env['res.partner'].sudo().browse(recipient_partner_ids)
+                for partner in partners:
+                    if partner.user_ids:
                         # For partners that have associated users
-                        user = self.env['res.users'].sudo().search([('partner_id', '=', recipient.id)], limit=1)
-                        user_id = user.id
+                        user_id = partner.user_ids[0].id
                         break
             
             # If still no user_id found, try to get it from message context or current user
