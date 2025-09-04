@@ -738,47 +738,26 @@ class order(models.Model):
             return groups
         self.ensure_one()
 
-        # Create personalized groups for each recipient
-        personalized_groups = []
-        
-        # Process each group to get followers and create personalized URLs
+        # Process each group to customize button access
         for group_name, _group_func, group_data in groups:
-            recipients = group_data.get('recipients', [])
+            access_opt = group_data.setdefault('button_access', {})
             
-            # Create individual group for each recipient with their personalized URL
-            for recipient in recipients:
-                # Create a copy of group data for this specific recipient
-                recipient_group_data = dict(group_data)
-                recipient_group_data['recipients'] = [recipient]
-                
-                access_opt = recipient_group_data.setdefault('button_access', {})
-                
-                # Set the title based on the state of the order
-                if self.state in ('draft', 'sent'):
-                    if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
-                        access_opt['title'] = _("Voir le devis")
-                    else:
-                        access_opt['title'] = _("View Quotation")
+            # Set the title based on the state of the order
+            if self.state in ('draft', 'sent'):
+                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir le devis")
                 else:
-                    if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
-                        access_opt['title'] = _("Voir la commande")
-                    else:
-                        access_opt['title'] = _("View Order")
-                
-                # Generate personalized URL with follower's user_id
-                base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-                
-                # Get the follower's partner ID
-                if hasattr(recipient, 'partner_id') and recipient.partner_id:
-                    personalized_url = f"{base_url}?user_id={recipient.partner_id.id}"
-                    access_opt['url'] = personalized_url
+                    access_opt['title'] = _("View Quotation")
+            else:
+                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
+                    access_opt['title'] = _("Voir la commande")
                 else:
-                    # Fallback to base URL if no partner_id found
-                    access_opt['url'] = base_url
+                    access_opt['title'] = _("View Order")
                 
-                personalized_groups.append((group_name, _group_func, recipient_group_data))
+            # Store base URL - we'll personalize this per recipient in _notify_compute_recipients
+            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
 
-        return personalized_groups
+        return groups
     
     def _notify_get_action_link(self, link_type, **kwargs):
         """ Override to generate recipient-specific URLs when available. """
