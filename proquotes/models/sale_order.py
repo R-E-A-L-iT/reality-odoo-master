@@ -611,53 +611,35 @@ class order(models.Model):
         )
         return section
 
-    def generate_product_line(
-            self,
-            product_id,
-            *,
-            selected=False,
-            uom="Units",
-            locked_qty="yes",
-            optional="no"
-    ):
-        if selected == True:
+    def generate_product_line(self, product_id, *, selected=False, uom="Units", locked_qty="yes", optional="no"):
+        if selected is True:
             selected = "true"
-        elif selected == False:
+        elif selected is False:
             selected = "false"
 
-        product = self.env["product.product"].search([
-            ("id", "=", product_id.id)])
+        product = self.env["product.product"].browse(product_id.id)
 
-        # Get Price
+        # Price from pricelist (as you already do)
         pricelist = self.pricelist_id.id
         pricelist_entry = self.env["product.pricelist.item"].search(
-            [
-                ("pricelist_id.id", "=", pricelist),
-                ("product_tmpl_id.sku", "=", product.sku),
-            ]
+            [("pricelist_id.id", "=", pricelist), ("product_tmpl_id.sku", "=", product.sku)]
         )
-        price = 0
         if len(pricelist_entry) > 1:
             return "Duplicate Pricelist Rules: " + str(product_id.sku)
-        elif len(pricelist_entry) == 1:
-            price = pricelist_entry[-1].fixed_price
-        uomitem = self.env["uom.uom"].search([("name", "=", uom)])
-        if len(product) != 1:
-            return "Invalid Responses for: sku=" + str(product_id.sku)
-        line = self.env["sale.order.line"].new(
-            {
-                "name": product.name,
-                "selected": selected,
-                "optional": optional,
-                "quantityLocked": locked_qty,
-                "product_id": product.id,
-                "product_uom_qty": 1,
-                "product_uom": uomitem,
-                "price_unit": price,
-                "order_id": self._origin.id,
-            }
-        )
-        return line
+        price = pricelist_entry[-1].fixed_price if len(pricelist_entry) == 1 else 0
+
+        # DO NOT set product_uom: Odoo will use product.uom_id & validate categories.
+        line_vals = {
+            "name": product.name,
+            "selected": selected,
+            "optional": optional,
+            "quantityLocked": locked_qty,
+            "product_id": product.id,
+            "product_uom_qty": 1,
+            "price_unit": price,
+            "order_id": self._origin.id,
+        }
+        return self.env["sale.order.line"].new(line_vals)
 
     def hardwareCCP(self, hardware_lines, product):
         eid = product.name
