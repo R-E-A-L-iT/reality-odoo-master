@@ -721,109 +721,66 @@ class order(models.Model):
         if not self:
             return groups
         self.ensure_one()
+        # Get the base URL for the portal
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        portal_url = self.get_portal_url()
 
         for group in groups:
             group_name = group[0]
+            recipients = group[1]
+
             # enable the access button for all groups
             group[2]['has_button_access'] = True
+            access_opt = group[2].setdefault('button_access', {})
             
-        return groups
-
-    def _notify_get_recipients_groups_fillup(self, groups, model_description, msg_vals=None):
-        """ Override to customize button access with recipient-specific URLs. """
-        
-        # Call parent method to get default setup
-        groups = super()._notify_get_recipients_groups_fillup(groups, model_description, msg_vals=msg_vals)
-        if not self:
-            return groups
-        self.ensure_one()
-
-        # Process each group to customize button access
-        for group_name, _group_func, group_data in groups:
-            access_opt = group_data.setdefault('button_access', {})
-            
-            # Set the title based on the state of the order
+            # set the title for the access button based on the state of the order
             if self.state in ('draft', 'sent'):
-                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
+                if self.partner_id.lang == 'fr_CA':
                     access_opt['title'] = _("Voir le devis")
                 else:
                     access_opt['title'] = _("View Quotation")
             else:
-                if hasattr(self.partner_id, 'lang') and self.partner_id.lang == 'fr_CA':
+                if self.partner_id.lang == 'fr_CA':
                     access_opt['title'] = _("Voir la commande")
                 else:
                     access_opt['title'] = _("View Order")
-                
-            # Store base URL - we'll personalize this per recipient in _notify_compute_recipients
-            access_opt['url'] = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-
-        return groups
-    
-    def _notify_get_action_link(self, link_type, **kwargs):
-        """ Override to generate recipient-specific URLs when available. """
-        
-        # If we have recipient info, generate recipient-specific URL
-        if kwargs.get('pid'):  # portal user ID is available
-            partner_id = kwargs['pid']
-            base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-            return f"{base_url}?user_id={partner_id}"
-        
-        # Fall back to parent method for other cases
-        return super()._notify_get_action_link(link_type, **kwargs)
-    
-    def _message_notification_recipients(self, message, msg_vals, done_ids, using_ids, access_link=None):
-        """ Override to generate personalized access links for each recipient. """
-        
-        # First get the recipient groups 
-        groups = self._notify_get_recipients_groups(message, msg_vals.get('model_description'), msg_vals=msg_vals)
-        groups = self._notify_get_recipients_groups_fillup(groups, msg_vals.get('model_description'), msg_vals=msg_vals)
-        
-        recipients_info = []
-        base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
-        
-        # Process each group and its recipients
-        for group_name, _group_func, group_data in groups:
-            recipients = group_data.get('recipients', [])
             
-            # Create personalized data for each recipient
-            for recipient in recipients:
-                if hasattr(recipient, 'partner_id') and recipient.partner_id:
-                    # Create a copy of group_data for this specific recipient
-                    recipient_group_data = dict(group_data)
-                    
-                    # Personalize the button access URL with recipient's partner ID
-                    if 'button_access' in recipient_group_data:
-                        button_access = dict(recipient_group_data['button_access'])
-                        personalized_url = f"{base_url}?user_id={recipient.partner_id.id}"
-                        button_access['url'] = personalized_url
-                        recipient_group_data['button_access'] = button_access
-                    
-                    # Set recipients to contain only this specific recipient
-                    recipient_group_data['recipients'] = [recipient]
-                    
-                    recipients_info.append((group_name, _group_func, recipient_group_data))
-                else:
-                    # Fallback for recipients without partner_id
-                    recipient_group_data = dict(group_data)
-                    recipient_group_data['recipients'] = [recipient]
-                    recipients_info.append((group_name, _group_func, recipient_group_data))
-        
-        # Now call the parent method with our personalized recipient groups
-        # We need to temporarily replace the groups to use our personalized version
-        original_notify_get_recipients_groups_fillup = self._notify_get_recipients_groups_fillup
-        
-        def personalized_fillup(groups, model_description, msg_vals=None):
-            return recipients_info
-        
-        self._notify_get_recipients_groups_fillup = personalized_fillup
-        
-        try:
-            result = super()._message_notification_recipients(message, msg_vals, done_ids, using_ids, access_link=access_link)
-        finally:
-            # Restore original method
-            self._notify_get_recipients_groups_fillup = original_notify_get_recipients_groups_fillup
-        
-        return result
+            # Get user_id for this recipient group
+            user_id = None
+            if recipients:
+                # Try to get user_id from the first recipient in the group
+                for recipient in recipients:
+                    if hasattr(recipient, 'user_ids') and recipient.user_ids:
+                        # For portal customers - get from partner's user
+                        user_id = recipient.user_ids[0].id
+                        break
+                    elif hasattr(recipient, 'id') and self.env['res.users'].sudo().search([('partner_id', '=', recipient.id)], limit=1):
+                        # For partners that have associated users
+                        user = self.env['res.users'].sudo().search([('partner_id', '=', recipient.id)], limit=1)
+                        user_id = user.id
+                        break
+            
+            # If still no user_id found, try to get it from message context or current user
+            if not user_id:
+                # Check if there's a user context in the message
+                if msg_vals and msg_vals.get('author_id'):
+                    author_user = self.env['res.users'].sudo().search([('partner_id', '=', msg_vals['author_id'])], limit=1)
+                    if author_user:
+                        user_id = author_user.id
+                
+                # Fallback to current user if no other user found
+                if not user_id:
+                    user_id = self.env.user.id
+            
+            # set the portal access URL for the button with user_id parameter
+            base_url = f"/check_quotation_redirect/{self.id}/{self.access_token}"
+            if user_id:
+                access_opt['url'] = f"{base_url}?user_id={user_id}"
+            else:
+                access_opt['url'] = base_url
+
+        # return the modified recipient groups with the updated access options
+        return groups
 
     def _amount_all(self):
         # Ensure sale order lines are selected to included in calculation
