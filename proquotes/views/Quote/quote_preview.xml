@@ -129,8 +129,18 @@
                 <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
                 <t t-set="partner" t-value="sale_order.partner_id"/>
                 <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
-                <t t-set="address" t-value="str(partner.street + ', ' + partner.city + ' ' + partner.state_id.code + ', ' + partner.country_id.name)"/>
+                
+                <t t-set="addr_street"  t-value="partner.street or ''"/>
+                <t t-set="addr_city"    t-value="partner.city or ''"/>
+                <t t-set="addr_state"   t-value="(partner.state_id and partner.state_id.code) or ''"/>
+                <t t-set="addr_country" t-value="(partner.country_id and partner.country_id.name) or ''"/>
 
+                <t t-set="address"
+                t-value="(addr_street and (addr_street + ', ') or '')
+                            + (addr_city and (addr_city + ' ') or '')
+                            + addr_state
+                            + (addr_country and (', ' + addr_country) or '')"/>
+                
                 <section t-if="'vimeo' in sale_order.header_id.url" class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level o_background_video s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" style="background-image: url(&quot;/web/image/4527-redirect/blk2gocolored.png&quot;); min-height: 606.625px !important;" data-bg-video-src="https://player.vimeo.com/video/951537329?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1" data-oe-model="ir.ui.view" data-oe-id="8160" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/section[1]">
                     <div class="o_bg_video_container">
                         <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_5" t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" style="width: 100%; height: 113.589532%; inset-inline-start: 0px; inset-block-start: -6.794766%;"></iframe>
