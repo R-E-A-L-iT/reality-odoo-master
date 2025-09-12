@@ -6,6 +6,12 @@ from odoo import api, fields, models, _
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+
+    simple_email_layout = fields.Boolean(
+        string='Send Gmail Message',
+        default=False,
+    )
+
     def prepare_google_message(self):
         """
         Prepare lead for Google message by setting simple_email_layout to True
