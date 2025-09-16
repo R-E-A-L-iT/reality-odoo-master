@@ -6,6 +6,11 @@
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="replace">
 
             <t t-call="web.external_layout">
+
+                <!-- force correct assets -->
+                <t t-call-assets="web.report_assets_common" t-js="false"/>
+                <t t-call-assets="sale.report_assets_common" t-js="false"/>
+
                 <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
                 <t t-set="language" t-value="doc.partner_id.lang"/>
                 <t t-set="forced_vat" t-value="doc.fiscal_position_id.foreign_vat"/> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
