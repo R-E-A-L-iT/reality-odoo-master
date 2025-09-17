@@ -88,6 +88,19 @@ class SaleOrderLine(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    def _action_launch_stock_rule(self, previous_product_uom_qty=False):
+        lines = self.filtered(
+            lambda l: l.selected == 'true'
+            and not l.display_type
+            and l.product_id
+            and l.product_uom_qty > 0
+            and l.product_id.name != 'No CCP'
+        )
+        if not lines:
+            return self.env['stock.move']
+        # Call super ONLY on the filtered recordset
+        return super(SaleOrderLine, lines)._action_launch_stock_rule(previous_product_uom_qty)
+
     def _extract_move_ids_from_commands(self, cmds):
         ids = []
         if not cmds:

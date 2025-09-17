@@ -368,11 +368,11 @@ class order(models.Model):
                 _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
 
         return action
-            
+
     def _action_confirm(self):
-        selected_lines = self.order_line.sudo().filtered(
-            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
-        selected_lines._action_launch_stock_rule()
+        res = super()._action_confirm()
+        return res
+
 
 
     # this overrides the subscribe method to not allow the partner_id to be subscribed, since their company email is not where the quote should go
