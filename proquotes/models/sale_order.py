@@ -828,7 +828,7 @@ class order(models.Model):
         return rentalRate + rentalMonthRate + rentalWeekDayRate
 
     @api.depends_context('lang')
-    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    @api.depends('order_line.tax_id', 'order_line.price_unit', 'order_line.price_subtotal', 'currency_id')
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
@@ -837,8 +837,6 @@ class order(models.Model):
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
             )
-            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Give access button to all users and portal customers to view the quote in the portal. """
