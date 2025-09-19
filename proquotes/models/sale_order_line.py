@@ -277,6 +277,43 @@ class SaleOrderLine(models.Model):
         
         # Otherwise, use the default behavior
         return super(orderLineProquotes, self)._create_procurement(product_qty, procurement_uom, values)
+    
+    def _prepare_invoice_line(self, **optional_values):
+        """
+        Override to handle renewal products with serial numbers for invoices.
+        For Renewal Auto template, use the correct product from stock.lot if a match is found.
+        """
+        # Get the standard invoice line values first
+        values = super(orderLineProquotes, self)._prepare_invoice_line(**optional_values)
+        
+        # Check if this is a Renewal Auto template
+        if self.order_id.sale_order_template_id and self.order_id.sale_order_template_id.name == "Renewal Auto":
+            # Get the renewal products from the order
+            renewal_products = self.order_id.renewal_product_items
+            
+            # Check if this line corresponds to a renewal product
+            for renewal_item in renewal_products:
+                # Check if the serial number exists in the product name or order line name
+                serial_number = renewal_item.name
+                if serial_number in (self.product_id.name or '') or serial_number in (self.name or ''):
+                    # Search for matching stock.lot with the same serial number and owner
+                    matching_lot = self.env['stock.lot'].search([
+                        ('name', '=', serial_number),
+                        ('owner', '=', self.order_id.partner_id.id)
+                    ], limit=1)
+                    
+                    if matching_lot and matching_lot.product_id:
+                        # Use the product from the matching lot for the invoice
+                        values['product_id'] = matching_lot.product_id.id
+                        # Update the name to use the lot's product name (without serial number)
+                        values['name'] = matching_lot.product_id.name
+                        # Remove serial number from the name if present
+                        if serial_number in values['name']:
+                            values['name'] = values['name'].replace(f'({serial_number})', '').strip()
+                            values['name'] = values['name'].replace(serial_number, '').strip()
+                        break
+        
+        return values
 
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
 
