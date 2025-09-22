@@ -93,6 +93,19 @@ class order(models.Model):
         help="Header selection field",
     )
 
+    @api.model
+    def _is_viewed_subtype(self, subtype_xmlid):
+        return subtype_xmlid in ('sale.mt_order_viewed', 'sale.mt_quote_viewed')
+
+    # skip logging quote viewed message if context key is set
+    def message_post(self, **kwargs):
+        if (
+            self.env.context.get('skip_default_quote_view_log')
+            and self._is_viewed_subtype(kwargs.get('subtype_xmlid'))
+        ):
+            return self.env['mail.message']
+        return super().message_post(**kwargs)
+
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id_set_header_footer(self):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:

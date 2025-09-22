@@ -351,6 +351,26 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
+    def portal_order_page(self, order_id, access_token=None, **kw):
+        if kw.get('user_id'):
+            request.env = request.env(context=dict(request.env.context, skip_default_quote_view_log=True))
+        return super().portal_order_page(order_id, access_token=access_token, **kw)
+
+    def _post_view_notification(self, order, viewer_partner):
+        recipient_ids = []
+        if order.user_id and order.user_id.partner_id:
+            recipient_ids.append(order.user_id.partner_id.id)
+
+        order.message_post(
+            body=_("Quotation viewed by %s") % viewer_partner.name,
+            message_type='notification',
+            subtype_xmlid='sale.mt_quote_viewed',
+            partner_ids=list(set(recipient_ids)),
+            email_layout_xmlid='mail.mail_notification_light',
+            author_id=viewer_partner.id,
+        )
+
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
@@ -380,12 +400,7 @@ class QuoteCustomerPortal(cPortal):
                         url = f"{url}{sep}user_id={int(user_id)}"
                         
                         # Log the quotation view
-                        order.message_post(
-                            body=_("Quotation viewed by %s") % partner.name,
-                            message_type='notification',
-                            subtype_xmlid='sale.mt_quote_viewed',
-                            author_id=partner.id,
-                        )
+                        self._post_view_notification(order, partner)
                         
                         # Set redirect URL with language prefix if needed
                         if partner.lang == 'fr_CA':
