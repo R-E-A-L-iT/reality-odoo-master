@@ -215,6 +215,96 @@ class order(models.Model):
 
 
 
+
+
+
+
+    # 
+    # 
+    # TAXES AUTOMATIONS
+    # 
+    # 
+
+    def _is_ca_company_scope(self):
+        """Limit to your Canadian company, same condition as your rule."""
+        # Keep your business rule as-is:
+        return self.company_id and self.company_id.name == "R-E-A-L.iT Solutions"
+
+    def _get_province_tax(self, province_code):
+        """Return the account.tax record for the province under the order's company."""
+        self.ensure_one()
+        if not (province_code and self._is_ca_company_scope()):
+            return self.env["account.tax"]
+        tax_name = PROVINCE_TAX_BY_CODE.get(province_code)
+        if not tax_name:
+            return self.env["account.tax"]
+        # Search inside the order's company context
+        return (
+            self.env["account.tax"]
+            .with_company(self.company_id)
+            .search([("name", "=", tax_name)], limit=1)
+        )
+
+    def _apply_canadian_province_taxes(self):
+        """Clear and apply taxes to order lines based on shipping province."""
+        for order in self:
+            # Only run for your Canadian company and when a shipping state exists
+            state = order.partner_shipping_id.state_id
+            if not order._is_ca_company_scope() or not state:
+                # Clear taxes if we’re not in scope (so you don't accidentally retain old taxes)
+                for line in order.order_line:
+                    if not line.display_type and line.product_id:
+                        line.tax_id = [Command.clear()]
+                continue
+
+            province_code = _code_from_state(state)
+            province_tax = order._get_province_tax(province_code)
+
+            for line in order.order_line:
+                # skip sections/notes and empty lines
+                if line.display_type or not line.product_id or line.product_uom_qty <= 0:
+                    continue
+                if province_tax:
+                    # Clear-and-set (ensures nothing else sticks)
+                    line.tax_id = [Command.set(province_tax.ids)]
+                else:
+                    # No match: clear taxes to avoid stale values
+                    line.tax_id = [Command.clear()]
+
+    # ---------- Triggers to (re)apply ----------
+    @api.onchange("partner_id", "partner_shipping_id", "company_id", "pricelist_id", "sale_order_template_id")
+    def _onchange_reapply_province_taxes(self):
+        self._apply_canadian_province_taxes()
+
+    def write(self, vals):
+        res = super().write(vals)
+        # If any of these change, recompute taxes
+        if {"partner_id", "partner_shipping_id", "company_id", "pricelist_id"} & set(vals.keys()):
+            self._apply_canadian_province_taxes()
+        return res
+
+
+    # 
+    # 
+    # 
+    # 
+    # 
+
+
+
+    @api.model
+    def _is_viewed_subtype(self, subtype_xmlid):
+        return subtype_xmlid in ('sale.mt_order_viewed', 'sale.mt_quote_viewed')
+
+    # skip logging quote viewed message if context key is set
+    def message_post(self, **kwargs):
+        if (
+            self.env.context.get('skip_default_quote_view_log')
+            and self._is_viewed_subtype(kwargs.get('subtype_xmlid'))
+        ):
+            return self.env['mail.message']
+        return super().message_post(**kwargs)
+
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id_set_header_footer(self):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:
