@@ -12,7 +12,7 @@
                     type="object"
                     string="Register with Leica"
                     class="oe_highlight"
-                    attrs="{'invisible': [('leica_can_register','=',False)]}"
+                    invisible="not leica_can_register"
                 />
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
