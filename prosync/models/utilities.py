@@ -264,7 +264,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
         return
 
     try:
-        new_price = float(value)
+        new_price = normalize_float(value)
     except (ValueError, TypeError):
         _logger.warning(f"ProSync: Invalid price value '{value}' at cell {cell_ref}")
         return
