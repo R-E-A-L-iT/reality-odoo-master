@@ -3,6 +3,12 @@ from odoo import fields, models, api, tools
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+    leica_can_register = fields.Boolean(
+        string="Ready for Leica Registration",
+        compute="_compute_leica_can_register",
+        store=False,
+    )
+
     opportunity_source = fields.Selection([
         ("source_website", "Website"),
         ("source_landing", "Landing Page"),
@@ -133,3 +139,26 @@ class CrmLead(models.Model):
             else:
                 lead.quotation_amount = 0.00
                 lead.expected_revenue = 0.00
+
+    # can the lead be registered with leica
+    @api.depends("partner_name", "partner_id", "email_from", "phone")
+    def _compute_leica_can_register(self):
+        single_re = tools.single_email_re
+        for lead in self:
+            
+            has_all = bool(lead.partner_name and lead.partner_id and lead.email_from and lead.phone)
+
+            email_ok = False
+            if lead.email_from:
+                email_ok = bool(tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
+
+            phone_ok = False
+            if lead.phone:
+                digits = re.sub(r"\D", "", lead.phone)
+                phone_ok = len(digits) >= 7
+
+            lead.leica_can_register = has_all and email_ok and phone_ok
+
+    def action_leica_register(self):
+        self.ensure_one()
+        return True

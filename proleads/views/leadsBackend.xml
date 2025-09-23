@@ -6,6 +6,15 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_leica_register"
+                    type="object"
+                    string="Register with Leica"
+                    class="oe_highlight"
+                    attrs="{'invisible': [('leica_can_register','=',False)]}"
+                />
+            </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="opportunity_source" />
             </xpath>
@@ -17,6 +26,9 @@
                 <field name="opportunity_sn" />
                 <field name="opportunity_notes" />
                 <field name="linkedin_link" />
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="leica_can_register" invisible="1"/>
             </xpath>
         </field>
     </record>
