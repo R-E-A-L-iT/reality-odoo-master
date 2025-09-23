@@ -196,10 +196,12 @@ class CrmLead(models.Model):
 
             self.leica_registered = True
 
+            system_partner = self.env.ref("base.user_root").partner_id
             self.message_post(
                 body=_("Lead has been registered in Leica's system and is awaiting approval."),
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
+                author_id=system_partner.id,
             )
 
         except Exception as e:

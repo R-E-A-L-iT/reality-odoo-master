@@ -12,7 +12,15 @@
                     type="object"
                     string="Register with Leica"
                     class="oe_highlight"
-                    invisible="not leica_can_register"
+                    invisible="not leica_can_register or leica_registered"
+                />
+
+                <button
+                    name="action_leica_register"
+                    type="object"
+                    string="Register with Leica"
+                    readonly="1"
+                    invisible="not leica_registered"
                 />
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
