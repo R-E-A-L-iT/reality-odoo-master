@@ -4,6 +4,13 @@ from odoo import fields, models, api, tools
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+    leica_registered = fields.Boolean(
+        string="Registered with Leica",
+        default=False,
+        readonly=True,
+        help="Set automatically after the 'Register with Leica' action is sent."
+    )
+
     leica_can_register = fields.Boolean(
         string="Ready for Leica Registration",
         compute="_compute_leica_can_register",
@@ -146,20 +153,51 @@ class CrmLead(models.Model):
     def _compute_leica_can_register(self):
         single_re = tools.single_email_re
         for lead in self:
-            
-            has_all = bool(lead.partner_name and lead.partner_id and lead.email_from and lead.phone)
-
+            has_all = bool(lead.contact_name and lead.partner_name and lead.email_from and lead.phone)
             email_ok = False
             if lead.email_from:
                 email_ok = bool(tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
-
             phone_ok = False
             if lead.phone:
                 digits = re.sub(r"\D", "", lead.phone)
                 phone_ok = len(digits) >= 7
-
             lead.leica_can_register = has_all and email_ok and phone_ok
 
+    # register lead with leica sending email to vm
     def action_leica_register(self):
         self.ensure_one()
-        return True
+
+        if self.leica_registered:
+            raise UserError(_("This lead has already been registered with Leica."))
+
+        payload = {
+            "lead_id": self.id,
+            "contact_name": self.contact_name or "",
+            "company_name": self.partner_name or "",
+            "email": self.email_from or "",
+            "phone": self.phone or "",
+        }
+        body_text = json.dumps(payload, ensure_ascii=False, indent=2)
+
+        body_html = "<pre>%s</pre>" % tools.html_escape(body_text)
+
+        try:
+            Mail = self.env["mail.mail"].sudo()
+            mail = Mail.create({
+                "subject": f"Lead Registration #{self.id}",
+                "email_to": "lead-registration@r-e-a-l.it",
+                "body_html": body_html,
+            })
+            mail.send()
+
+            self.leica_registered = True
+
+            self.message_post(
+                body=_("Lead has been registered in Leica's system and is awaiting approval."),
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        except Exception as e:
+            _logger.exception("Leica registration email failed for lead %s", self.id)
+            raise UserError(_("Failed to send the registration email: %s") % e) from e
