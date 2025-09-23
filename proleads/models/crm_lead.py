@@ -1,7 +1,9 @@
 import re
 import json
 import logging
-from odoo import fields, models, api, tools
+
+from odoo import fields, models, api, tools, _
+from odoo.exceptions import UserError
 
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
