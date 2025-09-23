@@ -37,6 +37,7 @@
             </xpath>
             <xpath expr="//sheet" position="inside">
                 <field name="leica_can_register" invisible="1"/>
+                <field name="leica_registered" invisible="1"/>
             </xpath>
         </field>
     </record>
