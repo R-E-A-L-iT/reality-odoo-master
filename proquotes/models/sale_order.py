@@ -12,8 +12,7 @@ from functools import partial
 from itertools import groupby
 import logging
 
-from odoo.fields import Command
-from odoo import api, fields, models, SUPERUSER_ID, _, tools
+from odoo import api, fields, models, SUPERUSER_ID, _, tools, Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
@@ -1029,6 +1028,32 @@ class order(models.Model):
 
     def _create_invoices(self, grouped=False, final=False, date=None):
         invoices = super()._create_invoices(grouped=grouped, final=final, date=date)
+
+        for invoice in invoices:
+            # Work on a stable order
+            lines = invoice.invoice_line_ids.sorted('sequence')
+            seq = 1
+            commands = []
+
+            for line in lines:
+                # If our tag is present, insert a section just before this line
+                if line.x_needs_section and line.x_section_label:
+                    commands.append(Command.create({
+                        'display_type': 'line_section',
+                        'name': line.x_section_label,
+                        'sequence': seq,
+                    }))
+                    seq += 1
+
+                # Re-sequence the actual product line, and keep flags (no harm)
+                commands.append(Command.update(line.id, {
+                    'sequence': seq,
+                }))
+                seq += 1
+
+            if commands:
+                # Apply in one write to avoid flicker / resort
+                invoice.write({'invoice_line_ids': commands})
 
         for order in self:
             if order.state != 'sale':
