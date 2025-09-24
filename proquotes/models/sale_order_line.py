@@ -232,7 +232,7 @@ class SaleOrderLine(models.Model):
         For Renewal Auto template, modify the procurement values to use the correct product
         from stock.lot if a match is found.
         """
-        values = super(orderLineProquotes, self)._prepare_procurement_values(group_id)
+        values = super(SaleOrderLine, self)._prepare_procurement_values(group_id)
         
         # Check if this is a Renewal Auto template
         if self.order_id.sale_order_template_id and self.order_id.sale_order_template_id.name == "Renewal Auto":
@@ -276,7 +276,7 @@ class SaleOrderLine(models.Model):
             )
         
         # Otherwise, use the default behavior
-        return super(orderLineProquotes, self)._create_procurement(product_qty, procurement_uom, values)
+        return super(SaleOrderLine, self)._create_procurement(product_qty, procurement_uom, values)
     
     def _prepare_invoice_line(self, **optional_values):
         """
@@ -284,7 +284,7 @@ class SaleOrderLine(models.Model):
         For Renewal Auto template, use the correct product from stock.lot if a match is found.
         Also tag the line so we can inject a section above it after invoice creation.
         """
-        values = super(orderLineProquotes, self)._prepare_invoice_line(**optional_values)
+        values = super(SaleOrderLine, self)._prepare_invoice_line(**optional_values)
 
         # Only for the specific template
         if self.order_id.sale_order_template_id and self.order_id.sale_order_template_id.name == "Renewal Auto":
