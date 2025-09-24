@@ -21,6 +21,9 @@ _logger = logging.getLogger(__name__)
 class invoiceLine(models.Model):
     _inherit = "account.move.line"
 
+    x_needs_section = fields.Boolean(index=True)
+    x_section_label = fields.Char()
+
     # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
     applied_name = fields.Char( string="Applied Name")
 
