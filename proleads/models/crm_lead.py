@@ -167,6 +167,48 @@ class CrmLead(models.Model):
                 phone_ok = len(digits) >= 7
             lead.leica_can_register = has_all and email_ok and phone_ok
 
+    # helper for compiling/sending information to leica webhook
+    def _post_to_leica_webhook(self, payload: dict):
+        ICP = self.env["ir.config_parameter"].sudo()
+        url = ICP.get_param("proleads_leica_webhook_url", "").strip()
+        secret = ICP.get_param("proleads_leica_webhook_secret", "").strip()
+
+        if not url:
+            raise UserError(_("Leica webhook URL is not configured (proleads_leica_webhook_url)."))
+        if not secret:
+            raise UserError(_("Leica webhook secret is not configured (proleads_leica_webhook_secret)."))
+
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        signature = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-REAL-Signature": signature,
+            "User-Agent": "Odoo-17/LeicaWebhook",
+        }
+
+        try:
+            resp = requests.post(url, data=body, headers=headers, timeout=10)
+        except requests.RequestException as e:
+            _logger.exception("Error posting to Leica webhook: %s", e)
+            raise UserError(_("Failed to reach the Leica webhook: %s") % e) from e
+
+        if resp.status_code != 200:
+            _logger.error("Leica webhook non-200: %s, body=%s", resp.status_code, resp.text[:500])
+            raise UserError(_("Leica webhook responded with HTTP %s") % resp.status_code)
+
+        try:
+            data = resp.json()
+        except Exception:
+            _logger.error("Leica webhook invalid JSON response: %s", resp.text[:500])
+            raise UserError(_("Leica webhook returned invalid JSON."))
+
+        if not data or not data.get("ok"):
+            _logger.error("Leica webhook returned error payload: %s", data)
+            raise UserError(_("Leica webhook indicated failure."))
+
+        return True
+
     # register lead with leica sending email to vm
     def action_leica_register(self):
         self.ensure_one()
@@ -174,36 +216,32 @@ class CrmLead(models.Model):
         if self.leica_registered:
             raise UserError(_("This lead has already been registered with Leica."))
 
+        if not self.leica_can_register:
+            raise UserError(_("Lead is missing required fields (name/company/email/phone)."))
+
         payload = {
             "lead_id": self.id,
             "contact_name": self.contact_name or "",
             "company_name": self.partner_name or "",
             "email": self.email_from or "",
             "phone": self.phone or "",
+            "opportunity_source": self.opportunity_source or "",
+            "opportunity_sn": self.opportunity_sn or "",
+            "opportunity_notes": self.opportunity_notes or "",
+            "quotation_amount": self.quotation_amount or 0.0,
+            "odoo_company": self.company_id and self.company_id.name or "",
+            "odoo_lead_url": self.get_portal_url() if hasattr(self, "get_portal_url") else "",
         }
-        body_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
-        body_html = "<pre>%s</pre>" % tools.html_escape(body_text)
+        self._post_to_leica_webhook(payload)
 
-        try:
-            Mail = self.env["mail.mail"].sudo()
-            mail = Mail.create({
-                "subject": f"Lead Registration #{self.id}",
-                "email_to": "lead-registration@r-e-a-l.it",
-                "body_html": body_html,
-            })
-            mail.send()
+        self.leica_registered = True
+        system_partner = self.env.ref("base.user_root").partner_id
+        self.message_post(
+            body=_("Lead was sent to Leica webhook and is awaiting approval."),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+            author_id=system_partner.id,
+        )
 
-            self.leica_registered = True
-
-            system_partner = self.env.ref("base.user_root").partner_id
-            self.message_post(
-                body=_("Lead has been registered in Leica's system and is awaiting approval."),
-                message_type="comment",
-                subtype_xmlid="mail.mt_note",
-                author_id=system_partner.id,
-            )
-
-        except Exception as e:
-            _logger.exception("Leica registration email failed for lead %s", self.id)
-            raise UserError(_("Failed to send the registration email: %s") % e) from e
+        return True
