@@ -1,6 +1,8 @@
 import re
 import json
 import logging
+import hmac
+import hashlib
 
 from odoo import fields, models, api, tools, _
 from odoo.exceptions import UserError
