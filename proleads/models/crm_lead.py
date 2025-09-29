@@ -219,7 +219,7 @@ class CrmLead(models.Model):
                 email_ok = bool(tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
             phone_ok = False
             if lead.phone:
-                digits = self.env.re.sub(r"\D", "", lead.phone)
+                digits = re.sub(r"\D", "", lead.phone)
                 phone_ok = len(digits) >= 7
 
             seg_ok = bool(lead.leica_market_segment)
