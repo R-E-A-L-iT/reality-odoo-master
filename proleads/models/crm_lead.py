@@ -1,6 +1,7 @@
 import re
 import json
 import logging
+import requests
 import hmac
 import hashlib
 
