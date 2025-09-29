@@ -41,10 +41,6 @@
                             attrs="{'invisible': [('leica_sales_region','=',False)]}"/>
                     </group>
                 </group>
-
-                <!-- hidden tech fields -->
-                <field name="leica_can_register" invisible="1"/>
-                <field name="leica_registered" invisible="1"/>
             </xpath>
         </field>
     </record>
