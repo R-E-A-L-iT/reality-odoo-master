@@ -5,7 +5,7 @@ import requests
 import hmac
 import hashlib
 
-from odoo import fields, models, api, tools, _
+from odoo import fields, models, api, _, tools
 from odoo.exceptions import UserError
 
 LEICA_MARKET_SEGMENT_SEL = [
@@ -211,12 +211,12 @@ class CrmLead(models.Model):
     @api.depends("contact_name", "partner_name", "email_from", "phone",
                  "leica_market_segment", "leica_product_interest", "leica_sales_region")
     def _compute_leica_can_register(self):
-        single_re = self.env.tools.single_email_re
+        single_re = tools.single_email_re
         for lead in self:
             has_all = bool(lead.contact_name and lead.partner_name and lead.email_from and lead.phone)
             email_ok = False
             if lead.email_from:
-                email_ok = bool(self.env.tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
+                email_ok = bool(tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
             phone_ok = False
             if lead.phone:
                 digits = self.env.re.sub(r"\D", "", lead.phone)
