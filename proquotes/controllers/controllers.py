@@ -362,14 +362,19 @@ class QuoteCustomerPortal(cPortal):
         if order.user_id and order.user_id.partner_id:
             recipient_ids.append(order.user_id.partner_id.id)
 
-        order.message_post(
+        order.with_context(mail_post_autofollow=True).message_post(
             body=_("Quotation viewed by %s") % viewer_partner.name,
-            message_type='notification',
-            subtype_xmlid='sale.mt_quote_viewed',
+            message_type='comment',
+            subtype_xmlid='sale.mt_order_viewed',
             partner_ids=list(set(recipient_ids)),
-            email_layout_xmlid='mail.mail_notification_light',
             author_id=viewer_partner.id,
+            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
         )
+
+    def _log_order_viewed(self, order_sudo):
+        if request.params.get('user_id'):
+            return
+        return super()._log_order_viewed(order_sudo)
 
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)

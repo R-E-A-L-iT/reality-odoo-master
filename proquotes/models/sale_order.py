@@ -21,6 +21,10 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
+VIEWED_XMLIDS = {'sale.mt_order_viewed', 'sale.mt_quote_viewed'}
+
+VIEWED_XMLIDS = {'sale.mt_order_viewed', 'sale.mt_quote_viewed'}
+
 PROVINCE_TAX_BY_CODE = {
     # code -> tax name in that company's chart
     "QC": "GST + QST for sales",
@@ -293,17 +297,44 @@ class order(models.Model):
 
 
     @api.model
-    def _is_viewed_subtype(self, subtype_xmlid):
-        return subtype_xmlid in ('sale.mt_order_viewed', 'sale.mt_quote_viewed')
+    def _is_viewed_post(self, kwargs):
+        # Default path sometimes passes subtype via xmlid, sometimes via id
+        subtype_xmlid = kwargs.get('subtype_xmlid')
+        if subtype_xmlid in VIEWED_XMLIDS:
+            return True
+        subtype_id = kwargs.get('subtype_id')
+        if subtype_id:
+            try:
+                rec = self.env['mail.message.subtype'].browse(subtype_id)
+                if rec and rec.get_external_id().get(rec.id) in VIEWED_XMLIDS:
+                    return True
+            except Exception:
+                pass
+        # Fallback: body starts with generic text (covers localized builds poorly; keep xmlids above as primary)
+        body = (kwargs.get('body') or '').strip()
+        return body.startswith('Quotation viewed by customer')
 
     # skip logging quote viewed message if context key is set
     def message_post(self, **kwargs):
-        if (
-            self.env.context.get('skip_default_quote_view_log')
-            and self._is_viewed_subtype(kwargs.get('subtype_xmlid'))
-        ):
+        try:
+            has_user_id = bool(request and request.params.get('user_id'))
+        except Exception:
+            has_user_id = False
+
+        if has_user_id and self._is_viewed_post(kwargs):
             return self.env['mail.message']
+
         return super().message_post(**kwargs)
+
+    def message_post_with_view(self, view, **kwargs):
+        try:
+            has_user_id = bool(request and request.params.get('user_id'))
+        except Exception:
+            has_user_id = False
+
+        if has_user_id and self._is_viewed_post(kwargs):
+            return self.env['mail.message']
+        return super().message_post_with_view(view, **kwargs)
 
     @api.onchange('sale_order_template_id')
     def _onchange_sale_order_template_id_set_header_footer(self):
