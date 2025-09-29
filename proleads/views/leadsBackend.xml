@@ -7,21 +7,11 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-                <button
-                    name="action_leica_register"
-                    type="object"
-                    string="Register with Leica"
-                    class="oe_highlight"
-                    invisible="not leica_can_register or leica_registered"
-                />
-
-                <button
-                    name="action_leica_register"
-                    type="object"
-                    string="Register with Leica"
-                    readonly="1"
-                    invisible="not leica_registered"
-                />
+                <button name="action_leica_register" type="object" string="Register with Leica"
+                        class="oe_highlight"
+                        invisible="not leica_can_register or leica_registered"/>
+                <button name="action_leica_register" type="object" string="Register with Leica"
+                        readonly="1" invisible="not leica_registered"/>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="opportunity_source" />
@@ -36,6 +26,23 @@
                 <field name="linkedin_link" />
             </xpath>
             <xpath expr="//sheet" position="inside">
+                <field name="leica_can_register" invisible="1"/>
+                <field name="leica_registered" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='linkedin_link']" position="after">
+                <group string="Leica Lead Details" colspan="2" name="leica_block">
+                    <group>
+                        <field name="leica_market_segment"/>
+                        <field name="leica_product_interest"/>
+                        <field name="leica_is_rfp"/>
+                    </group>
+                    <group>
+                        <field name="leica_sales_region" readonly="1"
+                            attrs="{'invisible': [('leica_sales_region','=',False)]}"/>
+                    </group>
+                </group>
+
+                <!-- hidden tech fields -->
                 <field name="leica_can_register" invisible="1"/>
                 <field name="leica_registered" invisible="1"/>
             </xpath>

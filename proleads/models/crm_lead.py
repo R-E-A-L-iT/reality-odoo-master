@@ -8,6 +8,24 @@ import hashlib
 from odoo import fields, models, api, tools, _
 from odoo.exceptions import UserError
 
+LEICA_MARKET_SEGMENT_SEL = [
+    ("bld_construction", "Building & Construction"),
+    ("heavy_construction", "Heavy Construction"),
+    ("industrial_plant", "Industrial Plant"),
+    ("media_ent", "Media & Entertainment"),
+    ("public_safety", "Public Safety"),
+    ("rail", "Rail"),
+    ("surveying_ground", "Surveying Ground"),
+]
+LEICA_MARKET_SEGMENT_LABEL = dict(LEICA_MARKET_SEGMENT_SEL)
+
+LEICA_PRODUCT_INTEREST_SEL = [
+    ("blk_arc", "BLK ARC"),
+    ("rtc_pxx_2go_2fly", "RTC/Pxx/2GO/2FLY"),
+    ("trk_100_500_700", "TRK 100/500/700"),
+]
+LEICA_PRODUCT_INTEREST_LABEL = dict(LEICA_PRODUCT_INTEREST_SEL)
+
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
@@ -22,6 +40,29 @@ class CrmLead(models.Model):
         string="Ready for Leica Registration",
         compute="_compute_leica_can_register",
         store=False,
+    )
+
+    leica_market_segment = fields.Selection(
+        selection=LEICA_MARKET_SEGMENT_SEL,
+        string="Leica Market Segment",
+        help="Required by Leica lead portal."
+    )
+    leica_product_interest = fields.Selection(
+        selection=LEICA_PRODUCT_INTEREST_SEL,
+        string="Leica Product Interest",
+        help="Required by Leica lead portal."
+    )
+    leica_is_rfp = fields.Boolean(
+        string="Is this lead part of an RFP?"
+    )
+
+    leica_sales_region = fields.Selection(
+        selection=[("ca", "Canada"), ("us", "United States")],
+        string="Leica Sales Region",
+        compute="_compute_leica_sales_region",
+        store=True,
+        readonly=True,
+        help="Auto-derived from country (CA→Canada, US→United States)."
     )
 
     opportunity_source = fields.Selection([
@@ -52,6 +93,17 @@ class CrmLead(models.Model):
     opportunity_notes = fields.Text(string="Opportunity Notes")
     linkedin_link = fields.Char('LinkedIn Link')
     quotation_amount = fields.Float(compute="_compute_total_quotation_amount")
+
+    @api.depends("country_id")
+    def _compute_leica_sales_region(self):
+        for lead in self:
+            code = (lead.country_id.code or "").upper()
+            if code == "CA":
+                lead.leica_sales_region = "ca"
+            elif code == "US":
+                lead.leica_sales_region = "us"
+            else:
+                lead.leica_sales_region = False
 
     @api.model
     def _company_for_country_code(self, code):
@@ -156,19 +208,26 @@ class CrmLead(models.Model):
                 lead.expected_revenue = 0.00
 
     # can the lead be registered with leica
-    @api.depends("partner_name", "partner_id", "email_from", "phone")
+    @api.depends("contact_name", "partner_name", "email_from", "phone",
+                 "leica_market_segment", "leica_product_interest", "leica_sales_region")
     def _compute_leica_can_register(self):
-        single_re = tools.single_email_re
+        single_re = self.env.tools.single_email_re
         for lead in self:
             has_all = bool(lead.contact_name and lead.partner_name and lead.email_from and lead.phone)
             email_ok = False
             if lead.email_from:
-                email_ok = bool(tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
+                email_ok = bool(self.env.tools.email_normalize(lead.email_from)) and bool(single_re.match(lead.email_from.strip()))
             phone_ok = False
             if lead.phone:
-                digits = re.sub(r"\D", "", lead.phone)
+                digits = self.env.re.sub(r"\D", "", lead.phone)
                 phone_ok = len(digits) >= 7
-            lead.leica_can_register = has_all and email_ok and phone_ok
+
+            seg_ok = bool(lead.leica_market_segment)
+            prod_ok = bool(lead.leica_product_interest)
+            region_ok = bool(lead.leica_sales_region)
+
+            lead.leica_can_register = has_all and email_ok and phone_ok and seg_ok and prod_ok and region_ok
+
 
     # helper for compiling/sending information to leica webhook
     def _post_to_leica_webhook(self, payload: dict):
@@ -215,12 +274,10 @@ class CrmLead(models.Model):
     # register lead with leica sending email to vm
     def action_leica_register(self):
         self.ensure_one()
-
         if self.leica_registered:
             raise UserError(_("This lead has already been registered with Leica."))
-
         if not self.leica_can_register:
-            raise UserError(_("Lead is missing required fields (name/company/email/phone)."))
+            raise UserError(_("Please complete all required Leica fields before registering."))
 
         payload = {
             "lead_id": self.id,
@@ -228,11 +285,21 @@ class CrmLead(models.Model):
             "company_name": self.partner_name or "",
             "email": self.email_from or "",
             "phone": self.phone or "",
+
+            # --- Leica additions in payload ---
+            "market_segment_code": self.leica_market_segment or "",
+            "market_segment_label": LEICA_MARKET_SEGMENT_LABEL.get(self.leica_market_segment or "", ""),
+            "product_interest_code": self.leica_product_interest or "",
+            "product_interest_label": LEICA_PRODUCT_INTEREST_LABEL.get(self.leica_product_interest or "", ""),
+            "is_rfp": bool(self.leica_is_rfp),
+            "sales_region": self.leica_sales_region or "",  # 'ca' or 'us'
+
+            # useful extras you already had
             "opportunity_source": self.opportunity_source or "",
             "opportunity_sn": self.opportunity_sn or "",
             "opportunity_notes": self.opportunity_notes or "",
             "quotation_amount": self.quotation_amount or 0.0,
-            "odoo_company": self.company_id and self.company_id.name or "",
+            "odoo_company": self.company_id.name if self.company_id else "",
             "odoo_lead_url": self.get_portal_url() if hasattr(self, "get_portal_url") else "",
         }
 
@@ -246,5 +313,4 @@ class CrmLead(models.Model):
             subtype_xmlid="mail.mt_note",
             author_id=system_partner.id,
         )
-
         return True
