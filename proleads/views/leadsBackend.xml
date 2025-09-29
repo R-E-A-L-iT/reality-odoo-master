@@ -29,8 +29,9 @@
                 <field name="leica_can_register" invisible="1"/>
                 <field name="leica_registered" invisible="1"/>
             </xpath>
-            <xpath expr="//field[@name='linkedin_link']" position="after">
-                <group string="Leica Lead Details" colspan="2" name="leica_block">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Leica Information" name="leica_information">
+                <group string="Leica Lead Details" colspan="2">
                     <group>
                         <field name="leica_market_segment"/>
                         <field name="leica_product_interest"/>
@@ -38,9 +39,10 @@
                     </group>
                     <group>
                         <field name="leica_sales_region" readonly="1"
-                            invisible="not leica_sales_region"/>
+                            attrs="{'invisible': [('leica_sales_region','=', False)]}"/>
                     </group>
                 </group>
+                </page>
             </xpath>
         </field>
     </record>
