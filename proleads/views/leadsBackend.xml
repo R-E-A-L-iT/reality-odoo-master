@@ -38,7 +38,7 @@
                     </group>
                     <group>
                         <field name="leica_sales_region" readonly="1"
-                            attrs="{'invisible': [('leica_sales_region','=',False)]}"/>
+                            invisible="not leica_sales_region"/>
                     </group>
                 </group>
             </xpath>
