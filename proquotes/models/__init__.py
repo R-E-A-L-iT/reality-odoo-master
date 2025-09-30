@@ -3,6 +3,7 @@
 from . import account_move_line
 from . import account_move_send
 from . import account_move
+from . import crm_lead
 from . import header_footer
 from . import helpdesk_ticket
 from . import ir_ui_view
