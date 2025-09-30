@@ -31,17 +31,34 @@
             </xpath>
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Leica Information" name="leica_information">
-                <group string="Leica Lead Details" colspan="2">
-                    <group>
-                        <field name="leica_market_segment"/>
-                        <field name="leica_product_interest"/>
-                        <field name="leica_is_rfp"/>
+                    <group string="Leica Lead Details" colspan="2">
+                        <group string="End-user Requests">
+                            <field name="leica_has_demo_request"/>
+                            <field name="leica_has_pricing_request"/>
+                            <field name="leica_has_meeting_request"/>
+                        </group>
+
+                        <group string="Optional Details">
+                            <field name="leica_expected_purchase_date"/>
+                            <field name="leica_quantity"/>
+                        </group>
+
+                        <group string="Extra Details">
+                            <field name="leica_market_segment"/>
+                            <field name="leica_product_interest"/>
+                            <field name="leica_is_rfp"/>
+                        </group>
+
+                        <!-- (Optional) Show partner address (read-through) so users can fix it on the Contact) -->
+                        <group string="Contact Address (from Customer)">
+                            <field name="partner_street" readonly="1"/>
+                            <field name="partner_city" readonly="1"/>
+                            <field name="partner_state_id" readonly="1"/>
+                            <field name="partner_zip" readonly="1"/>
+                            <field name="partner_country_id" readonly="1"/>
+                            <label string="Edit the Customer to update these fields."/>
+                        </group>
                     </group>
-                    <group>
-                        <field name="leica_sales_region" readonly="1"
-                            invisible="not leica_sales_region"/>
-                    </group>
-                </group>
                 </page>
             </xpath>
         </field>
