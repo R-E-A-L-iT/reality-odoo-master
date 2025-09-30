@@ -26,6 +26,8 @@
         "website_sale",
         "sale_timesheet",
         "purchase",
+        "crm",
+        "website_crm",
     ],
     "assets": {
         "web.assets_common": [
