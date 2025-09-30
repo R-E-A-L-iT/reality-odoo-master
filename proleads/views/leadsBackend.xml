@@ -56,7 +56,6 @@
                             <field name="partner_state_id" readonly="1"/>
                             <field name="partner_zip" readonly="1"/>
                             <field name="partner_country_id" readonly="1"/>
-                            <label string="Edit the Customer to update these fields."/>
                         </group>
                     </group>
                 </page>
