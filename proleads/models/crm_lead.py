@@ -29,15 +29,6 @@ LEICA_PRODUCT_INTEREST_LABEL = dict(LEICA_PRODUCT_INTEREST_SEL)
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    leica_registration_state = fields.Selection([
-        ("none", "Not sent"),
-        ("pending", "Pending"),
-        ("success", "Registered"),
-        ("failed", "Failed"),
-    ], default="none", readonly=True)
-
-    leica_last_error = fields.Text(readonly=True)
-
     leica_registered = fields.Boolean(
         string="Registered with Leica",
         default=False,
@@ -235,11 +226,21 @@ class CrmLead(models.Model):
         single_re = tools.single_email_re
         for lead in self:
             has_core = bool(lead.contact_name and lead.partner_name and lead.email_from and lead.phone)
-            email_ok = bool(lead.email_from and tools.email_normalize(lead.email_from)
-                            and single_re.match((lead.email_from or "").strip()))
-            phone_ok = bool(re.sub(r"\D", "", lead.phone or "") and len(re.sub(r"\D", "", lead.phone or "")) >= 7)
-            addr_ok = bool(lead.partner_id and lead.partner_id.street and lead.partner_id.city
-                           and lead.partner_id.zip and lead.partner_id.country_id)
+            email_ok = bool(lead.email_from and tools.email_normalize(lead.email_from) and single_re.match(lead.email_from.strip() or ""))
+            # basic phone sanity (7+ digits)
+            phone_ok = False
+            if lead.phone:
+                digits = re.sub(r"\D", "", lead.phone)
+                phone_ok = len(digits) >= 7
+
+            addr_ok = bool(
+                lead.partner_id and
+                (lead.partner_id.street or "").strip() and
+                (lead.partner_id.city or "").strip() and
+                (lead.partner_id.zip or "").strip() and
+                lead.partner_id.country_id
+            )
+
             lead.leica_can_register = has_core and email_ok and phone_ok and addr_ok
 
     # helper for compiling/sending information to leica webhook
@@ -287,52 +288,59 @@ class CrmLead(models.Model):
     # register lead with leica sending email to vm
     def action_leica_register(self):
         self.ensure_one()
-        if self.leica_registration_state == "pending":
-            raise UserError(_("Already pending Leica registration."))
-        if self.leica_registration_state == "success":
-            raise UserError(_("This lead is already registered with Leica."))
+        if self.leica_registered:
+            raise UserError(_("This lead has already been registered with Leica."))
 
-        # build payload
+        def _fmt_us_date(d):
+            if not d:
+                return ""
+            try:
+                py = fields.Date.to_date(d)
+                return py.strftime("%m/%d/%Y")
+            except Exception:
+                return ""
+
+        sales_region = ""
+        c = (self.partner_id.country_id and self.partner_id.country_id.code or "").upper()
+        if c == "CA":
+            sales_region = "ca"
+        elif c == "US":
+            sales_region = "us"
+
         payload = {
             "lead_id": self.id,
             "contact_name": self.contact_name or "",
             "company_name": self.partner_name or "",
             "email": self.email_from or "",
             "phone": self.phone or "",
+
             "street": self.partner_id.street or "",
             "city": self.partner_id.city or "",
             "state": (self.partner_id.state_id and (self.partner_id.state_id.code or self.partner_id.state_id.name)) or "",
             "zip": self.partner_id.zip or "",
             "country": (self.partner_id.country_id and self.partner_id.country_id.name) or "",
-            "market_segment_label": dict(self._fields['leica_market_segment'].selection).get(self.leica_market_segment, ""),
-            "product_interest_label": dict(self._fields['leica_product_interest'].selection).get(self.leica_product_interest, ""),
-            "is_rfp": bool(self.leica_is_rfp),
-            "expected_closing_mmddyyyy": fields.Date.to_date(self.leica_expected_purchase_date).strftime("%m/%d/%Y") if self.leica_expected_purchase_date else "",
+
+            "sales_region": sales_region,
+
+            "market_segment_label": dict(self._fields['leica_market_segment'].selection).get(self.leica_market_segment, "") if hasattr(self, 'leica_market_segment') else "",
+            "product_interest_label": dict(self._fields['leica_product_interest'].selection).get(self.leica_product_interest, "") if hasattr(self, 'leica_product_interest') else "",
+            "is_rfp": bool(getattr(self, 'leica_is_rfp', False)),
+
+            "expected_closing_mmddyyyy": _fmt_us_date(self.leica_expected_purchase_date),
             "quantity": self.leica_quantity or None,
+
             "has_demo_request": bool(self.leica_has_demo_request),
             "has_pricing_request": bool(self.leica_has_pricing_request),
             "has_meeting_request": bool(self.leica_has_meeting_request),
         }
 
-        # post to ngrok
-        ICP = self.env["ir.config_parameter"].sudo()
-        url = ICP.get_param("proleads_leica_webhook_url")
-        secret = ICP.get_param("proleads_leica_webhook_secret") or ""
-        if not url or not secret:
-            raise UserError(_("Webhook URL/secret not configured."))
+        self._post_to_leica_webhook(payload)
 
-        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        signature = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
-
-        import requests
-        resp = requests.post(url, data=body, headers={
-            "Content-Type": "application/json",
-            "X-Hub-Signature-256": f"sha256={signature}",
-        }, timeout=20)
-        if resp.status_code >= 300:
-            raise UserError(_("Webhook error: %s") % resp.text)
-
-        # mark pending
-        self.write({"leica_registration_state": "pending", "leica_last_error": False})
-        self.message_post(body=_("Leica registration submitted (pending)."), message_type="comment",
-                          subtype_xmlid="mail.mt_note")
+        self.leica_registered = True
+        system_partner = self.env.ref("base.user_root").partner_id
+        self.message_post(
+            body=_("Lead has been registered in Leica's system and is awaiting approval."),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+            author_id=system_partner.id,
+        )

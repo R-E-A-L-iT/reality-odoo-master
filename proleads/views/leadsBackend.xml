@@ -9,7 +9,7 @@
             <xpath expr="//header" position="inside">
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         class="oe_highlight"
-                        invisible="not leica_can_register or leica_registration_state == 'pending' or leica_registration_state == 'success'"/>
+                        invisible="not leica_can_register or leica_registered"/>
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         readonly="1" invisible="not leica_registered"/>
             </xpath>
