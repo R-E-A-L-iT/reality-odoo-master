@@ -5,7 +5,7 @@ import logging
 import base64
 import binascii
 
-from odoo import fields, http, _, SUPERUSER_ID
+from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.http import Response
@@ -351,77 +351,30 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
-    @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
-    def portal_order_page(
-        self,
-        order_id,
-        report_type=None,
-        access_token=None,
-        message=False,
-        download=False,
-        payment_amount=None,
-        amount_selection=None,
-        **kw
-    ):
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
+    def portal_order_page(self, order_id, access_token=None, **kw):
+        if kw.get('user_id'):
+            request.env = request.env(context=dict(request.env.context, skip_default_quote_view_log=True))
+        return super().portal_order_page(order_id, access_token=access_token, **kw)
 
-        payment_amount = self._cast_as_float(payment_amount)
-        prepayment_amount = order_sudo._get_prepayment_required_amount()
-        if payment_amount and payment_amount < prepayment_amount and order_sudo.state != 'sale':
-            raise MissingError(_("The amount is lower than the prepayment amount."))
+    def _post_view_notification(self, order, viewer_partner):
+        recipient_ids = []
+        if order.user_id and order.user_id.partner_id:
+            recipient_ids.append(order.user_id.partner_id.id)
 
-        if report_type in ('html', 'pdf', 'text'):
-            return self._show_report(
-                model=order_sudo,
-                report_type=report_type,
-                report_ref='sale.action_report_saleorder',
-                download=download,
-            )
+        order.with_context(mail_post_autofollow=True).message_post(
+            body=_("Quotation viewed by %s") % viewer_partner.name,
+            message_type='comment',
+            subtype_xmlid='sale.mt_order_viewed',
+            partner_ids=list(set(recipient_ids)),
+            author_id=viewer_partner.id,
+            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
+        )
 
-        if request.env.user.share and access_token and kw.get("user_id"):
-            order_sudo = request.env['sale.order'].sudo().browse(order_id)
-            viewer = request.env['res.partner'].sudo().browse(int(kw['user_id']))
-            if viewer.exists():
-                order_sudo.with_user(SUPERUSER_ID).message_post(
-                    body=_("Quotation viewed by %s") % viewer.name,
-                    message_type="comment",
-                    subtype_xmlid="sale.mt_order_viewed",
-                    subject=_("%s viewed by %s") % (order_sudo.name, viewer.name),
-                    author_id=viewer.id,
-                )
-
-        backend_url = f'/odoo/action-{order_sudo._get_portal_return_action().id}/{order_sudo.id}'
-        values = {
-            'sale_order': order_sudo,
-            'product_documents': order_sudo._get_product_documents(),
-            'message': message,
-            'report_type': 'html',
-            'backend_url': backend_url,
-            'res_company': order_sudo.company_id,
-            'payment_amount': payment_amount,
-        }
-
-        if order_sudo._has_to_be_paid() or payment_amount:
-            values.update(self._get_payment_values(
-                order_sudo,
-                is_down_payment=self._determine_is_down_payment(
-                    order_sudo, amount_selection, payment_amount
-                ),
-                payment_amount=payment_amount,
-            ))
-
-        if order_sudo.state in ('draft', 'sent', 'cancel'):
-            history_session_key = 'my_quotations_history'
-        else:
-            history_session_key = 'my_orders_history'
-
-        values = self._get_page_view_values(
-            order_sudo, access_token, values, history_session_key, False)
-
-        return request.render('sale.sale_order_portal_template', values)
+    def _log_order_viewed(self, order_sudo):
+        if request.params.get('user_id'):
+            return
+        return super()._log_order_viewed(order_sudo)
 
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)
@@ -450,6 +403,9 @@ class QuoteCustomerPortal(cPortal):
                         # Add user_id parameter to the URL
                         sep = '&' if '?' in url else '?'
                         url = f"{url}{sep}user_id={int(user_id)}"
+                        
+                        # Log the quotation view
+                        self._post_view_notification(order, partner)
                         
                         # Set redirect URL with language prefix if needed
                         if partner.lang == 'fr_CA':
