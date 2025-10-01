@@ -1,4 +1,5 @@
 from operator import itemgetter
+import logging
 from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
@@ -12,6 +13,8 @@ from collections import OrderedDict
 from odoo.osv.expression import OR, AND
 from markupsafe import Markup
 from odoo.tools import groupby as groupbyelem
+
+_logger = logging.getLogger(__name__)
 
 
 class CustomerPortalReal(CustomerPortal):
@@ -213,6 +216,14 @@ class CustomerPortalReal(CustomerPortal):
 
     @http.route(['/my/orders/<int:order_id>','/my/orders/company/<int:order_id>/<int:partner_company_id>'], type='http', auth="public", website=True)
     def portal_order_company_page(self, order_id, partner_company_id=None, report_type=None,downpayment=None, access_token=None, message=False, download=False, **kw):
+        # Check if this is custom tracking from proquotes module
+        if kw.get('user_id'):
+            # Set session to prevent default logging - coordinate with proquotes module
+            today = fields.Date.today().isoformat()
+            session_key = 'view_quote_%s' % order_id
+            request.session[session_key] = today
+            _logger.info(f"PROPORTAL: Detected custom tracking for order {order_id}, set session {session_key} = {today}")
+        
         # try:
         #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         # except (AccessError, MissingError):
@@ -226,15 +237,19 @@ class CustomerPortalReal(CustomerPortal):
 
         # use sudo to allow accessing/viewing orders for public user
         # only if he knows the private token
-        # Log only once a day
+        # Log only once a day - BUT skip if custom tracking is being used
         if order_sudo:
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
             session_obj_date = request.session.get('view_quote_%s' % order_sudo.id)
-            if session_obj_date != now and request.env.user.share and access_token:
+            
+            # Only create default log note if NOT from custom tracking (no user_id parameter)
+            if not kw.get('user_id') and session_obj_date != now and request.env.user.share and access_token:
                 request.session['view_quote_%s' % order_sudo.id] = now
                 body = _('Quotation viewed by customer %s',
                          order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
+                
+                _logger.info(f"PROPORTAL: Creating default quote view log for order {order_sudo.id} - NOT from custom tracking")
                 
                 # Send notification to followers who are internal users
                 recipients = []
@@ -254,6 +269,8 @@ class CustomerPortalReal(CustomerPortal):
                         subtype_xmlid="mail.mt_note",
                         partner_ids=recipients,
                     )
+            elif kw.get('user_id'):
+                _logger.info(f"PROPORTAL: Skipping default quote view log for order {order_sudo.id} - custom tracking detected")
                 
         backend_url = f'/web#model={order_sudo._name}'\
                       f'&id={order_sudo.id}'\
