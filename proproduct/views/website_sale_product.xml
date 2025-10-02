@@ -3,7 +3,7 @@
     <template id="website_sale_product_add_section" inherit_id="website_sale.product">
 
         <!-- forcing parsing of html tags in sales description -->
-        <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+        <xpath expr="//*[@t-field='product.description_sale']" position="replace">
             <t t-if="product.description_sale">
                 <div t-raw="product.description_sale" class="text-muted my-2"/>
             </t>
