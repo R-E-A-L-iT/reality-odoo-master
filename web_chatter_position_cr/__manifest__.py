@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Chatter Position',
-    'version': '17.0.1.0',
+    'version': '17.0.1',
     'summary': 'Chatter Position Custom Configuration based on users specific',
     'author': 'Candidroot Solutions Pvt. Ltd.',
     'description': """

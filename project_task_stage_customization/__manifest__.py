@@ -1,6 +1,6 @@
 {
     'name': 'Project Task Stage Customization',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1',
     'category': 'Project',
     'summary': 'Customize project task stages: rename In Progress to Not Started and create new In Progress stage',
     'description': """
