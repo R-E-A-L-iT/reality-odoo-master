@@ -13,7 +13,7 @@
                             <!-- <field name="parentProducts" string="Company Products"/> -->
                         <!-- </div> -->
                         <!-- <div t-if="company_type == 'company'"> -->
-                            <field name="products" string="Products"/>
+                            <field name="products" domain="[('company_id', '=', 1)]" string="Products"/>
                         <!-- </div> -->
                     </sheet>
                 </page>
