@@ -20,8 +20,6 @@ from werkzeug.utils import redirect
 
 _logger = logging.getLogger(__name__)
 
-# add note for empty commit
-
 
 # class CustomPortalSaleOrder(http.Controller):
 
