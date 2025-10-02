@@ -8,6 +8,8 @@ import hashlib
 from odoo import fields, models, api, _, tools
 from odoo.exceptions import UserError
 
+_logger = logging.getLogger(__name__)
+
 LEICA_MARKET_SEGMENT_SEL = [
     ("bld_construction", "Building & Construction"),
     ("heavy_construction", "Heavy Construction"),
