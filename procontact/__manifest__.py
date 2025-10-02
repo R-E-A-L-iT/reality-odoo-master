@@ -8,7 +8,7 @@
     "depends": ["base"],
     "data": [
         "views/contact_internal.xml",
-        "views/contact_list.xml"
+        # "views/contact_list.xml"
     ],
     "installable": True,
     "application": True,
