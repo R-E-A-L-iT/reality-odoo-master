@@ -21,9 +21,9 @@
         'website_crm_iap_reveal'
     ],
     # always loaded
-    "data": [
-        "views/website_visitor_views.xml"
-    ],
+    # "data": [
+    #     "views/website_visitor_views.xml"
+    # ],
     'installable': True,
     'application': False
 }
