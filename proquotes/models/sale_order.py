@@ -239,7 +239,7 @@ class order(models.Model):
 
         return json.dumps(items)
 
-    # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
+    # this function adds derek@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model_create_multi
     def create(self, vals_list):
         orders = super().create(vals_list)
@@ -247,8 +247,8 @@ class order(models.Model):
         # apply taxes if canadian quote
         orders._apply_canadian_province_taxes()
 
-        # Find or create the partner with email sales@r-e-a-l.it
-        sales_email = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+        # Find or create the partner with email derek@r-e-a-l.it
+        sales_email = self.env['res.partner'].search([('email', '=', 'DEREK@R-E-A-L.iT')], limit=1)
         for order in orders:
             if sales_email:
                 order.message_subscribe(partner_ids=[sales_email.id])
@@ -370,7 +370,14 @@ class order(models.Model):
         return action
 
     def _action_confirm(self):
+
+        admin_email = self.env['res.partner'].search([('email', '=', 'admin@r-e-a-l.it')], limit=1)
+
+        if admin_email:
+            self.message_subscribe(partner_ids=[admin_email.id])
+
         res = super()._action_confirm()
+
         return res
 
 

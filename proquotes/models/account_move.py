@@ -267,9 +267,9 @@ class invoice(models.Model):
         if invoice_object.move_type not in ['out_invoice', 'out_refund']:
             return invoice_object
 
-        # add sales@r-e-a-l.it as a follower of the document
+        # add derek@r-e-a-l.it as a follower of the document
         if invoice_object.move_type in ['out_invoice', 'out_refund']:
-            partner = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
+            partner = self.env['res.partner'].search([('email', '=', 'DEREK@R-E-A-L.iT')], limit=1)
             if partner and partner.id not in invoice_object.message_partner_ids.ids:
                 invoice_object.message_subscribe(partner_ids=[partner.id])
 
