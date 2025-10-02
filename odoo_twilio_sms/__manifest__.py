@@ -21,7 +21,7 @@
 ###############################################################################
 {
     'name': 'Twilio SMS Gateway',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1',
     'category': 'Productivity',
     'summary': 'Facilitating individual and group SMS communication through '
                'the Twilio gateway.',
