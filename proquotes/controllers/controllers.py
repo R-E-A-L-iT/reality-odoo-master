@@ -351,6 +351,39 @@ class QuoteCustomerPortal(cPortal):
         return results
 
 
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
+    def portal_order_page(self, order_id, access_token=None, **kw):
+        if kw.get('user_id'):
+            # Set context to skip default quote view logging
+            request.env = request.env(context=dict(request.env.context, skip_default_quote_view_log=True))
+        
+        # Manipulate session to prevent core Odoo's daily tracking
+        # Core Odoo checks if 'view_quote_<order_id>' session key exists with today's date
+        # By setting it here, we trick core Odoo into thinking the quote was already viewed today
+        today = fields.Date.today().isoformat()
+        request.session[f'view_quote_{order_id}'] = today
+
+        return super().portal_order_page(order_id, access_token=access_token, **kw)
+
+    def _post_view_notification(self, order, viewer_partner):
+        recipient_ids = []
+        if order.user_id and order.user_id.partner_id:
+            recipient_ids.append(order.user_id.partner_id.id)
+
+        order.with_context(mail_post_autofollow=True).message_post(
+            body=_("Quotation viewed by %s") % viewer_partner.name,
+            message_type='comment',
+            subtype_xmlid='sale.mt_order_viewed',
+            partner_ids=list(set(recipient_ids)),
+            author_id=viewer_partner.id,
+            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
+        )
+
+    def _log_order_viewed(self, order_sudo):
+        if request.params.get('user_id'):
+            return
+        return super()._log_order_viewed(order_sudo)
+
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
@@ -361,6 +394,7 @@ class QuoteCustomerPortal(cPortal):
         else:
             # Portal/public user - handle portal view
             order = request.env['sale.order'].sudo().browse(order_id)
+
             if order and order.access_token == access_token:
                 url = order.get_portal_url()
             else:
@@ -379,12 +413,7 @@ class QuoteCustomerPortal(cPortal):
                         url = f"{url}{sep}user_id={int(user_id)}"
                         
                         # Log the quotation view
-                        order.message_post(
-                            body=_("Quotation viewed by %s") % partner.name,
-                            message_type='notification',
-                            subtype_xmlid='sale.mt_quote_viewed',
-                            author_id=partner.id,
-                        )
+                        self._post_view_notification(order, partner)
                         
                         # Set redirect URL with language prefix if needed
                         if partner.lang == 'fr_CA':
