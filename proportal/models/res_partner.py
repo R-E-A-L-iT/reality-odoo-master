@@ -30,7 +30,7 @@ class ResPartner(models.Model):
     portal_companies_ids = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
 
     products = fields.One2many(
-        "stock.lot", "owner", string="Products", readonly=True
+        "stock.lot", "owner", string="Products", readonly=True, domain=[('company_id', '=', 1)],
     )
     parentProducts = fields.One2many(
         related="parent_id.products", string="Company Products", readonly=True
