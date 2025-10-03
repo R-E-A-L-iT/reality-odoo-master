@@ -153,7 +153,7 @@ class StockPicking(models.Model):
                 body=body_html,
                 message_type='comment',
                 subtype_xmlid='mail.mt_comment',
-                email_layout_xmlid='mail.mail_notification_light',
+                email_layout_xmlid='mail.mail_notification_layout',
                 attachment_ids=attachment_ids,
             )
 
