@@ -50,15 +50,18 @@
                                                     </td>
                                                     <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
 
-                                                    <td t-if="actions">
-                                                        <t t-foreach="actions" t-as="action">
-                                                            <a t-att-href="action['url']"
-                                                                t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
-                                                                <t t-out="action['title']"/>
-                                                            </a>
-                                                            &amp;nbsp;&amp;nbsp;
-                                                        </t>
-                                                    </td>
+                                                    <!-- wrapped in if statement to avoid duplicate buttons for task assignment emails -->
+                                                    <t t-if="not (message and message.model == 'project.task')">
+                                                        <td t-if="actions">
+                                                            <t t-foreach="actions" t-as="action">
+                                                                <a t-att-href="action['url']"
+                                                                    t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
+                                                                    <t t-out="action['title']"/>
+                                                                </a>
+                                                                &amp;nbsp;&amp;nbsp;
+                                                            </t>
+                                                        </td>
+                                                    </t>
                                                     <td t-if="subtitles" style="font-size: 12px;">
                                                         <t t-foreach="subtitles" t-as="subtitle">
                                                             <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}" t-out="subtitle"/>
