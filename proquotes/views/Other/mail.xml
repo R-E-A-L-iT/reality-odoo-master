@@ -139,4 +139,11 @@
     <template id="ba_remove_power_override_second_tr" inherit_id="mail.mail_notification_light">
         <xpath expr="//table/tr[2]" position="replace"></xpath>
     </template>
+    <!-- remove second purple button on task assignment emails -->
+    <template id="disable_body_cta" inherit_id="mail.mail_notification_action">
+        <!-- Replace whole template with nothing -->
+        <xpath expr="." position="replace">
+        <t t-if="False"/>
+        </xpath>
+  </template>
 </odoo>
