@@ -381,7 +381,7 @@
                         <br/>
                         <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
                             <span t-if="language == 'en_CA' or language == 'en_US'">Total Rental Value: 
-                                <span id="total-rental-value-english" t-raw="request.env['ir.qweb.field.monetary'].value_to_html(rental_value_total, {'display_currency': currency})"/>
+                                <span id="total-rental-value-english"/>
                             </span>
                             <br/>
                             <span>
@@ -391,7 +391,7 @@
                         </div>
                         <div class=" rental_product_value" t-if=" language== 'fr_CA'">
                             <span>Valeur locative totale:  
-                                <span id="total-rental-value-french" t-raw="request.env['ir.qweb.field.monetary'].value_to_html(rental_value_total, {'display_currency': currency})"/>
+                                <span id="total-rental-value-french"/>
                             </span>
                             <br/>
                             <span>
@@ -620,18 +620,9 @@
         <!-- Rental Item Value -->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
             <t t-if="sale_order.is_rental == True">
-                <t t-set="rental_lines"
-                    t-value="sale_order.order_line.filtered(
-                        lambda l: getattr(l, 'selected', 'true') == 'true'
-                                    and (not l.product_id.is_software)
-                                    and ((l.product_id.default_code or '').upper() != 'SHIPPING')
-                    )"/>
-                
                 <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                    <t t-set="rental_value_total"
-                       t-value="sum(rental_lines.mapped(lambda l: (l.product_id.usd_val or 0.0) * l.product_uom_qty))"/>
-                    <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.cad_val)"
                           class="text-left itemValue test"/>
                     <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
@@ -640,9 +631,7 @@
                 </td>
                 <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                     <t t-set="rental_value_total"
-                        t-value="sum(rental_lines.mapped(lambda l: (l.price_unit or 0.0) * l.product_uom_qty))"/>
-                    <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.usd_val)"
                           class="text-left itemValue test"/>
                     <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
