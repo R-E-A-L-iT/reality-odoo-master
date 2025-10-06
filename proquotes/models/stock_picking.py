@@ -45,6 +45,10 @@ class StockPicking(models.Model):
     footer_id = fields.Many2one(
         'header.footer')
 
+    hide_on_portal = fields.Boolean(
+        string="Hide on Portal",
+        default=False,)
+
     @api.depends("company_id")
     def _get_default_footer(self):
         # Get Company

@@ -129,11 +129,21 @@
                 <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
                 <t t-set="partner" t-value="sale_order.partner_id"/>
                 <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
-                <t t-set="address" t-value="str(partner.street + ', ' + partner.city + ' ' + partner.state_id.code + ', ' + partner.country_id.name)"/>
+                
+                <t t-set="addr_street"  t-value="partner.street or ''"/>
+                <t t-set="addr_city"    t-value="partner.city or ''"/>
+                <t t-set="addr_state"   t-value="(partner.state_id and partner.state_id.code) or ''"/>
+                <t t-set="addr_country" t-value="(partner.country_id and partner.country_id.name) or ''"/>
 
+                <t t-set="address"
+                t-value="(addr_street and (addr_street + ', ') or '')
+                            + (addr_city and (addr_city + ' ') or '')
+                            + addr_state
+                            + (addr_country and (', ' + addr_country) or '')"/>
+                
                 <section t-if="'vimeo' in sale_order.header_id.url" class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level o_background_video s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" style="background-image: url(&quot;/web/image/4527-redirect/blk2gocolored.png&quot;); min-height: 606.625px !important;" data-bg-video-src="https://player.vimeo.com/video/951537329?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1" data-oe-model="ir.ui.view" data-oe-id="8160" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/section[1]">
                     <div class="o_bg_video_container">
-                        <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_5" t-att-src="sale_order.header_id.url + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" style="width: 100%; height: 113.589532%; inset-inline-start: 0px; inset-block-start: -6.794766%;"></iframe>
+                        <iframe class="o_bg_video_iframe fade show" frameborder="0" aria-label="Background video" id="o_bg_video_iframe_5" t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" style="width: 100%; height: 113.589532%; inset-inline-start: 0px; inset-block-start: -6.794766%;"></iframe>
                     </div>  
                     <div class="o_we_bg_filter bg-black-25"></div>
                     <div class="container s_allow_columns">
@@ -161,7 +171,7 @@
                         </div>
                     </div>
                 </section>
-                <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + sale_order.header_id.url + '); min-height: 606.625px !important;'">
+                <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + str(sale_order.header_id.url) + '); min-height: 606.625px !important;'">
                     <div class="o_we_bg_filter bg-black-50"></div>
                     <div class="container s_allow_columns">
                         <h1 class="display-3" style="text-align: center; font-weight: bold;">
@@ -201,6 +211,106 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+            <!-- shipping/delivery info section -->
+            <div class="delivery-section">
+                <t t-set="delivery_orders"
+                    t-value="sale_order.picking_ids
+                                .filtered(lambda p: p.picking_type_id.code == 'outgoing')
+                                .filtered(lambda p: not (p.hide_on_portal or False))
+                                .sorted('date', reverse=True)[:3]"/>
+                <div t-if="delivery_orders" class="col-12 col-lg-6 mb-4">
+                    <h4 class="mb-1">Last Delivery Orders</h4>
+                    <hr class="mt-1 mb-2"/>
+                    <div>
+                        <t t-foreach="delivery_orders" t-as="picking">
+                            <t t-set="delivery_report_url" t-value="'/my/picking/pdf/%s?%s' % (picking.id, keep_query())"/>
+                            <div name="delivery_order" class="d-flex flex-column">
+                                <div name="delivery_details" class="d-flex align-items-center justify-content-between">
+                                    <a t-att-href="delivery_report_url">
+                                        <span t-esc="picking.name"/>
+                                    </a>
+                                    <div t-if="picking.state == 'done'">
+                                        <span class="small badge text-bg-success orders_label_text_align">
+                                            <i class="fa fa-fw fa-truck"/> Shipped
+                                        </span>
+                                        <a class="badge text-bg-secondary orders_label_text_align" target="_blank" t-att-href="'/my/picking/return/pdf/%s?%s' % (picking.id, keep_query())">
+                                            RETURN
+                                        </a>
+                                    </div>
+                                    <span t-elif="picking.state == 'cancel'" class="small badge text-bg-danger orders_label_text_align">
+                                        <i class="fa fa-fw fa-times"/>Cancelled
+                                    </span>
+                                    <span t-elif="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge text-bg-info orders_label_text_align">
+                                        <i class="fa fa-fw fa-clock-o"/>Preparation
+                                    </span>
+                                </div>
+                                <div t-if="picking.carrier_tracking_ref" class="small d-lg-inline-block">
+                                    Tracking:
+                                    <t t-set="multiple_carrier_tracking" t-value="picking.get_multiple_carrier_tracking()"/>
+                                    <t t-if="multiple_carrier_tracking">
+                                        <t t-foreach="multiple_carrier_tracking" t-as="line">
+                                            <a t-att-href="line[1]" target="_blank">
+                                                <span t-esc="line[0]"/>
+                                            </a>
+                                            <span t-if="not line_last"> + </span>
+                                        </t>
+                                    </t>
+                                    <t t-elif="picking.carrier_tracking_url">
+                                        <a t-att-href="picking.carrier_tracking_url" target="_blank">
+                                            <span t-field="picking.carrier_tracking_ref"/>
+                                        </a>
+                                    </t>
+                                    <t t-else="">
+                                        <span t-field="picking.carrier_id.name"/> <span t-field="picking.carrier_tracking_ref"/>
+                                    </t>
+                                </div>
+                                <div t-if="picking.carrier_id.get_return_label_from_portal and picking.return_label_ids">
+                                    <a class="ms-3" t-attf-href="/web/content/#{picking.return_label_ids[:1].id}?access_token=#{picking.return_label_ids[:1].access_token}" target="_blank">
+                                        Print Return Label
+                                    </a>
+                                </div>
+                                <div class="small d-lg-inline-block" t-if="picking.date_done or picking.scheduled_date">
+                                    Date:
+                                    <span class="text-muted" t-field="picking.date_done" t-options="{'date_only': True}"/>
+                                    <span t-if="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="picking.scheduled_date" t-options="{'date_only': True}"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-set="returns"
+                    t-value="sale_order.picking_ids
+                                .filtered(lambda p: p.picking_type_id.code == 'incoming')
+                                .filtered(lambda p: not (p.hide_on_portal or False))"/>
+                <div t-if="returns" class="col-12 col-lg-6 mb-4">
+                    <h4 class="mb-1">Returns</h4>
+                    <hr class="mt-1 mb-2"/>
+                    <t t-foreach="returns" t-as="picking">
+                        <t t-set="delivery_report_url" t-value="'/my/picking/pdf/%s?%s' % (picking.id, keep_query())"/>
+                        <div name="return">
+                            <div name="return_details" class="d-flex justify-content-between align-items-center">
+                                <a t-att-href="delivery_report_url">
+                                    <span t-esc="picking.name"/>
+                                </a>
+                                <span t-if="picking.state == 'done'" class="small badge text-bg-success orders_label_text_align">
+                                    <i class="fa fa-fw fa-truck"/> Received
+                                </span>
+                                <span t-elif="picking.state == 'cancel'" class="small badge text-bg-danger orders_label_text_align">
+                                    <i class="fa fa-fw fa-times"/> Cancelled
+                                </span>
+                                <span t-elif="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge text-bg-info orders_label_text_align">
+                                    <i class="fa fa-fw fa-clock-o"/> Awaiting arrival
+                                </span>
+                            </div>
+                            <div class="small d-lg-inline-block">
+                                Date:
+                                <span class="text-muted" t-field="picking.date_done" t-options="{'date_only': True}"/>
+                                <span t-if="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="picking.scheduled_date" t-options="{'date_only': True}"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
             <!-- <p>Language:
                 <t t-out="language"/>
             </p> -->
@@ -278,7 +388,7 @@
                         <br/>
                         <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
                             <span t-if="language == 'en_CA' or language == 'en_US'">Total Rental Value: 
-                                <span id="total-rental-value-english" t-raw="request.env['ir.qweb.field.monetary'].value_to_html(rental_value_total, {'display_currency': currency})"/>
+                                <span id="total-rental-value-english"/>
                             </span>
                             <br/>
                             <span>
@@ -288,7 +398,7 @@
                         </div>
                         <div class=" rental_product_value" t-if=" language== 'fr_CA'">
                             <span>Valeur locative totale:  
-                                <span id="total-rental-value-french" t-raw="request.env['ir.qweb.field.monetary'].value_to_html(rental_value_total, {'display_currency': currency})"/>
+                                <span id="total-rental-value-french"/>
                             </span>
                             <br/>
                             <span>
@@ -517,32 +627,21 @@
         <!-- Rental Item Value -->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
             <t t-if="sale_order.is_rental == True">
-                <t t-set="rental_lines"
-                    t-value="sale_order.order_line.filtered(
-                        lambda l: getattr(l, 'selected', 'true') == 'true'
-                                    and (not l.product_id.is_software)
-                                    and ((l.product_id.default_code or '').upper() != 'SHIPPING')
-                    )"/>
-                
                 <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                    <t t-set="rental_value_total"
-                       t-value="sum(rental_lines.mapped(lambda l: (l.product_id.usd_val or 0.0) * l.product_uom_qty))"/>
-                    <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.cad_val)"
                           class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False  and language == 'fr_CA'"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.cad_val)"
                           class="text-left itemValue test"/>
                 </td>
                 <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
-                     <t t-set="rental_value_total"
-                        t-value="sum(rental_lines.mapped(lambda l: (l.price_unit or 0.0) * l.product_uom_qty))"/>
-                    <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
                           t-esc="'$ {value:,.2f}'.format(value=line.product_id.usd_val)"
                           class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and language == 'fr_CA'"
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.usd_val)"
                           class="text-left itemValue test"/>
                 </td>
