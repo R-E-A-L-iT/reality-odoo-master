@@ -353,17 +353,14 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
     def portal_order_page(self, order_id, access_token=None, **kw):
-        if kw.get('user_id'):
-            # Set context to skip default quote view logging
+        if not kw.get('user_id'):
             request.env = request.env(context=dict(request.env.context, skip_default_quote_view_log=True))
-        
-        # Manipulate session to prevent core Odoo's daily tracking
-        # Core Odoo checks if 'view_quote_<order_id>' session key exists with today's date
-        # By setting it here, we trick core Odoo into thinking the quote was already viewed today
-        today = fields.Date.today().isoformat()
-        request.session[f'view_quote_{order_id}'] = today
+            
+            today = fields.Date.today().isoformat()
+            request.session[f'view_quote_{order_id}'] = today
 
         return super().portal_order_page(order_id, access_token=access_token, **kw)
+
 
     def _post_view_notification(self, order, viewer_partner):
         recipient_ids = []
@@ -380,7 +377,7 @@ class QuoteCustomerPortal(cPortal):
         )
 
     def _log_order_viewed(self, order_sudo):
-        if request.params.get('user_id'):
+        if not request.params.get('user_id'):
             return
         return super()._log_order_viewed(order_sudo)
 
