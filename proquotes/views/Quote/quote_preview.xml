@@ -213,7 +213,11 @@
             <h1>Quotation</h1>
             <!-- shipping/delivery info section -->
             <div class="delivery-section">
-                <t t-set="delivery_orders" t-value="sale_order.picking_ids.filtered(lambda picking: picking.picking_type_id.code == 'outgoing').sorted('date', reverse=True)[:3]"/>
+                <t t-set="delivery_orders"
+                   t-value="sale_order.picking_ids
+                            .filtered(lambda p: p.picking_type_id.code == 'outgoing')
+                            .filtered(lambda p: not bool(getattr(p, 'hide_on_portal', False)))
+                            .sorted('date', reverse=True)[:3]"/>
                 <div t-if="delivery_orders" class="col-12 col-lg-6 mb-4">
                     <h4 class="mb-1">Last Delivery Orders</h4>
                     <hr class="mt-1 mb-2"/>
@@ -274,7 +278,10 @@
                         </t>
                     </div>
                 </div>
-                <t t-set="returns" t-value="sale_order.picking_ids.filtered(lambda picking: picking.picking_type_id.code == 'incoming')"/>
+                <t t-set="returns" 
+                   t-value="sale_order.picking_ids
+                            .filtered(lambda p: p.picking_type_id.code == 'incoming')
+                            .filtered(lambda p: not bool(getattr(p, 'hide_on_portal', False)))"/>
                 <div t-if="returns" class="col-12 col-lg-6 mb-4">
                     <h4 class="mb-1">Returns</h4>
                     <hr class="mt-1 mb-2"/>
