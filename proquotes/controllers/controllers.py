@@ -5,6 +5,8 @@ import logging
 import base64
 import binascii
 
+from datetime import timedelta
+
 from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
