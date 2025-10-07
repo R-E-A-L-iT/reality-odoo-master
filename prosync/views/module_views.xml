@@ -77,4 +77,20 @@
             </form>
         </field>
     </record>
+
+    <record id="view_sync_report_form_run_btn" model="ir.ui.view">
+        <field name="name">prosync.report.form.run.btn</field>
+        <field name="model">prosync.report</field>
+        <field name="inherit_id" ref="prosync.view_sync_report_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button type="action"
+                        name="%(prosync.ir_actions_server_run_prosync_now)d"
+                        class="oe_highlight"
+                        string="Run ProSync now"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
 </odoo>
