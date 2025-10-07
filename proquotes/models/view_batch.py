@@ -44,6 +44,54 @@ class ProquotesViewBatch(models.Model):
                     batch.sent = True
                     continue
 
+                recipient_partners = self.env["res.partner"]
+
+                def is_internal_partner(p):
+                    # a partner is internal if any linked user is not a portal/shared user
+                    users = p.user_ids.sudo()
+                    return any(not u.share for u in users)
+
+                # salesperson (if internal)
+                if order.user_id and order.user_id.partner_id and is_internal_partner(order.user_id.partner_id):
+                    recipient_partners |= order.user_id.partner_id
+
+                # followers (only internal + with email)
+                follower_partners = order.message_follower_ids.mapped("partner_id")
+                follower_partners = follower_partners.filtered(lambda p: p.email and is_internal_partner(p))
+                recipient_ids = list(set(recipient_partners.ids | follower_partners.ids))
+
+                if not recipient_ids:
+                    _logger.info("ProQuotes: batch %s has no internal recipients; marking sent", batch.id)
+                    batch.sent = True
+                    continue
+
+                # --- Body: use clean HTML list (safer for most mail clients/templates) ---
+                user_tz = (order.user_id and order.user_id.tz) or self.env.user.tz or "UTC"
+                def _fmt(dt):
+                    local_dt = fields.Datetime.context_timestamp(self.with_context(tz=user_tz), dt)
+                    return local_dt.strftime("%H:%M")
+
+                items = []
+                for ev in events:
+                    when = _fmt(ev.viewed_at)
+                    who = ev.viewer_partner_id.display_name or (ev.viewer_email or _("Unknown"))
+                    items.append(f"<li>{who} at {when}</li>")
+
+                body = _(
+                    "Quote viewed by the following users (last 10 minutes):"
+                ) + f"<ul>{''.join(items)}</ul>"
+
+                order.with_context(
+                    mail_notify_force_send=True,
+                    mail_create_nosubscribe=True,
+                ).message_post(
+                    body=body,
+                    message_type="comment",
+                    subtype_xmlid="sale.mt_order_viewed",
+                    partner_ids=recipient_ids,
+                    subject=_("%s: quote views (batched)") % order.name,
+                )
+
                 # Build recipients: salesperson + followers (with email)
                 recipient_partners = self.env["res.partner"]
                 if order.user_id and order.user_id.partner_id and order.user_id.partner_id.email:
