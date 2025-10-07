@@ -42,9 +42,10 @@ class ProsyncReport(models.Model):
 
     @api.model
     def manual_trigger_prosync_schedule(self):
-        cron = self.env.ref('prosync.ir_cron_prosync_schedule', raise_if_not_found=False)
-        if cron:
-            cron.method_direct_trigger()
+        cron = self.env.ref('prosync.prosync_schedule', raise_if_not_found=False)
+        if not cron:
+            raise UserError("Cron 'prosync.prosync_schedule' not found.")
+        cron.method_direct_trigger()
         return True
 
     def dummy_button(self):

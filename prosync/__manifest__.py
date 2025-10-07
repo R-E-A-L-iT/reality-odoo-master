@@ -22,6 +22,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/schedule.xml",
+        "data/run_sync_action.xml",
         "views/res_partner.xml",
         "views/stock_lot.xml",
         "views/module_views.xml",
