@@ -5,3 +5,5 @@ proquotes.access_renewal_map,access_renewal_map,proquotes.model_renewal_map,base
 proquotes.access_header_footer,access_header_footer,proquotes.model_header_footer,base.group_user,1,1,1,1
 proquotes.access_preconfigured_section,access_preconfigured_section,proquotes.model_preconfigured_section,,1,1,1,1
 proquotes.access_preconfigured_section_line,access_preconfigured_section_line,proquotes.model_preconfigured_section_line,,1,1,1,1
+access_proquotes_view_batch,access_proquotes_view_batch,model_proquotes_view_batch,base.group_system,1,1,1,1
+access_proquotes_view_event,access_proquotes_view_event,model_proquotes_view_event,base.group_system,1,1,1,1

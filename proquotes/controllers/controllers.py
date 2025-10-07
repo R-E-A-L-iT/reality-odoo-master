@@ -363,18 +363,30 @@ class QuoteCustomerPortal(cPortal):
 
 
     def _post_view_notification(self, order, viewer_partner):
-        recipient_ids = []
-        if order.user_id and order.user_id.partner_id:
-            recipient_ids.append(order.user_id.partner_id.id)
+        env = request.env.sudo()
+        now = fields.Datetime.now()
 
-        order.with_context(mail_post_autofollow=True).message_post(
-            body=_("Quotation viewed by %s") % viewer_partner.name,
-            message_type='comment',
-            subtype_xmlid='sale.mt_order_viewed',
-            partner_ids=list(set(recipient_ids)),
-            author_id=viewer_partner.id,
-            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
-        )
+        # Find an active, not-yet-sent batch whose window hasn't expired.
+        batch = env["proquotes.view.batch"].search([
+            ("sale_order_id", "=", order.id),
+            ("sent", "=", False),
+            ("send_at", ">", now),
+        ], limit=1)
+
+        # If none, start a fresh 10-minute window.
+        if not batch:
+            batch = env["proquotes.view.batch"].create({
+                "sale_order_id": order.id,
+                "send_at": now + timedelta(minutes=10),
+            })
+
+        # Append the event
+        env["proquotes.view.event"].create({
+            "batch_id": batch.id,
+            "viewer_partner_id": viewer_partner.id,
+            "viewer_email": viewer_partner.email or False,
+            "viewed_at": now,
+        })
 
     def _log_order_viewed(self, order_sudo):
         if not request.params.get('user_id'):

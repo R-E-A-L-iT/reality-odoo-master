@@ -106,5 +106,6 @@
         "views/Other/preconfigured_sections.xml",
         "views/Quote/table_align.xml",
         "data/thanks_for_payment.xml",
+        "data/view_notif_batch_cron.xml",
     ],
 }
