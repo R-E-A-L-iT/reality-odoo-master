@@ -114,6 +114,7 @@ class DiscussChannel(models.Model):
                 self.livechat_lead_id.message_post(
                     body=_('LiveChat conversation updated:<br/><br/><strong>New Messages:</strong><br/>%s', new_history),
                     message_type='notification',
+                    author_id=self.env['res.partner'].sudo().browse(2).id,
                     subtype_xmlid='mail.mt_note'  # Internal note
                 )
                 
@@ -121,7 +122,7 @@ class DiscussChannel(models.Model):
             else:
                 msg = _('No new messages to update in lead: %s', self.livechat_lead_id._get_html_link())
                 
-            self._send_transient_message(partner, msg)
+            # self._send_transient_message(partner, msg)
             return {'success': True, 'message': 'Lead updated successfully'}
             
         except Exception as e:
