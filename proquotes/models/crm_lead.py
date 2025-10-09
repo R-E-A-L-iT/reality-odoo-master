@@ -8,6 +8,13 @@ _logger = logging.getLogger(__name__)
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+    reveal_ip_public = fields.Char(store=True, compute='_compute_reveal_ip_public')
+
+    @api.depends('reveal_ip')
+    def _compute_reveal_ip_public(self):
+        for rec in self:
+            rec.reveal_ip_public = rec.sudo().reveal_ip or False
+
     @api.model
     def create(self, vals):
         lead = super(CrmLead, self).create(vals)
