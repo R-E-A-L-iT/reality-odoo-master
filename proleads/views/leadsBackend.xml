@@ -6,17 +6,67 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='tag_ids']" position="after">
-                <field name="opportunity_source" />
-            </xpath>
+            <!-- <xpath expr="//header" position="inside">
+                <button name="action_leica_register" type="object" string="Register with Leica"
+                        class="oe_highlight"
+                        invisible="not leica_can_register or leica_registered"/>
+                <button name="action_leica_register" type="object" string="Register with Leica"
+                        readonly="1" invisible="not leica_registered"/>
+            </xpath> -->
             <xpath expr="//field[@name='stage_id']" position="replace">
                 <field name="stage_id" widget="statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]" invisible="not active"/>
             </xpath>
-            <xpath expr="//field[@name='tag_ids']" position="after">
-                <field name="opportunity_custom_status" />
-                <field name="opportunity_sn" />
-                <field name="opportunity_notes" />
-                <field name="linkedin_link" />
+            <xpath expr="//group[@name='categorization']" position="after">
+                <group string="Opportunity Details">
+                    <field name="opportunity_custom_status" />
+                    <field name="opportunity_source" />
+                    <field name="opportunity_sn" />
+                    <field name="opportunity_notes" />
+                    <field name="linkedin_link" />
+                    <field name="opportunity_log"/>
+                    <field name="opportunity_answer_date"/>
+                </group>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="leica_can_register" invisible="1"/>
+                <field name="leica_registered" invisible="1"/>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Leica Information" name="leica_information">
+                    <group string="Leica Lead Details" colspan="2">
+                        <group string="Leica registration details">
+                            <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
+                            <!-- <field name="leica_registration_number" readonly="1"/>
+                            <field name="leica_registration_date" readonly="1"/> -->
+                            <field name="leica_representative_id" />
+                        </group>
+                        <group string="End-user Requests">
+                            <field name="leica_has_demo_request"/>
+                            <field name="leica_has_pricing_request"/>
+                            <field name="leica_has_meeting_request"/>
+                        </group>
+
+                        <group string="Optional Details">
+                            <field name="leica_expected_purchase_date"/>
+                            <field name="leica_quantity"/>
+                        </group>
+
+                        <group string="Extra Details">
+                            <field name="leica_market_segment"/>
+                            <field name="leica_product_interest"/>
+                            <field name="leica_is_rfp"/>
+                        </group>
+
+                        <!-- (Optional) Show partner address (read-through) so users can fix it on the Contact) -->
+                        <group string="Contact Address (from Customer)">
+                            <field name="partner_street" readonly="1"/>
+                            <field name="partner_city" readonly="1"/>
+                            <field name="partner_state_id" readonly="1"/>
+                            <field name="partner_zip" readonly="1"/>
+                            <field name="partner_country_id" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
