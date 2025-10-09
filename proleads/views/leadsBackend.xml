@@ -19,7 +19,7 @@
             <xpath expr="//field[@name='stage_id']" position="replace">
                 <field name="stage_id" widget="statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]" invisible="not active"/>
             </xpath>
-            <xpath expr="//group[@string='Marketing']" position="after">
+            <xpath expr="//group[@name='categorization']" position="after">
                 <group string="Opportunity Details">
                     <field name="opportunity_custom_status" />
                     <field name="opportunity_sn" />
