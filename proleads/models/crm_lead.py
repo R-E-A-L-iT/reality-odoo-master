@@ -31,6 +31,9 @@ LEICA_PRODUCT_INTEREST_LABEL = dict(LEICA_PRODUCT_INTEREST_SEL)
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+    opportunity_log = fields.Datetime(string="Opportunity Log", help="Timestamp of when this lead was converted to an opportunity.")
+    opportunity_answer_date = fields.Date(string="Opportunity Answer Date", help="Date when the lead was accepted or rejected as an opportunity.")
+
     leica_registered = fields.Boolean(
         string="Registered with Leica",
         default=False,
@@ -73,6 +76,8 @@ class CrmLead(models.Model):
     leica_has_demo_request = fields.Boolean(string="Has the end-user requested a demonstration?")
     leica_has_pricing_request = fields.Boolean(string="Has the end-user requested pricing?")
     leica_has_meeting_request = fields.Boolean(string="Has the end-user requested a meeting?")
+
+    leica_representative_id = fields.Many2one('res.partner', string="Leica Representative", help="Leica representative associated with this lead.")
 
     partner_street = fields.Char(related='partner_id.street', string="Street (Partner)")
     partner_city = fields.Char(related='partner_id.city', string="City (Partner)")

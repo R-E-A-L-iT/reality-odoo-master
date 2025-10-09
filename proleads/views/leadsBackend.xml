@@ -24,6 +24,8 @@
                 <field name="opportunity_sn" />
                 <field name="opportunity_notes" />
                 <field name="linkedin_link" />
+                <field name="opportunity_log"/>
+                <field name="opportunity_answer_date"/>
             </xpath>
             <xpath expr="//sheet" position="inside">
                 <field name="leica_can_register" invisible="1"/>
@@ -32,6 +34,12 @@
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Leica Information" name="leica_information">
                     <group string="Leica Lead Details" colspan="2">
+                        <group string="Leica registration details">
+                            <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
+                            <!-- <field name="leica_registration_number" readonly="1"/>
+                            <field name="leica_registration_date" readonly="1"/> -->
+                            <field name="leica_representative_id" />
+                        </group>
                         <group string="End-user Requests">
                             <field name="leica_has_demo_request"/>
                             <field name="leica_has_pricing_request"/>
