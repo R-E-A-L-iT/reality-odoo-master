@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+    <record id="view_crm_lead_form_reveal_ip_public" model="ir.ui.view">
+      <field name="name">crm.lead.form.reveal_ip_public.domain</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+      <field name="arch" type="xml">
+        <!-- Adjust the exact xpath to your visitor_ids field -->
+        <xpath expr="//field[@name='visitor_ids']" position="attributes">
+          <attribute name="domain">[('ip_address','!=',False), ('ip_address','=', reveal_ip_public)]</attribute>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
