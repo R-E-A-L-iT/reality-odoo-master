@@ -19,13 +19,15 @@
             <xpath expr="//field[@name='stage_id']" position="replace">
                 <field name="stage_id" widget="statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]" invisible="not active"/>
             </xpath>
-            <xpath expr="//field[@name='tag_ids']" position="after">
-                <field name="opportunity_custom_status" />
-                <field name="opportunity_sn" />
-                <field name="opportunity_notes" />
-                <field name="linkedin_link" />
-                <field name="opportunity_log"/>
-                <field name="opportunity_answer_date"/>
+            <xpath expr="//group[@string='Marketing']" position="after">
+                <group string="Opportunity Details">
+                    <field name="opportunity_custom_status" />
+                    <field name="opportunity_sn" />
+                    <field name="opportunity_notes" />
+                    <field name="linkedin_link" />
+                    <field name="opportunity_log"/>
+                    <field name="opportunity_answer_date"/>
+                </group>
             </xpath>
             <xpath expr="//sheet" position="inside">
                 <field name="leica_can_register" invisible="1"/>
