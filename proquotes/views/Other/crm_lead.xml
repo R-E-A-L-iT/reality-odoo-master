@@ -5,8 +5,8 @@
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="crm.crm_lead_view_form"/>
       <field name="arch" type="xml">
-        <xpath expr="//field[@name='date_open']" position="attributes">
-          <attribute name="domain">[('ip_address','!=',False), ('ip_address','=', reveal_ip_public)]</attribute>
+        <xpath expr="//field[@name='date_open']" position="after">
+          <field name="reveal_ip_public" invisible="1"/>
         </xpath>
       </field>
     </record>
