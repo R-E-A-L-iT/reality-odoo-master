@@ -13,7 +13,6 @@ from odoo.http import request
 from odoo.http import Response
 from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
-from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.sale.controllers.portal import CustomerPortal as SalePortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
@@ -40,21 +39,21 @@ _logger = logging.getLogger(__name__)
 #         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(SalePortal):
-    def _log_order_viewed(self, order_sudo):
-        user_id = request.params.get('user_id')
-        if not user_id:
-            _logger.info("Skip default quote view log: no user_id in params")
-            return
-        _logger.info("Skip default quote view log: using custom batched notifications")
-        return
 
-class QuoteCustomerPortal(cPortal):
     def validate(string):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return {}
+        return super()._get_portal_order_details(order_sudo)
+
+    def _log_order_viewed(self, order_sudo):
+        _logger.info("Blocked default _log_order_viewed for %s", order_sudo.name)
+        return  # no-op (prevents generic emails when no user_id)
+
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True, multilang=True)
+    def portal_order_page(self, order_id, access_token=None, report_type=None, download=False, **kw):
+        return super().portal_order_page(order_id, access_token=access_token, report_type=report_type, download=download, **kw)
 
     @http.route(
         ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True
@@ -380,12 +379,12 @@ class QuoteCustomerPortal(cPortal):
             recipient_ids.append(order.user_id.partner_id.id)
 
         order.with_context(mail_post_autofollow=True).message_post(
-            body=_("Quotation viewed by %s") % viewer_partner.name,
+            body=_("Quotation viewed by %s") % (viewer_partner.display_name or viewer_partner.name),
             message_type='comment',
             subtype_xmlid='sale.mt_order_viewed',
             partner_ids=list(set(recipient_ids)),
             author_id=viewer_partner.id,
-            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
+            subject=_("%s viewed by %s") % (order.name, (viewer_partner.display_name or viewer_partner.name)),
         )
 
     # def _log_order_viewed(self, order_sudo):
@@ -393,54 +392,28 @@ class QuoteCustomerPortal(cPortal):
     #         return
     #     return super()._log_order_viewed(order_sudo)
 
-    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
-                website=True)
+    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public', website=True, multilang=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
         if not request.env.user._is_public():
-            # Internal user - redirect to backend
-            url = f"/web#id={order_id}&model=sale.order&view_type=form"
-            return redirect(url)
-        else:
-            # Portal/public user - handle portal view
-            order = request.env['sale.order'].sudo().browse(order_id)
+            return redirect(f"/web#id={order_id}&model=sale.order&view_type=form")
 
-            if order and order.access_token == access_token:
-                url = order.get_portal_url()
-            else:
-                url = '/my'
+        order = request.env['sale.order'].sudo().browse(order_id)
+        url = order.get_portal_url() if (order and order.access_token == access_token) else '/my'
 
-            user_id = kwargs.get('user_id')
-            partner = None
-            redirect_url = url
+        user_id = kwargs.get('user_id')
+        if user_id:
+            try:
+                partner = request.env['res.partner'].sudo().browse(int(user_id))
+                if partner.exists():
+                    sep = '&' if '?' in url else '?'
+                    url = f"{url}{sep}user_id={int(user_id)}"
+                    # Send your **only** notification here (tracked, named)
+                    self._post_view_notification(order, partner)
+                # else: fall through to default url silently
+            except (ValueError, TypeError):
+                pass
 
-            if user_id:
-                try:
-                    partner = request.env['res.partner'].sudo().browse(int(user_id))
-                    if partner.exists():
-                        # Add user_id parameter to the URL
-                        sep = '&' if '?' in url else '?'
-                        url = f"{url}{sep}user_id={int(user_id)}"
-                        
-                        # Log the quotation view
-                        self._post_view_notification(order, partner)
-                        
-                        # Set redirect URL with language prefix if needed
-                        if partner.lang == 'fr_CA':
-                            redirect_url = f"/fr_CA{url}"
-                        else:
-                            redirect_url = url
-                    else:
-                        # Partner doesn't exist, use default URL
-                        redirect_url = url
-                        
-                except (ValueError, TypeError):
-                    # Invalid user_id, use default URL
-                    redirect_url = url
-            else:
-                # No user_id provided, use default URL
-                redirect_url = url
-
-            return redirect(redirect_url)
+        return redirect(url)
     
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
