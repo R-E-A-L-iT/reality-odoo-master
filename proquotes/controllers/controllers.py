@@ -45,7 +45,7 @@ class QuoteCustomerPortal(SalePortal):
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return {}
+        return super()._get_portal_order_details(order_sudo)
 
     def _log_order_viewed(self, order_sudo):
         _logger.info("Blocked default _log_order_viewed for %s", order_sudo.name)
