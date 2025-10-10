@@ -45,11 +45,14 @@ class QuoteCustomerPortal(SalePortal):
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return super()._get_portal_order_details(order_sudo)
+        return {
+            "sale_order": order_sudo,
+            "report_type": "html",
+        }
 
     def _log_order_viewed(self, order_sudo):
         _logger.info("Blocked default _log_order_viewed for %s", order_sudo.name)
-        return  # no-op (prevents generic emails when no user_id)
+        return
 
     @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True, multilang=True)
     def portal_order_page(self, order_id, access_token=None, report_type=None, download=False, **kw):
