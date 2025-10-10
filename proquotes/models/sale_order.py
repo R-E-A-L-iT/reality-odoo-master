@@ -138,7 +138,11 @@ class order(models.Model):
     )
 
 
-
+    # stop default quote viewed notifications
+    def _mark_quotation_as_viewed(self):
+        if not self.env.context.get('allow_default_viewed'):
+            return False
+        return super()._mark_quotation_as_viewed()
 
 
     # 

@@ -54,9 +54,20 @@ class QuoteCustomerPortal(SalePortal):
         _logger.info("Blocked default _log_order_viewed for %s", order_sudo.name)
         return
 
-    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True, multilang=True)
-    def portal_order_page(self, order_id, access_token=None, report_type=None, download=False, **kw):
-        return super().portal_order_page(order_id, access_token=access_token, report_type=report_type, download=download, **kw)
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
+    def portal_order_page(self, order_id, access_token=None, **kw):
+        tracking = kw.get('user_id') or kw.get('trk') or kw.get('tracking')
+
+        request.env = request.env(context=dict(
+            request.env.context,
+            allow_default_viewed=bool(tracking), 
+        ))
+
+        if not tracking:
+            today = fields.Date.today().isoformat()
+            request.session[f'view_quote_{order_id}'] = today
+
+        return super().portal_order_page(order_id, access_token=access_token, **kw)
 
     @http.route(
         ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True
@@ -381,6 +392,7 @@ class QuoteCustomerPortal(SalePortal):
         if order.user_id and order.user_id.partner_id:
             recipient_ids.append(order.user_id.partner_id.id)
 
+        
         order.with_context(mail_post_autofollow=True).message_post(
             body=_("Quotation viewed by %s") % (viewer_partner.display_name or viewer_partner.name),
             message_type='comment',
@@ -389,11 +401,6 @@ class QuoteCustomerPortal(SalePortal):
             author_id=viewer_partner.id,
             subject=_("%s viewed by %s") % (order.name, (viewer_partner.display_name or viewer_partner.name)),
         )
-
-    # def _log_order_viewed(self, order_sudo):
-    #     if not request.params.get('user_id'):
-    #         return
-    #     return super()._log_order_viewed(order_sudo)
 
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public', website=True, multilang=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
