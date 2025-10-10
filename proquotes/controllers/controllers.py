@@ -14,7 +14,6 @@ from odoo.http import Response
 from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
-from odoo.addons.sale.controllers.portal import CustomerPortal as SalePortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
@@ -447,17 +446,6 @@ class QuoteCustomerPortal(cPortal):
                 redirect_url = url
 
             return redirect(redirect_url)
-
-
-class QuoteCustomerPortal(SalePortal):
-    
-    def _log_order_viewed(self, order_sudo):
-        user_id = request.params.get('user_id')
-        if not user_id:
-            _logger.info("Skip default quote view log: no user_id in params")
-            return
-        _logger.info("Skip default quote view log: using custom batched notifications")
-        return
     
 class Website(WebsiteINH):
     # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
