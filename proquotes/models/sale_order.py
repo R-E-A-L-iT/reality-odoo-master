@@ -867,31 +867,9 @@ class order(models.Model):
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Create individual recipient groups with partner-specific tracking URLs, avoiding duplicates. """
         
-        try:
-            mt_order_viewed = self.env.ref('sale.mt_order_viewed')
-        except Exception:
-            mt_order_viewed = False
-
-        # Only for sale.order + the "viewed" subtype
-        if (
-            message.model == 'sale.order'
-            and mt_order_viewed
-            and message.subtype_id.id == mt_order_viewed.id
-        ):
-            user_id_param = None
-            # request may not exist in non-http contexts
-            if request and getattr(request, 'params', None):
-                user_id_param = request.params.get('user_id')
-
-            if not user_id_param:
-                # No tracking => DO NOT send anything
-                return []
-
-        # ---- your existing logic continues below ----
         groups = super()._notify_get_recipients_groups(
             message, model_description, msg_vals=msg_vals
         )
-
         if not self:
             return groups
         self.ensure_one()
