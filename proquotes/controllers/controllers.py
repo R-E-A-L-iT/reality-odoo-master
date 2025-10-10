@@ -14,6 +14,7 @@ from odoo.http import Response
 from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
+from odoo.addons.sale.controllers.portal import CustomerPortal as SalePortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
@@ -37,6 +38,15 @@ _logger = logging.getLogger(__name__)
 
 #         # Call the default controller or return your own response
 #         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
+
+class QuoteCustomerPortal(SalePortal):
+    def _log_order_viewed(self, order_sudo):
+        user_id = request.params.get('user_id')
+        if not user_id:
+            _logger.info("Skip default quote view log: no user_id in params")
+            return
+        _logger.info("Skip default quote view log: using custom batched notifications")
+        return
 
 class QuoteCustomerPortal(cPortal):
     def validate(string):
@@ -393,10 +403,10 @@ class QuoteCustomerPortal(cPortal):
             "viewed_at": now,
         })
 
-    def _log_order_viewed(self, order_sudo):
-        if not request.params.get('user_id'):
-            return
-        return super()._log_order_viewed(order_sudo)
+    # def _log_order_viewed(self, order_sudo):
+    #     if not request.params.get('user_id'):
+    #         return
+    #     return super()._log_order_viewed(order_sudo)
 
     @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
                 website=True)
