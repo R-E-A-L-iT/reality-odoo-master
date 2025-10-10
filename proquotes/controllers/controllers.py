@@ -375,14 +375,11 @@ class QuoteCustomerPortal(cPortal):
 
 
     def _post_view_notification(self, order, viewer_partner):
-        env = request.env
+        env = request.env.sudo()
         now = fields.Datetime.now()
 
-        Batch = env['proquotes.view.batch'].sudo()
-        Event = env['proquotes.view.event'].sudo()
-
         # Find an active, not-yet-sent batch whose window hasn't expired.
-        batch = Batch.search([
+        batch = env["proquotes.view.batch"].search([
             ("sale_order_id", "=", order.id),
             ("sent", "=", False),
             ("send_at", ">", now),
@@ -390,13 +387,13 @@ class QuoteCustomerPortal(cPortal):
 
         # If none, start a fresh 10-minute window.
         if not batch:
-            batch = Batch.create({
+            batch = env["proquotes.view.batch"].create({
                 "sale_order_id": order.id,
                 "send_at": now + timedelta(minutes=10),
             })
 
         # Append the event
-        Event.create({
+        env["proquotes.view.event"].create({
             "batch_id": batch.id,
             "viewer_partner_id": viewer_partner.id,
             "viewer_email": viewer_partner.email or False,
