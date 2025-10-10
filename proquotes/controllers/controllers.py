@@ -377,17 +377,25 @@ class QuoteCustomerPortal(SalePortal):
 
 
     def _post_view_notification(self, order, viewer_partner):
+        # Send only to the salesperson (adjust if you want more recipients)
         recipient_ids = []
         if order.user_id and order.user_id.partner_id:
             recipient_ids.append(order.user_id.partner_id.id)
+        if not recipient_ids:
+            return
 
-        order.with_context(mail_post_autofollow=True).message_post(
-            body=_("Quotation viewed by %s") % (viewer_partner.display_name or viewer_partner.name),
-            message_type='comment',
-            subtype_xmlid='sale.mt_order_viewed',
+        now = fields.Datetime.now()
+        # Make body/subject unique so nothing is collapsed
+        when = fields.Datetime.context_timestamp(order, now).strftime('%Y-%m-%d %H:%M:%S')
+
+        order.message_notify(
             partner_ids=list(set(recipient_ids)),
+            subject=_("%s viewed by %s at %s") % (order.name, viewer_partner.display_name or viewer_partner.name, when),
+            body=_("Quotation viewed by <b>%s</b> at %s.") % (viewer_partner.display_name or viewer_partner.name, when),
+            subtype_xmlid='sale.mt_order_viewed',
+            email_layout_xmlid='mail.mail_notification_light',  # optional, pick your layout
+            # author_id can be omitted to use the company/ODOO Bot; include it if you want the viewer as author:
             author_id=viewer_partner.id,
-            subject=_("%s viewed by %s") % (order.name, (viewer_partner.display_name or viewer_partner.name)),
         )
 
     # def _log_order_viewed(self, order_sudo):
