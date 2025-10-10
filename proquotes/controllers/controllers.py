@@ -44,8 +44,8 @@ class QuoteCustomerPortal(cPortal):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
 
-    # def _get_portal_order_details(self, order_sudo):
-    #     return {}
+    def _get_portal_order_details(self, order_sudo):
+        return {}
 
     @http.route(
         ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True
@@ -399,7 +399,8 @@ class QuoteCustomerPortal(cPortal):
             return
         return super()._log_order_viewed(order_sudo)
 
-    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public', website=True, multilang=True)
+    @http.route(['/check_quotation_redirect/<int:order_id>/<string:access_token>'], type='http', auth='public',
+                website=True)
     def check_quotation_redirect(self, order_id, access_token, **kwargs):
         if not request.env.user._is_public():
             # Internal user - redirect to backend
@@ -450,10 +451,6 @@ class QuoteCustomerPortal(cPortal):
 
 class QuoteCustomerPortal(SalePortal):
     
-    @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True, multilang=True)
-    def portal_order_page(self, order_id, access_token=None, report_type=None, download=False, **kw):
-        return super().portal_order_page(order_id, access_token=access_token, report_type=report_type, download=download, **kw)
-
     def _log_order_viewed(self, order_sudo):
         user_id = request.params.get('user_id')
         if not user_id:
