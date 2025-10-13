@@ -47,6 +47,7 @@ threadActionsRegistry.add("create-lead", {
         console.log("Create Lead Button: Setup called");
         action.rpc = useService("rpc");
         action.notification = useService("notification");
+        action.actionService = useService("action");
     },
     icon: "fa fa-fw fa-handshake-o",
     iconLarge: "fa fa-fw fa-lg fa-handshake-o",
@@ -100,7 +101,25 @@ threadActionsRegistry.add("create-lead", {
                 console.log("Action result:", result);
                 
                 if (result && result.success) {
+                    // Show success notification
                     action.notification.add(successMsg, { type: 'success' });
+                    
+                    // Auto-redirect to lead form if lead_id is provided
+                    if (result.lead_id) {
+                        // Show opening notification
+                        action.notification.add(_t("Opening lead..."), { type: 'info' });
+                        
+                        // Small delay for better UX, then open the lead
+                        setTimeout(() => {
+                            action.actionService.doAction({
+                                type: 'ir.actions.act_window',
+                                res_model: 'crm.lead',
+                                res_id: result.lead_id,
+                                views: [[false, 'form']],
+                                target: 'current'
+                            });
+                        }, 800); // 800ms delay for smooth transition
+                    }
                 } else {
                     action.notification.add(_t("Error: %s", result?.message || "Unknown error"), {
                         type: 'danger'
