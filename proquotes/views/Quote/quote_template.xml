@@ -29,6 +29,7 @@
                 <field name="sectionSelected" invisible="1" />
                 <field name="quantityLocked" invisible="0" />
                 <field name="hiddenSection" invisible="1" />
+                <field name="discount" widget="percentage" invisible="0" />
             </xpath>
 
             <xpath expr="//create[3]" position="after">

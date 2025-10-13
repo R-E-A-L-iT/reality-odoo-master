@@ -1262,6 +1262,10 @@ class SaleOrderTemplateHandler(models.Model):
                     else:
                         price = pricelist_price
 
+                template_discount = getattr(line, 'discount', 0.0) or 0.0
+                if template_discount:
+                    discount = template_discount
+
                 data.update({
                     'price_unit': price,
                     'discount': discount,
@@ -1269,8 +1273,8 @@ class SaleOrderTemplateHandler(models.Model):
                     'product_id': line.product_id.id,
                     'product_uom': line.product_uom_id.id,
                     'optional': line.optional,
-                    'selected':line.selected,
-                    'sectionSelected':line.sectionSelected,
+                    'selected': line.selected,
+                    'sectionSelected': line.sectionSelected,
                     'quantityLocked': line.quantityLocked,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })

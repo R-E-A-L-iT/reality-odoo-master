@@ -46,3 +46,10 @@ class SaleOrderTemplateLine(models.Model):
     quantityLocked = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
+
+    discount = fields.Float(
+        string='Discount (%)',
+        digits='Discount',
+        default=0.0,
+        help='Default percentage discount to apply when this template is used.'
+    )
