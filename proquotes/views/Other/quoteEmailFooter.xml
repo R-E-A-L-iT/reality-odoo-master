@@ -1,36 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
-        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="before">
-            <t t-set="new_logo" t-value="'https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png'" />
-        </xpath>
-        <xpath expr="//td[@t-if='company and not company.uses_default_logo']/img" position="attributes">
-            <attribute name="style">width: 100% !important;</attribute>
-            <attribute name="t-att-src">new_logo</attribute>
-        </xpath>
-        <xpath expr="//div[@style='margin-top:32px;']" position="replace">
-            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
-            <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
-                <div>
-                    <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
-                </div>
-            </t>
-            <t t-elif="record._name == 'helpdesk.ticket'">
-               <div>
-                    <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;" alt="Footer Image"/>
-                </div>
-            </t>
-        </xpath>
-        <xpath expr="//td[@t-if='subtitles']" position="replace">
-            <td t-if="subtitles and not record._name == 'sale.order'" style="font-size: 12px;">
-                <t t-foreach="subtitles" t-as="subtitle">
-                    <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}" t-out="subtitle"/>
-                    <br t-if="not subtitle_last"/>
-                </t>
-            </td>
+        <!-- Replace the entire header section for CRM leads with simple_email_layout -->
+        <xpath expr="//div[@t-if='subtitles or has_button_access or actions or not is_discussion']" position="replace">
+            <div t-if="(record._name != 'crm.lead' or not record.simple_email_layout) and (subtitles or has_button_access or actions or not is_discussion)"
+                 summary="o_mail_notification" style="padding: 0px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+                       style="width: 100%; margin-top: 5px;">
+                    <tbody>
+                        <tr>
+                            <td valign="center" t-if="company and not company.uses_default_logo">
+                                <t t-set="new_logo" t-value="'https://cdn.r-e-a-l.it/images/esignatures/eSig/eSig.png'"/>
+                                <img t-att-src="new_logo"
+                                     style="padding: 0px; margin: 0px; height: auto; max-width: 200px; max-height: 36px; width: 100% !important;"
+                                     t-att-alt="'%s' % company.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="center">
+                                <hr width="100%"
+                                    style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 10px 0px;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="center" style="white-space:nowrap;">
+                                <table cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td t-if="has_button_access"
+                                                t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
+                                                <a t-att-href="button_access['url']"
+                                                   style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 12px 11px; text-decoration: none !important; font-weight: 400;">
+                                                    <t t-out="button_access['title']"/>
+                                                </a>
+                                            </td>
+                                            <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
+
+                                            <td t-if="actions">
+                                                <t t-foreach="actions" t-as="action">
+                                                    <a t-att-href="action['url']"
+                                                       t-att-style="'font-size: 12px; color: ' + (company.email_secondary_color or '#875A7B')+ '; text-decoration:none !important;'">
+                                                        <t t-out="action['title']"/>
+                                                    </a>
+                                                    &amp;nbsp;&amp;nbsp;
+                                                </t>
+                                            </td>
+                                            <td t-if="subtitles and not (record._name == 'sale.order')" style="font-size: 12px;">
+                                                <t t-foreach="subtitles" t-as="subtitle">
+                                                    <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}"
+                                                          t-out="subtitle"/>
+                                                    <br t-if="not subtitle_last"/>
+                                                </t>
+                                            </td>
+                                            <td t-else="">
+                                                <span style="font-weight:bold;" t-out="record_name"/>
+                                                <br/>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="center">
+                                <hr width="100%"
+                                    style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0;margin: 10px 0px;"/>
+                                <p t-if="subtype_internal"
+                                   style="background-color: #f2dede; padding: 5px; margin-bottom: 16px; font-size: 13px;">
+                                    <strong>Internal communication</strong>: Replying will post an internal
+                                    note. Followers won't receive any email notification.
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </xpath>
 
-        <!-- remove powered by odoo -->
+        <!-- Replace signature section to exclude for CRM leads with simple_email_layout -->
+        <xpath expr="//t[@class='o_signature']" position="replace">
+            <t class="o_signature">
+                <!-- Normal signature for non-Google messages -->
+                <div t-if="email_add_signature and not is_html_empty(signature) and not (record._name == 'crm.lead' and record.simple_email_layout)" 
+                     t-out="signature" style="font-size: 13px;"/>
+                
+                <!-- Mass signature for Google messages (CRM leads with simple_email_layout = True) -->
+                <div t-if="record._name == 'crm.lead' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
+                    <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
+                    <div t-if="author_user.ba_mass_signature and not is_html_empty(author_user.ba_mass_signature)"
+                    t-out="author_user.ba_mass_signature" style="font-size: 13px;"/>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- Replace footer section to exclude for CRM leads with simple_email_layout -->
+        <xpath expr="//div[@style='margin-top:32px;']" position="replace">
+            <div t-if="record._name != 'crm.lead' or not record.simple_email_layout" style="margin-top:32px;">
+                <hr width="100%"
+                    style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
+                <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
+                    <div>
+                        <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
+                             alt="Footer Image"/>
+                    </div>
+                </t>
+                <t t-elif="record._name == 'helpdesk.ticket'">
+                    <div>
+                        <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
+                             alt="Footer Image"/>
+                    </div>
+                </t>
+                <t t-else="">
+                    <b t-out="company.name" style="font-size:11px;"/>
+                    <br/>
+                    <p style="color: #999999; margin-top:2px; font-size:11px;">
+                        <t t-out="company.phone"/>
+                        <t t-if="company.email and company.phone">|</t>
+                        <a t-if="company.email" t-att-href="'mailto:%s' % company.email"
+                           style="text-decoration:none; color: #999999;" t-out="company.email"/>
+                        <t t-if="company.website and (company.phone or company.email)">|</t>
+                        <a t-if="company.website" t-att-href="'%s' % company.website"
+                           style="text-decoration:none; color: #999999;" t-out="company.website"/>
+                    </p>
+                </t>
+            </div>
+        </xpath>
+
+        <!-- Remove powered by odoo for all cases -->
         <xpath expr="//div[@class='d-none']" position="replace" />
     </template>
 </odoo>
