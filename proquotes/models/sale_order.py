@@ -16,6 +16,7 @@ from odoo import api, fields, models, SUPERUSER_ID, _, tools, Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
+from odoo.http import request, route
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
@@ -314,14 +315,17 @@ class order(models.Model):
         body = (kwargs.get('body') or '').strip()
         return body.startswith('Quotation viewed by customer')
 
-    # skip logging quote viewed message if context key is set
+    # Skip default quote viewed messages when user_id is NOT present in URL
+    # This ensures only tracking URLs (with user_id) trigger notifications
     def message_post(self, **kwargs):
         try:
             has_user_id = bool(request and request.params.get('user_id'))
         except Exception:
             has_user_id = False
 
-        if has_user_id and self._is_viewed_post(kwargs):
+        # Skip "quote viewed" messages when there's NO user_id in URL (direct access)
+        if not has_user_id and self._is_viewed_post(kwargs):
+            _logger.info(f"BLOCKING DEFAULT NOTIFICATION: Quote {self.name} - no user_id in URL, skipping default 'viewed' message")
             return self.env['mail.message']
 
         return super().message_post(**kwargs)
@@ -332,7 +336,9 @@ class order(models.Model):
         except Exception:
             has_user_id = False
 
-        if has_user_id and self._is_viewed_post(kwargs):
+        # Skip "quote viewed" messages when there's NO user_id in URL (direct access)
+        if not has_user_id and self._is_viewed_post(kwargs):
+            _logger.info(f"BLOCKING DEFAULT NOTIFICATION (with_view): Quote {self.name} - no user_id in URL, skipping default 'viewed' message")
             return self.env['mail.message']
         return super().message_post_with_view(view, **kwargs)
 
