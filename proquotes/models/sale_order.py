@@ -374,7 +374,7 @@ class order(models.Model):
         orders._apply_canadian_province_taxes()
 
         # Find or create the partner with email derek@r-e-a-l.it
-        sales_email = self.env['res.partner'].search([('email', '=', 'DEREK@R-E-A-L.iT')], limit=1)
+        sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
         for order in orders:
             if not sales_email:
                 continue

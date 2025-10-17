@@ -269,7 +269,7 @@ class invoice(models.Model):
 
         # add derek@r-e-a-l.it as a follower of the document
         if invoice_object.move_type in ['out_invoice', 'out_refund']:
-            partner = self.env['res.partner'].search([('email', '=', 'DEREK@R-E-A-L.iT')], limit=1)
+            partner = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
             if partner and partner.id not in invoice_object.message_partner_ids.ids:
                 invoice_object.message_subscribe(partner_ids=[partner.id])
 
