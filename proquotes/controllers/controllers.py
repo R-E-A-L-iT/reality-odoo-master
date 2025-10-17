@@ -367,13 +367,18 @@ class QuoteCustomerPortal(cPortal):
         if order.user_id and order.user_id.partner_id:
             recipient_ids.append(order.user_id.partner_id.id)
 
+        if viewer_partner.parent_id:
+            viewer_display = "%s from %s" % (viewer_partner.name, viewer_partner.parent_id.name)
+        else:
+            viewer_display = viewer_partner.name
+
         order.with_context(mail_post_autofollow=True).message_post(
-            body=_("Quotation viewed by %s") % viewer_partner.name,
+            body=_("Quotation viewed by %s") % viewer_display,
             message_type='comment',
             subtype_xmlid='sale.mt_order_viewed',
             partner_ids=list(set(recipient_ids)),
             author_id=viewer_partner.id,
-            subject=_("%s viewed by %s") % (order.name, viewer_partner.name),
+            subject=_("%s viewed by %s") % (order.name, viewer_display),
         )
 
     def _log_order_viewed(self, order_sudo):
