@@ -70,7 +70,7 @@ class CrmLead(models.Model):
         help="Auto-derived from country (CA→Canada, US→United States)."
     )
 
-    leica_expected_purchase_date = fields.Date(string="Expected Purchase Date")
+    # leica_expected_purchase_date = fields.Date(string="Expected Purchase Date")
     leica_quantity = fields.Integer(string="Quantity")
 
     leica_has_demo_request = fields.Boolean(string="Has the end-user requested a demonstration?")
@@ -110,6 +110,7 @@ class CrmLead(models.Model):
         default=False
     )
 
+    partner_company_id = fields.Many2one('res.partner', string="Company (Partner)", help="Company associated with the partner.")
     opportunity_notes = fields.Text(string="Opportunity Notes")
     linkedin_link = fields.Char('LinkedIn Link')
     quotation_amount = fields.Float(compute="_compute_total_quotation_amount")
@@ -157,9 +158,24 @@ class CrmLead(models.Model):
 
         return self.env["res.company"].browse(company_id) if company_id else self.env["res.company"]
 
+    def _apply_stage_probability_override(self, stage):
+        """Return float or None. Only applies to opportunities."""
+        self.ensure_one()
+        if self.type != 'opportunity':
+            return None
+        if stage and stage.use_probability_override:
+            return stage.probability_override
+        return None
+
     @api.model_create_multi
     def create(self, vals_list):
         leads = super().create(vals_list)
+
+        for lead in leads:
+            new_prob = lead._apply_stage_probability_override(lead.stage_id)
+            if new_prob is not None:
+                # write instead of direct set to trigger relevant onchange/computes safely
+                lead.write({"probability": new_prob})
 
         # Process each created lead alongside its original vals (order preserved)
         for lead, vals in zip(leads, vals_list):
@@ -215,6 +231,27 @@ class CrmLead(models.Model):
                 _logger.exception("Auto company from visitor failed for lead %s: %s", lead.id, e)
 
         return leads
+
+    def write(self, vals):
+        if 'stage_id' not in vals:
+            return super().write(vals)
+
+        # Apply per-record to respect each record's target stage
+        for lead in self:
+            per_vals = dict(vals)
+            # Determine the stage that will be applied to this specific record
+            target_stage = None
+            if 'stage_id' in per_vals and per_vals['stage_id']:
+                target_stage = self.env['crm.stage'].browse(per_vals['stage_id'])
+            else:
+                target_stage = lead.stage_id
+
+            new_prob = lead._apply_stage_probability_override(target_stage)
+            if new_prob is not None:
+                per_vals['probability'] = new_prob
+
+            super(CrmLead, lead).write(per_vals)
+        return True
 
     def _compute_total_quotation_amount(self):
         for lead in self:
@@ -333,7 +370,7 @@ class CrmLead(models.Model):
             "product_interest_label": dict(self._fields['leica_product_interest'].selection).get(self.leica_product_interest, "") if hasattr(self, 'leica_product_interest') else "",
             "is_rfp": bool(getattr(self, 'leica_is_rfp', False)),
 
-            "expected_closing_mmddyyyy": _fmt_us_date(self.leica_expected_purchase_date),
+            "expected_closing_mmddyyyy": _fmt_us_date(self.date_deadline),
             "quantity": self.leica_quantity or None,
 
             "has_demo_request": bool(self.leica_has_demo_request),

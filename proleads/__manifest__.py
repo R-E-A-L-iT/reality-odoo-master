@@ -8,7 +8,8 @@
     'description': ' ',
     'depends': ['base', 'crm', 'website_crm'],
     "data": [
-        "views/leadsBackend.xml"
+        "views/leadsBackend.xml",
+        "views/crm_stage.xml",
     ],
     'installable': True,
     'application': True,

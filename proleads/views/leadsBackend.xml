@@ -13,6 +13,9 @@
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         readonly="1" invisible="not leica_registered"/>
             </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_company_id" />
+            </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="opportunity_source" />
             </xpath>
@@ -49,7 +52,7 @@
                         </group>
 
                         <group string="Optional Details">
-                            <field name="leica_expected_purchase_date"/>
+                            <field name="date_deadline" string="Expected Purchase Date"/>
                             <field name="leica_quantity"/>
                         </group>
 
