@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_stage_form_inherit_probability_override" model="ir.ui.view">
+        <field name="name">crm.stage.form.probability.override</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_won']" position="after">
+                <field name="use_probability_override"/>
+                <field name="probability_override" invisible="not use_probability_override"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
