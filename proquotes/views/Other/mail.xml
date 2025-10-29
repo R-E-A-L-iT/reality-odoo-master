@@ -89,7 +89,13 @@
                         </table>
                     </div>
                     <!-- CONTENT -->
-                    <div t-out="message.body" style="font-size: 13px;"/>
+                    <!-- <div t-out="message.body" style="font-size: 13px;"/> -->
+                    <div style="font-size:13px;">
+                        <t t-raw="message.body"/>
+                        <style>
+                            div p:nth-of-type(2) a { display: none !important;padding-bottom:2px !important; } 
+                        </style>
+                    </div>
                     <ul t-if="tracking_values">
                         <t t-foreach="tracking_values" t-as="tracking">
                             <li><t t-out="tracking[0]"/>:
