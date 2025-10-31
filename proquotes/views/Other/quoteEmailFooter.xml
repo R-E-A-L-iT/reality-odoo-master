@@ -82,9 +82,9 @@
         <xpath expr="//t[@class='o_signature']" position="replace">
             <t class="o_signature">
                 <!-- Normal signature for non-Google messages -->
-                <div t-if="email_add_signature and not is_html_empty(signature) and not (record._name == 'crm.lead' and record.simple_email_layout)" 
+                <div t-if="email_add_signature and not is_html_empty(signature) and not (record._name == 'crm.lead' and record.simple_email_layout)"
                      t-out="signature" style="font-size: 13px;"/>
-                
+
                 <!-- Mass signature for Google messages (CRM leads with simple_email_layout = True) -->
                 <div t-if="record._name == 'crm.lead' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
                     <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
@@ -112,17 +112,21 @@
                     </div>
                 </t>
                 <t t-else="">
-                    <b t-out="company.name" style="font-size:11px;"/>
-                    <br/>
-                    <p style="color: #999999; margin-top:2px; font-size:11px;">
-                        <t t-out="company.phone"/>
-                        <t t-if="company.email and company.phone">|</t>
-                        <a t-if="company.email" t-att-href="'mailto:%s' % company.email"
-                           style="text-decoration:none; color: #999999;" t-out="company.email"/>
-                        <t t-if="company.website and (company.phone or company.email)">|</t>
-                        <a t-if="company.website" t-att-href="'%s' % company.website"
-                           style="text-decoration:none; color: #999999;" t-out="company.website"/>
-                    </p>
+					<div>
+						<img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
+							 alt="Footer Image"/>
+					</div>
+				<!--                    <b t-out="company.name" style="font-size:11px;"/>-->
+				<!--                    <br/>-->
+				<!--                    <p style="color: #999999; margin-top:2px; font-size:11px;">-->
+				<!--                        <t t-out="company.phone"/>-->
+				<!--                        <t t-if="company.email and company.phone">|</t>-->
+				<!--                        <a t-if="company.email" t-att-href="'mailto:%s' % company.email"-->
+				<!--                           style="text-decoration:none; color: #999999;" t-out="company.email"/>-->
+				<!--                        <t t-if="company.website and (company.phone or company.email)">|</t>-->
+				<!--                        <a t-if="company.website" t-att-href="'%s' % company.website"-->
+				<!--                           style="text-decoration:none; color: #999999;" t-out="company.website"/>-->
+				<!--                    </p>-->
                 </t>
             </div>
         </xpath>
