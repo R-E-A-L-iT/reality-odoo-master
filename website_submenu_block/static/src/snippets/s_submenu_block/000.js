@@ -145,13 +145,13 @@ publicWidget.registry.SubmenuBlock = publicWidget.Widget.extend({
         const checkNavbarVisibility = () => {
             if (!ticking) {
                 requestAnimationFrame(() => {
-                    // Look for Odoo's main navbar
-                    const mainNavbar = document.querySelector('.o_main_navbar, .navbar-header, header nav');
+                    // Look for Odoo's main navbar with more specific selectors
+                    const mainNavbar = document.querySelector('header.o_header_standard, header.o_header_fixed, header nav, .o_main_navbar, #top');
                     
                     if (mainNavbar) {
                         const rect = mainNavbar.getBoundingClientRect();
-                        // If main navbar is scrolled out of view (top < -50), hide it
-                        const isNavbarHidden = rect.bottom <= 0;
+                        // More accurate detection - navbar is hidden if completely out of view
+                        const isNavbarHidden = rect.bottom <= 10; // Small buffer for better detection
                         
                         if (isNavbarHidden) {
                             this.el.classList.add('o_navbar_hidden');
@@ -159,8 +159,13 @@ publicWidget.registry.SubmenuBlock = publicWidget.Widget.extend({
                             this.el.classList.remove('o_navbar_hidden');
                         }
                     } else {
-                        // If no main navbar found, always stick to top
-                        this.el.classList.add('o_navbar_hidden');
+                        // If no main navbar found, check scroll position
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        if (scrollTop > 60) {
+                            this.el.classList.add('o_navbar_hidden');
+                        } else {
+                            this.el.classList.remove('o_navbar_hidden');
+                        }
                     }
                     
                     ticking = false;
