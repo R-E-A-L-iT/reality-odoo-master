@@ -30,6 +30,27 @@
             
             <we-separator/>
             
+            <!-- Scroll Effect Options -->
+            <we-select string="Scroll Effect" data-variable="submenu-scroll-effect">
+                <we-button data-customize-website-variable="'standard'"
+                           data-select-class="o_submenu_standard">Standard</we-button>
+                <we-button data-customize-website-variable="'fixed'"
+                           data-select-class="o_submenu_fixed">Fixed</we-button>
+                <we-button data-customize-website-variable="'disappears'"
+                           data-select-class="o_submenu_disappears">Disappears</we-button>
+                <we-button data-customize-website-variable="'fade-out'"
+                           data-select-class="o_submenu_fade_out">Fade Out</we-button>
+            </we-select>
+            
+            <!-- Header Position Options -->
+            <we-select string="Header Position" data-no-preview="true">
+                <we-button data-select-class="">Regular</we-button>
+                <we-button data-select-class="o_submenu_overlay">Over The Content</we-button>
+                <we-button data-select-class="o_submenu_hidden">Hidden</we-button>
+            </we-select>
+            
+            <we-separator/>
+            
             <!-- Background Color -->
             <we-colorpicker string="Background Color" 
                            data-css-property="background-color"

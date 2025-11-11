@@ -1,6 +1,6 @@
 {
     'name': 'Website Submenu Block',
-    'version': '17.0.1.8.0',
+    'version': '17.0.2.0.0',
     'category': 'Website/Website',
     'summary': 'Sticky submenu navigation block for websites',
     'description': """

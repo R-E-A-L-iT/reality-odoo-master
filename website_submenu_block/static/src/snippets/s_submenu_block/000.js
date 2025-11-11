@@ -19,6 +19,9 @@ publicWidget.registry.SubmenuBlock = publicWidget.Widget.extend({
         this._updateActiveLink();
         this._setupScrollListener();
         this._setupNavbarVisibilityDetection();
+        this._setupScrollEffects();
+        this.lastScrollTop = 0; // Track scroll direction
+        this.scrollOffsetLimit = 200; // Threshold for disappearing effect
         return this._super(...arguments);
     },
 
@@ -177,6 +180,100 @@ publicWidget.registry.SubmenuBlock = publicWidget.Widget.extend({
     },
 
     /**
+     * Setup scroll effects based on selected effect type
+     * @private
+     */
+    _setupScrollEffects() {
+        let ticking = false;
+        const scrolledPoint = 100; // Threshold for scroll effects
+        
+        const handleScrollEffects = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const scrollDirection = scrollTop > this.lastScrollTop ? 'down' : 'up';
+                    const isScrolled = scrollTop > scrolledPoint;
+                    
+                    // Add/remove scrolled state
+                    if (isScrolled) {
+                        this.el.classList.add('o_submenu_is_scrolled');
+                    } else {
+                        this.el.classList.remove('o_submenu_is_scrolled');
+                    }
+                    
+                    // Handle different scroll effects
+                    if (this.el.classList.contains('o_submenu_disappears')) {
+                        this._handleDisappearingEffect(scrollTop, scrollDirection);
+                    } else if (this.el.classList.contains('o_submenu_fade_out')) {
+                        this._handleFadeOutEffect(scrollTop, scrollDirection);
+                    } else if (this.el.classList.contains('o_submenu_fixed')) {
+                        this._handleFixedEffect(isScrolled);
+                    }
+                    
+                    this.lastScrollTop = scrollTop;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        // Add scroll listener for effects
+        window.addEventListener('scroll', handleScrollEffects);
+        this._scrollEffectsListener = handleScrollEffects;
+    },
+
+    /**
+     * Handle disappearing scroll effect
+     * @private
+     */
+    _handleDisappearingEffect(scrollTop, scrollDirection) {
+        const scrollDiff = Math.abs(scrollTop - this.lastScrollTop);
+        
+        if (scrollDiff > 5) { // Minimum scroll distance to trigger
+            if (scrollDirection === 'down' && scrollTop > this.scrollOffsetLimit) {
+                this.el.classList.add('o_submenu_hidden_down');
+                this.el.classList.remove('o_submenu_hidden_up');
+            } else if (scrollDirection === 'up') {
+                this.el.classList.add('o_submenu_hidden_up');
+                this.el.classList.remove('o_submenu_hidden_down');
+                
+                // Show header when scrolling up
+                setTimeout(() => {
+                    this.el.classList.remove('o_submenu_hidden_up');
+                }, 50);
+            }
+        }
+    },
+
+    /**
+     * Handle fade out scroll effect
+     * @private
+     */
+    _handleFadeOutEffect(scrollTop, scrollDirection) {
+        const scrollDiff = Math.abs(scrollTop - this.lastScrollTop);
+        
+        if (scrollDiff > 5) {
+            if (scrollDirection === 'down' && scrollTop > this.scrollOffsetLimit) {
+                this.el.classList.add('o_submenu_fade_hidden');
+            } else if (scrollDirection === 'up') {
+                this.el.classList.remove('o_submenu_fade_hidden');
+            }
+        }
+    },
+
+    /**
+     * Handle fixed scroll effect
+     * @private
+     */
+    _handleFixedEffect(isScrolled) {
+        if (isScrolled) {
+            this.el.classList.add('o_submenu_affixed');
+        } else {
+            this.el.classList.remove('o_submenu_affixed');
+        }
+    },
+
+    /**
      * @override
      */
     destroy() {
@@ -187,6 +284,10 @@ publicWidget.registry.SubmenuBlock = publicWidget.Widget.extend({
         // Clean up navbar visibility listener
         if (this._navbarVisibilityListener) {
             window.removeEventListener('scroll', this._navbarVisibilityListener);
+        }
+        // Clean up scroll effects listener
+        if (this._scrollEffectsListener) {
+            window.removeEventListener('scroll', this._scrollEffectsListener);
         }
         this._super(...arguments);
     },

@@ -78,6 +78,112 @@
     }
 }
 
+// ====================
+// SCROLL EFFECT STYLES
+// ====================
+
+// Standard scroll effect - default behavior
+.s_submenu_block.o_submenu_standard {
+    &.o_submenu_affixed {
+        transform: translateY(0);
+    }
+    
+    &.o_submenu_is_scrolled {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+// Fixed scroll effect - always stays in place
+.s_submenu_block.o_submenu_fixed {
+    position: fixed !important;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 1015;
+    
+    &.o_navbar_hidden {
+        top: 0;
+    }
+}
+
+// Disappears scroll effect - slides up/down based on scroll direction
+.s_submenu_block.o_submenu_disappears {
+    transition: transform 0.3s ease;
+    
+    &.o_submenu_hidden_up {
+        transform: translateY(-100%);
+    }
+    
+    &.o_submenu_hidden_down {
+        transform: translateY(-100%);
+    }
+}
+
+// Fade out scroll effect - fades based on scroll direction
+.s_submenu_block.o_submenu_fade_out {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    
+    &.o_submenu_fade_hidden {
+        opacity: 0;
+        transform: translateY(-50%);
+    }
+}
+
+// ====================
+// HEADER POSITION STYLES
+// ====================
+
+// Regular position - default
+.s_submenu_block {
+    // Default styles already defined above
+}
+
+// Over the content position - overlay style
+.s_submenu_block.o_submenu_overlay {
+    position: absolute;
+    top: 56px; // Position below main header
+    z-index: 1020;
+    background-color: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(5px);
+    
+    &.o_navbar_hidden {
+        top: 0;
+    }
+}
+
+// Hidden position
+.s_submenu_block.o_submenu_hidden {
+    display: none !important;
+}
+
+// ====================
+// COMMON EFFECT CLASSES
+// ====================
+
+// Affixed state for scroll effects
+.s_submenu_block.o_submenu_affixed {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 1015;
+    transition: transform 0.3s ease;
+    
+    &.o_navbar_hidden {
+        top: 0;
+    }
+}
+
+// Scrolled state indicator
+.s_submenu_block.o_submenu_is_scrolled {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+// No transition class (for temporary state changes)
+.s_submenu_block.o_submenu_no_transition {
+    transition: none !important;
+}
+
 // Smooth scrolling for anchor links
 html {
     scroll-behavior: smooth;
