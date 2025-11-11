@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Extend the default snippets to add our submenu block -->
+<template id="submenu_block_snippet" inherit_id="website.snippets">
+    <xpath expr="//div[@id='snippet_structure']//div[@class='o_panel_body']" position="inside">
+        <t t-snippet="website_submenu_block.s_submenu_block" 
+           string="Submenu Block" 
+           t-thumbnail="/website_submenu_block/static/src/img/snippets_thumbs/s_submenu_block.svg">
+            <keywords>navigation, menu, submenu, sticky, anchor</keywords>
+        </t>
+    </xpath>
+</template>
+
+<!-- Snippet options for customization -->
+<template id="snippet_options" inherit_id="web_editor.snippet_options">
+    
+    <!-- Submenu Block Options -->
+    <xpath expr="." position="inside">
+        <div data-js="SubmenuBlock" 
+             data-selector=".s_submenu_block"
+             data-exclude="">
+            
+            <!-- Add Link Button -->
+            <we-button string="Add New Link" 
+                       class="fa fa-plus o_we_bg_success" 
+                       data-add-link=""
+                       data-no-preview="true"
+                       title="Add and manage submenu links"/>
+            
+            <we-separator/>
+            
+            <!-- Background Color -->
+            <we-colorpicker string="Background Color" 
+                           data-css-property="background-color"
+                           data-select-style=""
+                           data-exclude=""/>
+            
+            <!-- Text Color -->
+            <we-colorpicker string="Text Color" 
+                           data-css-property="color"
+                           data-select-style=""
+                           data-exclude=""
+                           data-target=".s_submenu_link"/>
+            
+            <we-separator/>
+            
+            <!-- Spacing -->
+            <we-select string="Spacing">
+                <we-button data-select-class="py-2">Small</we-button>
+                <we-button data-select-class="py-3" data-default="">Medium</we-button>
+                <we-button data-select-class="py-4">Large</we-button>
+            </we-select>
+            
+            <!-- Text Alignment -->
+            <we-select string="Alignment">
+                <we-button data-select-class="justify-content-start">Left</we-button>
+                <we-button data-select-class="justify-content-center" data-default="">Center</we-button>
+                <we-button data-select-class="justify-content-end">Right</we-button>
+            </we-select>
+            
+        </div>
+    </xpath>
+</template>
+
+</odoo>
