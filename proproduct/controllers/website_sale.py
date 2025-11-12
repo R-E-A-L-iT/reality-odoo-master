@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 import logging
-from odoo.addons.website_sale.controllers import main
+from datetime import datetime
+
+import requests  # still imported in case you want the geoIP logic later
+
+from odoo import fields, http, SUPERUSER_ID, tools, _
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.website.models.ir_http import sitemap_qs2dom
-from odoo import fields, http, SUPERUSER_ID, tools, _
 from odoo.addons.website.controllers.main import QueryURL
+from odoo.addons.website_sale.controllers import main
 from odoo.http import request
 from werkzeug.exceptions import Forbidden, NotFound
-import requests
-from datetime import datetime
 from odoo.tools import lazy, str2bool
+
 from odoo.addons.proproduct.controllers.table_compute import TableCompute
 
-import logging
 _logger = logging.getLogger(__name__)
+
 
 class WebsiteSale(main.WebsiteSale):
 
@@ -36,44 +39,48 @@ class WebsiteSale(main.WebsiteSale):
         '''/shop/category/<model("product.public.category"):category>/page/<int:page>'''
     ], type='http', auth="public", website=True, sitemap=sitemap_shop)
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, **post):
-        
+
         website = request.env['website'].get_current_website()
         website_domain = website.website_domain()
 
-        # autoselect pricelist by region if not manually set
-        if not request.session.get('pricelist_region_initialized'):
-            try:
-                geo = requests.get("https://ipapi.co/json").json()
-                country_code = geo.get('country_code')
+        # GEOIP-BASED PRICE LIST AUTODETECTION (DISABLED)
+        # ------------------------------------------------
+        # All the CAD/USD auto-selection logic has been intentionally disabled
+        # to fall back to standard Odoo pricelist behavior.
+        #
+        # if not request.session.get('pricelist_region_initialized'):
+        #     try:
+        #         geo = requests.get("https://ipapi.co/json").json()
+        #         country_code = geo.get('country_code')
+        #
+        #         Pricelist = request.env['product.pricelist'].sudo()
+        #
+        #         if country_code == 'US':
+        #             us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
+        #             if us_pricelist and website.is_pricelist_available(us_pricelist.id):
+        #                 request.session['website_sale_current_pl'] = us_pricelist.id
+        #                 request.website.sale_get_order(update_pricelist=True)
+        #                 _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
+        #         elif country_code == 'CA':
+        #             ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
+        #             if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
+        #                 request.session['website_sale_current_pl'] = ca_pricelist.id
+        #                 request.website.sale_get_order(update_pricelist=True)
+        #                 _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
+        #     except Exception as e:
+        #         _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
+        #
+        #     request.session['pricelist_region_initialized'] = True
 
-                Pricelist = request.env['product.pricelist'].sudo()
-
-                if country_code == 'US':
-                    us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
-                    if us_pricelist and website.is_pricelist_available(us_pricelist.id):
-                        request.session['website_sale_current_pl'] = us_pricelist.id
-                        request.website.sale_get_order(update_pricelist=True)
-                        _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
-                elif country_code == 'CA':
-                    ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
-                    if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
-                        request.session['website_sale_current_pl'] = ca_pricelist.id
-                        request.website.sale_get_order(update_pricelist=True)
-                        _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
-            except Exception as e:
-                _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
-
-            request.session['pricelist_region_initialized'] = True
-        
         add_qty = int(post.get('add_qty', 1))
         try:
             min_price = float(min_price)
         except ValueError:
-            min_price = 0
+            min_price = 0.0
         try:
             max_price = float(max_price)
         except ValueError:
-            max_price = 0
+            max_price = 0.0
 
         Category = request.env['product.public.category']
         if category:
@@ -111,30 +118,44 @@ class WebsiteSale(main.WebsiteSale):
                 post['tags'] = None
                 tags = {}
 
-        keep = QueryURL('/shop', **self._shop_get_query_url_kwargs(category and int(category), search, min_price, max_price, **post))
+        keep = QueryURL(
+            '/shop',
+            **self._shop_get_query_url_kwargs(category and int(category), search, min_price, max_price, **post)
+        )
 
+        # ------------------------------------------------------------------
+        # PRICELIST & CONVERSION RATE  (RESTORED / FIXED)
+        # ------------------------------------------------------------------
         now = datetime.timestamp(datetime.now())
-        pricelist = website.pricelist_id
-        if 'website_sale_pricelist_time' in request.session:
-            # Check if we need to refresh the cached pricelist
-            pricelist_save_time = request.session['website_sale_pricelist_time']
-            if pricelist_save_time < now - 60*60:
-                request.session.pop('website_sale_current_pl', None)
-                website.invalidate_recordset(['pricelist_id'])
-                pricelist = website.pricelist_id
-                request.session['website_sale_pricelist_time'] = now
-                request.session['website_sale_current_pl'] = pricelist.id
-        else:
-            request.session['website_sale_pricelist_time'] = now
-            request.session['website_sale_current_pl'] = pricelist.id
 
+        # Use the current order's pricelist if there is an order, otherwise
+        # fall back to the website's default pricelist.
+        order = request.website.sale_get_order(force_create=False)
+        pricelist = order.pricelist_id if order else website.pricelist_id
+
+        # Compute conversion rate for price filter (company currency -> website currency)
         filter_by_price_enabled = website.is_view_active('website_sale.filter_products_price')
         if filter_by_price_enabled:
             company_currency = website.company_id.currency_id
             conversion_rate = request.env['res.currency']._get_conversion_rate(
-                company_currency, website.currency_id, request.website.company_id, fields.Date.today())
+                company_currency,
+                website.currency_id,
+                website.company_id,
+                fields.Date.today(),
+            )
         else:
-            conversion_rate = 1
+            conversion_rate = 1.0
+
+        display_currency = pricelist.currency_id or website.currency_id
+
+        # Old custom caching logic for pricelist has been removed to avoid
+        # overriding Odoo's default behavior:
+        #
+        # pricelist = website.pricelist_id
+        # if 'website_sale_pricelist_time' in request.session:
+        #     ...
+        # else:
+        #     ...
 
         url = '/shop'
         if search:
@@ -150,57 +171,56 @@ class WebsiteSale(main.WebsiteSale):
             'displayImage': True,
             'allowFuzzy': not post.get('noFuzzy'),
             'category': str(category.id) if category else None,
-            'min_price': min_price / conversion_rate,
-            'max_price': max_price / conversion_rate,
+            # Convert from website currency back to company currency for internal search
+            'min_price': min_price / conversion_rate if conversion_rate else min_price,
+            'max_price': max_price / conversion_rate if conversion_rate else max_price,
             'attrib_values': attrib_values,
-            'display_currency': pricelist.currency_id,
+            'display_currency': display_currency,
         }
+
         # No limit because attributes are obtained from complete product list
-        fuzzy_search_term, product_count, search_product = self._shop_lookup_products(attrib_set, options, post, search, website)
+        fuzzy_search_term, product_count, search_product = self._shop_lookup_products(
+            attrib_set, options, post, search, website
+        )
 
-        if pricelist.currency_id:
-            currency = pricelist.currency_id.name
-            if currency == 'USD':
-                search_product = search_product.filtered(lambda e: e.is_us == True)
-                product_count = len(search_product)
-            elif currency == 'CAD':
-                search_product = search_product.filtered(lambda e: e.is_ca == True)
-                product_count = len(search_product)
-        else:
-            tst = requests.get("https://ipapi.co/json").json()
-            if tst['country_code'] == 'US':
-                search_product = search_product.filtered(lambda e: e.is_us == True)
-                product_count = len(search_product)
-            elif tst['country_code'] == 'CA':
-                search_product = search_product.filtered(lambda e: e.is_ca == True)
-                product_count = len(search_product)
+        # CAD / USD PRODUCT VISIBILITY FILTERING REMOVED
+        # ------------------------------------------------
+        # If you ever want to re-enable region-specific visibility, this is
+        # where it used to happen:
+        #
+        # if pricelist.currency_id:
+        #     currency = pricelist.currency_id.name
+        #     if currency == 'USD':
+        #         search_product = search_product.filtered(lambda e: e.is_us)
+        #         product_count = len(search_product)
+        #     elif currency == 'CAD':
+        #         search_product = search_product.filtered(lambda e: e.is_ca)
+        #         product_count = len(search_product)
+        # else:
+        #     tst = requests.get("https://ipapi.co/json").json()
+        #     ...
 
-
+        # Re-check price filter to compute min/max bounds using SQL
         filter_by_price_enabled = request.website.is_view_active('website_sale.filter_products_price')
         if filter_by_price_enabled:
-            # TODO Find an alternative way to obtain the domain through the search metadata.
             Product = request.env['product.template'].with_context(bin_size=True)
             domain = self._get_shop_domain(search, category, attrib_values)
 
-            # This is ~4 times more efficient than a search for the cheapest and most expensive products
+            # This is ~4 times more efficient than searching for cheapest and most expensive products
             query = Product._where_calc(domain)
             Product._apply_ir_rules(query, 'read')
             from_clause, where_clause, where_params = query.get_sql()
-            query = f"""
-                SELECT COALESCE(MIN(list_price), 0) * {conversion_rate}, COALESCE(MAX(list_price), 0) * {conversion_rate}
+            sql = f"""
+                SELECT COALESCE(MIN(list_price), 0) * {conversion_rate},
+                       COALESCE(MAX(list_price), 0) * {conversion_rate}
                   FROM {from_clause}
                  WHERE {where_clause}
             """
-            request.env.cr.execute(query, where_params)
+            request.env.cr.execute(sql, where_params)
             available_min_price, available_max_price = request.env.cr.fetchone()
 
             if min_price or max_price:
-                # The if/else condition in the min_price / max_price value assignment
-                # tackles the case where we switch to a list of products with different
-                # available min / max prices than the ones set in the previous page.
-                # In order to have logical results and not yield empty product lists, the
-                # price filter is set to their respective available prices when the specified
-                # min exceeds the max, and / or the specified max is lower than the available min.
+                # Ensure filters stay within the available range
                 if min_price:
                     min_price = min_price if min_price <= available_max_price else available_min_price
                     post['min_price'] = min_price
@@ -239,7 +259,6 @@ class WebsiteSale(main.WebsiteSale):
 
         ProductAttribute = request.env['product.attribute']
         if products:
-            # get all products without limit
             attributes = lazy(lambda: ProductAttribute.search([
                 ('product_tmpl_ids', 'in', search_product.ids),
                 ('visibility', '=', 'visible'),

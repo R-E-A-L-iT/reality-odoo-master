@@ -365,13 +365,125 @@ class order(models.Model):
 
         return json.dumps(items)
 
-    # this function adds derek@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
-    @api.model_create_multi
-    def create(self, vals_list):
-        orders = super().create(vals_list)
+    def _set_company_based_on_visitor_country(self):
+        """Assign company (and matching warehouse) based on visitor's country."""
+        for order in self:
+            # Only process website orders
+            if not order.website_id:
+                continue
 
-        # apply taxes if canadian quote
-        orders._apply_canadian_province_taxes()
+            previous_company = order.company_id
+            previous_warehouse = order.warehouse_id
+
+            company_to_assign = None
+
+            # Try to get visitor from request context
+            try:
+                if request and hasattr(request, 'env'):
+                    visitor = request.env['website.visitor']._get_visitor_from_request()
+                    if visitor and visitor.country_id:
+                        us_country = self.env.ref('base.us', raise_if_not_found=False)
+                        _logger.info(
+                            '>>>>>>>Website order %s - visitor country: %s',
+                            order.name, visitor.country_id.name
+                        )
+
+                        if us_country and visitor.country_id.id == us_country.id:
+                            # US visitor → assign to R-E-A-L.iT U.S. Inc.
+                            company_to_assign = self.env['res.company'].search(
+                                [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                                limit=1,
+                            )
+                            _logger.info(
+                                '>>>>>>>Assigning US company to sale order %s >>>: %s',
+                                order.name,
+                                company_to_assign.name if company_to_assign else None,
+                            )
+                        else:
+                            # Non-US visitor → R-E-A-L.iT Solutions
+                            company_to_assign = self.env['res.company'].search(
+                                [('name', '=', 'R-E-A-L.iT Solutions')],
+                                limit=1,
+                            )
+                            _logger.info(
+                                '>>>>>>>Assigning Solutions company to sale order %s >>>: %s',
+                                order.name,
+                                company_to_assign.name if company_to_assign else None,
+                            )
+            except Exception as e:
+                _logger.warning(
+                    '>>>>>>>Could not get visitor from request for order %s: %s',
+                    order.name, str(e),
+                )
+
+            # Fallback: default to Solutions
+            if not company_to_assign:
+                company_to_assign = self.env['res.company'].search(
+                    [('name', '=', 'R-E-A-L.iT Solutions')],
+                    limit=1,
+                )
+                _logger.info(
+                    '>>>>>>>Fallback to Solutions company for sale order %s >>>: %s',
+                    order.name,
+                    company_to_assign.name if company_to_assign else None,
+                )
+
+            if not company_to_assign or order.company_id == company_to_assign:
+                continue
+
+            # Actually change company
+            _logger.info(
+                '>>>>>>>Changing company on %s: %s -> %s',
+                order.name,
+                previous_company.name if previous_company else None,
+                company_to_assign.name,
+            )
+            order.company_id = company_to_assign.id
+
+            # --- IMPORTANT PART: pick a warehouse for that company ---
+            warehouse_env = (
+                self.env['stock.warehouse']
+                .sudo()
+                .with_context(allowed_company_ids=[company_to_assign.id])
+                .with_company(company_to_assign.id)
+            )
+
+            warehouse = warehouse_env.search(
+                [('company_id', '=', company_to_assign.id)],
+                limit=1,
+            )
+
+            if warehouse:
+                _logger.info(
+                    '>>>>>>>Assigning warehouse on %s: %s -> %s',
+                    order.name,
+                    previous_warehouse.display_name if previous_warehouse else None,
+                    warehouse.display_name,
+                )
+                order.warehouse_id = warehouse.id
+            else:
+                _logger.warning(
+                    '>>>>>>>No warehouse found for company %s; sale order %s may crash with incompatible companies',
+                    company_to_assign.name,
+                    order.name,
+                )
+
+            # Let Odoo recompute dependent fields
+            try:
+                order._onchange_company_id()
+            except Exception as e:
+                _logger.warning(
+                    '>>>>>>>Error in _onchange_company_id for order %s: %s',
+                    order.name, str(e),
+                )
+
+    # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
+    @api.model
+    def create(self, vals):
+        order = super().create(vals)
+
+        # Assign company based on visitor location for website orders
+        self._set_company_based_on_visitor_country()
 
         # Find or create the partner with email derek@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
@@ -399,13 +511,12 @@ class order(models.Model):
             order.message_subscribe(partner_ids=[sales_email.id])
 
         # Add non-company partners to subscribers (automatic quotes from store)
-        for order in orders:
-            partner = order.partner_id
-            if partner and not partner.is_company:
-                if partner.id not in order.message_partner_ids.ids:
-                    order.message_subscribe(partner_ids=[partner.id])
-        
-        return orders
+        partner = order.partner_id
+        if partner and not partner.is_company:
+            if partner.id not in order.message_partner_ids.ids:
+                order.message_subscribe(partner_ids=[partner.id])
+
+        return order
 
 
     @api.model
