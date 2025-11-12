@@ -76,6 +76,7 @@
 			</t>
 		</xpath>
 
+		<xpath expr="//t[@t-set='information_block']" position="replace" />
 
 		<!-- Add Description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
