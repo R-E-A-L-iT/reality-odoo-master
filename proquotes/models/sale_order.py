@@ -164,10 +164,49 @@ class order(models.Model):
 
         return json.dumps(items)
 
+    def _set_company_based_on_visitor_country(self, order):
+        """Assign company based on visitor's country: US → R-E-A-L.iT U.S. Inc., Others → R-E-A-L.iT Solutions"""
+        # Only process website orders
+        if not order.website_id:
+            return
+
+        company_to_assign = None
+
+        # Try to get visitor from request context
+        try:
+            if request and hasattr(request, 'env'):
+                visitor = request.env['website.visitor']._get_visitor_from_request()
+                if visitor and visitor.country_id:
+                    us_country = self.env.ref('base.us', raise_if_not_found=False)
+                    _logger.info('>>>>>>>Website order - visitor country: %s', visitor.country_id.name)
+
+                    if us_country and visitor.country_id.id == us_country.id:
+                        # US visitor → assign to R-E-A-L.iT U.S. Inc.
+                        company_to_assign = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT U.S. Inc.')], limit=1)
+                        _logger.info('>>>>>>>Assigning US company to sale order>>>:%s', company_to_assign.name if company_to_assign else None)
+                    else:
+                        # Non-US visitor → assign to R-E-A-L.iT Solutions
+                        company_to_assign = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT Solutions')], limit=1)
+                        _logger.info('>>>>>>>Assigning Solutions company to sale order>>>:%s', company_to_assign.name if company_to_assign else None)
+        except Exception as e:
+            _logger.warning('>>>>>>>Could not get visitor from request: %s', str(e))
+
+        # Fallback: if no visitor or country unknown → default to R-E-A-L.iT Solutions
+        if not company_to_assign:
+            company_to_assign = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT Solutions')], limit=1)
+            _logger.info('>>>>>>>Fallback to Solutions company for sale order>>>:%s', company_to_assign.name if company_to_assign else None)
+
+        # Assign the company
+        if company_to_assign:
+            order.company_id = company_to_assign.id
+
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
         order = super().create(vals)
+
+        # Assign company based on visitor location for website orders
+        self._set_company_based_on_visitor_country(order)
 
         # Find or create the partner with email sales@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
@@ -179,7 +218,7 @@ class order(models.Model):
         if partner and not partner.is_company:
             if partner.id not in order.message_partner_ids.ids:
                 order.message_subscribe(partner_ids=[partner.id])
-        
+
         return order
 
 
