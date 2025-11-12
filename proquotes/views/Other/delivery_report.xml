@@ -25,9 +25,10 @@
 
 		<!-- Translate Info Labels -->
 
-		<xpath expr="//div[@name='partner_address']" position="replace">
-			<div name="partner_address" t-else="">
-				<t t-set="src" t-value="o.sale_id" />
+		<xpath expr="//t[@t-set='address']" position="replace">
+			<t t-set="address">
+				<div name="partner_address">
+				<t t-set="src" t-value="o.sale_id"/>
 				<style>
 					#addressTable, #addressTable * {
 					color: #495057;
@@ -40,45 +41,41 @@
 				</style>
 				<table id="addressTable" style="border-style: collapse !important;" border="0">
 					<tr>
-						<td colspan="100">
-							<h3 t-if="src.partner_id.parent_id != False" t-field="src.partner_id.parent_id.name" />
-							<h3 t-field="src.partner_id.name" />
-						</td>
+					<td colspan="100">
+						<h3 t-if="src.partner_id.parent_id != False" t-field="src.partner_id.parent_id.name"/>
+						<h3 t-field="src.partner_id.name"/>
+					</td>
 					</tr>
 					<tr>
-						<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
-							<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturer à</h5>
-							<h5 t-else="" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
-							<span t-field="src.partner_id.name" />
-							<br />
-							<span t-field="src.partner_id.street" />
-							<br />
-							<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','" />
-							<span t-esc="src.partner_id.state_id.code" />
-							<span t-field="src.partner_id.zip" />
-							<span t-field="src.partner_id.country_id.name" />
-							<br />
-							<span t-field="src.partner_id.phone" />
-							<br />
-						</td>
-						<td t-if="src.partner_id.id != src.partner_shipping_id.id" style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
-							<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Envoyer à</h5>
-							<h5 t-else="" style="color: #db0d0d;">Ship To</h5>
-							<span t-field="src.partner_id.name" />
-							<br />
-							<span t-field="src.partner_shipping_id.street" />
-							<br />
-							<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','" />
-							<span t-esc="src.partner_shipping_id.state_id.code" />
-							<span t-field="src.partner_shipping_id.zip" />
-							<span t-field="src.partner_shipping_id.country_id.name" />
-							<br />
-							<span t-field="src.partner_shipping_id.phone" />
-						</td>
+					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
+						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturer à</h5>
+						<h5 t-else="" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
+						<span t-field="src.partner_id.name"/><br/>
+						<span t-field="src.partner_id.street"/><br/>
+						<span t-if="src.partner_id.city != False" t-out="src.partner_id.city + ','"/>
+						<span t-esc="src.partner_id.state_id.code"/>
+						<span t-field="src.partner_id.zip"/>
+						<span t-field="src.partner_id.country_id.name"/><br/>
+						<span t-field="src.partner_id.phone"/><br/>
+					</td>
+					<td t-if="src.partner_id.id != src.partner_shipping_id.id"
+						style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
+						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Envoyer à</h5>
+						<h5 t-else="" style="color: #db0d0d;">Ship To</h5>
+						<span t-field="src.partner_id.name"/><br/>
+						<span t-field="src.partner_shipping_id.street"/><br/>
+						<span t-if="src.partner_shipping_id.city != False" t-out="src.partner_shipping_id.city + ','"/>
+						<span t-esc="src.partner_shipping_id.state_id.code"/>
+						<span t-field="src.partner_shipping_id.zip"/>
+						<span t-field="src.partner_shipping_id.country_id.name"/><br/>
+						<span t-field="src.partner_shipping_id.phone"/>
+					</td>
 					</tr>
 				</table>
-			</div>
+				</div>
+			</t>
 		</xpath>
+
 
 		<!-- Add Description -->
 		<xpath expr="//tr[@t-foreach=&quot;lines&quot;]//td[1]//span" position="after">
