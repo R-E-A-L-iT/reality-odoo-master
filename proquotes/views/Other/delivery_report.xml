@@ -24,6 +24,9 @@
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
 		<!-- Translate Info Labels -->
+		<xpath expr="//div[@name='outgoing_delivery_address']" position="replace">
+		</xpath>
+
 		<xpath expr="//div[hasclass('row')][1]" position="replace">
 			<t t-set="src" t-value="o.sale_id" />
 			<style>
