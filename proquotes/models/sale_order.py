@@ -204,7 +204,7 @@ class order(models.Model):
             order.company_id = company_to_assign.id
 
             # Make sure warehouse matches the company
-            warehouse = self.env['stock.warehouse'].search([
+            warehouse = self.env['stock.warehouse'].sudo().search([
                 ('company_id', '=', company_to_assign.id)
             ], limit=1)
             if warehouse:
