@@ -164,63 +164,117 @@ class order(models.Model):
 
         return json.dumps(items)
 
-    def _set_company_based_on_visitor_country(self, order):
-        """Assign company based on visitor's country: US → R-E-A-L.iT U.S. Inc., Others → R-E-A-L.iT Solutions"""
-        if not order.website_id:
-            return
+    def _set_company_based_on_visitor_country(self):
+        """Assign company (and matching warehouse) based on visitor's country."""
+        for order in self:
+            # Only process website orders
+            if not order.website_id:
+                continue
 
-        company_to_assign = None
+            previous_company = order.company_id
+            previous_warehouse = order.warehouse_id
 
-        try:
-            if request and hasattr(request, 'env'):
-                visitor = request.env['website.visitor']._get_visitor_from_request()
-                if visitor and visitor.country_id:
-                    us_country = self.env.ref('base.us', raise_if_not_found=False)
-                    _logger.info('>>>>>>>Website order - visitor country: %s', visitor.country_id.name)
+            company_to_assign = None
 
-                    if us_country and visitor.country_id.id == us_country.id:
-                        company_to_assign = self.env['res.company'].search([
-                            ('name', '=', 'R-E-A-L.iT U.S. Inc.')
-                        ], limit=1)
-                        _logger.info('>>>>>>>Assigning US company to sale order>>>:%s',
-                                    company_to_assign.name if company_to_assign else None)
-                    else:
-                        company_to_assign = self.env['res.company'].search([
-                            ('name', '=', 'R-E-A-L.iT Solutions')
-                        ], limit=1)
-                        _logger.info('>>>>>>>Assigning Solutions company to sale order>>>:%s',
-                                    company_to_assign.name if company_to_assign else None)
-        except Exception as e:
-            _logger.warning('>>>>>>>Could not get visitor from request: %s', str(e))
+            # Try to get visitor from request context
+            try:
+                if request and hasattr(request, 'env'):
+                    visitor = request.env['website.visitor']._get_visitor_from_request()
+                    if visitor and visitor.country_id:
+                        us_country = self.env.ref('base.us', raise_if_not_found=False)
+                        _logger.info(
+                            '>>>>>>>Website order %s - visitor country: %s',
+                            order.name, visitor.country_id.name
+                        )
 
-        if not company_to_assign:
-            company_to_assign = self.env['res.company'].search([
-                ('name', '=', 'R-E-A-L.iT Solutions')
-            ], limit=1)
-            _logger.info('>>>>>>>Fallback to Solutions company for sale order>>>:%s',
-                        company_to_assign.name if company_to_assign else None)
+                        if us_country and visitor.country_id.id == us_country.id:
+                            # US visitor → assign to R-E-A-L.iT U.S. Inc.
+                            company_to_assign = self.env['res.company'].search(
+                                [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                                limit=1,
+                            )
+                            _logger.info(
+                                '>>>>>>>Assigning US company to sale order %s >>>: %s',
+                                order.name,
+                                company_to_assign.name if company_to_assign else None,
+                            )
+                        else:
+                            # Non-US visitor → R-E-A-L.iT Solutions
+                            company_to_assign = self.env['res.company'].search(
+                                [('name', '=', 'R-E-A-L.iT Solutions')],
+                                limit=1,
+                            )
+                            _logger.info(
+                                '>>>>>>>Assigning Solutions company to sale order %s >>>: %s',
+                                order.name,
+                                company_to_assign.name if company_to_assign else None,
+                            )
+            except Exception as e:
+                _logger.warning(
+                    '>>>>>>>Could not get visitor from request for order %s: %s',
+                    order.name, str(e),
+                )
 
-        if company_to_assign and order.company_id != company_to_assign:
+            # Fallback: default to Solutions
+            if not company_to_assign:
+                company_to_assign = self.env['res.company'].search(
+                    [('name', '=', 'R-E-A-L.iT Solutions')],
+                    limit=1,
+                )
+                _logger.info(
+                    '>>>>>>>Fallback to Solutions company for sale order %s >>>: %s',
+                    order.name,
+                    company_to_assign.name if company_to_assign else None,
+                )
+
+            if not company_to_assign or order.company_id == company_to_assign:
+                continue
+
+            # Actually change company
+            _logger.info(
+                '>>>>>>>Changing company on %s: %s -> %s',
+                order.name,
+                previous_company.name if previous_company else None,
+                company_to_assign.name,
+            )
             order.company_id = company_to_assign.id
 
-            # Make sure warehouse matches the company
-            warehouse = self.env['stock.warehouse'].sudo().search([
-                ('company_id', '=', company_to_assign.id)
-            ], limit=1)
+            # --- IMPORTANT PART: pick a warehouse for that company ---
+            warehouse_env = (
+                self.env['stock.warehouse']
+                .sudo()
+                .with_context(allowed_company_ids=[company_to_assign.id])
+                .with_company(company_to_assign.id)
+            )
+
+            warehouse = warehouse_env.search(
+                [('company_id', '=', company_to_assign.id)],
+                limit=1,
+            )
+
             if warehouse:
-                _logger.info('>>>>>>>Assigning warehouse %s to sale order %s',
-                            warehouse.name, order.name)
+                _logger.info(
+                    '>>>>>>>Assigning warehouse on %s: %s -> %s',
+                    order.name,
+                    previous_warehouse.display_name if previous_warehouse else None,
+                    warehouse.display_name,
+                )
                 order.warehouse_id = warehouse.id
             else:
-                _logger.warning('>>>>>>>No warehouse found for company %s, sale order %s may fail with multi-company errors',
-                                company_to_assign.name, order.name)
+                _logger.warning(
+                    '>>>>>>>No warehouse found for company %s; sale order %s may crash with incompatible companies',
+                    company_to_assign.name,
+                    order.name,
+                )
 
-            # Let Odoo recompute related stuff for the new company (taxes, journals, etc.)
+            # Let Odoo recompute dependent fields
             try:
                 order._onchange_company_id()
             except Exception as e:
-                _logger.warning('>>>>>>>Error in _onchange_company_id for order %s: %s',
-                                order.name, str(e))
+                _logger.warning(
+                    '>>>>>>>Error in _onchange_company_id for order %s: %s',
+                    order.name, str(e),
+                )
 
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
