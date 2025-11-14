@@ -363,6 +363,18 @@ class QuoteCustomerPortal(cPortal):
 
 
     def _post_view_notification(self, order, viewer_partner):
+
+        email = (viewer_partner.email or '').strip().lower()
+        first_email = re.split(r'[;,]', email)[0].strip() if email else ''
+        
+        if first_email.endswith('@r-e-a-l.it'):
+            _logger.info(
+                "Skipping quotation viewed notification for internal partner %s (%s)",
+                viewer_partner.id,
+                first_email,
+            )
+            return
+
         recipient_ids = []
         if order.user_id and order.user_id.partner_id:
             recipient_ids.append(order.user_id.partner_id.id)
