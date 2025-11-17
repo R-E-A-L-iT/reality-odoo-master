@@ -41,29 +41,29 @@ class WebsiteSale(main.WebsiteSale):
         website_domain = website.website_domain()
 
         # autoselect pricelist by region if not manually set
-        if not request.session.get('pricelist_region_initialized'):
-            try:
-                geo = requests.get("https://ipapi.co/json").json()
-                country_code = geo.get('country_code')
+        # if not request.session.get('pricelist_region_initialized'):
+        #     try:
+        #         geo = requests.get("https://ipapi.co/json").json()
+        #         country_code = geo.get('country_code')
 
-                Pricelist = request.env['product.pricelist'].sudo()
+        #         Pricelist = request.env['product.pricelist'].sudo()
 
-                if country_code == 'US':
-                    us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
-                    if us_pricelist and website.is_pricelist_available(us_pricelist.id):
-                        request.session['website_sale_current_pl'] = us_pricelist.id
-                        request.website.sale_get_order(update_pricelist=True)
-                        _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
-                elif country_code == 'CA':
-                    ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
-                    if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
-                        request.session['website_sale_current_pl'] = ca_pricelist.id
-                        request.website.sale_get_order(update_pricelist=True)
-                        _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
-            except Exception as e:
-                _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
+        #         if country_code == 'US':
+        #             us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
+        #             if us_pricelist and website.is_pricelist_available(us_pricelist.id):
+        #                 request.session['website_sale_current_pl'] = us_pricelist.id
+        #                 request.website.sale_get_order(update_pricelist=True)
+        #                 _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
+        #         elif country_code == 'CA':
+        #             ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
+        #             if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
+        #                 request.session['website_sale_current_pl'] = ca_pricelist.id
+        #                 request.website.sale_get_order(update_pricelist=True)
+        #                 _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
+        #     except Exception as e:
+        #         _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
 
-            request.session['pricelist_region_initialized'] = True
+        #     request.session['pricelist_region_initialized'] = True
         
         add_qty = int(post.get('add_qty', 1))
         try:
@@ -114,27 +114,27 @@ class WebsiteSale(main.WebsiteSale):
         keep = QueryURL('/shop', **self._shop_get_query_url_kwargs(category and int(category), search, min_price, max_price, **post))
 
         now = datetime.timestamp(datetime.now())
-        pricelist = website.pricelist_id
-        if 'website_sale_pricelist_time' in request.session:
-            # Check if we need to refresh the cached pricelist
-            pricelist_save_time = request.session['website_sale_pricelist_time']
-            if pricelist_save_time < now - 60*60:
-                request.session.pop('website_sale_current_pl', None)
-                website.invalidate_recordset(['pricelist_id'])
-                pricelist = website.pricelist_id
-                request.session['website_sale_pricelist_time'] = now
-                request.session['website_sale_current_pl'] = pricelist.id
-        else:
-            request.session['website_sale_pricelist_time'] = now
-            request.session['website_sale_current_pl'] = pricelist.id
+        # pricelist = website.pricelist_id
+        # if 'website_sale_pricelist_time' in request.session:
+        #     # Check if we need to refresh the cached pricelist
+        #     pricelist_save_time = request.session['website_sale_pricelist_time']
+        #     if pricelist_save_time < now - 60*60:
+        #         request.session.pop('website_sale_current_pl', None)
+        #         website.invalidate_recordset(['pricelist_id'])
+        #         pricelist = website.pricelist_id
+        #         request.session['website_sale_pricelist_time'] = now
+        #         request.session['website_sale_current_pl'] = pricelist.id
+        # else:
+        #     request.session['website_sale_pricelist_time'] = now
+        #     request.session['website_sale_current_pl'] = pricelist.id
 
-        filter_by_price_enabled = website.is_view_active('website_sale.filter_products_price')
-        if filter_by_price_enabled:
-            company_currency = website.company_id.currency_id
-            conversion_rate = request.env['res.currency']._get_conversion_rate(
-                company_currency, website.currency_id, request.website.company_id, fields.Date.today())
-        else:
-            conversion_rate = 1
+        # filter_by_price_enabled = website.is_view_active('website_sale.filter_products_price')
+        # if filter_by_price_enabled:
+        #     company_currency = website.company_id.currency_id
+        #     conversion_rate = request.env['res.currency']._get_conversion_rate(
+        #         company_currency, website.currency_id, request.website.company_id, fields.Date.today())
+        # else:
+        #     conversion_rate = 1
 
         url = '/shop'
         if search:
@@ -153,27 +153,27 @@ class WebsiteSale(main.WebsiteSale):
             'min_price': min_price / conversion_rate,
             'max_price': max_price / conversion_rate,
             'attrib_values': attrib_values,
-            'display_currency': pricelist.currency_id,
+            # 'display_currency': pricelist.currency_id,
         }
         # No limit because attributes are obtained from complete product list
         fuzzy_search_term, product_count, search_product = self._shop_lookup_products(attrib_set, options, post, search, website)
 
-        if pricelist.currency_id:
-            currency = pricelist.currency_id.name
-            if currency == 'USD':
-                search_product = search_product.filtered(lambda e: e.is_us == True)
-                product_count = len(search_product)
-            elif currency == 'CAD':
-                search_product = search_product.filtered(lambda e: e.is_ca == True)
-                product_count = len(search_product)
-        else:
-            tst = requests.get("https://ipapi.co/json").json()
-            if tst['country_code'] == 'US':
-                search_product = search_product.filtered(lambda e: e.is_us == True)
-                product_count = len(search_product)
-            elif tst['country_code'] == 'CA':
-                search_product = search_product.filtered(lambda e: e.is_ca == True)
-                product_count = len(search_product)
+        # if pricelist.currency_id:
+        #     currency = pricelist.currency_id.name
+        #     if currency == 'USD':
+        #         search_product = search_product.filtered(lambda e: e.is_us == True)
+        #         product_count = len(search_product)
+        #     elif currency == 'CAD':
+        #         search_product = search_product.filtered(lambda e: e.is_ca == True)
+        #         product_count = len(search_product)
+        # else:
+        #     tst = requests.get("https://ipapi.co/json").json()
+        #     if tst['country_code'] == 'US':
+        #         search_product = search_product.filtered(lambda e: e.is_us == True)
+        #         product_count = len(search_product)
+        #     elif tst['country_code'] == 'CA':
+        #         search_product = search_product.filtered(lambda e: e.is_ca == True)
+        #         product_count = len(search_product)
 
 
         filter_by_price_enabled = request.website.is_view_active('website_sale.filter_products_price')
