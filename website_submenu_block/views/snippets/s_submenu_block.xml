@@ -2,7 +2,7 @@
 <odoo>
 
 <template id="s_submenu_block" name="Submenu Block">
-    <section class="s_submenu_block d-none d-md-block" data-vcss="001" data-name="Submenu Block">
+    <section class="s_submenu_block d-none d-md-block" data-vcss="001" data-name="Submenu Block" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #dee2e6;">
         <div class="container-fluid">
             <nav class="s_submenu_nav">
                 <ul class="s_submenu_list nav justify-content-center">

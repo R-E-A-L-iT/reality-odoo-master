@@ -58,12 +58,38 @@
                            data-exclude=""/>
             
             <!-- Text Color -->
-            <we-colorpicker string="Text Color" 
+            <we-colorpicker string="Text Color"
                            data-css-property="color"
                            data-select-style=""
                            data-exclude=""
                            data-target=".s_submenu_link"/>
-            
+
+            <!-- Border Color -->
+            <we-colorpicker string="Border Color"
+                           data-css-property="border-bottom-color"
+                           data-select-style=""
+                           data-exclude=""/>
+
+            <!-- Border Width -->
+            <we-input string="Border Width"
+                     data-name="border_width_opt"
+                     data-css-property="border-bottom-width"
+                     data-select-style="0"
+                     data-unit="px"/>
+
+            <!-- Border Style -->
+            <we-select string="Border Style"
+                      data-css-property="border-bottom-style"
+                      data-dependencies="border_width_opt">
+                <we-button data-select-style="solid">Solid</we-button>
+                <we-button data-select-style="dotted">Dotted</we-button>
+                <we-button data-select-style="dashed">Dashed</we-button>
+<!--                <we-button data-select-style="double">Double</we-button>-->
+<!--                <we-button data-select-style="groove">Groove</we-button>-->
+<!--                <we-button data-select-style="ridge">Ridge</we-button>-->
+<!--                <we-button data-select-style="none">None</we-button>-->
+            </we-select>
+
             <we-separator/>
             
             <!-- Spacing -->

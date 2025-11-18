@@ -5,25 +5,27 @@
     // Sticky positioning - dynamically adjust based on main navbar visibility
     position: sticky;
     top: 56px; // Default: below Odoo header
-    z-index: 1050; // High z-index to ensure it's always visible above main header
+    z-index: 1020; // Below Odoo header dropdowns (1050) but above content
     transition: top 0.3s ease; // Smooth transition when position changes
-    
+
     // When main navbar is hidden (scrolled away), move to top
     &.o_navbar_hidden {
         top: 0;
     }
-    
-    // Ensure submenu always stays above main header
+
+    // Ensure submenu stays below main header dropdowns
     &,
     &.o_submenu_is_scrolled,
     &.o_submenu_affixed,
     &.o_navbar_hidden {
-        z-index: 1050 !important; // Higher z-index to ensure visibility
+        z-index: 1020 !important; // Below header dropdowns to allow interaction
     }
     
     // Default background and styling
     background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #dee2e6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     
     // Responsive behavior - hide on mobile
