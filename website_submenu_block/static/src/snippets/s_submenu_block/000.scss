@@ -2,23 +2,16 @@
 // ===================
 
 .s_submenu_block {
-    // Sticky positioning - dynamically adjust based on main navbar visibility
-    position: sticky;
-    top: 56px; // Default: below Odoo header
+    // Default positioning - relative in normal flow with full width
+    position: relative;
+    width: 100%;
     z-index: 1020; // Below Odoo header dropdowns (1050) but above content
-    transition: top 0.3s ease; // Smooth transition when position changes
+    transition: top 0.3s ease, transform 0.3s ease;
 
-    // When main navbar is hidden (scrolled away), move to top
-    &.o_navbar_hidden {
-        top: 0;
-    }
-
-    // Ensure submenu stays below main header dropdowns
-    &,
-    &.o_submenu_is_scrolled,
-    &.o_submenu_affixed,
-    &.o_navbar_hidden {
-        z-index: 1020 !important; // Below header dropdowns to allow interaction
+    // Ensure container takes full width
+    .container-fluid {
+        max-width: 100%;
+        width: 100%;
     }
     
     // Default background and styling
@@ -94,10 +87,14 @@
 
 // Standard scroll effect - default behavior
 .s_submenu_block.o_submenu_standard {
+    width: 100%;
+
     &.o_submenu_affixed {
+        left: 0;
+        right: 0;
         transform: translateY(0);
     }
-    
+
     &.o_submenu_is_scrolled {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
@@ -118,12 +115,18 @@
 
 // Disappears scroll effect - slides up/down based on scroll direction
 .s_submenu_block.o_submenu_disappears {
+    width: 100%;
     transition: transform 0.3s ease;
-    
+
+    &.o_submenu_affixed {
+        left: 0;
+        right: 0;
+    }
+
     &.o_submenu_hidden_up {
         transform: translateY(-100%);
     }
-    
+
     &.o_submenu_hidden_down {
         transform: translateY(-100%);
     }
@@ -131,8 +134,14 @@
 
 // Fade out scroll effect - fades based on scroll direction
 .s_submenu_block.o_submenu_fade_out {
+    width: 100%;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    
+
+    &.o_submenu_affixed {
+        left: 0;
+        right: 0;
+    }
+
     &.o_submenu_fade_hidden {
         opacity: 0;
         transform: translateY(-50%);
@@ -150,14 +159,19 @@
 
 // Over the content position - overlay style
 .s_submenu_block.o_submenu_overlay {
-    position: absolute;
-    top: 56px; // Position below main header
-    z-index: 1050 !important; // Ensure it's always visible
+    position: relative;
+    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1020;
     background-color: rgba(248, 249, 250, 0.95);
     backdrop-filter: blur(5px);
-    
-    &.o_navbar_hidden {
+
+    &.o_submenu_affixed {
+        position: fixed;
         top: 0;
+        left: 0;
+        right: 0;
     }
 }
 
@@ -173,15 +187,12 @@
 // Affixed state for scroll effects
 .s_submenu_block.o_submenu_affixed {
     position: fixed;
-    top: 56px;
+    top: 0; // Will be adjusted by JavaScript based on header height
     left: 0;
     right: 0;
-    z-index: 1050 !important; // Ensure it's always visible
-    transition: transform 0.3s ease;
-    
-    &.o_navbar_hidden {
-        top: 0;
-    }
+    width: 100%;
+    z-index: 1020;
+    transition: transform 0.3s ease, top 0.3s ease;
 }
 
 // Scrolled state indicator
