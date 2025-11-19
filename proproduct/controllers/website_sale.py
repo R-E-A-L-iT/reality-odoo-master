@@ -146,6 +146,8 @@ class WebsiteSale(main.WebsiteSale):
         else:
             conversion_rate = 1.0
 
+        display_currency = pricelist.currency_id or website.currency_id
+
         # Old custom caching logic for pricelist has been removed to avoid
         # overriding Odoo's default behavior:
         #
@@ -173,7 +175,7 @@ class WebsiteSale(main.WebsiteSale):
             'min_price': min_price / conversion_rate if conversion_rate else min_price,
             'max_price': max_price / conversion_rate if conversion_rate else max_price,
             'attrib_values': attrib_values,
-            # 'display_currency': pricelist.currency_id,  # optional
+            'display_currency': display_currency,
         }
 
         # No limit because attributes are obtained from complete product list
