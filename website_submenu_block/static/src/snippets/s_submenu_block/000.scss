@@ -3,7 +3,7 @@
 
 .s_submenu_block {
     // Default positioning - relative in normal flow with full width
-    position: relative;
+    position: sticky;
     width: 100%;
     z-index: 1020; // Below Odoo header dropdowns (1050) but above content
     transition: top 0.3s ease, transform 0.3s ease;
