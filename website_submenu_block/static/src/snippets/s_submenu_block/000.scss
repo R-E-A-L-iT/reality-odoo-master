@@ -103,7 +103,6 @@
 // Fixed scroll effect - always stays in place
 .s_submenu_block.o_submenu_fixed {
     position: fixed !important;
-    top: 56px;
     left: 0;
     right: 0;
     z-index: 1050 !important; // Ensure it's always visible
