@@ -27,7 +27,7 @@ options.registry.SubmenuBlock = options.Class.extend({
     async addLink(previewMode, widgetValue, params) {
         // Get existing links
         const $links = this.$target.find('.s_submenu_link');
-        
+
         const linkData = [];
         $links.each((index, link) => {
             const $link = $(link);
@@ -46,6 +46,99 @@ options.registry.SubmenuBlock = options.Class.extend({
         if (newLinkData) {
             this._updateLinks(newLinkData);
         }
+    },
+
+    /**
+     * Set hover color (text or background)
+     */
+    setHoverColor(previewMode, widgetValue, params) {
+        const type = params.defaultValue || 'text'; // 'text' or 'bg'
+        let colorValue = params.activeValue;
+
+        // If no activeValue, try to extract from class
+        if (!colorValue) {
+            const colorClass = params.colorPrefix + widgetValue;
+            const isBackground = type === 'bg' || colorClass.startsWith('bg-');
+            colorValue = this._extractColorFromClass(colorClass, isBackground);
+        }
+
+        if (colorValue) {
+            const varName = type === 'bg' ? '--submenu-link-hover-bg' : '--submenu-link-hover-color';
+            this.$target[0].style.setProperty(varName, colorValue);
+
+            // Store the selected color name as a data attribute for state tracking
+            const attrName = type === 'bg' ? 'data-hover-bg-color' : 'data-hover-text-color';
+            this.$target[0].setAttribute(attrName, widgetValue);
+        }
+    },
+
+    /**
+     * Set active color (text or background)
+     */
+    setActiveColor(previewMode, widgetValue, params) {
+        const type = params.defaultValue || 'text'; // 'text' or 'bg'
+        let colorValue = params.activeValue;
+
+        // If no activeValue, try to extract from class
+        if (!colorValue) {
+            const colorClass = params.colorPrefix + widgetValue;
+            const isBackground = type === 'bg' || colorClass.startsWith('bg-');
+            colorValue = this._extractColorFromClass(colorClass, isBackground);
+        }
+
+        if (colorValue) {
+            const varName = type === 'bg' ? '--submenu-link-active-bg' : '--submenu-link-active-color';
+            this.$target[0].style.setProperty(varName, colorValue);
+
+            // Store the selected color name as a data attribute for state tracking
+            const attrName = type === 'bg' ? 'data-active-bg-color' : 'data-active-text-color';
+            this.$target[0].setAttribute(attrName, widgetValue);
+        }
+    },
+
+    //--------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------
+
+    /**
+     * @override
+     */
+    _computeWidgetState(methodName, params) {
+        switch (methodName) {
+            case 'setHoverColor': {
+                const type = params.defaultValue || 'text';
+                const attrName = type === 'bg' ? 'data-hover-bg-color' : 'data-hover-text-color';
+                return this.$target[0].getAttribute(attrName) || '';
+            }
+            case 'setActiveColor': {
+                const type = params.defaultValue || 'text';
+                const attrName = type === 'bg' ? 'data-active-bg-color' : 'data-active-text-color';
+                return this.$target[0].getAttribute(attrName) || '';
+            }
+        }
+        return this._super(methodName, params);
+    },
+
+    /**
+     * Extract color value from a Bootstrap/Odoo color class
+     * @private
+     */
+    _extractColorFromClass(className, isBackground) {
+        const testEl = document.createElement('div');
+        testEl.style.cssText = 'position: absolute; left: -9999px; top: -9999px; visibility: hidden;';
+        testEl.className = className;
+        document.body.appendChild(testEl);
+
+        const computedStyle = window.getComputedStyle(testEl);
+        const colorValue = isBackground ? computedStyle.backgroundColor : computedStyle.color;
+
+        document.body.removeChild(testEl);
+
+        // Return the color if it's valid
+        if (colorValue && colorValue !== 'rgba(0, 0, 0, 0)' && colorValue !== 'transparent') {
+            return colorValue;
+        }
+        return null;
     },
 
     /**
@@ -256,5 +349,8 @@ options.registry.SubmenuBlock = options.Class.extend({
         this._super(...arguments);
         // Remove any temporary classes or attributes
         this.$target.find('.s_submenu_link').removeClass('active');
+        // Keep the data attributes for color state tracking:
+        // data-hover-bg-color, data-hover-text-color,
+        // data-active-bg-color, data-active-text-color
     },
 });

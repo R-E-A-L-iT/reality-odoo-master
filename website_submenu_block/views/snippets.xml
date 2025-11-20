@@ -64,6 +64,28 @@
                            data-exclude=""
                            data-target=".s_submenu_link"/>
 
+            <!-- Hover Text Color -->
+            <we-colorpicker string="Hover Text Color"
+                           data-set-hover-color="text"
+                           data-color-prefix="text-"/>
+
+            <!-- Hover Background Color -->
+            <we-colorpicker string="Hover Background"
+                           data-set-hover-color="bg"
+                           data-color-prefix="bg-"/>
+
+            <!-- Active Text Color -->
+            <we-colorpicker string="Active Text Color"
+                           data-set-active-color="text"
+                           data-color-prefix="text-"/>
+
+            <!-- Active Background Color -->
+            <we-colorpicker string="Active Background"
+                           data-set-active-color="bg"
+                           data-color-prefix="bg-"/>
+
+            <we-separator/>
+
             <!-- Border Color -->
             <we-colorpicker string="Border Color"
                            data-css-property="border-bottom-color"
