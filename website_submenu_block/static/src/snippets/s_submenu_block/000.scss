@@ -105,6 +105,7 @@
     position: fixed !important;
     left: 0;
     right: 0;
+    width: 99vw !important;
     z-index: 1050 !important; // Ensure it's always visible
     
     &.o_navbar_hidden {
