@@ -487,28 +487,25 @@ class order(models.Model):
 
         # Find or create the partner with email derek@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
-        for order in orders:
-            if not sales_email:
-                continue
-
-            target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
-            if not target_email:
-                continue
-
-            follower_partners = order.message_follower_ids.mapped('partner_id')
-            follower_emails = {
-                (p.email_normalized or (p.email or '').strip().lower())
-                for p in follower_partners
-                if (p.email or p.email_normalized)
-            }
-
-            sp_partner = order.user_id.partner_id if order.user_id else False
-            salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
-
-            if target_email in follower_emails or target_email == salesperson_email:
-                continue
-
+        if sales_email:
             order.message_subscribe(partner_ids=[sales_email.id])
+
+        target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
+        if not target_email:
+            return order
+
+        follower_partners = order.message_follower_ids.mapped('partner_id')
+        follower_emails = {
+            (p.email_normalized or (p.email or '').strip().lower())
+            for p in follower_partners
+            if (p.email or p.email_normalized)
+        }
+
+        sp_partner = order.user_id.partner_id if order.user_id else False
+        salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
+
+        if target_email in follower_emails or target_email == salesperson_email:
+            return order
 
         # Add non-company partners to subscribers (automatic quotes from store)
         partner = order.partner_id
