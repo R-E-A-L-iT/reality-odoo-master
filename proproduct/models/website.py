@@ -1,4 +1,5 @@
-from odoo import models, request
+from odoo import models
+from odoo.http import request
 
 class Website(models.Model):
     _inherit = 'website'
