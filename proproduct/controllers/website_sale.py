@@ -17,6 +17,13 @@ from odoo.addons.proproduct.controllers.table_compute import TableCompute
 
 _logger = logging.getLogger(__name__)
 
+class PricelistSelectionController(http.Controller):
+
+    @http.route('/shop/set_pricelist', type='http', auth="public", website=True)
+    def set_pricelist(self, pricelist_id=None, **kw):
+        request.session['pricelist_selected_manually'] = True
+        request.session['website_sale_current_pl'] = int(pricelist_id)
+        return request.redirect(request.httprequest.referrer or '/shop')
 
 class WebsiteSale(main.WebsiteSale):
 
