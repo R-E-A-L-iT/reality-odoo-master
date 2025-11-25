@@ -108,9 +108,9 @@
             </t>
         </xpath>
 
-        <!-- Replace footer section to exclude for CRM leads with simple_email_layout -->
+        <!-- Replace footer section - ALWAYS show for project.task, exclude for CRM leads with simple_email_layout -->
         <xpath expr="//div[@style='margin-top:32px;']" position="replace">
-            <div t-if="(record._name not in ['crm.lead', 'project.task']) or not record.simple_email_layout" style="margin-top:32px;">
+            <div t-if="record._name == 'project.task' or (record._name != 'crm.lead' or not record.simple_email_layout)" style="margin-top:32px;">
                 <hr width="100%"
                     style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
                 <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
