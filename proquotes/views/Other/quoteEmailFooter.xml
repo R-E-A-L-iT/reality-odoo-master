@@ -78,47 +78,6 @@
             </div>
         </xpath>
 
-        <!-- Add project task details header for follower emails (when simple_email_layout is False) -->
-        <xpath expr="//div[@t-if='subtitles or has_button_access or actions or not is_discussion']" position="after">
-            <div t-if="record._name == 'project.task' and not record.simple_email_layout"
-                 style="padding: 10px 0px; margin: 10px 0px; background-color: #f8f9fa; border-left: 4px solid #875A7B;">
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                    <tbody>
-                        <tr>
-                            <td style="padding: 10px 15px;">
-                                <h3 style="margin: 0 0 10px 0; color: #875A7B; font-size: 16px;">Task Details</h3>
-                                <table role="presentation" cellspacing="0" cellpadding="3" border="0" style="font-size: 13px;">
-                                    <tbody>
-                                        <tr t-if="record.project_id">
-                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Project:</td>
-                                            <td t-out="record.project_id.name"/>
-                                        </tr>
-                                        <tr t-if="record.name">
-                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Task:</td>
-                                            <td t-out="record.name"/>
-                                        </tr>
-                                        <tr t-if="record.stage_id">
-                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Stage:</td>
-                                            <td t-out="record.stage_id.name"/>
-                                        </tr>
-                                        <tr t-if="record.user_ids">
-                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Assigned to:</td>
-                                            <td>
-                                                <t t-foreach="record.user_ids" t-as="user">
-                                                    <span t-out="user.name"/>
-                                                    <t t-if="not user_last">, </t>
-                                                </t>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </xpath>
-
         <!-- Replace signature section to exclude for CRM leads and project tasks with simple_email_layout -->
         <xpath expr="//t[@class='o_signature']" position="replace">
             <t class="o_signature">
@@ -133,7 +92,7 @@
                     t-out="author_user.ba_mass_signature" style="font-size: 13px;"/>
                 </div>
 
-                <!-- Mass signature for project tasks with simple_email_layout = True -->
+                <!-- Mass signature for project tasks with simple_email_layout = True (non-followers) -->
                 <div t-if="record._name == 'project.task' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
                     <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
                     <div t-if="author_user.ba_mass_signature and not is_html_empty(author_user.ba_mass_signature)"
@@ -149,9 +108,9 @@
             </t>
         </xpath>
 
-        <!-- Replace footer section - always show for project tasks (both followers and non-followers) -->
+        <!-- Replace footer section to exclude for CRM leads with simple_email_layout -->
         <xpath expr="//div[@style='margin-top:32px;']" position="replace">
-            <div t-if="record._name != 'crm.lead' or not record.simple_email_layout" style="margin-top:32px;">
+            <div t-if="(record._name not in ['crm.lead', 'project.task']) or not record.simple_email_layout" style="margin-top:32px;">
                 <hr width="100%"
                     style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
                 <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
