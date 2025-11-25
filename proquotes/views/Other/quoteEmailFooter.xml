@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
-        <!-- Replace the entire header section for CRM leads with simple_email_layout -->
+        <!-- Replace the entire header section for CRM leads and Project tasks with simple_email_layout -->
         <xpath expr="//div[@t-if='subtitles or has_button_access or actions or not is_discussion']" position="replace">
-            <div t-if="(record._name != 'crm.lead' or not record.simple_email_layout) and (subtitles or has_button_access or actions or not is_discussion)"
+            <div t-if="(record._name not in ['crm.lead', 'project.task'] or not record.simple_email_layout) and (subtitles or has_button_access or actions or not is_discussion)"
                  summary="o_mail_notification" style="padding: 0px;">
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0"
                        style="width: 100%; margin-top: 5px;">
@@ -78,15 +78,63 @@
             </div>
         </xpath>
 
-        <!-- Replace signature section to exclude for CRM leads with simple_email_layout -->
+        <!-- Add project task details header for follower emails (when simple_email_layout is False) -->
+        <xpath expr="//div[@t-if='subtitles or has_button_access or actions or not is_discussion']" position="after">
+            <div t-if="record._name == 'project.task' and not record.simple_email_layout"
+                 style="padding: 10px 0px; margin: 10px 0px; background-color: #f8f9fa; border-left: 4px solid #875A7B;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="padding: 10px 15px;">
+                                <h3 style="margin: 0 0 10px 0; color: #875A7B; font-size: 16px;">Task Details</h3>
+                                <table role="presentation" cellspacing="0" cellpadding="3" border="0" style="font-size: 13px;">
+                                    <tbody>
+                                        <tr t-if="record.project_id">
+                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Project:</td>
+                                            <td t-out="record.project_id.name"/>
+                                        </tr>
+                                        <tr t-if="record.name">
+                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Task:</td>
+                                            <td t-out="record.name"/>
+                                        </tr>
+                                        <tr t-if="record.stage_id">
+                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Stage:</td>
+                                            <td t-out="record.stage_id.name"/>
+                                        </tr>
+                                        <tr t-if="record.user_ids">
+                                            <td style="font-weight: bold; padding-right: 10px; vertical-align: top;">Assigned to:</td>
+                                            <td>
+                                                <t t-foreach="record.user_ids" t-as="user">
+                                                    <span t-out="user.name"/>
+                                                    <t t-if="not user_last">, </t>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>
+
+        <!-- Replace signature section to exclude for CRM leads and project tasks with simple_email_layout -->
         <xpath expr="//t[@class='o_signature']" position="replace">
             <t class="o_signature">
                 <!-- Normal signature for non-Google messages -->
-                <div t-if="email_add_signature and not is_html_empty(signature) and not (record._name == 'crm.lead' and record.simple_email_layout)" 
+                <div t-if="email_add_signature and not is_html_empty(signature) and not ((record._name in ['crm.lead', 'project.task']) and record.simple_email_layout)"
                      t-out="signature" style="font-size: 13px;"/>
-                
+
                 <!-- Mass signature for Google messages (CRM leads with simple_email_layout = True) -->
                 <div t-if="record._name == 'crm.lead' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
+                    <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
+                    <div t-if="author_user.ba_mass_signature and not is_html_empty(author_user.ba_mass_signature)"
+                    t-out="author_user.ba_mass_signature" style="font-size: 13px;"/>
+                </div>
+
+                <!-- Mass signature for project tasks with simple_email_layout = True -->
+                <div t-if="record._name == 'project.task' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
                     <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
                     <div t-if="author_user.ba_mass_signature and not is_html_empty(author_user.ba_mass_signature)"
                     t-out="author_user.ba_mass_signature" style="font-size: 13px;"/>
@@ -94,7 +142,7 @@
             </t>
         </xpath>
 
-        <!-- Replace footer section to exclude for CRM leads with simple_email_layout -->
+        <!-- Replace footer section - always show for project tasks (both followers and non-followers) -->
         <xpath expr="//div[@style='margin-top:32px;']" position="replace">
             <div t-if="record._name != 'crm.lead' or not record.simple_email_layout" style="margin-top:32px;">
                 <hr width="100%"
@@ -108,6 +156,14 @@
                 <t t-elif="record._name == 'helpdesk.ticket'">
                     <div>
                         <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
+                             alt="Footer Image"/>
+                    </div>
+                </t>
+                <t t-elif="record._name == 'project.task' and record.project_id and record.project_id.company_id">
+                    <!-- Get default footer for the task's company -->
+                    <t t-set="task_footer" t-value="request.env['header.footer'].sudo().search([('record_type', '=', 'Footer'), ('default', '=', True), ('company_ids', 'in', record.project_id.company_id.id), ('active', '=', True)], limit=1)"/>
+                    <div t-if="task_footer and task_footer.url">
+                        <img t-att-src="task_footer.url" style="width: 100%; max-width: 900px; height: auto;"
                              alt="Footer Image"/>
                     </div>
                 </t>
