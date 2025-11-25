@@ -37,8 +37,8 @@ class ProjectTask(models.Model):
 
     def message_post(self, **kwargs):
         """
-        Override message_post to detect if the email is being sent to non-followers.
-        If recipients are not followers, set simple_email_layout to True temporarily.
+        Override message_post to handle mixed follower/non-follower recipients.
+        Send separate emails: followers get default template, non-followers get simple layout.
         """
         # Store original value
         original_layout = self.simple_email_layout
@@ -71,12 +71,32 @@ class ProjectTask(models.Model):
             # Get current followers
             follower_ids = self.message_partner_ids.ids
 
-            # Check if any recipient is not a follower
-            has_non_follower = any(pid not in follower_ids for pid in recipient_ids)
+            # Separate followers and non-followers
+            follower_recipients = [pid for pid in recipient_ids if pid in follower_ids]
+            non_follower_recipients = [pid for pid in recipient_ids if pid not in follower_ids]
 
-            # If sending to non-followers, enable simple layout
-            if has_non_follower:
+            # If we have both types, we need to send separate emails
+            if follower_recipients and non_follower_recipients:
+                # First, send to followers with default layout
+                kwargs_followers = dict(kwargs)
+                kwargs_followers['partner_ids'] = [(6, 0, follower_recipients)]
+                super(ProjectTask, self).message_post(**kwargs_followers)
+
+                # Then, send to non-followers with simple layout
                 self.simple_email_layout = True
+                kwargs_non_followers = dict(kwargs)
+                kwargs_non_followers['partner_ids'] = [(6, 0, non_follower_recipients)]
+                self = self.with_context(project_task_non_followers=non_follower_recipients)
+                result = super(ProjectTask, self).message_post(**kwargs_non_followers)
+
+                # Restore original value
+                self.simple_email_layout = original_layout
+                return result
+
+            # If only non-followers
+            elif non_follower_recipients:
+                self.simple_email_layout = True
+                self = self.with_context(project_task_non_followers=non_follower_recipients)
 
         # Call parent method
         result = super(ProjectTask, self).message_post(**kwargs)
@@ -84,6 +104,31 @@ class ProjectTask(models.Model):
         # Restore original value
         if self.simple_email_layout != original_layout:
             self.simple_email_layout = original_layout
+
+        return result
+
+    def _message_post_after_hook(self, message, msg_vals):
+        """
+        Override to prevent auto-following of recipients who were non-followers
+        when the email was sent via composer.
+        """
+        # Get non-follower IDs from context
+        non_follower_ids = self.env.context.get('project_task_non_followers', [])
+
+        # Call parent method
+        result = super(ProjectTask, self)._message_post_after_hook(message, msg_vals)
+
+        # Remove non-followers who were auto-added by the parent method
+        if non_follower_ids:
+            # Find followers that were just added (non-followers)
+            followers_to_remove = self.env['mail.followers'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', self.id),
+                ('partner_id', 'in', non_follower_ids)
+            ])
+            if followers_to_remove:
+                followers_to_remove.sudo().unlink()
+                _logger.info(f"Removed auto-added followers: {non_follower_ids} from task {self.id}")
 
         return result
 
