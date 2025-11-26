@@ -78,7 +78,7 @@ class DiscussChannel(models.Model):
             
             # Send success message
             msg = _('Lead created successfully: %s', lead._get_html_link())
-            self._send_transient_message(partner, msg)
+            # self._send_transient_message(partner, msg)
             
             # Post chat history in lead's internal notes  
             chat_history = self._get_channel_history()
