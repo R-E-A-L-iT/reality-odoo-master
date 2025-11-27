@@ -36,6 +36,7 @@
 }
 
 #top_menu > li:nth-child(5) > a > span {
+    font-weight: 1000;
     position: relative;
     background-image: url("https://cdn.r-e-a-l.it/images/header/FieryGIF.gif");
     background-size: cover;
