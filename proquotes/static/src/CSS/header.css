@@ -34,3 +34,17 @@
 #o_product_terms_and_share {
     display: none !important;
 }
+
+.o_header .navbar-nav a[href="/shop"] span[data-oe-id="129"] {
+    position: relative;
+    background-image: url("https://cdn.r-e-a-l.it/images/header/FieryGIF.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
