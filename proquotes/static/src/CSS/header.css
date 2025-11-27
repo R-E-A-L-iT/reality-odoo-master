@@ -35,7 +35,7 @@
     display: none !important;
 }
 
-.o_header .navbar-nav a[href="/shop"] span[data-oe-id="129"] {
+#top_menu > li:nth-child(5) > a > span {
     position: relative;
     background-image: url("https://cdn.r-e-a-l.it/images/header/FieryGIF.gif");
     background-size: cover;
