@@ -3,15 +3,38 @@
   <template id="software_license_email_body">
     <t t-set="so" t-value="sale_order"/>
     <t t-set="picking" t-value="picking"/>
+    <t t-set="partner_lang" t-value="(so.partner_id.lang or '').lower()"/>
 
-    <p>Hello <t t-esc="so.partner_id.display_name"/>.</p>
-    <p>
-      Attached are your software license document(s) from delivery
-      <b t-esc="picking.name"/> for order <b t-esc="so.name"/>.
-    </p>
+    <!-- Greeting -->
+    <t t-if="partner_lang == 'fr_ca'">
+      <p>Bonjour <t t-esc="so.partner_id.display_name"/>.</p>
+    </t>
+    <t t-else="">
+      <p>Hello <t t-esc="so.partner_id.display_name"/>.</p>
+    </t>
 
+    <!-- Main text -->
+    <t t-if="partner_lang == 'fr_ca'">
+      <p>
+        Vous trouverez ci-joint votre/vos document(s) de licence logicielle
+        pour la livraison <b t-esc="picking.name"/> de la commande <b t-esc="so.name"/>.
+      </p>
+    </t>
+    <t t-else="">
+      <p>
+        Attached are your software license document(s) from delivery
+        <b t-esc="picking.name"/> for order <b t-esc="so.name"/>.
+      </p>
+    </t>
+
+    <!-- Serials list -->
     <t t-if="lots">
-      <p>Included serials:</p>
+      <t t-if="partner_lang == 'fr_ca'">
+        <p>Numéros de série inclus :</p>
+      </t>
+      <t t-else="">
+        <p>Included serials:</p>
+      </t>
       <ul>
         <t t-foreach="lots" t-as="lot">
           <li>
@@ -22,6 +45,12 @@
       </ul>
     </t>
 
-    <p>If you have any questions, just reply to this email.</p>
+    <!-- Closing -->
+    <t t-if="partner_lang == 'fr_ca'">
+      <p>Si vous avez des questions, vous pouvez simplement répondre à ce courriel.</p>
+    </t>
+    <t t-else="">
+      <p>If you have any questions, just reply to this email.</p>
+    </t>
   </template>
 </odoo>
