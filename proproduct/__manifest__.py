@@ -14,6 +14,7 @@
         "website",
         "product",
         "website_sale",
+        "payment",
     ],
     "data": [
         "views/website_sale_product.xml",
