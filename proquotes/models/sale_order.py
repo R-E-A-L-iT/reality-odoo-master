@@ -36,7 +36,7 @@ PROVINCE_TAX_BY_CODE = {
     "NB": "HST for sales - 15%",
     "NL": "HST for sales - 15%",
     "NT": "GST for sales - 5%",
-    "NS": "HST for sales - 15%",
+    "NS": "HST 14%",
     "NU": "GST for sales - 5%",
     "PE": "HST for sales - 15%",
     "SK": "GST + PST for sales (SK)",
