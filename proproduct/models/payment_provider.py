@@ -17,13 +17,17 @@ class PaymentProvider(models.Model):
         is_express_checkout=False, is_validation=False, **kwargs
     ):
         """
-        Override to enforce strict company matching for payment providers.
+        Override to enforce company-aware payment provider selection.
 
-        This ensures that when a sale order is created with a specific company
-        (e.g., R-E-A-L.iT U.S. Inc. for USD orders), only payment providers
-        assigned to that exact company are available for selection.
+        This ensures payment providers are filtered based on company assignment:
+        - Shared providers (company_id = False) are available to ALL companies
+        - Company-specific providers are only available to their assigned company
 
-        Critical for multi-company setups with separate Stripe accounts per currency.
+        This allows:
+        1. Global payment providers (e.g., shared Stripe account) to work across all companies
+        2. Company-specific providers (e.g., separate USD/CAD Stripe accounts) to be restricted
+
+        Critical for multi-company setups with currency-specific payment accounts.
         """
         # Call parent method to get initial compatible providers
         compatible_providers = super()._get_compatible_providers(
@@ -58,28 +62,30 @@ class PaymentProvider(models.Model):
             partner.country_id.name if partner and partner.country_id else 'None',
             amount,
             len(compatible_providers),
-            [(p.name, p.company_id.name, p.code) for p in compatible_providers]
+            [(p.name, p.company_id.name if p.company_id else 'SHARED', p.code) for p in compatible_providers]
         )
 
-        # Apply strict company filtering
-        # Only show providers that belong to the EXACT company making the order
+        # Apply company filtering that respects shared providers
+        # Show providers that either:
+        # 1. Have no company assigned (company_id = False) - shared across all companies
+        # 2. Are assigned to the exact company making the order
         company_filtered_providers = compatible_providers.filtered(
-            lambda p: p.company_id.id == company_id
+            lambda p: not p.company_id or p.company_id.id == company_id
         )
 
         # Log filtering results
         if len(company_filtered_providers) != len(compatible_providers):
             removed_providers = compatible_providers - company_filtered_providers
             _logger.warning(
-                "STRICT COMPANY FILTER APPLIED\n"
+                "COMPANY FILTER APPLIED\n"
                 "Removed %s provider(s) due to company mismatch:\n"
                 "%s\n"
                 "Keeping %s provider(s):\n"
                 "%s",
                 len(removed_providers),
-                [(p.name, p.company_id.name, 'Expected: ' + company.name) for p in removed_providers],
+                [(p.name, p.company_id.name if p.company_id else 'SHARED', 'Expected: ' + company.name + ' or SHARED') for p in removed_providers],
                 len(company_filtered_providers),
-                [(p.name, p.company_id.name, p.code) for p in company_filtered_providers]
+                [(p.name, p.company_id.name if p.company_id else 'SHARED', p.code) for p in company_filtered_providers]
             )
 
         # Additional validation: log if no providers found
@@ -89,9 +95,10 @@ class PaymentProvider(models.Model):
                 "Company: %s (ID: %s)\n"
                 "Currency: %s\n"
                 "This likely means:\n"
-                "1. No payment providers are configured for this company\n"
+                "1. No payment providers are configured (shared or for this company)\n"
                 "2. Payment providers are disabled\n"
                 "3. Payment providers don't support this currency\n"
+                "4. Payment providers don't support the customer's country\n"
                 "Please check Settings → Payment Providers configuration.",
                 company.name if company else 'None',
                 company_id,
@@ -103,7 +110,7 @@ class PaymentProvider(models.Model):
                 "Details: %s\n"
                 "=" * 80,
                 len(company_filtered_providers),
-                [(p.name, p.code, p.company_id.name, p.state) for p in company_filtered_providers]
+                [(p.name, p.code, p.company_id.name if p.company_id else 'SHARED', p.state) for p in company_filtered_providers]
             )
 
         return company_filtered_providers
