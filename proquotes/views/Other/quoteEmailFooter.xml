@@ -127,7 +127,7 @@
                 </t>
                 <t t-elif="record._name == 'project.task' and record.project_id and record.project_id.company_id">
                     <!-- Get default footer for the task's company -->
-                    <t t-set="task_footer" t-value="request.env['header.footer'].sudo().search([('record_type', '=', 'Footer'), ('default', '=', True), ('company_ids', 'in', record.project_id.company_id.id), ('active', '=', True)], limit=1)"/>
+                    <t t-set="task_footer" t-value="record.env['header.footer'].sudo().search([('record_type', '=', 'Footer'), ('default', '=', True), ('company_ids', 'in', record.project_id.company_id.id), ('active', '=', True)], limit=1)"/>
                     <div t-if="task_footer and task_footer.url">
                         <img t-att-src="task_footer.url" style="width: 100%; max-width: 900px; height: auto;"
                              alt="Footer Image"/>
