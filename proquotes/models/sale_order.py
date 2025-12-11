@@ -365,6 +365,79 @@ class order(models.Model):
 
         return json.dumps(items)
 
+    def write(self, vals):
+        # Normal write first
+        res = super().write(vals)
+
+        # Avoid recursion when we fix things ourselves
+        if self.env.context.get('skip_company_consistency'):
+            return res
+
+        for order in self:
+            # Only enforce this for website orders with a company
+            if not order.website_id or not order.company_id:
+                continue
+
+            company = order.company_id
+
+            # --- Fix warehouse if mismatched ---
+            if order.warehouse_id and order.warehouse_id.company_id != company:
+                _logger.info(
+                    ">>>>>>> Fixing warehouse company mismatch on %s: SO company=%s, warehouse=%s (%s)",
+                    order.name,
+                    company.name,
+                    order.warehouse_id.display_name,
+                    order.warehouse_id.company_id.name,
+                )
+
+                warehouse_env = (
+                    self.env['stock.warehouse']
+                    .sudo()
+                    .with_context(allowed_company_ids=[company.id])
+                    .with_company(company.id)
+                )
+
+                new_wh = warehouse_env.search(
+                    [('company_id', '=', company.id)],
+                    limit=1,
+                )
+
+                if new_wh:
+                    _logger.info(
+                        ">>>>>>> Assigning warehouse %s to SO %s for company %s",
+                        new_wh.display_name,
+                        order.name,
+                        company.name,
+                    )
+                    order.with_context(skip_company_consistency=True).write({
+                        'warehouse_id': new_wh.id,
+                    })
+                else:
+                    _logger.warning(
+                        ">>>>>>> No warehouse found for company %s when fixing SO %s",
+                        company.name,
+                        order.name,
+                    )
+
+            # --- Fix partner companies if mismatched ---
+            partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id)
+            for partner in partners:
+                if not partner:
+                    continue
+                if partner.company_id and partner.company_id != company:
+                    _logger.info(
+                        ">>>>>>> Fixing partner company for %s on SO %s: %s -> %s",
+                        partner.display_name,
+                        order.name,
+                        partner.company_id.name,
+                        company.name,
+                    )
+                    partner.sudo().with_context(
+                        allowed_company_ids=[partner.company_id.id, company.id]
+                    ).write({'company_id': company.id})
+
+        return res
+
     def _set_company_based_on_visitor_country(self):
         """Assign company based on pricelist currency first, then visitor's country as fallback."""
         for order in self:
@@ -461,19 +534,11 @@ class order(models.Model):
                     company_to_assign.name if company_to_assign else None,
                 )
 
+            # If nothing to do or already on that company, skip
             if not company_to_assign or order.company_id == company_to_assign:
                 continue
 
-            # Actually change company
-            _logger.info(
-                '>>>>>>>Changing company on %s: %s -> %s',
-                order.name,
-                previous_company.name if previous_company else None,
-                company_to_assign.name,
-            )
-            order.company_id = company_to_assign.id
-
-            # --- IMPORTANT PART: pick a warehouse for that company ---
+            # --- IMPORTANT: pick a warehouse for that company BEFORE writing company_id ---
             warehouse_env = (
                 self.env['stock.warehouse']
                 .sudo()
@@ -486,20 +551,35 @@ class order(models.Model):
                 limit=1,
             )
 
-            if warehouse:
-                _logger.info(
-                    '>>>>>>>Assigning warehouse on %s: %s -> %s',
-                    order.name,
-                    previous_warehouse.display_name if previous_warehouse else None,
-                    warehouse.display_name,
-                )
-                order.warehouse_id = warehouse.id
-            else:
+            if not warehouse:
                 _logger.warning(
                     '>>>>>>>No warehouse found for company %s; sale order %s may crash with incompatible companies',
                     company_to_assign.name,
                     order.name,
                 )
+                # If really no warehouse, we can only try to switch company and hope nothing uses warehouse
+                values = {'company_id': company_to_assign.id}
+            else:
+                _logger.info(
+                    '>>>>>>>Assigning warehouse for %s: %s -> %s',
+                    order.name,
+                    previous_warehouse.display_name if previous_warehouse else None,
+                    warehouse.display_name,
+                )
+                # Write company and warehouse TOGETHER to avoid check_company errors
+                values = {
+                    'company_id': company_to_assign.id,
+                    'warehouse_id': warehouse.id,
+                }
+
+            _logger.info(
+                '>>>>>>>Changing company on %s: %s -> %s',
+                order.name,
+                previous_company.name if previous_company else None,
+                company_to_assign.name,
+            )
+
+            order.write(values)
 
             # Let Odoo recompute dependent fields
             try:
@@ -516,7 +596,7 @@ class order(models.Model):
         order = super().create(vals)
 
         # Assign company based on visitor location for website orders
-        self._set_company_based_on_visitor_country()
+        order._set_company_based_on_visitor_country()
 
         # Find or create the partner with email derek@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
