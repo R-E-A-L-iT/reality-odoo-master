@@ -2,25 +2,28 @@
 <odoo>
     <data>
 
-        <!-- Restrict checkout country list based on pricelist currency,
-             but fall back to all countries if no pricelist/currency -->
+        <!-- Restrict checkout country list based on current website pricelist -->
         <template id="proproduct_website_sale_address_country_restrict"
                   inherit_id="website_sale.address">
 
             <xpath expr="//select[@id='country_id']/t[@t-foreach='countries']" position="replace">
 
-                <!-- Precompute currency name safely -->
+                <!-- Get the current pricelist from the website,
+                     which already uses your geo-based logic -->
+                <t t-set="current_pl" t-value="website.get_current_pricelist()"/>
+
+                <!-- Safely pull the currency name -->
                 <t t-set="pl_currency"
-                   t-value="website_sale_order.pricelist_id.currency_id.name
-                            if website_sale_order.pricelist_id and website_sale_order.pricelist_id.currency_id
-                            else None"/>
+                   t-value="current_pl and current_pl.currency_id and current_pl.currency_id.name or None"/>
 
                 <t t-foreach="countries" t-as="c">
-                    <t t-if="(pl_currency == 'USD' and c.code == 'US')
-                              or
-                             (pl_currency == 'CAD' and c.code == 'CA')
-                              or
-                             (not pl_currency)">
+                    <t t-if="
+                        (pl_currency == 'USD' and c.code == 'US')
+                        or
+                        (pl_currency == 'CAD' and c.code == 'CA')
+                        or
+                        (pl_currency not in ['USD', 'CAD'])
+                    ">
                         <option t-att-value="c.id"
                                 t-att-selected="c.id == (country and country.id or -1)">
                             <t t-esc="c.name"/>
