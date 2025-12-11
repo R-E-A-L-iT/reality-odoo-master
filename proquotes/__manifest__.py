@@ -23,7 +23,6 @@
         "portal",
         "contacts",
         "stock_account",
-        "project",
         "sale_project",
         "website_sale",
         "sale_timesheet",
