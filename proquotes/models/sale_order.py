@@ -165,7 +165,7 @@ class order(models.Model):
         return json.dumps(items)
 
     def _set_company_based_on_visitor_country(self):
-        """Assign company (and matching warehouse) based on visitor's country."""
+        """Assign company based on pricelist currency first, then visitor's country as fallback."""
         for order in self:
             # Only process website orders
             if not order.website_id:
@@ -176,53 +176,86 @@ class order(models.Model):
 
             company_to_assign = None
 
-            # Try to get visitor from request context
-            try:
-                if request and hasattr(request, 'env'):
-                    visitor = request.env['website.visitor']._get_visitor_from_request()
-                    if visitor and visitor.country_id:
-                        us_country = self.env.ref('base.us', raise_if_not_found=False)
-                        _logger.info(
-                            '>>>>>>>Website order %s - visitor country: %s',
-                            order.name, visitor.country_id.name
-                        )
+            # PRIORITY 1: Determine company based on pricelist currency
+            if order.pricelist_id and order.pricelist_id.currency_id:
+                currency_name = order.pricelist_id.currency_id.name
 
-                        if us_country and visitor.country_id.id == us_country.id:
-                            # US visitor → assign to R-E-A-L.iT U.S. Inc.
-                            company_to_assign = self.env['res.company'].search(
-                                [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
-                                limit=1,
-                            )
-                            _logger.info(
-                                '>>>>>>>Assigning US company to sale order %s >>>: %s',
-                                order.name,
-                                company_to_assign.name if company_to_assign else None,
-                            )
-                        else:
-                            # Non-US visitor → R-E-A-L.iT Solutions
-                            company_to_assign = self.env['res.company'].search(
-                                [('name', '=', 'R-E-A-L.iT Solutions')],
-                                limit=1,
-                            )
-                            _logger.info(
-                                '>>>>>>>Assigning Solutions company to sale order %s >>>: %s',
-                                order.name,
-                                company_to_assign.name if company_to_assign else None,
-                            )
-            except Exception as e:
-                _logger.warning(
-                    '>>>>>>>Could not get visitor from request for order %s: %s',
-                    order.name, str(e),
+                _logger.info(
+                    '>>>>>>>Website order %s - pricelist: %s, currency: %s',
+                    order.name, order.pricelist_id.name, currency_name
                 )
 
-            # Fallback: default to Solutions
+                if currency_name == 'USD':
+                    # USD pricelist → assign to US company
+                    company_to_assign = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                        limit=1,
+                    )
+                    _logger.info(
+                        '>>>>>>>Assigning US company based on USD pricelist to sale order %s >>>: %s',
+                        order.name,
+                        company_to_assign.name if company_to_assign else None,
+                    )
+                elif currency_name == 'CAD':
+                    # CAD pricelist → assign to Canadian company
+                    company_to_assign = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT Solutions')],
+                        limit=1,
+                    )
+                    _logger.info(
+                        '>>>>>>>Assigning Canadian company based on CAD pricelist to sale order %s >>>: %s',
+                        order.name,
+                        company_to_assign.name if company_to_assign else None,
+                    )
+
+            # PRIORITY 2: Fallback to GeoIP if pricelist doesn't determine company
+            if not company_to_assign:
+                try:
+                    if request and hasattr(request, 'env'):
+                        visitor = request.env['website.visitor']._get_visitor_from_request()
+                        if visitor and visitor.country_id:
+                            us_country = self.env.ref('base.us', raise_if_not_found=False)
+                            _logger.info(
+                                '>>>>>>>Website order %s - visitor country: %s (GeoIP fallback)',
+                                order.name, visitor.country_id.name
+                            )
+
+                            if us_country and visitor.country_id.id == us_country.id:
+                                # US visitor → assign to R-E-A-L.iT U.S. Inc.
+                                company_to_assign = self.env['res.company'].search(
+                                    [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                                    limit=1,
+                                )
+                                _logger.info(
+                                    '>>>>>>>Assigning US company via GeoIP fallback to sale order %s >>>: %s',
+                                    order.name,
+                                    company_to_assign.name if company_to_assign else None,
+                                )
+                            else:
+                                # Non-US visitor → R-E-A-L.iT Solutions
+                                company_to_assign = self.env['res.company'].search(
+                                    [('name', '=', 'R-E-A-L.iT Solutions')],
+                                    limit=1,
+                                )
+                                _logger.info(
+                                    '>>>>>>>Assigning Canadian company via GeoIP fallback to sale order %s >>>: %s',
+                                    order.name,
+                                    company_to_assign.name if company_to_assign else None,
+                                )
+                except Exception as e:
+                    _logger.warning(
+                        '>>>>>>>Could not get visitor from request for order %s: %s',
+                        order.name, str(e),
+                    )
+
+            # PRIORITY 3: Final fallback - default to Canadian company
             if not company_to_assign:
                 company_to_assign = self.env['res.company'].search(
                     [('name', '=', 'R-E-A-L.iT Solutions')],
                     limit=1,
                 )
                 _logger.info(
-                    '>>>>>>>Fallback to Solutions company for sale order %s >>>: %s',
+                    '>>>>>>>Final fallback to Canadian company for sale order %s >>>: %s',
                     order.name,
                     company_to_assign.name if company_to_assign else None,
                 )
