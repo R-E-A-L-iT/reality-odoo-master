@@ -260,19 +260,11 @@ class order(models.Model):
                     company_to_assign.name if company_to_assign else None,
                 )
 
+            # If nothing to do or already on that company, skip
             if not company_to_assign or order.company_id == company_to_assign:
                 continue
 
-            # Actually change company
-            _logger.info(
-                '>>>>>>>Changing company on %s: %s -> %s',
-                order.name,
-                previous_company.name if previous_company else None,
-                company_to_assign.name,
-            )
-            order.company_id = company_to_assign.id
-
-            # --- IMPORTANT PART: pick a warehouse for that company ---
+            # --- IMPORTANT: pick a warehouse for that company BEFORE writing company_id ---
             warehouse_env = (
                 self.env['stock.warehouse']
                 .sudo()
@@ -285,20 +277,35 @@ class order(models.Model):
                 limit=1,
             )
 
-            if warehouse:
-                _logger.info(
-                    '>>>>>>>Assigning warehouse on %s: %s -> %s',
-                    order.name,
-                    previous_warehouse.display_name if previous_warehouse else None,
-                    warehouse.display_name,
-                )
-                order.warehouse_id = warehouse.id
-            else:
+            if not warehouse:
                 _logger.warning(
                     '>>>>>>>No warehouse found for company %s; sale order %s may crash with incompatible companies',
                     company_to_assign.name,
                     order.name,
                 )
+                # If really no warehouse, we can only try to switch company and hope nothing uses warehouse
+                values = {'company_id': company_to_assign.id}
+            else:
+                _logger.info(
+                    '>>>>>>>Assigning warehouse for %s: %s -> %s',
+                    order.name,
+                    previous_warehouse.display_name if previous_warehouse else None,
+                    warehouse.display_name,
+                )
+                # Write company and warehouse TOGETHER to avoid check_company errors
+                values = {
+                    'company_id': company_to_assign.id,
+                    'warehouse_id': warehouse.id,
+                }
+
+            _logger.info(
+                '>>>>>>>Changing company on %s: %s -> %s',
+                order.name,
+                previous_company.name if previous_company else None,
+                company_to_assign.name,
+            )
+
+            order.write(values)
 
             # Let Odoo recompute dependent fields
             try:
