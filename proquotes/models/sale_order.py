@@ -315,7 +315,7 @@ class order(models.Model):
         order = super().create(vals)
 
         # Assign company based on visitor location for website orders
-        self._set_company_based_on_visitor_country()
+        order._set_company_based_on_visitor_country()
 
         # Find or create the partner with email sales@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('email', '=', 'sales@r-e-a-l.it')], limit=1)
