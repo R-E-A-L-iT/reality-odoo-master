@@ -131,12 +131,14 @@
                 <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
                 
                 <t t-set="addr_street"  t-value="partner.street or ''"/>
+                <t t-set="addr_street2" t-value="partner.street or ''"/>
                 <t t-set="addr_city"    t-value="partner.city or ''"/>
                 <t t-set="addr_state"   t-value="(partner.state_id and partner.state_id.code) or ''"/>
                 <t t-set="addr_country" t-value="(partner.country_id and partner.country_id.name) or ''"/>
 
                 <t t-set="address"
                 t-value="(addr_street and (addr_street + ', ') or '')
+                            + (addr_street2 and (addr_street2 + ', ') or '')
                             + (addr_city and (addr_city + ' ') or '')
                             + addr_state
                             + (addr_country and (', ' + addr_country) or '')"/>
