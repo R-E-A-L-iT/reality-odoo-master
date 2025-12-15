@@ -27,6 +27,27 @@ class PricelistSelectionController(http.Controller):
 
 class WebsiteSale(main.WebsiteSale):
 
+    def _checkout_form_save(self, mode, checkout, all_values):
+        """
+        Ensure checkout-created partners/addresses are NOT company-specific.
+        This prevents 'Incompatible companies' when the SO company is US but
+        the partner/address was created under the website's (CA) company.
+        """
+        partner_id = super()._checkout_form_save(mode, checkout, all_values)
+
+        order = request.website.sale_get_order()
+        if order:
+            partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id).sudo()
+            partners = partners.filtered(lambda p: p and p.company_id)  # only those that are locked
+            if partners:
+                _logger.info(
+                    "[pro] Clearing company_id on checkout partners for SO %s: %s",
+                    order.name, partners.mapped("display_name")
+                )
+                partners.write({"company_id": False})
+
+        return partner_id
+
     def sitemap_shop(env, rule, qs):
         if not qs or qs.lower() in '/shop':
             yield {'loc': '/shop'}
