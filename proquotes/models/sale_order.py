@@ -165,75 +165,44 @@ class order(models.Model):
         return json.dumps(items)
 
     def write(self, vals):
-        # Normal write first
         res = super().write(vals)
 
-        # Avoid recursion when we fix things ourselves
         if self.env.context.get('skip_company_consistency'):
             return res
 
         for order in self:
-            # Only enforce this for website orders with a company
             if not order.website_id or not order.company_id:
                 continue
 
             company = order.company_id
 
-            # --- Fix warehouse if mismatched ---
-            if order.warehouse_id and order.warehouse_id.company_id != company:
-                _logger.info(
-                    ">>>>>>> Fixing warehouse company mismatch on %s: SO company=%s, warehouse=%s (%s)",
-                    order.name,
-                    company.name,
-                    order.warehouse_id.display_name,
-                    order.warehouse_id.company_id.name,
-                )
-
-                warehouse_env = (
-                    self.env['stock.warehouse']
-                    .sudo()
-                    .with_context(allowed_company_ids=[company.id])
-                    .with_company(company.id)
-                )
-
-                new_wh = warehouse_env.search(
-                    [('company_id', '=', company.id)],
-                    limit=1,
-                )
-
-                if new_wh:
-                    _logger.info(
-                        ">>>>>>> Assigning warehouse %s to SO %s for company %s",
-                        new_wh.display_name,
-                        order.name,
-                        company.name,
-                    )
-                    order.with_context(skip_company_consistency=True).write({
-                        'warehouse_id': new_wh.id,
-                    })
-                else:
-                    _logger.warning(
-                        ">>>>>>> No warehouse found for company %s when fixing SO %s",
-                        company.name,
-                        order.name,
-                    )
-
-            # --- Fix partner companies if mismatched ---
+            # Fix partner company mismatch by making the partner global (company_id = False)
             partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id)
             for partner in partners:
                 if not partner:
                     continue
+
+                # If partner is tied to a *different* company than the order, make it shared
                 if partner.company_id and partner.company_id != company:
                     _logger.info(
-                        ">>>>>>> Fixing partner company for %s on SO %s: %s -> %s",
+                        ">>>>>>> Partner %s is in company %s but SO %s is in %s. Setting partner.company_id=False (shared).",
                         partner.display_name,
-                        order.name,
                         partner.company_id.name,
+                        order.name,
                         company.name,
                     )
-                    partner.sudo().with_context(
-                        allowed_company_ids=[partner.company_id.id, company.id]
-                    ).write({'company_id': company.id})
+                    try:
+                        partner.sudo().with_context(
+                            skip_company_consistency=True,
+                            allowed_company_ids=list(set((self.env.context.get('allowed_company_ids') or []) + [company.id]))
+                        ).write({'company_id': False})
+                    except Exception as e:
+                        _logger.warning(
+                            ">>>>>>> Failed to set partner %s company_id=False for SO %s: %s",
+                            partner.display_name,
+                            order.name,
+                            str(e),
+                        )
 
         return res
 
