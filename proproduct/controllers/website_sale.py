@@ -28,23 +28,26 @@ class PricelistSelectionController(http.Controller):
 class WebsiteSale(main.WebsiteSale):
 
     def _checkout_form_save(self, mode, checkout, all_values):
-        """
-        Ensure checkout-created partners/addresses are NOT company-specific.
-        This prevents 'Incompatible companies' when the SO company is US but
-        the partner/address was created under the website's (CA) company.
-        """
         partner_id = super()._checkout_form_save(mode, checkout, all_values)
 
+        # IMPORTANT: clear company_id on the partner that was just created/updated
+        partner = request.env['res.partner'].sudo().browse(partner_id).exists()
+        if partner:
+            # also clear on the commercial entity (important if this is a contact under a company)
+            targets = (partner | partner.commercial_partner_id | partner.child_ids).sudo()
+            locked = targets.filtered(lambda p: p.company_id)
+            if locked:
+                _logger.info("[pro] Clearing company_id on checkout partner(s): %s", locked.mapped("display_name"))
+                locked.write({"company_id": False})
+
+        # Optional: do it again on SO partners (now that some flows may have updated them)
         order = request.website.sale_get_order()
         if order:
-            partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id).sudo()
-            partners = partners.filtered(lambda p: p and p.company_id)  # only those that are locked
-            if partners:
-                _logger.info(
-                    "[pro] Clearing company_id on checkout partners for SO %s: %s",
-                    order.name, partners.mapped("display_name")
-                )
-                partners.write({"company_id": False})
+            so_partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id).sudo()
+            locked2 = so_partners.filtered(lambda p: p.company_id)
+            if locked2:
+                _logger.info("[pro] Clearing company_id on SO partner fields for %s: %s", order.name, locked2.mapped("display_name"))
+                locked2.write({"company_id": False})
 
         return partner_id
 
