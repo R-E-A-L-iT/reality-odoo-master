@@ -59,20 +59,13 @@ class MailComposeMessage(models.TransientModel):
                 _logger.info("Order found: " + order.name)
 
             if order.website_id:
-                # Check for website-specific template first
-                if order.website_id.quote_send_mail_template_id:
-                    template = order.website_id.quote_send_mail_template_id
-                    _logger.info(f"Applied website-specific quote send template: {template.name}")
-                else:
-                    # Fallback to eCommerce Quote Send
-                    template = self.env['mail.template'].search([
-                        ('name', '=', 'eCommerce Quote Send')
-                    ], limit=1)
-                    if template:
-                        _logger.info("Applied eCommerce Quote Send template (fallback)")
+                template = self.env['mail.template'].search([
+                    ('name', '=', 'eCommerce Quote Send')
+                ], limit=1)
 
                 if template:
                     defaults['template_id'] = template.id
+                    _logger.info("Applied eCommerce Quote Send template")
             else:
                 template = self.env['mail.template'].search([
                     ('name', '=', 'General Sales')
