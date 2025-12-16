@@ -19,6 +19,7 @@ from . import project_task
 from . import purchase_order
 from . import renewal_maps
 from . import res_company
+from . import res_config_settings
 from . import res_partner
 from . import res_users
 from . import sale_order_line
@@ -27,3 +28,4 @@ from . import sale_order_template
 from . import sale_order
 from . import stock_lot
 from . import stock_picking
+from . import website
