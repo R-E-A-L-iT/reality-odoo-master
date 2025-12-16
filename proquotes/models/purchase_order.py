@@ -69,11 +69,11 @@ class purchase_order(models.Model):
             ("REALiTFooter_Derek_US", "REALiTFooter_Derek_US"),
             ("REALiTFooter_Martin", "REALiTFooter_Martin"),
             ("REALiTSOLUTIONSLLCFooter_Derek_US", "R-E-A-L.iT Solutions Derek"),
-            ("REALiTFooter_Derek", "FOOTER - R-E-A-L.iT CANADA - Derek"),
+            ("REALiTFooter_Derek", "REALiTFooter_Derek"),
             ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
         ],
         default="REALiTFooter_Derek",
-        required=True,
+        required=False,
         string="Footer OLD",
         help="Footer selection field",
     )
