@@ -79,46 +79,47 @@ class purchase_order(models.Model):
     )
 
     def _get_default_footer(self):
-        # Get Company
-        company = None
-        if self.company_id == False or self.company_id == None:
-            company = self.company_id
-        else:
-            company = self.env.company
+        company_id = (
+            self.env.context.get("default_company_id")
+            or self.env.context.get("company_id")
+            or self.env.company.id
+        )
 
-        # Get User
-        user = None
-        if self.user_id == False or self.user_id == None:
-            user = self.user_id
-        else:
-            user = self.env.user
+        user = self.env.user
 
-        # Get Prefered Footers
-        result_raw = user.prefered_quote_footers
+        preferred = user.prefered_quote_footers.filtered(
+            lambda f: f.active
+            and f.record_type == "Footer"
+            and (not f.company_ids or company_id in f.company_ids.ids)
+        )
+        if preferred:
+            return preferred[-1]
 
-        if result_raw != False:
-            result = []
-            for item in result_raw:
-                # Verify footers are applicable for company
-                if company in item.company_ids or len(item.company_ids) == 0:
-                    result.append(item)
-            if len(result) != 0:
-                return result[-1]
-        # Check for default footer that matches company
-        defaults = self.env["header.footer"].search(
+        default_footer = self.env["header.footer"].search(
             [
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
                 ("default", "=", True),
-                ("company_ids", "=", company.id),
-            ]
+                "|",
+                ("company_ids", "=", False),
+                ("company_ids", "in", [company_id]),
+            ],
+            limit=1,
         )
-        if len(defaults) != 0:
-            return defaults[-1]
-        else:
-            return False
-            raise UserError("No Default Footer Available")
+        if default_footer:
+            return default_footer
+
+        fallback = self.env["header.footer"].search(
+            [("active", "=", True), ("record_type", "=", "Footer")],
+            limit=1,
+        )
+        if fallback:
+            return fallback
+
+        return False
 
     footer_id = fields.Many2one(
-        "header.footer", default=_get_default_footer, required="True"
+        "header.footer",
+        default=_get_default_footer,
+        required=True,
     )
