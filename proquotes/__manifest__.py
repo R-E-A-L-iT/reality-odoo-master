@@ -103,6 +103,7 @@
         "views/Other/helpdeskTicket.xml",
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",
+        # "views/Other/res_config_extend_view.xml",
         "views/Quote/table_align.xml",
         "data/thanks_for_payment.xml",
     ],
