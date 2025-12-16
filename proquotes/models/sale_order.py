@@ -516,6 +516,17 @@ class order(models.Model):
                 _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
 
         return action
+
+    def _get_confirmation_template(self):
+        """Override to use website-specific confirmation email template if available."""
+        self.ensure_one()
+        # Priority 1: Check for website-specific confirmation template
+        if self.website_id and self.website_id.confirmation_mail_template_id:
+            _logger.info(f"Using website-specific confirmation template for {self.name}: {self.website_id.confirmation_mail_template_id.name}")
+            return self.website_id.confirmation_mail_template_id
+        # Priority 2: Fall back to global system parameter
+        _logger.info(f"Using default confirmation template for {self.name}")
+        return super()._get_confirmation_template()
             
     def _action_confirm(self):
         selected_lines = self.order_line.sudo().filtered(

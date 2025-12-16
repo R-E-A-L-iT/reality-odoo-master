@@ -105,5 +105,6 @@
         "views/Other/preconfigured_sections.xml",
         "views/Quote/table_align.xml",
         "data/thanks_for_payment.xml",
+        "views/Other/res_config_settings_views.xml",
     ],
 }

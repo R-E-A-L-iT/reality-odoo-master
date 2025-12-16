@@ -27,3 +27,5 @@ from . import sale_order_template
 from . import sale_order
 from . import stock_lot
 from . import stock_picking
+from . import website
+from . import res_config_settings
