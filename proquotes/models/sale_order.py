@@ -1539,4 +1539,4 @@ class PreconfigSaleOrder(models.Model):
                         'product_uom_qty': 1,
                     }))
             if new_lines:
-                self.order_line = [(5, 0, 0)] + new_lines
+                self.order_line = new_lines
