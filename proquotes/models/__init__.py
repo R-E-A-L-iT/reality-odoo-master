@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from . import account_move_line
-from . import account_move_send
 from . import account_move
+from . import account_move_send
 from . import calendar_event
 from . import crm_lead
 from . import header_footer
@@ -27,3 +27,4 @@ from . import sale_order_template
 from . import sale_order
 from . import stock_lot
 from . import stock_picking
+from . import res_config_extend
