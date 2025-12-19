@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_website_email_extend_view_form" model="ir.ui.view">
+        <field name="name">res.config.website.email.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="15"/>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='website_info_settings']" position="before">
+                <block title="Website Email Template" id="website_email_template">
+                    <setting id="website_email_menu">
+                        <div class="row mt16 col-lg-12">
+                             <label for="ba_email_template_id" class="col-lg-4" style="font-weight: 500; !important;"/>
+                             <field name="ba_email_template_id"/>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
