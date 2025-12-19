@@ -36,7 +36,7 @@ PROVINCE_TAX_BY_CODE = {
     "NB": "HST for sales - 15%",
     "NL": "HST for sales - 15%",
     "NT": "GST for sales - 5%",
-    "NS": "HST for sales - 15%",
+    "NS": "HST 14%",
     "NU": "GST for sales - 5%",
     "PE": "HST for sales - 15%",
     "SK": "GST + PST for sales (SK)",
@@ -365,47 +365,268 @@ class order(models.Model):
 
         return json.dumps(items)
 
-    # this function adds derek@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
-    @api.model_create_multi
-    def create(self, vals_list):
-        orders = super().create(vals_list)
+    def write(self, vals):
+        # Normal write first
+        res = super().write(vals)
 
-        # apply taxes if canadian quote
-        orders._apply_canadian_province_taxes()
+        # Avoid recursion when we fix things ourselves
+        if self.env.context.get('skip_company_consistency'):
+            return res
+
+        for order in self:
+            # Only enforce this for website orders with a company
+            if not order.website_id or not order.company_id:
+                continue
+
+            company = order.company_id
+
+            # --- Fix warehouse if mismatched ---
+            if order.warehouse_id and order.warehouse_id.company_id != company:
+                _logger.info(
+                    ">>>>>>> Fixing warehouse company mismatch on %s: SO company=%s, warehouse=%s (%s)",
+                    order.name,
+                    company.name,
+                    order.warehouse_id.display_name,
+                    order.warehouse_id.company_id.name,
+                )
+
+                warehouse_env = (
+                    self.env['stock.warehouse']
+                    .sudo()
+                    .with_context(allowed_company_ids=[company.id])
+                    .with_company(company.id)
+                )
+
+                new_wh = warehouse_env.search(
+                    [('company_id', '=', company.id)],
+                    limit=1,
+                )
+
+                if new_wh:
+                    _logger.info(
+                        ">>>>>>> Assigning warehouse %s to SO %s for company %s",
+                        new_wh.display_name,
+                        order.name,
+                        company.name,
+                    )
+                    order.with_context(skip_company_consistency=True).write({
+                        'warehouse_id': new_wh.id,
+                    })
+                else:
+                    _logger.warning(
+                        ">>>>>>> No warehouse found for company %s when fixing SO %s",
+                        company.name,
+                        order.name,
+                    )
+
+            # --- Fix partner companies if mismatched ---
+            partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id)
+            for partner in partners:
+                if not partner:
+                    continue
+                if partner.company_id and partner.company_id != company:
+                    _logger.info(
+                        ">>>>>>> Fixing partner company for %s on SO %s: %s -> %s",
+                        partner.display_name,
+                        order.name,
+                        partner.company_id.name,
+                        company.name,
+                    )
+                    partner.sudo().with_context(
+                        allowed_company_ids=[partner.company_id.id, company.id]
+                    ).write({'company_id': company.id})
+
+        return res
+
+    def _set_company_based_on_visitor_country(self):
+        """Assign company based on pricelist currency first, then visitor's country as fallback."""
+        for order in self:
+            # Only process website orders
+            if not order.website_id:
+                continue
+
+            previous_company = order.company_id
+            previous_warehouse = order.warehouse_id
+
+            company_to_assign = None
+
+            # PRIORITY 1: Determine company based on pricelist currency
+            if order.pricelist_id and order.pricelist_id.currency_id:
+                currency_name = order.pricelist_id.currency_id.name
+
+                _logger.info(
+                    '>>>>>>>Website order %s - pricelist: %s, currency: %s',
+                    order.name, order.pricelist_id.name, currency_name
+                )
+
+                if currency_name == 'USD':
+                    # USD pricelist → assign to US company
+                    company_to_assign = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                        limit=1,
+                    )
+                    _logger.info(
+                        '>>>>>>>Assigning US company based on USD pricelist to sale order %s >>>: %s',
+                        order.name,
+                        company_to_assign.name if company_to_assign else None,
+                    )
+                elif currency_name == 'CAD':
+                    # CAD pricelist → assign to Canadian company
+                    company_to_assign = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT Solutions')],
+                        limit=1,
+                    )
+                    _logger.info(
+                        '>>>>>>>Assigning Canadian company based on CAD pricelist to sale order %s >>>: %s',
+                        order.name,
+                        company_to_assign.name if company_to_assign else None,
+                    )
+
+            # PRIORITY 2: Fallback to GeoIP if pricelist doesn't determine company
+            if not company_to_assign:
+                try:
+                    if request and hasattr(request, 'env'):
+                        visitor = request.env['website.visitor']._get_visitor_from_request()
+                        if visitor and visitor.country_id:
+                            us_country = self.env.ref('base.us', raise_if_not_found=False)
+                            _logger.info(
+                                '>>>>>>>Website order %s - visitor country: %s (GeoIP fallback)',
+                                order.name, visitor.country_id.name
+                            )
+
+                            if us_country and visitor.country_id.id == us_country.id:
+                                # US visitor → assign to R-E-A-L.iT U.S. Inc.
+                                company_to_assign = self.env['res.company'].search(
+                                    [('name', '=', 'R-E-A-L.iT U.S. Inc.')],
+                                    limit=1,
+                                )
+                                _logger.info(
+                                    '>>>>>>>Assigning US company via GeoIP fallback to sale order %s >>>: %s',
+                                    order.name,
+                                    company_to_assign.name if company_to_assign else None,
+                                )
+                            else:
+                                # Non-US visitor → R-E-A-L.iT Solutions
+                                company_to_assign = self.env['res.company'].search(
+                                    [('name', '=', 'R-E-A-L.iT Solutions')],
+                                    limit=1,
+                                )
+                                _logger.info(
+                                    '>>>>>>>Assigning Canadian company via GeoIP fallback to sale order %s >>>: %s',
+                                    order.name,
+                                    company_to_assign.name if company_to_assign else None,
+                                )
+                except Exception as e:
+                    _logger.warning(
+                        '>>>>>>>Could not get visitor from request for order %s: %s',
+                        order.name, str(e),
+                    )
+
+            # PRIORITY 3: Final fallback - default to Canadian company
+            if not company_to_assign:
+                company_to_assign = self.env['res.company'].search(
+                    [('name', '=', 'R-E-A-L.iT Solutions')],
+                    limit=1,
+                )
+                _logger.info(
+                    '>>>>>>>Final fallback to Canadian company for sale order %s >>>: %s',
+                    order.name,
+                    company_to_assign.name if company_to_assign else None,
+                )
+
+            # If nothing to do or already on that company, skip
+            if not company_to_assign or order.company_id == company_to_assign:
+                continue
+
+            # --- IMPORTANT: pick a warehouse for that company BEFORE writing company_id ---
+            warehouse_env = (
+                self.env['stock.warehouse']
+                .sudo()
+                .with_context(allowed_company_ids=[company_to_assign.id])
+                .with_company(company_to_assign.id)
+            )
+
+            warehouse = warehouse_env.search(
+                [('company_id', '=', company_to_assign.id)],
+                limit=1,
+            )
+
+            if not warehouse:
+                _logger.warning(
+                    '>>>>>>>No warehouse found for company %s; sale order %s may crash with incompatible companies',
+                    company_to_assign.name,
+                    order.name,
+                )
+                # If really no warehouse, we can only try to switch company and hope nothing uses warehouse
+                values = {'company_id': company_to_assign.id}
+            else:
+                _logger.info(
+                    '>>>>>>>Assigning warehouse for %s: %s -> %s',
+                    order.name,
+                    previous_warehouse.display_name if previous_warehouse else None,
+                    warehouse.display_name,
+                )
+                # Write company and warehouse TOGETHER to avoid check_company errors
+                values = {
+                    'company_id': company_to_assign.id,
+                    'warehouse_id': warehouse.id,
+                }
+
+            _logger.info(
+                '>>>>>>>Changing company on %s: %s -> %s',
+                order.name,
+                previous_company.name if previous_company else None,
+                company_to_assign.name,
+            )
+
+            order.write(values)
+
+            # Let Odoo recompute dependent fields
+            try:
+                order._onchange_company_id()
+            except Exception as e:
+                _logger.warning(
+                    '>>>>>>>Error in _onchange_company_id for order %s: %s',
+                    order.name, str(e),
+                )
+
+    # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
+    @api.model
+    def create(self, vals):
+        order = super().create(vals)
+
+        # Assign company based on visitor location for website orders
+        order._set_company_based_on_visitor_country()
 
         # Find or create the partner with email derek@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
-        for order in orders:
-            if not sales_email:
-                continue
-
-            target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
-            if not target_email:
-                continue
-
-            follower_partners = order.message_follower_ids.mapped('partner_id')
-            follower_emails = {
-                (p.email_normalized or (p.email or '').strip().lower())
-                for p in follower_partners
-                if (p.email or p.email_normalized)
-            }
-
-            sp_partner = order.user_id.partner_id if order.user_id else False
-            salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
-
-            if target_email in follower_emails or target_email == salesperson_email:
-                continue
-
+        if sales_email:
             order.message_subscribe(partner_ids=[sales_email.id])
 
+        target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
+        if not target_email:
+            return order
+
+        follower_partners = order.message_follower_ids.mapped('partner_id')
+        follower_emails = {
+            (p.email_normalized or (p.email or '').strip().lower())
+            for p in follower_partners
+            if (p.email or p.email_normalized)
+        }
+
+        sp_partner = order.user_id.partner_id if order.user_id else False
+        salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
+
+        if target_email in follower_emails or target_email == salesperson_email:
+            return order
+
         # Add non-company partners to subscribers (automatic quotes from store)
-        for order in orders:
-            partner = order.partner_id
-            if partner and not partner.is_company:
-                if partner.id not in order.message_partner_ids.ids:
-                    order.message_subscribe(partner_ids=[partner.id])
-        
-        return orders
+        partner = order.partner_id
+        if partner and not partner.is_company:
+            if partner.id not in order.message_partner_ids.ids:
+                order.message_subscribe(partner_ids=[partner.id])
+
+        return order
 
 
     @api.model

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="s_submenu_block" name="Submenu Block">
+    <section class="s_submenu_block d-none d-md-block" data-vcss="001" data-name="Submenu Block" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #dee2e6;">
+        <div class="container-fluid">
+            <nav class="s_submenu_nav">
+                <ul class="s_submenu_list nav justify-content-center">
+                    <li class="nav-item">
+                        <a class="nav-link s_submenu_link" href="#section1">Section 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link s_submenu_link" href="#section2">Section 2</a>
+                    </li>
+                    <li class="nav-item d-none">
+                        <a class="nav-link s_submenu_link" href="#section3">Section 3</a>
+                    </li>
+                </ul>
+                <div class="s_submenu_add_link d-none">
+                    <button type="button" class="btn btn-sm btn-outline-primary s_submenu_add_btn">
+                        <i class="fa fa-plus"></i> Add Link
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </section>
+</template>
+
+</odoo>

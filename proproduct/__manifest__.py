@@ -14,10 +14,12 @@
         "website",
         "product",
         "website_sale",
+        "payment",
     ],
     "data": [
         "views/website_sale_product.xml",
         "views/product_template_form.xml",
         "views/wishlist_page.xml",
+        "views/website_address.xml",
     ],
 }

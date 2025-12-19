@@ -260,12 +260,33 @@ class invoice(models.Model):
                     move.name = new_name
         return res
 
+    def _set_company_from_sale_order(self, invoice):
+        """Inherit company from originating sale order if it's a website order"""
+        if invoice.move_type not in ['out_invoice', 'out_refund']:
+            return
+
+        # Find the related sale orders
+        sale_orders = invoice.invoice_line_ids.mapped('sale_line_ids.order_id')
+
+        if sale_orders:
+            # Use the first sale order's company (typically all lines from same order)
+            first_order = sale_orders[0]
+
+            # If the sale order is from website, ensure invoice uses same company
+            if first_order.website_id and first_order.company_id:
+                if invoice.company_id != first_order.company_id:
+                    _logger.info('>>>>>>>Setting invoice company from website sale order: %s', first_order.company_id.name)
+                    invoice.company_id = first_order.company_id.id
+
     @api.model
     def create(self, vals):
         invoice_object = super(invoice, self).create(vals)
 
         if invoice_object.move_type not in ['out_invoice', 'out_refund']:
             return invoice_object
+
+        # Ensure invoice inherits correct company from website sale order
+        self._set_company_from_sale_order(invoice_object)
 
         # add derek@r-e-a-l.it as a follower of the document
         if invoice_object.move_type in ['out_invoice', 'out_refund']:
