@@ -135,10 +135,30 @@ class PaymentProvider(models.Model):
 
         return company_filtered_providers
 
+    def _check_company(self):
+        """
+        payment.provider is already in an inconsistent state (website_id points to a website in another company).
+        We allow bypassing company checks ONLY when explicitly requested via context and only for a very narrow update.
+        """
+        if self.env.context.get("bypass_provider_company_check"):
+            return
+        return super()._check_company()
+
     def write(self, vals):
-        if set(vals) == {'journal_id'}:
-            # bypass company check for this specific case
-            with self.env.cr.savepoint():
-                self = self.with_context(check_company=False)
-                return super(PaymentProvider, self).write(vals)
+        # Only bypass when the ONLY thing being changed is journal_id
+        # (so we don't allow other risky edits to slip through).
+        if set(vals.keys()) == {"journal_id"}:
+            # Extra safety: journal company should match provider company (or be shared)
+            # This prevents accidentally pointing to some other company’s journal.
+            if vals.get("journal_id"):
+                j = self.env["account.journal"].sudo().browse(vals["journal_id"])
+                for provider in self.sudo():
+                    if j.company_id and provider.company_id and j.company_id != provider.company_id:
+                        raise UserError(
+                            "Refusing to set journal '%s' (company %s) on provider '%s' (company %s)."
+                            % (j.display_name, j.company_id.display_name, provider.display_name, provider.company_id.display_name)
+                        )
+
+            return super(PaymentProvider, self.with_context(bypass_provider_company_check=True)).write(vals)
+
         return super().write(vals)
