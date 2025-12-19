@@ -32,7 +32,10 @@ class MailComposeMessage(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
-        res_id_target = None 
+        res_id_target = None
+        company = self.env.company
+        ba_email = company.ba_email_template_id
+        _logger.info(">>>>>>>>>>>>>37>>>>ba_email %s %s %s",ba_email,self.env.user.company_id,self.env.user)
         if 'res_ids' in defaults and defaults['res_ids']:
             try:
                 parsed_res_ids = ast.literal_eval(defaults['res_ids'])
@@ -59,22 +62,18 @@ class MailComposeMessage(models.TransientModel):
                 _logger.info("Order found: " + order.name)
 
             if order.website_id:
-                template = self.env['mail.template'].search([
-                    ('name', '=', 'eCommerce Quote Send')
-                ], limit=1)
-
-                if template:
-                    defaults['template_id'] = template.id
+                if ba_email:
+                    defaults['template_id'] = ba_email.id
                     _logger.info("Applied eCommerce Quote Send template")
-            else:
-                template = self.env['mail.template'].search([
-                    ('name', '=', 'General Sales')
-                ], limit=1)
+            # else:
+            #     template = self.env['mail.template'].search([
+            #         ('name', '=', 'General Sales')
+            #     ], limit=1)
                 
-                if template:
-                    defaults['template_id'] = template.id
-                    _logger.info("Applied General Sales template")
-                    # defaults['use_template'] = True
+            #     if template:
+            #         defaults['template_id'] = template.id
+            #         _logger.info("Applied General Sales template")
+            #         # defaults['use_template'] = True
 
 
         elif model in ['account.move']:

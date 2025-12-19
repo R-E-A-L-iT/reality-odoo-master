@@ -6,7 +6,7 @@
         <field name="priority" eval="15"/>
         <field name="inherit_id" ref="website.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//block[@name='website_info_settings']" position="before">
+            <xpath expr="//block[@id='website_info_settings']" position="before">
                 <block title="Website Email Template" id="website_email_template">
                     <setting id="website_email_menu">
                         <div class="row mt16 col-lg-12">
