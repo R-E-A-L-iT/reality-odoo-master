@@ -134,3 +134,11 @@ class PaymentProvider(models.Model):
             )
 
         return company_filtered_providers
+
+    def write(self, vals):
+        if set(vals) == {'journal_id'}:
+            # bypass company check for this specific case
+            with self.env.cr.savepoint():
+                self = self.with_context(check_company=False)
+                return super(PaymentProvider, self).write(vals)
+        return super().write(vals)
