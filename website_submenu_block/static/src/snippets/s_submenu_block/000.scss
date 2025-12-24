@@ -114,11 +114,10 @@
 
 #wrapwrap.o_header_overlay {
     > header:not(.o_header_affixed):not(.o_header_sidebar) {
-        position: unset;
-        z-index: 1000;
+        position: relative;
+        z-index: 1050;
 
         > .navbar {
-            // Prevent the nav color/gradient to impact the header color.
             background-color: transparent !important;
             background-image: none !important;
             border-color: transparent;
@@ -126,7 +125,7 @@
         }
 
         &:not(.o_top_menu_collapse_shown) > .navbar {
-            @include o-apply-colors(1); // Reset to default colored components
+            @include o-apply-colors(1);
 
             .nav-item {
                 > .nav-link {
@@ -141,6 +140,10 @@
                 }
             }
         }
+    }
+
+    .dropdown-menu {
+        z-index: 1100 !important;
     }
 }
 
