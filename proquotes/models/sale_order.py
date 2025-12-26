@@ -761,6 +761,23 @@ class order(models.Model):
         if not partner_ids:
             return
         return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
+
+    def has_external_followers(self):
+        """
+        Check if the sale order has external followers (non-internal users).
+        Returns True if there are followers who are not internal users.
+        """
+        self.ensure_one()
+        # Get all followers of the current record
+        followers = self.message_partner_ids
+
+        # Filter for external followers (partners without internal user access)
+        # Internal users have share=False, external users have share=True or no user
+        external_followers = followers.filtered(
+            lambda p: not p.user_ids or any(user.share for user in p.user_ids)
+        )
+
+        return len(external_followers) > 0
     
     @api.depends('rental_start', 'rental_end')
     def _compute_duration(self):

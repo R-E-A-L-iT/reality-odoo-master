@@ -57,6 +57,8 @@
         ],
         'web.assets_backend': [
             "proquotes/static/src/JS/website_preview.js",
+            "proquotes/static/src/JS/composer_confirmation.js",
+            "proquotes/static/src/xml/composer_confirmation.xml",
         ],
         'website.assets_wysiwyg': [
             'proquotes/static/src/JS/rental_quote_form_editor.js',
