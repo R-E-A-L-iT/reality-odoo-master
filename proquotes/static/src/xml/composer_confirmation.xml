@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="proquotes.ConfirmationDialog">
+        <Dialog title="props.title" size="'md'">
+            <div class="modal-body">
+                <p t-esc="props.body"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="onCancel">Cancel</button>
+                <button class="btn btn-primary" t-on-click="onConfirm">Yes, Send</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
