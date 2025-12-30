@@ -10,6 +10,12 @@
 			<t t-set="footer" t-value="o.footer_id.url" />
 		</xpath>
 
+		<!-- Setup Translations -->
+        <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
+            <t t-set="lang" t-value="o.partner_id.lang"/>
+            <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))"/>
+        </xpath>
+
 		<!-- <xpath expr="//div[@class='page']" position="before">
 			<style>
 				h2 span, strong, .text-danger {
@@ -37,7 +43,8 @@
 				<!-- first row -->
 				<div class="row align-items-center" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 10px;">
 					<div class="col-12">
-						<h4 style="margin-bottom: 5px;">Vendor Address</h4>
+						<h4 t-if="(lang == 'en_CA' or lang == 'en_US')" style="margin-bottom: 5px;">Vendor Address</h4>
+						<h4 t-elif="lang == 'fr_CA'" style="margin-bottom: 5px;">Adresse du fournisseur</h4>
 						<div t-if="o.partner_id">
 							<div style="display: flex; flex-direction: column;">
 								<span t-field="o.partner_id.name"/><br/>
@@ -60,7 +67,8 @@
 				<!-- second row -->
 				<div class="row" style="background-color: #f0f0f0; padding: 10px;">
 					<div class="col-6">
-						<h4>Billing Address</h4>
+						<h4 t-if="(lang == 'en_CA' or lang == 'en_US')">Billing Address</h4>
+						<h4 t-elif="lang == 'fr_CA'">Adresse de facturation</h4>
 						<div t-if="o.company_id">
 							<span t-field="o.company_id.street"/><br/>
 							<span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
@@ -78,7 +86,8 @@
 					</div>
 
 					<div class="col-6">
-						<h4>Shipping Address</h4>
+						<h4 t-if="(lang == 'en_CA' or lang == 'en_US')">Shipping Address</h4>
+						<h4 t-elif="lang == 'fr_CA'">Adresse de livraison</h4>
 						<div t-if="o.picking_type_id">
 							<div t-field="o.picking_type_id.warehouse_id.partner_id" 
 								t-options="{&quot;widget&quot;: &quot;contact&quot;, 
