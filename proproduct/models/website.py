@@ -54,29 +54,3 @@ class Website(models.Model):
         request.session['website_sale_current_pl'] = pricelist.id
 
         return pricelist
-
-    def sale_get_order(self, force_create=False, **kwargs):
-        order = super().sale_get_order(force_create=force_create, **kwargs)
-
-        # Only in HTTP context
-        if not order or not request:
-            return order
-
-        # Do not override if user selected manually
-        if request.session.get('pricelist_selected_manually'):
-            return order
-
-        # Ensure geo pricelist is applied to the existing cart
-        desired_pl = self.sale_get_pricelist(partner=order.partner_id)
-        if desired_pl and order.pricelist_id != desired_pl:
-            _logger.info(
-                "[geo-pricelist] Updating cart %s pricelist %s -> %s",
-                order.name,
-                order.pricelist_id.display_name,
-                desired_pl.display_name,
-            )
-            order = order.sudo()
-            order.write({'pricelist_id': desired_pl.id})
-            order._recompute_prices()
-
-        return order
