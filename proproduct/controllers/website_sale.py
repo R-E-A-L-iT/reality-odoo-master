@@ -157,17 +157,29 @@ class WebsiteSale(main.WebsiteSale):
         # ------------------------------------------------------------------
         # PRICELIST & CONVERSION RATE  (FIXED)
         # ------------------------------------------------------------------
+        now = datetime.timestamp(datetime.now())
 
-        # IMPORTANT: call sale_get_pricelist() so your geo logic runs on first landing
+        # Run geo pricelist logic on first landing
         geo_pricelist = website.sale_get_pricelist()
 
-        # Get cart if it exists, and force pricelist update if needed
+        # Ensure cart (if any) is aligned with current pricelist
         order = request.website.sale_get_order(force_create=False, update_pricelist=True)
 
-        # Use cart pricelist if cart exists; otherwise use geo pricelist (NOT website default)
+        # Use cart pricelist if cart exists; else geo pricelist (NOT website default)
         pricelist = order.pricelist_id if order else geo_pricelist
-
         display_currency = pricelist.currency_id or website.currency_id
+
+        # Price-filter conversion rate (always defined)
+        filter_by_price_enabled = website.is_view_active('website_sale.filter_products_price')
+        conversion_rate = 1.0
+        if filter_by_price_enabled:
+            company_currency = website.company_id.currency_id
+            conversion_rate = request.env['res.currency']._get_conversion_rate(
+                company_currency,
+                website.currency_id,
+                website.company_id,
+                fields.Date.today(),
+            )
 
         # Old custom caching logic for pricelist has been removed to avoid
         # overriding Odoo's default behavior:
