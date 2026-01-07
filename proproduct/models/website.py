@@ -55,13 +55,8 @@ class Website(models.Model):
 
         return pricelist
 
-    def sale_get_order(self, force_create=False, code=None, update_pricelist=False, force_pricelist=False):
-        order = super().sale_get_order(
-            force_create=force_create,
-            code=code,
-            update_pricelist=update_pricelist,
-            force_pricelist=force_pricelist,
-        )
+    def sale_get_order(self, force_create=False, **kwargs):
+        order = super().sale_get_order(force_create=force_create, **kwargs)
 
         # Only in HTTP context
         if not order or not request:
