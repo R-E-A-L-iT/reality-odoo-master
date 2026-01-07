@@ -155,27 +155,17 @@ class WebsiteSale(main.WebsiteSale):
         )
 
         # ------------------------------------------------------------------
-        # PRICELIST & CONVERSION RATE  (RESTORED / FIXED)
+        # PRICELIST & CONVERSION RATE  (FIXED)
         # ------------------------------------------------------------------
-        now = datetime.timestamp(datetime.now())
 
-        # Use the current order's pricelist if there is an order, otherwise
-        # fall back to the website's default pricelist.
-        order = request.website.sale_get_order(force_create=False)
-        pricelist = order.pricelist_id if order else website.pricelist_id
+        # IMPORTANT: call sale_get_pricelist() so your geo logic runs on first landing
+        geo_pricelist = website.sale_get_pricelist()
 
-        # Compute conversion rate for price filter (company currency -> website currency)
-        filter_by_price_enabled = website.is_view_active('website_sale.filter_products_price')
-        if filter_by_price_enabled:
-            company_currency = website.company_id.currency_id
-            conversion_rate = request.env['res.currency']._get_conversion_rate(
-                company_currency,
-                website.currency_id,
-                website.company_id,
-                fields.Date.today(),
-            )
-        else:
-            conversion_rate = 1.0
+        # Get cart if it exists, and force pricelist update if needed
+        order = request.website.sale_get_order(force_create=False, update_pricelist=True)
+
+        # Use cart pricelist if cart exists; otherwise use geo pricelist (NOT website default)
+        pricelist = order.pricelist_id if order else geo_pricelist
 
         display_currency = pricelist.currency_id or website.currency_id
 
