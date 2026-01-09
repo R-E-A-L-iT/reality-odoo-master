@@ -51,6 +51,39 @@ class WebsiteSale(main.WebsiteSale):
 
         return partner_id
 
+    def _get_search_options(self, category=None, attrib_values=None, tags=None,
+                           min_price=0.0, max_price=0.0, conversion_rate=1, **post):
+        """Override to fix signature compatibility issue with website_sale_renting.
+
+        The enterprise website_sale_renting module has _get_search_options(self, **post)
+        which causes 'multiple values for keyword argument' errors when tags are passed.
+        This override builds the complete options dict to avoid calling parent.
+        """
+        # Build complete options dict (same as base website_sale)
+        options = {
+            'displayDescription': True,
+            'displayDetail': True,
+            'displayExtraDetail': True,
+            'displayExtraLink': True,
+            'displayImage': True,
+            'allowFuzzy': not post.get('noFuzzy'),
+            'category': str(category.id) if category else None,
+            'tags': tags,
+            'min_price': min_price / conversion_rate if conversion_rate else min_price,
+            'max_price': max_price / conversion_rate if conversion_rate else max_price,
+            'attrib_values': attrib_values,
+            'display_currency': post.get('display_currency'),
+        }
+
+        # Add rental-specific options (from website_sale_renting module)
+        options.update({
+            'from_date': post.get('start_date'),
+            'to_date': post.get('end_date'),
+            'rent_only': post.get('rent_only') in ('True', 'true', '1'),
+        })
+
+        return options
+
     def sitemap_shop(env, rule, qs):
         if not qs or qs.lower() in '/shop':
             yield {'loc': '/shop'}
@@ -139,6 +172,7 @@ class WebsiteSale(main.WebsiteSale):
         attrib_set = {v[1] for v in attrib_values}
 
         filter_by_tags_enabled = website.is_view_active('website_sale.filter_products_tags')
+        tags = {}
         if filter_by_tags_enabled:
             tags = request_args.getlist('tags')
             # Allow only numeric tag values to avoid internal error.
@@ -196,20 +230,19 @@ class WebsiteSale(main.WebsiteSale):
         if attrib_list:
             post['attrib'] = attrib_list
 
-        options = {
-            'displayDescription': True,
-            'displayDetail': True,
-            'displayExtraDetail': True,
-            'displayExtraLink': True,
-            'displayImage': True,
-            'allowFuzzy': not post.get('noFuzzy'),
-            'category': str(category.id) if category else None,
-            # Convert from website currency back to company currency for internal search
-            'min_price': min_price / conversion_rate if conversion_rate else min_price,
-            'max_price': max_price / conversion_rate if conversion_rate else max_price,
-            'attrib_values': attrib_values,
-            'display_currency': display_currency,
-        }
+        # Build search options including tags for proper filtering
+        # Extract tags from post to pass explicitly (avoid duplicate parameter error)
+        post_without_tags = {k: v for k, v in post.items() if k != 'tags'}
+        options = self._get_search_options(
+            category=category,
+            attrib_values=attrib_values,
+            tags=tags,
+            min_price=min_price,
+            max_price=max_price,
+            conversion_rate=conversion_rate,
+            display_currency=display_currency,
+            **post_without_tags
+        )
 
         # No limit because attributes are obtained from complete product list
         fuzzy_search_term, product_count, search_product = self._shop_lookup_products(
@@ -235,6 +268,8 @@ class WebsiteSale(main.WebsiteSale):
 
         # Re-check price filter to compute min/max bounds using SQL
         filter_by_price_enabled = request.website.is_view_active('website_sale.filter_products_price')
+        available_min_price = 0.0
+        available_max_price = 0.0
         if filter_by_price_enabled:
             Product = request.env['product.template'].with_context(bin_size=True)
             domain = self._get_shop_domain(search, category, attrib_values)
@@ -261,6 +296,7 @@ class WebsiteSale(main.WebsiteSale):
                     max_price = max_price if max_price >= available_min_price else available_max_price
                     post['max_price'] = max_price
 
+        all_tags = []
         if filter_by_tags_enabled:
             if (
                 search_product.product_tag_ids
