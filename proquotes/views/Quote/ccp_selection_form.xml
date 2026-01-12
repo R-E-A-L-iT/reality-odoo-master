@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="CCP Selection Form" id="ccp_selection_form">
+        <t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
+        <t t-elif="doc != undefined" t-set="source" t-value="doc" />
+        <t t-elif="o != undefined" t-set="source" t-value="o" />
+
+        <section class="ccp-selection-container" t-attf-data-scanner="{{scanner_name}}" t-attf-data-section="{{section_name}}" t-attf-data-order-id="{{source.id}}">
+
+            <!-- Step 1: CCP Type Selection -->
+            <div class="ccp-step ccp-step-1 active">
+                <div class="ccp-header">
+                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
+                        Select CCP Type for <span t-esc="scanner_name"/>
+                    </h3>
+                    <h3 t-elif="language == 'fr_CA'">
+                        Sélectionnez le type CCP pour <span t-esc="scanner_name"/>
+                    </h3>
+                </div>
+
+                <div class="ccp-type-options">
+                    <!-- BASIC -->
+                    <div class="ccp-type-card" data-ccp-type="BASIC">
+                        <input type="radio" name="ccp_type" id="ccp_basic" value="BASIC" class="ccp-radio"/>
+                        <label for="ccp_basic">
+                            <div class="ccp-card-content">
+                                <div class="ccp-image-placeholder" data-ccp-type="BASIC">
+                                    <!-- Image will be loaded by JavaScript -->
+                                </div>
+                                <span class="ccp-type-name">BASIC</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- BLUE -->
+                    <div class="ccp-type-card" data-ccp-type="BLUE">
+                        <input type="radio" name="ccp_type" id="ccp_blue" value="BLUE" class="ccp-radio"/>
+                        <label for="ccp_blue">
+                            <div class="ccp-card-content">
+                                <div class="ccp-image-placeholder" data-ccp-type="BLUE">
+                                    <!-- Image will be loaded by JavaScript -->
+                                </div>
+                                <span class="ccp-type-name">BLUE</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- BRONZE -->
+                    <div class="ccp-type-card" data-ccp-type="BRONZE">
+                        <input type="radio" name="ccp_type" id="ccp_bronze" value="BRONZE" class="ccp-radio"/>
+                        <label for="ccp_bronze">
+                            <div class="ccp-card-content">
+                                <div class="ccp-image-placeholder" data-ccp-type="BRONZE">
+                                    <!-- Image will be loaded by JavaScript -->
+                                </div>
+                                <span class="ccp-type-name">BRONZE</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- SILVER -->
+                    <div class="ccp-type-card" data-ccp-type="SILVER">
+                        <input type="radio" name="ccp_type" id="ccp_silver" value="SILVER" class="ccp-radio"/>
+                        <label for="ccp_silver">
+                            <div class="ccp-card-content">
+                                <div class="ccp-image-placeholder" data-ccp-type="SILVER">
+                                    <!-- Image will be loaded by JavaScript -->
+                                </div>
+                                <span class="ccp-type-name">SILVER</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- GOLD -->
+                    <div class="ccp-type-card" data-ccp-type="GOLD">
+                        <input type="radio" name="ccp_type" id="ccp_gold" value="GOLD" class="ccp-radio"/>
+                        <label for="ccp_gold">
+                            <div class="ccp-card-content">
+                                <div class="ccp-image-placeholder" data-ccp-type="GOLD">
+                                    <!-- Image will be loaded by JavaScript -->
+                                </div>
+                                <span class="ccp-type-name">GOLD</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-primary ccp-next-btn" disabled="disabled">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Next</span>
+                        <span t-elif="language == 'fr_CA'">Suivant</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Time Period Selection -->
+            <div class="ccp-step ccp-step-2">
+                <div class="ccp-header">
+                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
+                        Select Time Period
+                    </h3>
+                    <h3 t-elif="language == 'fr_CA'">
+                        Sélectionnez la période
+                    </h3>
+                </div>
+
+                <div class="ccp-period-selection">
+                    <label for="ccp_period">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Time Period:</span>
+                        <span t-elif="language == 'fr_CA'">Période:</span>
+                    </label>
+                    <select id="ccp_period" class="form-control ccp-period-select">
+                        <option value="">
+                            <t t-if="language == 'en_CA' or language == 'en_US'">-- Select Period --</t>
+                            <t t-elif="language == 'fr_CA'">-- Sélectionner la période --</t>
+                        </option>
+                        <option value="1 yr">1 yr</option>
+                        <option value="2 yr">2 yr</option>
+                        <option value="3 yr">3 yr</option>
+                        <option value="5 yr">5 yr</option>
+                    </select>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-secondary ccp-back-btn">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Back</span>
+                        <span t-elif="language == 'fr_CA'">Retour</span>
+                    </button>
+                    <button type="button" class="btn btn-primary ccp-next-btn" disabled="disabled">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Next</span>
+                        <span t-elif="language == 'fr_CA'">Suivant</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Confirmation -->
+            <div class="ccp-step ccp-step-3">
+                <div class="ccp-header">
+                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
+                        CCP Selection Confirmed
+                    </h3>
+                    <h3 t-elif="language == 'fr_CA'">
+                        Sélection CCP confirmée
+                    </h3>
+                </div>
+
+                <div class="ccp-confirmation">
+                    <p class="ccp-confirmation-message">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">
+                            You have chosen the CCP <strong class="ccp-selected-type"></strong>.
+                        </t>
+                        <t t-elif="language == 'fr_CA'">
+                            Vous avez choisi le CCP <strong class="ccp-selected-type"></strong>.
+                        </t>
+                    </p>
+                    <p class="ccp-change-prompt">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">
+                            Want to choose again?
+                        </t>
+                        <t t-elif="language == 'fr_CA'">
+                            Voulez-vous choisir à nouveau?
+                        </t>
+                    </p>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-warning ccp-clear-btn">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Clear CCP Selection</span>
+                        <span t-elif="language == 'fr_CA'">Effacer la sélection CCP</span>
+                    </button>
+                </div>
+
+                <!-- Loading indicator -->
+                <div class="ccp-loading" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">
+                            <t t-if="language == 'en_CA' or language == 'en_US'">Loading...</t>
+                            <t t-elif="language == 'fr_CA'">Chargement...</t>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </template>
+</odoo>

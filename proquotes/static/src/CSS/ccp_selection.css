@@ -1,0 +1,298 @@
+/* CCP Selection Form Styles */
+
+.ccp-selection-container {
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+/* Step Management */
+.ccp-step {
+    display: none;
+}
+
+.ccp-step.active {
+    display: block;
+}
+
+/* Header Styles */
+.ccp-header {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.ccp-header h3 {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Step 1: CCP Type Options */
+.ccp-type-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.ccp-type-card {
+    position: relative;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.ccp-type-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.ccp-type-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ccp-type-card input[type="radio"]:checked + label {
+    background-color: #e7f3ff;
+}
+
+.ccp-type-card input[type="radio"]:checked + label .ccp-card-content {
+    border-color: #007bff;
+}
+
+.ccp-type-card label {
+    cursor: pointer;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.ccp-card-content {
+    border: 2px solid transparent;
+    border-radius: 6px;
+    padding: 10px;
+    transition: border-color 0.3s ease;
+}
+
+.ccp-image-placeholder {
+    width: 100%;
+    min-height: 80px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ccp-image-placeholder img {
+    max-width: 100%;
+    max-height: 80px;
+    object-fit: contain;
+}
+
+.ccp-type-name {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+    margin-top: 8px;
+}
+
+/* Step 2: Period Selection */
+.ccp-period-selection {
+    margin: 30px 0;
+}
+
+.ccp-period-selection label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.ccp-period-select {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.ccp-period-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Step 3: Confirmation */
+.ccp-confirmation {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+}
+
+.ccp-confirmation-message {
+    font-size: 1.2rem;
+    color: #155724;
+    margin-bottom: 15px;
+}
+
+.ccp-confirmation-message strong {
+    font-weight: 700;
+    color: #0c3d1a;
+}
+
+.ccp-change-prompt {
+    font-size: 1rem;
+    color: #155724;
+    margin-bottom: 0;
+}
+
+.ccp-selected-type {
+    font-weight: 700;
+    color: #007bff;
+}
+
+/* Action Buttons */
+.ccp-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ccp-actions button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.ccp-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ccp-next-btn {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.ccp-next-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ccp-back-btn {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.ccp-back-btn:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ccp-clear-btn {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.ccp-clear-btn:hover:not(:disabled) {
+    background-color: #e0a800;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading Indicator */
+.ccp-loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ccp-type-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ccp-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .ccp-actions {
+        flex-direction: column;
+    }
+
+    .ccp-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .ccp-type-options {
+        grid-template-columns: 1fr;
+    }
+
+    .ccp-selection-container {
+        padding: 15px;
+        margin: 15px 0;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .ccp-actions {
+        display: none;
+    }
+
+    .ccp-type-card:not(:has(input:checked)) {
+        display: none;
+    }
+
+    .ccp-step:not(.active) {
+        display: none;
+    }
+}
