@@ -432,6 +432,8 @@ class QuoteCustomerPortal(cPortal):
                         # Set redirect URL with language prefix if needed
                         if partner.lang == 'fr_CA':
                             redirect_url = f"/fr_CA{url}"
+                        elif partner.lang == 'es_ES':
+                            redirect_url = f"/es_ES{url}"
                         else:
                             redirect_url = url
                     else:

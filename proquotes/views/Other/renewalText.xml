@@ -6,10 +6,12 @@
 			<h2>
 				<strong t-if="language ==  'en_CA' or language == 'en_US'">Hardware CCP</strong>
 				<strong t-elif="language == 'fr_CA'">CCP pour Instruments</strong>
+				<strong t-elif="language == 'es_ES'">CCP para Hardware</strong>
 			</h2>
 			<br />
 			<h4 t-if="language ==  'en_CA' or language == 'en_US'">WHY RENEW YOUR HARDWARE CCP?</h4>
 			<h4 t-elif="language == 'fr_CA'">Pourquoi Renouveler vos CCP pour vos Instruments?</h4>
+			<h4 t-elif="language == 'es_ES'">¿Por Qué Renovar su CCP para Hardware?</h4>
 
 			<div class="red-div" />
 			<p t-if="language ==  'en_CA' or language == 'en_US'" id="hardware">New features and bug fixes to the firmware are constantly being worked on and updates
@@ -25,6 +27,11 @@
 				fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent
 				d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre
 				instrument est en panne ou en réparation/étallonage.</p>
+			<p t-elif="language == 'es_ES'" id="hardware">Se están trabajando constantemente en nuevas funciones y correcciones de errores para el firmware y las actualizaciones
+				están disponibles típicamente cada pocos meses. También es importante mantener su instrumento funcionando sin
+				problemas con el servicio y la calibración. Algunos de sus clientes pueden incluso requerir que tenga un certificado de
+				calibración reciente para demostrar que su instrumento funciona correctamente. Tener un CCP también le da acceso al soporte técnico para el producto. 
+				Otras opciones le permiten extender su garantía (BRONCE, PLATA y ORO) y los CCP ORO incluyen un instrumento de préstamo gratuito mientras su instrumento está fuera de servicio o en reparación/calibración.</p>
 			<p t-out="isPDF" />
 			<img t-if="isPDF == False" src="" alt="" id="chart" />
 			<img t-elif="isPDF == True" src="" alt="" id="chartPDF" />
@@ -36,9 +43,11 @@
 			<h2>
 				<strong t-if="language ==  'en_CA' or language == 'en_US'">Software CCP</strong>
 				<strong t-elif="language == 'fr_CA'">CCP pour Logiciels</strong>
+				<strong t-elif="language == 'es_ES'">CCP para Software</strong>
 			</h2>
 			<h4 t-if="language ==  'en_CA' or language == 'en_US'">WHY RENEW YOUR SOFTWARE CCP?</h4>
 			<h4 t-elif="language == 'fr_CA'">Pourquoi Renouveler vos CCP Logiciel?</h4>
+			<h4 t-elif="language == 'es_ES'">¿Por Qué Renovar su CCP para Software?</h4>
 			<div class="red-div" />
 			<p t-if="language ==  'en_CA' or language == 'en_US'">New features and bug fixes are constantly being worked on and updates to our software are available
 				every few months. It's also important to keep all your products up to date together as they may stop
@@ -51,6 +60,11 @@
 				de fonctionner correctement si certains sont renouvelés et d'autres ne le sont pas. Avoir un CCP vous donne également accès à un
 				support technique pour le produit.
 			</p>
+			<p t-elif="language == 'es_ES'">
+				Se están trabajando constantemente en nuevas funciones y correcciones de errores y las actualizaciones de nuestro software
+				están disponibles varias veces al año. También es importante mantener todos sus productos actualizados juntos, ya que pueden
+				dejar de funcionar correctamente si algunos se renuevan y otros no. Tener un CCP también le da acceso al soporte técnico para el producto.
+			</p>
 		</div>
 	</template>
 
@@ -59,13 +73,15 @@
 			<h2>
 				<strong t-if="language ==  'en_CA' or language == 'en_US'">Software Subscriptions</strong>
 				<strong t-elif="language == 'fr_CA'">Abonnements Logiciels</strong>
+				<strong t-elif="language == 'es_ES'">Suscripciones de Software</strong>
 			</h2>
 			<h4 t-if="language ==  'en_CA' or language == 'en_US'">WHY RENEW YOUR SOFTWARE SUBSCRIPTIONS?</h4>
 			<h4 t-elif="language == 'fr_CA'">Pourquoi Renouveler vos Abonnements Logiciel?</h4>
+			<h4 t-elif="language == 'es_ES'">¿Por Qué Renovar sus Suscripciones de Software?</h4>
 			<div class="red-div" />
 			<p t-if="language ==  'en_CA' or language == 'en_US'"> New features and bug fixes are constantly being released and updates to our software are released several times a year. It is also important to keep all your products up to date together as they may stop working properly if some are renewed and others are not. A subscription gives you the possibility to be up to date and have access to the software at all times until the expiry of the subscription. If the product is not renewed, you lose access to this software on the expiration date. <br /> In the "Additional subscriptions" section, you can choose to add products and their quantities. In the “Existing subscriptions” section, you can choose whether or not to renew the products you already have. </p>
 			<p t-elif="language == 'fr_CA'">De nouvelles fonctionnalités et corrections de bogues sont constamment mises au point et les mises à jour sont généralement disponibles 3-4 fois par année. Il est également important de garder votre instrument en bon état avec l'entretien et l'étalonnage. Certains de vos clients exigent même que vous ayez un certificat d'étalonnage récent pour prouver que votre instrument fonctionne correctement. Avoir un CCP vous donne également accès à un support technique pour le produit. D'autres options vous permettent d'étendre votre garantie (BRONZE, ARGENT et OR) tandis que les CCP OR incluent un instrument en prêt gratuitement pendant que votre instrument est en panne ou en réparation/étallonage.</p>
-
+			<p t-elif="language == 'es_ES'">Se están trabajando constantemente en nuevas funciones y correcciones de errores y las actualizaciones de nuestro software están disponibles varias veces al año. También es importante mantener todos sus productos actualizados juntos, ya que pueden dejar de funcionar correctamente si algunos se renuevan y otros no. Una suscripción le da la posibilidad de estar actualizado y tener acceso al software en todo momento hasta el vencimiento de la suscripción. Si el producto no se renueva, pierde el acceso a este software en la fecha de vencimiento. <br /> En la sección "Suscripciones adicionales", puede elegir agregar productos y sus cantidades. En la sección "Suscripciones existentes", puede elegir si desea renovar o no los productos que ya tiene. </p>
 		</div>
 	</template>
 

@@ -49,6 +49,7 @@
 					<tr>
 					<td style="display: block; float: left; border-style: hidden !important; margin-right: 30px;">
 						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturer à</h5>
+						<h5 t-elif="src.partner_id.lang == 'es_ES'" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Facturar a</h5>
 						<h5 t-else="" style="color: #db0d0d" if="src.partner_id.id != src.partner_shipping_id.id">Bill To</h5>
 						<span t-field="src.partner_id.name"/><br/>
 						<span t-field="src.partner_id.street"/><br/>
@@ -61,6 +62,7 @@
 					<td t-if="src.partner_id.id != src.partner_shipping_id.id"
 						style="margin-left: 100px; display: block; float: right; border-style: hidden !important;">
 						<h5 t-if="src.partner_id.lang == 'fr_CA'" style="color: #db0d0d;">Envoyer à</h5>
+						<h5 t-elif="src.partner_id.lang == 'es_ES'" style="color: #db0d0d;">Enviar a</h5>
 						<h5 t-else="" style="color: #db0d0d;">Ship To</h5>
 						<span t-field="src.partner_id.name"/><br/>
 						<span t-field="src.partner_shipping_id.street"/><br/>

@@ -390,5 +390,171 @@
                 </li>
             </ol>
         </div>
+        <div id="rental-terms" t-if="language == 'es_ES'">
+            <ol>
+                <li>
+                    <h4>
+                        <strong>Alquiler, Fecha de Vigencia y Plazo</strong>
+                    </h4>
+                    <p> El Cliente por la presente alquila el Equipo de <t t-esc="company_name + ','" /> por el período indicado en el preámbulo de este Acuerdo, siguiendo los términos y condiciones establecidos a continuación. El Acuerdo entra en vigor en la fecha en que lo firma el Cliente y expira al final del período de alquiler del Equipo indicado en el preámbulo de este Acuerdo. </p>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Consideraciones</strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4>
+                                Renta y Tarifas
+                            </h4>
+                            <p> En consideración por alquilar el Equipo, el Cliente acepta pagar a <t t-esc="company_name" /> la renta y tarifas indicadas en la primera página de este Acuerdo, además de los impuestos aplicables. Si el Cliente permanece en posesión del Equipo después del Plazo, con el consentimiento de <t t-esc="company_name + ','" /> este Acuerdo permanecerá vigente y el Cliente será considerado el arrendatario del Equipo, siguiendo los mismos términos, condiciones y compromisos que los estipulados en este Acuerdo (incluido el pago de cualquier renta). </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Servicios Adicionales o Tarifas Adicionales
+                            </h4>
+                            <p> En caso de que el Cliente requiera cualquier otro servicio de <t t-esc="company_name" /> que no esté incluido en este Acuerdo o se apliquen tarifas adicionales a los montos indicados en este Acuerdo, el Cliente acepta pagar a <t t-esc="company_name" /> cualquier monto o tarifa tras recibir una factura a tal efecto. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Intereses
+                            </h4>
+                            <p> Cualquier monto adeudado a <t t-esc="company_name" /> por el Cliente devengará intereses a una tasa del veinticuatro por ciento (24%) anual, a partir de la fecha en que dichos montos sean debidos. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h4>
+                        <strong>COMPROMISOS DE <t t-esc="company_name" />
+                        </strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4>    
+                                Estado del Equipo
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> se compromete a proporcionar Equipo funcional y en buen estado de mantenimiento al Cliente. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Entrega del Equipo
+                            </h4>
+                            <p> <t t-esc="company_name" /> se compromete a entregar el Equipo al Cliente en el lugar acordado. El Cliente reconoce haber proporcionado a <t t-esc="company_name + ','" /> toda la información pertinente sobre el lugar de entrega del Equipo y que dicha información cumple con lo indicado, de ser aplicable, en este Acuerdo. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h4>        
+                        <strong>COMPROMISOS DEL CLIENTE</strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4>
+                                Uso del Equipo
+                            </h4>
+                            <p> El Cliente se compromete a usar el Equipo únicamente para los fines específicos indicados en este Acuerdo. El Cliente no podrá usar el Equipo para ningún propósito ilegal o no autorizado. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Responsabilidad por Daños
+                            </h4>
+                            <p> El Cliente es responsable por cualquier daño o pérdida del Equipo causada por su uso indebido o negligencia. El Cliente se compromete a indemnizar a <t t-esc="company_name" /> por cualquier daño o pérdida del Equipo que resulte de su uso no autorizado o negligente. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h4>
+                        <strong>INDEMNIZACIÓN</strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4> No Responsabilidad</h4>
+                            <p>
+                                <t t-esc="company_name" /> no será en ningún momento responsable por cualquier daño, rotura o interrupción parcial o total que pueda ocurrir en cualquier momento durante el uso del Equipo. El Cliente es el único responsable por las personas que puedan ser requeridas para usar el Equipo durante el Plazo del Acuerdo. </p>
+                        </li>
+                        <li>
+                            <h4>Indemnización</h4>
+                            <p> El Cliente reconoce que <t t-esc="company_name + ','" /> sus directores, oficiales, empleados, agentes, voluntarios y subcontratistas no pueden ser responsables por cualquier rotura, pérdida, destrucción de propiedad y/o daño, de cualquier tipo, resultante del uso del Equipo. El Cliente renuncia a cualquier derecho, recurso, reclamo y acción contra <t t-esc="company_name + ','" /> sus directores, oficiales, empleados, agentes, voluntarios y subcontratistas resultantes del uso del Equipo. El Cliente acuerda indemnizar y mantener indemne a <t t-esc="company_name" /> contra cualquier reclamo, de cualquier tipo, resultante o que pueda resultar de cualquier incumplimiento por parte del Cliente en respetar sus obligaciones bajo los términos de este Acuerdo o por cualquier rotura, pérdida, destrucción de propiedad y/o daño, de cualquier tipo, resultante del uso del Equipo. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h4>
+                        <strong>FIN DEL ACUERDO</strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4> Terminación de Derecho</h4>
+                            <p> Este Acuerdo será terminado de derecho sin ningún aviso o demanda formal requerida por <t t-esc="company_name + ','" /> si el Cliente hace una cesión general de su propiedad para el beneficio de sus acreedores, o si es declarado en quiebra o insolvente o si permite que sus activos sean embargados a raíz de una orden de ejecución un otro procedimiento legal. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Terminación con Aviso
+                            </h4>
+                            <p> El Acuerdo se termina al expirar un límite de 10 días, a partir de la entrega de un aviso escrito que indique, según sea aplicable, el incumplimiento por cualquiera de las partes, si la parte incumplidora no corrige dicho incumplimiento dentro de ese límite de tiempo, en cualquiera de los siguientes casos (i) el Cliente incumple o no cumple con cualquiera de los términos, cláusulas, condiciones y estipulaciones del Acuerdo, y el Cliente estará obligado a pagar cualquier monto adeudado a <t t-esc="company_name" /> o (ii) si <t t-esc="company_name" /> incumple o no cumple con cualquiera de los términos, cláusulas, condiciones y estipulaciones del Acuerdo. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Efecto de la Terminación
+                            </h4>
+                            <p> Cuando este Acuerdo se termina, el Cliente acuerda pagar a <t t-esc="company_name" /> cualquier monto adeudado bajo los términos del Acuerdo. <t t-esc="company_name" /> puede, en cualquier momento y sin previo aviso a partir de la terminación, retomar la posesión del Equipo y el Cliente por la presente autoriza a , sus agentes, empleados o representantes a entrar en su propiedad o en cualquier ubicación donde se encuentre el Equipo con el fin de retomar inmediatamente la posesión de dicho Equipo, todo a expensas del Cliente. </p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <h4>
+                        <strong>DISPOSICIONES GENERALES</strong>
+                    </h4>
+                    <ol>
+                        <li>
+                            <h4>
+                                Asignación
+                            </h4>
+                            <p>
+                                <t t-esc="company_name" /> se reserva el derecho de asignar o transferir a cualquiera una parte o la totalidad de sus derechos y obligaciones resultantes de este Acuerdo, sin la necesidad de solicitar el consentimiento o aprobación del Cliente. Sin embargo, el Cliente no puede asignar sus derechos ni solicitar o permitir que un tercero asuma sus obligaciones bajo este Acuerdo. </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Aviso
+                            </h4>
+                            <p>
+                                Cualquier aviso requerido bajo este Acuerdo es adecuado si se registra por escrito y se envía por un
+                                método de comunicación que permita a la parte remitente probar que dicho aviso fue efectivamente
+                                entregado a la parte receptora en las direcciones indicadas en la primera página del Acuerdo o en
+                                cualquier otra dirección que la parte receptora pueda haber dado a conocer de acuerdo con este Acuerdo.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                No Renuncia
+                            </h4>
+                            <p>
+                                Si cualquiera de las partes renuncia, descuida o demora el ejercicio de un derecho o recurso
+                                proporcionado por este Acuerdo, esto nunca se considerará en contra de dicha parte como una
+                                renuncia a sus derechos y recursos, siempre que el tiempo prescrito convencional o legal para ejercer dicho
+                                derecho o recurso no haya expirado.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Representantes Legales
+                            </h4>
+                            <p>
+                                El Acuerdo vincula a las partes, sus sucesores, representantes legales, liquidadores, fideicomisarios y cesionarios.
+                            </p>
+                        </li>
+                        <li>
+                            <h4>
+                                Leyes Aplicables y Jurisdicción
+                            </h4>
+                            <p> Este Acuerdo y su interpretación, ejecución, aplicación, validez y efectos están sujetos a las leyes aplicables vigentes en la provincia de <t t-esc="state" /> y en vigor en <t t-esc="country" /> que se aplican en la provincia de <t t-esc="state + ','" /> que rigen todas las disposiciones que contiene. Las partes acuerdan que cualquier reclamo o acción legal tomada por cualquier motivo con respecto a este Acuerdo se llevará ante un tribunal ubicado en el distrito judicial de <t t-esc="city + ','" />
+                                <t t-esc="state + ','" />
+                                <t t-esc="country + ','" /> con exclusión de cualquier otro distrito judicial que pueda tener jurisdicción sobre tales disputas según la ley. </p>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
     </template>
 </odoo>

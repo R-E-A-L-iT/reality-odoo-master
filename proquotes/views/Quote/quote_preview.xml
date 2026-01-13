@@ -332,7 +332,7 @@
                 <tr>
                     <td style="border-style: none;" colspan="100">
                         <t t-set="isPDF" t-value="False"/>
-                        <t t-if="language == 'en_CA' or language == 'en_US'" t-call="proquotes.renewal-hardware-english"/>
+                        <t t-if="language == 'en_CA' or language == 'en_US' or language == 'es_ES'" t-call="proquotes.renewal-hardware-english"/>
                         <t t-elif="language == 'fr_CA'" t-call="proquotes.renewal-hardware-french"/>
                     </td>
                 </tr>
@@ -373,6 +373,11 @@
                             Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
                             Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
                         </p>
+                        <p class="rental_price_explain" t-elif="language == 'es_ES'">
+                            * El costo final de alquiler se calculará una vez que el equipo sea devuelto.
+                            El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba).
+                            El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
+                        </p>
                         <br/>
 
                         <t t-if="language == 'en_CA' or language == 'en_US'">
@@ -383,6 +388,11 @@
                         <t t-elif="language == 'fr_CA'">
                             <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
                                 accessoires:
+                                <span id="rental-estimate-total-english"/>
+                            </span>
+                        </t>
+                        <t t-elif="language == 'es_ES'">
+                            <span class="rental_price_estimate">Costo estimado de alquiler del equipo y accesorios:
                                 <span id="rental-estimate-total-english"/>
                             </span>
                         </t>
@@ -409,8 +419,22 @@
                             </span>
                             <br/>
                         </div>
+                        <div class=" rental_product_value" t-if=" language== 'es_ES'">
+                            <span>Valor total de alquiler:  
+                                <span id="total-rental-value-spanish"/>
+                            </span>
+                            <br/>
+                            <span>
+                                Cargue su comprobante de seguro por el monto total en los comentarios a continuación:
+                            </span>
+                            <br/>
+                        </div>
                     </td>
                 </tr>
+            </t>
+            <t t-if="line.name == '#ccp_section_rtc360">
+
+
             </t>
             <!--  Keep for Backwards Compatibility-->
             <t t-if="line.name == '$rental_address'">
@@ -440,24 +464,30 @@
                         </span>
                         <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
                         </span>
+                        <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
+                        </span>
                     </td>
                     <td t-if="line.name == '$block+'" class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
+                        <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
                     </td>
                     <td t-else=""/>
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
+                        <span t-elif="language == 'es_ES'" class="cHead">Cant.</span>
                     </td>
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Price</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
+                        <span t-elif="language == 'es_ES'" class="cHead">Precio</span>
                     </td>
                     <t t-if="any(line.discount for line in sale_order.order_line)">
                         <td class="text-left">
                             <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
                             <span t-elif="language == 'fr_CA'" class="cHead">Rabais%</span>
+                            <span t-elif="language == 'es_ES'" class="cHead">Desc.%</span>
                         </td>
                     </t>
                     <!-- <td>
@@ -467,6 +497,7 @@
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Amount</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Montant</span>
+                        <span t-elif="language == 'es_ES'" class="cHead">Cantidad</span>
                     </td>
                 </tr>
             </t>
@@ -558,6 +589,9 @@
                         <strong t-if="language == 'fr_CA'" class="text-left subtotal-label" style="font-weight: bolder">
                             Sous-total
                         </strong>
+                        <strong t-if="language == 'es_ES'" class="text-left subtotal-label" style="font-weight: bolder">
+                            Total parcial
+                        </strong>
                     </span>
                     <!-- <span t-if="line.special != 'optional' or line.selected == 'true'"
                           class="subtotal-destination-span text-left" t-att-data-section_id="line_section_id"
@@ -590,6 +624,9 @@
                         0.00$
                     </t>
                     <t t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">
+                        0,00$
+                    </t>
+                    <t t-elif="language == 'es_ES'" class="text-left" style="font-weight: 400 !important;">
                         0,00$
                     </t>
                 </label>
@@ -637,6 +674,9 @@
                     <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.cad_val)"
                           class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'es_ES'"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cad_val)"
+                          class="text-left itemValue test"/>
                 </td>
                 <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
                     style="width: fit-content;">
@@ -645,6 +685,9 @@
                           class="text-left itemValue test"/>
                     <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
                           t-esc="'{value:,.2f} $'.format(value=line.product_id.usd_val)"
+                          class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'es_ES'"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usd_val)"
                           class="text-left itemValue test"/>
                 </td>
             </t>
@@ -869,10 +912,16 @@
                    t-value="'canadiens'"/>
                 <t t-set="currency_label" t-elif="language == 'fr_CA' and sale_order.currency_id.name == 'USD'"
                    t-value="'américains'"/>
+                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'USD'"
+                   t-value="'americanos'"/>
+                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'CAD'"
+                   t-value="'canadienses'"/>
                 <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
                 <span t-if="language == 'en_CA' or language == 'en_US'">All prices in <t t-out="currency_label"/> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.
                 </span>
                 <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                </span>
+                <span t-elif="language == 'es_ES'">Todos los precios están en dólares <t t-out="currency_label"/>. Los impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
                 </span>
             </div>
             <div t-if="'abtech' in sale_order.company_id.name.lower()">
@@ -889,6 +938,12 @@
                         par l'un de nos partenaires.
                     </span>
                 </t>
+                <t t-elif="language == 'es_ES'">
+                    <span class="white-text">R-E-A-L.iT trabaja con socios para el cumplimiento de ciertos productos y, por lo tanto,
+                        algunos o todos los productos cotizados pueden ser facturados y entregados por uno de nuestros
+                        socios.
+                    </span>
+                </t>
             </div>
             <t t-if="sale_order.is_rental == True">
                 <br/><br/>
@@ -900,6 +955,7 @@
                         <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
                 <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
@@ -914,6 +970,7 @@
                         <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
                 <div id="rentalTerms" t-call="proquotes.normal_terms"/>
@@ -1080,6 +1137,10 @@
             <div t-if="language == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
                 <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
+            </div>
+            <div t-elif="language == 'es_ES'" id="customer-acceptance">
+                <h1 class="white-text">Aceptación del cliente</h1>
+                <p>Con su firma, acepta nuestra oferta en nombre de su empresa como se indica arriba y confirma que está autorizado para hacerlo.</p>
             </div>
             <div t-else="" id="customer-acceptance">
                 <h1 class="white-text">Customer Acceptance</h1>

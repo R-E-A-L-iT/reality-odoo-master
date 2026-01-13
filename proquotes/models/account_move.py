@@ -151,6 +151,16 @@ class invoice(models.Model):
                 }
                 month_name = months_fr.get(month_name, month_name)
                 formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
+            elif self.env.context.get('lang') == 'es_ES':
+                month_name = expiry_date_obj.strftime('%B').capitalize()
+                months_es = {
+                    'January': 'enero', 'February': 'febrero', 'March': 'marzo',
+                    'April': 'abril', 'May': 'mayo', 'June': 'junio',
+                    'July': 'julio', 'August': 'agosto', 'September': 'septiembre',
+                    'October': 'octubre', 'November': 'noviembre', 'December': 'diciembre'
+                }
+                month_name = months_es.get(month_name, month_name)
+                formatted_date = f"{expiry_date_obj.day} {month_name} {expiry_date_obj.year}"
             else:
                 formatted_date = expiry_date_obj.strftime('%d %B, %Y')
 
@@ -160,6 +170,8 @@ class invoice(models.Model):
 
             if self.env.context.get('lang') == 'fr_CA':
                 new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
+            elif self.env.context.get('lang') == 'es_ES':
+                new_label = f"{product_name} ({parts[1]}) - Vencimiento: {formatted_date}"
             else:
                 new_label = f"{product_name} ({parts[1]}) - Expiration: {formatted_date}"
 

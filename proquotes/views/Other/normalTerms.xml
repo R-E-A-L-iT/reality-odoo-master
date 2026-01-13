@@ -152,5 +152,75 @@
                 </li>
             </ol>
         </div>
+        <div id="rental-terms" t-if="language == 'es_ES'">
+            <ol>
+                <li>
+                    <h4>
+                        <strong>Aceptación de los términos</strong>
+                    </h4>
+                    <p>Al firmar esta cotización, el cliente acepta los precios, especificaciones y términos aquí descritos, y autoriza al vendedor a proceder con el cumplimiento del pedido.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Términos de pago</strong>
+                    </h4>
+                    <p>El pago se debe realizar de acuerdo con el cronograma indicado en la cotización. Si no se especifica, el pago vence en la fecha indicada en la factura.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Cargos por pago atrasado</strong>
+                    </h4>
+                    <p>Se aplicará un cargo por financiamiento del 2% mensual (24% anual) a todos los saldos vencidos. El cliente es responsable de todos los honorarios legales y costos de recuperación incurridos debido a facturas atrasadas o impagas.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>No cancelable y venta final</strong>
+                    </h4>
+                    <p>Todas las cotizaciones aceptadas son no cancelables y finales, a menos que el vendedor acuerde lo contrario por escrito.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>No hay devoluciones ni reembolsos</strong>
+                    </h4>
+                    <p>Todas las ventas son finales. No se aceptarán devoluciones ni reembolsos bajo ninguna circunstancia, a menos que se acuerde lo contrario por escrito.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Garantía</strong>
+                    </h4>
+                    <p>No se expresan ni implican garantías por parte del vendedor. Cualquier garantía aplicable es únicamente la del fabricante original. El cliente es responsable de registrar los productos y manejar las reclamaciones de garantía directamente con el fabricante, a menos que se especifique lo contrario.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Software y soluciones personalizadas</strong>
+                    </h4>
+                    <p>Todas las licencias de software y soluciones desarrolladas a medida no son reembolsables. Cualquier cambio fuera del alcance originalmente acordado puede incurrir en cargos adicionales.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Propiedad y riesgo</strong>
+                    </h4>
+                    <p>El título de todos los bienes permanece con el vendedor hasta que se reciba el pago completo. El riesgo de pérdida o daño se transfiere al comprador al momento de la entrega.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Limitación de responsabilidad por errores</strong>
+                    </h4>
+                    <p>El vendedor no es responsable de ningún error técnico, tipográfico o clerical u omisiones en cotizaciones, facturas u otros documentos. El vendedor se reserva el derecho de corregir dichos errores y volver a emitir documentos según sea necesario.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Ley aplicable</strong>
+                    </h4>
+                    <p>Este acuerdo se regirá e interpretará de acuerdo con las leyes del Estado de Delaware, sin tener en cuenta sus disposiciones sobre conflictos de leyes. Las partes consienten la jurisdicción exclusiva de los tribunales ubicados en el Estado de Delaware para la resolución de cualquier disputa legal.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Confidencialidad de la cotización</strong>
+                    </h4>
+                    <p>Todas las cotizaciones son confidenciales y están destinadas únicamente a la organización a la que se dirigen. Está prohibido compartir documentos de cotización fuera de su organización, excepto con permiso por escrito.</p>
+                </li>
+            </ol>
+        </div>
     </template>
 </odoo>

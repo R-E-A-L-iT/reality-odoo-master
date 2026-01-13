@@ -10,12 +10,14 @@
 				<div>
 					<h2 t-if="language == 'en_CA' or language == 'en_US'">Estimated rental costs</h2>
 					<h2 t-elif="language == 'fr_CA'">Estimations de coût de location</h2>
+					<h2 t-elif="language == 'es_ES'">Costos estimados de alquiler</h2>
 				</div>
 				<!-- Dates -->
 				<div>
 					<label for="rental-start">
 						<span t-if="language == 'en_CA' or language == 'en_US'">Start of the rental:</span>
 						<span t-if="language == 'fr_CA'">Début de la Location:</span>
+						<span t-if="language == 'es_ES'">Inicio del alquiler:</span>
 					</label>
 					<input id="rental-start" type="date" t-attf-value="{{source.rental_start}}" />
 					<br />
@@ -23,6 +25,7 @@
 					<label for="rental-end">
 						<span t-if="language == 'en_CA' or language == 'en_US'">Estimated end of the rental:</span>
 						<span t-if="language == 'fr_CA'">Fin estimée de la Location:</span>
+						<span t-if="language == 'es_ES'">Fin estimada del alquiler:</span>
 					</label>
 					<input t-if="source.rental_start != False" id="rental-end" type="date" t-attf-value="{{source.rental_end}}" />
 				</div>
@@ -39,6 +42,11 @@
 						Le taux de location à la semaine est équivalent à 4x le taux journalier ci-haut.
 						Le taux de location au mois (30 jours) est équivalent à 12x le taux journalier ci-haut.
 					</p>
+					<p class="rental_price_explain" t-elif="language == 'es_ES'">
+						* El costo final del alquiler se calculará una vez que se devuelva el equipo.
+						El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba).
+						El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
+					</p>
 
 					<br />
 					<t t-if="language == 'en_CA' or language == 'en_US'">
@@ -46,6 +54,9 @@
 					</t>
 					<t t-elif="language == 'fr_CA'">
 						<span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
+					</t>
+					<t t-elif="language == 'es_ES'">
+						<span class="rental_price_estimate">Costo estimado de alquiler del hardware y accesorios elegidos: <b style="color: #db0d0d;"><span id="rental-estimate-total-english"></span></b></span>
 					</t>
 					<br />
 					<br />
@@ -65,6 +76,16 @@
 						<br />
 						<span>
 							Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
+						</span>
+						<br />
+					</div>
+					<div class=" rental_product_value" t-if=" language== 'es_ES'">
+						<span>
+							Valor total del alquiler: &#160;<b style="color: #db0d0d;"><span id="total-rental-value-spanish"></span></b>
+						</span>
+						<br />
+						<span>
+							Por favor, cargue su comprobante de seguro por el monto total en los comentarios a continuación.
 						</span>
 						<br />
 					</div>
@@ -98,24 +119,39 @@
 						</label>
 						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">Non</span>
 					</t>
+					<t t-elif="language == 'es_ES'">
+						<span><b>¿La dirección de envío es la misma que la dirección de facturación?</b></span>
+						<label id="address_yes_label" for="new-address">
+							<span style="cursor: pointer;">Sí</span>
+						</label>
+						<span id="address_yes" style="background-color: #db0d0d; cursor: pointer;">Sí</span>
+						<span>|</span>
+						<label id="address_no_label" for="new-address">
+							<span style="cursor: pointer;">No</span>
+						</label>
+						<span id="address_no" style="background-color: #db0d0d; cursor: pointer;">No</span>
+					</t>
 					<br />
 					<!-- Rental Address -->
 					<div id="rental-address" class="rental-address">
 						<label for="street">
 							<span t-if="language == 'en_CA' or language == 'en_US'">Street</span>
 							<span t-elif="language == 'fr_CA'">Rue</span>
+							<span t-elif="language == 'es_ES'">Calle</span>
 						</label>
 						<input id="street" type="text" t-attf-value="{{source.rental_street}}" />
 						<br />
 						<label for="city">
 							<span t-if="language == 'en_CA' or language == 'en_US'">City</span>
 							<span t-elif="language == 'fr_CA'">Ville</span>
+							<span t-elif="language == 'es_ES'">Ciudad</span>
 						</label>
 						<input id="city" type="text" t-attf-value="{{source.rental_city}}" />
 						<br />
 						<label for="state">
 							<span t-if="language == 'en_CA' or language == 'en_US'">State/Province</span>
 							<span t-elif="language == 'fr_CA'">Province/État</span>
+							<span t-elif="language == 'es_ES'">Estado/Provincia</span>
 						</label>
 						<!-- States and Provinces -->
 
@@ -258,6 +294,7 @@
 						<label for="country">
 							<span t-if="language == 'en_CA' or language == 'en_US'">Country</span>
 							<span t-elif="language == 'fr_CA'">Pays</span>
+							<span t-elif="language == 'es_ES'">País</span>
 						</label>
 						<select id="country">
 							<option t-if="source.rental_country.id == False" value="Select">Select</option>
@@ -265,8 +302,10 @@
 							<option t-else="" value="Canada">Canada</option>
 							<option t-if="source.rental_country.id == 233 and (language == 'en_CA' or language == 'en_US')" selected="selected" value="United States">United States</option>
 							<option t-elif="source.rental_country.id == 233 and (language == 'fr_CA')" selected="selected" value="United States">États-Unis</option>
+							<option t-elif="source.rental_country.id == 233 and (language == 'es_ES')" selected="selected" value="United States">Estados Unidos</option>
 							<option t-elif="language == 'en_CA' or language == 'en_US'" value="United States">United States</option>
 							<option t-elif="language == 'fr_CA'" value="United States">États-Unis</option>
+							<option t-elif="language == 'es_ES'" value="United States">Estados Unidos</option>
 						</select>
 						<br />
 						<label for="zip">

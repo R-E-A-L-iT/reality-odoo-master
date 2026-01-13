@@ -9,6 +9,9 @@
     <t t-if="partner_lang == 'fr_ca'">
       <p>Bonjour <t t-esc="so.partner_id.display_name"/>.</p>
     </t>
+    <t t-elif="partner_lang == 'es_es'">
+      <p>Hola <t t-esc="so.partner_id.display_name"/>.</p>
+    </t>
     <t t-else="">
       <p>Hello <t t-esc="so.partner_id.display_name"/>.</p>
     </t>
@@ -18,6 +21,12 @@
       <p>
         Vous trouverez ci-joint votre/vos document(s) de licence logicielle
         pour la livraison <b t-esc="picking.name"/> de la commande <b t-esc="so.name"/>.
+      </p>
+    </t>
+    <t t-elif="partner_lang == 'es_es'">
+      <p>
+        Adjunto están sus documentos de licencia de software de la entrega
+        <b t-esc="picking.name"/> para el pedido <b t-esc="so.name"/>.
       </p>
     </t>
     <t t-else="">
@@ -31,6 +40,9 @@
     <t t-if="lots">
       <t t-if="partner_lang == 'fr_ca'">
         <p>Numéros de série inclus :</p>
+      </t>
+      <t t-elif="partner_lang == 'es_es'">
+        <p>Números de serie incluidos:</p>
       </t>
       <t t-else="">
         <p>Included serials:</p>
@@ -48,6 +60,9 @@
     <!-- Closing -->
     <t t-if="partner_lang == 'fr_ca'">
       <p>Si vous avez des questions, vous pouvez simplement répondre à ce courriel.</p>
+    </t>
+    <t t-elif="partner_lang == 'es_es'">
+      <p>Si tiene alguna pregunta, simplemente responda a este correo electrónico.</p>
     </t>
     <t t-else="">
       <p>If you have any questions, just reply to this email.</p>
