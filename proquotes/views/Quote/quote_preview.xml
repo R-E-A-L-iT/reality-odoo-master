@@ -432,10 +432,6 @@
                     </td>
                 </tr>
             </t>
-            <t t-if="line.name == '#ccp_section_rtc360">
-
-
-            </t>
             <!--  Keep for Backwards Compatibility-->
             <t t-if="line.name == '$rental_address'">
                 <t t-set="rental_estimate_display" t-value="False"/>
