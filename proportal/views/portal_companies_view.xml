@@ -3,14 +3,19 @@
   <template id="portal_company_settings_detail" name="Company Settings Detail">
     <t t-call="portal.portal_layout">
       <t t-set="breadcrumbs_searchbar" t-value="True"/>
+      <t t-set="language" t-value="request.lang.code" />
       <t t-call="portal.portal_searchbar">
-        <t t-set="title">Company Settings</t>
+        <t t-set="title" t-if="language == 'fr_CA'">Paramètres de l'entreprise</t>
+        <t t-set="title" t-elif="language == 'es_ES'">Configuración de la empresa</t>
+        <t t-set="title" t-else="">Company Settings</t>
       </t>
 
       <div class="d-flex align-items-center mb-3">
-        <a class="btn btn-light me-2" href="/my/company-settings">← Back</a>
+        <a class="btn btn-light me-2" href="/my/company-settings" t-if="language == 'fr_CA'">← Retour</a>
+        <a class="btn btn-light me-2" href="/my/company-settings" t-elif="language == 'es_ES'">← Volver</a>
+        <a class="btn btn-light me-2" href="/my/company-settings" t-else="">← Back</a>
         <h3 class="m-0">
-          <t t-esc="company.name"/> — Contact Settings
+          <t t-esc="company.name"/> <t t-if="language == 'fr_CA'">— Paramètres du contact</t><t t-elif="language == 'es_ES'">— Configuración del contacto</t><t t-else="">— Contact Settings</t>
         </h3>
       </div>
 
@@ -22,7 +27,9 @@
         <!-- 1) Invoice Address -->
         <div class="col-12">
           <div class="card shadow-sm">
-            <div class="card-header fw-bold">Invoice Address</div>
+            <div class="card-header fw-bold" t-if="language == 'fr_CA'">Addresse de facturation</div>
+            <div class="card-header fw-bold" t-elif="language == 'es_ES'">Dirección de Facturación</div>
+            <div class="card-header fw-bold" t-else="">Invoice Address</div>
             <div class="card-body">
               <form onsubmit="return false;">
                 <div class="row g-3">
