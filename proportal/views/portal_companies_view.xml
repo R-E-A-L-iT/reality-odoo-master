@@ -34,7 +34,9 @@
               <form onsubmit="return false;">
                 <div class="row g-3">
                   <div class="col-md-6">
-                    <label class="form-label">Contact Name</label>
+                    <label class="form-label" t-if="language == 'fr_CA'">Nom du contact</label>
+                    <label class="form-label" t-elif="language == 'es_ES'">Nombre del contacto</label>
+                    <label class="form-label" t-else="">Contact Name</label>
                     <input class="form-control" type="text"
                       t-att-value="(invoice_partner and invoice_partner.name) or (company and company.name) or ''"/>
                   </div>
