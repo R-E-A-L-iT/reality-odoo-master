@@ -19,13 +19,26 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 
-class owner(models.Model):
+class StockLot(models.Model):
     _inherit = "stock.lot"
 
     owner = fields.Many2one("res.partner", string="Owner")
 
     document_pdf = fields.Binary(string="Attached PDF")
     document_pdf_filename = fields.Char(string="Filename")
+
+    ccp_type = fields.Selection(
+        selection=[
+            ("ccp_basic", "CCP BASIC"),
+            ("ccp_blue", "CCP BLUE"),
+            ("ccp_silver", "CCP SILVER"),
+            ("ccp_bronze", "CCP BRONZE"),
+            ("ccp_gold", "CCP GOLD"),
+        ],
+        string="CCP Type",
+        default=False,
+        copy=False,
+    )
 
     def copy_label(self):
         # Form Button Needs a Python Target Function
