@@ -8,6 +8,7 @@
 
             <t t-if="not products">
                 <p>No products found for your associated companies.</p>
+                <br />
             </t>
 
             <t t-if="products" t-call="portal.portal_table">
