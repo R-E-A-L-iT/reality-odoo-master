@@ -12,6 +12,7 @@
                 <field name="sku" string="SKU" />
                 <field name="equipment_number" string="Equipment Number" />
                 <field name="expire" string="Expiration Date" />
+                <field name="ccp_type" string="CCP Type" />
             </xpath>
         </field>
     </record>

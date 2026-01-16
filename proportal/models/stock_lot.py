@@ -49,6 +49,19 @@ class StockLot(models.Model):
         readonly=True,
     )
 
+    ccp_type = fields.Selection(
+        selection=[
+            ("ccp_basic", "CCP BASIC"),
+            ("ccp_blue", "CCP BLUE"),
+            ("ccp_silver", "CCP SILVER"),
+            ("ccp_bronze", "CCP BRONZE"),
+            ("ccp_gold", "CCP GOLD"),
+        ],
+        string="CCP Type",
+        default=False,
+        copy=False,
+    )
+
     firmware_version = fields.Text(string='Firmware Version', help='Firmware version associated with this lot.')
 
     ccp_renewal_reminder_sent = fields.Boolean(
@@ -61,7 +74,7 @@ class StockLot(models.Model):
     @api.depends("expire")
     def _compute_ccp_status(self):
         today = fields.Date.context_today(self)
-        one_month = today + relativedelta(months=1)
+        two_months = today + relativedelta(months=2)
 
         def _to_date(v):
             if not v:
@@ -81,7 +94,7 @@ class StockLot(models.Model):
             if exp <= today:
                 days_past = (today - exp).days
                 lot.ccp_status = "grace" if days_past <= 7 else "expired"
-            elif exp <= one_month:
+            elif exp <= two_months:
                 lot.ccp_status = "expiring"
             else:
                 lot.ccp_status = "active"
