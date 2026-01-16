@@ -11,6 +11,17 @@
             </t>
 
             <t t-if="products" t-call="portal.portal_table">
+
+                <!-- CCP badge colors -->
+                <style>
+                    .badge-ccp-basic  { background-color: #6c757d; } /* grey */
+                    .badge-ccp-blue   { background-color: #0d6efd; } /* blue */
+                    .badge-ccp-bronze { background-color: #cd7f32; } /* bronze/brown */
+                    .badge-ccp-silver { background-color: #c0c0c0; color: #111; } /* silver */
+                    .badge-ccp-gold   { background-color: #d4af37; color: #111; } /* gold */
+                    .badge-ccp { font-weight: 600; }
+                </style>
+
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -18,17 +29,21 @@
                         <th>Serial Number</th>
                         <th>Expiration</th>
                         <th>Status</th>
+                        <th>CCP Type</th>
                     </tr>
                 </thead>
+
                 <t t-foreach="products" t-as="product">
                     <tr>
                         <td>
-                            <img class="portal_product_image" t-att-src="'data:image/png;base64,' + product.product_id.image_128.decode('utf-8') if product.product_id.image_128 else ''"/>
+                            <img class="portal_product_image"
+                                 t-att-src="'data:image/png;base64,' + product.product_id.image_128.decode('utf-8') if product.product_id.image_128 else ''"/>
                             <t t-esc="product.product_id.name"/>
                         </td>
                         <td><t t-esc="product.sku"/></td>
                         <td><t t-esc="product.name"/></td>
                         <td><t t-esc="product.expire"/></td>
+
                         <td t-if="product.expire">
                             <style>
                                 .badge.bg-grace { background-color: #6f42c1; }
@@ -37,6 +52,27 @@
                             <span t-elif="product.ccp_status == 'grace'" class="badge bg-grace text-dark">Grace period</span>
                             <span t-elif="product.ccp_status == 'expiring'" class="badge bg-warning text-dark">Expiring soon</span>
                             <span t-elif="product.ccp_status == 'active'"   class="badge bg-success">Active</span>
+                        </td>
+                        <td t-else=""></td>
+
+                        <!-- CCP Type column (blank if none) -->
+                        <td>
+                            <t t-if="product.ccp_type == 'ccp_basic'">
+                                <span class="badge badge-ccp badge-ccp-basic">CCP BASIC</span>
+                            </t>
+                            <t t-elif="product.ccp_type == 'ccp_blue'">
+                                <span class="badge badge-ccp badge-ccp-blue">CCP BLUE</span>
+                            </t>
+                            <t t-elif="product.ccp_type == 'ccp_bronze'">
+                                <span class="badge badge-ccp badge-ccp-bronze">CCP BRONZE</span>
+                            </t>
+                            <t t-elif="product.ccp_type == 'ccp_silver'">
+                                <span class="badge badge-ccp badge-ccp-silver">CCP SILVER</span>
+                            </t>
+                            <t t-elif="product.ccp_type == 'ccp_gold'">
+                                <span class="badge badge-ccp badge-ccp-gold">CCP GOLD</span>
+                            </t>
+                            <!-- else: leave blank -->
                         </td>
                     </tr>
                 </t>
