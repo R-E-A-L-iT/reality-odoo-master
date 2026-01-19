@@ -5,7 +5,7 @@
         <field name="name">ProSync Schedule</field>
         <field name="model_id" ref="model_prosync_sync"/>
         <field name="state">code</field>
-        <field name='interval_number'>30</field>
+        <field name='interval_number'>180</field>
         <field name='interval_type'>minutes</field>
         <field name="numbercall">-1</field>
         <field name="priority">0</field>
