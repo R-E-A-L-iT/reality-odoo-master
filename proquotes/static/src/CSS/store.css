@@ -2,3 +2,8 @@
     background-color: #181A1E !important;
     color: #fff !important;
 }
+
+/* portal icons */
+.o_portal_icon > img {
+    max-width: 68px;
+}
