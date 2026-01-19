@@ -6,7 +6,17 @@
 
         <xpath expr="//div[@id='portal_common_category']//t[@t-set='icon'][@t-value=&quot;'/portal/static/src/img/portal-connection.svg'&quot;]"
                position="replace">
-            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Connection-And-Security.png'" style="max-width: 170px;"/>
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Connection-and-Security.png'" style="max-width: 170px;"/>
+        </xpath>
+
+    </template>
+    <template id="portal_my_home_appointment_icon_inherit"
+              inherit_id="appointment.portal_my_home_appointment"
+              name="Portal My Home - Replace Appointments Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/appointments'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Appointments.png'"/>
         </xpath>
 
     </template>
