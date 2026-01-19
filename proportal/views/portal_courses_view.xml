@@ -6,7 +6,7 @@
         </xpath>
         <div id="portal_client_category" position="inside">
             <!-- <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/knowledge/static/src/img/Books.svg'"/>
+                <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Courses.png'"/>
                 <t t-set="text" t-if="language == 'fr_CA'">Voir tous vos cours</t>
                 <t t-set="text" t-elif="language == 'es_ES'">Ver todos sus cursos</t>
                 <t t-set="text" t-else="">View all your courses</t>

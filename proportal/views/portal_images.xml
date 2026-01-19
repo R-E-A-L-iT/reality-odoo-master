@@ -65,4 +65,48 @@
         </xpath>
     </template>
 
+    <template id="portal_my_home_sale_icon_inherit"
+              inherit_id="sale.portal_my_home_sale"
+              name="Portal My Home - Replace Sales Orders Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/orders'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Sales-Orders.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_invoice_icon_inherit"
+              inherit_id="account.portal_my_home_invoice"
+              name="Portal My Home - Replace Invoices Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/invoices?filterby=invoices'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Your-Invoices.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_project_icon_inherit"
+              inherit_id="account.portal_my_home_project"
+              name="Portal My Home - Replace Projects &amp; Tasks Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/projects'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Projects.png'"/>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/tasks'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Tasks.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_knowledge_icon_inherit"
+              inherit_id="knowledge.portal_my_home_knowledge"
+              name="Portal My Home - Replace Knowledge Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/knowledge/home'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Knowledge.png'"/>
+        </xpath>
+    </template>
+
 </odoo>

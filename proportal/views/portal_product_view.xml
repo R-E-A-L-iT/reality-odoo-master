@@ -87,7 +87,7 @@
         </xpath>
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/purchase/static/src/img/rfq.svg'"/>
+                <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Products.png'"/>
                 <t t-set="text">View all your company products</t>
                 <t t-set="title">Products</t>
                 <t t-set="url" t-value="'/my/products'"/>
