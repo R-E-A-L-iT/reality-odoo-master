@@ -31,6 +31,7 @@
         "views/partnerView.xml",
         "views/stockView.xml",
         "views/productView.xml",
+        "views/portal_images.xml",
         "views/partner_internal.xml",
         "views/productInstance.xml",
         "views/header_icons.xml",
