@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_my_home_connection_security_icon_inherit"
+              inherit_id="portal.portal_my_home"
+              name="Portal My Home - Replace Connection &amp; Security Icon">
+
+        <xpath expr="//div[@id='portal_common_category']//t[t-set='title' and normalize-space(.)='Connection &amp; Security']/following-sibling::t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Connection-And-Security.png'" style="max-width: 170px;"/>
+        </xpath>
+
+    </template>
+</odoo>
