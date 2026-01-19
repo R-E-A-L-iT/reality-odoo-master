@@ -289,7 +289,7 @@
     <div id="portal_client_category" position="inside">
       <t t-if="request.env.user.partner_id.portal_administrator">
         <t t-call="portal.portal_docs_entry">
-          <t t-set="icon" t-value="'/base/static/description/icon.png'"/>
+          <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Company-Settings.png'"/>
           <t t-set="text">Manage your company access &amp; info</t>
           <t t-set="title">Company Settings</t>
           <t t-set="url" t-value="'/my/company-settings'"/>
