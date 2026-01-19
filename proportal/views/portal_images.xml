@@ -86,7 +86,7 @@
     </template>
 
     <template id="portal_my_home_project_icon_inherit"
-              inherit_id="account.portal_my_home_project"
+              inherit_id="project.portal_my_home"
               name="Portal My Home - Replace Projects &amp; Tasks Icon">
 
         <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/projects'&quot;]]/t[@t-set='icon']"
