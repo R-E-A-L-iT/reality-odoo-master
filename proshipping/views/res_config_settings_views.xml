@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_envio_connector" model="ir.ui.view">
+        <field name="name">res.config.settings.envio.connector</field>
+        <field name="model">res.config.settings</field>
+
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+
+                <app string="Envio" name="envio_settings" logo="/base/static/description/settings.png">
+                    <block title="Envio IoT" name="envio_iot_settings_block">
+                        <setting string="Envio API" help="Configure Envio API connection parameters.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <div class="col-12 col-lg-6">
+                                        <label for="envio_base_url" class="o_light_label"/>
+                                        <field name="envio_base_url" placeholder="https://iot.envio.io"/>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <label for="envio_api_token" class="o_light_label"/>
+                                        <field name="envio_api_token" password="True"/>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mt16">
+                                        <label for="envio_header_mode" class="o_light_label"/>
+                                        <field name="envio_header_mode"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

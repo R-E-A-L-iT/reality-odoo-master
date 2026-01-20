@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_envio_package_map" model="ir.ui.view">
+        <field name="name">envio.package.map</field>
+        <field name="model">envio.package</field>
+        <field name="arch" type="xml">
+            <map string="Envio Devices Map" lat="latitude" lng="longitude">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="battery_percent"/>
+                <field name="last_event_at"/>
+            </map>
+        </field>
+    </record>
+
+</odoo>
