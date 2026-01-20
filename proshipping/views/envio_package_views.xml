@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree -->
+    <record id="view_envio_package_tree" model="ir.ui.view">
+        <field name="name">envio.package.tree</field>
+        <field name="model">envio.package</field>
+        <field name="arch" type="xml">
+            <tree string="Envio Packages">
+                <field name="name"/>
+                <field name="tracking_number"/>
+                <field name="status"/>
+                <field name="last_event_at"/>
+                <field name="origin"/>
+                <field name="destination"/>
+                <field name="device_id"/>
+                <field name="battery_percent"/>
+                <field name="temperature_c"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="view_envio_package_form" model="ir.ui.view">
+        <field name="name">envio.package.form</field>
+        <field name="model">envio.package</field>
+        <field name="arch" type="xml">
+            <form string="Envio Package">
+                <header>
+                    <button name="action_sync_envio_packages"
+                            type="object"
+                            string="Sync Now"
+                            class="btn-primary"/>
+                    <button name="action_push_envio_update"
+                            type="object"
+                            string="Push Update to Envio"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="envio_external_id" readonly="1"/>
+                            <field name="tracking_number"/>
+                            <field name="status"/>
+                            <field name="last_event_at"/>
+                        </group>
+                        <group>
+                            <field name="origin"/>
+                            <field name="destination"/>
+                            <field name="device_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Telemetry">
+                        <group>
+                            <field name="battery_percent"/>
+                            <field name="temperature_c"/>
+                        </group>
+                        <group>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+                    </group>
+
+                    <group string="Unit being housed">
+                        <field name="lot_id"/>
+                    </group>
+
+                    <group string="Envio Update">
+                        <group>
+                            <field name="update_frequency_seconds"/>
+                            <field name="inspection_date"/>
+                        </group>
+                        <group>
+                            <field name="label_image" filename="label_image_filename"/>
+                            <field name="label_image_filename" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Raw JSON">
+                            <field name="raw_json" nolabel="1" readonly="1" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_envio_packages" model="ir.actions.act_window">
+        <field name="name">Envio Packages</field>
+        <field name="res_model">envio.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Envio packages yet.
+            </p>
+            <p>
+                Configure your Envio API credentials in Settings, then click "Sync Now".
+            </p>
+        </field>
+    </record>
+</odoo>

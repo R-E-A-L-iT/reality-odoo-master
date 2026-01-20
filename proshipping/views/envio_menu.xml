@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_envio_root" name="Envio" sequence="10"/>
+    <menuitem id="menu_envio_packages"
+              name="Packages"
+              parent="menu_envio_root"
+              action="action_envio_packages"
+              sequence="10"/>
+</odoo>
