@@ -1,0 +1,89 @@
+.company-settings-container {
+    overflow-y: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    padding-bottom: 50px;
+}
+
+.o_portal_layout .o_portal_my_body {
+    overflow-y: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+.o_portal_my_home .o_portal_docs {
+    overflow-y: visible !important;
+}
+
+.address-form .card {
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+}
+
+.address-form .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+}
+
+.address-form .card-body {
+    overflow-y: visible !important;
+    max-height: none !important;
+    padding: 1rem;
+}
+
+.address-form .form-label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.address-form .form-control {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.address-form .btn-primary {
+    background-color: #00a09d;
+    border-color: #00a09d;
+    padding: 0.375rem 1.5rem;
+    font-size: 0.875rem;
+}
+
+.address-form .btn-primary:hover {
+    background-color: #008c89;
+    border-color: #008c89;
+}
+
+body, html {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+#wrapwrap {
+    overflow-y: auto !important;
+}
+
+.o_portal_layout .container,
+.o_portal_layout .container-fluid {
+    overflow-y: visible !important;
+    max-width: 100%;
+}
+
+.o_portal_my_home .row {
+    overflow-y: visible !important;
+}
+
+.safari-browser-fix {
+    overflow-y: visible !important;
+}
+
+@media (max-width: 768px) {
+    .address-form .card {
+        margin-bottom: 0.5rem;
+    }
+    
+    .address-form .card-body {
+        padding: 0.75rem;
+    }
+}

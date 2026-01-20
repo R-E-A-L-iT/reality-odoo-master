@@ -9,8 +9,15 @@
             <xpath expr="//field[@name='title']" position="after">
                 <field name="company_nickname" invisible="not is_company" />
             </xpath>
-            <xpath expr="//field[@name='category_id']" position="after">
-                <field name="portal_companies_ids" widget="many2many_tags"/>
+            <xpath expr="//notebook" position="inside">
+                <page name="portal" string="Portal Settings">
+                    <sheet>
+                        <group string="Portal Administration">
+                    <field name="portal_administrator"/>
+                    <field name="portal_companies_ids" widget="many2many_tags"/>
+                </group>
+                    </sheet>
+                </page>
             </xpath>
         </field>
     </record>

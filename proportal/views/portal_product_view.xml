@@ -1,0 +1,62 @@
+<odoo>
+    <template id="portal_my_products" name="My Products">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Products</t>
+            </t>
+
+            <t t-if="not products">
+                <p>No products found for your associated companies.</p>
+            </t>
+
+            <t t-if="products" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>SKU</th>
+                        <th>Serial Number</th>
+                        <th>Expiration</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <t t-foreach="products" t-as="product">
+                    <tr>
+                        <td>
+                            <img class="portal_product_image" t-att-src="'data:image/png;base64,' + product.product_id.image_128.decode('utf-8') if product.product_id.image_128 else ''"/>
+                            <t t-esc="product.product_id.name"/>
+                        </td>
+                        <td><t t-esc="product.sku"/></td>
+                        <td><t t-esc="product.name"/></td>
+                        <td><t t-esc="product.expire"/></td>
+                        <td t-if="product.expire">
+                            <style>
+                                .badge.bg-grace { background-color: #6f42c1; }
+                            </style>
+                            <span t-if="product.ccp_status == 'expired'"  class="badge bg-danger">Expired</span>
+                            <span t-elif="product.ccp_status == 'grace'" class="badge bg-grace text-dark">Grace period</span>
+                            <span t-elif="product.ccp_status == 'expiring'" class="badge bg-warning text-dark">Expiring soon</span>
+                            <span t-elif="product.ccp_status == 'active'"   class="badge bg-success">Active</span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_home_products_card" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/purchase/static/src/img/rfq.svg'"/>
+                <t t-set="text">View all your company products</t>
+                <t t-set="title">Products</t>
+                <t t-set="url" t-value="'/my/products'"/>
+                <t t-set="placeholder_count" t-value="'product_count'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </div>
+    </template>
+</odoo>
