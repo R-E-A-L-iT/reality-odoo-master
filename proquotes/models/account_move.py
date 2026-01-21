@@ -213,7 +213,7 @@ class invoice(models.Model):
                 ("active", "=", True),
                 ("record_type", "=", "Footer"),
                 ("default", "=", True),
-                ("company_ids", "=", company.id),
+                ("company_ids", "in", [company.id]),
             ]
         )
         if len(defaults) != 0:
