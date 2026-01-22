@@ -198,9 +198,9 @@
                             <h4>
                                 Applicable Laws and Jurisdiction
                             </h4>
-                            <p> This Agreement and its interpretation, execution, application, validity and effects are subject to the applicable laws in force in the province of <t t-esc="state" /> and in force in <t t-esc="country" /> that apply in the province of <t t-esc="state + ','" /> which govern all of the provisions it contains. The parties agree that any claim or any legal action taken for any reason with respect to this Agreement shall be brought to a court located in the judicial district of <t t-esc="city + ','" />
-								<t t-esc="state + ','" />
-								<t t-esc="country + ','" /> to the exclusion of any other judicial district that may have jurisdiction over such disputes under the law. </p>
+                            <p> This Agreement and its interpretation, execution, application, validity and effects are subject to the applicable laws in force in the province of <t t-esc="state" /> and in force in <t t-esc="country" /> that apply in the province of <t t-esc="str(state) + ','" /> which govern all of the provisions it contains. The parties agree that any claim or any legal action taken for any reason with respect to this Agreement shall be brought to a court located in the judicial district of <t t-esc="city + ','" />
+								<t t-esc="str(state) + ','" />
+								<t t-esc="str(country) + ','" /> to the exclusion of any other judicial district that may have jurisdiction over such disputes under the law. </p>
                         </li>
                     </ol>
                 </li>
@@ -383,7 +383,7 @@
                             <h4>
                                 Lois applicables et juridiction
                             </h4>
-                            <p> La présente entente, son interprétation, son exécution, son application, sa validité et ses effets sont assujettis aux lois en vigueur dans la province de <t t-esc="state" /> et celles en vigueur au <t t-esc="country" /> applicables dans la province de <t t-esc="state" /> lesquelles régissent l'ensemble des dispositions qu'elle contient. Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que ce soit, relativement aux présentes, de choisir le district judiciaire de <t t-esc="city + ','" /> province de <t t-esc="state + ','" />
+                            <p> La présente entente, son interprétation, son exécution, son application, sa validité et ses effets sont assujettis aux lois en vigueur dans la province de <t t-esc="state" /> et celles en vigueur au <t t-esc="country" /> applicables dans la province de <t t-esc="state" /> lesquelles régissent l'ensemble des dispositions qu'elle contient. Les parties reconnaissent, pour toute réclamation ou poursuite judiciaire pour quelque motif que ce soit, relativement aux présentes, de choisir le district judiciaire de <t t-esc="city + ','" /> province de <t t-esc="str(state) + ','" />
 								<t t-esc="country + ','" /> comme le lieu approprié pour l'audition desdites réclamations ou poursuites judiciaires, à l'exclusion de tout autre district judiciaire qui peut avoir juridiction sur un tel litige selon les prescriptions de la loi. </p>
                         </li>
                     </ol>
