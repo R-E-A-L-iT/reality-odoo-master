@@ -10,6 +10,7 @@
             <xpath expr="//field[@name='title']" position="after">
                 <field name="linkedin_link" />
                 <field name="is_customer" />
+                <field name="parent_company_id" attrs="{'invisible': [('is_company','=',False)]}"/>
             </xpath>
 
             <xpath expr="//sheet/group" position="before">
@@ -41,6 +42,20 @@
 
             <xpath expr="//field[@name='website']" position="replace">
                 <field name="website" widget="CopyClipboardChar" string="Website"/>
+            </xpath>
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Branches" attrs="{'invisible': [('is_company','=',False)]}">
+                    <field name="branch_company_ids" nolabel="1" readonly="1">
+                        <tree string="Branches">
+                            <field name="name"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="city"/>
+                            <field name="country_id"/>
+                        </tree>
+                    </field>
+                </page>
             </xpath>
 
         </field>

@@ -33,6 +33,23 @@ class individual(models.Model):
     first_name = fields.Char(string="First Name", compute="_compute_first_last_names", store=False)
     last_name = fields.Char(string="Last Name", compute="_compute_first_last_names", store=False)
 
+    parent_company_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Parent Company",
+        domain="[('is_company', '=', True), ('id', '!=', id)]",
+        help="Select the parent company for this company contact."
+    )
+
+    # NEW: Branches list (companies that point to this company as parent)
+    branch_company_ids = fields.One2many(
+        comodel_name="res.partner",
+        inverse_name="parent_company_id",
+        string="Branches",
+        domain=[('is_company', '=', True)],
+        readonly=True,
+        help="Companies that have this company set as their Parent Company."
+    )
+
     def _compute_first_last_names(self):
         for rec in self:
             parts = (rec.name or "").strip().split()
