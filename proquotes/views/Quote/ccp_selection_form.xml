@@ -9,15 +9,6 @@
 
             <!-- Step 1: CCP Type Selection -->
             <div class="ccp-step ccp-step-1 active">
-                <div class="ccp-header">
-                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
-                        Select CCP Type for <span t-esc="scanner_name"/>
-                    </h3>
-                    <h3 t-elif="language == 'fr_CA'">
-                        Sélectionnez le type CCP pour <span t-esc="scanner_name"/>
-                    </h3>
-                </div>
-
                 <div class="ccp-type-options">
                     <!-- BASIC -->
                     <div class="ccp-type-card" data-ccp-type="BASIC">
@@ -95,15 +86,6 @@
 
             <!-- Step 2: Time Period Selection -->
             <div class="ccp-step ccp-step-2">
-                <div class="ccp-header">
-                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
-                        Select Time Period
-                    </h3>
-                    <h3 t-elif="language == 'fr_CA'">
-                        Sélectionnez la période
-                    </h3>
-                </div>
-
                 <div class="ccp-period-selection">
                     <label for="ccp_period">
                         <span t-if="language == 'en_CA' or language == 'en_US'">Time Period:</span>
@@ -135,15 +117,6 @@
 
             <!-- Step 3: Confirmation -->
             <div class="ccp-step ccp-step-3">
-                <div class="ccp-header">
-                    <h3 t-if="language == 'en_CA' or language == 'en_US'">
-                        CCP Selection Confirmed
-                    </h3>
-                    <h3 t-elif="language == 'fr_CA'">
-                        Sélection CCP confirmée
-                    </h3>
-                </div>
-
                 <div class="ccp-confirmation">
                     <p class="ccp-confirmation-message">
                         <t t-if="language == 'en_CA' or language == 'en_US'">

@@ -2,7 +2,7 @@
 
 .ccp-selection-container {
     padding: 10px 20px;
-    margin: 5px 0;
+    margin: 0;
     background-color: #fff;
     border: 1px solid #dee2e6;
     border-radius: 8px;
@@ -15,20 +15,6 @@
 
 .ccp-step.active {
     display: block;
-}
-
-/* Header Styles */
-.ccp-header {
-    margin-bottom: 10px;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 8px;
-}
-
-.ccp-header h3 {
-    color: #333;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
 }
 
 /* Step 1: CCP Type Options */
