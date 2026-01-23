@@ -361,6 +361,14 @@
 
             <!-- CCP Selection Blocks -->
             <t t-if="line.name == '#ccp_selection_blkarc'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK ARC</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK ARC</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -372,6 +380,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_pegasustrk'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for PEGASUS TRK</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour PEGASUS TRK</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -383,6 +399,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_blk2fly'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2FLY</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2FLY</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -394,6 +418,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_blk2go'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -405,6 +437,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_blk2gopulse'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO PULSE</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO PULSE</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -416,6 +456,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_rtc360'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for RTC360</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour RTC360</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -427,6 +475,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_pseries'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for P-SERIES</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour P-SERIES</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -438,6 +494,14 @@
             </t>
 
             <t t-if="line.name == '#ccp_selection_blk360'">
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK360</t>
+                        <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK360</t>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
@@ -457,7 +521,7 @@
 
         <!-- Handle Special Sections Seperatly -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="attributes">
-            <attribute name="t-if">line.name[0] != '$'</attribute>
+            <attribute name="t-if">line.name[0] != '$' and line.name[:16] != '#ccp_selection_'</attribute>
         </xpath>
 
         <!-- Add Attributes For Easier CSS -->
