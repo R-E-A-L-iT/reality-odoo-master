@@ -362,7 +362,7 @@
             <!-- CCP Selection Blocks -->
             <t t-if="line.name == '#ccp_selection_blkarc'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'BLK ARC'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_blkarc'"/>
@@ -373,7 +373,7 @@
 
             <t t-if="line.name == '#ccp_selection_pegasustrk'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'PEGASUS TRK'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_pegasustrk'"/>
@@ -384,7 +384,7 @@
 
             <t t-if="line.name == '#ccp_selection_blk2fly'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'BLK2FLY'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_blk2fly'"/>
@@ -395,7 +395,7 @@
 
             <t t-if="line.name == '#ccp_selection_blk2go'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'BLK2GO'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_blk2go'"/>
@@ -406,7 +406,7 @@
 
             <t t-if="line.name == '#ccp_selection_blk2gopulse'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'BLK2GO PULSE'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_blk2gopulse'"/>
@@ -417,7 +417,7 @@
 
             <t t-if="line.name == '#ccp_selection_rtc360'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'RTC360'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_rtc360'"/>
@@ -428,7 +428,7 @@
 
             <t t-if="line.name == '#ccp_selection_pseries'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'P-SERIES'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_pseries'"/>
@@ -439,7 +439,7 @@
 
             <t t-if="line.name == '#ccp_selection_blk360'">
                 <tr>
-                    <td style="border-style: none;" colspan="100">
+                    <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
                             <t t-set="scanner_name" t-value="'BLK360'"/>
                             <t t-set="section_name" t-value="'#ccp_selection_blk360'"/>
