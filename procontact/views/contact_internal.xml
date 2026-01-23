@@ -10,7 +10,7 @@
             <xpath expr="//field[@name='title']" position="after">
                 <field name="linkedin_link" />
                 <field name="is_customer" />
-                <field name="parent_company_id" attrs="{'invisible': [('is_company','=',False)]}"/>
+                <field name="parent_company_id" invisible="not is_company"/>
             </xpath>
 
             <xpath expr="//sheet/group" position="before">
@@ -45,7 +45,7 @@
             </xpath>
 
             <xpath expr="//sheet/notebook" position="inside">
-                <page string="Branches" attrs="{'invisible': [('is_company','=',False)]}">
+                <page string="Branches" invisible="not is_company">
                     <field name="branch_company_ids" nolabel="1" readonly="1">
                         <tree string="Branches">
                             <field name="name"/>
