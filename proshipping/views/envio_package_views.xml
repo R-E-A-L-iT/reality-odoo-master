@@ -49,6 +49,7 @@
                             <field name="envio_external_id" string="ID" readonly="1"/>
                             <field name="status" readonly="1"/>
                             <field name="name" readonly="1"/>
+                            <field name="lot_id"/>
                         </group>
 
                         <group string="Live">

@@ -41,6 +41,7 @@ class EnvioPackage(models.Model):
 
     # updatedable settings
     inspection_date = fields.Datetime(string="Inspection Date")
+    update_frequency_seconds = fields.Integer(string="Update Frequency (seconds)")
 
     UPDATE_FREQ_OPTIONS = [
         ("30", "30 seconds"),
