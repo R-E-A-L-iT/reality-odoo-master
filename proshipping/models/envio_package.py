@@ -31,7 +31,7 @@ class EnvioPackage(models.Model):
 
     # Optional device/telemetry (adjust mapping to match Envio)
     device_id = fields.Char(string="Device ID", index=True)
-    battery_percent = fields.Float(string="Battery %")
+    battery_percent = fields.Float(string="Battery %", default=False)
     temperature_c = fields.Float(string="Temperature (°C)")
     latitude = fields.Float(string="Latitude", digits=(10, 6))
     longitude = fields.Float(string="Longitude", digits=(10, 6))
@@ -283,7 +283,10 @@ class EnvioPackage(models.Model):
 
         # Telemetry
         temp = rec.get("temperatureC") or rec.get("temperature_c") or rec.get("tempC") or rec.get("temperature")
-        batt = rec.get("batteryPercent") or rec.get("battery_percent") or rec.get("battery")
+        batt = rec.get("batteryLevel")
+        if batt is None:
+            batt = rec.get("batteryPercent") or rec.get("battery_percent") or rec.get("battery")
+
 
         # Timestamps
         last_ts = rec.get("lastEventAt") or rec.get("last_event_at") or rec.get("updatedAt") or rec.get("updated_at")
@@ -310,7 +313,7 @@ class EnvioPackage(models.Model):
             "origin": origin if isinstance(origin, str) else (origin.get("name") if isinstance(origin, dict) else False),
             "destination": dest if isinstance(dest, str) else (dest.get("name") if isinstance(dest, dict) else False),
             "device_id": str(device_id) if device_id else False,
-            "battery_percent": float(batt) if batt not in (None, "") else 0.0,
+            "battery_percent": float(batt) if batt not in (None, "", False) else 0.0,
             "temperature_c": float(temp) if temp not in (None, "") else 0.0,
             "latitude": _to_float_or_false(lat),
             "longitude": _to_float_or_false(lng),
