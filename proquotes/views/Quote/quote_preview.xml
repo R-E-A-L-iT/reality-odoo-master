@@ -708,7 +708,11 @@
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
                         <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
-                             <img t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''" alt="Product Image" style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                             <img class="zoomable-product-image"
+                                  t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
+                                  t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
+                                  alt="Product Image"
+                                  style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
                         </t>
                         </div>
                         <div width="90%">
