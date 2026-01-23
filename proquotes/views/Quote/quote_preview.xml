@@ -192,8 +192,8 @@
 
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
-            <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
-                'line_section') and not line.is_downpayment and line.name != '$hardware' and line.name != '$software'
+            <attribute name="t-if">current_section and (line_last or (lines_to_report[line_index+1].display_type ==
+                'line_section' and not str(lines_to_report[line_index+1].name).startswith('#ccp_selection_'))) and not line.is_downpayment and line.name != '$hardware' and line.name != '$software'
                 and line.name != '$subscription'
             </attribute>
         </tr>
@@ -588,7 +588,7 @@
                 </t>
             </div>
 
-            <div style="width: 25%; float: right">
+            <div style="width: 25%; float: right" t-if="not str(line.name).startswith('#ccp_selection_')">
                 <label class="subtotal-label" t-att-data-sec-line="line.id" t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%; text-align: right;">
                     <span>
