@@ -11,7 +11,7 @@ to match your Envio dashboard API docs.
 """,
     "author": "Ézékiel deBlois",
     "license": "LGPL-3",
-    "depends": ["base", "stock"],
+    "depends": ["base", "stock", "base_setup", "web"],
     "data": [
         "security/ir.model.access.csv",
         "views/res_config_settings_views.xml",
