@@ -40,29 +40,8 @@ class EnvioPackage(models.Model):
     raw_json = fields.Text(string="Raw JSON", readonly=True)
 
     # updatedable settings
+    update_frequency_seconds = fields.Integer(string="Update Frequency (seconds)")
     inspection_date = fields.Datetime(string="Inspection Date")
-
-    UPDATE_FREQ_OPTIONS = [
-        ("30", "30 seconds"),
-        ("300", "5 minutes"),
-        ("600", "10 minutes"),
-        ("1200", "20 minutes"),
-        ("1800", "30 minutes"),
-        ("3600", "1 hour"),
-        ("7200", "2 hours"),
-        ("14400", "4 hours"),
-        ("21600", "6 hours"),
-        ("43200", "12 hours"),
-        ("86400", "1 day"),
-    ]
-
-    update_frequency_option = fields.Selection(
-        selection=UPDATE_FREQ_OPTIONS,
-        string="Device Update Frequency",
-        compute="_compute_update_frequency_option",
-        inverse="_inverse_update_frequency_option",
-        store=False,
-    )
 
     # Optional label image to send to Envio
     label_image = fields.Binary(string="Label Image")
@@ -79,15 +58,6 @@ class EnvioPackage(models.Model):
         inverse="_inverse_lot_id",
         store=False,
     )
-
-    @api.depends("update_frequency_seconds")
-    def _compute_update_frequency_option(self):
-        for rec in self:
-            rec.update_frequency_option = str(rec.update_frequency_seconds) if rec.update_frequency_seconds else False
-
-    def _inverse_update_frequency_option(self):
-        for rec in self:
-            rec.update_frequency_seconds = int(rec.update_frequency_option) if rec.update_frequency_option else 0
 
     def _compute_lot_id(self):
         # Find the lot that points to this envio.package (many2one stored on stock.lot)
@@ -171,9 +141,9 @@ class EnvioPackage(models.Model):
 
             existing = self.search([("envio_external_id", "=", external_id)], limit=1)
             if existing:
-                existing.with_context(envio_no_push=True).write(vals)
+                existing.write(vals)
             else:
-                self.with_context(envio_no_push=True).create(vals)
+                self.create(vals)
             upserts += 1
 
         _logger.info("Envio sync done. Upserted: %s", upserts)
@@ -363,7 +333,7 @@ class EnvioPackage(models.Model):
         payload = {}
 
         # Only send keys that are set (avoid resetting values unintentionally)
-        if self.update_frequency_seconds is not None:
+        if self.update_frequency_seconds:
             payload["updateFrequencyInSeconds"] = int(self.update_frequency_seconds)
 
         if self.inspection_date:
@@ -401,26 +371,4 @@ class EnvioPackage(models.Model):
 
         if "inspectionDate" in data and data["inspectionDate"]:
             self.inspection_date = self._parse_dt(data["inspectionDate"])
-
-    def write(self, vals):
-        # Fields that should trigger a push when edited
-        push_fields = {
-            "update_frequency_seconds",
-            "inspection_date",
-            "label_image",
-            "label_image_filename",
-            # If you ever make name editable and want it pushed, include "name"
-        }
-
-        should_push = bool(push_fields.intersection(vals.keys()))
-        res = super().write(vals)
-
-        # Avoid pushing during sync/import/internal updates
-        if should_push and not self.env.context.get("envio_no_push"):
-            # Push per-record so the error message points to the failing device
-            for rec in self:
-                if rec.envio_external_id:
-                    rec.action_push_envio_update()
-
-        return res
 
