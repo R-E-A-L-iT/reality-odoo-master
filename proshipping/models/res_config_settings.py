@@ -17,3 +17,9 @@ class ResConfigSettings(models.TransientModel):
         default="bearer",
         config_parameter="envio_connector.header_mode",
     )
+
+    envio_devices_path = fields.Char(
+        string="Devices Endpoint Path",
+        default="/api/v1/devices",
+        config_parameter="envio_connector.devices_path",
+    )
