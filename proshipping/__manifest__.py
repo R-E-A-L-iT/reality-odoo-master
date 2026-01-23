@@ -15,8 +15,9 @@ to match your Envio dashboard API docs.
     "data": [
         "security/ir.model.access.csv",
         "views/res_config_settings_views.xml",
-        "views/envio_menu.xml",
+        "views/envio_menu_root.xml",
         "views/envio_package_views.xml",
+        "views/envio_menu_items.xml",
         "views/envio_map_action.xml",
         "views/stock_lot_views.xml",
         "data/ir_cron.xml",
