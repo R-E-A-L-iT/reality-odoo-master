@@ -371,24 +371,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -414,24 +412,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -457,24 +453,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -500,24 +494,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -543,24 +535,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -586,24 +576,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -629,24 +617,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -672,24 +658,22 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="prev_subtotal" t-value="0"/>
-                            <t t-set="in_prev_section" t-value="False"/>
-                            <t t-set="found_section" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="prev_line">
-                                <t t-if="prev_line.id == line.id">
-                                    <t t-set="found_section" t-value="True"/>
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
                                 </t>
-                                <t t-if="not found_section">
-                                    <t t-if="prev_line.display_type == 'line_section'">
-                                        <t t-set="in_prev_section" t-value="True"/>
-                                        <t t-set="prev_subtotal" t-value="0"/>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
                                     </t>
-                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
-                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                     </t>
                                 </t>
                             </t>
-                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
