@@ -371,7 +371,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -397,7 +414,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -423,7 +457,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -449,7 +500,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -475,7 +543,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -501,7 +586,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -527,7 +629,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -553,7 +672,24 @@
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <span t-out="current_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                            <t t-set="prev_subtotal" t-value="0"/>
+                            <t t-set="in_prev_section" t-value="False"/>
+                            <t t-set="found_section" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="prev_line">
+                                <t t-if="prev_line.id == line.id">
+                                    <t t-set="found_section" t-value="True"/>
+                                </t>
+                                <t t-if="not found_section">
+                                    <t t-if="prev_line.display_type == 'line_section'">
+                                        <t t-set="in_prev_section" t-value="True"/>
+                                        <t t-set="prev_subtotal" t-value="0"/>
+                                    </t>
+                                    <t t-elif="in_prev_section and prev_line.selected == 'true'">
+                                        <t t-set="prev_subtotal" t-value="prev_subtotal + prev_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="prev_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
                         </div>
                     </td>
                 </tr>
@@ -577,7 +713,7 @@
 
         <!-- Handle Special Sections Seperatly -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/tbody/t[3]/tr" position="attributes">
-            <attribute name="t-if">line.name[0] != '$' and line.name[:16] != '#ccp_selection_'</attribute>
+            <attribute name="t-if">line.name and not line.name.startswith('$') and not line.name.startswith('#ccp_selection_')</attribute>
         </xpath>
 
         <!-- Add Attributes For Easier CSS -->
