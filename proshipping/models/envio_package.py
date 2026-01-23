@@ -31,10 +31,7 @@ class EnvioPackage(models.Model):
 
     # Optional device/telemetry (adjust mapping to match Envio)
     device_id = fields.Char(string="Device ID", index=True)
-    battery_percent = rec.get("batteryLevel")
-    if battery_percent is None:
-        battery_percent = rec.get("batteryPercent") or rec.get("battery_percent") or rec.get("battery")
-
+    battery_percent = fields.Float(string="Battery %")
     temperature_c = fields.Float(string="Temperature (°C)")
     latitude = fields.Float(string="Latitude", digits=(10, 6))
     longitude = fields.Float(string="Longitude", digits=(10, 6))
