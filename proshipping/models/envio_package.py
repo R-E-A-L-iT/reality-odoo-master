@@ -355,8 +355,10 @@ class EnvioPackage(models.Model):
                 data = None
 
             if isinstance(data, dict):
-                rec.raw_json = json.dumps(data, ensure_ascii=False)
-                rec._apply_envio_device_details(data)
+                rec.with_context(envio_no_push=True).write({
+                    "raw_json": json.dumps(data, ensure_ascii=False),
+                })
+                rec.with_context(envio_no_push=True)._apply_envio_device_details(data)
 
         return True
 
