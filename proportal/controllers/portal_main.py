@@ -135,3 +135,16 @@ class CustomerPortalReal(CustomerPortal):
 
         return values
 
+    def _document_check_access(self, model_name, document_id, access_token=None):
+        try:
+            return super()._document_check_access(model_name, document_id, access_token=access_token)
+        except (AccessError, MissingError):
+            # Portal-admin bypass (only for logged-in users, not public)
+            user = request.env.user
+            if user and not user._is_public():
+                partner = user.partner_id
+                if partner.portal_administrator and model_name in ("sale.order", "account.move"):
+                    doc = request.env[model_name].sudo().browse(int(document_id)).exists()
+                    if doc and partner.portal_admin_can_access_partner(doc.partner_id):
+                        return doc
+            raise
