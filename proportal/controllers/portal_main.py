@@ -35,7 +35,11 @@ class CustomerPortalReal(CustomerPortal):
         # except (AccessError, MissingError):
         #     return request.redirect('/my')
 
-        order_sudo = request.env['sale.order'].sudo().browse(int(order_id))
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=order_sudo, report_type=report_type,
