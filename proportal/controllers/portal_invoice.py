@@ -1,10 +1,17 @@
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.osv import expression
+from odoo.http import request
+
 
 class CustomCustomerPortal(CustomerPortal):
 
-    def _get_invoices_domain(self, partner):
-        domain = super()._get_invoices_domain(partner)
+    def _get_invoices_domain(self, invoice_type=None, partner=None):
+        # Keep Odoo's original base domain logic
+        domain = super()._get_invoices_domain(invoice_type)
+
+        # Resolve partner properly
+        if partner is None:
+            partner = request.env.user.partner_id
 
         # Existing behavior: followers can see it
         follower_domain = [('message_partner_ids', 'in', [partner.id])]
