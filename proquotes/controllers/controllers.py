@@ -544,8 +544,12 @@ class QuotePortalFix(cPortal):
             return {'success': False, 'error': _('Missing required parameters.')}
 
         # Check if order is locked (already confirmed)
-        if str(order_sudo.state) == "sale":
-            return {'success': False, 'error': _('Order is already confirmed and cannot be modified.')}
+        if str(order_sudo.state) in ('sale', 'done', 'cancel'):
+            return {
+                'success': False,
+                'error': _('This order is confirmed and cannot be modified. CCP selection changes are not allowed for confirmed orders.'),
+                'order_locked': True
+            }
 
         # Get scanner configuration from section name
         scanner_config = request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(section_name)
@@ -561,36 +565,44 @@ class QuotePortalFix(cPortal):
             # Use configured search patterns
             search_patterns = scanner_config.get_search_patterns(ccp_type, period)
 
-        # Search for the CCP product
-        product = None
-        for pattern in search_patterns:
-            product = request.env['product.product'].sudo().search([
-                ('name', 'ilike', pattern)
-            ], limit=1)
-            if product:
-                break
+        # Search for the CCP product - OPTIMIZED: Single query with OR conditions
+        if not search_patterns:
+            return {'success': False, 'error': _('No search patterns configured.')}
+
+        # Build domain with OR conditions for all patterns
+        domain = []
+        for i, pattern in enumerate(search_patterns):
+            if i > 0:
+                domain.insert(0, '|')  # Add OR operator before each additional pattern
+            domain.append(('name', 'ilike', pattern))
+
+        product = request.env['product.product'].sudo().search(domain, limit=1)
 
         if not product:
             return {
                 'success': False,
-                'error': _('CCP product not found. Searched for: %s') % search_patterns[0]
+                'error': _('CCP product not found. Searched for patterns: %s') % ', '.join(search_patterns[:3])
             }
 
-        # Find the section line to insert after
-        section_line = order_sudo.order_line.filtered(lambda l: l.name == section_name)
+        # Find the section line to insert after - OPTIMIZED: Use ORM search instead of filtered
+        section_line = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('name', '=', section_name)
+        ], limit=1)
+
         if not section_line:
             return {'success': False, 'error': _('Section not found in order.')}
 
         # Get the sequence of the section line
-        section_sequence = section_line[0].sequence if section_line else 0
+        section_sequence = section_line.sequence
 
-        # Check if a CCP product already exists for this section
+        # Check if a CCP product already exists for this section - OPTIMIZED: Use ORM search
         # Remove any existing CCP line for this section
-        existing_ccp_lines = order_sudo.order_line.filtered(
-            lambda l: l.product_id and
-            'CCP' in l.product_id.name and
-            scanner_name in l.product_id.name
-        )
+        existing_ccp_lines = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('product_id.name', 'ilike', 'CCP'),
+            ('product_id.name', 'ilike', scanner_name)
+        ])
         if existing_ccp_lines:
             existing_ccp_lines.unlink()
 
@@ -620,14 +632,17 @@ class QuotePortalFix(cPortal):
             'order_line': [Command.create(line_data)]
         })
 
-        # Recompute tax totals
-        order_sudo._compute_tax_totals()
+        # Get the ID of the newly created line - OPTIMIZED: Use ORM search instead of filtered
+        new_line = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('product_id', '=', product.id),
+            ('sequence', '=', section_sequence + 1)
+        ], limit=1, order='id desc')  # Get most recent matching line
 
-        # Get the ID of the newly created line
-        new_line = order_sudo.order_line.filtered(
-            lambda l: l.product_id.id == product.id and l.sequence == section_sequence + 1
-        )
-        line_id = f"lineId{new_line[0].id}" if new_line else None
+        line_id = f"lineId{new_line.id}" if new_line else None
+
+        # OPTIMIZED: Tax computation will happen automatically during template rendering
+        # Removed explicit _compute_tax_totals() call to improve performance
 
         # Prepare response with updated template
         results = self._get_portal_order_details(order_sudo)
@@ -656,8 +671,12 @@ class QuotePortalFix(cPortal):
             return {'success': False, 'error': _('Invalid order or access denied.')}
 
         # Check if order is locked (already confirmed)
-        if str(order_sudo.state) == "sale":
-            return {'success': False, 'error': _('Order is already confirmed and cannot be modified.')}
+        if str(order_sudo.state) in ('sale', 'done', 'cancel'):
+            return {
+                'success': False,
+                'error': _('This order is confirmed and cannot be modified. CCP selection changes are not allowed for confirmed orders.'),
+                'order_locked': True
+            }
 
         # Extract numeric ID from line_id (format: "lineId123")
         if line_id and line_id.startswith('lineId'):

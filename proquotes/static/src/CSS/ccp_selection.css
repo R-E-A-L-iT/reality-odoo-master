@@ -202,6 +202,42 @@
     color: #007bff;
 }
 
+/* Locked State for Confirmed Orders */
+.ccp-selection-container.ccp-locked {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.ccp-lock-message {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #856404;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+}
+
+.ccp-lock-message i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+    color: #f39c12;
+}
+
+.ccp-lock-message p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.ccp-lock-message strong {
+    font-size: 1.1rem;
+    color: #664d03;
+}
+
 /* Action Buttons */
 .ccp-actions {
     margin-top: 10px;

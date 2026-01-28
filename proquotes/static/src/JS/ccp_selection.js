@@ -26,6 +26,15 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
         const self = this;
         const ccpContainers = document.querySelectorAll(".ccp-selection-container");
 
+        // Check if order is confirmed/locked
+        const orderState = this.orderDetail && this.orderDetail.state ? this.orderDetail.state : null;
+
+        // Lock CCP sections if order is confirmed, done, or cancelled
+        if (orderState === 'sale' || orderState === 'done' || orderState === 'cancel') {
+            this._lockCcpSections(ccpContainers);
+            return;
+        }
+
         ccpContainers.forEach((container) => {
             // Check if CCP product already added (from session storage)
             const sectionName = container.getAttribute("data-section");
@@ -45,6 +54,32 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
 
             // Load product images for CCP types
             self._loadCcpImages(container);
+        });
+    },
+
+    /**
+     * Lock all CCP sections when order is confirmed
+     */
+    _lockCcpSections: function (ccpContainers) {
+        ccpContainers.forEach((container) => {
+            // Add locked class for styling
+            container.classList.add('ccp-locked');
+
+            // Disable all inputs and buttons
+            container.querySelectorAll('input, button').forEach(el => {
+                el.disabled = true;
+            });
+
+            // Create and insert lock message
+            const lockMessage = document.createElement('div');
+            lockMessage.className = 'ccp-lock-message';
+            lockMessage.innerHTML = `
+                <i class="fa fa-lock"></i>
+                <p><strong>Order is confirmed.</strong><br>CCP selection cannot be modified for confirmed orders.</p>
+            `;
+
+            // Insert message at the beginning of container
+            container.insertBefore(lockMessage, container.firstChild);
         });
     },
 
