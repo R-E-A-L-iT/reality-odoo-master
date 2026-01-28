@@ -128,12 +128,39 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				return Number.isFinite(n) ? n : 0;
 			};
 
+			// NEW: get quantity from the current quote line row
+			const getLineQty = (rowEl) => {
+				if (!rowEl) return 1;
+
+				// 1) Editable quantity input
+				const qtyInput = rowEl.querySelector("input.quantityChange[type='number']");
+				if (qtyInput) {
+					let qty = toNumOr0(qtyInput.value);
+					qty = Math.round(qty);
+					if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+					return qty;
+				}
+
+				// 2) Locked quantity span
+				const qtySpan = rowEl.querySelector("span.qtySpan");
+				if (qtySpan) {
+					let qty = toNumOr0(text(qtySpan));
+					qty = Math.round(qty);
+					if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+					return qty;
+				}
+
+				// Fallback
+				return 1;
+			};
+
 			var totalLandingEnglish = document.getElementById("total-rental-value-english");
 			var totalLandingFrench  = document.getElementById("total-rental-value-french");
 			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
 				return;
 			}
 
+			// TOTAL RENTAL VALUE (now quantity-aware)
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
 			for (var i = 0; i < items.length; i++) {
@@ -145,16 +172,19 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				if (include) {
 					var vals = items[i].getElementsByClassName("itemValue");
 					if (vals.length > 0) {
-						total += toIntOr0(text(vals[0]));
+						const qty = getLineQty(items[i]); // NEW
+						total += toIntOr0(text(vals[0])) * getLineQty(items[i]); // NEW
 					}
 				}
 			}
+
 			if (totalLandingEnglish != undefined) {
-				totalLandingEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
+				totalLandingEnglish.innerHTML =
+					'$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total);
 			}
 			if (totalLandingFrench != undefined) {
-				Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 })
-				totalLandingFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
+				totalLandingFrench.innerHTML =
+					Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
 			}
 
 			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");
@@ -195,6 +225,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			while (rentalLength >= 7)  { weeks  += 1; rentalLength -= 7;  }
 			while (rentalLength >= 1)  { days   += 1; rentalLength -= 1;  }
 
+			// RENTAL ESTIMATE (now quantity-aware)
 			var rentalEstimateTotal = 0;
 			var productPrices = document.getElementsByClassName("rental_rate_calc");
 			for (var j = 0; j < productPrices.length; j++) {
@@ -207,9 +238,12 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					continue;
 				}
 
-				var price = toNumOr0(text(productPrices[j]));
+				const qty = getLineQty(node); // NEW
+				var price = toNumOr0(text(productPrices[j])); // per-unit rate
 
 				var rentalEstimateSubTotal = 0;
+
+				// days/weeks/months caps apply per unit, then multiply by qty
 				rentalEstimateSubTotal += 1 * days * price;
 				if (rentalEstimateSubTotal > 4 * price) {
 					rentalEstimateSubTotal = 4 * price;
@@ -219,13 +253,16 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					rentalEstimateSubTotal = 12 * price;
 				}
 				rentalEstimateSubTotal += 12 * months * price;
-				rentalEstimateTotal += rentalEstimateSubTotal;
+
+				rentalEstimateTotal += (rentalEstimateSubTotal * getLineQty(node)); // NEW
 			}
 
 			if (rentalEstimateEnglish != undefined) {
-				rentalEstimateEnglish.innerHTML = '$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
+				rentalEstimateEnglish.innerHTML =
+					'$ ' + Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal);
 			} else if (rentalEstimateFrench != undefined) {
-				rentalEstimateFrench.innerHTML = Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
+				rentalEstimateFrench.innerHTML =
+					Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(rentalEstimateTotal) + ' $';
 			}
 		},
 
