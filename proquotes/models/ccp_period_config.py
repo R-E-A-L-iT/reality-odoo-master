@@ -20,10 +20,29 @@ class CcpPeriodConfig(models.Model):
         string='Display Name (French)',
         help='Display label shown to French-speaking users'
     )
+    icon = fields.Selection(
+        selection=[
+            ('fa-clock-o', 'Clock'),
+            ('fa-calendar', 'Calendar'),
+            ('fa-calendar-check-o', 'Calendar Check'),
+            ('fa-calendar-plus-o', 'Calendar Plus'),
+            ('fa-history', 'History'),
+            ('fa-hourglass-half', 'Hourglass'),
+            ('fa-time', 'Time'),
+        ],
+        string='Icon',
+        default='fa-clock-o',
+        help='Font Awesome icon to display for this time period'
+    )
+    color = fields.Char(
+        string='Color',
+        default='#3498DB',
+        help='Hex color code for UI styling (e.g., #3498DB)'
+    )
     sequence = fields.Integer(
         string='Sequence',
         default=10,
-        help='Display order in period selection dropdown'
+        help='Display order in period selection'
     )
     active = fields.Boolean(
         string='Active',

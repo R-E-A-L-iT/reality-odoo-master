@@ -7,7 +7,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
         "change .ccp-radio": "_onCcpTypeChange",
-        "change .ccp-period-select": "_onPeriodChange",
+        "change .ccp-period-radio": "_onPeriodChange",
         "click .ccp-next-btn": "_onNextClick",
         "click .ccp-back-btn": "_onBackClick",
         "click .ccp-clear-btn": "_onClearClick",
@@ -89,19 +89,17 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
     },
 
     /**
-     * Handle period dropdown change
+     * Handle period card radio button change
      */
     _onPeriodChange: function (ev) {
         const container = ev.currentTarget.closest(".ccp-selection-container");
         const step2 = container.querySelector(".ccp-step-2");
         const nextBtn = step2.querySelector(".ccp-next-btn");
-        const select = ev.currentTarget;
 
         // Enable next button when a period is selected
-        if (select.value) {
+        const selectedRadio = step2.querySelector(".ccp-period-radio:checked");
+        if (selectedRadio) {
             nextBtn.disabled = false;
-        } else {
-            nextBtn.disabled = true;
         }
     },
 
@@ -165,9 +163,9 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
 
         // Get selected CCP type and period
         const selectedType = container.querySelector(".ccp-radio:checked");
-        const selectedPeriod = container.querySelector(".ccp-period-select");
+        const selectedPeriod = container.querySelector(".ccp-period-radio:checked");
 
-        if (!selectedType || !selectedPeriod.value) {
+        if (!selectedType || !selectedPeriod) {
             console.error("CCP type or period not selected");
             return;
         }
@@ -284,11 +282,11 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
             radio.checked = false;
         });
 
-        // Reset period dropdown
-        const periodSelect = container.querySelector(".ccp-period-select");
-        if (periodSelect) {
-            periodSelect.value = "";
-        }
+        // Reset period radio buttons
+        const periodRadios = container.querySelectorAll(".ccp-period-radio");
+        periodRadios.forEach((radio) => {
+            radio.checked = false;
+        });
 
         // Reset next buttons to disabled
         const nextBtns = container.querySelectorAll(".ccp-next-btn");

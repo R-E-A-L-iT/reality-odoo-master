@@ -57,40 +57,51 @@
 
             <!-- Step 2: Time Period Selection -->
             <div class="ccp-step ccp-step-2">
-                <div class="ccp-period-selection">
-                    <label for="ccp_period">
-                        <span t-if="language == 'en_CA' or language == 'en_US'">Time Period:</span>
-                        <span t-elif="language == 'fr_CA'">Période:</span>
-                    </label>
-                    <select id="ccp_period" class="form-control ccp-period-select">
-                        <option value="">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">-- Select Period --</t>
-                            <t t-elif="language == 'fr_CA'">-- Sélectionner la période --</t>
-                        </option>
-                        <!-- Dynamic Period Options -->
-                        <t t-if="scanner_config">
-                            <t t-foreach="scanner_config.period_ids.sorted(key=lambda p: p.sequence)" t-as="period_config">
-                                <option t-attf-value="{{period_config.name}}">
-                                    <t t-if="language == 'fr_CA' and period_config.display_name_fr">
-                                        <t t-out="period_config.display_name_fr"/>
-                                    </t>
-                                    <t t-elif="period_config.display_name_en">
-                                        <t t-out="period_config.display_name_en"/>
-                                    </t>
-                                    <t t-else="">
-                                        <t t-out="period_config.name"/>
-                                    </t>
-                                </option>
-                            </t>
+                <div class="ccp-period-options">
+                    <!-- Dynamic Period Cards -->
+                    <t t-if="scanner_config">
+                        <t t-foreach="scanner_config.period_ids.sorted(key=lambda p: p.sequence)" t-as="period_config">
+                            <div class="ccp-period-card" t-attf-data-period="{{period_config.name}}">
+                                <input type="radio" name="ccp_period" t-attf-id="ccp_period_{{period_config.name.replace(' ', '_')}}_{{section_name}}" t-attf-value="{{period_config.name}}" class="ccp-period-radio"/>
+                                <label t-attf-for="ccp_period_{{period_config.name.replace(' ', '_')}}_{{section_name}}">
+                                    <div class="ccp-period-card-content">
+                                        <div class="ccp-period-icon" t-attf-style="color: {{period_config.color}};">
+                                            <i t-attf-class="fa {{period_config.icon}} fa-3x"></i>
+                                        </div>
+                                        <div class="ccp-period-name">
+                                            <t t-if="language == 'fr_CA' and period_config.display_name_fr">
+                                                <t t-out="period_config.display_name_fr"/>
+                                            </t>
+                                            <t t-elif="period_config.display_name_en">
+                                                <t t-out="period_config.display_name_en"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-out="period_config.name"/>
+                                            </t>
+                                        </div>
+                                        <div class="ccp-period-code" t-out="period_config.name"></div>
+                                    </div>
+                                </label>
+                            </div>
                         </t>
-                        <!-- Fallback: Legacy periods if no config -->
-                        <t t-else="">
-                            <option value="1 yr">1 yr</option>
-                            <option value="2 yr">2 yr</option>
-                            <option value="3 yr">3 yr</option>
-                            <option value="5 yr">5 yr</option>
+                    </t>
+                    <!-- Fallback: Legacy period cards if no config -->
+                    <t t-else="">
+                        <t t-foreach="[('1 yr', '1 Year', 'fa-clock-o', '#3498DB'), ('2 yr', '2 Years', 'fa-calendar', '#2ECC71'), ('3 yr', '3 Years', 'fa-calendar-check-o', '#F39C12'), ('5 yr', '5 Years', 'fa-history', '#E74C3C')]" t-as="legacy_period">
+                            <div class="ccp-period-card" t-attf-data-period="{{legacy_period[0]}}">
+                                <input type="radio" name="ccp_period" t-attf-id="ccp_period_{{legacy_period[0].replace(' ', '_')}}_{{section_name}}" t-attf-value="{{legacy_period[0]}}" class="ccp-period-radio"/>
+                                <label t-attf-for="ccp_period_{{legacy_period[0].replace(' ', '_')}}_{{section_name}}">
+                                    <div class="ccp-period-card-content">
+                                        <div class="ccp-period-icon" t-attf-style="color: {{legacy_period[3]}};">
+                                            <i t-attf-class="fa {{legacy_period[2]}} fa-3x"></i>
+                                        </div>
+                                        <div class="ccp-period-name" t-out="legacy_period[1]"></div>
+                                        <div class="ccp-period-code" t-out="legacy_period[0]"></div>
+                                    </div>
+                                </label>
+                            </div>
                         </t>
-                    </select>
+                    </t>
                 </div>
 
                 <div class="ccp-actions">

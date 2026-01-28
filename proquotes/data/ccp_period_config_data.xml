@@ -6,6 +6,8 @@
             <field name="name">1 yr</field>
             <field name="display_name_en">1 Year</field>
             <field name="display_name_fr">1 an</field>
+            <field name="icon">fa-clock-o</field>
+            <field name="color">#3498DB</field>
             <field name="sequence">10</field>
             <field name="active" eval="True"/>
         </record>
@@ -15,6 +17,8 @@
             <field name="name">2 yr</field>
             <field name="display_name_en">2 Years</field>
             <field name="display_name_fr">2 ans</field>
+            <field name="icon">fa-calendar</field>
+            <field name="color">#2ECC71</field>
             <field name="sequence">20</field>
             <field name="active" eval="True"/>
         </record>
@@ -24,6 +28,8 @@
             <field name="name">3 yr</field>
             <field name="display_name_en">3 Years</field>
             <field name="display_name_fr">3 ans</field>
+            <field name="icon">fa-calendar-check-o</field>
+            <field name="color">#F39C12</field>
             <field name="sequence">30</field>
             <field name="active" eval="True"/>
         </record>
@@ -33,6 +39,8 @@
             <field name="name">5 yr</field>
             <field name="display_name_en">5 Years</field>
             <field name="display_name_fr">5 ans</field>
+            <field name="icon">fa-history</field>
+            <field name="color">#E74C3C</field>
             <field name="sequence">40</field>
             <field name="active" eval="True"/>
         </record>

@@ -10,6 +10,8 @@
                 <field name="name"/>
                 <field name="display_name_en"/>
                 <field name="display_name_fr"/>
+                <field name="icon"/>
+                <field name="color" widget="color"/>
                 <field name="active"/>
             </tree>
         </field>
@@ -30,11 +32,13 @@
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="sequence"/>
-                        </group>
-                        <group>
                             <field name="display_name_en"/>
                             <field name="display_name_fr"/>
+                        </group>
+                        <group>
+                            <field name="icon"/>
+                            <field name="color" widget="color"/>
+                            <field name="sequence"/>
                         </group>
                     </group>
                     <notebook>

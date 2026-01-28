@@ -97,34 +97,78 @@
     margin-top: 8px;
 }
 
-/* Step 2: Period Selection */
-.ccp-period-selection {
+/* Step 2: Period Selection with Cards */
+.ccp-period-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
     margin: 10px 0;
 }
 
-.ccp-period-selection label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 1.1rem;
-}
-
-.ccp-period-select {
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+.ccp-period-card {
+    position: relative;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
     background-color: #fff;
-    transition: border-color 0.3s ease;
 }
 
-.ccp-period-select:focus {
-    outline: none;
+.ccp-period-card:hover {
     border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.ccp-period-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ccp-period-card input[type="radio"]:checked ~ label {
+    background-color: #e7f3ff;
+}
+
+.ccp-period-card:has(input[type="radio"]:checked) {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.ccp-period-card label {
+    cursor: pointer;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.ccp-period-card-content {
+    padding: 10px;
+}
+
+.ccp-period-icon {
+    margin-bottom: 15px;
+}
+
+.ccp-period-icon i {
+    display: inline-block;
+}
+
+.ccp-period-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.ccp-period-code {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
 }
 
 /* Step 3: Confirmation */
@@ -240,7 +284,8 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .ccp-type-options {
+    .ccp-type-options,
+    .ccp-period-options {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -258,7 +303,8 @@
 }
 
 @media (max-width: 480px) {
-    .ccp-type-options {
+    .ccp-type-options,
+    .ccp-period-options {
         grid-template-columns: 1fr;
     }
 
