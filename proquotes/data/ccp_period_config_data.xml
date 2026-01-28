@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 1 Year Period -->
+        <record id="ccp_period_1yr" model="ccp.period.config">
+            <field name="name">1 yr</field>
+            <field name="display_name_en">1 Year</field>
+            <field name="display_name_fr">1 an</field>
+            <field name="sequence">10</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 2 Years Period -->
+        <record id="ccp_period_2yr" model="ccp.period.config">
+            <field name="name">2 yr</field>
+            <field name="display_name_en">2 Years</field>
+            <field name="display_name_fr">2 ans</field>
+            <field name="sequence">20</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 3 Years Period -->
+        <record id="ccp_period_3yr" model="ccp.period.config">
+            <field name="name">3 yr</field>
+            <field name="display_name_en">3 Years</field>
+            <field name="display_name_fr">3 ans</field>
+            <field name="sequence">30</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 5 Years Period -->
+        <record id="ccp_period_5yr" model="ccp.period.config">
+            <field name="name">5 yr</field>
+            <field name="display_name_en">5 Years</field>
+            <field name="display_name_fr">5 ans</field>
+            <field name="sequence">40</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

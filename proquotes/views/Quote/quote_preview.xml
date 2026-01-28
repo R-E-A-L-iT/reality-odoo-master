@@ -359,59 +359,34 @@
                 </tr>
             </t>
 
-            <!-- CCP Selection Blocks -->
-            <t t-if="line.name == '#ccp_selection_blkarc'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK ARC</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK ARC</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'BLK ARC'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_blkarc'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
+            <!-- Dynamic CCP Selection Block -->
+            <t t-if="line.name and line.name.startswith('#ccp_selection_')">
+                <!-- Get scanner configuration -->
+                <t t-set="ccp_scanner_config" t-value="request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(line.name)"/>
 
-            <t t-if="line.name == '#ccp_selection_pegasustrk'">
                 <!-- Section Header -->
                 <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
                     <td colspan="100" style="padding: 20px !important;">
                         <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for PEGASUS TRK</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour PEGASUS TRK</t>
+                            <!-- Dynamic Title from Config -->
+                            <t t-if="ccp_scanner_config">
+                                <t t-out="ccp_scanner_config.get_title(language)"/>
+                            </t>
+                            <!-- Fallback: Extract scanner name from section_name if no config -->
+                            <t t-else="">
+                                <t t-set="scanner_id" t-value="line.name[15:]"/>
+                                <t t-if="language == 'en_CA' or language == 'en_US'">
+                                    Select CCP Type for <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                </t>
+                                <t t-elif="language == 'fr_CA'">
+                                    Sélectionner le type CCP pour <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                </t>
+                            </t>
                         </div>
                         <div style="width: 25%; float: right; text-align: right;">
                             <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
                             <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
+                            <!-- Calculate CCP products subtotal -->
                             <t t-set="ccp_subtotal" t-value="0"/>
                             <t t-set="calculating" t-value="False"/>
                             <t t-foreach="sale_order.order_line" t-as="ccp_line">
@@ -435,254 +410,8 @@
                 <tr>
                     <td style="border-style: none; padding: 0;" colspan="100">
                         <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'PEGASUS TRK'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_pegasustrk'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_blk2fly'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2FLY</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2FLY</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'BLK2FLY'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_blk2fly'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_blk2go'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'BLK2GO'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_blk2go'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_blk2gopulse'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO PULSE</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO PULSE</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'BLK2GO PULSE'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_blk2gopulse'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_rtc360'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for RTC360</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour RTC360</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'RTC360'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_rtc360'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_pseries'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for P-SERIES</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour P-SERIES</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'P-SERIES'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_pseries'"/>
-                        </t>
-                    </td>
-                </tr>
-            </t>
-
-            <t t-if="line.name == '#ccp_selection_blk360'">
-                <!-- Section Header -->
-                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
-                    <td colspan="100" style="padding: 20px !important;">
-                        <div style="width: 75%; float: left;">
-                            <t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK360</t>
-                            <t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK360</t>
-                        </div>
-                        <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
-                            <t t-set="ccp_subtotal" t-value="0"/>
-                            <t t-set="calculating" t-value="False"/>
-                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
-                                <t t-if="ccp_line.id == line.id">
-                                    <t t-set="calculating" t-value="True"/>
-                                </t>
-                                <t t-elif="calculating">
-                                    <t t-if="ccp_line.display_type == 'line_section'">
-                                        <t t-set="calculating" t-value="False"/>
-                                    </t>
-                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
-                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
-                                    </t>
-                                </t>
-                            </t>
-                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- CCP Form -->
-                <tr>
-                    <td style="border-style: none; padding: 0;" colspan="100">
-                        <t t-call="proquotes.ccp_selection_form">
-                            <t t-set="scanner_name" t-value="'BLK360'"/>
-                            <t t-set="section_name" t-value="'#ccp_selection_blk360'"/>
+                            <t t-set="scanner_name" t-value="ccp_scanner_config.name if ccp_scanner_config else line.name[15:].upper().replace('_', ' ')"/>
+                            <t t-set="section_name" t-value="line.name"/>
                         </t>
                     </td>
                 </tr>

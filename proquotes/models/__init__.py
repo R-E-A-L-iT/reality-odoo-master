@@ -4,6 +4,9 @@ from . import account_move_line
 from . import account_move
 from . import account_move_send
 from . import calendar_event
+from . import ccp_period_config
+from . import ccp_scanner_config
+from . import ccp_type_config
 from . import crm_lead
 from . import header_footer
 from . import helpdesk_ticket

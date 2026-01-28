@@ -76,6 +76,14 @@
     # always loaded
     "data": [
         "security/ir.model.access.csv",
+        # ccp configuration data
+        "data/ccp_type_config_data.xml",
+        "data/ccp_period_config_data.xml",
+        "data/ccp_scanner_config_data.xml",
+        # ccp configuration views
+        "views/Configuration/ccp_type_config_view.xml",
+        "views/Configuration/ccp_period_config_view.xml",
+        "views/Configuration/ccp_scanner_config_view.xml",
         # quotes
         "views/Quote/quote_report.xml",
         "views/Quote/quote_preview.xml",

@@ -531,7 +531,7 @@ class QuotePortalFix(cPortal):
     def add_ccp_line(self, order_id, access_token=None, scanner_name=None, ccp_type=None, period=None, section_name=None, **kw):
         """
         Add a CCP product line to the order based on scanner name, CCP type, and period.
-        Searches for a product matching the pattern: "{period} {scanner_name} Laser Scanner CCP {ccp_type}"
+        Uses scanner configuration to generate search patterns dynamically.
         """
         # Access check
         try:
@@ -540,21 +540,28 @@ class QuotePortalFix(cPortal):
             return {'success': False, 'error': _('Invalid order or access denied.')}
 
         # Validate inputs
-        if not scanner_name or not ccp_type or not period:
+        if not scanner_name or not ccp_type or not period or not section_name:
             return {'success': False, 'error': _('Missing required parameters.')}
 
         # Check if order is locked (already confirmed)
         if str(order_sudo.state) == "sale":
             return {'success': False, 'error': _('Order is already confirmed and cannot be modified.')}
 
-        # Search for the CCP product
-        # Pattern: "{period} {scanner_name} Laser Scanner CCP {ccp_type}"
-        search_patterns = [
-            f"{period} {scanner_name} Laser Scanner CCP {ccp_type}",
-            f"{period} {scanner_name} CCP {ccp_type}",
-            f"CCP {ccp_type} {scanner_name} {period}",
-        ]
+        # Get scanner configuration from section name
+        scanner_config = request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(section_name)
 
+        if not scanner_config:
+            # Fallback to legacy hardcoded patterns if scanner config not found
+            search_patterns = [
+                f"{period} {scanner_name} Laser Scanner CCP {ccp_type}",
+                f"{period} {scanner_name} CCP {ccp_type}",
+                f"CCP {ccp_type} {scanner_name} {period}",
+            ]
+        else:
+            # Use configured search patterns
+            search_patterns = scanner_config.get_search_patterns(ccp_type, period)
+
+        # Search for the CCP product
         product = None
         for pattern in search_patterns:
             product = request.env['product.product'].sudo().search([

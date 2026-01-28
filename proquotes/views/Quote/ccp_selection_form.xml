@@ -5,75 +5,46 @@
         <t t-elif="doc != undefined" t-set="source" t-value="doc" />
         <t t-elif="o != undefined" t-set="source" t-value="o" />
 
+        <!-- Get scanner configuration -->
+        <t t-set="scanner_config" t-value="request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(section_name)"/>
+
         <section class="ccp-selection-container" t-attf-data-scanner="{{scanner_name}}" t-attf-data-section="{{section_name}}" t-attf-data-order-id="{{source.id}}">
 
             <!-- Step 1: CCP Type Selection -->
             <div class="ccp-step ccp-step-1 active">
                 <div class="ccp-type-options">
-                    <!-- BASIC -->
-                    <div class="ccp-type-card" data-ccp-type="BASIC">
-                        <input type="radio" name="ccp_type" id="ccp_basic" value="BASIC" class="ccp-radio"/>
-                        <label for="ccp_basic">
-                            <div class="ccp-card-content">
-                                <div class="ccp-image-placeholder" data-ccp-type="BASIC">
-                                    <!-- Image will be loaded by JavaScript -->
-                                </div>
-                                <span class="ccp-type-name">BASIC</span>
+                    <!-- Dynamic CCP Type Cards -->
+                    <t t-if="scanner_config">
+                        <t t-foreach="scanner_config.type_ids.sorted(key=lambda t: t.sequence)" t-as="ccp_type_config">
+                            <div class="ccp-type-card" t-attf-data-ccp-type="{{ccp_type_config.name}}">
+                                <input type="radio" name="ccp_type" t-attf-id="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}" t-attf-value="{{ccp_type_config.name}}" class="ccp-radio"/>
+                                <label t-attf-for="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}">
+                                    <div class="ccp-card-content">
+                                        <div class="ccp-icon-placeholder" t-attf-style="color: {{ccp_type_config.color}};">
+                                            <i t-attf-class="fa {{ccp_type_config.icon}} fa-3x"></i>
+                                        </div>
+                                        <span class="ccp-type-name" t-out="ccp_type_config.display_name or ccp_type_config.name"></span>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
-                    </div>
-
-                    <!-- BLUE -->
-                    <div class="ccp-type-card" data-ccp-type="BLUE">
-                        <input type="radio" name="ccp_type" id="ccp_blue" value="BLUE" class="ccp-radio"/>
-                        <label for="ccp_blue">
-                            <div class="ccp-card-content">
-                                <div class="ccp-image-placeholder" data-ccp-type="BLUE">
-                                    <!-- Image will be loaded by JavaScript -->
-                                </div>
-                                <span class="ccp-type-name">BLUE</span>
+                        </t>
+                    </t>
+                    <!-- Fallback: If no scanner config found, show legacy hardcoded types -->
+                    <t t-else="">
+                        <t t-foreach="['BASIC', 'BLUE', 'BRONZE', 'SILVER', 'GOLD']" t-as="legacy_type">
+                            <div class="ccp-type-card" t-attf-data-ccp-type="{{legacy_type}}">
+                                <input type="radio" name="ccp_type" t-attf-id="ccp_{{legacy_type.lower()}}_{{section_name}}" t-attf-value="{{legacy_type}}" class="ccp-radio"/>
+                                <label t-attf-for="ccp_{{legacy_type.lower()}}_{{section_name}}">
+                                    <div class="ccp-card-content">
+                                        <div class="ccp-image-placeholder" t-attf-data-ccp-type="{{legacy_type}}">
+                                            <!-- Fallback placeholder -->
+                                        </div>
+                                        <span class="ccp-type-name" t-out="legacy_type"></span>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
-                    </div>
-
-                    <!-- BRONZE -->
-                    <div class="ccp-type-card" data-ccp-type="BRONZE">
-                        <input type="radio" name="ccp_type" id="ccp_bronze" value="BRONZE" class="ccp-radio"/>
-                        <label for="ccp_bronze">
-                            <div class="ccp-card-content">
-                                <div class="ccp-image-placeholder" data-ccp-type="BRONZE">
-                                    <!-- Image will be loaded by JavaScript -->
-                                </div>
-                                <span class="ccp-type-name">BRONZE</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- SILVER -->
-                    <div class="ccp-type-card" data-ccp-type="SILVER">
-                        <input type="radio" name="ccp_type" id="ccp_silver" value="SILVER" class="ccp-radio"/>
-                        <label for="ccp_silver">
-                            <div class="ccp-card-content">
-                                <div class="ccp-image-placeholder" data-ccp-type="SILVER">
-                                    <!-- Image will be loaded by JavaScript -->
-                                </div>
-                                <span class="ccp-type-name">SILVER</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- GOLD -->
-                    <div class="ccp-type-card" data-ccp-type="GOLD">
-                        <input type="radio" name="ccp_type" id="ccp_gold" value="GOLD" class="ccp-radio"/>
-                        <label for="ccp_gold">
-                            <div class="ccp-card-content">
-                                <div class="ccp-image-placeholder" data-ccp-type="GOLD">
-                                    <!-- Image will be loaded by JavaScript -->
-                                </div>
-                                <span class="ccp-type-name">GOLD</span>
-                            </div>
-                        </label>
-                    </div>
+                        </t>
+                    </t>
                 </div>
 
                 <div class="ccp-actions">
@@ -96,10 +67,29 @@
                             <t t-if="language == 'en_CA' or language == 'en_US'">-- Select Period --</t>
                             <t t-elif="language == 'fr_CA'">-- Sélectionner la période --</t>
                         </option>
-                        <option value="1 yr">1 yr</option>
-                        <option value="2 yr">2 yr</option>
-                        <option value="3 yr">3 yr</option>
-                        <option value="5 yr">5 yr</option>
+                        <!-- Dynamic Period Options -->
+                        <t t-if="scanner_config">
+                            <t t-foreach="scanner_config.period_ids.sorted(key=lambda p: p.sequence)" t-as="period_config">
+                                <option t-attf-value="{{period_config.name}}">
+                                    <t t-if="language == 'fr_CA' and period_config.display_name_fr">
+                                        <t t-out="period_config.display_name_fr"/>
+                                    </t>
+                                    <t t-elif="period_config.display_name_en">
+                                        <t t-out="period_config.display_name_en"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-out="period_config.name"/>
+                                    </t>
+                                </option>
+                            </t>
+                        </t>
+                        <!-- Fallback: Legacy periods if no config -->
+                        <t t-else="">
+                            <option value="1 yr">1 yr</option>
+                            <option value="2 yr">2 yr</option>
+                            <option value="3 yr">3 yr</option>
+                            <option value="5 yr">5 yr</option>
+                        </t>
                     </select>
                 </div>
 

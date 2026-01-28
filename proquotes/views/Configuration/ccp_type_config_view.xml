@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="ccp_type_config_view_tree" model="ir.ui.view">
+        <field name="name">ccp.type.config.view.tree</field>
+        <field name="model">ccp.type.config</field>
+        <field name="arch" type="xml">
+            <tree string="CCP Types">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="display_name"/>
+                <field name="icon"/>
+                <field name="color" widget="color"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="ccp_type_config_view_form" model="ir.ui.view">
+        <field name="name">ccp.type.config.view.form</field>
+        <field name="model">ccp.type.config</field>
+        <field name="arch" type="xml">
+            <form string="CCP Type">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="display_name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="icon"/>
+                            <field name="color" widget="color"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scanners" name="scanners">
+                            <field name="scanner_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="ccp_type_config_view_search" model="ir.ui.view">
+        <field name="name">ccp.type.config.view.search</field>
+        <field name="model">ccp.type.config</field>
+        <field name="arch" type="xml">
+            <search string="CCP Types">
+                <field name="name"/>
+                <field name="display_name"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Icon" name="group_icon" context="{'group_by': 'icon'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="ccp_type_config_action" model="ir.actions.act_window">
+        <field name="name">CCP Types</field>
+        <field name="res_model">ccp.type.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new CCP Type
+            </p>
+            <p>
+                Define CCP types (e.g., BASIC, BLUE, BRONZE, SILVER, GOLD) that can be selected for different scanners.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_ccp_configuration"
+              name="CCP Configuration"
+              parent="sale.sale_config"
+              sequence="50"/>
+
+    <menuitem id="menu_ccp_type_config"
+              name="CCP Types"
+              parent="menu_ccp_configuration"
+              action="ccp_type_config_action"
+              sequence="10"/>
+</odoo>

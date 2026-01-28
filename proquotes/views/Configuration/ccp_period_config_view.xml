@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="ccp_period_config_view_tree" model="ir.ui.view">
+        <field name="name">ccp.period.config.view.tree</field>
+        <field name="model">ccp.period.config</field>
+        <field name="arch" type="xml">
+            <tree string="CCP Periods">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="display_name_en"/>
+                <field name="display_name_fr"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="ccp_period_config_view_form" model="ir.ui.view">
+        <field name="name">ccp.period.config.view.form</field>
+        <field name="model">ccp.period.config</field>
+        <field name="arch" type="xml">
+            <form string="CCP Period">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="display_name_en"/>
+                            <field name="display_name_fr"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scanners" name="scanners">
+                            <field name="scanner_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="ccp_period_config_view_search" model="ir.ui.view">
+        <field name="name">ccp.period.config.view.search</field>
+        <field name="model">ccp.period.config</field>
+        <field name="arch" type="xml">
+            <search string="CCP Periods">
+                <field name="name"/>
+                <field name="display_name_en"/>
+                <field name="display_name_fr"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="ccp_period_config_action" model="ir.actions.act_window">
+        <field name="name">CCP Periods</field>
+        <field name="res_model">ccp.period.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new CCP Period
+            </p>
+            <p>
+                Define time periods (e.g., 1 yr, 2 yr, 3 yr, 5 yr) available for CCP selections.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_ccp_period_config"
+              name="CCP Periods"
+              parent="menu_ccp_configuration"
+              action="ccp_period_config_action"
+              sequence="20"/>
+</odoo>
