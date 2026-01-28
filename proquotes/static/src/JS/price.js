@@ -238,12 +238,11 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					continue;
 				}
 
-				const qty = getLineQty(node); // NEW
-				var price = toNumOr0(text(productPrices[j])); // per-unit rate
+				var price = toNumOr0(text(productPrices[j])); // value shown on the line
 
 				var rentalEstimateSubTotal = 0;
 
-				// days/weeks/months caps apply per unit, then multiply by qty
+				// so do NOT multiply again by qty here.
 				rentalEstimateSubTotal += 1 * days * price;
 				if (rentalEstimateSubTotal > 4 * price) {
 					rentalEstimateSubTotal = 4 * price;
@@ -254,7 +253,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				}
 				rentalEstimateSubTotal += 12 * months * price;
 
-				rentalEstimateTotal += (rentalEstimateSubTotal * getLineQty(node)); // NEW
+				rentalEstimateTotal += rentalEstimateSubTotal;
 			}
 
 			if (rentalEstimateEnglish != undefined) {
