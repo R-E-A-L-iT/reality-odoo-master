@@ -53,6 +53,7 @@
             "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
             "proquotes/static/src/JS/website_preview.js",
+            "proquotes/static/src/JS/image_zoom.js",
             ('replace', 'portal/static/src/signature_form/signature_form.js',
              'proquotes/static/src/JS/signature_form.js'),
         ],
