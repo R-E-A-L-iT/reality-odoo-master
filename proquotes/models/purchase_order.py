@@ -136,3 +136,10 @@ class purchase_order(models.Model):
         default=_get_default_footer,
         required=True,
     )
+
+    confirmation_date = fields.Datetime(
+        string="Confirmation Date",
+        copy=False,
+        tracking=True,
+        readonly=False,
+    )
