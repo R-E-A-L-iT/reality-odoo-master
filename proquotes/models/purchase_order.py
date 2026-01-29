@@ -137,7 +137,7 @@ class purchase_order(models.Model):
         required=True,
     )
 
-    confirmation_date = fields.Datetime(
+    date_approve = fields.Datetime(
         string="Confirmation Date",
         copy=False,
         tracking=True,
