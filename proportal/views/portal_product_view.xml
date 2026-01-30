@@ -26,7 +26,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>SKU</th>
                         <th>Serial Number</th>
                         <th>Expiration</th>
                         <th>Status</th>
@@ -41,7 +40,6 @@
                                  t-att-src="'data:image/png;base64,' + product.product_id.image_128.decode('utf-8') if product.product_id.image_128 else ''"/>
                             <t t-esc="product.product_id.name"/>
                         </td>
-                        <td><t t-esc="product.sku"/></td>
                         <td><t t-esc="product.name"/></td>
                         <td><t t-esc="product.expire"/></td>
 
