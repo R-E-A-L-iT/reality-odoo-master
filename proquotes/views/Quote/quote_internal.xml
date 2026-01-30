@@ -72,20 +72,26 @@
 
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
                    position="before">
-                <field name="applied_name" invisible="0" optional="hide"/>
+                <field name="applied_name" invisible="0" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
+            </xpath>
+
+            <!-- Make quantity readonly when order is confirmed -->
+            <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
+                   position="attributes">
+                <attribute name="readonly">state in ('sale', 'done', 'cancel')</attribute>
             </xpath>
 
             <!-- Custom Line Fields -->
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
                    position="after">
-                <field name="optional" column_invisible="1"/>
-                <field name="is_optional" invisible="0"/>
-                <field name="selected" column_invisible="1"/>
-                <field name="is_selected" invisible="0"/>
-                <field name="sectionSelected" invisible="1" optional="hide"/>
-                <field name="quantityLocked" column_invisible="1"/>
-                 <field name="demo_selected" column_invisible="1" optional="hide"/>
-                <field name="is_quantityLocked" invisible="0"/>
+                <field name="optional" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="is_optional" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="selected" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="is_selected" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="sectionSelected" invisible="1" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="quantityLocked" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
+                 <field name="demo_selected" column_invisible="1" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="is_quantityLocked" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="variant" invisible="1" optional="hide"/>
                 <field name="hiddenSection" invisible="1" optional="hide"/>
             </xpath>
