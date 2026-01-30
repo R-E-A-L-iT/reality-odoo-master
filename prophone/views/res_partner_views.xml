@@ -11,8 +11,7 @@
                 <button type="object"
                         name="action_view_quo_calls"
                         class="oe_stat_button"
-                        icon="fa-phone"
-                        invisible="is_company == False and parent_id != False">
+                        icon="fa-phone">
                     <field name="quo_calls_count" widget="statinfo" string="Calls"/>
                 </button>
             </xpath>
