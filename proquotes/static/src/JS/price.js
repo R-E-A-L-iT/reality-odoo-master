@@ -21,8 +21,17 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 		async start() {
 			this.orderDetail = this.$el.find("table#sales_order_table").data();
+			// Get order state from table data attribute
+			const table = document.getElementById('sales_order_table');
+			this.orderState = table ? table.getAttribute('data-order-state') : null;
+			console.log('Order state:', this.orderState);
 			this._onLoad();
 			await this._super(...arguments);
+		},
+
+		_isOrderLocked: function () {
+			// Check if order is in a locked state (confirmed, done, or cancelled)
+			return this.orderState === 'sale' || this.orderState === 'done' || this.orderState === 'cancel';
 		},
 
 		_onLoad: function () {
@@ -31,6 +40,12 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updateQuantityEvent: function (t) {
+			// Check if order is locked before processing
+			if (this._isOrderLocked()) {
+				console.log('Order is locked - quantity changes not allowed');
+				return;
+			}
+
             setTimeout(() => {
 			//Update Quantity for Product
     			let self = this;
@@ -73,6 +88,12 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updatePriceTotalsEvent: function (ev) {
+			// Check if order is locked before processing (only if event triggered by user interaction)
+			if (ev && this._isOrderLocked()) {
+				console.log('Order is locked - price selection changes not allowed');
+				return;
+			}
+
             setTimeout(() => {
     			//Find All Products that Might Change the Price
                 // var $link = $(ev.currentTarget);
@@ -223,6 +244,13 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updateSectionSelectionEvent: function (ev) {
+			// Check if order is locked before processing
+			if (this._isOrderLocked()) {
+				console.log('Order is locked - section selection changes not allowed');
+				ev.preventDefault();
+				return;
+			}
+
 			var target = ev.currentTarget;
 			var checked = target.checked;
 			var p = target;

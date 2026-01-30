@@ -206,6 +206,10 @@
             </p> -->
         </xpath>
 
+        <!-- Add order state to table data attributes for JavaScript access -->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="attributes">
+            <attribute name="data-order-state" t-att-data-order-state="sale_order.state"/>
+        </xpath>
 
         <!-- Remove Original Table Header-->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
@@ -457,8 +461,8 @@
 
                     <t t-if="line.special == 'optional'">
                         <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox"
-                               checked="true"/>
-                        <input t-else="" class="optionalSectionCheckbox" type="checkbox"/>
+                               checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" class="optionalSectionCheckbox" type="checkbox" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                     </t>
                     <!-- <t t-if="'translate' in line.name">
                         <span t-esc="sale_order.get_translated_term(line.name, language)" class="section-header"/>
@@ -601,13 +605,13 @@
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
                 <t t-if="line.optional == 'yes'">
-                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true"/>
-                    <input t-else="" type="checkbox" class="priceChange"/>
+                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                 </t>
                 <t t-else="">
                     <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                           class="priceChange"/>
-                    <input t-else="" type="radio" style="display: none;" class="priceChange"/>
+                           class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                 </t>
 
                 <!--Line Id For User Selection-->
@@ -760,12 +764,12 @@
 
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
-            <t t-if="line.quantityLocked == 'yes'">
+            <t t-if="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
                 <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
                       t-esc="round(line.product_uom_qty)"/>
                 <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>
             </t>
-            <t t-if="line.quantityLocked =='no'">
+            <t t-elif="line.quantityLocked =='no' and sale_order.state not in ('sale', 'done', 'cancel')">
                 <t t-set="qty" t-value="round(line.product_uom_qty)"/>
                 <!-- <span t-out="qty" /> -->
                 <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}"
