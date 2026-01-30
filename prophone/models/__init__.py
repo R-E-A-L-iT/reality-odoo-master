@@ -1,4 +1,3 @@
 # -*- coding: utf-8 -*-
-from . import models
-from . import controllers
-from . import wizards
+from . import quo_call
+from . import res_config_settings
