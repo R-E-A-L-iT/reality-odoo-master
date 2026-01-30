@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import base64
-import binascii
-import hmac
-import hashlib
 import json
 import logging
 
@@ -12,88 +8,59 @@ from odoo.http import request
 _logger = logging.getLogger(__name__)
 
 
-def _parse_signature_header(header_value):
-    """
-    Expected formats:
-      - "t=...,v1=<hex>"
-      - "<hex>"
-    Returns (timestamp_str_or_None, signature_hex)
-    """
-    if not header_value:
-        return (None, "")
-    hv = header_value.strip()
-    if "v1=" in hv:
-        ts = None
-        sig = ""
-        parts = [p.strip() for p in hv.split(",")]
-        for p in parts:
-            if p.startswith("t="):
-                ts = p.split("=", 1)[1].strip()
-            elif p.startswith("v1="):
-                sig = p.split("=", 1)[1].strip()
-        return (ts, sig)
-    return (None, hv)
-
-
-
 class QuoWebhookController(http.Controller):
 
     @http.route("/quo/webhook", type="http", auth="public", csrf=False, methods=["POST"])
     def quo_webhook(self, **kwargs):
         raw = request.httprequest.data or b""
-        sig_header = request.httprequest.headers.get("openphone-signature", "")
-        ts, sig = _parse_signature_header(sig_header)
 
-        secret = request.env["ir.config_parameter"].sudo().get_param("quo_transcripts.webhook_secret") or ""
-        if secret:
-            # Key can be raw text or base64-encoded. Try both.
-            candidate_keys = [secret.encode("utf-8")]
-            try:
-                candidate_keys.append(base64.b64decode(secret))
-            except (binascii.Error, ValueError):
-                pass
+        # 1) Parse JSON safely
+        try:
+            payload = json.loads(raw.decode("utf-8") or "{}")
+        except Exception:
+            _logger.exception("Quo webhook: invalid JSON body")
+            return request.make_response("invalid json", status=400)
 
-            # Message can be raw body or "t.body"
-            candidate_msgs = [raw]
-            if ts:
-                candidate_msgs.append((ts + ".").encode("utf-8") + raw)
+        # Helpful debug (you can keep this)
+        _logger.info("Quo webhook received keys=%s", list(payload.keys()))
 
-            valid = False
-            for key in candidate_keys:
-                for msg in candidate_msgs:
-                    expected = hmac.new(key, msg=msg, digestmod=hashlib.sha256).hexdigest()
-                    if hmac.compare_digest(expected, sig):
-                        valid = True
-                        break
-                if valid:
-                    break
-
-            if not valid:
-                _logger.warning("Quo webhook signature invalid. header=%s", sig_header)
-                return request.make_response("invalid signature", status=401)
-
-        # Best-effort event extraction
+        # 2) Extract event type and call object (matches your sample payload)
         event_type = payload.get("type") or payload.get("event") or payload.get("eventType") or ""
-        data_obj = (payload.get("data") or {}).get("object") or payload.get("data") or {}
+        call_obj = (payload.get("data") or {}).get("object") or {}
 
-        # We care about transcript completion
-        if event_type == "call.transcript.completed":
-            call_id = data_obj.get("id")
-            if not call_id:
-                return request.make_response("missing call id", status=400)
+        # Some providers wrap further; try one more level if needed
+        if call_obj and isinstance(call_obj, dict) and call_obj.get("object") == "event" and "data" in call_obj:
+            call_obj = (call_obj.get("data") or {}).get("object") or {}
 
-            # upsert call from call object
-            request.env["quo.call"].sudo().upsert_call_from_payload(call_id, data_obj)
+        # 3) Only handle transcript completed (matches your UI checkbox: call.transcript.completed)
+        if event_type != "call.transcript.completed":
+            return request.make_response("ignored", status=200)
 
-            # build transcript payload from nested callTranscript
-            call_transcript = data_obj.get("callTranscript") or {}
+        # 4) Must have a call id
+        call_id = call_obj.get("id")
+        if not call_id:
+            _logger.warning("Quo webhook missing call id. payload=%s", payload)
+            return request.make_response("missing call id", status=400)
+
+        try:
+            # 5) Upsert call record using call object (direction, from/to, etc.)
+            request.env["quo.call"].sudo().upsert_call_from_payload(call_id, call_obj)
+
+            # 6) Build transcript payload from nested callTranscript object
+            call_transcript = call_obj.get("callTranscript") or {}
             transcript_payload = {
                 "callId": call_id,
                 "createdAt": call_transcript.get("createdAt"),
                 "duration": call_transcript.get("duration"),
-                "status": data_obj.get("status"),
+                "status": call_obj.get("status"),
                 "dialogue": call_transcript.get("dialogue") or [],
             }
+
             request.env["quo.call.transcript"].sudo().upsert_from_transcript_payload(call_id, transcript_payload)
 
             return request.make_response("ok", status=200)
+
+        except Exception:
+            # IMPORTANT: log full traceback so you can see it in Odoo logs
+            _logger.exception("Failed processing Quo transcript webhook. call_id=%s", call_id)
+            return request.make_response("error", status=500)
