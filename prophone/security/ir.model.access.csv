@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_quo_call_user,access.quo.call.user,model_quo_call,base.group_user,1,0,0,0
+access_quo_call_admin,access.quo.call.admin,model_quo_call,base.group_system,1,1,1,1
+
+access_quo_call_transcript_user,access.quo.call.transcript.user,model_quo_call_transcript,base.group_user,1,0,0,0
+access_quo_call_transcript_admin,access.quo.call.transcript.admin,model_quo_call_transcript,base.group_system,1,1,1,1
+
+access_quo_call_transcript_line_user,access.quo.call.transcript.line.user,model_quo_call_transcript_line,base.group_user,1,0,0,0
+access_quo_call_transcript_line_admin,access.quo.call.transcript.line.admin,model_quo_call_transcript_line,base.group_system,1,1,1,1
+
+access_quo_import_wizard_admin,access.quo.import.wizard.admin,model_quo_import_call_transcript_wizard,base.group_system,1,1,1,1

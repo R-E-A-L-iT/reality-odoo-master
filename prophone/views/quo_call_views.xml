@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- CALLS -->
+    <record id="view_quo_call_tree" model="ir.ui.view">
+        <field name="name">quo.call.tree</field>
+        <field name="model">quo.call</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="quo_call_id"/>
+                <field name="direction"/>
+                <field name="phone_number_id"/>
+                <field name="started_at"/>
+                <field name="duration_seconds"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_quo_call_form" model="ir.ui.view">
+        <field name="name">quo.call.form</field>
+        <field name="model">quo.call</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(action_quo_import_transcript_wizard)d"
+                        type="action"
+                        string="Import Transcript by Call ID"
+                        class="btn-primary"
+                        groups="base.group_system"/>
+
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="quo_call_id"/>
+                            <field name="direction"/>
+                            <field name="phone_number_id"/>
+                        </group>
+                        <group>
+                            <field name="started_at"/>
+                            <field name="ended_at"/>
+                            <field name="duration_seconds"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Transcript">
+                            <field name="transcript_id" context="{'default_call_id': active_id}">
+                                <tree>
+                                    <field name="created_at"/>
+                                    <field name="status"/>
+                                    <field name="duration_seconds"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Raw JSON">
+                            <group>
+                                <field name="participants_json" widget="text"/>
+                                <field name="contact_ids_json" widget="text"/>
+                                <field name="raw_call_json" widget="text"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quo_calls" model="ir.actions.act_window">
+        <field name="name">Quo Calls</field>
+        <field name="res_model">quo.call</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- TRANSCRIPTS -->
+    <record id="view_quo_transcript_tree" model="ir.ui.view">
+        <field name="name">quo.call.transcript.tree</field>
+        <field name="model">quo.call.transcript</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="quo_call_id"/>
+                <field name="created_at"/>
+                <field name="status"/>
+                <field name="duration_seconds"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_quo_transcript_form" model="ir.ui.view">
+        <field name="name">quo.call.transcript.form</field>
+        <field name="model">quo.call.transcript</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="call_id"/>
+                        <field name="created_at"/>
+                        <field name="status"/>
+                        <field name="duration_seconds"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Dialogue">
+                            <field name="line_ids">
+                                <tree editable="false">
+                                    <field name="sequence"/>
+                                    <field name="speaker_label"/>
+                                    <field name="start_ms"/>
+                                    <field name="end_ms"/>
+                                    <field name="content"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Raw JSON">
+                            <field name="raw_transcript_json" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quo_transcripts" model="ir.actions.act_window">
+        <field name="name">Quo Transcripts</field>
+        <field name="res_model">quo.call.transcript</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
