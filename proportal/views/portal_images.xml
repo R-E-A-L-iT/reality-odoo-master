@@ -83,6 +83,7 @@
                position="replace">
             <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Your-Invoices.png'"/>
         </xpath>
+         <xpath expr="//div[@id='portal_vendor_category']" position="replace"/>
     </template>
 
     <template id="portal_my_home_project_icon_inherit"
