@@ -38,9 +38,33 @@ class QuoCall(models.Model):
 
     transcript_id = fields.One2many("quo.call.transcript", "call_id", string="Transcripts")
 
+    from_number = fields.Char(string="From")
+    to_number = fields.Char(string="To")
+
+    from_sanitized = fields.Char(string="From (sanitized)", index=True)
+    to_sanitized = fields.Char(string="To (sanitized)", index=True)
+
     _sql_constraints = [
         ("quo_call_id_unique", "unique(quo_call_id)", "Quo Call ID must be unique."),
     ]
+
+    @api.model
+    def _sanitize_phone(self, phone):
+        """Very tolerant phone sanitizer: keep digits, preserve leading + if present, else add + if looks like E.164."""
+        if not phone:
+            return False
+        s = str(phone).strip()
+        has_plus = s.startswith("+")
+        digits = re.sub(r"\D+", "", s)
+        if not digits:
+            return False
+        # keep the plus if it was present
+        if has_plus:
+            return "+" + digits
+        # if it looks like country+number length, normalize with +
+        if len(digits) >= 10:
+            return "+" + digits
+        return digits
 
     @api.depends("quo_call_id", "started_at", "direction")
     def _compute_name(self):
@@ -110,6 +134,9 @@ class QuoCall(models.Model):
         ended_at = payload.get("endedAt") or payload.get("ended_at")
         duration = payload.get("duration") or payload.get("durationSeconds") or payload.get("duration_seconds")
 
+        from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""
+        to_num = payload.get("to") or payload.get("toNumber") or payload.get("to_phone") or ""
+
         participants = payload.get("participants")
         contact_ids = payload.get("contactIds") or payload.get("contact_ids")
 
@@ -120,6 +147,10 @@ class QuoCall(models.Model):
             "started_at": self._parse_dt(created_at),
             "ended_at": self._parse_dt(ended_at),
             "duration_seconds": int(duration) if duration not in (None, "") else 0,
+            "from_number": from_num,
+            "to_number": to_num,
+            "from_sanitized": self._sanitize_phone(from_num),
+            "to_sanitized": self._sanitize_phone(to_num),
             "participants_json": json.dumps(participants, ensure_ascii=False) if participants is not None else rec.participants_json,
             "contact_ids_json": json.dumps(contact_ids, ensure_ascii=False) if contact_ids is not None else rec.contact_ids_json,
             "raw_call_json": json.dumps(payload, ensure_ascii=False),
