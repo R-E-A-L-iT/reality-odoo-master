@@ -1,66 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
     <record id="view_res_config_settings_quo_transcripts" model="ir.ui.view">
-        <field name="name">res.config.settings.view.form.quo.transcripts</field>
+        <field name="name">res.config.settings.quo.transcripts</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="Quo Call Transcripts" string="Quo Call Transcripts">
-                    <h2>Quo Call Transcripts</h2>
-                    <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <label for="quo_api_key"/>
-                                <div class="text-muted">Used for manual import/backfill (wizard/cron).</div>
-                                <field name="quo_api_key" password="True"/>
-                            </div>
-                        </div>
+            <xpath expr="//form" position="inside">
 
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <label for="quo_webhook_secret"/>
-                                <div class="text-muted">Used to validate openphone-signature header.</div>
-                                <field name="quo_webhook_secret" password="True"/>
-                            </div>
-                        </div>
+                <app string="Quo" name="quo_transcripts_settings" logo="/base/static/description/settings.png">
+                    <block title="Quo Call Transcripts" name="quo_transcripts_block">
+                        <setting string="API / Webhooks" help="Configure Quo API and webhook validation.">
+                            <div class="content-group">
+                                <div class="row mt16">
 
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <label for="quo_api_base_url"/>
-                                <div class="text-muted">Example: https://api.openphone.com/v1</div>
-                                <field name="quo_api_base_url"/>
-                            </div>
-                        </div>
+                                    <div class="col-12 col-lg-6">
+                                        <label for="quo_api_key" class="o_light_label"/>
+                                        <field name="quo_api_key" password="True"
+                                               placeholder="Paste your Quo API key"/>
+                                        <div class="text-muted">
+                                            Used for manual import/backfill (wizard/cron).
+                                        </div>
+                                    </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <div class="fw-bold">Webhook URL</div>
-                                <div class="text-muted">Configure this in Quo: /quo/webhook on your Odoo domain.</div>
-                                <div class="text-muted">
-                                    Example: https://YOURDOMAIN.com/quo/webhook
+                                    <div class="col-12 col-lg-6">
+                                        <label for="quo_webhook_secret" class="o_light_label"/>
+                                        <field name="quo_webhook_secret" password="True"
+                                               placeholder="Paste your webhook secret"/>
+                                        <div class="text-muted">
+                                            Used to validate the openphone-signature header.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-lg-6 mt16">
+                                        <label for="quo_api_base_url" class="o_light_label"/>
+                                        <field name="quo_api_base_url"
+                                               placeholder="https://api.openphone.com/v1"/>
+                                        <div class="text-muted">
+                                            Base URL for the Quo API.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-lg-6 mt16">
+                                        <div class="o_light_label">Webhook URL</div>
+                                        <div class="text-muted">
+                                            Configure this endpoint in Quo:
+                                            <strong>/quo/webhook</strong> on your Odoo domain.
+                                        </div>
+                                        <div class="text-muted">
+                                            Example: https://YOURDOMAIN.com/quo/webhook
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
+                        </setting>
+                    </block>
+                </app>
 
-                    </div>
-                </div>
             </xpath>
         </field>
     </record>
-
-    <record id="action_quo_settings" model="ir.actions.act_window">
-        <field name="name">Quo Settings</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_mode">form</field>
-        <field name="target">current</field>
-        <!-- Open standard settings form; user can search "Quo" section -->
-        <field name="context">{}</field>
-    </record>
-
 </odoo>
