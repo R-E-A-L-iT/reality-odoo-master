@@ -20,13 +20,25 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
+from odoo.tools import html2plaintext
 
 _logger = logging.getLogger(__name__)
+
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
     skuhidden = fields.One2many("ir.model.data", "res_id", readonly=True)
     sku = fields.Char(related="skuhidden.name", string="SKU")
+    description_sale_clean = fields.Text(
+        compute='_compute_description_sale_clean',
+        store=False
+    )
+
+    def _compute_description_sale_clean(self):
+        for product in self:
+            product.description_sale_clean = html2plaintext(
+                product.description_sale or ''
+            )
 
     def import_images_from_url(self):
         for product in self:
@@ -71,3 +83,20 @@ class ProductTemplate(models.Model):
                                 "model": "product.template", "res_id": record_id,
                                 "display_name": record_name,
                                 })
+
+    @api.model
+    def _search_get_detail(self, website, order, options):
+        res = super()._search_get_detail(website, order, options)
+
+        mapping = res.get('mapping', {})
+        fetch_fields = res.get('fetch_fields', [])
+
+        if 'description' in mapping:
+            mapping['description']['name'] = 'description_sale_clean'
+            mapping['description']['type'] = 'text'
+            mapping['description']['match'] = True
+
+            if 'description_sale_clean' not in fetch_fields:
+                fetch_fields.append('description_sale_clean')
+
+        return res
