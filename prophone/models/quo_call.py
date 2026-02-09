@@ -463,6 +463,10 @@ class QuoCall(models.Model):
                 p_from = call._get_or_create_partner_for_phone(call.from_number)
                 p_to = call._get_or_create_partner_for_phone(call.to_number)
 
+                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
+                # This is the exact approach described in the article.
+                call_link = call._get_html_link(title="View full call details")
+
                 # Prefer just the contact name (no "Company, Name" prefix)
                 def _partner_short_title(p):
                     # res.partner.name for individuals is just the person name.
@@ -504,7 +508,7 @@ class QuoCall(models.Model):
                         ("summary", "=", step_text),
                     ]))
 
-                def _schedule_followups_on_record(rec, steps):
+                def _schedule_followups_on_record(rec, steps, call_link):
                     """Create To-do activities on `rec` assigned to its salesperson, due +2 days."""
                     if not rec or not steps:
                         return
@@ -522,8 +526,10 @@ class QuoCall(models.Model):
                             summary=step,
                             user_id=user.id,
                             date_deadline=due_date,
-                            note=(f"Created from QUO call summary.\n"
-                                f"{call_link}"),
+                            note=(
+                                "Created from QUO call summary.\n"
+                                f"{call_link}"
+                            ),
                         )
 
                 # Activity type "To Do"
@@ -548,7 +554,7 @@ class QuoCall(models.Model):
                         target = quotes[0]
 
                     if target:
-                        _schedule_followups_on_record(target, next_steps)
+                        _schedule_followups_on_record(target, next_steps, call_link)
 
                 time_str = call._format_call_time() or ""
 
@@ -562,10 +568,6 @@ class QuoCall(models.Model):
                 for p in (p_from | p_to):
                     if p and p.id in internal_partner_ids:
                         to_ping |= p
-
-                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
-                # This is the exact approach described in the article.
-                call_link = call._get_html_link(title="View full call details")
 
                 def nl2br(txt):
                     """Escape text and preserve line breaks for chatter (HTML)."""
