@@ -263,6 +263,12 @@ class QuoCall(models.Model):
                 ]
                 opportunities = self.env["crm.lead"].sudo().search(opp_domain)
 
+                if opportunities:
+                    _logger.info(
+                        "Posting Quo call %s to %d opportunities for partner %s: %s",
+                        call.id, len(opportunities), partner.display_name, opportunities.ids
+                    )
+
 
                 # -------------------------
                 # Quotes (Sales)
@@ -278,6 +284,12 @@ class QuoCall(models.Model):
                         ("message_partner_ids", "in", partner.ids),
                 ]
                 quotes = self.env["sale.order"].sudo().search(quote_domain)
+
+                if quotes:
+                    _logger.info(
+                        "Posting Quo call %s to %d quotes for partner %s: %s",
+                        call.id, len(quotes), partner.display_name, quotes.ids
+                    )
 
 
                 # Body
