@@ -502,9 +502,12 @@ class QuoCall(models.Model):
                 parts = []
 
                 parts.append(
-                    f"<p><b>Potentially related call</b> at <b>{time_str}</b> between <b>{between_html}</b>.</p>"
+                    Markup("<p><b>Potentially related call</b> at <b>")
+                    + escape(time_str)
+                    + Markup("</b> between <b>")
+                    + Markup(between_html)   # already HTML anchor(s)
+                    + Markup("</b>.</p>")
                 )
-
 
                 parts.append(Markup("<br/><br/>"))
 
