@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 class QuoCall(models.Model):
     _name = "quo.call"
     _description = "Quo Call"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "started_at desc, id desc"
 
     name = fields.Char(string="Display Name", compute="_compute_name", store=True)
@@ -161,6 +162,110 @@ class QuoCall(models.Model):
             rec.write({k: v for k, v in vals.items() if v not in (None, False, "", 0) or k in ("raw_call_json",)})
             return rec
         return Call.create(vals)
+
+    def _get_external_partners(self):
+        self.ensure_one()
+        partners = self.partner_ids
+
+        # internal user partner = res.users with share=False (not portal) whose partner_id matches
+        internal_partner_ids = set(
+            self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids
+        )
+        return partners.filtered(lambda p: p.id not in internal_partner_ids)
+
+    def _build_call_link_html(self):
+        self.ensure_one()
+        # direct backend link to the call form
+        return '/web#id=%s&model=quo.call&view_type=form' % self.id
+
+    def _post_potentially_related_to_documents(self):
+        for call in self:
+            # We need a timestamp to compare against document creation
+            call_dt = call.started_at or call.create_date
+            if not call_dt:
+                continue
+
+            external_partners = call._get_external_partners()
+            if not external_partners:
+                continue
+
+            call_url = call._build_call_link_html()
+
+            # To avoid double-posting if the same call is processed twice, we add a signature token
+            signature = f"[QUO_CALL:{call.id}]"
+
+            for partner in external_partners:
+                # -------------------------
+                # Opportunities (CRM)
+                # -------------------------
+                # "open" opportunities: active, not won; also exclude lost if probability==0 and lost_reason set
+                opp_domain = [
+                    ("type", "=", "opportunity"),
+                    ("active", "=", True),
+                    ("stage_id.is_won", "=", False),
+                    ("create_date", "<", call_dt),
+                    ("partner_id", "child_of", partner.commercial_partner_id.id),
+                ]
+                opportunities = self.env["crm.lead"].sudo().search(opp_domain)
+
+                # -------------------------
+                # Quotes (Sales)
+                # -------------------------
+                # "open" quotes: draft/sent only; exclude confirmed (sale), done, cancelled
+                quote_domain = [
+                    ("state", "in", ["draft", "sent"]),
+                    ("create_date", "<", call_dt),
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
+                ]
+                quotes = self.env["sale.order"].sudo().search(quote_domain)
+
+                # Body
+                body = _(
+                    '%(sig)s Potentially related call involving <b>%(partner)s</b>: '
+                    '<a href="%(url)s">Open call</a>'
+                ) % {
+                    "sig": signature,
+                    "partner": partner.display_name,
+                    "url": call_url,
+                }
+
+                # Post to each doc if not already posted
+                for rec in (opportunities | quotes):
+                    # prevent duplicates
+                    already = self.env["mail.message"].sudo().search_count([
+                        ("model", "=", rec._name),
+                        ("res_id", "=", rec.id),
+                        ("body", "ilike", signature),
+                    ])
+                    if already:
+                        continue
+
+                    rec.message_post(
+                        body=body,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        # Only post after record exists and partners are linked
+        # If partner_ids are assigned later (write), see write override below.
+        for rec in records:
+            rec._post_potentially_related_to_documents()
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        # If partner linkage happens after create (e.g., you set partner_ids in upsert),
+        # run again when partner_ids changes.
+        if "partner_ids" in vals:
+            for rec in self:
+                rec._post_potentially_related_to_documents()
+        return res
+
 
 
 class QuoCallTranscript(models.Model):

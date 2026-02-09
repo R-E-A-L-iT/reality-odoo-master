@@ -6,7 +6,13 @@
     "summary": "Store Quo (OpenPhone/Quo) call transcripts in Odoo",
     "license": "LGPL-3",
     "author": "Ézékiel deBlois",
-    "depends": ["base"],
+    "depends": [
+        "base",
+        "mail",
+        "contacts",
+        "crm",
+        "sale_management",
+        ],
     "data": [
         "security/ir.model.access.csv",
         "views/res_config_settings_views.xml",
