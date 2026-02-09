@@ -502,7 +502,6 @@ class QuoCall(models.Model):
                         ("res_id", "=", res_id),
                         ("activity_type_id", "=", todo_type.id),
                         ("summary", "=", step_text),
-                        ("note", "ilike", signature),
                     ]))
 
                 def _schedule_followups_on_record(rec, steps):
@@ -523,8 +522,7 @@ class QuoCall(models.Model):
                             summary=step,
                             user_id=user.id,
                             date_deadline=due_date,
-                            note=(f"{signature}\n"
-                                f"Created from QUO call summary.\n"
+                            note=(f"Created from QUO call summary.\n"
                                 f"{call_link}"),
                         )
 
