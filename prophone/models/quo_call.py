@@ -233,6 +233,7 @@ class QuoCall(models.Model):
             "raw_summary_json": json.dumps(cs, ensure_ascii=False),
         }
         call.write(vals)
+        call._post_potentially_related_to_documents()
         return call
 
     @api.model
@@ -461,36 +462,32 @@ class QuoCall(models.Model):
                     if p and p.id in internal_partner_ids:
                         to_ping |= p
 
-                time_str = call._format_call_time() or (call.started_at and str(call.started_at) or "")
-
-                name_1 = p_from.display_name if p_from else ""
-                name_2 = p_to.display_name if p_to else ""
+                time_str = call._format_call_time() or ""
                 between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
 
-                call_url = call._build_call_link_html()
+                lines = []
+                lines.append(f"Potentially related call at {time_str} between {between}.")
+                lines.append("")
 
-                summary_block = ""
                 if call.summary_text:
-                    summary_block = f"<br/><br/><b>Summary:</b><br/>{call.summary_text.replace(chr(10), '<br/>')}"
-                next_steps_block = ""
+                    lines.append("Summary:")
+                    lines.append(call.summary_text)   # this already has bullets/newlines
+                    lines.append("")
+
                 if call.next_steps_text:
-                    next_steps_block = f"<br/><br/><b>Action items:</b><br/>{call.next_steps_text.replace(chr(10), '<br/>')}"
+                    lines.append("Action items:")
+                    lines.append(call.next_steps_text)
+                    lines.append("")
 
-                mentions_block = ""
+                # @mentions in plaintext:
+                # Don’t use <a ...> mentions — just put @Name and *also* set partner_ids to actually notify them.
                 if to_ping:
-                    mentions_block = "<br/><br/>" + " ".join([call._mention_html(p) for p in to_ping])
+                    lines.append("Notified: " + ", ".join([f"@{p.display_name}" for p in to_ping]))
+                    lines.append("")
 
-                signature = f"[QUO_CALL:{call.id}]"
+                lines.append(f"View full call details: {call_url}")
 
-                body = (
-                    f"{signature} "
-                    f"<b>Potentially related call</b> at <b>{time_str}</b> between <b>{between}</b>."
-                    f"{summary_block}"
-                    f"{next_steps_block}"
-                    f"{mentions_block}"
-                    f"<br/><br/>View full call details: <a href=\"{call_url}\">Open call</a>"
-                )
-
+                body = "\n".join(lines)
 
                 # Post to each doc if not already posted
                 for rec in opportunities:
@@ -532,20 +529,9 @@ class QuoCall(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
-        # Only post after record exists and partners are linked
-        # If partner_ids are assigned later (write), see write override below.
-        for rec in records:
-            rec._post_potentially_related_to_documents()
-        return records
 
     def write(self, vals):
         res = super().write(vals)
-        # If partner linkage happens after create (e.g., you set partner_ids in upsert),
-        # run again when partner_ids changes.
-        if "partner_ids" in vals:
-            for rec in self:
-                rec._post_potentially_related_to_documents()
-        return res
 
 
 
