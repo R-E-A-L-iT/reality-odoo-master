@@ -127,6 +127,7 @@
                         <page string="Dialogue">
                             <field name="line_ids">
                                 <tree editable="false">
+                                    <field name="partner_id"/>
                                     <field name="sequence"/>
                                     <field name="speaker_label"/>
                                     <field name="start_ms"/>

@@ -259,6 +259,59 @@ class QuoCall(models.Model):
         call.write(vals)
         return call
 
+    def _get_quo_author_partner(self):
+        """Partner used as the author of chatter messages."""
+        ICP = self.env["ir.config_parameter"].sudo()
+        pid = ICP.get_param("quo_transcripts.author_partner_id")
+        if pid:
+            p = self.env["res.partner"].sudo().browse(int(pid))
+            if p.exists():
+                return p
+
+        # Create once
+        p = self.env["res.partner"].sudo().create({
+            "name": "QUO",
+            "company_type": "company",
+            # optional but helps: "email": "quo@local",
+        })
+        ICP.set_param("quo_transcripts.author_partner_id", str(p.id))
+        return p
+
+    @api.model
+    def _get_or_create_partner_for_phone(self, phone, default_name="Unknown Caller"):
+        """Return a single res.partner for a phone. If none, create Unknown Caller."""
+        sanitized = self._sanitize_phone(phone)
+        if not sanitized:
+            return self.env["res.partner"]
+
+        matches = self._find_partners_by_phone([sanitized])
+        if matches:
+            # choose the first deterministically
+            return matches.sorted(lambda p: p.id)[0]
+
+        # create a new contact with that number
+        return self.env["res.partner"].sudo().create({
+            "name": default_name,
+            "phone": sanitized,
+        })
+
+    def _get_internal_partner_ids(self):
+        return set(self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids)
+
+    def _mention_html(self, partner):
+        # renders as a mention + clickable link in chatter
+        return f'<a href="#" data-oe-model="res.partner" data-oe-id="{partner.id}">@{partner.display_name}</a>'
+
+    def _format_call_time(self):
+        self.ensure_one()
+        dt = self.started_at or self.create_date
+        if not dt:
+            return ""
+        # choose a sensible timezone: company tz > user tz > UTC
+        tz = self.env.company.partner_id.tz or self.env.user.tz or "UTC"
+        dt_local = fields.Datetime.context_timestamp(self.with_context(tz=tz), dt)
+        return dt_local.strftime("%-I:%M %p")  # e.g. 2:36 PM (Linux). If Windows, use %#I.
+
 
 
     # ---------- Upserts from webhook / API ----------
@@ -395,14 +448,49 @@ class QuoCall(models.Model):
 
 
                 # Body
-                body = _(
-                    '%(sig)s Potentially related call involving <b>%(partner)s</b>: '
-                    '<a href="%(url)s">Open call</a>'
-                ) % {
-                    "sig": signature,
-                    "partner": partner.display_name,
-                    "url": call_url,
-                }
+                quo_author = call._get_quo_author_partner()
+                internal_partner_ids = call._get_internal_partner_ids()
+
+                # resolve “from/to” partners (create Unknown Caller if missing)
+                p_from = call._get_or_create_partner_for_phone(call.from_number)
+                p_to = call._get_or_create_partner_for_phone(call.to_number)
+
+                # internal participants to ping (if either side is internal)
+                to_ping = self.env["res.partner"]
+                for p in (p_from | p_to):
+                    if p and p.id in internal_partner_ids:
+                        to_ping |= p
+
+                time_str = call._format_call_time() or (call.started_at and str(call.started_at) or "")
+
+                name_1 = p_from.display_name if p_from else ""
+                name_2 = p_to.display_name if p_to else ""
+                between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
+
+                call_url = call._build_call_link_html()
+
+                summary_block = ""
+                if call.summary_text:
+                    summary_block = f"<br/><br/><b>Summary:</b><br/>{call.summary_text.replace(chr(10), '<br/>')}"
+                next_steps_block = ""
+                if call.next_steps_text:
+                    next_steps_block = f"<br/><br/><b>Action items:</b><br/>{call.next_steps_text.replace(chr(10), '<br/>')}"
+
+                mentions_block = ""
+                if to_ping:
+                    mentions_block = "<br/><br/>" + " ".join([call._mention_html(p) for p in to_ping])
+
+                signature = f"[QUO_CALL:{call.id}]"
+
+                body = (
+                    f"{signature} "
+                    f"<b>Potentially related call</b> at <b>{time_str}</b> between <b>{between}</b>."
+                    f"{summary_block}"
+                    f"{next_steps_block}"
+                    f"{mentions_block}"
+                    f"<br/><br/>View full call details: <a href=\"{call_url}\">Open call</a>"
+                )
+
 
                 # Post to each doc if not already posted
                 for rec in opportunities:
@@ -418,7 +506,10 @@ class QuoCall(models.Model):
                         body=body,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
+
 
                 for rec in quotes:
                     already = self.env["mail.message"].sudo().search_count([
@@ -433,7 +524,10 @@ class QuoCall(models.Model):
                         body=body,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -519,16 +613,19 @@ class QuoCallTranscript(models.Model):
         seq = 1
         line_vals = []
         for item in dialogue:
-            # item may have: start, end, content, identifier, userId
+            identifier = item.get("identifier") or ""
+            partner = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(identifier)
+
             line_vals.append({
                 "transcript_id": transcript.id,
                 "sequence": seq,
                 "start_ms": int(item.get("start") or item.get("startMs") or 0),
                 "end_ms": int(item.get("end") or item.get("endMs") or 0),
                 "content": item.get("content") or "",
-                "identifier": item.get("identifier") or "",
+                "identifier": identifier,
                 "user_id": item.get("userId") or item.get("user_id") or "",
-                "speaker_label": item.get("identifier") or item.get("userId") or "",
+                "speaker_label": identifier or (item.get("userId") or ""),
+                "partner_id": partner.id or False,
             })
             seq += 1
 
@@ -553,3 +650,5 @@ class QuoCallTranscriptLine(models.Model):
     identifier = fields.Char(string="Identifier")
     user_id = fields.Char(string="User ID")
     speaker_label = fields.Char(string="Speaker")
+
+    partner_id = fields.Many2one("res.partner", string="Partner", index=True)
