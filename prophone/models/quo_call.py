@@ -400,9 +400,6 @@ class QuoCall(models.Model):
 
             call_url = call._build_call_link_html()
 
-            # To avoid double-posting if the same call is processed twice, we add a signature token
-            signature = f"[QUO_CALL:{call.id}]"
-
             for partner in external_partners:
                 # -------------------------
                 # Opportunities (CRM)
@@ -482,9 +479,6 @@ class QuoCall(models.Model):
 
                 parts = []
 
-                # Hidden signature so your dedupe still works but users don’t see it
-                parts.append(Markup("<span style='display:none'>") + escape(signature) + Markup("</span>"))
-
                 parts.append(
                     Markup("<b>Potentially related call</b> at <b>") + escape(time_str) +
                     Markup("</b> between <b>") + escape(between) + Markup("</b>.")
@@ -512,13 +506,12 @@ class QuoCall(models.Model):
 
                 # Post to each doc if not already posted
                 for rec in opportunities:
-                    already = self.env["mail.message"].sudo().search_count([
-                        ("model", "=", rec._name),
-                        ("res_id", "=", rec.id),
-                        ("body", "ilike", signature),
-                    ])
-                    if already:
-                        continue
+                    # already = self.env["mail.message"].sudo().search_count([
+                    #     ("model", "=", rec._name),
+                    #     ("res_id", "=", rec.id),
+                    # ])
+                    # if already:
+                    #     continue
 
                     rec.message_post(
                         body=body_html,
@@ -532,13 +525,12 @@ class QuoCall(models.Model):
 
 
                 for rec in quotes:
-                    already = self.env["mail.message"].sudo().search_count([
-                        ("model", "=", rec._name),
-                        ("res_id", "=", rec.id),
-                        ("body", "ilike", signature),
-                    ])
-                    if already:
-                        continue
+                    # already = self.env["mail.message"].sudo().search_count([
+                    #     ("model", "=", rec._name),
+                    #     ("res_id", "=", rec.id),
+                    # ])
+                    # if already:
+                    #     continue
 
                     rec.message_post(
                         body=body_html,
