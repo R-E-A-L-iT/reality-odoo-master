@@ -139,7 +139,7 @@
                 <t t-set="address"
                 t-value="(addr_street and (addr_street + ', ') or '')
                             + (addr_street2 and (addr_street2 + ', ') or '')
-                            + (addr_city and (addr_city + ' ') or '')
+                            + (addr_city and (addr_city + ', ') or '')
                             + addr_state
                             + (addr_country and (', ' + addr_country) or '')"/>
                 
