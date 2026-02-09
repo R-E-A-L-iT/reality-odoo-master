@@ -340,8 +340,22 @@ class QuoCall(models.Model):
                 }
 
                 # Post to each doc if not already posted
-                for rec in (opportunities | quotes):
-                    # prevent duplicates
+                for rec in opportunities:
+                    already = self.env["mail.message"].sudo().search_count([
+                        ("model", "=", rec._name),
+                        ("res_id", "=", rec.id),
+                        ("body", "ilike", signature),
+                    ])
+                    if already:
+                        continue
+
+                    rec.message_post(
+                        body=body,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                    )
+
+                for rec in quotes:
                     already = self.env["mail.message"].sudo().search_count([
                         ("model", "=", rec._name),
                         ("res_id", "=", rec.id),
