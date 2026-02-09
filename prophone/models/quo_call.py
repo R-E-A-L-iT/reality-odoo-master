@@ -184,8 +184,11 @@ class QuoCall(models.Model):
         from_s = self._sanitize_phone(from_num)
         to_s = self._sanitize_phone(to_num)
         matched_partners = self._find_partners_by_phone([from_s, to_s])
-
-
+        
+        _logger.info(
+            "Quo call partner match: from=%s to=%s digits_from=%s digits_to=%s matched_partner_ids=%s",
+            from_num, to_num, re.sub(r"\D+","", from_num or ""), re.sub(r"\D+","", to_num or ""), matched_partners.ids
+        )
 
         participants = payload.get("participants")
         contact_ids = payload.get("contactIds") or payload.get("contact_ids")
