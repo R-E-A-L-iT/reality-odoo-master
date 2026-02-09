@@ -509,7 +509,7 @@ class QuoCall(models.Model):
                     + Markup("</b>.</p>")
                 )
 
-                parts.append(Markup("<br/><br/>"))
+                parts.append(Markup("<br/>"))
 
                 if call.summary_text:
                     parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
