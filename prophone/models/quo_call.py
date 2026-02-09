@@ -3,6 +3,7 @@ import re
 import json
 import logging
 from datetime import datetime, timedelta
+from markupsafe import Markup, escape
 
 import requests
 
@@ -397,66 +398,16 @@ class QuoCall(models.Model):
             if not external_partners:
                 continue
 
-            # Signature token to prevent double-posting
+            call_url = call._build_call_link_html()
+
+            # To avoid double-posting if the same call is processed twice, we add a signature token
             signature = f"[QUO_CALL:{call.id}]"
-
-            # Author + internal users set (for notification pings)
-            quo_author = call._get_quo_author_partner()
-            internal_partner_ids = call._get_internal_partner_ids()
-
-            # Resolve “from/to” partners (create Unknown Caller if missing)
-            p_from = call._get_or_create_partner_for_phone(call.from_number)
-            p_to = call._get_or_create_partner_for_phone(call.to_number)
-
-            name_1 = p_from.display_name if p_from else ""
-            name_2 = p_to.display_name if p_to else ""
-
-            # Internal participants to ping (if either side is internal)
-            to_ping = self.env["res.partner"]
-            for p in (p_from | p_to):
-                if p and p.id in internal_partner_ids:
-                    to_ping |= p
-
-            time_str = call._format_call_time() or ""
-            between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
-
-            # Inline clickable link to the call record (Odoo-generated)
-            # Requires quo.call to inherit mail.thread (it does) so _get_html_link exists.
-            call_link = call._get_html_link(title="View full call details")
-
-            # Helper: convert your plain-text bullet blocks into HTML with <br/>
-            def _text_to_html_block(txt):
-                if not txt:
-                    return ""
-                # escape is handled by mail rendering; keep it simple:
-                # preserve line breaks with <br/>
-                return "<br/>".join((txt or "").splitlines())
-
-            # Build HTML body. IMPORTANT: body_is_html=True when posting.
-            parts = []
-            parts.append(
-                f"<p><b>Potentially related call</b> at <b>{time_str}</b> between <b>{between}</b>.</p>"
-            )
-
-            if call.summary_text:
-                parts.append(f"<p><b>Summary:</b><br/>{_text_to_html_block(call.summary_text)}</p>")
-
-            if call.next_steps_text:
-                parts.append(f"<p><b>Action items:</b><br/>{_text_to_html_block(call.next_steps_text)}</p>")
-
-            if to_ping:
-                # Show @names for readability, and also set partner_ids on message_post for actual notifications.
-                notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
-                parts.append(f"<p><b>Notified:</b> {notified_txt}</p>")
-
-            parts.append(f"<p>{call_link}</p>")
-
-            body_html = signature + "".join(parts)
 
             for partner in external_partners:
                 # -------------------------
                 # Opportunities (CRM)
                 # -------------------------
+                # "open" opportunities: active, not won; also exclude lost if probability==0 and lost_reason set
                 opp_domain = [
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
@@ -475,9 +426,11 @@ class QuoCall(models.Model):
                         call.id, len(opportunities), partner.display_name, opportunities.ids
                     )
 
+
                 # -------------------------
                 # Quotes (Sales)
                 # -------------------------
+                # "open" quotes: draft/sent only; exclude confirmed (sale), done, cancelled
                 quote_domain = [
                     ("state", "in", ["draft", "sent"]),
                     ("create_date", "<", call_dt),
@@ -494,6 +447,68 @@ class QuoCall(models.Model):
                         "Posting Quo call %s to %d quotes for partner %s: %s",
                         call.id, len(quotes), partner.display_name, quotes.ids
                     )
+
+
+                # Body
+                quo_author = call._get_quo_author_partner()
+                internal_partner_ids = call._get_internal_partner_ids()
+
+                # resolve “from/to” partners (create Unknown Caller if missing)
+                p_from = call._get_or_create_partner_for_phone(call.from_number)
+                p_to = call._get_or_create_partner_for_phone(call.to_number)
+
+                name_1 = p_from.display_name if p_from else ""
+                name_2 = p_to.display_name if p_to else ""
+
+                # internal participants to ping (if either side is internal)
+                to_ping = self.env["res.partner"]
+                for p in (p_from | p_to):
+                    if p and p.id in internal_partner_ids:
+                        to_ping |= p
+
+                time_str = call._format_call_time() or ""
+                between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
+
+                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
+                # This is the exact approach described in the article.
+                call_link = call._get_html_link(title="View full call details")
+
+                def nl2br(txt):
+                    """Escape text and preserve line breaks for chatter (HTML)."""
+                    if not txt:
+                        return Markup("")
+                    # escape() prevents HTML injection; join with <br/> preserves newlines
+                    return Markup("<br/>").join(escape(txt).splitlines())
+
+                parts = []
+
+                # Hidden signature so your dedupe still works but users don’t see it
+                parts.append(Markup("<span style='display:none'>") + escape(signature) + Markup("</span>"))
+
+                parts.append(
+                    Markup("<b>Potentially related call</b> at <b>") + escape(time_str) +
+                    Markup("</b> between <b>") + escape(between) + Markup("</b>.")
+                )
+
+                parts.append(Markup("<br/><br/>"))
+
+                if call.summary_text:
+                    parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
+                    parts.append(Markup("<br/><br/>"))
+
+                if call.next_steps_text:
+                    parts.append(Markup("<b>Action items:</b><br/>") + nl2br(call.next_steps_text))
+                    parts.append(Markup("<br/><br/>"))
+
+                if to_ping:
+                    notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
+                    parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
+                    parts.append(Markup("<br/><br/>"))
+
+                # Put the call link at the end
+                parts.append(Markup(call_link))
+
+                body_html = Markup("").join(parts)
 
                 # Post to each doc if not already posted
                 for rec in opportunities:
@@ -514,6 +529,8 @@ class QuoCall(models.Model):
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
 
+
+
                 for rec in quotes:
                     already = self.env["mail.message"].sudo().search_count([
                         ("model", "=", rec._name),
@@ -531,6 +548,7 @@ class QuoCall(models.Model):
                         author_id=quo_author.id,
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
+
 
 
     @api.model_create_multi
