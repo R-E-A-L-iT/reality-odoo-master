@@ -31,6 +31,20 @@
 
                 </header>
                 <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+
+                        <div class="o_row mt-1">
+                            <span class="text-muted me-2">Between</span>
+                            <field name="caller_from_partner_id" options="{'no_create': False}" class="oe_inline"/>
+                            <span class="text-muted mx-2">and</span>
+                            <field name="caller_to_partner_id" options="{'no_create': False}" class="oe_inline"/>
+                        </div>
+                    </div>
+
                     <group>
                         <group>
                             <field name="quo_call_id"/>

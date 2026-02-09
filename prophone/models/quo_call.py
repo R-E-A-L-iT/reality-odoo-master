@@ -45,6 +45,21 @@ class QuoCall(models.Model):
     from_number = fields.Char(string="From")
     to_number = fields.Char(string="To")
 
+    caller_from_partner_id = fields.Many2one(
+        "res.partner",
+        string="Caller (From)",
+        readonly=True,
+        index=True,
+    )
+
+    caller_to_partner_id = fields.Many2one(
+        "res.partner",
+        string="Caller (To)",
+        readonly=True,
+        index=True,
+    )
+
+
     from_sanitized = fields.Char(string="From (sanitized)", index=True)
     to_sanitized = fields.Char(string="To (sanitized)", index=True)
 
@@ -90,15 +105,25 @@ class QuoCall(models.Model):
             return "+" + digits
         return digits
 
-    @api.depends("quo_call_id", "started_at", "direction")
+    @api.depends("direction", "from_number", "to_number", "caller_from_partner_id", "caller_to_partner_id")
     def _compute_name(self):
         for rec in self:
-            base = rec.quo_call_id or ""
-            if rec.started_at:
-                base = f"{rec.started_at.strftime('%Y-%m-%d %H:%M')} • {base}"
-            if rec.direction and rec.direction != "unknown":
-                base = f"{rec.direction.upper()} • {base}"
-            rec.name = base
+            prefix = "Call"
+            if rec.direction == "inbound":
+                prefix = "Inbound"
+            elif rec.direction == "outbound":
+                prefix = "Outbound"
+
+            from_label = (rec.caller_from_partner_id.name or "").strip() if rec.caller_from_partner_id else ""
+            to_label = (rec.caller_to_partner_id.name or "").strip() if rec.caller_to_partner_id else ""
+
+            if not from_label:
+                from_label = rec.from_number or ""
+            if not to_label:
+                to_label = rec.to_number or ""
+
+            rec.name = f"{prefix} call from {from_label} to {to_label}".strip()
+
 
     # ---------- Utilities ----------
     @api.model
@@ -226,6 +251,7 @@ class QuoCall(models.Model):
             call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
 
         cs = (call_payload or {}).get("callSummary") or {}
+        direction = self._normalize_direction((call_payload or {}).get("direction"))
         summary_list = cs.get("summary") or []
         next_steps_list = cs.get("nextSteps") or []
 
@@ -323,6 +349,14 @@ class QuoCall(models.Model):
         dt_local = fields.Datetime.context_timestamp(self.with_context(tz=tz), dt)
         return dt_local.strftime("%-I:%M %p")  # e.g. 2:36 PM (Linux). If Windows, use %#I.
 
+    @api.model
+    def _normalize_direction(self, raw):
+        s = (raw or "").strip().lower()
+        if s in ("inbound", "incoming", "in"):
+            return "inbound"
+        if s in ("outbound", "outgoing", "out"):
+            return "outbound"
+        return "unknown"
 
 
     # ---------- Upserts from webhook / API ----------
@@ -337,7 +371,7 @@ class QuoCall(models.Model):
 
         # Try extract common fields
         phone_number_id = payload.get("phoneNumberId") or payload.get("phone_number_id")
-        direction = payload.get("direction") or "unknown"
+        direction = self._normalize_direction(payload.get("direction"))
         created_at = payload.get("createdAt") or payload.get("created_at")
         ended_at = payload.get("endedAt") or payload.get("ended_at")
         duration = payload.get("duration") or payload.get("durationSeconds") or payload.get("duration_seconds")
@@ -362,12 +396,14 @@ class QuoCall(models.Model):
         vals = {
             "quo_call_id": call_id,
             "phone_number_id": phone_number_id,
-            "direction": direction if direction in ("inbound", "outbound") else "unknown",
+            "direction": direction,
             "started_at": self._parse_dt(created_at),
             "ended_at": self._parse_dt(ended_at),
             "duration_seconds": int(duration) if duration not in (None, "") else 0,
             "from_number": from_num,
             "to_number": to_num,
+            "caller_from_partner_id": p_from.id or False,
+            "caller_to_partner_id": p_to.id or False,
             "from_sanitized": from_s,
             "to_sanitized": to_s,
             "partner_ids": [(6, 0, matched_partners.ids)],
@@ -395,6 +431,18 @@ class QuoCall(models.Model):
         self.ensure_one()
         # direct backend link to the call form
         return '/web#id=%s&model=quo.call&view_type=form' % self.id
+
+    def _ensure_caller_partners(self):
+        for call in self:
+            updates = {}
+            if call.from_number and not call.caller_from_partner_id:
+                p_from = call.sudo()._get_or_create_partner_for_phone(call.from_number, default_name="Unknown Caller")
+                updates["caller_from_partner_id"] = p_from.id or False
+            if call.to_number and not call.caller_to_partner_id:
+                p_to = call.sudo()._get_or_create_partner_for_phone(call.to_number, default_name="Unknown Caller")
+                updates["caller_to_partner_id"] = p_to.id or False
+            if updates:
+                call.sudo().with_context(skip_ensure_callers=True).write(updates)
 
     def _post_potentially_related_to_documents(self):
         for call in self:
@@ -460,8 +508,8 @@ class QuoCall(models.Model):
                 internal_partner_ids = call._get_internal_partner_ids()
 
                 # resolve “from/to” partners (create Unknown Caller if missing)
-                p_from = call._get_or_create_partner_for_phone(call.from_number)
-                p_to = call._get_or_create_partner_for_phone(call.to_number)
+                p_from = self.sudo()._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller")
+                p_to = self.sudo()._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller")
 
                 # Clickable link to the quo.call record (Odoo-generated HTML anchor)
                 # This is the exact approach described in the article.
@@ -648,10 +696,14 @@ class QuoCall(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
+        if not self.env.context.get("skip_ensure_callers"):
+            records._ensure_caller_partners()
         return records
 
     def write(self, vals):
         res = super().write(vals)
+        if not self.env.context.get("skip_ensure_callers"):
+            self._ensure_caller_partners()
         return res
 
 
