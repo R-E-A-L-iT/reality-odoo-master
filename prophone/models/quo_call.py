@@ -456,6 +456,9 @@ class QuoCall(models.Model):
                 p_from = call._get_or_create_partner_for_phone(call.from_number)
                 p_to = call._get_or_create_partner_for_phone(call.to_number)
 
+                name_1 = p_from.display_name if p_from else ""
+                name_2 = p_to.display_name if p_to else ""
+
                 # internal participants to ping (if either side is internal)
                 to_ping = self.env["res.partner"]
                 for p in (p_from | p_to):
