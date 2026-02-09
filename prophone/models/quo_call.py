@@ -397,16 +397,66 @@ class QuoCall(models.Model):
             if not external_partners:
                 continue
 
-            call_url = call._build_call_link_html()
-
-            # To avoid double-posting if the same call is processed twice, we add a signature token
+            # Signature token to prevent double-posting
             signature = f"[QUO_CALL:{call.id}]"
+
+            # Author + internal users set (for notification pings)
+            quo_author = call._get_quo_author_partner()
+            internal_partner_ids = call._get_internal_partner_ids()
+
+            # Resolve “from/to” partners (create Unknown Caller if missing)
+            p_from = call._get_or_create_partner_for_phone(call.from_number)
+            p_to = call._get_or_create_partner_for_phone(call.to_number)
+
+            name_1 = p_from.display_name if p_from else ""
+            name_2 = p_to.display_name if p_to else ""
+
+            # Internal participants to ping (if either side is internal)
+            to_ping = self.env["res.partner"]
+            for p in (p_from | p_to):
+                if p and p.id in internal_partner_ids:
+                    to_ping |= p
+
+            time_str = call._format_call_time() or ""
+            between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
+
+            # Inline clickable link to the call record (Odoo-generated)
+            # Requires quo.call to inherit mail.thread (it does) so _get_html_link exists.
+            call_link = call._get_html_link(title="View full call details")
+
+            # Helper: convert your plain-text bullet blocks into HTML with <br/>
+            def _text_to_html_block(txt):
+                if not txt:
+                    return ""
+                # escape is handled by mail rendering; keep it simple:
+                # preserve line breaks with <br/>
+                return "<br/>".join((txt or "").splitlines())
+
+            # Build HTML body. IMPORTANT: body_is_html=True when posting.
+            parts = []
+            parts.append(
+                f"<p><b>Potentially related call</b> at <b>{time_str}</b> between <b>{between}</b>.</p>"
+            )
+
+            if call.summary_text:
+                parts.append(f"<p><b>Summary:</b><br/>{_text_to_html_block(call.summary_text)}</p>")
+
+            if call.next_steps_text:
+                parts.append(f"<p><b>Action items:</b><br/>{_text_to_html_block(call.next_steps_text)}</p>")
+
+            if to_ping:
+                # Show @names for readability, and also set partner_ids on message_post for actual notifications.
+                notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
+                parts.append(f"<p><b>Notified:</b> {notified_txt}</p>")
+
+            parts.append(f"<p>{call_link}</p>")
+
+            body_html = signature + "".join(parts)
 
             for partner in external_partners:
                 # -------------------------
                 # Opportunities (CRM)
                 # -------------------------
-                # "open" opportunities: active, not won; also exclude lost if probability==0 and lost_reason set
                 opp_domain = [
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
@@ -425,11 +475,9 @@ class QuoCall(models.Model):
                         call.id, len(opportunities), partner.display_name, opportunities.ids
                     )
 
-
                 # -------------------------
                 # Quotes (Sales)
                 # -------------------------
-                # "open" quotes: draft/sent only; exclude confirmed (sale), done, cancelled
                 quote_domain = [
                     ("state", "in", ["draft", "sent"]),
                     ("create_date", "<", call_dt),
@@ -447,51 +495,6 @@ class QuoCall(models.Model):
                         call.id, len(quotes), partner.display_name, quotes.ids
                     )
 
-
-                # Body
-                quo_author = call._get_quo_author_partner()
-                internal_partner_ids = call._get_internal_partner_ids()
-
-                # resolve “from/to” partners (create Unknown Caller if missing)
-                p_from = call._get_or_create_partner_for_phone(call.from_number)
-                p_to = call._get_or_create_partner_for_phone(call.to_number)
-
-                name_1 = p_from.display_name if p_from else ""
-                name_2 = p_to.display_name if p_to else ""
-
-                # internal participants to ping (if either side is internal)
-                to_ping = self.env["res.partner"]
-                for p in (p_from | p_to):
-                    if p and p.id in internal_partner_ids:
-                        to_ping |= p
-
-                time_str = call._format_call_time() or ""
-                between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
-
-                lines = []
-                lines.append(f"Potentially related call at {time_str} between {between}.")
-                lines.append("")
-
-                if call.summary_text:
-                    lines.append("Summary:")
-                    lines.append(call.summary_text)   # this already has bullets/newlines
-                    lines.append("")
-
-                if call.next_steps_text:
-                    lines.append("Action items:")
-                    lines.append(call.next_steps_text)
-                    lines.append("")
-
-                # @mentions in plaintext:
-                # Don’t use <a ...> mentions — just put @Name and *also* set partner_ids to actually notify them.
-                if to_ping:
-                    lines.append("Notified: " + ", ".join([f"@{p.display_name}" for p in to_ping]))
-                    lines.append("")
-
-                lines.append(f"View full call details: {call_url}")
-
-                body = "\n".join(lines)
-
                 # Post to each doc if not already posted
                 for rec in opportunities:
                     already = self.env["mail.message"].sudo().search_count([
@@ -503,13 +506,13 @@ class QuoCall(models.Model):
                         continue
 
                     rec.message_post(
-                        body=body,
+                        body=body_html,
+                        body_is_html=True,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
-
 
                 for rec in quotes:
                     already = self.env["mail.message"].sudo().search_count([
@@ -521,7 +524,8 @@ class QuoCall(models.Model):
                         continue
 
                     rec.message_post(
-                        body=body,
+                        body=body_html,
+                        body_is_html=True,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
