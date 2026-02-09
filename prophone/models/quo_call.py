@@ -46,6 +46,14 @@ class QuoCall(models.Model):
     from_sanitized = fields.Char(string="From (sanitized)", index=True)
     to_sanitized = fields.Char(string="To (sanitized)", index=True)
 
+    partner_ids = fields.Many2many(
+        "res.partner",
+        "quo_call_res_partner_rel",
+        "call_id",
+        "partner_id",
+        string="Participants",
+    )
+
     _sql_constraints = [
         ("quo_call_id_unique", "unique(quo_call_id)", "Quo Call ID must be unique."),
     ]
