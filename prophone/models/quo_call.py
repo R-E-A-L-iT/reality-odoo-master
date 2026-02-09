@@ -246,21 +246,18 @@ class QuoCall(models.Model):
         if not call:
             call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
 
-        media = payload.get("media") or []
+        media = (call_payload or {}).get("media") or []
         m0 = media[0] if media else {}
-        vals.update({
-            "recording_url": m0.get("url") or rec.recording_url,
-            "recording_mimetype": m0.get("type") or rec.recording_mimetype,
-            "recording_duration_seconds": int(m0.get("duration") or rec.recording_duration_seconds or 0),
-        })
-
 
         vals = {
             "recording_url": m0.get("url") or False,
             "recording_mimetype": m0.get("type") or False,
             "recording_duration_seconds": int(m0.get("duration") or 0),
+            "raw_recording_json": json.dumps(media, ensure_ascii=False),
         }
 
+        call.write(vals)
+        return call
 
 
 
