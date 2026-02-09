@@ -424,7 +424,7 @@ class QuoCall(models.Model):
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("message_partner_ids", "in", partner.ids),
                 ]
-                opportunities = self.env["crm.lead"].sudo().search(opp_domain)
+                opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
 
                 if opportunities:
                     _logger.info(
@@ -446,7 +446,7 @@ class QuoCall(models.Model):
                         ("partner_invoice_id", "child_of", partner.commercial_partner_id.id),
                         ("message_partner_ids", "in", partner.ids),
                 ]
-                quotes = self.env["sale.order"].sudo().search(quote_domain)
+                quotes = self.env["sale.order"].sudo().search(quote_domain, order="create_date desc, id desc")
 
                 if quotes:
                     _logger.info(
@@ -474,6 +474,83 @@ class QuoCall(models.Model):
                         return ""
                     # res.partner inherits mail.thread, so _get_html_link exists
                     return p._get_html_link(title=_partner_short_title(p))
+
+                # --- Follow-up activities (mail.activity) helpers ---
+                def _extract_next_steps(call):
+                    """
+                    Prefer raw_summary_json so we get the original list.
+                    Fallback to next_steps_text (bullets) if needed.
+                    """
+                    steps = []
+                    try:
+                        cs = json.loads(call.raw_summary_json or "{}")
+                        steps = cs.get("nextSteps") or []
+                    except Exception:
+                        steps = []
+
+                    if not steps and call.next_steps_text:
+                        # next_steps_text is formatted bullets; best-effort split
+                        steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
+
+                    # Normalize to non-empty strings
+                    return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
+
+                def _activity_already_exists(model_name, res_id, step_text):
+                    """Avoid duplicates if webhook replays."""
+                    return bool(self.env["mail.activity"].sudo().search_count([
+                        ("res_model", "=", model_name),
+                        ("res_id", "=", res_id),
+                        ("activity_type_id", "=", todo_type.id),
+                        ("summary", "=", step_text),
+                        ("note", "ilike", signature),
+                    ]))
+
+                def _schedule_followups_on_record(rec, steps):
+                    """Create To-do activities on `rec` assigned to its salesperson, due +2 days."""
+                    if not rec or not steps:
+                        return
+
+                    # Salesperson: both crm.lead and sale.order use user_id
+                    user = getattr(rec, "user_id", False) or self.env.user
+                    due_date = fields.Date.context_today(self) + timedelta(days=2)
+
+                    for step in steps:
+                        if _activity_already_exists(rec._name, rec.id, step):
+                            continue
+
+                        rec.sudo().activity_schedule(
+                            "mail.mail_activity_data_todo",
+                            summary=step,
+                            user_id=user.id,
+                            date_deadline=due_date,
+                            note=(f"{signature}\n"
+                                f"Created from QUO call summary.\n"
+                                f"{call_link}"),
+                        )
+
+                # Activity type "To Do"
+                todo_type = self.env.ref("mail.mail_activity_data_todo")
+                next_steps = _extract_next_steps(call)
+
+                # ---------------------------------------------------
+                # Follow-up To-do activities from QUO "next steps"
+                # Rules:
+                # 1) If (quote XOR opportunity) exists -> create on that doc
+                # 2) If BOTH exist -> create ONLY on the opportunity
+                # 3) If multiple opportunities -> use MOST RECENT (order above handles it)
+                # ---------------------------------------------------
+                if next_steps:
+                    target = False
+                    if opportunities and quotes:
+                        target = opportunities[0]          # most recent opp only
+                    elif opportunities:
+                        target = opportunities[0]          # most recent opp only
+                    elif quotes:
+                        # Spec doesn't say; choose most recent quote for determinism
+                        target = quotes[0]
+
+                    if target:
+                        _schedule_followups_on_record(target, next_steps)
 
                 time_str = call._format_call_time() or ""
 
