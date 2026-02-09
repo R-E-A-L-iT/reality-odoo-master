@@ -374,7 +374,7 @@ class QuoCall(models.Model):
         phone_number_id = payload.get("phoneNumberId") or payload.get("phone_number_id")
         direction = self._normalize_direction(payload.get("direction"))
         created_at = payload.get("createdAt") or payload.get("created_at")
-        ended_at = payload.get("endedAt") or payload.get("ended_at")
+        ended_at = payload.get("completedAt") or payload.get("completed_at")
         duration = payload.get("duration") or payload.get("durationSeconds") or payload.get("duration_seconds")
 
         from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""

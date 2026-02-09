@@ -23,11 +23,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="%(action_quo_import_transcript_wizard)d"
+                    <!-- <button name="%(action_quo_import_transcript_wizard)d"
                         type="action"
                         string="Import Transcript by Call ID"
                         class="btn-primary"
-                        groups="base.group_system"/>
+                        groups="base.group_system"/> -->
 
                 </header>
                 <sheet>
@@ -44,16 +44,19 @@
                             <field name="caller_to_partner_id" options="{'no_create': False}" class="oe_inline"/>
                         </div>
                     </div>
-
-                    <group>
-                        <group>
-                            <field name="quo_call_id"/>
-                            <field name="direction"/>
-                            <field name="phone_number_id"/>
-                        </group>
+                    
+                    </br>
+                    <group string="Call details" colspan="2">
                         <group>
                             <field name="started_at"/>
                             <field name="ended_at"/>
+                            <field name="direction"/>
+                        </group>
+
+                        <!-- Dev-only -->
+                        <group groups="base.group_system">
+                            <field name="quo_call_id"/>
+                            <field name="phone_number_id"/>
                             <field name="duration_seconds"/>
                         </group>
                     </group>
@@ -88,13 +91,15 @@
                                 <field name="raw_recording_json" nolabel="1"/>
                             </group> -->
                         </page>
-                        <!-- <page string="Raw JSON">
+                        <page string="Raw JSON" groups="base.group_system">
                             <group>
                                 <field name="participants_json" widget="text"/>
                                 <field name="contact_ids_json" widget="text"/>
                                 <field name="raw_call_json" widget="text"/>
+                                <field name="raw_summary_json" widget="text"/>
+                                <field name="raw_recording_json" widget="text"/>
                             </group>
-                        </page> -->
+                        </page>
                     </notebook>
                 </sheet>
             </form>
