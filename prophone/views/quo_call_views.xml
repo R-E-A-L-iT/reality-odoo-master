@@ -54,11 +54,11 @@
                         </group>
 
                         <!-- Dev-only -->
-                        <group groups="base.group_system">
+                        <!-- <group groups="base.group_system">
                             <field name="quo_call_id"/>
                             <field name="phone_number_id"/>
                             <field name="duration_seconds"/>
-                        </group>
+                        </group> -->
                     </group>
 
                     <notebook>
@@ -91,7 +91,7 @@
                                 <field name="raw_recording_json" nolabel="1"/>
                             </group> -->
                         </page>
-                        <page string="Raw JSON" groups="base.group_system">
+                        <!-- <page string="Raw JSON" groups="base.group_system">
                             <group>
                                 <field name="participants_json" widget="text"/>
                                 <field name="contact_ids_json" widget="text"/>
@@ -99,7 +99,7 @@
                                 <field name="raw_summary_json" widget="text"/>
                                 <field name="raw_recording_json" widget="text"/>
                             </group>
-                        </page>
+                        </page> -->
                     </notebook>
                 </sheet>
             </form>
