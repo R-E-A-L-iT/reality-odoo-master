@@ -62,6 +62,27 @@
                                 <field name="raw_call_json" widget="text"/>
                             </group>
                         </page>
+                        <page string="Summary">
+                            <group>
+                                <field name="summary_text" nolabel="1" placeholder="No summary yet..." />
+                                <separator string="Next Steps"/>
+                                <field name="next_steps_text" nolabel="1" placeholder="No next steps yet..." />
+                            </group>
+                            <group string="Raw">
+                                <field name="raw_summary_json" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Recording">
+                            <group>
+                                <field name="recording_url" widget="url"/>
+                                <field name="recording_mimetype"/>
+                                <field name="recording_duration_seconds"/>
+                            </group>
+                            <group string="Raw">
+                                <field name="raw_recording_json" nolabel="1"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

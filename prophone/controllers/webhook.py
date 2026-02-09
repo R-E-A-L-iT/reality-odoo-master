@@ -33,8 +33,17 @@ class QuoWebhookController(http.Controller):
             call_obj = (call_obj.get("data") or {}).get("object") or {}
 
         # 3) Only handle transcript completed (matches your UI checkbox: call.transcript.completed)
-        if event_type != "call.transcript.completed":
-            return request.make_response("ignored", status=200)
+        if event_type == "call.transcript.completed":
+            transcript = (call_obj.get("callTranscript") or {})
+            request.env["quo.call.transcript"].sudo().upsert_from_transcript_payload(call_id, transcript)
+
+        elif event_type == "call.summary.completed":
+            request.env["quo.call"].sudo().upsert_summary_from_payload(call_id, call_obj)
+
+        elif event_type == "call.recording.completed":
+            request.env["quo.call"].sudo().upsert_recording_from_payload(call_id, call_obj)
+
+        return "ok"
 
         # 4) Must have a call id
         call_id = call_obj.get("id")

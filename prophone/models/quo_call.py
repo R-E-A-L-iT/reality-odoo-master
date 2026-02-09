@@ -58,6 +58,18 @@ class QuoCall(models.Model):
         ("quo_call_id_unique", "unique(quo_call_id)", "Quo Call ID must be unique."),
     ]
 
+    # ----- Summary -----
+    summary_text = fields.Text(string="Summary", readonly=True)
+    next_steps_text = fields.Text(string="Next Steps", readonly=True)
+    raw_summary_json = fields.Text(string="Raw Summary (JSON)", readonly=True)
+
+    # ----- Recording -----
+    recording_url = fields.Char(string="Recording URL", readonly=True)
+    recording_mimetype = fields.Char(string="Recording MIME Type", readonly=True)
+    recording_duration_seconds = fields.Integer(string="Recording Duration (s)", readonly=True)
+    raw_recording_json = fields.Text(string="Raw Recording (JSON)", readonly=True)
+
+
     @api.model
     def _sanitize_phone(self, phone):
         """Very tolerant phone sanitizer: keep digits, preserve leading + if present, else add + if looks like E.164."""
@@ -193,6 +205,62 @@ class QuoCall(models.Model):
             return False
 
         return candidates.filtered(is_match)
+
+
+    def _format_bullets(self, items):
+        """items: list[str] -> '• ...' lines"""
+        if not items:
+            return ""
+        return "\n".join([f"• {str(x).strip()}" for x in items if str(x).strip()])
+
+    @api.model
+    def upsert_summary_from_payload(self, call_id, call_payload):
+        """
+        call_payload is data.object (the call) from call.summary.completed event.
+        """
+        Call = self.sudo()
+        call = Call.search([("quo_call_id", "=", call_id)], limit=1)
+        if not call:
+            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+
+        cs = (call_payload or {}).get("callSummary") or {}
+        summary_list = cs.get("summary") or []
+        next_steps_list = cs.get("nextSteps") or []
+
+        vals = {
+            "summary_text": self._format_bullets(summary_list),
+            "next_steps_text": self._format_bullets(next_steps_list),
+            "raw_summary_json": json.dumps(cs, ensure_ascii=False),
+        }
+        call.write(vals)
+        return call
+
+    @api.model
+    def upsert_recording_from_payload(self, call_id, call_payload):
+        """
+        call_payload is data.object (the call) from call.recording.completed event.
+        Uses media[0] if present.
+        """
+        Call = self.sudo()
+        call = Call.search([("quo_call_id", "=", call_id)], limit=1)
+        if not call:
+            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+
+        media = payload.get("media") or []
+        m0 = media[0] if media else {}
+        vals.update({
+            "recording_url": m0.get("url") or rec.recording_url,
+            "recording_mimetype": m0.get("type") or rec.recording_mimetype,
+            "recording_duration_seconds": int(m0.get("duration") or rec.recording_duration_seconds or 0),
+        })
+
+
+        vals = {
+            "recording_url": m0.get("url") or False,
+            "recording_mimetype": m0.get("type") or False,
+            "recording_duration_seconds": int(m0.get("duration") or 0),
+        }
+
 
 
 
