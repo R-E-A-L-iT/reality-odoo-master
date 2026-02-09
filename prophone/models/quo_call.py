@@ -127,6 +127,20 @@ class QuoCall(models.Model):
             raise UserError(_("Quo API error %s: %s") % (resp.status_code, resp.text))
         return resp.json()
 
+    @api.model
+    def _find_partners_by_phone(self, numbers):
+        numbers = [n for n in numbers if n]
+        if not numbers:
+            return self.env["res.partner"]
+        digits = [re.sub(r"\D+", "", n) for n in numbers if re.sub(r"\D+", "", n)]
+        if not digits:
+            return self.env["res.partner"]
+
+        domain = ["|", ("phone", "ilike", digits[0]), ("mobile", "ilike", digits[0])]
+        for d in digits[1:]:
+            domain = ["|", "|", ("phone", "ilike", d), ("mobile", "ilike", d)] + domain
+        return self.env["res.partner"].sudo().search(domain)
+
     # ---------- Upserts from webhook / API ----------
     @api.model
     def upsert_call_from_payload(self, call_id, payload):
@@ -146,6 +160,11 @@ class QuoCall(models.Model):
 
         from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""
         to_num = payload.get("to") or payload.get("toNumber") or payload.get("to_phone") or ""
+        from_s = self._sanitize_phone(from_num)
+        to_s = self._sanitize_phone(to_num)
+        matched_partners = self._find_partners_by_phone([from_s, to_s])
+
+
 
         participants = payload.get("participants")
         contact_ids = payload.get("contactIds") or payload.get("contact_ids")
@@ -159,8 +178,9 @@ class QuoCall(models.Model):
             "duration_seconds": int(duration) if duration not in (None, "") else 0,
             "from_number": from_num,
             "to_number": to_num,
-            "from_sanitized": self._sanitize_phone(from_num),
-            "to_sanitized": self._sanitize_phone(to_num),
+            "from_sanitized": from_s,
+            "to_sanitized": to_s,
+            "partner_ids": [(6, 0, matched_partners.ids)],
             "participants_json": json.dumps(participants, ensure_ascii=False) if participants is not None else rec.participants_json,
             "contact_ids_json": json.dumps(contact_ids, ensure_ascii=False) if contact_ids is not None else rec.contact_ids_json,
             "raw_call_json": json.dumps(payload, ensure_ascii=False),
@@ -211,10 +231,14 @@ class QuoCall(models.Model):
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
                     ("stage_id.is_won", "=", False),
+                    ("probability", ">", 0),
                     ("create_date", "<", call_dt),
-                    ("partner_id", "child_of", partner.commercial_partner_id.id),
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
                 ]
                 opportunities = self.env["crm.lead"].sudo().search(opp_domain)
+
 
                 # -------------------------
                 # Quotes (Sales)
@@ -223,11 +247,14 @@ class QuoCall(models.Model):
                 quote_domain = [
                     ("state", "in", ["draft", "sent"]),
                     ("create_date", "<", call_dt),
-                    "|",
+                    "|", "|", "|",
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_invoice_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
                 ]
                 quotes = self.env["sale.order"].sudo().search(quote_domain)
+
 
                 # Body
                 body = _(
