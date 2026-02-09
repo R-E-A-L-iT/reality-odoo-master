@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="quo_root_menu" name="Quo" sequence="50"/>
+
+    <menuitem id="quo_menu_calls"
+              name="Calls"
+              parent="quo_root_menu"
+              action="action_quo_calls"
+              sequence="10"/>
+
+    <menuitem id="quo_menu_transcripts"
+              name="Transcripts"
+              parent="quo_root_menu"
+              action="action_quo_transcripts"
+              sequence="20"/>
+</odoo>

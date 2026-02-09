@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ir_cron_quo_transcripts_retry_missing" model="ir.cron">
+        <field name="name">Quo: Retry Missing Transcripts</field>
+        <field name="model_id" ref="model_quo_call"/>
+        <field name="state">code</field>
+        <field name="code">
+model = env['quo.call'].sudo()
+calls = model.search([('transcript_id', '=', False)], limit=25)
+for c in calls:
+    try:
+        payload = model._quo_get(f"call-transcripts/{c.quo_call_id}")
+        transcript_obj = payload.get("data") if isinstance(payload, dict) and "data" in payload else payload
+        env['quo.call.transcript'].sudo().upsert_from_transcript_payload(c.quo_call_id, transcript_obj if isinstance(transcript_obj, dict) else {})
+    except Exception:
+        # swallow; will retry later
+        pass
+        </field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
