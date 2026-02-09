@@ -45,6 +45,17 @@ class QuoCall(models.Model):
     from_number = fields.Char(string="From")
     to_number = fields.Char(string="To")
 
+    from_sanitized = fields.Char(string="From (sanitized)", index=True)
+    to_sanitized = fields.Char(string="To (sanitized)", index=True)
+
+    partner_ids = fields.Many2many(
+        "res.partner",
+        "quo_call_res_partner_rel",
+        "call_id",
+        "partner_id",
+        string="Participants",
+    )
+
     caller_from_partner_id = fields.Many2one(
         "res.partner",
         string="Caller (From)",
@@ -57,18 +68,6 @@ class QuoCall(models.Model):
         string="Caller (To)",
         readonly=True,
         index=True,
-    )
-
-
-    from_sanitized = fields.Char(string="From (sanitized)", index=True)
-    to_sanitized = fields.Char(string="To (sanitized)", index=True)
-
-    partner_ids = fields.Many2many(
-        "res.partner",
-        "quo_call_res_partner_rel",
-        "call_id",
-        "partner_id",
-        string="Participants",
     )
 
     _sql_constraints = [
@@ -85,7 +84,6 @@ class QuoCall(models.Model):
     recording_mimetype = fields.Char(string="Recording MIME Type", readonly=True)
     recording_duration_seconds = fields.Integer(string="Recording Duration (s)", readonly=True)
     raw_recording_json = fields.Text(string="Raw Recording (JSON)", readonly=True)
-
 
     @api.model
     def _sanitize_phone(self, phone):
@@ -105,6 +103,19 @@ class QuoCall(models.Model):
             return "+" + digits
         return digits
 
+    @api.model
+    def _normalize_direction(self, raw):
+        """
+        QUO can send incoming/outgoing, inbound/outbound, etc.
+        Normalize to our selection: inbound/outbound/unknown
+        """
+        s = (raw or "").strip().lower()
+        if s in ("inbound", "incoming", "in"):
+            return "inbound"
+        if s in ("outbound", "outgoing", "out"):
+            return "outbound"
+        return "unknown"
+
     @api.depends("direction", "from_number", "to_number", "caller_from_partner_id", "caller_to_partner_id")
     def _compute_name(self):
         for rec in self:
@@ -123,7 +134,6 @@ class QuoCall(models.Model):
                 to_label = rec.to_number or ""
 
             rec.name = f"{prefix} call from {from_label} to {to_label}".strip()
-
 
     # ---------- Utilities ----------
     @api.model
@@ -233,7 +243,6 @@ class QuoCall(models.Model):
 
         return candidates.filtered(is_match)
 
-
     def _format_bullets(self, items):
         """items: list[str] -> '• ...' lines"""
         if not items:
@@ -245,13 +254,12 @@ class QuoCall(models.Model):
         """
         call_payload is data.object (the call) from call.summary.completed event.
         """
-        Call = self.sudo()
-        call = Call.search([("quo_call_id", "=", call_id)], limit=1)
-        if not call:
-            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+        call_payload = call_payload or {}
+
+        # Ensure base call fields are captured even if summary is the first event we receive
+        call = self.sudo().upsert_call_from_payload(call_id, call_payload)
 
         cs = (call_payload or {}).get("callSummary") or {}
-        direction = self._normalize_direction((call_payload or {}).get("direction"))
         summary_list = cs.get("summary") or []
         next_steps_list = cs.get("nextSteps") or []
 
@@ -270,10 +278,10 @@ class QuoCall(models.Model):
         call_payload is data.object (the call) from call.recording.completed event.
         Uses media[0] if present.
         """
-        Call = self.sudo()
-        call = Call.search([("quo_call_id", "=", call_id)], limit=1)
-        if not call:
-            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+        call_payload = call_payload or {}
+
+        # Ensure base call fields are captured even if recording is the first event we receive
+        call = self.sudo().upsert_call_from_payload(call_id, call_payload)
 
         media = (call_payload or {}).get("media") or []
         m0 = media[0] if media else {}
@@ -349,25 +357,18 @@ class QuoCall(models.Model):
         dt_local = fields.Datetime.context_timestamp(self.with_context(tz=tz), dt)
         return dt_local.strftime("%-I:%M %p")  # e.g. 2:36 PM (Linux). If Windows, use %#I.
 
-    @api.model
-    def _normalize_direction(self, raw):
-        s = (raw or "").strip().lower()
-        if s in ("inbound", "incoming", "in"):
-            return "inbound"
-        if s in ("outbound", "outgoing", "out"):
-            return "outbound"
-        return "unknown"
-
-
     # ---------- Upserts from webhook / API ----------
     @api.model
     def upsert_call_from_payload(self, call_id, payload):
         """
         Create/update quo.call with best-effort parsing.
-        payload can be transcript event payload or call payload.
+        `payload` can be the call object coming from transcript/summary/recording events.
+        This method is the canonical place where we normalize core call fields (direction, from/to, timestamps, callers).
         """
         Call = self.sudo()
         rec = Call.search([("quo_call_id", "=", call_id)], limit=1)
+
+        payload = payload or {}
 
         # Try extract common fields
         phone_number_id = payload.get("phoneNumberId") or payload.get("phone_number_id")
@@ -378,17 +379,28 @@ class QuoCall(models.Model):
 
         from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""
         to_num = payload.get("to") or payload.get("toNumber") or payload.get("to_phone") or ""
+
+        # Ensure deterministic caller partners when phone numbers exist
+        p_from = self.env["res.partner"]
+        p_to = self.env["res.partner"]
+        if from_num:
+            p_from = self._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller")
+        if to_num:
+            p_to = self._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller")
+
         from_s = self._sanitize_phone(from_num)
         to_s = self._sanitize_phone(to_num)
         matched_partners = self._find_partners_by_phone([from_s, to_s])
-        
+
         _logger.info(
             "Quo call partner match: from=%s to=%s patterns=%s matched_partner_ids=%s",
             from_num, to_num,
-            sorted(list(set([re.sub(r'\\D+','', from_num or '')[-10:], re.sub(r'\\D+','', to_num or '')[-10:]]))),
-            matched_partners.ids
+            sorted(list(set([
+                re.sub(r"\D+", "", from_num or "")[-10:],
+                re.sub(r"\D+", "", to_num or "")[-10:],
+            ]))),
+            matched_partners.ids,
         )
-
 
         participants = payload.get("participants")
         contact_ids = payload.get("contactIds") or payload.get("contact_ids")
@@ -400,8 +412,8 @@ class QuoCall(models.Model):
             "started_at": self._parse_dt(created_at),
             "ended_at": self._parse_dt(ended_at),
             "duration_seconds": int(duration) if duration not in (None, "") else 0,
-            "from_number": from_num,
-            "to_number": to_num,
+            "from_number": from_num or False,
+            "to_number": to_num or False,
             "caller_from_partner_id": p_from.id or False,
             "caller_to_partner_id": p_to.id or False,
             "from_sanitized": from_s,
@@ -413,8 +425,38 @@ class QuoCall(models.Model):
         }
 
         if rec:
-            rec.write({k: v for k, v in vals.items() if v not in (None, False, "", 0) or k in ("raw_call_json",)})
+            update_vals = {}
+
+            # Never lose the raw payload
+            update_vals["raw_call_json"] = vals["raw_call_json"]
+
+            # Only write "direction" if it is meaningful, OR if we don't already have one
+            if direction != "unknown" or rec.direction in (False, "unknown"):
+                update_vals["direction"] = direction
+
+            # Fill in other fields only when provided (avoid overwriting good data with blanks)
+            for k in (
+                "phone_number_id",
+                "started_at",
+                "ended_at",
+                "duration_seconds",
+                "from_number",
+                "to_number",
+                "caller_from_partner_id",
+                "caller_to_partner_id",
+                "from_sanitized",
+                "to_sanitized",
+                "partner_ids",
+                "participants_json",
+                "contact_ids_json",
+            ):
+                v = vals.get(k)
+                if v not in (None, False, "", 0):
+                    update_vals[k] = v
+
+            rec.write(update_vals)
             return rec
+
         return Call.create(vals)
 
     def _get_external_partners(self):
@@ -480,7 +522,6 @@ class QuoCall(models.Model):
                         call.id, len(opportunities), partner.display_name, opportunities.ids
                     )
 
-
                 # -------------------------
                 # Quotes (Sales)
                 # -------------------------
@@ -502,37 +543,31 @@ class QuoCall(models.Model):
                         call.id, len(quotes), partner.display_name, quotes.ids
                     )
 
-
                 # Body
                 quo_author = call._get_quo_author_partner()
                 internal_partner_ids = call._get_internal_partner_ids()
 
                 # resolve “from/to” partners (create Unknown Caller if missing)
-                p_from = self.sudo()._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller")
-                p_to = self.sudo()._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller")
-
-                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
-                # This is the exact approach described in the article.
-                call_link = call._get_html_link(title="View full call details")
+                p_from = call._get_or_create_partner_for_phone(call.from_number)
+                p_to = call._get_or_create_partner_for_phone(call.to_number)
 
                 # Prefer just the contact name (no "Company, Name" prefix)
                 def _partner_short_title(p):
-                    # res.partner.name for individuals is just the person name.
-                    # For companies it's the company name.
                     return (p.name or p.display_name) if p else ""
 
                 def _partner_clickable(p):
                     if not p:
                         return ""
-                    # res.partner inherits mail.thread, so _get_html_link exists
                     return p._get_html_link(title=_partner_short_title(p))
+
+                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
+                call_link = call._get_html_link(title="View full call details")
+
+                # To avoid double-posting if the same call is processed twice, we add a signature token
+                signature = f"[QUO_CALL:{call.id}]"
 
                 # --- Follow-up activities (mail.activity) helpers ---
                 def _extract_next_steps(call):
-                    """
-                    Prefer raw_summary_json so we get the original list.
-                    Fallback to next_steps_text (bullets) if needed.
-                    """
                     steps = []
                     try:
                         cs = json.loads(call.raw_summary_json or "{}")
@@ -541,29 +576,25 @@ class QuoCall(models.Model):
                         steps = []
 
                     if not steps and call.next_steps_text:
-                        # next_steps_text is formatted bullets; best-effort split
                         steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
 
-                    # Normalize to non-empty strings
                     return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
 
                 def _activity_already_exists(model_name, res_id, step_text):
-                    """Avoid duplicates if webhook replays."""
                     return bool(self.env["mail.activity"].sudo().search_count([
                         ("res_model", "=", model_name),
                         ("res_id", "=", res_id),
                         ("activity_type_id", "=", todo_type.id),
                         ("summary", "=", step_text),
+                        ("note", "ilike", signature),
                     ]))
 
                 def _schedule_followups_on_record(rec, steps, call_link):
-                    """Create To-do activities on `rec` assigned to its salesperson, due +2 days."""
                     if not rec or not steps:
                         return
 
-                    # Salesperson: both crm.lead and sale.order use user_id
                     user = getattr(rec, "user_id", False) or self.env.user
-                    due_date = fields.Date.context_today(self)
+                    due_date = fields.Date.context_today(self) + timedelta(days=2)
 
                     for step in steps:
                         if _activity_already_exists(rec._name, rec.id, step):
@@ -575,31 +606,24 @@ class QuoCall(models.Model):
                             user_id=user.id,
                             date_deadline=due_date,
                             note=(
+                                f"{signature}\n"
                                 "Created from QUO call summary.\n"
                                 f"{call_link}"
                             ),
                         )
 
-                # Activity type "To Do"
                 todo_type = self.env.ref("mail.mail_activity_data_todo")
                 next_steps = _extract_next_steps(call)
 
-                # ---------------------------------------------------
-                # Follow-up To-do activities from QUO "next steps"
-                # Rules:
-                # 1) If (quote XOR opportunity) exists -> create on that doc
-                # 2) If BOTH exist -> create ONLY on the opportunity
-                # 3) If multiple opportunities -> use MOST RECENT (order above handles it)
-                # ---------------------------------------------------
+                # Create follow-up activities with your rules
                 if next_steps:
                     target = False
                     if opportunities and quotes:
-                        target = opportunities[0]          # most recent opp only
+                        target = opportunities[0]  # only on most recent opportunity
                     elif opportunities:
-                        target = opportunities[0]          # most recent opp only
+                        target = opportunities[0]  # most recent opportunity
                     elif quotes:
-                        # Spec doesn't say; choose most recent quote for determinism
-                        target = quotes[0]
+                        target = quotes[0]         # most recent quote
 
                     if target:
                         _schedule_followups_on_record(target, next_steps, call_link)
@@ -608,7 +632,6 @@ class QuoCall(models.Model):
 
                 name_1_html = _partner_clickable(p_from)
                 name_2_html = _partner_clickable(p_to)
-
                 between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
 
                 # internal participants to ping (if either side is internal)
@@ -618,10 +641,8 @@ class QuoCall(models.Model):
                         to_ping |= p
 
                 def nl2br(txt):
-                    """Escape text and preserve line breaks for chatter (HTML)."""
                     if not txt:
                         return Markup("")
-                    # escape() prevents HTML injection; join with <br/> preserves newlines
                     return Markup("<br/>").join(escape(txt).splitlines())
 
                 parts = []
@@ -630,7 +651,7 @@ class QuoCall(models.Model):
                     Markup("<p><b>Potentially related call</b> at <b>")
                     + escape(time_str)
                     + Markup("</b> between <b>")
-                    + Markup(between_html)   # already HTML anchor(s)
+                    + Markup(between_html)
                     + Markup("</b>.</p>")
                 )
 
@@ -649,20 +670,11 @@ class QuoCall(models.Model):
                     parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
                     parts.append(Markup("<br/><br/>"))
 
-                # Put the call link at the end
                 parts.append(Markup(call_link))
-
                 body_html = Markup("").join(parts)
 
-                # Post to each doc if not already posted
+                # Post to opportunities
                 for rec in opportunities:
-                    # already = self.env["mail.message"].sudo().search_count([
-                    #     ("model", "=", rec._name),
-                    #     ("res_id", "=", rec.id),
-                    # ])
-                    # if already:
-                    #     continue
-
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
@@ -672,16 +684,8 @@ class QuoCall(models.Model):
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
 
-
-
+                # Post to quotes
                 for rec in quotes:
-                    # already = self.env["mail.message"].sudo().search_count([
-                    #     ("model", "=", rec._name),
-                    #     ("res_id", "=", rec.id),
-                    # ])
-                    # if already:
-                    #     continue
-
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
@@ -690,8 +694,6 @@ class QuoCall(models.Model):
                         author_id=quo_author.id,
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
-
-
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -705,7 +707,6 @@ class QuoCall(models.Model):
         if not self.env.context.get("skip_ensure_callers"):
             self._ensure_caller_partners()
         return res
-
 
 
 class QuoCallTranscript(models.Model):
