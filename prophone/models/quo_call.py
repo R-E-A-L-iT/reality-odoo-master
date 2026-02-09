@@ -463,17 +463,30 @@ class QuoCall(models.Model):
                 p_from = call._get_or_create_partner_for_phone(call.from_number)
                 p_to = call._get_or_create_partner_for_phone(call.to_number)
 
-                name_1 = p_from.display_name if p_from else ""
-                name_2 = p_to.display_name if p_to else ""
+                # Prefer just the contact name (no "Company, Name" prefix)
+                def _partner_short_title(p):
+                    # res.partner.name for individuals is just the person name.
+                    # For companies it's the company name.
+                    return (p.name or p.display_name) if p else ""
+
+                def _partner_clickable(p):
+                    if not p:
+                        return ""
+                    # res.partner inherits mail.thread, so _get_html_link exists
+                    return p._get_html_link(title=_partner_short_title(p))
+
+                time_str = call._format_call_time() or ""
+
+                name_1_html = _partner_clickable(p_from)
+                name_2_html = _partner_clickable(p_to)
+
+                between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
 
                 # internal participants to ping (if either side is internal)
                 to_ping = self.env["res.partner"]
                 for p in (p_from | p_to):
                     if p and p.id in internal_partner_ids:
                         to_ping |= p
-
-                time_str = call._format_call_time() or ""
-                between = " and ".join([x for x in [name_1, name_2] if x]) or "unknown participants"
 
                 # Clickable link to the quo.call record (Odoo-generated HTML anchor)
                 # This is the exact approach described in the article.
@@ -489,9 +502,9 @@ class QuoCall(models.Model):
                 parts = []
 
                 parts.append(
-                    Markup("<b>Potentially related call</b> at <b>") + escape(time_str) +
-                    Markup("</b> between <b>") + escape(between) + Markup("</b>.")
+                    f"<p><b>Potentially related call</b> at <b>{time_str}</b> between <b>{between_html}</b>.</p>"
                 )
+
 
                 parts.append(Markup("<br/><br/>"))
 
