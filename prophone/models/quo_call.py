@@ -220,9 +220,12 @@ class QuoCall(models.Model):
         matched_partners = self._find_partners_by_phone([from_s, to_s])
         
         _logger.info(
-            "Quo call partner match: from=%s to=%s digits_from=%s digits_to=%s matched_partner_ids=%s",
-            from_num, to_num, re.sub(r"\D+","", from_num or ""), re.sub(r"\D+","", to_num or ""), matched_partners.ids
+            "Quo call partner match: from=%s to=%s patterns=%s matched_partner_ids=%s",
+            from_num, to_num,
+            sorted(list(set([re.sub(r'\\D+','', from_num or '')[-10:], re.sub(r'\\D+','', to_num or '')[-10:]]))),
+            matched_partners.ids
         )
+
 
         participants = payload.get("participants")
         contact_ids = payload.get("contactIds") or payload.get("contact_ids")
