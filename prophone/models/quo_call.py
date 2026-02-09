@@ -529,9 +529,11 @@ class QuoCall(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
+        return records
 
     def write(self, vals):
         res = super().write(vals)
+        return res
 
 
 
