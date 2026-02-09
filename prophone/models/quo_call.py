@@ -133,33 +133,67 @@ class QuoCall(models.Model):
         if not numbers:
             return self.env["res.partner"]
 
-        tokens = set()
+        patterns = set()
+
         for n in numbers:
             d = re.sub(r"\D+", "", n or "")
             if not d:
                 continue
-            # use matching tokens that survive formatting
-            if len(d) >= 7:
-                tokens.add(d[-7:])     # 5550100
-            if len(d) >= 10:
-                tokens.add(d[-10:])    # 8005550100
-            tokens.add(d)              # 18005550100 (still useful sometimes)
 
-        if not tokens:
+            # Use last 10 digits for NANP (US/CA), last 7 as fallback
+            last10 = d[-10:] if len(d) >= 10 else d
+            last7 = d[-7:] if len(d) >= 7 else ""
+
+            # Build patterns that survive formatting: 800-555-0100 => %800%555%0100%
+            if len(last10) == 10:
+                patterns.add(f"%{last10[0:3]}%{last10[3:6]}%{last10[6:10]}%")  # %800%555%0100%
+                patterns.add(f"%{last10[3:6]}%{last10[6:10]}%")                # %555%0100%
+            if last7:
+                patterns.add(f"%{last7[0:3]}%{last7[3:7]}%")                    # %555%0100%
+
+            # Also keep raw digits as a sometimes-useful direct match
+            patterns.add(last10)
+            if last7:
+                patterns.add(last7)
+
+        if not patterns:
             return self.env["res.partner"]
 
-        # Build OR domain: (phone ilike token OR mobile ilike token) for any token
+        # OR domain across all patterns for phone/mobile
         domain = []
         first = True
-        for t in tokens:
-            chunk = ["|", ("phone", "ilike", t), ("mobile", "ilike", t)]
+        for p in patterns:
+            chunk = ["|", ("phone", "ilike", p), ("mobile", "ilike", p)]
             if first:
                 domain = chunk
                 first = False
             else:
                 domain = ["|"] + chunk + domain
 
-        return self.env["res.partner"].sudo().search(domain)
+        candidates = self.env["res.partner"].sudo().search(domain)
+
+        # FINAL FILTER: sanitize candidate phone/mobile and compare by last 10/last 7 digits
+        def norm_digits(val):
+            return re.sub(r"\D+", "", val or "")
+
+        wanted = set()
+        for n in numbers:
+            d = norm_digits(n)
+            if len(d) >= 10:
+                wanted.add(d[-10:])
+            if len(d) >= 7:
+                wanted.add(d[-7:])
+
+        def is_match(p):
+            pd = norm_digits(p.phone) + " " + norm_digits(p.mobile)
+            # check last10/last7 existence anywhere in pd
+            for w in wanted:
+                if w and w in pd:
+                    return True
+            return False
+
+        return candidates.filtered(is_match)
+
 
 
     # ---------- Upserts from webhook / API ----------
