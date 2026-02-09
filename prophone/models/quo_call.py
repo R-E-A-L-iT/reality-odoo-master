@@ -515,7 +515,7 @@ class QuoCall(models.Model):
 
                     # Salesperson: both crm.lead and sale.order use user_id
                     user = getattr(rec, "user_id", False) or self.env.user
-                    due_date = fields.Date.context_today(self) + timedelta(days=2)
+                    due_date = fields.Date.context_today(self)
 
                     for step in steps:
                         if _activity_already_exists(rec._name, rec.id, step):
