@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import json
+import base64
 import logging
 from datetime import datetime, timedelta
 from markupsafe import Markup, escape
@@ -262,22 +263,30 @@ class QuoCall(models.Model):
         return call
 
     def _get_quo_author_partner(self):
-        """Partner used as the author of chatter messages."""
-        ICP = self.env["ir.config_parameter"].sudo()
-        pid = ICP.get_param("quo_transcripts.author_partner_id")
-        if pid:
-            p = self.env["res.partner"].sudo().browse(int(pid))
-            if p.exists():
-                return p
+        Partner = self.env["res.partner"].sudo()
 
-        # Create once
-        p = self.env["res.partner"].sudo().create({
+        quo_partner = Partner.search([("name", "=", "QUO")], limit=1)
+        if quo_partner:
+            return quo_partner
+
+        # Create it if missing
+        image_b64 = None
+        try:
+            resp = requests.get(
+                "https://media.licdn.com/dms/image/v2/D5622AQET2MqPqr5tRw/feedshare-shrink_800/B56ZpuetfHHkAg-/0/1762790136108"
+            )
+            if resp.ok:
+                image_b64 = base64.b64encode(resp.content)
+        except Exception:
+            pass
+
+        return Partner.create({
             "name": "QUO",
             "company_type": "company",
-            # optional but helps: "email": "quo@local",
+            "is_company": True,
+            "email": "noreply@quo.ai",
+            "image_1920": image_b64,
         })
-        ICP.set_param("quo_transcripts.author_partner_id", str(p.id))
-        return p
 
     @api.model
     def _get_or_create_partner_for_phone(self, phone, default_name="Unknown Caller"):
