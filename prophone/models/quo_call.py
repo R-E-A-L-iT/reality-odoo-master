@@ -129,17 +129,38 @@ class QuoCall(models.Model):
 
     @api.model
     def _find_partners_by_phone(self, numbers):
-        numbers = [n for n in numbers if n]
+        numbers = [n for n in (numbers or []) if n]
         if not numbers:
             return self.env["res.partner"]
-        digits = [re.sub(r"\D+", "", n) for n in numbers if re.sub(r"\D+", "", n)]
-        if not digits:
+
+        tokens = set()
+        for n in numbers:
+            d = re.sub(r"\D+", "", n or "")
+            if not d:
+                continue
+            # use matching tokens that survive formatting
+            if len(d) >= 7:
+                tokens.add(d[-7:])     # 5550100
+            if len(d) >= 10:
+                tokens.add(d[-10:])    # 8005550100
+            tokens.add(d)              # 18005550100 (still useful sometimes)
+
+        if not tokens:
             return self.env["res.partner"]
 
-        domain = ["|", ("phone", "ilike", digits[0]), ("mobile", "ilike", digits[0])]
-        for d in digits[1:]:
-            domain = ["|", "|", ("phone", "ilike", d), ("mobile", "ilike", d)] + domain
+        # Build OR domain: (phone ilike token OR mobile ilike token) for any token
+        domain = []
+        first = True
+        for t in tokens:
+            chunk = ["|", ("phone", "ilike", t), ("mobile", "ilike", t)]
+            if first:
+                domain = chunk
+                first = False
+            else:
+                domain = ["|"] + chunk + domain
+
         return self.env["res.partner"].sudo().search(domain)
+
 
     # ---------- Upserts from webhook / API ----------
     @api.model
