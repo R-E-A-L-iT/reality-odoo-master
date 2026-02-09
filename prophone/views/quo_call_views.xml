@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     
-                    </br>
+                    <br></br>
                     <group string="Call details" colspan="2">
                         <group>
                             <field name="started_at"/>
