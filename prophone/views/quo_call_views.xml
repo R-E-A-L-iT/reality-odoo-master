@@ -54,35 +54,33 @@
                                 </tree>
                             </field>
                         </page>
-
-                        <page string="Raw JSON">
-                            <group>
-                                <field name="participants_json" widget="text"/>
-                                <field name="contact_ids_json" widget="text"/>
-                                <field name="raw_call_json" widget="text"/>
-                            </group>
-                        </page>
                         <page string="Summary">
                             <group>
                                 <field name="summary_text" nolabel="1" placeholder="No summary yet..." />
                                 <separator string="Next Steps"/>
                                 <field name="next_steps_text" nolabel="1" placeholder="No next steps yet..." />
                             </group>
-                            <group string="Raw">
+                            <!-- <group string="Raw">
                                 <field name="raw_summary_json" nolabel="1"/>
-                            </group>
+                            </group> -->
                         </page>
-
                         <page string="Recording">
                             <group>
                                 <field name="recording_url" widget="url"/>
-                                <field name="recording_mimetype"/>
-                                <field name="recording_duration_seconds"/>
+                                <!-- <field name="recording_mimetype"/>
+                                <field name="recording_duration_seconds"/> -->
                             </group>
-                            <group string="Raw">
+                            <!-- <group string="Raw">
                                 <field name="raw_recording_json" nolabel="1"/>
-                            </group>
+                            </group> -->
                         </page>
+                        <!-- <page string="Raw JSON">
+                            <group>
+                                <field name="participants_json" widget="text"/>
+                                <field name="contact_ids_json" widget="text"/>
+                                <field name="raw_call_json" widget="text"/>
+                            </group>
+                        </page> -->
                     </notebook>
                 </sheet>
             </form>
@@ -128,8 +126,8 @@
                             <field name="line_ids">
                                 <tree editable="false">
                                     <field name="partner_id"/>
-                                    <field name="sequence"/>
-                                    <field name="speaker_label"/>
+                                    <!-- <field name="sequence"/> -->
+                                    <field name="speaker_label" string="Phone #"/>
                                     <field name="start_ms"/>
                                     <field name="end_ms"/>
                                     <field name="content"/>
