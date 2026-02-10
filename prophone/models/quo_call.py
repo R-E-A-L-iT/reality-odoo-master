@@ -249,17 +249,20 @@ class QuoCall(models.Model):
             return ""
         return "\n".join([f"• {str(x).strip()}" for x in items if str(x).strip()])
 
-    @api.model
-    def upsert_summary_from_payload(self, call_id, call_payload):
-        """
-        call_payload is data.object (the call) from call.summary.completed event.
-        """
+   def upsert_summary_from_payload(self, call_id, call_payload):
         call_payload = call_payload or {}
 
-        # Ensure base call fields are captured even if summary is the first event we receive
-        call = self.sudo().upsert_call_from_payload(call_id, call_payload)
+        Call = self.sudo()
+        call = Call.search([("quo_call_id", "=", call_id)], limit=1)
+        if not call:
+            # Create a stub call; full call details may arrive via recording/other events
+            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
 
-        cs = (call_payload or {}).get("callSummary") or {}
+        # Support BOTH payload shapes:
+        # 1) call object with callSummary nested
+        # 2) callSummary object with summary/nextSteps at top level
+        cs = call_payload.get("callSummary") or call_payload
+
         summary_list = cs.get("summary") or []
         next_steps_list = cs.get("nextSteps") or []
 
@@ -269,8 +272,11 @@ class QuoCall(models.Model):
             "raw_summary_json": json.dumps(cs, ensure_ascii=False),
         }
         call.write(vals)
+
+        # Post chatter notes / create activities based on the summary (if any related docs exist)
         call._post_potentially_related_to_documents()
         return call
+
 
     @api.model
     def upsert_recording_from_payload(self, call_id, call_payload):
