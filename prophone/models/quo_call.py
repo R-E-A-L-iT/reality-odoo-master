@@ -6,6 +6,10 @@ import logging
 from datetime import datetime, timedelta
 from markupsafe import Markup, escape
 
+import os
+import mimetypes
+from urllib.parse import urlparse
+
 import requests
 
 from odoo import api, fields, models, _
@@ -250,19 +254,23 @@ class QuoCall(models.Model):
         return "\n".join([f"• {str(x).strip()}" for x in items if str(x).strip()])
 
     def upsert_summary_from_payload(self, call_id, call_payload):
+        MIN_DURATION_SECONDS = 10
+
         call_payload = call_payload or {}
 
         Call = self.sudo()
         call = Call.search([("quo_call_id", "=", call_id)], limit=1)
         if not call:
-            # Create a stub call; full call details may arrive via recording/other events
-            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+            _logger.info("Skipping QUO summary for call %s: no call record exists (possibly discarded short call).", call_id)
+            return self.env["quo.call"]
 
-        # Support BOTH payload shapes:
-        # 1) call object with callSummary nested
-        # 2) callSummary object with summary/nextSteps at top level
+        # If duration is already known and it's short, delete & skip
+        if call.duration_seconds and call.duration_seconds < MIN_DURATION_SECONDS:
+            _logger.info("Discarding QUO call %s on summary (duration=%ss < %ss)", call_id, call.duration_seconds, MIN_DURATION_SECONDS)
+            call.unlink()
+            return self.env["quo.call"]
+
         cs = call_payload.get("callSummary") or call_payload
-
         summary_list = cs.get("summary") or []
         next_steps_list = cs.get("nextSteps") or []
 
@@ -273,21 +281,18 @@ class QuoCall(models.Model):
         }
         call.write(vals)
 
-        # Post chatter notes / create activities based on the summary (if any related docs exist)
         call._post_potentially_related_to_documents()
         return call
 
 
+
     @api.model
     def upsert_recording_from_payload(self, call_id, call_payload):
-        """
-        call_payload is data.object (the call) from call.recording.completed event.
-        Uses media[0] if present.
-        """
         call_payload = call_payload or {}
 
-        # Ensure base call fields are captured even if recording is the first event we receive
         call = self.sudo().upsert_call_from_payload(call_id, call_payload)
+        if not call:
+            return call  # discarded
 
         media = (call_payload or {}).get("media") or []
         m0 = media[0] if media else {}
@@ -309,23 +314,10 @@ class QuoCall(models.Model):
         if quo_partner:
             return quo_partner
 
-        # Create it if missing
-        image_b64 = None
-        try:
-            resp = requests.get(
-                "https://media.licdn.com/dms/image/v2/D5622AQET2MqPqr5tRw/feedshare-shrink_800/B56ZpuetfHHkAg-/0/1762790136108"
-            )
-            if resp.ok:
-                image_b64 = base64.b64encode(resp.content)
-        except Exception:
-            pass
-
         return Partner.create({
             "name": "QUO",
             "company_type": "company",
             "is_company": True,
-            "email": "noreply@quo.ai",
-            "image_1920": image_b64,
         })
 
     @api.model
@@ -368,9 +360,14 @@ class QuoCall(models.Model):
     def upsert_call_from_payload(self, call_id, payload):
         """
         Create/update quo.call with best-effort parsing.
-        `payload` can be the call object coming from transcript/summary/recording events.
-        This method is the canonical place where we normalize core call fields (direction, from/to, timestamps, callers).
+
+        Spam protection:
+        - If we can determine duration and it is < 10 seconds, we discard the call:
+          - If a record already exists, delete it.
+          - If none exists, do not create anything.
         """
+        MIN_DURATION_SECONDS = 10
+
         Call = self.sudo()
         rec = Call.search([("quo_call_id", "=", call_id)], limit=1)
 
@@ -380,8 +377,38 @@ class QuoCall(models.Model):
         phone_number_id = payload.get("phoneNumberId") or payload.get("phone_number_id")
         direction = self._normalize_direction(payload.get("direction"))
         created_at = payload.get("createdAt") or payload.get("created_at")
-        ended_at = payload.get("completedAt") or payload.get("completed_at")
-        duration = payload.get("duration") or payload.get("durationSeconds") or payload.get("duration_seconds")
+
+        # completedAt is the one QUO sends on real calls; keep a couple fallbacks
+        ended_at = (
+            payload.get("completedAt")
+            or payload.get("completed_at")
+            or payload.get("endedAt")
+            or payload.get("ended_at")
+        )
+
+        # Duration may appear in different places depending on event type
+        duration = (
+            payload.get("duration")
+            or payload.get("durationSeconds")
+            or payload.get("duration_seconds")
+        )
+        if not duration:
+            media = payload.get("media") or []
+            if media and isinstance(media, list) and isinstance(media[0], dict):
+                duration = media[0].get("duration")
+
+        # Spam protection: discard calls < 10 seconds if duration is known
+        try:
+            if duration not in (None, "", False):
+                dur_int = int(float(duration))
+                if dur_int < MIN_DURATION_SECONDS:
+                    _logger.info("Discarding QUO call %s (duration=%ss < %ss)", call_id, dur_int, MIN_DURATION_SECONDS)
+                    if rec:
+                        rec.unlink()
+                    return self.env["quo.call"]  # empty recordset
+        except Exception:
+            # If duration can't be parsed, do not block creation; just proceed.
+            pass
 
         from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""
         to_num = payload.get("to") or payload.get("toNumber") or payload.get("to_phone") or ""
@@ -399,13 +426,8 @@ class QuoCall(models.Model):
         matched_partners = self._find_partners_by_phone([from_s, to_s])
 
         _logger.info(
-            "Quo call partner match: from=%s to=%s patterns=%s matched_partner_ids=%s",
-            from_num, to_num,
-            sorted(list(set([
-                re.sub(r"\D+", "", from_num or "")[-10:],
-                re.sub(r"\D+", "", to_num or "")[-10:],
-            ]))),
-            matched_partners.ids,
+            "Quo call partner match: from=%s to=%s matched_partner_ids=%s",
+            from_num, to_num, matched_partners.ids,
         )
 
         participants = payload.get("participants")
@@ -417,7 +439,7 @@ class QuoCall(models.Model):
             "direction": direction,
             "started_at": self._parse_dt(created_at),
             "ended_at": self._parse_dt(ended_at),
-            "duration_seconds": int(duration) if duration not in (None, "") else 0,
+            "duration_seconds": int(float(duration)) if duration not in (None, "", False) else 0,
             "from_number": from_num or False,
             "to_number": to_num or False,
             "caller_from_partner_id": p_from.id or False,
@@ -436,7 +458,7 @@ class QuoCall(models.Model):
             # Never lose the raw payload
             update_vals["raw_call_json"] = vals["raw_call_json"]
 
-            # Only write "direction" if it is meaningful, OR if we don't already have one
+            # Only write "direction" if meaningful, OR if we don't already have one
             if direction != "unknown" or rec.direction in (False, "unknown"):
                 update_vals["direction"] = direction
 
@@ -503,19 +525,151 @@ class QuoCall(models.Model):
             if not external_partners:
                 continue
 
-            call_url = call._build_call_link_html()
+            # Body
+            quo_author = call._get_quo_author_partner()
+            internal_partner_ids = call._get_internal_partner_ids()
+
+            # resolve “from/to” partners (create Unknown Caller if missing)
+            p_from = call._get_or_create_partner_for_phone(call.from_number)
+            p_to = call._get_or_create_partner_for_phone(call.to_number)
+
+            # Prefer just the contact name (no "Company, Name" prefix)
+            def _partner_short_title(p):
+                return (p.name or p.display_name) if p else ""
+
+            def _partner_clickable(p):
+                if not p:
+                    return ""
+                return p._get_html_link(title=_partner_short_title(p))
+
+            # Clickable link to the quo.call record (Odoo-generated HTML anchor)
+            call_link = call._get_html_link(title="View full call details")
+
+            # --- Follow-up activities (mail.activity) helpers ---
+            def _extract_next_steps(call):
+                steps = []
+                try:
+                    cs = json.loads(call.raw_summary_json or "{}")
+                    steps = cs.get("nextSteps") or []
+                except Exception:
+                    steps = []
+
+                if not steps and call.next_steps_text:
+                    steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
+
+                return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
+
+            todo_type = self.env.ref("mail.mail_activity_data_todo")
+            next_steps = _extract_next_steps(call)
+
+            def _activity_already_exists(model_name, res_id, step_text):
+                return bool(self.env["mail.activity"].sudo().search_count([
+                    ("res_model", "=", model_name),
+                    ("res_id", "=", res_id),
+                    ("activity_type_id", "=", todo_type.id),
+                    ("summary", "=", step_text),
+                ]))
+
+            def _schedule_followups_on_record(rec, steps, call_link):
+                """Create TODO activities for each next-step on exactly one record.
+                Idempotent per record + summary text.
+                """
+                if not rec or not steps:
+                    return
+
+                user = getattr(rec, "user_id", False) or self.env.user
+                due_date = fields.Date.context_today(self)
+
+                for step in steps:
+                    if _activity_already_exists(rec._name, rec.id, step):
+                        continue
+
+                    rec.sudo().activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=step,
+                        user_id=user.id,
+                        date_deadline=due_date,
+                        note=(
+                            "Created from QUO call summary.\n"
+                            f"{call_link}"
+                        ),
+                    )
+
+            def _is_newer(a, b):
+                """Return True if record a is newer than record b (by create_date then id)."""
+                if not a:
+                    return False
+                if not b:
+                    return True
+                ad = getattr(a, "create_date", False) or False
+                bd = getattr(b, "create_date", False) or False
+                if ad and bd and ad != bd:
+                    return ad > bd
+                return (a.id or 0) > (b.id or 0)
+
+            # We'll collect the single best target for activities across ALL external partners,
+            # to guarantee activities are created only once per call.
+            best_opp = self.env["crm.lead"]
+            best_quote = self.env["sale.order"]
+
+            time_str = call._format_call_time() or ""
+
+            name_1_html = _partner_clickable(p_from)
+            name_2_html = _partner_clickable(p_to)
+            between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
+
+            # internal participants to ping (if either side is internal)
+            to_ping = self.env["res.partner"]
+            for p in (p_from | p_to):
+                if p and p.id in internal_partner_ids:
+                    to_ping |= p
+
+            def nl2br(txt):
+                if not txt:
+                    return Markup("")
+                return Markup("<br/>").join(escape(txt).splitlines())
+
+            parts = []
+
+            parts.append(
+                Markup("<p><b>Potentially related call</b> at <b>")
+                + escape(time_str)
+                + Markup("</b> between <b>")
+                + Markup(between_html)
+                + Markup("</b>.</p>")
+            )
+
+            parts.append(Markup("<br/>"))
+
+            if call.summary_text:
+                parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
+                parts.append(Markup("<br/><br/>"))
+
+            if call.next_steps_text:
+                parts.append(Markup("<b>Action items:</b><br/>") + nl2br(call.next_steps_text))
+                parts.append(Markup("<br/><br/>"))
+
+            if to_ping:
+                notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
+                parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
+                parts.append(Markup("<br/><br/>"))
+
+            parts.append(Markup(call_link))
+            body_html = Markup("").join(parts)
 
             for partner in external_partners:
                 # -------------------------
                 # Opportunities (CRM)
                 # -------------------------
-                # "open" opportunities: active, not won; also exclude lost if probability==0 and lost_reason set
                 opp_domain = [
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
                     ("stage_id.is_won", "=", False),
                     ("probability", ">", 0),
-                    ("create_date", "<", call_dt),
+                ]
+                if call_dt:
+                    opp_domain.append(("create_date", "<", call_dt))
+                opp_domain += [
                     "|",
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("message_partner_ids", "in", partner.ids),
@@ -527,14 +681,16 @@ class QuoCall(models.Model):
                         "Posting Quo call %s to %d opportunities for partner %s: %s",
                         call.id, len(opportunities), partner.display_name, opportunities.ids
                     )
+                    if _is_newer(opportunities[0], best_opp[0] if best_opp else False):
+                        best_opp = opportunities[0:1]
 
                 # -------------------------
                 # Quotes (Sales)
                 # -------------------------
-                # "open" quotes: draft/sent only; exclude confirmed (sale), done, cancelled
-                quote_domain = [
-                    ("state", "in", ["draft", "sent"]),
-                    ("create_date", "<", call_dt),
+                quote_domain = [("state", "in", ["draft", "sent"])]
+                if call_dt:
+                    quote_domain.append(("create_date", "<", call_dt))
+                quote_domain += [
                     "|", "|", "|",
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
@@ -548,131 +704,8 @@ class QuoCall(models.Model):
                         "Posting Quo call %s to %d quotes for partner %s: %s",
                         call.id, len(quotes), partner.display_name, quotes.ids
                     )
-
-                # Body
-                quo_author = call._get_quo_author_partner()
-                internal_partner_ids = call._get_internal_partner_ids()
-
-                # resolve “from/to” partners (create Unknown Caller if missing)
-                p_from = call._get_or_create_partner_for_phone(call.from_number)
-                p_to = call._get_or_create_partner_for_phone(call.to_number)
-
-                # Prefer just the contact name (no "Company, Name" prefix)
-                def _partner_short_title(p):
-                    return (p.name or p.display_name) if p else ""
-
-                def _partner_clickable(p):
-                    if not p:
-                        return ""
-                    return p._get_html_link(title=_partner_short_title(p))
-
-                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
-                call_link = call._get_html_link(title="View full call details")
-
-                # --- Follow-up activities (mail.activity) helpers ---
-                def _extract_next_steps(call):
-                    steps = []
-                    try:
-                        cs = json.loads(call.raw_summary_json or "{}")
-                        steps = cs.get("nextSteps") or []
-                    except Exception:
-                        steps = []
-
-                    if not steps and call.next_steps_text:
-                        steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
-
-                    return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
-
-                def _activity_already_exists(model_name, res_id, step_text):
-                    return bool(self.env["mail.activity"].sudo().search_count([
-                        ("res_model", "=", model_name),
-                        ("res_id", "=", res_id),
-                        ("activity_type_id", "=", todo_type.id),
-                        ("summary", "=", step_text),
-                    ]))
-
-                def _schedule_followups_on_record(rec, steps, call_link):
-                    if not rec or not steps:
-                        return
-
-                    user = getattr(rec, "user_id", False) or self.env.user
-                    due_date = fields.Date.context_today(self)
-
-                    for step in steps:
-                        if _activity_already_exists(rec._name, rec.id, step):
-                            continue
-
-                        rec.sudo().activity_schedule(
-                            "mail.mail_activity_data_todo",
-                            summary=step,
-                            user_id=user.id,
-                            date_deadline=due_date,
-                            note=(
-                                "Created from QUO call summary.\n"
-                                f"{call_link}"
-                            ),
-                        )
-
-                todo_type = self.env.ref("mail.mail_activity_data_todo")
-                next_steps = _extract_next_steps(call)
-
-                # Create follow-up activities with your rules
-                if next_steps:
-                    target = False
-                    if opportunities and quotes:
-                        target = opportunities[0]  # only on most recent opportunity
-                    elif opportunities:
-                        target = opportunities[0]  # most recent opportunity
-                    elif quotes:
-                        target = quotes[0]         # most recent quote
-
-                    if target:
-                        _schedule_followups_on_record(target, next_steps, call_link)
-
-                time_str = call._format_call_time() or ""
-
-                name_1_html = _partner_clickable(p_from)
-                name_2_html = _partner_clickable(p_to)
-                between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
-
-                # internal participants to ping (if either side is internal)
-                to_ping = self.env["res.partner"]
-                for p in (p_from | p_to):
-                    if p and p.id in internal_partner_ids:
-                        to_ping |= p
-
-                def nl2br(txt):
-                    if not txt:
-                        return Markup("")
-                    return Markup("<br/>").join(escape(txt).splitlines())
-
-                parts = []
-
-                parts.append(
-                    Markup("<p><b>Potentially related call</b> at <b>")
-                    + escape(time_str)
-                    + Markup("</b> between <b>")
-                    + Markup(between_html)
-                    + Markup("</b>.</p>")
-                )
-
-                parts.append(Markup("<br/>"))
-
-                if call.summary_text:
-                    parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
-                    parts.append(Markup("<br/><br/>"))
-
-                if call.next_steps_text:
-                    parts.append(Markup("<b>Action items:</b><br/>") + nl2br(call.next_steps_text))
-                    parts.append(Markup("<br/><br/>"))
-
-                if to_ping:
-                    notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
-                    parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
-                    parts.append(Markup("<br/><br/>"))
-
-                parts.append(Markup(call_link))
-                body_html = Markup("").join(parts)
+                    if _is_newer(quotes[0], best_quote[0] if best_quote else False):
+                        best_quote = quotes[0:1]
 
                 # Post to opportunities
                 for rec in opportunities:
@@ -695,6 +728,28 @@ class QuoCall(models.Model):
                         author_id=quo_author.id,
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
+
+                # Post to the partner record as well (always, for external partners)
+                partner.message_post(
+                    body=body_html,
+                    body_is_html=True,
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                    author_id=quo_author.id,
+                    partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                )
+
+            # Create follow-up activities with your rules (only once per call)
+            # Priority: newest opportunity -> newest quote -> (fallback) first external partner
+            if next_steps:
+                if best_opp:
+                    target = best_opp[0]
+                elif best_quote:
+                    target = best_quote[0]
+                else:
+                    target = external_partners[0]
+
+                _schedule_followups_on_record(target, next_steps, call_link)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -740,7 +795,31 @@ class QuoCallTranscript(models.Model):
             "status": "...",
             "dialogue": [{...}, ...]
           }
+
+        Spam protection:
+        - If transcript duration < 10s, do not create call/transcript at all.
         """
+        MIN_DURATION_SECONDS = 10
+
+        transcript_payload = transcript_payload or {}
+
+        # duration is present on transcript payload
+        duration = (
+            transcript_payload.get("duration")
+            or transcript_payload.get("durationSeconds")
+            or transcript_payload.get("duration_seconds")
+        )
+        try:
+            if duration not in (None, "", False) and int(float(duration)) < MIN_DURATION_SECONDS:
+                _logger.info("Discarding QUO transcript for call %s (duration=%ss < %ss)", call_id, int(float(duration)), MIN_DURATION_SECONDS)
+                # If a call record already exists, remove it too (keeps DB clean)
+                existing_call = self.env["quo.call"].sudo().search([("quo_call_id", "=", call_id)], limit=1)
+                if existing_call:
+                    existing_call.unlink()
+                return False
+        except Exception:
+            pass
+
         Call = self.env["quo.call"].sudo()
         Transcript = self.sudo()
         Line = self.env["quo.call.transcript.line"].sudo()
@@ -752,14 +831,13 @@ class QuoCallTranscript(models.Model):
         rec = Transcript.search([("call_id", "=", call.id)], limit=1)
 
         created_at = transcript_payload.get("createdAt") or transcript_payload.get("created_at")
-        duration = transcript_payload.get("duration") or transcript_payload.get("durationSeconds") or transcript_payload.get("duration_seconds")
         status = transcript_payload.get("status") or ""
 
         vals = {
             "call_id": call.id,
             "status": status,
             "created_at": self.env["quo.call"]._parse_dt(created_at),
-            "duration_seconds": int(duration) if duration not in (None, "") else 0,
+            "duration_seconds": int(float(duration)) if duration not in (None, "", False) else 0,
             "raw_transcript_json": json.dumps(transcript_payload, ensure_ascii=False),
         }
 
@@ -813,3 +891,393 @@ class QuoCallTranscriptLine(models.Model):
     speaker_label = fields.Char(string="Speaker")
 
     partner_id = fields.Many2one("res.partner", string="Partner", index=True)
+
+class QuoText(models.Model):
+    _name = "quo.text"
+    _description = "Quo Text Message"
+    _inherit = ["mail.thread"]
+    _order = "created_at desc, id desc"
+
+    name = fields.Char(string="Display Name", compute="_compute_name", store=True)
+
+    quo_message_id = fields.Char(string="Quo Message ID", required=True, index=True)
+    phone_number_id = fields.Char(string="Phone Number ID", index=True)
+    conversation_id = fields.Char(string="Conversation ID", index=True)
+
+    direction = fields.Selection(
+        [("inbound", "Inbound"), ("outbound", "Outbound"), ("unknown", "Unknown")],
+        default="unknown",
+        string="Direction",
+        index=True,
+    )
+
+    created_at = fields.Datetime(string="Created At", index=True)
+    status = fields.Char(string="Status", index=True)
+
+    from_number = fields.Char(string="From")
+    to_number = fields.Char(string="To")
+    from_sanitized = fields.Char(string="From (sanitized)", index=True)
+    to_sanitized = fields.Char(string="To (sanitized)", index=True)
+
+    from_partner_id = fields.Many2one("res.partner", string="From Partner", index=True, ondelete="set null")
+    to_partner_id = fields.Many2one("res.partner", string="To Partner", index=True, ondelete="set null")
+
+    body = fields.Text(string="Message")
+    media_json = fields.Text(string="Media (JSON)")
+    raw_message_json = fields.Text(string="Raw Message (JSON)")
+
+    _sql_constraints = [
+        ("quo_message_id_unique", "unique(quo_message_id)", "Quo Message ID must be unique."),
+    ]
+
+    @api.depends("direction", "from_partner_id", "to_partner_id", "from_number", "to_number", "created_at")
+    def _compute_name(self):
+        for rec in self:
+            dir_label = "Text"
+            if rec.direction == "inbound":
+                dir_label = "Inbound text"
+            elif rec.direction == "outbound":
+                dir_label = "Outbound text"
+
+            def _label(p, num):
+                if p and p.name:
+                    return p.name
+                return num or ""
+
+            left = _label(rec.from_partner_id, rec.from_number)
+            right = _label(rec.to_partner_id, rec.to_number)
+            rec.name = f"{dir_label} from {left} to {right}".strip()
+
+    def _get_internal_partner_ids(self):
+        return set(self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids)
+
+    def _get_external_partners_from_message(self):
+        """Return external partners involved in this message (exclude internal user partners)."""
+        self.ensure_one()
+        internal_partner_ids = self._get_internal_partner_ids()
+        partners = (self.from_partner_id | self.to_partner_id)
+        return partners.filtered(lambda p: p and p.id not in internal_partner_ids)
+
+    def _fetch_media_as_attachments(self, media_list):
+        """Return (attachment_ids, fallback_links) for QUO media."""
+        import os
+        import mimetypes
+        from urllib.parse import urlparse
+
+        IrAttachment = self.env["ir.attachment"].sudo()
+
+        def _guess_ext(ct, fallback=""):
+            ct = (ct or "").split(";")[0].strip().lower()
+            if ct:
+                ext = mimetypes.guess_extension(ct) or ""
+                if ext:
+                    return ext
+            ft = (fallback or "").split(";")[0].strip().lower()
+            if ft:
+                ext = mimetypes.guess_extension(ft) or ""
+                if ext:
+                    return ext
+            return ".bin"
+
+        def _filename(url, ct, mtype, idx):
+            try:
+                base = os.path.basename(urlparse(url).path or "") or ""
+            except Exception:
+                base = ""
+            if not base or "." not in base:
+                base = f"quo_media_{idx}{_guess_ext(ct, mtype)}"
+            return base
+
+        attachment_ids = []
+        fallback_links = []
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Odoo)",
+            "Accept": "*/*",
+        }
+
+        for idx, m in enumerate(media_list or [], start=1):
+            url = (m or {}).get("url")
+            mtype = (m or {}).get("type") or ""
+            if not url:
+                continue
+
+            try:
+                resp = requests.get(url, headers=headers, timeout=45, allow_redirects=True)
+                ct = (resp.headers.get("Content-Type") or mtype or "").strip()
+
+                if not (resp.ok and resp.content):
+                    fallback_links.append((ct or "file", url))
+                    continue
+
+                # Guard: don't save HTML error pages as "images"
+                if (ct.lower().startswith("text/html") or resp.content[:20].lstrip().lower().startswith(b"<!doctype html")):
+                    fallback_links.append((ct or "file", url))
+                    continue
+
+                fname = _filename(url, ct, mtype, idx)
+
+                att = IrAttachment.create({
+                    "name": fname,
+                    "datas": base64.b64encode(resp.content).decode("ascii"),  # Binary field expects base64 string
+                    "mimetype": (ct.split(";")[0].strip() if ct else False),
+                })
+                attachment_ids.append(att.id)
+
+            except Exception:
+                fallback_links.append((mtype or "file", url))
+
+        return attachment_ids, fallback_links
+
+    def _post_to_related_documents_and_contacts(self):
+        """Log the text on:
+        - BOTH involved contacts (always, as long as they are not internal user partners)
+        - ALL matching open opportunities and draft/sent quotes for those external contacts
+        - Attach any media as chatter attachments (images/files), not just links
+        """
+        import os
+        import mimetypes
+        from urllib.parse import urlparse
+
+        def nl2br(txtval):
+            if not txtval:
+                return Markup("")
+            return Markup("<br/>").join(escape(txtval).splitlines())
+
+        def _partner_short_title(p):
+            return (p.name or p.display_name) if p else ""
+
+        def _partner_clickable(p):
+            if not p:
+                return ""
+            return p._get_html_link(title=_partner_short_title(p))
+
+        def _guess_ext(content_type, fallback=""):
+            ct = (content_type or "").split(";")[0].strip().lower()
+            if ct:
+                ext = mimetypes.guess_extension(ct) or ""
+                if ext:
+                    return ext
+            fb = (fallback or "").split(";")[0].strip().lower()
+            if fb:
+                ext = mimetypes.guess_extension(fb) or ""
+                if ext:
+                    return ext
+            return ".bin"
+
+        def _filename_from_url(url, content_type, fallback_type, idx):
+            try:
+                base = os.path.basename(urlparse(url).path or "") or ""
+            except Exception:
+                base = ""
+            if not base or "." not in base:
+                base = f"quo_media_{idx}{_guess_ext(content_type, fallback_type)}"
+            return base
+
+        for txt in self:
+            msg_dt = txt.created_at or txt.create_date
+            external_partners = txt._get_external_partners_from_message()
+
+            from_html = _partner_clickable(txt.from_partner_id) or escape(txt.from_number or "")
+            to_html = _partner_clickable(txt.to_partner_id) or escape(txt.to_number or "")
+
+            # -------------------------
+            # Build attachments payload for message_post (list of (name, b64data))
+            # -------------------------
+            media_list = []
+            try:
+                media_list = json.loads(txt.media_json or "[]") if txt.media_json else []
+            except Exception:
+                media_list = []
+
+            attachments = []
+            fallback_links = []
+
+            headers = {
+                "User-Agent": "Mozilla/5.0 (compatible; Odoo)",
+                "Accept": "*/*",
+            }
+
+            for idx, m in enumerate(media_list or [], start=1):
+                url = (m or {}).get("url")
+                mtype = (m or {}).get("type") or ""
+                if not url:
+                    continue
+
+                try:
+                    resp = requests.get(url, headers=headers, timeout=45, allow_redirects=True)
+                    ct = (resp.headers.get("Content-Type") or mtype or "").strip()
+
+                    if not (resp.ok and resp.content):
+                        fallback_links.append((ct or mtype or "file", url))
+                        continue
+
+                    # Don't attach HTML error pages
+                    head = resp.content[:64].lstrip().lower()
+                    if (ct.lower().startswith("text/html") or head.startswith(b"<!doctype html") or head.startswith(b"<html")):
+                        fallback_links.append((ct or mtype or "file", url))
+                        continue
+
+                    fname = _filename_from_url(url, ct, mtype, idx)
+
+                    # IMPORTANT: message_post expects base64 content for attachments
+                    attachments.append((fname, resp.content))
+
+                except Exception:
+                    _logger.exception("Failed fetching QUO media url=%s", url)
+                    fallback_links.append((mtype or "file", url))
+
+            _logger.info(
+                "QUO text %s media: attachments=%d fallback_links=%d",
+                txt.id, len(attachments), len(fallback_links)
+            )
+
+            # -------------------------
+            # Build message body
+            # -------------------------
+            parts = []
+            parts.append(
+                Markup("<p><b>Text from </b>")
+                + Markup(from_html)
+                + Markup("<b> to </b>")
+                + Markup(to_html)
+                + Markup("</p>")
+            )
+
+            if txt.body:
+                parts.append(Markup("<p>") + nl2br(txt.body) + Markup("</p>"))
+            else:
+                parts.append(Markup("<p><i>(No message body)</i></p>"))
+
+            if fallback_links:
+                parts.append(Markup("<p><b>Media (links):</b><br/>"))
+                for label, url in fallback_links:
+                    parts.append(
+                        Markup(f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(label)}</a><br/>')
+                    )
+                parts.append(Markup("</p>"))
+
+            body_html = Markup("").join(parts)
+
+            quo_author = self.env["quo.call"].sudo()._get_quo_author_partner()
+
+            # -------------------------
+            # Post to contacts (always), for external contacts only
+            # -------------------------
+            for p in external_partners:
+                p.message_post(
+                    body=body_html,
+                    body_is_html=True,
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                    author_id=quo_author.id,
+                    attachments=attachments or None,
+                )
+
+            # -------------------------
+            # Post to opportunities and quotes for each external partner
+            # -------------------------
+            for partner in external_partners:
+                opp_domain = [
+                    ("type", "=", "opportunity"),
+                    ("active", "=", True),
+                    ("stage_id.is_won", "=", False),
+                    ("probability", ">", 0),
+                ]
+                if msg_dt:
+                    opp_domain.append(("create_date", "<", msg_dt))
+                opp_domain += [
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
+
+                quote_domain = [
+                    ("state", "in", ["draft", "sent"]),
+                ]
+                if msg_dt:
+                    quote_domain.append(("create_date", "<", msg_dt))
+                quote_domain += [
+                    "|", "|", "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_invoice_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                quotes = self.env["sale.order"].sudo().search(quote_domain, order="create_date desc, id desc")
+
+                for rec in opportunities:
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        attachments=attachments or None,
+                    )
+
+                for rec in quotes:
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        attachments=attachments or None,
+                    )
+
+
+    @api.model
+    def upsert_text_from_payload(self, message_id, payload):
+        """Create/update quo.text from message.received/message.delivered event."""
+        payload = payload or {}
+        Text = self.sudo()
+        rec = Text.search([("quo_message_id", "=", message_id)], limit=1)
+
+        from_num = payload.get("from") or ""
+        to_num = payload.get("to") or ""
+        from_s = self.env["quo.call"].sudo()._sanitize_phone(from_num)
+        to_s = self.env["quo.call"].sudo()._sanitize_phone(to_num)
+
+        # Create / resolve partners (Unknown Caller if missing)
+        p_from = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller") if from_num else self.env["res.partner"]
+        p_to = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller") if to_num else self.env["res.partner"]
+
+        direction = self.env["quo.call"].sudo()._normalize_direction(payload.get("direction"))
+
+        created_at = payload.get("createdAt") or payload.get("created_at")
+        dt_created = self.env["quo.call"].sudo()._parse_dt(created_at)
+
+        media = payload.get("media") or []
+        vals = {
+            "quo_message_id": message_id,
+            "phone_number_id": payload.get("phoneNumberId") or payload.get("phone_number_id"),
+            "conversation_id": payload.get("conversationId") or payload.get("conversation_id"),
+            "direction": direction,
+            "created_at": dt_created,
+            "status": payload.get("status") or "",
+            "from_number": from_num or False,
+            "to_number": to_num or False,
+            "from_sanitized": from_s,
+            "to_sanitized": to_s,
+            "from_partner_id": p_from.id or False,
+            "to_partner_id": p_to.id or False,
+            "body": payload.get("body") or "",
+            "media_json": json.dumps(media, ensure_ascii=False),
+            "raw_message_json": json.dumps(payload, ensure_ascii=False),
+        }
+
+        if rec:
+            rec.write({k: v for k, v in vals.items() if v not in (None, False, "") or k in ("raw_message_json", "media_json")})
+            txt = rec
+        else:
+            txt = Text.create(vals)
+
+        # Post chatter logs after upsert
+        try:
+            txt._post_to_related_documents_and_contacts()
+        except Exception:
+            _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+
+        return txt
