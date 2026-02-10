@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <menuitem id="quo_root_menu" name="Quo" sequence="50"/>
+    <menuitem id="quo_root_menu" name="Quo" sequence="50" web_icon="prophone,static/description/icon.png"/>
 
     <menuitem id="quo_menu_calls"
               name="Calls"
