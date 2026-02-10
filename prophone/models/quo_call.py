@@ -1088,7 +1088,7 @@ class QuoText(models.Model):
                     fname = _filename_from_url(url, ct, mtype, idx)
 
                     # IMPORTANT: message_post expects base64 content for attachments
-                    attachments.append((fname, base64.b64encode(resp.content)))
+                    attachments.append((fname, resp.content))
 
                 except Exception:
                     _logger.exception("Failed fetching QUO media url=%s", url)
