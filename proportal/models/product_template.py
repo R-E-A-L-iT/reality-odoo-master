@@ -47,6 +47,48 @@ class ProductTemplate(models.Model):
             except Exception as e:
                 _logger.error(f"ProPortal: Error processing {sku}: {e}")
 
+    def _prosync_extract_ccp_key(self):
+        self.ensure_one()
+        sku = (self.sku or "").strip()
+        if not sku.upper().startswith("CCP-"):
+            return False
+        return sku[4:].strip()  # everything after CCP-
+
+    def import_images_from_ccp_lots(self, timeout=5):
+        StockLot = self.env["stock.lot"].sudo()
+
+        for product in self:
+            ccp_key = product._prosync_extract_ccp_key()
+            if not ccp_key:
+                continue
+
+            lot = StockLot.search([("name", "ilike", ccp_key)], limit=1)
+            if not lot:
+                _logger.info("ProSync Images: No stock.lot found for CCP key '%s' (product %s)", ccp_key, product.id)
+                continue
+
+            lot_sku = (getattr(lot, "sku", False) or "").strip()
+            if not lot_sku:
+                _logger.info("ProSync Images: stock.lot %s matched '%s' but has no lot.sku", lot.id, ccp_key)
+                continue
+
+            image_url = f"https://cdn.r-e-a-l.it/images/ecommerce/Leica/{lot_sku}/{lot_sku}-01.png"
+
+            # Keep going even if a single product fails
+            with self.env.cr.savepoint():
+                try:
+                    resp = requests.get(image_url, timeout=timeout)
+                    if resp.status_code == 200 and resp.content:
+                        product.image_1920 = base64.b64encode(resp.content)
+                        _logger.info("ProSync Images: Uploaded image for product %s from %s", product.id, image_url)
+                    else:
+                        _logger.warning(
+                            "ProSync Images: Image not found for lot_sku '%s' (status %s) url=%s",
+                            lot_sku, resp.status_code, image_url
+                        )
+                except Exception as e:
+                    _logger.exception("ProSync Images: Error processing product %s url=%s: %s", product.id, image_url, e)
+
     @api.model
     def create(self, vals):
         record = super(ProductTemplate, self).create(vals)
