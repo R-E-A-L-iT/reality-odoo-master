@@ -525,19 +525,151 @@ class QuoCall(models.Model):
             if not external_partners:
                 continue
 
-            call_url = call._build_call_link_html()
+            # Body
+            quo_author = call._get_quo_author_partner()
+            internal_partner_ids = call._get_internal_partner_ids()
+
+            # resolve “from/to” partners (create Unknown Caller if missing)
+            p_from = call._get_or_create_partner_for_phone(call.from_number)
+            p_to = call._get_or_create_partner_for_phone(call.to_number)
+
+            # Prefer just the contact name (no "Company, Name" prefix)
+            def _partner_short_title(p):
+                return (p.name or p.display_name) if p else ""
+
+            def _partner_clickable(p):
+                if not p:
+                    return ""
+                return p._get_html_link(title=_partner_short_title(p))
+
+            # Clickable link to the quo.call record (Odoo-generated HTML anchor)
+            call_link = call._get_html_link(title="View full call details")
+
+            # --- Follow-up activities (mail.activity) helpers ---
+            def _extract_next_steps(call):
+                steps = []
+                try:
+                    cs = json.loads(call.raw_summary_json or "{}")
+                    steps = cs.get("nextSteps") or []
+                except Exception:
+                    steps = []
+
+                if not steps and call.next_steps_text:
+                    steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
+
+                return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
+
+            todo_type = self.env.ref("mail.mail_activity_data_todo")
+            next_steps = _extract_next_steps(call)
+
+            def _activity_already_exists(model_name, res_id, step_text):
+                return bool(self.env["mail.activity"].sudo().search_count([
+                    ("res_model", "=", model_name),
+                    ("res_id", "=", res_id),
+                    ("activity_type_id", "=", todo_type.id),
+                    ("summary", "=", step_text),
+                ]))
+
+            def _schedule_followups_on_record(rec, steps, call_link):
+                """Create TODO activities for each next-step on exactly one record.
+                Idempotent per record + summary text.
+                """
+                if not rec or not steps:
+                    return
+
+                user = getattr(rec, "user_id", False) or self.env.user
+                due_date = fields.Date.context_today(self)
+
+                for step in steps:
+                    if _activity_already_exists(rec._name, rec.id, step):
+                        continue
+
+                    rec.sudo().activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=step,
+                        user_id=user.id,
+                        date_deadline=due_date,
+                        note=(
+                            "Created from QUO call summary.\n"
+                            f"{call_link}"
+                        ),
+                    )
+
+            def _is_newer(a, b):
+                """Return True if record a is newer than record b (by create_date then id)."""
+                if not a:
+                    return False
+                if not b:
+                    return True
+                ad = getattr(a, "create_date", False) or False
+                bd = getattr(b, "create_date", False) or False
+                if ad and bd and ad != bd:
+                    return ad > bd
+                return (a.id or 0) > (b.id or 0)
+
+            # We'll collect the single best target for activities across ALL external partners,
+            # to guarantee activities are created only once per call.
+            best_opp = self.env["crm.lead"]
+            best_quote = self.env["sale.order"]
+
+            time_str = call._format_call_time() or ""
+
+            name_1_html = _partner_clickable(p_from)
+            name_2_html = _partner_clickable(p_to)
+            between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
+
+            # internal participants to ping (if either side is internal)
+            to_ping = self.env["res.partner"]
+            for p in (p_from | p_to):
+                if p and p.id in internal_partner_ids:
+                    to_ping |= p
+
+            def nl2br(txt):
+                if not txt:
+                    return Markup("")
+                return Markup("<br/>").join(escape(txt).splitlines())
+
+            parts = []
+
+            parts.append(
+                Markup("<p><b>Potentially related call</b> at <b>")
+                + escape(time_str)
+                + Markup("</b> between <b>")
+                + Markup(between_html)
+                + Markup("</b>.</p>")
+            )
+
+            parts.append(Markup("<br/>"))
+
+            if call.summary_text:
+                parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
+                parts.append(Markup("<br/><br/>"))
+
+            if call.next_steps_text:
+                parts.append(Markup("<b>Action items:</b><br/>") + nl2br(call.next_steps_text))
+                parts.append(Markup("<br/><br/>"))
+
+            if to_ping:
+                notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
+                parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
+                parts.append(Markup("<br/><br/>"))
+
+            parts.append(Markup(call_link))
+            body_html = Markup("").join(parts)
 
             for partner in external_partners:
                 # -------------------------
                 # Opportunities (CRM)
                 # -------------------------
-                # "open" opportunities: active, not won; also exclude lost if probability==0 and lost_reason set
                 opp_domain = [
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
                     ("stage_id.is_won", "=", False),
                     ("probability", ">", 0),
-                    ("create_date", "<", call_dt),
+                ]
+                if call_dt:
+                    opp_domain.append(("create_date", "<", call_dt))
+                opp_domain += [
                     "|",
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("message_partner_ids", "in", partner.ids),
@@ -549,14 +681,16 @@ class QuoCall(models.Model):
                         "Posting Quo call %s to %d opportunities for partner %s: %s",
                         call.id, len(opportunities), partner.display_name, opportunities.ids
                     )
+                    if _is_newer(opportunities[0], best_opp[0] if best_opp else False):
+                        best_opp = opportunities[0:1]
 
                 # -------------------------
                 # Quotes (Sales)
                 # -------------------------
-                # "open" quotes: draft/sent only; exclude confirmed (sale), done, cancelled
-                quote_domain = [
-                    ("state", "in", ["draft", "sent"]),
-                    ("create_date", "<", call_dt),
+                quote_domain = [("state", "in", ["draft", "sent"])]
+                if call_dt:
+                    quote_domain.append(("create_date", "<", call_dt))
+                quote_domain += [
                     "|", "|", "|",
                         ("partner_id", "child_of", partner.commercial_partner_id.id),
                         ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
@@ -570,131 +704,8 @@ class QuoCall(models.Model):
                         "Posting Quo call %s to %d quotes for partner %s: %s",
                         call.id, len(quotes), partner.display_name, quotes.ids
                     )
-
-                # Body
-                quo_author = call._get_quo_author_partner()
-                internal_partner_ids = call._get_internal_partner_ids()
-
-                # resolve “from/to” partners (create Unknown Caller if missing)
-                p_from = call._get_or_create_partner_for_phone(call.from_number)
-                p_to = call._get_or_create_partner_for_phone(call.to_number)
-
-                # Prefer just the contact name (no "Company, Name" prefix)
-                def _partner_short_title(p):
-                    return (p.name or p.display_name) if p else ""
-
-                def _partner_clickable(p):
-                    if not p:
-                        return ""
-                    return p._get_html_link(title=_partner_short_title(p))
-
-                # Clickable link to the quo.call record (Odoo-generated HTML anchor)
-                call_link = call._get_html_link(title="View full call details")
-
-                # --- Follow-up activities (mail.activity) helpers ---
-                def _extract_next_steps(call):
-                    steps = []
-                    try:
-                        cs = json.loads(call.raw_summary_json or "{}")
-                        steps = cs.get("nextSteps") or []
-                    except Exception:
-                        steps = []
-
-                    if not steps and call.next_steps_text:
-                        steps = [x.strip("• ").strip() for x in (call.next_steps_text or "").splitlines() if x.strip()]
-
-                    return [s.strip() for s in steps if isinstance(s, str) and s.strip()]
-
-                def _activity_already_exists(model_name, res_id, step_text):
-                    return bool(self.env["mail.activity"].sudo().search_count([
-                        ("res_model", "=", model_name),
-                        ("res_id", "=", res_id),
-                        ("activity_type_id", "=", todo_type.id),
-                        ("summary", "=", step_text),
-                    ]))
-
-                def _schedule_followups_on_record(rec, steps, call_link):
-                    if not rec or not steps:
-                        return
-
-                    user = getattr(rec, "user_id", False) or self.env.user
-                    due_date = fields.Date.context_today(self)
-
-                    for step in steps:
-                        if _activity_already_exists(rec._name, rec.id, step):
-                            continue
-
-                        rec.sudo().activity_schedule(
-                            "mail.mail_activity_data_todo",
-                            summary=step,
-                            user_id=user.id,
-                            date_deadline=due_date,
-                            note=(
-                                "Created from QUO call summary.\n"
-                                f"{call_link}"
-                            ),
-                        )
-
-                todo_type = self.env.ref("mail.mail_activity_data_todo")
-                next_steps = _extract_next_steps(call)
-
-                # Create follow-up activities with your rules
-                if next_steps:
-                    target = False
-                    if opportunities and quotes:
-                        target = opportunities[0]  # only on most recent opportunity
-                    elif opportunities:
-                        target = opportunities[0]  # most recent opportunity
-                    elif quotes:
-                        target = quotes[0]         # most recent quote
-
-                    if target:
-                        _schedule_followups_on_record(target, next_steps, call_link)
-
-                time_str = call._format_call_time() or ""
-
-                name_1_html = _partner_clickable(p_from)
-                name_2_html = _partner_clickable(p_to)
-                between_html = " and ".join([x for x in [name_1_html, name_2_html] if x]) or "unknown participants"
-
-                # internal participants to ping (if either side is internal)
-                to_ping = self.env["res.partner"]
-                for p in (p_from | p_to):
-                    if p and p.id in internal_partner_ids:
-                        to_ping |= p
-
-                def nl2br(txt):
-                    if not txt:
-                        return Markup("")
-                    return Markup("<br/>").join(escape(txt).splitlines())
-
-                parts = []
-
-                parts.append(
-                    Markup("<p><b>Potentially related call</b> at <b>")
-                    + escape(time_str)
-                    + Markup("</b> between <b>")
-                    + Markup(between_html)
-                    + Markup("</b>.</p>")
-                )
-
-                parts.append(Markup("<br/>"))
-
-                if call.summary_text:
-                    parts.append(Markup("<b>Summary:</b><br/>") + nl2br(call.summary_text))
-                    parts.append(Markup("<br/><br/>"))
-
-                if call.next_steps_text:
-                    parts.append(Markup("<b>Action items:</b><br/>") + nl2br(call.next_steps_text))
-                    parts.append(Markup("<br/><br/>"))
-
-                if to_ping:
-                    notified_txt = ", ".join([f"@{p.display_name}" for p in to_ping])
-                    parts.append(Markup("<b>Notified:</b> ") + escape(notified_txt))
-                    parts.append(Markup("<br/><br/>"))
-
-                parts.append(Markup(call_link))
-                body_html = Markup("").join(parts)
+                    if _is_newer(quotes[0], best_quote[0] if best_quote else False):
+                        best_quote = quotes[0:1]
 
                 # Post to opportunities
                 for rec in opportunities:
@@ -717,6 +728,28 @@ class QuoCall(models.Model):
                         author_id=quo_author.id,
                         partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                     )
+
+                # Post to the partner record as well (always, for external partners)
+                partner.message_post(
+                    body=body_html,
+                    body_is_html=True,
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                    author_id=quo_author.id,
+                    partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                )
+
+            # Create follow-up activities with your rules (only once per call)
+            # Priority: newest opportunity -> newest quote -> (fallback) first external partner
+            if next_steps:
+                if best_opp:
+                    target = best_opp[0]
+                elif best_quote:
+                    target = best_quote[0]
+                else:
+                    target = external_partners[0]
+
+                _schedule_followups_on_record(target, next_steps, call_link)
 
     @api.model_create_multi
     def create(self, vals_list):
