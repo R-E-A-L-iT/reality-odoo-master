@@ -314,23 +314,10 @@ class QuoCall(models.Model):
         if quo_partner:
             return quo_partner
 
-        # Create it if missing
-        image_b64 = None
-        try:
-            resp = requests.get(
-                "https://media.licdn.com/dms/image/v2/D5622AQET2MqPqr5tRw/feedshare-shrink_800/B56ZpuetfHHkAg-/0/1762790136108"
-            )
-            if resp.ok:
-                image_b64 = base64.b64encode(resp.content)
-        except Exception:
-            pass
-
         return Partner.create({
             "name": "QUO",
             "company_type": "company",
             "is_company": True,
-            "email": "noreply@quo.ai",
-            "image_1920": image_b64,
         })
 
     @api.model
@@ -1009,22 +996,15 @@ class QuoText(models.Model):
 
         return attachment_ids, fallback_links
 
-
     def _post_to_related_documents_and_contacts(self):
         """Log the text on:
         - BOTH involved contacts (always, as long as they are not internal user partners)
         - ALL matching open opportunities and draft/sent quotes for those external contacts
         - Attach any media as chatter attachments (images/files), not just links
         """
-        import os
-        import mimetypes
-        from urllib.parse import urlparse
-
         for txt in self:
             msg_dt = txt.created_at or txt.create_date
             external_partners = txt._get_external_partners_from_message()
-
-            # Always log on the contact chatter (for external contacts)
 
             def nl2br(txtval):
                 if not txtval:
@@ -1052,7 +1032,7 @@ class QuoText(models.Model):
             except Exception:
                 media_list = []
 
-            attachment_ids, fallback_links = self._fetch_media_as_attachments(media_list)
+            attachment_ids, fallback_links = txt._fetch_media_as_attachments(media_list)
 
             # -------------------------
             # Build message body
@@ -1090,14 +1070,13 @@ class QuoText(models.Model):
             # Post to contacts (always), for external contacts only
             # -------------------------
             for p in external_partners:
-
                 p.message_post(
                     body=body_html,
                     body_is_html=True,
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                     author_id=quo_author.id,
-                    attachment_ids=attachment_ids or None,   # <-- use attachment_ids, NOT attachments=
+                    attachment_ids=attachment_ids or None,
                 )
 
             # -------------------------
@@ -1137,7 +1116,6 @@ class QuoText(models.Model):
 
                 # Post on ALL found opps and quotes
                 for rec in opportunities:
-
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
@@ -1148,15 +1126,15 @@ class QuoText(models.Model):
                     )
 
                 for rec in quotes:
-
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        attachments=attachments or None,
+                        attachment_ids=attachment_ids or None,
                     )
+
 
     @api.model
     def upsert_text_from_payload(self, message_id, payload):
