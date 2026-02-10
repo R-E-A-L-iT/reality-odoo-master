@@ -13,6 +13,7 @@
         id="menu_sync_reports"
         name="Sync Reports"
         sequence="10"
+        web_icon="prosync,static/description/icon.png"
         action="action_sync_report_tree"
         parent=""
         groups="base.group_no_one" /> <!-- Visible in developer mode only -->
