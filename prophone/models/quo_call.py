@@ -6,6 +6,10 @@ import logging
 from datetime import datetime, timedelta
 from markupsafe import Markup, escape
 
+import os
+import mimetypes
+from urllib.parse import urlparse
+
 import requests
 
 from odoo import api, fields, models, _
@@ -938,20 +942,24 @@ class QuoText(models.Model):
         """Log the text on:
         - BOTH involved contacts (always, as long as they are not internal user partners)
         - ALL matching open opportunities and draft/sent quotes for those external contacts
+        - Attach any media as chatter attachments (images/files), not just links
         """
+        import os
+        import mimetypes
+        from urllib.parse import urlparse
+
         for txt in self:
             msg_dt = txt.created_at or txt.create_date
             external_partners = txt._get_external_partners_from_message()
 
             # Always log on the contact chatter (for external contacts)
-            signature = f"[QUO_TEXT:{txt.id}]"
 
             def nl2br(txtval):
                 if not txtval:
                     return Markup("")
                 return Markup("<br/>").join(escape(txtval).splitlines())
 
-            # Clickable "between" names (use short name)
+            # Clickable partner names (short title)
             def _partner_short_title(p):
                 return (p.name or p.display_name) if p else ""
 
@@ -962,66 +970,102 @@ class QuoText(models.Model):
 
             from_html = _partner_clickable(txt.from_partner_id) or escape(txt.from_number or "")
             to_html = _partner_clickable(txt.to_partner_id) or escape(txt.to_number or "")
-            between_html = Markup(from_html) + Markup(" and ") + Markup(to_html)
 
-            # Time (user tz)
-            time_str = ""
-            if msg_dt:
-                tz = self.env.company.partner_id.tz or self.env.user.tz or "UTC"
-                dt_local = fields.Datetime.context_timestamp(self.with_context(tz=tz), msg_dt)
-                time_str = dt_local.strftime("%-I:%M %p")
-
-            parts = []
-            parts.append(
-                Markup("<p><b>Text message</b>")
-                + (Markup(" at <b>") + escape(time_str) + Markup("</b>") if time_str else Markup(""))
-                + Markup(" between <b>") + Markup(between_html) + Markup("</b>.</p>")
-            )
-
-            if txt.body:
-                parts.append(Markup("<b>Message:</b><br/>") + nl2br(txt.body))
-                parts.append(Markup("<br/>"))
-
-            # Media links
+            # -------------------------
+            # Build attachments from media
+            # -------------------------
             media_list = []
             try:
                 media_list = json.loads(txt.media_json or "[]") if txt.media_json else []
             except Exception:
                 media_list = []
 
-            if media_list:
-                parts.append(Markup("<b>Media:</b><br/>"))
-                for m in media_list:
-                    url = (m or {}).get("url")
-                    mtype = (m or {}).get("type") or "file"
-                    if url:
-                        parts.append(Markup(f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(mtype)}</a><br/>'))
-                parts.append(Markup("<br/>"))
+            def _guess_filename(url, mtype, idx):
+                # Try to use the filename in the URL path, else generate one
+                try:
+                    path = urlparse(url).path or ""
+                    base = os.path.basename(path) or ""
+                except Exception:
+                    base = ""
 
-            # Hidden signature to dedupe
-            parts.append(Markup(f'<span style="display:none">{escape(signature)}</span>'))
+                if not base or "." not in base:
+                    ext = ""
+                    if mtype:
+                        ext = mimetypes.guess_extension(mtype.split(";")[0].strip()) or ""
+                    if not ext:
+                        ext = ".bin"
+                    base = f"quo_media_{idx}{ext}"
+                return base
+
+            attachments = []
+            fallback_links = []
+
+            for idx, m in enumerate(media_list or [], start=1):
+                url = (m or {}).get("url")
+                mtype = (m or {}).get("type") or ""
+                if not url:
+                    continue
+
+                filename = _guess_filename(url, mtype, idx)
+
+                try:
+                    resp = requests.get(url, timeout=30)
+                    if resp.ok and resp.content:
+                        attachments.append((filename, base64.b64encode(resp.content)))
+                    else:
+                        fallback_links.append((mtype or filename, url))
+                except Exception:
+                    fallback_links.append((mtype or filename, url))
+
+            # -------------------------
+            # Build message body
+            # -------------------------
+            parts = []
+            parts.append(
+                Markup("<p><b>Text from </b>")
+                + Markup(from_html)
+                + Markup("<b> to </b>")
+                + Markup(to_html)
+                + Markup("</p>")
+            )
+
+            if txt.body:
+                parts.append(Markup("<p>") + nl2br(txt.body) + Markup("</p>"))
+            else:
+                parts.append(Markup("<p><i>(No message body)</i></p>"))
+
+            # If we couldn't fetch media to attach, show fallback links (rare)
+            if fallback_links:
+                parts.append(Markup("<p><b>Media (links):</b><br/>"))
+                for label, url in fallback_links:
+                    parts.append(
+                        Markup(
+                            f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(label)}</a><br/>'
+                        )
+                    )
+                parts.append(Markup("</p>"))
 
             body_html = Markup("").join(parts)
 
             quo_author = self.env["quo.call"].sudo()._get_quo_author_partner()
 
+            # -------------------------
             # Post to contacts (always), for external contacts only
+            # -------------------------
             for p in external_partners:
-                already = self.env["mail.message"].sudo().search_count([
-                    ("model", "=", "res.partner"),
-                    ("res_id", "=", p.id),
-                    ("body", "ilike", signature),
-                ])
-                if not already:
-                    p.message_post(
-                        body=body_html,
-                        body_is_html=True,
-                        message_type="comment",
-                        subtype_xmlid="mail.mt_note",
-                        author_id=quo_author.id,
-                    )
 
+                p.message_post(
+                    body=body_html,
+                    body_is_html=True,
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                    author_id=quo_author.id,
+                    attachments=attachments or None,
+                )
+
+            # -------------------------
             # Post to opportunities and quotes for each external partner
+            # -------------------------
             for partner in external_partners:
                 # Opportunities (same logic as calls)
                 opp_domain = [
@@ -1056,35 +1100,25 @@ class QuoText(models.Model):
 
                 # Post on ALL found opps and quotes
                 for rec in opportunities:
-                    already = self.env["mail.message"].sudo().search_count([
-                        ("model", "=", rec._name),
-                        ("res_id", "=", rec.id),
-                        ("body", "ilike", signature),
-                    ])
-                    if already:
-                        continue
+
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
+                        attachments=attachments or None,
                     )
 
                 for rec in quotes:
-                    already = self.env["mail.message"].sudo().search_count([
-                        ("model", "=", rec._name),
-                        ("res_id", "=", rec.id),
-                        ("body", "ilike", signature),
-                    ])
-                    if already:
-                        continue
+
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
+                        attachments=attachments or None,
                     )
 
     @api.model
