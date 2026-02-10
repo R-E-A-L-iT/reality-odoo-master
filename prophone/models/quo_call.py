@@ -1002,29 +1002,54 @@ class QuoText(models.Model):
         - ALL matching open opportunities and draft/sent quotes for those external contacts
         - Attach any media as chatter attachments (images/files), not just links
         """
+        import os
+        import mimetypes
+        from urllib.parse import urlparse
+
+        def nl2br(txtval):
+            if not txtval:
+                return Markup("")
+            return Markup("<br/>").join(escape(txtval).splitlines())
+
+        def _partner_short_title(p):
+            return (p.name or p.display_name) if p else ""
+
+        def _partner_clickable(p):
+            if not p:
+                return ""
+            return p._get_html_link(title=_partner_short_title(p))
+
+        def _guess_ext(content_type, fallback=""):
+            ct = (content_type or "").split(";")[0].strip().lower()
+            if ct:
+                ext = mimetypes.guess_extension(ct) or ""
+                if ext:
+                    return ext
+            fb = (fallback or "").split(";")[0].strip().lower()
+            if fb:
+                ext = mimetypes.guess_extension(fb) or ""
+                if ext:
+                    return ext
+            return ".bin"
+
+        def _filename_from_url(url, content_type, fallback_type, idx):
+            try:
+                base = os.path.basename(urlparse(url).path or "") or ""
+            except Exception:
+                base = ""
+            if not base or "." not in base:
+                base = f"quo_media_{idx}{_guess_ext(content_type, fallback_type)}"
+            return base
+
         for txt in self:
             msg_dt = txt.created_at or txt.create_date
             external_partners = txt._get_external_partners_from_message()
-
-            def nl2br(txtval):
-                if not txtval:
-                    return Markup("")
-                return Markup("<br/>").join(escape(txtval).splitlines())
-
-            # Clickable partner names (short title)
-            def _partner_short_title(p):
-                return (p.name or p.display_name) if p else ""
-
-            def _partner_clickable(p):
-                if not p:
-                    return ""
-                return p._get_html_link(title=_partner_short_title(p))
 
             from_html = _partner_clickable(txt.from_partner_id) or escape(txt.from_number or "")
             to_html = _partner_clickable(txt.to_partner_id) or escape(txt.to_number or "")
 
             # -------------------------
-            # Build attachments from media
+            # Build attachments payload for message_post (list of (name, b64data))
             # -------------------------
             media_list = []
             try:
@@ -1032,18 +1057,47 @@ class QuoText(models.Model):
             except Exception:
                 media_list = []
 
-            attachment_ids, fallback_links = txt._fetch_media_as_attachments(media_list)
+            attachments = []
+            fallback_links = []
 
-            if attachment_ids:
-                _logger.info(
-                    "Fetched %d attachments for Quo text %s media",
-                    len(attachment_ids), txt.id
-                )
-            else:
-                _logger.info(
-                    "No attachments fetched for Quo text %s media; fallback links: %d",
-                    txt.id, len(fallback_links)
-                )
+            headers = {
+                "User-Agent": "Mozilla/5.0 (compatible; Odoo)",
+                "Accept": "*/*",
+            }
+
+            for idx, m in enumerate(media_list or [], start=1):
+                url = (m or {}).get("url")
+                mtype = (m or {}).get("type") or ""
+                if not url:
+                    continue
+
+                try:
+                    resp = requests.get(url, headers=headers, timeout=45, allow_redirects=True)
+                    ct = (resp.headers.get("Content-Type") or mtype or "").strip()
+
+                    if not (resp.ok and resp.content):
+                        fallback_links.append((ct or mtype or "file", url))
+                        continue
+
+                    # Don't attach HTML error pages
+                    head = resp.content[:64].lstrip().lower()
+                    if (ct.lower().startswith("text/html") or head.startswith(b"<!doctype html") or head.startswith(b"<html")):
+                        fallback_links.append((ct or mtype or "file", url))
+                        continue
+
+                    fname = _filename_from_url(url, ct, mtype, idx)
+
+                    # IMPORTANT: message_post expects base64 content for attachments
+                    attachments.append((fname, base64.b64encode(resp.content)))
+
+                except Exception:
+                    _logger.exception("Failed fetching QUO media url=%s", url)
+                    fallback_links.append((mtype or "file", url))
+
+            _logger.info(
+                "QUO text %s media: attachments=%d fallback_links=%d",
+                txt.id, len(attachments), len(fallback_links)
+            )
 
             # -------------------------
             # Build message body
@@ -1062,14 +1116,11 @@ class QuoText(models.Model):
             else:
                 parts.append(Markup("<p><i>(No message body)</i></p>"))
 
-            # If we couldn't fetch media to attach, show fallback links (rare)
             if fallback_links:
                 parts.append(Markup("<p><b>Media (links):</b><br/>"))
                 for label, url in fallback_links:
                     parts.append(
-                        Markup(
-                            f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(label)}</a><br/>'
-                        )
+                        Markup(f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(label)}</a><br/>')
                     )
                 parts.append(Markup("</p>"))
 
@@ -1087,15 +1138,13 @@ class QuoText(models.Model):
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                     author_id=quo_author.id,
-                    attachment_ids=attachment_ids or None,
-                    attachments=attachment_ids or None,
+                    attachments=attachments or None,
                 )
 
             # -------------------------
             # Post to opportunities and quotes for each external partner
             # -------------------------
             for partner in external_partners:
-                # Opportunities (same logic as calls)
                 opp_domain = [
                     ("type", "=", "opportunity"),
                     ("active", "=", True),
@@ -1111,7 +1160,6 @@ class QuoText(models.Model):
                 ]
                 opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
 
-                # Quotes
                 quote_domain = [
                     ("state", "in", ["draft", "sent"]),
                 ]
@@ -1126,7 +1174,6 @@ class QuoText(models.Model):
                 ]
                 quotes = self.env["sale.order"].sudo().search(quote_domain, order="create_date desc, id desc")
 
-                # Post on ALL found opps and quotes
                 for rec in opportunities:
                     rec.message_post(
                         body=body_html,
@@ -1134,8 +1181,7 @@ class QuoText(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        attachment_ids=attachment_ids or None,
-                        attachments=attachment_ids or None,
+                        attachments=attachments or None,
                     )
 
                 for rec in quotes:
@@ -1145,8 +1191,7 @@ class QuoText(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        attachment_ids=attachment_ids or None,
-                        attachments=attachment_ids or None,
+                        attachments=attachments or None,
                     )
 
 
