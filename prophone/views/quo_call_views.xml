@@ -48,9 +48,9 @@
                     <br></br>
                     <group string="Call details" colspan="2">
                         <group>
-                            <field name="started_at"/>
-                            <field name="ended_at"/>
-                            <field name="direction"/>
+                            <field name="started_at" readonly="1"/>
+                            <field name="ended_at" readonly="1"/>
+                            <field name="direction" readonly="1"/>
                         </group>
 
                         <!-- Dev-only -->
@@ -142,10 +142,10 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="call_id"/>
-                        <field name="created_at"/>
-                        <field name="status"/>
-                        <field name="duration_seconds"/>
+                        <field name="call_id" readonly="1"/>
+                        <field name="created_at" readonly="1"/>
+                        <field name="status" readonly="1"/>
+                        <field name="duration_seconds" readonly="1"/>
                     </group>
 
                     <notebook>
@@ -162,9 +162,9 @@
                             </field>
                         </page>
 
-                        <page string="Raw JSON">
+                        <!-- <page string="Raw JSON">
                             <field name="raw_transcript_json" widget="text"/>
-                        </page>
+                        </page> -->
                     </notebook>
                 </sheet>
             </form>
