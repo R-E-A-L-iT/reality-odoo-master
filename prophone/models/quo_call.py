@@ -1088,6 +1088,7 @@ class QuoText(models.Model):
                     subtype_xmlid="mail.mt_note",
                     author_id=quo_author.id,
                     attachment_ids=attachment_ids or None,
+                    attachments=attachment_ids or None,
                 )
 
             # -------------------------
@@ -1134,6 +1135,7 @@ class QuoText(models.Model):
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
                         attachment_ids=attachment_ids or None,
+                        attachments=attachment_ids or None,
                     )
 
                 for rec in quotes:
@@ -1144,6 +1146,7 @@ class QuoText(models.Model):
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
                         attachment_ids=attachment_ids or None,
+                        attachments=attachment_ids or None,
                     )
 
 
