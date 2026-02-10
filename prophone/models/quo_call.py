@@ -938,6 +938,78 @@ class QuoText(models.Model):
         partners = (self.from_partner_id | self.to_partner_id)
         return partners.filtered(lambda p: p and p.id not in internal_partner_ids)
 
+    def _fetch_media_as_attachments(self, media_list):
+        """Return (attachment_ids, fallback_links) for QUO media."""
+        import os
+        import mimetypes
+        from urllib.parse import urlparse
+
+        IrAttachment = self.env["ir.attachment"].sudo()
+
+        def _guess_ext(ct, fallback=""):
+            ct = (ct or "").split(";")[0].strip().lower()
+            if ct:
+                ext = mimetypes.guess_extension(ct) or ""
+                if ext:
+                    return ext
+            ft = (fallback or "").split(";")[0].strip().lower()
+            if ft:
+                ext = mimetypes.guess_extension(ft) or ""
+                if ext:
+                    return ext
+            return ".bin"
+
+        def _filename(url, ct, mtype, idx):
+            try:
+                base = os.path.basename(urlparse(url).path or "") or ""
+            except Exception:
+                base = ""
+            if not base or "." not in base:
+                base = f"quo_media_{idx}{_guess_ext(ct, mtype)}"
+            return base
+
+        attachment_ids = []
+        fallback_links = []
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Odoo)",
+            "Accept": "*/*",
+        }
+
+        for idx, m in enumerate(media_list or [], start=1):
+            url = (m or {}).get("url")
+            mtype = (m or {}).get("type") or ""
+            if not url:
+                continue
+
+            try:
+                resp = requests.get(url, headers=headers, timeout=45, allow_redirects=True)
+                ct = (resp.headers.get("Content-Type") or mtype or "").strip()
+
+                if not (resp.ok and resp.content):
+                    fallback_links.append((ct or "file", url))
+                    continue
+
+                # Guard: don't save HTML error pages as "images"
+                if (ct.lower().startswith("text/html") or resp.content[:20].lstrip().lower().startswith(b"<!doctype html")):
+                    fallback_links.append((ct or "file", url))
+                    continue
+
+                fname = _filename(url, ct, mtype, idx)
+
+                att = IrAttachment.create({
+                    "name": fname,
+                    "datas": base64.b64encode(resp.content).decode("ascii"),  # Binary field expects base64 string
+                    "mimetype": (ct.split(";")[0].strip() if ct else False),
+                })
+                attachment_ids.append(att.id)
+
+            except Exception:
+                fallback_links.append((mtype or "file", url))
+
+        return attachment_ids, fallback_links
+
+
     def _post_to_related_documents_and_contacts(self):
         """Log the text on:
         - BOTH involved contacts (always, as long as they are not internal user partners)
@@ -980,90 +1052,7 @@ class QuoText(models.Model):
             except Exception:
                 media_list = []
 
-            def _guess_extension(content_type, fallback_mtype=""):
-                ct = (content_type or "").split(";")[0].strip().lower()
-                if ct:
-                    ext = mimetypes.guess_extension(ct) or ""
-                    if ext:
-                        return ext
-                # fallback to provided mtype from payload
-                ft = (fallback_mtype or "").split(";")[0].strip().lower()
-                if ft:
-                    ext = mimetypes.guess_extension(ft) or ""
-                    if ext:
-                        return ext
-                return ".bin"
-
-            def _guess_filename(url, content_type, mtype, idx):
-                # Try to get a filename from the URL path
-                try:
-                    path = urlparse(url).path or ""
-                    base = os.path.basename(path) or ""
-                except Exception:
-                    base = ""
-
-                # If URL has no filename or no extension, generate one with a good extension
-                if not base or "." not in base:
-                    ext = _guess_extension(content_type, mtype)
-                    base = f"quo_media_{idx}{ext}"
-
-                return base
-
-            def _looks_like_image_bytes(b):
-                # Simple magic-byte checks for common image formats
-                if not b or len(b) < 12:
-                    return False
-                if b.startswith(b"\xFF\xD8\xFF"):  # JPEG
-                    return True
-                if b.startswith(b"\x89PNG\r\n\x1a\n"):  # PNG
-                    return True
-                if b.startswith(b"GIF87a") or b.startswith(b"GIF89a"):  # GIF
-                    return True
-                if b[0:4] == b"RIFF" and b[8:12] == b"WEBP":  # WEBP
-                    return True
-                return False
-
-            attachments = []
-            fallback_links = []
-
-            headers = {
-                # Some CDNs return an HTML page or block without a UA
-                "User-Agent": "Mozilla/5.0 (compatible; Odoo; +https://odoo.com)",
-                "Accept": "*/*",
-            }
-
-            for idx, m in enumerate(media_list or [], start=1):
-                url = (m or {}).get("url")
-                mtype = (m or {}).get("type") or ""
-                if not url:
-                    continue
-
-                try:
-                    resp = requests.get(url, headers=headers, timeout=45, allow_redirects=True)
-                    if not (resp.ok and resp.content):
-                        fallback_links.append((mtype or "file", url))
-                        continue
-
-                    content_type = (resp.headers.get("Content-Type") or "").strip()
-                    content = resp.content
-
-                    # If server returned HTML (login/error page), don't attach it
-                    if content_type.lower().startswith("text/html") or content[:20].lstrip().lower().startswith(b"<!doctype html"):
-                        fallback_links.append((mtype or "file", url))
-                        continue
-
-                    filename = _guess_filename(url, content_type, mtype, idx)
-
-                    # If it's supposed to be an image but doesn't look like one, fallback to link
-                    if ("image/" in (content_type.lower() or mtype.lower())) and not _looks_like_image_bytes(content):
-                        fallback_links.append((mtype or filename, url))
-                        continue
-
-                    # IMPORTANT: store as base64 *string* (ascii), not bytes
-                    attachments.append((filename, base64.b64encode(content)))
-
-                except Exception:
-                    fallback_links.append((mtype or "file", url))
+            attachment_ids, fallback_links = self._fetch_media_as_attachments(media_list)
 
             # -------------------------
             # Build message body
@@ -1108,7 +1097,7 @@ class QuoText(models.Model):
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                     author_id=quo_author.id,
-                    attachments=attachments or None,
+                    attachment_ids=attachment_ids or None,   # <-- use attachment_ids, NOT attachments=
                 )
 
             # -------------------------
@@ -1155,7 +1144,7 @@ class QuoText(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        attachments=attachments or None,
+                        attachment_ids=attachment_ids or None,
                     )
 
                 for rec in quotes:
