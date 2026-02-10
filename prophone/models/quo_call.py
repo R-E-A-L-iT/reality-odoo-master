@@ -250,19 +250,23 @@ class QuoCall(models.Model):
         return "\n".join([f"• {str(x).strip()}" for x in items if str(x).strip()])
 
     def upsert_summary_from_payload(self, call_id, call_payload):
+        MIN_DURATION_SECONDS = 10
+
         call_payload = call_payload or {}
 
         Call = self.sudo()
         call = Call.search([("quo_call_id", "=", call_id)], limit=1)
         if not call:
-            # Create a stub call; full call details may arrive via recording/other events
-            call = Call.create({"quo_call_id": call_id, "direction": "unknown"})
+            _logger.info("Skipping QUO summary for call %s: no call record exists (possibly discarded short call).", call_id)
+            return self.env["quo.call"]
 
-        # Support BOTH payload shapes:
-        # 1) call object with callSummary nested
-        # 2) callSummary object with summary/nextSteps at top level
+        # If duration is already known and it's short, delete & skip
+        if call.duration_seconds and call.duration_seconds < MIN_DURATION_SECONDS:
+            _logger.info("Discarding QUO call %s on summary (duration=%ss < %ss)", call_id, call.duration_seconds, MIN_DURATION_SECONDS)
+            call.unlink()
+            return self.env["quo.call"]
+
         cs = call_payload.get("callSummary") or call_payload
-
         summary_list = cs.get("summary") or []
         next_steps_list = cs.get("nextSteps") or []
 
@@ -273,21 +277,18 @@ class QuoCall(models.Model):
         }
         call.write(vals)
 
-        # Post chatter notes / create activities based on the summary (if any related docs exist)
         call._post_potentially_related_to_documents()
         return call
 
 
+
     @api.model
     def upsert_recording_from_payload(self, call_id, call_payload):
-        """
-        call_payload is data.object (the call) from call.recording.completed event.
-        Uses media[0] if present.
-        """
         call_payload = call_payload or {}
 
-        # Ensure base call fields are captured even if recording is the first event we receive
         call = self.sudo().upsert_call_from_payload(call_id, call_payload)
+        if not call:
+            return call  # discarded
 
         media = (call_payload or {}).get("media") or []
         m0 = media[0] if media else {}
@@ -368,9 +369,14 @@ class QuoCall(models.Model):
     def upsert_call_from_payload(self, call_id, payload):
         """
         Create/update quo.call with best-effort parsing.
-        `payload` can be the call object coming from transcript/summary/recording events.
-        This method is the canonical place where we normalize core call fields (direction, from/to, timestamps, callers).
+
+        Spam protection:
+        - If we can determine duration and it is < 10 seconds, we discard the call:
+          - If a record already exists, delete it.
+          - If none exists, do not create anything.
         """
+        MIN_DURATION_SECONDS = 10
+
         Call = self.sudo()
         rec = Call.search([("quo_call_id", "=", call_id)], limit=1)
 
@@ -380,8 +386,38 @@ class QuoCall(models.Model):
         phone_number_id = payload.get("phoneNumberId") or payload.get("phone_number_id")
         direction = self._normalize_direction(payload.get("direction"))
         created_at = payload.get("createdAt") or payload.get("created_at")
-        ended_at = payload.get("completedAt") or payload.get("completed_at")
-        duration = payload.get("duration") or payload.get("durationSeconds") or payload.get("duration_seconds")
+
+        # completedAt is the one QUO sends on real calls; keep a couple fallbacks
+        ended_at = (
+            payload.get("completedAt")
+            or payload.get("completed_at")
+            or payload.get("endedAt")
+            or payload.get("ended_at")
+        )
+
+        # Duration may appear in different places depending on event type
+        duration = (
+            payload.get("duration")
+            or payload.get("durationSeconds")
+            or payload.get("duration_seconds")
+        )
+        if not duration:
+            media = payload.get("media") or []
+            if media and isinstance(media, list) and isinstance(media[0], dict):
+                duration = media[0].get("duration")
+
+        # Spam protection: discard calls < 10 seconds if duration is known
+        try:
+            if duration not in (None, "", False):
+                dur_int = int(float(duration))
+                if dur_int < MIN_DURATION_SECONDS:
+                    _logger.info("Discarding QUO call %s (duration=%ss < %ss)", call_id, dur_int, MIN_DURATION_SECONDS)
+                    if rec:
+                        rec.unlink()
+                    return self.env["quo.call"]  # empty recordset
+        except Exception:
+            # If duration can't be parsed, do not block creation; just proceed.
+            pass
 
         from_num = payload.get("from") or payload.get("fromNumber") or payload.get("from_phone") or ""
         to_num = payload.get("to") or payload.get("toNumber") or payload.get("to_phone") or ""
@@ -399,13 +435,8 @@ class QuoCall(models.Model):
         matched_partners = self._find_partners_by_phone([from_s, to_s])
 
         _logger.info(
-            "Quo call partner match: from=%s to=%s patterns=%s matched_partner_ids=%s",
-            from_num, to_num,
-            sorted(list(set([
-                re.sub(r"\D+", "", from_num or "")[-10:],
-                re.sub(r"\D+", "", to_num or "")[-10:],
-            ]))),
-            matched_partners.ids,
+            "Quo call partner match: from=%s to=%s matched_partner_ids=%s",
+            from_num, to_num, matched_partners.ids,
         )
 
         participants = payload.get("participants")
@@ -417,7 +448,7 @@ class QuoCall(models.Model):
             "direction": direction,
             "started_at": self._parse_dt(created_at),
             "ended_at": self._parse_dt(ended_at),
-            "duration_seconds": int(duration) if duration not in (None, "") else 0,
+            "duration_seconds": int(float(duration)) if duration not in (None, "", False) else 0,
             "from_number": from_num or False,
             "to_number": to_num or False,
             "caller_from_partner_id": p_from.id or False,
@@ -436,7 +467,7 @@ class QuoCall(models.Model):
             # Never lose the raw payload
             update_vals["raw_call_json"] = vals["raw_call_json"]
 
-            # Only write "direction" if it is meaningful, OR if we don't already have one
+            # Only write "direction" if meaningful, OR if we don't already have one
             if direction != "unknown" or rec.direction in (False, "unknown"):
                 update_vals["direction"] = direction
 
@@ -740,7 +771,31 @@ class QuoCallTranscript(models.Model):
             "status": "...",
             "dialogue": [{...}, ...]
           }
+
+        Spam protection:
+        - If transcript duration < 10s, do not create call/transcript at all.
         """
+        MIN_DURATION_SECONDS = 10
+
+        transcript_payload = transcript_payload or {}
+
+        # duration is present on transcript payload
+        duration = (
+            transcript_payload.get("duration")
+            or transcript_payload.get("durationSeconds")
+            or transcript_payload.get("duration_seconds")
+        )
+        try:
+            if duration not in (None, "", False) and int(float(duration)) < MIN_DURATION_SECONDS:
+                _logger.info("Discarding QUO transcript for call %s (duration=%ss < %ss)", call_id, int(float(duration)), MIN_DURATION_SECONDS)
+                # If a call record already exists, remove it too (keeps DB clean)
+                existing_call = self.env["quo.call"].sudo().search([("quo_call_id", "=", call_id)], limit=1)
+                if existing_call:
+                    existing_call.unlink()
+                return False
+        except Exception:
+            pass
+
         Call = self.env["quo.call"].sudo()
         Transcript = self.sudo()
         Line = self.env["quo.call.transcript.line"].sudo()
@@ -752,14 +807,13 @@ class QuoCallTranscript(models.Model):
         rec = Transcript.search([("call_id", "=", call.id)], limit=1)
 
         created_at = transcript_payload.get("createdAt") or transcript_payload.get("created_at")
-        duration = transcript_payload.get("duration") or transcript_payload.get("durationSeconds") or transcript_payload.get("duration_seconds")
         status = transcript_payload.get("status") or ""
 
         vals = {
             "call_id": call.id,
             "status": status,
             "created_at": self.env["quo.call"]._parse_dt(created_at),
-            "duration_seconds": int(duration) if duration not in (None, "") else 0,
+            "duration_seconds": int(float(duration)) if duration not in (None, "", False) else 0,
             "raw_transcript_json": json.dumps(transcript_payload, ensure_ascii=False),
         }
 
