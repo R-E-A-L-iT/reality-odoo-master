@@ -249,7 +249,7 @@ class QuoCall(models.Model):
             return ""
         return "\n".join([f"• {str(x).strip()}" for x in items if str(x).strip()])
 
-   def upsert_summary_from_payload(self, call_id, call_payload):
+    def upsert_summary_from_payload(self, call_id, call_payload):
         call_payload = call_payload or {}
 
         Call = self.sudo()
