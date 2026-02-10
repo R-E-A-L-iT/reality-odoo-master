@@ -867,3 +867,276 @@ class QuoCallTranscriptLine(models.Model):
     speaker_label = fields.Char(string="Speaker")
 
     partner_id = fields.Many2one("res.partner", string="Partner", index=True)
+
+class QuoText(models.Model):
+    _name = "quo.text"
+    _description = "Quo Text Message"
+    _inherit = ["mail.thread"]
+    _order = "created_at desc, id desc"
+
+    name = fields.Char(string="Display Name", compute="_compute_name", store=True)
+
+    quo_message_id = fields.Char(string="Quo Message ID", required=True, index=True)
+    phone_number_id = fields.Char(string="Phone Number ID", index=True)
+    conversation_id = fields.Char(string="Conversation ID", index=True)
+
+    direction = fields.Selection(
+        [("inbound", "Inbound"), ("outbound", "Outbound"), ("unknown", "Unknown")],
+        default="unknown",
+        string="Direction",
+        index=True,
+    )
+
+    created_at = fields.Datetime(string="Created At", index=True)
+    status = fields.Char(string="Status", index=True)
+
+    from_number = fields.Char(string="From")
+    to_number = fields.Char(string="To")
+    from_sanitized = fields.Char(string="From (sanitized)", index=True)
+    to_sanitized = fields.Char(string="To (sanitized)", index=True)
+
+    from_partner_id = fields.Many2one("res.partner", string="From Partner", index=True, ondelete="set null")
+    to_partner_id = fields.Many2one("res.partner", string="To Partner", index=True, ondelete="set null")
+
+    body = fields.Text(string="Message")
+    media_json = fields.Text(string="Media (JSON)")
+    raw_message_json = fields.Text(string="Raw Message (JSON)")
+
+    _sql_constraints = [
+        ("quo_message_id_unique", "unique(quo_message_id)", "Quo Message ID must be unique."),
+    ]
+
+    @api.depends("direction", "from_partner_id", "to_partner_id", "from_number", "to_number", "created_at")
+    def _compute_name(self):
+        for rec in self:
+            dir_label = "Text"
+            if rec.direction == "inbound":
+                dir_label = "Inbound text"
+            elif rec.direction == "outbound":
+                dir_label = "Outbound text"
+
+            def _label(p, num):
+                if p and p.name:
+                    return p.name
+                return num or ""
+
+            left = _label(rec.from_partner_id, rec.from_number)
+            right = _label(rec.to_partner_id, rec.to_number)
+            rec.name = f"{dir_label} from {left} to {right}".strip()
+
+    def _get_internal_partner_ids(self):
+        return set(self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids)
+
+    def _get_external_partners_from_message(self):
+        """Return external partners involved in this message (exclude internal user partners)."""
+        self.ensure_one()
+        internal_partner_ids = self._get_internal_partner_ids()
+        partners = (self.from_partner_id | self.to_partner_id)
+        return partners.filtered(lambda p: p and p.id not in internal_partner_ids)
+
+    def _post_to_related_documents_and_contacts(self):
+        """Log the text on:
+        - BOTH involved contacts (always, as long as they are not internal user partners)
+        - ALL matching open opportunities and draft/sent quotes for those external contacts
+        """
+        for txt in self:
+            msg_dt = txt.created_at or txt.create_date
+            external_partners = txt._get_external_partners_from_message()
+
+            # Always log on the contact chatter (for external contacts)
+            signature = f"[QUO_TEXT:{txt.id}]"
+
+            def nl2br(txtval):
+                if not txtval:
+                    return Markup("")
+                return Markup("<br/>").join(escape(txtval).splitlines())
+
+            # Clickable "between" names (use short name)
+            def _partner_short_title(p):
+                return (p.name or p.display_name) if p else ""
+
+            def _partner_clickable(p):
+                if not p:
+                    return ""
+                return p._get_html_link(title=_partner_short_title(p))
+
+            from_html = _partner_clickable(txt.from_partner_id) or escape(txt.from_number or "")
+            to_html = _partner_clickable(txt.to_partner_id) or escape(txt.to_number or "")
+            between_html = Markup(from_html) + Markup(" and ") + Markup(to_html)
+
+            # Time (user tz)
+            time_str = ""
+            if msg_dt:
+                tz = self.env.company.partner_id.tz or self.env.user.tz or "UTC"
+                dt_local = fields.Datetime.context_timestamp(self.with_context(tz=tz), msg_dt)
+                time_str = dt_local.strftime("%-I:%M %p")
+
+            parts = []
+            parts.append(
+                Markup("<p><b>Text message</b>")
+                + (Markup(" at <b>") + escape(time_str) + Markup("</b>") if time_str else Markup(""))
+                + Markup(" between <b>") + Markup(between_html) + Markup("</b>.</p>")
+            )
+
+            if txt.body:
+                parts.append(Markup("<b>Message:</b><br/>") + nl2br(txt.body))
+                parts.append(Markup("<br/>"))
+
+            # Media links
+            media_list = []
+            try:
+                media_list = json.loads(txt.media_json or "[]") if txt.media_json else []
+            except Exception:
+                media_list = []
+
+            if media_list:
+                parts.append(Markup("<b>Media:</b><br/>"))
+                for m in media_list:
+                    url = (m or {}).get("url")
+                    mtype = (m or {}).get("type") or "file"
+                    if url:
+                        parts.append(Markup(f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(mtype)}</a><br/>'))
+                parts.append(Markup("<br/>"))
+
+            # Hidden signature to dedupe
+            parts.append(Markup(f'<span style="display:none">{escape(signature)}</span>'))
+
+            body_html = Markup("").join(parts)
+
+            quo_author = self.env["quo.call"].sudo()._get_quo_author_partner()
+
+            # Post to contacts (always), for external contacts only
+            for p in external_partners:
+                already = self.env["mail.message"].sudo().search_count([
+                    ("model", "=", "res.partner"),
+                    ("res_id", "=", p.id),
+                    ("body", "ilike", signature),
+                ])
+                if not already:
+                    p.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                    )
+
+            # Post to opportunities and quotes for each external partner
+            for partner in external_partners:
+                # Opportunities (same logic as calls)
+                opp_domain = [
+                    ("type", "=", "opportunity"),
+                    ("active", "=", True),
+                    ("stage_id.is_won", "=", False),
+                    ("probability", ">", 0),
+                ]
+                if msg_dt:
+                    opp_domain.append(("create_date", "<", msg_dt))
+                opp_domain += [
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
+
+                # Quotes
+                quote_domain = [
+                    ("state", "in", ["draft", "sent"]),
+                ]
+                if msg_dt:
+                    quote_domain.append(("create_date", "<", msg_dt))
+                quote_domain += [
+                    "|", "|", "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_shipping_id", "child_of", partner.commercial_partner_id.id),
+                        ("partner_invoice_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                quotes = self.env["sale.order"].sudo().search(quote_domain, order="create_date desc, id desc")
+
+                # Post on ALL found opps and quotes
+                for rec in opportunities:
+                    already = self.env["mail.message"].sudo().search_count([
+                        ("model", "=", rec._name),
+                        ("res_id", "=", rec.id),
+                        ("body", "ilike", signature),
+                    ])
+                    if already:
+                        continue
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                    )
+
+                for rec in quotes:
+                    already = self.env["mail.message"].sudo().search_count([
+                        ("model", "=", rec._name),
+                        ("res_id", "=", rec.id),
+                        ("body", "ilike", signature),
+                    ])
+                    if already:
+                        continue
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                    )
+
+    @api.model
+    def upsert_text_from_payload(self, message_id, payload):
+        """Create/update quo.text from message.received/message.delivered event."""
+        payload = payload or {}
+        Text = self.sudo()
+        rec = Text.search([("quo_message_id", "=", message_id)], limit=1)
+
+        from_num = payload.get("from") or ""
+        to_num = payload.get("to") or ""
+        from_s = self.env["quo.call"].sudo()._sanitize_phone(from_num)
+        to_s = self.env["quo.call"].sudo()._sanitize_phone(to_num)
+
+        # Create / resolve partners (Unknown Caller if missing)
+        p_from = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller") if from_num else self.env["res.partner"]
+        p_to = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller") if to_num else self.env["res.partner"]
+
+        direction = self.env["quo.call"].sudo()._normalize_direction(payload.get("direction"))
+
+        created_at = payload.get("createdAt") or payload.get("created_at")
+        dt_created = self.env["quo.call"].sudo()._parse_dt(created_at)
+
+        media = payload.get("media") or []
+        vals = {
+            "quo_message_id": message_id,
+            "phone_number_id": payload.get("phoneNumberId") or payload.get("phone_number_id"),
+            "conversation_id": payload.get("conversationId") or payload.get("conversation_id"),
+            "direction": direction,
+            "created_at": dt_created,
+            "status": payload.get("status") or "",
+            "from_number": from_num or False,
+            "to_number": to_num or False,
+            "from_sanitized": from_s,
+            "to_sanitized": to_s,
+            "from_partner_id": p_from.id or False,
+            "to_partner_id": p_to.id or False,
+            "body": payload.get("body") or "",
+            "media_json": json.dumps(media, ensure_ascii=False),
+            "raw_message_json": json.dumps(payload, ensure_ascii=False),
+        }
+
+        if rec:
+            rec.write({k: v for k, v in vals.items() if v not in (None, False, "") or k in ("raw_message_json", "media_json")})
+            txt = rec
+        else:
+            txt = Text.create(vals)
+
+        # Post chatter logs after upsert
+        try:
+            txt._post_to_related_documents_and_contacts()
+        except Exception:
+            _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+
+        return txt

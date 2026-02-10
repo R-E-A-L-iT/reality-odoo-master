@@ -6,13 +6,19 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
-            <!-- Insert a new smart button in the existing button box -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button type="object"
                         name="action_view_quo_calls"
                         class="oe_stat_button"
                         icon="fa-phone">
                     <field name="quo_calls_count" widget="statinfo" string="Calls"/>
+                </button>
+
+                <button type="object"
+                        name="action_view_quo_texts"
+                        class="oe_stat_button"
+                        icon="fa-comment">
+                    <field name="quo_texts_count" widget="statinfo" string="Texts"/>
                 </button>
             </xpath>
 

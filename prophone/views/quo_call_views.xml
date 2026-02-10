@@ -177,4 +177,73 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <!-- TEXTS -->
+    <record id="view_quo_text_tree" model="ir.ui.view">
+        <field name="name">quo.text.tree</field>
+        <field name="model">quo.text</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="created_at"/>
+                <field name="direction"/>
+                <field name="from_partner_id"/>
+                <field name="to_partner_id"/>
+                <field name="body"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_quo_text_form" model="ir.ui.view">
+        <field name="name">quo.text.form</field>
+        <field name="model">quo.text</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+
+                        <div class="o_row mt-1">
+                            <span class="text-muted me-2">Between</span>
+                            <field name="from_partner_id" options="{'no_create': False}" class="oe_inline"/>
+                            <span class="text-muted mx-2">and</span>
+                            <field name="to_partner_id" options="{'no_create': False}" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group string="Text details">
+                        <group>
+                            <field name="created_at"/>
+                            <field name="direction"/>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <field name="phone_number_id" groups="base.group_system"/>
+                            <field name="conversation_id" groups="base.group_system"/>
+                            <field name="quo_message_id" groups="base.group_system"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Message">
+                            <field name="body" nolabel="1" class="oe_full_width"/>
+                            <separator string="Media"/>
+                            <field name="media_json" nolabel="1" widget="text" class="oe_full_width"/>
+                        </page>
+
+                        <page string="Raw JSON" groups="base.group_system">
+                            <field name="raw_message_json" widget="text" class="oe_full_width"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quo_texts" model="ir.actions.act_window">
+        <field name="name">Quo Texts</field>
+        <field name="res_model">quo.text</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
 </odoo>

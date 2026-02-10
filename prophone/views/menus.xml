@@ -8,6 +8,12 @@
               action="action_quo_calls"
               sequence="10"/>
 
+    <menuitem id="quo_menu_texts"
+              name="Texts"
+              parent="quo_root_menu"
+              action="action_quo_texts"
+              sequence="15"/>
+
     <menuitem id="quo_menu_transcripts"
               name="Transcripts"
               parent="quo_root_menu"
