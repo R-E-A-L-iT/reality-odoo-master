@@ -569,9 +569,6 @@ class QuoCall(models.Model):
                 # Clickable link to the quo.call record (Odoo-generated HTML anchor)
                 call_link = call._get_html_link(title="View full call details")
 
-                # To avoid double-posting if the same call is processed twice, we add a signature token
-                signature = f"[QUO_CALL:{call.id}]"
-
                 # --- Follow-up activities (mail.activity) helpers ---
                 def _extract_next_steps(call):
                     steps = []
@@ -592,7 +589,6 @@ class QuoCall(models.Model):
                         ("res_id", "=", res_id),
                         ("activity_type_id", "=", todo_type.id),
                         ("summary", "=", step_text),
-                        ("note", "ilike", signature),
                     ]))
 
                 def _schedule_followups_on_record(rec, steps, call_link):
@@ -612,7 +608,6 @@ class QuoCall(models.Model):
                             user_id=user.id,
                             date_deadline=due_date,
                             note=(
-                                f"{signature}\n"
                                 "Created from QUO call summary.\n"
                                 f"{call_link}"
                             ),

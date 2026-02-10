@@ -72,12 +72,20 @@
                             </field>
                         </page>
                         <page string="Summary">
-                            <group>
-                                <field name="summary_text" nolabel="1" placeholder="No summary yet..." />
+                            <div class="o_form_sheet">
+                                <field name="summary_text"
+                                    nolabel="1"
+                                    placeholder="No summary yet..."
+                                    class="oe_full_width"/>
+
                                 <separator string="Next Steps"/>
-                                <field name="next_steps_text" nolabel="1" placeholder="No next steps yet..." />
-                            </group>
-                            <!-- <group string="Raw">
+
+                                <field name="next_steps_text"
+                                    nolabel="1"
+                                    placeholder="No next steps yet..."
+                                    class="oe_full_width"/>
+                            </div>
+                             <!-- <group string="Raw">
                                 <field name="raw_summary_json" nolabel="1"/>
                             </group> -->
                         </page>
