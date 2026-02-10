@@ -1034,6 +1034,17 @@ class QuoText(models.Model):
 
             attachment_ids, fallback_links = txt._fetch_media_as_attachments(media_list)
 
+            if attachment_ids:
+                _logger.info(
+                    "Fetched %d attachments for Quo text %s media",
+                    len(attachment_ids), txt.id
+                )
+            else:
+                _logger.info(
+                    "No attachments fetched for Quo text %s media; fallback links: %d",
+                    txt.id, len(fallback_links)
+                )
+
             # -------------------------
             # Build message body
             # -------------------------
