@@ -21,36 +21,61 @@ class QuoWebhookController(http.Controller):
             _logger.exception("Quo webhook: invalid JSON body")
             return request.make_response("invalid json", status=400)
 
-        _logger.info("Quo webhook received keys=%s", list(payload.keys()))
+        # QUO v3 typically wraps everything under {"object": {"object": "event", ...}}
+        event = payload.get("object") if isinstance(payload.get("object"), dict) else payload
+        if not (isinstance(event, dict) and event.get("object") == "event" and "data" in event):
+            # Some providers may post the event dict directly at top-level
+            event = payload
 
-        # 2) Extract event type and call object
-        event_type = payload.get("type") or payload.get("event") or payload.get("eventType") or ""
-        call_obj = (payload.get("data") or {}).get("object") or {}
+        event_type = event.get("type") or event.get("event") or event.get("eventType") or ""
+        data_obj = (event.get("data") or {}).get("object") or {}
 
-        # If provider wraps differently, try one more level
-        if isinstance(call_obj, dict) and call_obj.get("object") == "event" and "data" in call_obj:
-            call_obj = (call_obj.get("data") or {}).get("object") or {}
+        _logger.info(
+            "Quo webhook received event_type=%s data_object=%s keys=%s",
+            event_type,
+            (data_obj.get("object") if isinstance(data_obj, dict) else type(data_obj)),
+            list(event.keys()) if isinstance(event, dict) else [],
+        )
 
-        # 3) Must have a call id
-        call_id = (call_obj or {}).get("id")
+        # 2) Resolve call id across different event object shapes
+        call_id = False
+        if isinstance(data_obj, dict):
+            call_id = data_obj.get("id") or data_obj.get("callId")
+            # Defensive fallback if QUO ever nests it
+            if not call_id and isinstance(data_obj.get("call"), dict):
+                call_id = data_obj["call"].get("id") or data_obj["call"].get("callId")
+
         if not call_id:
             _logger.warning("Quo webhook missing call id. payload=%s", payload)
             return request.make_response("missing call id", status=400)
 
         try:
-            # 4) Always upsert the base call first
-            request.env["quo.call"].sudo().upsert_call_from_payload(call_id, call_obj)
+            Call = request.env["quo.call"].sudo()
 
-            # 5) Route by event type
+            # 3) Ensure the base call exists.
+            # Only upsert full call details when the payload is actually a call object.
+            # Transcript/Summary payloads are different objects and don't include from/to/direction reliably.
+            if isinstance(data_obj, dict) and (
+                data_obj.get("object") == "call" or any(k in data_obj for k in ("from", "to", "direction", "phoneNumberId"))
+            ):
+                Call.upsert_call_from_payload(call_id, data_obj)
+            else:
+                # Create a stub call if needed so transcript/summary can attach later
+                if not Call.search([("quo_call_id", "=", call_id)], limit=1):
+                    Call.create({"quo_call_id": call_id, "direction": "unknown"})
+
+            # 4) Route by event type
             if event_type == "call.transcript.completed":
-                transcript = call_obj.get("callTranscript") or {}
-                request.env["quo.call.transcript"].sudo().upsert_from_transcript_payload(call_id, transcript)
+                # data_obj is a callTranscript object that includes callId, dialogue, etc.
+                request.env["quo.call.transcript"].sudo().upsert_from_transcript_payload(call_id, data_obj)
 
             elif event_type == "call.summary.completed":
-                request.env["quo.call"].sudo().upsert_summary_from_payload(call_id, call_obj)
+                # data_obj is a callSummary object (object=callSummary, callId=...)
+                Call.upsert_summary_from_payload(call_id, data_obj)
 
             elif event_type == "call.recording.completed":
-                request.env["quo.call"].sudo().upsert_recording_from_payload(call_id, call_obj)
+                # data_obj is a call object with media[0]
+                Call.upsert_recording_from_payload(call_id, data_obj)
 
             # Unknown events: accept but do nothing
             return request.make_response("ok", status=200)
