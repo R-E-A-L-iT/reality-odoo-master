@@ -1060,7 +1060,7 @@ class QuoText(models.Model):
                         continue
 
                     # IMPORTANT: store as base64 *string* (ascii), not bytes
-                    attachments.append((filename, base64.b64encode(content).decode("ascii")))
+                    attachments.append((filename, base64.b64encode(content)))
 
                 except Exception:
                     fallback_links.append((mtype or "file", url))
