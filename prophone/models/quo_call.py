@@ -89,23 +89,52 @@ class QuoCall(models.Model):
     recording_duration_seconds = fields.Integer(string="Recording Duration (s)", readonly=True)
     raw_recording_json = fields.Text(string="Raw Recording (JSON)", readonly=True)
 
-    @api.model
     def _sanitize_phone(self, phone):
-        """Very tolerant phone sanitizer: keep digits, preserve leading + if present, else add + if looks like E.164."""
         if not phone:
             return False
+
         s = str(phone).strip()
-        has_plus = s.startswith("+")
+
+        # --- strip common extension patterns ---
+        # Examples handled:
+        #  "1-902-455-1537;226"
+        #  "+1 (902) 455-1537 x226"
+        #  "902-455-1537 ext 226"
+        #  "902-455-1537#226"
+        #  "902-455-1537,226"
+        s_lower = s.lower()
+
+        # split on explicit extension tokens
+        for token in [";"," ext "," ext."," extension "," x", " x ", "#", ","]:
+            if token in s_lower:
+                # for "x" we only want it when it appears like "... x226" or "...x226"
+                if token.strip() == "x":
+                    # handle "...x226" (no spaces) by splitting at last 'x' if digits follow
+                    m = re.search(r"(.*?)(?:\s*x\s*|\bx)(\d{1,6})\s*$", s_lower)
+                    if m:
+                        s = s[:m.start(2)-1]  # chop before the x/extension digits
+                        s_lower = s.lower()
+                    continue
+                s = s.split(token)[0].strip()
+                s_lower = s.lower()
+                break
+
+        # handle "ext226" / "x226" stuck together at end
+        s = re.sub(r"(?:ext\.?|extension|x)\s*\d{1,6}\s*$", "", s, flags=re.IGNORECASE).strip()
+
+        # --- digits only ---
         digits = re.sub(r"\D+", "", s)
         if not digits:
             return False
-        # keep the plus if it was present
-        if has_plus:
-            return "+" + digits
-        # if it looks like country+number length, normalize with +
+
+        # If it already looks like it included a country code, keep it.
+        # Otherwise, if it’s >= 10 digits, standardize to +digits.
         if len(digits) >= 10:
             return "+" + digits
+
+        # For short numbers (extensions), return just digits (or False if you want)
         return digits
+
 
     @api.model
     def _normalize_direction(self, raw):
