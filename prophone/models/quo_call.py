@@ -459,40 +459,87 @@ class QuoCall(models.Model):
         return bool(vals)
 
     def _partner_to_quo_payload(self, partner, phone_value):
-        """Build POST /contacts payload from an Odoo partner."""
-        name = (partner.name or "").strip()
-        first = ""
-        last = ""
-        if partner.is_company:
-            # Company-only contact
+        """Build POST /contacts payload from an Odoo partner.
+
+        Quo expects:
+        {
+            "defaultFields": { ... },
+            "source": "public-api",
+            "externalId": "..."
+        }
+
+        Important: avoid sending empty strings for fields; omit them instead.
+        """
+        Partner = partner.sudo()
+
+        # ---- Derive "person vs company" semantics ----
+        name = (Partner.name or "").strip()
+
+        # If it's a company partner, treat as company-only contact
+        is_company = bool(getattr(Partner, "is_company", False) or (getattr(Partner, "company_type", "") == "company"))
+
+        first = last = ""
+        company = ""
+
+        if is_company:
             company = name
         else:
-            company = (partner.parent_id.name or "").strip() if partner.parent_id else ""
+            # Person: split name into first/last (basic heuristic)
             if name:
                 parts = name.split()
                 first = parts[0]
                 last = " ".join(parts[1:]) if len(parts) > 1 else ""
+            # If they have a parent company, use that
+            if getattr(Partner, "parent_id", False):
+                company = (Partner.parent_id.name or "").strip()
 
+        # ---- Emails ----
         emails = []
-        if (partner.email or "").strip():
-            emails.append({"name": "work", "value": partner.email.strip()})
+        email_val = (Partner.email or "").strip()
+        if email_val:
+            emails.append({"name": "work", "value": email_val})
 
+        # ---- Phone numbers ----
+        # phone_value should already be sanitized (+E164-ish) by your caller
         phone_numbers = [{"name": "main", "value": phone_value}]
 
+        # ---- Build defaultFields with ONLY populated values ----
+        default_fields = {}
+
+        if first:
+            default_fields["firstName"] = first
+        if last:
+            default_fields["lastName"] = last
+        if company:
+            default_fields["company"] = company
+        elif is_company and name:
+            default_fields["company"] = name  # company contact without extra company name
+
+        role_val = (getattr(Partner, "function", "") or "").strip()
+        if role_val:
+            default_fields["role"] = role_val
+
+        if emails:
+            default_fields["emails"] = emails
+
+        # phoneNumbers must exist
+        default_fields["phoneNumbers"] = phone_numbers
+
         payload = {
-            "defaultFields": {
-                "firstName": first or ("" if partner.is_company else ""),
-                "lastName": last or ("" if partner.is_company else ""),
-                "company": company or (name if partner.is_company else ""),
-                "role": (partner.function or "").strip() or "",
-                "emails": emails,
-                "phoneNumbers": phone_numbers,
-            },
+            "defaultFields": default_fields,
             "source": "public-api",
-            # Use a stable externalId so we can later fetch by externalIds if you want
-            "externalId": f"odoo-res-partner-{partner.id}",
+            # Stable externalId so you can later use externalIds filtering if desired
+            "externalId": f"odoo-res-partner-{Partner.id}",
         }
+
+        # Optional: include sourceUrl if you want (safe to omit)
+        # payload["sourceUrl"] = f"{base_url}/web#id={Partner.id}&model=res.partner&view_type=form"
+
+        # Optional: customFields can be omitted entirely unless you use them
+        # payload["customFields"] = []
+
         return payload
+
 
     @api.model
     def cron_two_way_contact_sync(self, quo_max_pages=500, odoo_batch=500):
