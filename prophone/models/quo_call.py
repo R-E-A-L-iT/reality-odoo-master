@@ -210,7 +210,43 @@ class QuoCall(models.Model):
         return self._quo_request("GET", path, params=params)
 
     def _quo_post(self, path, payload):
-        return self._quo_request("POST", path, json_payload=payload)
+        settings = self._get_settings()
+        api_key = settings["api_key"]
+        if not api_key:
+            raise UserError(_("Missing Quo API Key. Set it in Settings → Quo Call Transcripts."))
+
+        url = settings["base_url"].rstrip("/") + "/" + path.lstrip("/")
+
+        headers = {
+            "Authorization": api_key,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+        _logger.info("QUO POST → %s", url)
+        _logger.info("QUO POST PAYLOAD → %s", json.dumps(payload, indent=2))
+
+        try:
+            resp = requests.post(url, headers=headers, json=payload, timeout=30)
+        except Exception as e:
+            _logger.exception("QUO POST NETWORK ERROR: %s", e)
+            raise
+
+        _logger.info("QUO RESPONSE STATUS → %s", resp.status_code)
+        _logger.info("QUO RESPONSE HEADERS → %s", dict(resp.headers))
+        _logger.info("QUO RESPONSE BODY → %s", resp.text)
+
+        if resp.status_code >= 400:
+            raise UserError(
+                _("Quo API POST error %s:\n%s") % (resp.status_code, resp.text)
+            )
+
+        try:
+            return resp.json()
+        except Exception:
+            _logger.warning("QUO RESPONSE NOT JSON — returning raw text")
+            return resp.text
+
     @api.model
     def _find_partners_by_phone(self, numbers):
         numbers = [n for n in (numbers or []) if n]
