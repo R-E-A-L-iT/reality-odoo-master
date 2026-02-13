@@ -494,6 +494,16 @@ class QuoCall(models.Model):
             partner.sudo().write(vals)
         return bool(vals)
 
+    def _is_valid_quo_phone(self, phone_value):
+        # Require + and 10-15 digits (E.164-ish)
+        if not phone_value:
+            return False
+        digits = re.sub(r"\D+", "", phone_value)
+        if not phone_value.startswith("+"):
+            return False
+        return 10 <= len(digits) <= 15
+
+
     def _partner_to_quo_payload(self, partner, phone_value):
         """Build POST /contacts payload from an Odoo partner.
 
@@ -641,6 +651,10 @@ class QuoCall(models.Model):
             phone_val = partner.phone or partner.mobile
             sanitized = self._sanitize_phone(phone_val)
             if not sanitized:
+                continue
+
+            if not self._is_valid_quo_phone(sanitized):
+                _logger.info("Quo contact sync: skipping partner %s due to invalid phone for Quo: %s", partner.id, phone_value)
                 continue
 
             checked += 1
