@@ -172,7 +172,7 @@ class QuoCall(models.Model):
         }
 
     @api.model
-    def _quo_get(self, path):
+    def _quo_request(self, method, path, params=None, json_payload=None):
         settings = self._get_settings()
         api_key = settings["api_key"]
         if not api_key:
@@ -184,11 +184,33 @@ class QuoCall(models.Model):
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
-        resp = requests.get(url, headers=headers, timeout=30)
+
+        try:
+            resp = requests.request(
+                method,
+                url,
+                headers=headers,
+                params=params or None,
+                json=json_payload if json_payload is not None else None,
+                timeout=30,
+            )
+        except Exception as e:
+            raise UserError(_("Quo API request failed: %s") % e)
+
         if resp.status_code >= 400:
             raise UserError(_("Quo API error %s: %s") % (resp.status_code, resp.text))
-        return resp.json()
 
+        # Some endpoints may return empty bodies; guard
+        try:
+            return resp.json()
+        except Exception:
+            return {}
+
+    def _quo_get(self, path, params=None):
+        return self._quo_request("GET", path, params=params)
+
+    def _quo_post(self, path, payload):
+        return self._quo_request("POST", path, json_payload=payload)
     @api.model
     def _find_partners_by_phone(self, numbers):
         numbers = [n for n in (numbers or []) if n]
@@ -347,6 +369,239 @@ class QuoCall(models.Model):
             "phone": sanitized,
         })
 
+    # -------------------------------------------------------------------------
+    # Two-way contact sync (Quo <-> Odoo)
+    # -------------------------------------------------------------------------
+
+    def _phone_key(self, phone):
+        d = re.sub(r"\D+", "", phone or "")
+        if not d:
+            return ""
+        return d[-10:] if len(d) > 10 else d
+
+    def _quo_iter_contacts(self, max_pages=500, page_size=50):
+        """Yield Quo contacts by paging GET /contacts."""
+        page_token = None
+        for _ in range(int(max_pages or 500)):
+            payload = self._quo_get("contacts", params={"maxResults": min(int(page_size or 50), 50), **({"pageToken": page_token} if page_token else {})})
+            for c in (payload.get("data") or []):
+                yield c
+            page_token = payload.get("nextPageToken")
+            if not page_token:
+                break
+
+    def _quo_contact_extract(self, quo_contact):
+        """Extract (name, email, company, role, phones[]) from a Quo contact dict."""
+        df = (quo_contact.get("defaultFields") or {})
+        first = (df.get("firstName") or "").strip()
+        last = (df.get("lastName") or "").strip()
+        company = (df.get("company") or "").strip()
+        role = (df.get("role") or "").strip()
+
+        email = ""
+        for e in (df.get("emails") or []):
+            val = (e.get("value") or "").strip()
+            if val:
+                email = val
+                break
+
+        phones = []
+        for p in (df.get("phoneNumbers") or []):
+            val = (p.get("value") or "").strip()
+            if val:
+                phones.append(val)
+
+        display_name = (f"{first} {last}").strip()
+        if not display_name:
+            display_name = company or ""
+        return display_name, email, company, role, phones
+
+    def _ensure_company_partner(self, company_name):
+        if not company_name:
+            return False
+        Partner = self.env["res.partner"].sudo()
+        company = Partner.search([("is_company", "=", True), ("name", "=", company_name)], limit=1)
+        if not company:
+            company = Partner.create({"name": company_name, "is_company": True, "company_type": "company"})
+        return company
+
+    def _update_partner_from_quo_if_empty(self, partner, display_name, email, company, role, phone_for_record):
+        """Update partner fields only if empty (except name if Unknown Caller)."""
+        vals = {}
+
+        # Name: only set if empty or Unknown Caller
+        if display_name:
+            if not (partner.name or "").strip() or (partner.name or "").strip() == "Unknown Caller":
+                vals["name"] = display_name
+
+        # Email: only set if empty
+        if email and not (partner.email or "").strip():
+            vals["email"] = email
+
+        # Role/function: only set if empty
+        if role and not (partner.function or "").strip():
+            vals["function"] = role
+
+        # Company: only set if empty and we have company
+        if company and not partner.is_company and not partner.parent_id:
+            comp = self._ensure_company_partner(company)
+            if comp:
+                vals["parent_id"] = comp.id
+                vals["company_type"] = "person"
+
+        # Phone: ensure at least one phone field is set (but don't override)
+        if phone_for_record:
+            if not (partner.phone or "").strip() and not (partner.mobile or "").strip():
+                vals["phone"] = phone_for_record
+
+        if vals:
+            partner.sudo().write(vals)
+        return bool(vals)
+
+    def _partner_to_quo_payload(self, partner, phone_value):
+        """Build POST /contacts payload from an Odoo partner."""
+        name = (partner.name or "").strip()
+        first = ""
+        last = ""
+        if partner.is_company:
+            # Company-only contact
+            company = name
+        else:
+            company = (partner.parent_id.name or "").strip() if partner.parent_id else ""
+            if name:
+                parts = name.split()
+                first = parts[0]
+                last = " ".join(parts[1:]) if len(parts) > 1 else ""
+
+        emails = []
+        if (partner.email or "").strip():
+            emails.append({"name": "work", "value": partner.email.strip()})
+
+        phone_numbers = [{"name": "main", "value": phone_value}]
+
+        payload = {
+            "defaultFields": {
+                "firstName": first or ("" if partner.is_company else ""),
+                "lastName": last or ("" if partner.is_company else ""),
+                "company": company or (name if partner.is_company else ""),
+                "role": (partner.function or "").strip() or "",
+                "emails": emails,
+                "phoneNumbers": phone_numbers,
+            },
+            "source": "public-api",
+            # Use a stable externalId so we can later fetch by externalIds if you want
+            "externalId": f"odoo-res-partner-{partner.id}",
+        }
+        return payload
+
+    @api.model
+    def cron_two_way_contact_sync(self, quo_max_pages=500, odoo_batch=500):
+        """
+        Phase 1 (Quo -> Odoo):
+          - List all Quo contacts.
+          - For each phone on each Quo contact:
+              - If Odoo partner exists for phone: fill missing fields (don't overwrite populated ones),
+                except allow replacing name if it's 'Unknown Caller'.
+              - Else: create partner in Odoo with as much info as possible.
+
+        Phase 2 (Odoo -> Quo):
+          - Scan Odoo partners with phone/mobile.
+          - If their phone isn't present in Quo, create a new Quo contact.
+          - Do NOT update existing Quo contacts.
+        """
+        Partner = self.env["res.partner"].sudo()
+
+        # -------------------------
+        # Phase 1: Quo -> Odoo
+        # -------------------------
+        quo_phone_keys = set()
+        created_odoo = 0
+        updated_odoo = 0
+
+        for qc in self.sudo()._quo_iter_contacts(max_pages=quo_max_pages, page_size=50):
+            display_name, email, company, role, phones = self._quo_contact_extract(qc)
+            if not phones:
+                continue
+
+            for raw_phone in phones:
+                sanitized = self._sanitize_phone(raw_phone)
+                if not sanitized:
+                    continue
+
+                key = self._phone_key(sanitized)
+                if key:
+                    quo_phone_keys.add(key)
+
+                matches = self._find_partners_by_phone([sanitized])
+                if matches:
+                    partner = matches.sorted(lambda p: p.id)[0]
+                    if self._update_partner_from_quo_if_empty(partner, display_name, email, company, role, sanitized):
+                        updated_odoo += 1
+                    continue
+
+                # create in Odoo
+                vals = {
+                    "name": display_name or "Unknown Caller",
+                    "phone": sanitized,
+                }
+                if email:
+                    vals["email"] = email
+                if role:
+                    vals["function"] = role
+
+                if company:
+                    comp = self._ensure_company_partner(company)
+                    if comp:
+                        vals["parent_id"] = comp.id
+                        vals["company_type"] = "person"
+
+                Partner.create(vals)
+                created_odoo += 1
+
+        _logger.info("Quo contact sync phase1 done: created_odoo=%s updated_odoo=%s quo_phones_indexed=%s",
+                     created_odoo, updated_odoo, len(quo_phone_keys))
+
+        # -------------------------
+        # Phase 2: Odoo -> Quo (create missing only)
+        # -------------------------
+        created_quo = 0
+        checked = 0
+
+        # Find partners with a phone or mobile
+        domain = ["|", ("phone", "!=", False), ("mobile", "!=", False)]
+        for partner in Partner.search(domain, limit=int(odoo_batch or 500)):
+            # choose phone preference: phone then mobile
+            phone_val = partner.phone or partner.mobile
+            sanitized = self._sanitize_phone(phone_val)
+            if not sanitized:
+                continue
+
+            checked += 1
+            key = self._phone_key(sanitized)
+            if key and key in quo_phone_keys:
+                continue
+
+            payload = self._partner_to_quo_payload(partner, sanitized)
+            try:
+                self._quo_post("contacts", payload)
+                created_quo += 1
+                if key:
+                    quo_phone_keys.add(key)
+            except Exception as e:
+                # swallow; will retry later
+                _logger.warning("Quo contact sync: failed creating contact for partner %s (%s): %s",
+                                partner.id, sanitized, e)
+
+        _logger.info("Quo contact sync phase2 done: checked_odoo=%s created_quo=%s",
+                     checked, created_quo)
+
+        return {
+            "created_odoo": created_odoo,
+            "updated_odoo": updated_odoo,
+            "created_quo": created_quo,
+            "checked_odoo": checked,
+            "quo_indexed": len(quo_phone_keys),
+        }
     def _get_internal_partner_ids(self):
         return set(self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids)
 
