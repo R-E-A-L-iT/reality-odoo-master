@@ -648,14 +648,12 @@ class QuoCall(models.Model):
         domain = ["|", ("phone", "!=", False), ("mobile", "!=", False)]
         for partner in Partner.search(domain, limit=int(odoo_batch or 500)):
             # choose phone preference: phone then mobile
-            phone_val = partner.phone or partner.mobile
-            sanitized = self._sanitize_phone(phone_val)
-            if not sanitized:
-                continue
-
-            if not self._is_valid_quo_phone(sanitized):
+            phone_value = partner.phone or partner.mobile
+            phone_value = self._sanitize_phone(phone_value)
+            if not self._is_valid_quo_phone(phone_value):
                 _logger.info("Quo contact sync: skipping partner %s due to invalid phone for Quo: %s", partner.id, phone_value)
                 continue
+
 
             checked += 1
             key = self._phone_key(sanitized)
