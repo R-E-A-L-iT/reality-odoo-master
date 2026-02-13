@@ -9,6 +9,9 @@ class ResPartner(models.Model):
     quo_calls_count = fields.Integer(compute="_compute_quo_calls_count")
     quo_texts_count = fields.Integer(compute="_compute_quo_texts_count")
 
+    quo_contact_id = fields.Char(string="Quo Contact ID", index=True)
+    quo_contact_source_url = fields.Char(string="Quo Contact URL")
+
     def _sanitize_phone(self, phone):
         if not phone:
             return False

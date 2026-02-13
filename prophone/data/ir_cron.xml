@@ -21,4 +21,20 @@ for c in calls:
         <field name="numbercall">-1</field>
         <field name="active">True</field>
     </record>
+    <record id="ir_cron_quo_two_way_contact_sync" model="ir.cron">
+        <field name="name">Quo: Two-way Contact Sync</field>
+        <field name="model_id" ref="model_quo_call"/>
+        <field name="state">code</field>
+        <field name="code">
+model = env['quo.call'].sudo()
+# quo_max_pages: how many pages of Quo contacts to scan (page size is 50)
+# odoo_batch: how many Odoo partners to consider per run
+model.cron_two_way_contact_sync(quo_max_pages=1000, odoo_batch=3300)
+        </field>
+        <field name="interval_number">12</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+
 </odoo>
