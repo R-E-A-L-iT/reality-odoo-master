@@ -511,12 +511,21 @@ class QuotePortalFix(cPortal):
 
         pdf = request.env['ir.actions.report'].sudo()._render_qweb_pdf('sale.action_report_saleorder', [order_sudo.id])[0]
 
+        # Extract user_id (pid) from request to correctly identify the signer
+        pid = request.httprequest.args.get('user_id')
+        _hash = None
+        if pid:
+            pid = int(pid)
+            _hash = order_sudo._sign_token(pid)
+
         _message_post_helper(
             'sale.order',
             order_sudo.id,
             _('Order signed by %s', name),
             attachments=[('%s.pdf' % order_sudo.name, pdf)],
             token=access_token,
+            pid=pid,
+            _hash=_hash,
         )
 
         query_string = '&message=sign_ok'
