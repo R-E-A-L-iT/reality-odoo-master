@@ -24,7 +24,7 @@ class QuoCall(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "started_at desc, id desc"
 
-    name = fields.Char(string="Display Name", compute="_compute_name", store=True)
+    name = fields.Char(string="Display Name", compute="_compute_name", store=False)
 
     quo_call_id = fields.Char(string="Quo Call ID", required=True, index=True)
     phone_number_id = fields.Char(string="Phone Number ID", index=True)
@@ -120,7 +120,15 @@ class QuoCall(models.Model):
             return "outbound"
         return "unknown"
 
-    @api.depends("direction", "from_number", "to_number", "caller_from_partner_id", "caller_to_partner_id")
+    @api.depends(
+        "direction",
+        "from_number",
+        "to_number",
+        "caller_from_partner_id",
+        "caller_to_partner_id",
+        "caller_from_partner_id.name",
+        "caller_to_partner_id.name",
+    )
     def _compute_name(self):
         for rec in self:
             prefix = "Call"
@@ -138,6 +146,7 @@ class QuoCall(models.Model):
                 to_label = rec.to_number or ""
 
             rec.name = f"{prefix} call from {from_label} to {to_label}".strip()
+
 
     # ---------- Utilities ----------
     @api.model
