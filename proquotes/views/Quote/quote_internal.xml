@@ -13,7 +13,7 @@
 
             <!-- pricelist filter -->
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
-                <!-- Default domain for regular orders (not rental) -->
+                <!-- Default domain for regular orders -->
                 <attribute name="domain">[('name', 'ilike', '')]</attribute>
             </xpath>
 
@@ -38,19 +38,6 @@
 
                 <!-- Rental Info -->
                 <group name="custom_quote_details">
-                    <field name="is_rental" invisible="0"/>
-                    <field name="rental_diff_add" invisible="'is_rental', '!=', True"/>
-                    <field name="rental_street"
-                           invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]"/>
-                    <field name="rental_city"
-                           invisible="['|', ('is_rental', '!=', True),('rental_diff_add', '!=', True)]"/>
-                    <field name="rental_zip"
-                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
-                    <field name="rental_state"
-                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
-                    <field name="rental_country"
-                           invisible="['|', ('is_rental', '!=', True), ('rental_diff_add', '!=', True)]"/>
-
 
                     <field name="customer_po_number" invisible="0"/>
                     <field name="manual_invoice_status"/>
@@ -126,17 +113,6 @@
                         </field>
                     </group>
                 </page>
-            </xpath>
-            <xpath expr="//field[@name=&quot;rental_start_date&quot;]" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='payment_term_id']" position="after">
-                <field name="rental_start"
-                       string="Rental period"
-                       widget="daterange"
-                       options="{'end_date_field': 'rental_end'}"
-                       invisible="not is_rental"
-                       required="has_rented_products"/>
             </xpath>
 
             <!--			commented due to the undefine-->
