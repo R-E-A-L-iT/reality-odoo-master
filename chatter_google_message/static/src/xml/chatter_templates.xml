@@ -14,7 +14,7 @@
                 'active': state.composerType === 'google_message',
                 'my-2': !props.compactHeight
             }" t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId" data-hotkey="g" t-on-click="() => this.toggleGoogleComposer()">
-                Send Google Message
+                Send message
             </button>
         </xpath>
     </t>
