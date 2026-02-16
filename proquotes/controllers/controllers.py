@@ -37,6 +37,7 @@ _logger = logging.getLogger(__name__)
 #         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(cPortal):
+    @staticmethod
     def validate(string):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
@@ -56,6 +57,9 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect("/my")
 
+        # Always save PO number regardless of order state
+        order_sudo.sudo().write({"customer_po_number": ponumber or ""})
+
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
             order_sudo._compute_tax_totals()
@@ -70,12 +74,12 @@ class QuoteCustomerPortal(cPortal):
             )
 
             return results
-        _logger.info("Unlocked Quote")
+        # _logger.info("Unlocked Quote")
 
-        if not self.validate(ponumber):
-            return
+        # if not self.validate(ponumber):
+        #     return
 
-        order_sudo.customer_po_number = ponumber
+        # order_sudo.customer_po_number = ponumber
 
         return
 
@@ -546,47 +550,6 @@ class QuotePortalFix(cPortal):
 
 class WebsiteForm(form.WebsiteForm):
 
-
-    # def insert_record(self, request, model, values, custom, meta=None):
-    #     if model.model == 'sale.order':
-    #         _logger.info('Processing sale.order form submission: %s', values)
-            
-    #         # Get partner email from form
-    #         partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
-    #         partner_name = values.get('partner_name') or partner_email or 'Website Customer'
-            
-    #         if not partner_email:
-    #             raise UserError(_("Email is required for creating quotations."))
-            
-    #         # Find or create partner
-    #         partner = request.env['res.partner'].sudo().search([('email', '=', partner_email)], limit=1)
-    #         if not partner:
-    #             partner = request.env['res.partner'].sudo().create({
-    #                 'name': partner_name,
-    #                 'email': partner_email,
-    #                 'phone': values.get('phone'),
-    #                 'lang': request.context.get('lang', 'en_US'),
-    #                 'is_company': False,
-    #             })
-    #             _logger.info('Created new partner: %s', partner.id)
-            
-    #         # Update values with partner_id for the sale order creation
-    #         values['partner_id'] = partner.id
-    #         values['is_rental'] = True
-    #         values['is_rental_order'] = True
-    #         values['rental_start'] = values.get('rental_start')
-    #         values['rental_end'] = values.get('rental_end')
-            
-    #         # Add company_id if not present
-    #         if 'company_id' not in values:
-    #             values['company_id'] = request.website.company_id.id
-    #         _logger.info('Updated values for sale order: %s', values)
-        
-    #     # Call parent method to actually create the record
-    #     return super().insert_record(request, model, values, custom, meta=meta)
-
-
-
     def insert_record(self, request, model, values, custom, meta=None):
         if model.model == 'sale.order':
             _logger.info('Processing sale.order form submission: %s', values)
@@ -643,8 +606,8 @@ class WebsiteForm(form.WebsiteForm):
             values['partner_id'] = company_partner.id
             values['is_rental'] = True
             values['is_rental_order'] = True
-            values['rental_start'] = values.get('rental_start')
-            values['rental_end'] = values.get('rental_end')
+            # values['rental_start'] = values.get('rental_start')
+            # values['rental_end'] = values.get('rental_end')
     
             if 'company_id' not in values:
                 values['company_id'] = request.website.company_id.id

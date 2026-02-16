@@ -644,38 +644,8 @@ class order(models.Model):
     @api.onchange('pricelist_id')
     def _onchange_pricelist_id(self):
         if self.pricelist_id:
-            # Check if the selected pricelist contains the word "RENTAL"
-            if 'RENTAL' in self.pricelist_id.name.upper():
-                self.is_rental = True
-            else:
-                self.is_rental = False
             for line in self.order_line:
                 line.tax_id = [(5, 0, 0)]
-
-
-    # @api.onchange('sale_order_template_id')
-    # def _onchange_sale_order_template_id(self):
-    #     if self.sale_order_template_id:
-    #         if 'RENTAL' in self.sale_order_template_id.name.upper():
-    #             self.is_rental = False
-    #         else:
-    #             self.is_rental = True
-    
-    @api.onchange('is_rental', 'partner_id')
-    def _onchange_is_rental(self):
-        if self.is_rental and self.partner_id:
-            # Check the country of the customer
-            if self.partner_id.country_id.code == 'CA':  # Canada
-                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'CAD RENTAL')], limit=1)
-            elif self.partner_id.country_id.code == 'US':  # USA
-                rental_pricelist = self.env['product.pricelist'].search([('name', '=', 'USD RENTAL')], limit=1)
-
-            if rental_pricelist:
-                self.pricelist_id = rental_pricelist.id
-        
-        # else:
-        #     # Reset pricelist if not rental
-        #     self.pricelist_id = False
 
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
@@ -689,24 +659,6 @@ class order(models.Model):
                 lines.discount = 0.0
         lines_to_recompute._compute_discount()
         self.show_update_pricelist = False
-
-
-    @api.onchange('partner_id')
-    def _onchange_partner_id(self):
-        if self.partner_id and not self.is_rental:
-            # Set domain for non-rental pricelists
-            return {
-                'domain': {
-                    'pricelist_id': [('name', 'not ilike', 'rental')]
-                }
-            }
-        elif self.partner_id and self.is_rental:
-            # Set domain for rental pricelists
-            return {
-                'domain': {
-                    'pricelist_id': [('name', 'ilike', 'rental')]
-                }
-            }
     
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):
@@ -784,16 +736,6 @@ class order(models.Model):
         )
 
         return len(external_followers) > 0
-    
-    @api.depends('rental_start', 'rental_end')
-    def _compute_duration(self):
-        self.duration_days = 0
-        self.remaining_hours = 0
-        for order in self:
-            if order.rental_start and order.rental_end:
-                duration = order.rental_end - order.rental_start
-                order.duration_days = duration.days
-                order.remaining_hours = ceil(duration.seconds / 3600)
     
     def get_translated_term(self, title, lang):
         if "translate" in title:
@@ -986,34 +928,15 @@ class order(models.Model):
             if header:
                 order.header_id = header.id
 
-    is_rental = fields.Boolean(string="Rental Quote", default=False)
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
-
-    rental_diff_add = fields.Boolean(string="Rental Address", default=False)
-    rental_street = fields.Char(string="Street Address")
-    rental_city = fields.Char(string="City")
-    rental_zip = fields.Char(string="ZIP/Postal Code")
-    rental_state = fields.Many2one(
-        "res.country.state", string="State/Province", store="true"
-    )
-    rental_country = fields.Many2one("res.country", string="Country", store="true")
-
-    rental_start = fields.Date(string="Rental Start Date", default=False)
-    rental_end = fields.Date(string="Rental End Date", default=False)
 
     renewal_product_items = fields.Many2many(
         string="Renewal Items", comodel_name="stock.lot"
     )
 
-    # rental_insurance = fields.Binary(string="Insurance")
 
     @api.onchange("sale_order_template_id")
-    def set_is_rental(self):
-        # Set a flag if quotes is a rental quote
-        if self.sale_order_template_id.name == "Rental":
-            self.is_rental = True
-        else:
-            self.is_rental = False
+    def set_is_renewal(self):
         if (
                 self.sale_order_template_id.name != False
                 and "Renewal" in self.sale_order_template_id.name
@@ -1207,34 +1130,6 @@ class order(models.Model):
         if error_msg != "":
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
-    def calc_rental_price(self, price):
-        # Take into account length of rental
-        if self.rental_start == False or self.rental_end == False:
-            return price
-
-        # Calculate Rental Length
-        sdate = str(self.rental_start).split("-")
-        edate = str(self.rental_end).split("-")
-        rentalDays = (
-                date(int(edate[0]), int(edate[1]), int(edate[2]))
-                - date(int(sdate[0]), int(sdate[1]), int(sdate[2]))
-        ).days
-        rentalMonths = rentalDays // 30
-        rentalDays = rentalDays % 30
-        rentalWeeks = rentalDays // 7
-        rentalDays = rentalDays % 7
-
-        # Calulate Rental Price based on rental length
-        rentalRate = 0
-        rentalDayRate = price * rentalDays
-        if rentalDayRate > price * 4:
-            rentalDayRate = price * 4
-        rentalWeekDayRate = 4 * price * rentalWeeks + rentalDayRate
-        if rentalWeekDayRate > price * 12:
-            rentalDayRate = price * 12
-        rentalMonthRate = 12 * price * rentalMonths
-        return rentalRate + rentalMonthRate + rentalWeekDayRate
-
     @api.depends_context('lang')
     @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
     def _compute_tax_totals(self):
@@ -1386,13 +1281,8 @@ class order(models.Model):
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
                 if line.selected == "true" and line.sectionSelected == "true":
-                    if order.is_rental == False or line.product_id.is_software:
-                        amount_untaxed += line.price_subtotal
-                        amount_tax += line.price_tax
-                    elif order.is_rental and line.product_id.is_software == False:
-                        price = self.calc_rental_price(line.price_subtotal)
-                        amount_untaxed += price
-                        amount_tax += self.calc_rental_price(line.price_tax)
+                    amount_untaxed += line.price_subtotal
+                    amount_tax += line.price_tax
 
             order.update(
                 {

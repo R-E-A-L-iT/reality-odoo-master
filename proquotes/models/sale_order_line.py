@@ -133,10 +133,10 @@ class SaleOrderLine(models.Model):
             created |= super(SaleOrderLine, self).create(allowed)
         return created
 
-    @api.onchange('product_id', 'order_id.is_rental')
+    @api.onchange('product_id')
     def _onchange_product_id(self):
         for line in self:
-            if line.order_id.is_rental and line.product_id:
+            if line.product_id:
                 target_categories = [
                     'Software (Permanent License)',
                     'Software CCP',
