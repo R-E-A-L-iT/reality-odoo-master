@@ -220,14 +220,23 @@
                                                     El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
                                                 </p>
                                                 <!-- Format Estimated Rental Rate Number -->
-                                                <t t-if=" language== 'en_CA' or language == 'en_US'">
-                                                    <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span>No longer supported</span>
+                                                <t t-if="language == 'en_CA' or language == 'en_US'">
+                                                    <span class="rental_price_estimate">
+                                                        Estimated rental cost of chosen hardware + accessories:
+                                                        <span>No longer supported</span>
+                                                    </span>
                                                 </t>
                                                 <t t-elif="language == 'fr_CA'">
-                                                    <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span>N'est plus pris en charge</span>
+                                                    <span class="rental_price_estimate">
+                                                        Coût estimé de la location de l'équipement et les accessoires:
+                                                        <span>N'est plus pris en charge</span>
+                                                    </span>
                                                 </t>
                                                 <t t-elif="language == 'es_ES'">
-                                                    <span class="rental_price_estimate">Costo estimado del alquiler del equipo y los accesorios: <span>No más soportado</span>
+                                                    <span class="rental_price_estimate">
+                                                        Costo estimado del alquiler del equipo y los accesorios:
+                                                        <span>No más soportado</span>
+                                                    </span>
                                                 </t>
                                                 <br />
                                                 <br />
