@@ -680,8 +680,7 @@
                         <div width="90%">
                             <span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"/>
 
-                            <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;">
-                            </label>
+                            <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"></label>
                             <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}"
                                    class="product_foldI" type="checkbox" style="display: none;"/>
                             <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI"
@@ -836,15 +835,14 @@
             </div>
             <t t-else="">
                 <br/><br/>
-                    <h3>
-                        <strong class="white-text" id="terms_hidden">+</strong>
-                        <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
-                        </strong>
-                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
-                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
-                    </h3>
-                </label>
+                <h3>
+                    <strong class="white-text" id="terms_hidden">+</strong>
+                    <strong class="white-text" id="terms_open">×</strong>
+                    <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                    </strong>
+                    <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                    <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
+                </h3>
             </t>
             <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
