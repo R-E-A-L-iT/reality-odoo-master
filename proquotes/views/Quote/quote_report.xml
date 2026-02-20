@@ -317,7 +317,7 @@
                                             <span t-field="line.name">A note, whose content usually applies to the section or product above.</span>
                                         </td>
                                     </t>
-                                    <t else="">
+                                    <t t-else="">
 
                                     </t>
                                 </tr>
