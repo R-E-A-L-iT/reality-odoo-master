@@ -130,39 +130,8 @@
 
                             <t t-set="current_subtotal" t-value="0"/>
 
-                            <!-- rental calculations -->
-                            <t t-set="rentalValue" t-value="0" />
-                            <t t-set="rentalRate" t-value="0" />
-
-                            <t t-if="doc.rental_start != False and doc.rental_end != False">
-                                <t t-set="sdate" t-value="str(doc.rental_start).split('-')" />
-                                <t t-set="edate" t-value="str(doc.rental_end).split('-')" />
-                                <t t-set="rentalDays" t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days + 1" />
-                                <t t-set="rentalMonths" t-value="rentalDays // 30" />
-                                <t t-set="rentalDays" t-value="rentalDays % 30" />
-                                <t t-set="rentalWeeks" t-value="rentalDays // 7" />
-                                <t t-set="rentalDays" t-value="rentalDays % 7" />
-                            </t>
-
-
                             <t t-foreach="lines_to_report" t-as="line">
                                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
-
-                                <!-- rental calculations -->
-                                <t t-if="'CAD' in doc.currency_id.name">
-                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.cad_val" />
-                                </t>
-                                <t t-elif="'USD' in doc.currency_id.name">
-                                    <t t-if="line.selected == 'true'" t-set="rentalValue" t-value="rentalValue + line.product_id.usd_val" />
-                                </t>
-                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays" />
-                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalDayRate > line.price_subtotal * 4)" t-set="rentalDayRate" t-value="line.price_subtotal * 4" />
-                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate" />
-                                <t t-if="doc.rental_start != False and doc.rental_end != False and (rentalWeekDayRate > line.price_subtotal * 12)" t-set="rentalDayRate" t-value="line.price_subtotal * 12" />
-                                <t t-if="doc.rental_start != False and doc.rental_end != False" t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths" />
-                                <t t-if="line.selected == 'true' and doc.rental_start != False and doc.rental_end != False" t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate" />
-
-
 
                                 <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else 'border_bottom'">
                                     <t t-if="not line.display_type and line.selected == 'true'">
@@ -224,16 +193,16 @@
                                             </td>
                                             <td t-elif="(line.name == '$rental_info') or (line.name == '#rental_info')" name="td_section_line" colspan="99" style="border-color: #fff !important; border-top-color: #000 !important">
                                                 <t t-if="language == 'en_CA' or language == 'en_US'">
-                                                    <p t-out="'Start of the Rental: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-                                                    <p t-out="'End of the Rental: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                                    <p t-out="'Start of the Rental: Due to an upgrade in our rental system this is deprecated and no longer visible.'" />
+                                                    <p t-out="'End of the Rental: Due to an upgrade in our rental system this is deprecated and no longer visible.'" />
                                                 </t>
                                                 <t t-elif="language == 'fr_CA'">
-                                                    <p t-out="'Début de la Location: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-                                                    <p t-out="'Fin estimée de la Location: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                                    <p t-out="'Début de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.'" />
+                                                    <p t-out="'Fin estimée de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.'" />
                                                 </t>
                                                 <t t-elif="language == 'es_ES'">
-                                                    <p t-out="'Inicio del alquiler: ' + str(str(doc.rental_start) if doc.rental_start != False else '')" />
-                                                    <p t-out="'Fin del alquiler: ' + str(str(doc.rental_end) if doc.rental_end != False else '')" />
+                                                    <p t-out="'Inicio del alquiler: Suite a una actualización de nuestro sistema de alquiler, esta funcionalidad está obsoleta y ya no es visible.'" />
+                                                    <p t-out="'Fin del alquiler: Suite a una actualización de nuestro sistema de alquiler, esta funcionalidad está obsoleta y ya no es visible.'" />
                                                 </t>
                                                 <p class="rental_price_explain" t-if="language == 'en_CA' or language == 'en_US'">
                                                     * The final rental cost will be calculated once the equipement is returned.
@@ -251,27 +220,21 @@
                                                     El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
                                                 </p>
                                                 <!-- Format Estimated Rental Rate Number -->
-                                                <t t-if="language == 'en_CA' or language == 'en_US'" t-set="rentalRateFormated" t-value="'$ {value:,.2f}'.format(value= rentalRate)" />
-                                                <t t-elif="language == 'fr_CA'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
-                                                <t t-elif="language == 'es_ES'" t-set="rentalRateFormated" t-value="'{value:,.2f} $'.format(value= rentalRate)" />
                                                 <t t-if=" language== 'en_CA' or language == 'en_US'">
-                                                    <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span t-out="rentalRateFormated" /></span>
+                                                    <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories: <span>No longer supported</span>
                                                 </t>
                                                 <t t-elif="language == 'fr_CA'">
-                                                    <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span t-out="rentalRateFormated" /></span>
+                                                    <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les accessoires: <span>N'est plus pris en charge</span>
                                                 </t>
                                                 <t t-elif="language == 'es_ES'">
-                                                    <span class="rental_price_estimate">Costo estimado del alquiler del equipo y los accesorios: <span t-out="rentalRateFormated" /></span>
+                                                    <span class="rental_price_estimate">Costo estimado del alquiler del equipo y los accesorios: <span>No más soportado</span>
                                                 </t>
                                                 <br />
                                                 <br />
 
                                                 <!-- Format Rental Value Number -->
-                                                <t t-if="language == 'en_CA' or language == 'en_US'" t-set="rentalValueFormated" t-value="'$ {value:,.2f}'.format(value= rentalValue)" />
-                                                <t t-elif="language == 'fr_CA'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
-                                                <t t-elif="language == 'es_ES'" t-set="rentalValueFormated" t-value="'{value:,.2f} $'.format(value= rentalValue)" />
                                                 <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
-                                                    <span>Total Rental Value:&#160; <span t-out="rentalValueFormated" /></span>
+                                                    <span>Total Rental Value:&#160; <span>No longer supported</span></span>
                                                     <br />
                                                     <br />
                                                     <span>
@@ -280,7 +243,7 @@
                                                     <br />
                                                 </div>
                                                 <div class="rental_product_value" t-elif="language == 'fr_ca' or true">
-                                                    <span>Valeur locative totale: &#160;<span t-out="rentalValueFormated" /></span>
+                                                    <span>Valeur locative totale: &#160;<span>N'est plus pris en charge</span></span>
                                                     <br />
                                                     <br />
                                                     <span>
@@ -289,7 +252,7 @@
                                                     <br />
                                                 </div>
                                                 <div class="rental_product_value" t-elif="language == 'es_ES'">
-                                                    <span>Valor total del alquiler:&#160; <span t-out="rentalValueFormated" /></span>
+                                                    <span>Valor total del alquiler:&#160; <span>No más soportado</span></span>
                                                     <br />
                                                     <br />
                                                     <span>
@@ -297,25 +260,6 @@
                                                     </span>
                                                     <br />
                                                 </div>
-
-                                                <t t-if="doc.rental_diff_add == True">
-                                                    <span t-if="language == 'en_CA' or language == 'en_US'">
-                                                        Shipping To
-                                                    </span>
-                                                    <span t-elif="language == 'fr_CA'">
-                                                        Expédition ànvoyez à
-                                                    </span>
-                                                    <span t-elif="language == 'es_ES'">
-                                                        Envío a
-                                                    </span>
-                                                    <br />
-                                                    <span t-field="doc.rental_street" />
-                                                    <br />
-                                                    <span t-if="doc.rental_city != False" t-esc="doc.rental_city + ','" />
-                                                    <span t-esc="doc.rental_state.code" />
-                                                    <span t-field="doc.rental_zip" />
-                                                    <span t-field="doc.rental_country" />
-                                                </t>
                                             </td>
                                             <td t-elif="line.name  == '#rental_software'" name="td_section_line" colspan="99">
                                                 <span t-if="language == 'fr_CA'">Location de logiciels: choisissez les logiciels souhaités ainsi que les quantités (en semaines)</span>
@@ -415,13 +359,6 @@
                             ya). La cotización es válida por 30 días después de la fecha de presentación.
                         </p>
                         <t t-set="company_name" t-value="doc.company_id.name"/>
-                        
-                        <t t-if="doc.is_rental == True">
-                            <h1 t-if="language == 'fr_CA'">Termes et conditions</h1>
-                            <h1 t-elif="language == 'es_ES'">Términos y condiciones</h1>
-                            <h1 t-else="">Terms and Conditions</h1>
-                            <div id="rentalTerms" t-call="proquotes.rental_terms"/>
-                        </t>
 
                         <t t-if="'abtech' in doc.company_id.name.lower()">
                             <br/>

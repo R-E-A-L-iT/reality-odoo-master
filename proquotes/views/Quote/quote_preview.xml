@@ -189,11 +189,6 @@
                 </section>
         </xpath>
 
-        <!-- Hide Total On Rental Quotes -->
-        <xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
-            <!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
-        </xpath>
-
         <!-- remove taxes column -->
         <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
         <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" /> -->
@@ -360,15 +355,7 @@
                     </td>
                 </tr>
             </t>
-            <!-- <t t-if="line.name == '#rental_subscription'">
-                <span t-if="language == 'fr_CA'">Abonnement de location</span>
-                <span>Rental Subscription</span>
-            </t>
-            <t t-if="line.name == '#rental_software'">
-                <span t-if="language == 'fr_CA'">Logiciel de location</span>
-                <span>Rental Software</span>
-            </t> -->
-            <!-- Keep for backwards combatibility due to how Quotes Are Rendered -->
+            <!-- KEEP RENTAL SECTIONS FOR BACKWARDS COMPATIBILITY -->
             <t t-if="line.name == '$rental_pricenote'">
                 <tr>
                     <td style="border-style: none;" colspan="100">
@@ -391,25 +378,25 @@
 
                         <t t-if="language == 'en_CA' or language == 'en_US'">
                             <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories:
-                                <span id="rental-estimate-total-english"/>
+                                <span style="color: red;">Due to system upgrades this system of calculating rental costs is no longer available. Please contact us for information regarding this order or request a new rental quote.</span>
                             </span>
                         </t>
                         <t t-elif="language == 'fr_CA'">
                             <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
                                 accessoires:
-                                <span id="rental-estimate-total-english"/>
+                                <span style="color: red;">En raison de mises à niveau du système, ce système de calcul des coûts de location n'est plus disponible. Veuillez nous contacter pour obtenir des informations concernant cette commande ou demander un nouveau devis de location.</span>
                             </span>
                         </t>
                         <t t-elif="language == 'es_ES'">
                             <span class="rental_price_estimate">Costo estimado de alquiler del equipo y accesorios:
-                                <span id="rental-estimate-total-english"/>
+                                <span style="color: red;">Debido a las actualizaciones del sistema, este sistema de cálculo de costos de alquiler ya no está disponible. Contáctenos para obtener información sobre este pedido o solicitar una nueva cotización de alquiler.</span>
                             </span>
                         </t>
                         <br/>
                         <br/>
                         <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
                             <span t-if="language == 'en_CA' or language == 'en_US'">Total Rental Value: 
-                                <span id="total-rental-value-english"/>
+                                <span>No longer available to view</span>
                             </span>
                             <br/>
                             <span>
@@ -417,9 +404,9 @@
                             </span>
                             <br/>
                         </div>
-                        <div class=" rental_product_value" t-if=" language== 'fr_CA'">
-                            <span>Valeur locative totale:  
-                                <span id="total-rental-value-french"/>
+                        <div class="rental_product_value" t-if="language== 'fr_CA'">
+                            <span>Valeur locative totale: 
+                                <span>Plus disponible pour visualisation</span>
                             </span>
                             <br/>
                             <span>
@@ -428,9 +415,9 @@
                             </span>
                             <br/>
                         </div>
-                        <div class=" rental_product_value" t-if=" language== 'es_ES'">
-                            <span>Valor total de alquiler:  
-                                <span id="total-rental-value-spanish"/>
+                        <div class="rental_product_value" t-if="language== 'es_ES'">
+                            <span>Valor total de alquiler: 
+                                <span>Ya no está disponible para ver</span>
                             </span>
                             <br/>
                             <span>
@@ -443,19 +430,17 @@
             </t>
             <!--  Keep for Backwards Compatibility-->
             <t t-if="line.name == '$rental_address'">
-                <t t-set="rental_estimate_display" t-value="False"/>
                 <tr style="padding: 0px !important;">
                     <td style="border-style: none; padding: 0px !important;" colspan="100">
-                        <t t-call="proquotes.rental_address_form"/>
+                        <span>No longer supported</span>
                     </td>
                 </tr>
             </t>
 
             <t t-if="line.name == '$rental_info'">
-                <t t-set="rental_estimate_display" t-value="True"/>
                 <tr style="padding: 0px !important;">
                     <td style="border-style: none; padding: 0px !important;" colspan="100">
-                        <t t-call="proquotes.rental_address_form"/>
+                        <span>No longer supported</span>
                     </td>
                 </tr>
             </t>
@@ -667,38 +652,6 @@
         <!--			<attribute name="class">subtotal-source</attribute>-->
         <!--		</xpath>-->
 
-
-        <!-- Rental Item Value -->
-        <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
-            <t t-if="sale_order.is_rental == True">
-                <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
-                    style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cad_val)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
-                          t-esc="'{value:,.2f} $'.format(value=line.product_id.cad_val)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'es_ES'"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cad_val)"
-                          class="text-left itemValue test"/>
-                </td>
-                <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
-                    style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and (language == 'en_CA' or language == 'en_US')"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usd_val)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'fr_CA'"
-                          t-esc="'{value:,.2f} $'.format(value=line.product_id.usd_val)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and line.product_id.sku != 'SHIPPING' and language == 'es_ES'"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usd_val)"
-                          class="text-left itemValue test"/>
-                </td>
-            </t>
-            <td t-else=""/>
-        </xpath>
-
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
@@ -755,83 +708,10 @@
             <t t-set="current_section_ended" t-value="false"/>
         </xpath>
 
-        <!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
-        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
-            <t t-if="line.selected == 'true' and not current_section_ended">
-                <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
-                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
-                </t>
-                <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
-                    <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
-                    <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
-                    <t t-set="rentalDays"
-                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
-                    <t t-set="rentalMonths" t-value="rentalDays // 30"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 30"/>
-                    <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 7"/>
-
-
-                    <t t-set="rentalRate" t-value="0"/>
-                    <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 4"/>
-                    <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
-                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 12"/>
-                    <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
-                    <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
-                    <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
-                </t>
-            </t>
-        </xpath>
-
-        <!-- Section Rental Estimate Given Rental Dates -->
-        <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
-            <t t-set="current_total" t-value="0"/>
-            <t t-if="line.selected == 'true' and not current_section_ended">
-                <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
-                    <t t-set="current_total" t-value="current_total + line.price_subtotal"/>
-                </t>
-                <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
-                    <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
-                    <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
-                    <t t-set="rentalDays"
-                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
-
-                    <t t-set="rentalMonths" t-value="rentalDays // 30"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 30"/>
-                    <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 7"/>
-
-
-                    <t t-set="rentalRate" t-value="0"/>
-                    <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 4"/>
-                    <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
-                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 12"/>
-                    <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
-                    <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
-                    <t t-set="current_total" t-value="current_total + rentalRate"/>
-                </t>
-            </t>
-        </xpath>
-
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <!-- <t t-if="language == 'en_CA' or language == 'en_US'" t-set="line_price"
-               t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
-            <t t-elif="language == 'fr_CA'" t-set="line_price"
-               t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
-            <span t-if="line.product_id.is_software == False"
-                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
-            <span t-elif="line.product_id.is_software == True"
-                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/> -->
-
             <t t-if="line.product_id.is_software == False">
-                <span class="proquotesLineTotal oe_order_line_price_subtotal rental_rate_calc"
+                <span class="proquotesLineTotal oe_order_line_price_subtotal"
                       t-field="line.price_subtotal"
                       t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
             </t>
@@ -856,7 +736,7 @@
         </xpath>
 
         <xpath expr="//div[@id='total']" position="replace">
-            <div t-if="sale_order.is_rental == False" id="total" name="total" style="page-break-inside: avoid;">
+            <div id="total" name="total" style="page-break-inside: avoid;">
                 <div class="col-xs-7 col-md-5 ms-auto">
                     <t t-call="sale.sale_order_portal_content_totals_table"/>
                 </div>
@@ -954,25 +834,8 @@
                     </span>
                 </t>
             </div>
-            <t t-if="sale_order.is_rental == True">
-                <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
-                    <h3>
-                        <strong class="white-text" id="terms_hidden">+</strong>
-                        <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
-                        </strong>
-                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
-                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
-                    </h3>
-                </label>
-                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
-            </t>
             <t t-else="">
                 <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
@@ -982,7 +845,6 @@
                         <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
-                <div id="rentalTerms" t-call="proquotes.normal_terms"/>
             </t>
             <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
