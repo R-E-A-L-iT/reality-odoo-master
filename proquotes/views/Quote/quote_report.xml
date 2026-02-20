@@ -234,7 +234,7 @@
 
                                                 <!-- Format Rental Value Number -->
                                                 <div class="rental_product_value" t-if="language == 'en_CA' or language == 'en_US'">
-                                                    <span>Total Rental Value:&#160; <span>No longer supported</span></span>
+                                                    <span>Total Rental Value:&#160; No longer supported</span>
                                                     <br />
                                                     <br />
                                                     <span>
@@ -243,7 +243,7 @@
                                                     <br />
                                                 </div>
                                                 <div class="rental_product_value" t-elif="language == 'fr_ca' or true">
-                                                    <span>Valeur locative totale: &#160;<span>N'est plus pris en charge</span></span>
+                                                    <span>Valeur locative totale: &#160;N'est plus pris en charge</span>
                                                     <br />
                                                     <br />
                                                     <span>
@@ -252,7 +252,7 @@
                                                     <br />
                                                 </div>
                                                 <div class="rental_product_value" t-elif="language == 'es_ES'">
-                                                    <span>Valor total del alquiler:&#160; <span>No más soportado</span></span>
+                                                    <span>Valor total del alquiler:&#160; No más soportado</span>
                                                     <br />
                                                     <br />
                                                     <span>
