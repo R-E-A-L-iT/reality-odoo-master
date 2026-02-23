@@ -176,7 +176,6 @@ class mrp_bom_line_sync:
                 bom = mrp_bom_model.create({
                     'product_tmpl_id': parent_product.id,
                     'type': 'phantom',
-                    'code': f"BOM/{parent_product.default_code or parent_product.name}",
                 })
                 _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom (ID: {bom.id}) for product '{parent_product.name}' (barcode: {bom_barcode})")
                 self.updated_items.append(
