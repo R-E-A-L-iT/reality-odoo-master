@@ -9,6 +9,20 @@
             <xpath expr="//field[@name=&quot;company_id&quot;]" position="after">
                 <field name="prefered_headers" domain="[('active', '=', True), ('record_type', '=', 'Header')]" />
                 <field name="prefered_quote_footers" domain="[('active', '=', True), ('record_type', '=', 'Footer')]" />
+                <field name="signature" />
+                <field name="signature_can" />
+                <field name="signature_usa" />
+            </xpath>
+        </field>
+    </record>
+    <record id="proquotes_internal_user_profile_backend" model="ir.ui.view">
+        <field name="name">Internal User Profile Backend</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="after">
+                <field name="signature_can" />
+                <field name="signature_usa" />
             </xpath>
         </field>
     </record>
