@@ -150,7 +150,8 @@
                             aria-label="Background video"
                             id="o_bg_video_iframe_5"
                             t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'"
-                            t-att-data-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'"></iframe>
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowfullscreen="1"></iframe>
                     </div>  
                     <div class="o_we_bg_filter bg-black-25"></div>
                     <div class="container s_allow_columns">
