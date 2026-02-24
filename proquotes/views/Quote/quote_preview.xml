@@ -149,7 +149,7 @@
                             frameborder="0"
                             aria-label="Background video"
                             id="o_bg_video_iframe_5"
-                            src="about:blank"
+                            t-att-src="str(sale_order.header_id.url) + '?background=1&amp;autoplay=1&amp;muted=1&amp;loop=1&amp;autopause=0&amp;controls=0&amp;title=0&amp;byline=0&amp;portrait=0&amp;playsinline=1'"
                             t-att-data-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'"></iframe>
                     </div>  
                     <div class="o_we_bg_filter bg-black-25"></div>
