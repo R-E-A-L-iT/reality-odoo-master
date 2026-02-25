@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+# 2026-02-25 - Brainecrew Apps
 
 import binascii
 from random import sample
@@ -235,6 +236,82 @@ class RentalCustomerPortal(cPortal):
         if start_date > end_date:
             order.rental_end = False
         return
+
+    @http.route(
+        ["/my/orders/<int:order_id>/update_invoice_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def update_invoice_address(self, order_id, name, street, city, state, zip, country, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+
+        address_vals = {"name": name, "street": street, "city": city, "zip": zip}
+        if country:
+            country_rec = request.env["res.country"].sudo().search(
+                [("name", "ilike", country)], limit=1
+            )
+            if country_rec:
+                address_vals["country_id"] = country_rec.id
+                if state:
+                    state_rec = request.env["res.country.state"].sudo().search(
+                        [("name", "ilike", state), ("country_id", "=", country_rec.id)], limit=1
+                    )
+                    if state_rec:
+                        address_vals["state_id"] = state_rec.id
+
+        inv = order_sudo.partner_invoice_id
+        if inv and inv.id != order_sudo.partner_id.id:
+            inv.sudo().write(address_vals)
+        else:
+            address_vals["type"] = "invoice"
+            address_vals["parent_id"] = order_sudo.partner_id.id
+            new_partner = request.env["res.partner"].sudo().create(address_vals)
+            order_sudo.partner_invoice_id = new_partner.id
+        return {"success": True}
+
+    @http.route(
+        ["/my/orders/<int:order_id>/update_delivery_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def update_delivery_address(self, order_id, name, street, city, state, zip, country, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+
+        address_vals = {"name": name, "street": street, "city": city, "zip": zip}
+        if country:
+            country_rec = request.env["res.country"].sudo().search(
+                [("name", "ilike", country)], limit=1
+            )
+            if country_rec:
+                address_vals["country_id"] = country_rec.id
+                if state:
+                    state_rec = request.env["res.country.state"].sudo().search(
+                        [("name", "ilike", state), ("country_id", "=", country_rec.id)], limit=1
+                    )
+                    if state_rec:
+                        address_vals["state_id"] = state_rec.id
+
+        dlv = order_sudo.partner_shipping_id
+        if dlv and dlv.id != order_sudo.partner_id.id:
+            dlv.sudo().write(address_vals)
+        else:
+            address_vals["type"] = "delivery"
+            address_vals["parent_id"] = order_sudo.partner_id.id
+            new_partner = request.env["res.partner"].sudo().create(address_vals)
+            order_sudo.partner_shipping_id = new_partner.id
+        return {"success": True}
 
     @http.route(
         ["/my/orders/<int:order_id>/start_date"],

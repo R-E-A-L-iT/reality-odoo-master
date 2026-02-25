@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 2026-02-25 - Brainecrew Apps -->
 <odoo>
 
     <template id="sale_order_total" inherit_id="portal.portal_sidebar" priority="17">
@@ -201,6 +202,117 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+
+            <!-- ===== RENTAL INFO SECTION (rental orders only) - 2026-02-25 - Brainecrew Apps ===== -->
+            <t t-if="sale_order.is_rental == True">
+                <div id="rental-info-section" style="padding: 16px 0 24px 0;">
+
+                    <!-- Row 1: PO Number | Rental Start | Rental End -->
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-2">
+                            <label for="portal-po-number" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">N° de bon de commande</t>
+                                <t t-else="">PO Number / Reference</t>
+                            </label>
+                            <input id="portal-po-number" class="poNumber form-control"
+                                   type="text"
+                                   t-attf-value="{{sale_order.customer_po_number or ''}}"/>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="rental-start" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">Début de la location</t>
+                                <t t-else="">Rental Start Date</t>
+                            </label>
+                            <input id="rental-start" type="date" class="form-control"
+                                   t-att-value="sale_order.rental_start and str(sale_order.rental_start) or ''"/>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="rental-end" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">Fin estimée de la location</t>
+                                <t t-else="">Rental End Date</t>
+                            </label>
+                            <input id="rental-end" type="date" class="form-control"
+                                   t-att-value="sale_order.rental_end and str(sale_order.rental_end) or ''"/>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Invoice Address (col-6) | Delivery Address (col-6) -->
+                    <div class="row">
+                        <!-- Invoice Address -->
+                        <div class="col-md-6 mb-2">
+                            <h6 class="fw-bold mb-1">
+                                <t t-if="language == 'fr_CA'">Adresse de facturation</t>
+                                <t t-else="">Invoice Address</t>
+                            </h6>
+                            <t t-set="inv" t-value="sale_order.partner_invoice_id"/>
+                            <input id="invoice-name" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{inv.name or ''}}"
+                                   t-attf-placeholder="{{'Nom' if language == 'fr_CA' else 'Name'}}"/>
+                            <input id="invoice-street" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{inv.street or ''}}"
+                                   t-attf-placeholder="{{'Rue' if language == 'fr_CA' else 'Street'}}"/>
+                            <div class="d-flex gap-1 mb-1">
+                                <input id="invoice-city" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{inv.city or ''}}"
+                                       t-attf-placeholder="{{'Ville' if language == 'fr_CA' else 'City'}}"/>
+                                <input id="invoice-state-text" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{inv.state_id.name or ''}}"
+                                       t-attf-placeholder="{{'Province' if language == 'fr_CA' else 'State'}}"/>
+                                <input id="invoice-country-text" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{inv.country_id.name or ''}}"
+                                       t-attf-placeholder="{{'Pays' if language == 'fr_CA' else 'Country'}}"/>
+                            </div>
+                            <input id="invoice-zip" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{inv.zip or ''}}"
+                                   placeholder="Zip / Postal Code"/>
+                        </div>
+
+                        <!-- Delivery Address -->
+                        <div class="col-md-6 mb-2">
+                            <h6 class="fw-bold mb-1">
+                                <t t-if="language == 'fr_CA'">Adresse de livraison</t>
+                                <t t-else="">Delivery Address</t>
+                            </h6>
+                            <t t-set="dlv" t-value="sale_order.partner_shipping_id"/>
+                            <input id="delivery-name" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{dlv.name or ''}}"
+                                   t-attf-placeholder="{{'Nom' if language == 'fr_CA' else 'Name'}}"/>
+                            <input id="delivery-street" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{dlv.street or ''}}"
+                                   t-attf-placeholder="{{'Rue' if language == 'fr_CA' else 'Street'}}"/>
+                            <div class="d-flex gap-1 mb-1">
+                                <input id="delivery-city" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{dlv.city or ''}}"
+                                       t-attf-placeholder="{{'Ville' if language == 'fr_CA' else 'City'}}"/>
+                                <input id="delivery-state-text" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{dlv.state_id.name or ''}}"
+                                       t-attf-placeholder="{{'Province' if language == 'fr_CA' else 'State'}}"/>
+                                <input id="delivery-country-text" type="text"
+                                       class="form-control form-control-sm border-0 rounded-0 px-0"
+                                       t-attf-value="{{dlv.country_id.name or ''}}"
+                                       t-attf-placeholder="{{'Pays' if language == 'fr_CA' else 'Country'}}"/>
+                            </div>
+                            <input id="delivery-zip" type="text"
+                                   class="form-control form-control-sm border-0 rounded-0 px-0 mb-1"
+                                   t-attf-value="{{dlv.zip or ''}}"
+                                   placeholder="Zip / Postal Code"/>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+            <!-- ===== END RENTAL INFO SECTION ===== -->
+
             <!-- <p>Language:
                 <t t-out="language"/>
             </p> -->
