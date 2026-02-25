@@ -1,4 +1,5 @@
 /** @odoo-module **/
+// 2026-02-25 - Brainecrew Apps
 
 //odoo.define("proquotes.rental", function (require) {
 //	"use strict";
@@ -19,6 +20,20 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "change #country": "_country",
         "change #rental-start": "_start",
         "change #rental-end": "_end",
+        // Invoice address - auto-save on each field change
+        "change #invoice-name":         "_saveInvoiceAddress",
+        "change #invoice-street":       "_saveInvoiceAddress",
+        "change #invoice-city":         "_saveInvoiceAddress",
+        "change #invoice-state-text":   "_saveInvoiceAddress",
+        "change #invoice-country-text": "_saveInvoiceAddress",
+        "change #invoice-zip":          "_saveInvoiceAddress",
+        // Delivery address - auto-save on each field change
+        "change #delivery-name":         "_saveDeliveryAddress",
+        "change #delivery-street":       "_saveDeliveryAddress",
+        "change #delivery-city":         "_saveDeliveryAddress",
+        "change #delivery-state-text":   "_saveDeliveryAddress",
+        "change #delivery-country-text": "_saveDeliveryAddress",
+        "change #delivery-zip":          "_saveDeliveryAddress",
     },
 
     async start() {
@@ -179,6 +194,30 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 //                end: end,
 //            },
 //        });
+    },
+
+    _saveInvoiceAddress: function () {
+        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/update_invoice_address", {
+            "access_token": this.orderDetail.token,
+            "name":    (document.getElementById("invoice-name") || {value: ""}).value,
+            "street":  (document.getElementById("invoice-street") || {value: ""}).value,
+            "city":    (document.getElementById("invoice-city") || {value: ""}).value,
+            "state":   (document.getElementById("invoice-state-text") || {value: ""}).value,
+            "zip":     (document.getElementById("invoice-zip") || {value: ""}).value,
+            "country": (document.getElementById("invoice-country-text") || {value: ""}).value,
+        });
+    },
+
+    _saveDeliveryAddress: function () {
+        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/update_delivery_address", {
+            "access_token": this.orderDetail.token,
+            "name":    (document.getElementById("delivery-name") || {value: ""}).value,
+            "street":  (document.getElementById("delivery-street") || {value: ""}).value,
+            "city":    (document.getElementById("delivery-city") || {value: ""}).value,
+            "state":   (document.getElementById("delivery-state-text") || {value: ""}).value,
+            "zip":     (document.getElementById("delivery-zip") || {value: ""}).value,
+            "country": (document.getElementById("delivery-country-text") || {value: ""}).value,
+        });
     },
 });
 //});

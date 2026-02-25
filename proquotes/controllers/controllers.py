@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+# 2026-02-25 - Brainecrew Apps
 
 import logging
 import base64
@@ -37,6 +38,7 @@ _logger = logging.getLogger(__name__)
 #         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(cPortal):
+    @staticmethod
     def validate(string):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
@@ -56,6 +58,10 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect("/my")
 
+        # Always save PO number regardless of order state
+        if self.validate(ponumber):
+            order_sudo.customer_po_number = ponumber
+
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
             order_sudo._compute_tax_totals()
@@ -70,12 +76,6 @@ class QuoteCustomerPortal(cPortal):
             )
 
             return results
-        _logger.info("Unlocked Quote")
-
-        if not self.validate(ponumber):
-            return
-
-        order_sudo.customer_po_number = ponumber
 
         return
 
