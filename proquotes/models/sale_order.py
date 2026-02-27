@@ -142,6 +142,23 @@ class order(models.Model):
     )
 
 
+    def _get_quote_mail_template(self):
+        """Pick the template to preselect in the Send Quote wizard."""
+        self.ensure_one()
+
+        # If you want the priority exactly as you wrote:
+        # rental > renewal > general
+        if self.is_rental:
+            name = "Rental Contract"
+        elif self.is_renewal:
+            name = "Renewal"
+        else:
+            name = "General Sales"
+
+        tmpl = self.env["mail.template"].search([("name", "=", name)], limit=1)
+        if not tmpl:
+            _logger.warning("Quote email template not found by name: %s", name)
+        return tmpl
 
 
 
@@ -712,26 +729,33 @@ class order(models.Model):
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):
         self.ensure_one()
-
         action = super().action_quotation_send()
 
-        if self.website_id:
-            ecommerce_template = self.env['mail.template'].search([
-                ('name', '=', 'eCommerce Quote Send')
-            ], limit=1)
+        ctx = dict(action.get("context", {}) or {})
 
+        # --- keep your ecommerce behavior as top priority (if that's what you want) ---
+        if self.website_id:
+            ecommerce_template = self.env["mail.template"].search(
+                [("name", "=", "eCommerce Quote Send")],
+                limit=1
+            )
             if ecommerce_template:
-                if action.get('context'):
-                    action['context'].update({
-                        'default_template_id': ecommerce_template.id,
-                        'default_use_template': bool(ecommerce_template.id),
-                    })
-                else:
-                    action['context'] = {
-                        'default_template_id': ecommerce_template.id,
-                        'default_use_template': bool(ecommerce_template.id),
-                    }
-                _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
+                ctx.update({
+                    "default_template_id": ecommerce_template.id,
+                    "default_use_template": True,
+                })
+                action["context"] = ctx
+                _logger.info("Applied eCommerce Quote Send template automatically for %s", self.name)
+                return action
+
+        # --- otherwise pick based on is_rental / is_renewal / default ---
+        tmpl = self._get_quote_mail_template()
+        if tmpl:
+            ctx.update({
+                "default_template_id": tmpl.id,
+                "default_use_template": True,
+            })
+            action["context"] = ctx
 
         return action
             
