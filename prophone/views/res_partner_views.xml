@@ -6,15 +6,17 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//div[@name='button_box']" position="inside">
+            <xpath expr="//chatter" position="before">
                 <field name="quo_has_valid_phone" invisible="1"/>
 
-                <button name="action_send_quo_text"
-                        type="object"
-                        string="Send Text"
-                        class="oe_stat_button"
-                        icon="fa-paper-plane"
-                         invisible="not quo_has_valid_phone"/>
+                <div class="o_row mb-2">
+                    <button name="action_send_quo_text"
+                            type="object"
+                            string="Send Text"
+                            class="btn btn-primary oe_highlight"
+                            icon="fa-paper-plane"
+                            invisible="not quo_has_valid_phone"/>
+                </div>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
