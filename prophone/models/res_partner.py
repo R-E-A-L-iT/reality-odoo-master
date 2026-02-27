@@ -12,6 +12,11 @@ class ResPartner(models.Model):
     quo_contact_id = fields.Char(string="Quo Contact ID", index=True)
     quo_contact_source_url = fields.Char(string="Quo Contact URL")
 
+    quo_has_valid_phone = fields.Boolean(
+        compute="_compute_quo_has_valid_phone",
+        string="Has Valid SMS Phone",
+    )
+
     def _sanitize_phone(self, phone):
         if not phone:
             return False
@@ -35,6 +40,24 @@ class ResPartner(models.Model):
             if sv:
                 candidates.add(sv)
         return list(candidates)
+
+    def _compute_quo_has_valid_phone(self):
+        """Used to show/hide the Send Text button.
+
+        Consider a phone valid if it normalizes to E.164-ish:
+        - starts with '+'
+        - 10 to 15 digits
+        """
+        for partner in self:
+            ok = False
+            for cand in partner._get_quo_phone_candidates():
+                if not cand or not cand.startswith("+"):
+                    continue
+                digits = re.sub(r"\D+", "", cand)
+                if 10 <= len(digits) <= 15:
+                    ok = True
+                    break
+            partner.quo_has_valid_phone = ok
 
     def _compute_quo_calls_count(self):
         Call = self.env["quo.call"].sudo()
@@ -85,4 +108,18 @@ class ResPartner(models.Model):
             "res_model": "quo.text",
             "view_mode": "tree,form",
             "domain": domain,
+        }
+
+    def action_send_quo_text(self):
+        """Open the Send Text wizard for this partner."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Send Text",
+            "res_model": "quo.send.text.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_partner_id": self.id,
+            },
         }
