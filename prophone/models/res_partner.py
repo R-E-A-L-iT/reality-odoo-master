@@ -17,6 +17,20 @@ class ResPartner(models.Model):
         string="Has Valid SMS Phone",
     )
 
+    quo_can_send_text = fields.Boolean(
+        compute="_compute_quo_can_send_text",
+        string="Can Send Text"
+    )
+
+    def _compute_quo_can_send_text(self):
+        user = self.env.user
+        has_numbers = bool(user.allowed_quo_phone_number_ids)
+
+        for partner in self:
+            partner.quo_can_send_text = bool(
+                has_numbers and partner.quo_has_valid_phone
+            )
+
     def _sanitize_phone(self, phone):
         if not phone:
             return False
