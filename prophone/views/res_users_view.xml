@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
 
             <!-- Put it somewhere reliable: after 'Groups' or in Preferences -->
-            <xpath expr="//group[@name='groups']" position="after">
+            <xpath expr="//group[@string='Multi Companies']" position="after">
                 <group string="Quo / ProPhone" groups="base.group_system">
                     <field name="allowed_quo_phone_number_ids" widget="many2many_tags"
                            domain="[('active', '=', True)]"/>
