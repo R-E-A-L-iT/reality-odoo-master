@@ -47,7 +47,7 @@ class CrmLead(models.Model):
 
         for lead in self:
             lead.quo_can_send_text = bool(
-                allowed_count >= 2 and lead._lead_destination_phone()
+                allowed_count >= 1 and lead._lead_destination_phone()
             )
 
     def action_send_quo_text(self):
@@ -55,7 +55,7 @@ class CrmLead(models.Model):
         self.ensure_one()
 
         # Enforce same rules server-side (never trust only JS/UI)
-        if len(self.env.user.allowed_quo_phone_number_ids) < 2:
+        if len(self.env.user.allowed_quo_phone_number_ids) < 1:
             raise UserError(_("You do not have enough Quo numbers assigned to send texts (need at least 2)."))
         to_num = self._lead_destination_phone()
         if not to_num:
@@ -81,7 +81,7 @@ class CrmLead(models.Model):
             return {"can_send": False}
 
         can_send = bool(
-            len(self.env.user.allowed_quo_phone_number_ids) >= 2
+            len(self.env.user.allowed_quo_phone_number_ids) >= 1
             and lead._lead_destination_phone()
         )
         return {"can_send": can_send}
