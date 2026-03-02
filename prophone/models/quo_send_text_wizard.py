@@ -26,34 +26,26 @@ class QuoSendTextWizard(models.TransientModel):
     @api.model
     def _selection_from_numbers(self):
         Call = self.env["quo.call"].sudo()
-        try:
-            payload = Call._quo_get("phone-numbers")
-        except Exception as e:
-            _logger.exception("Failed to fetch Quo phone numbers")
-            raise UserError(
-                _("Could not load Quo phone numbers. Please verify your API key and try again.\n\nError: %s") % e
-            )
 
-        data = payload.get("data") if isinstance(payload, dict) else None
-        data = data if isinstance(data, list) else []
+        # Ensure local phone number table is up-to-date
+        Call._quo_sync_phone_numbers()
+
+        Phone = self.env["quo.phone.number"].sudo()
+
+        user = self.env.user
+        allowed = user.allowed_quo_phone_number_ids
+
+        # If admin and no restriction set, allow all active numbers
+        if user.has_group("base.group_system") and not allowed:
+            recs = Phone.search([("active", "=", True)])
+        else:
+            recs = allowed.filtered(lambda r: r.active)
 
         options = []
-        for pn in data:
-            if not isinstance(pn, dict):
-                continue
+        for r in recs:
+            options.append((r.quo_id, r.display_name))  # value = PNxxxx
 
-            pn_id = (pn.get("id") or "").strip()             # <-- PNxxxx
-            display = (pn.get("formattedNumber") or pn.get("number") or "").strip()
-            name = (pn.get("name") or "").strip()
-
-            if not pn_id:
-                continue
-
-            # Label shows human-friendly number, value is PN id
-            label = f"{name} ({display})" if name and display else (display or name or pn_id)
-            options.append((pn_id, label))
-
-        options.sort(key=lambda x: x[1])
+        options.sort(key=lambda x: x[1] or "")
         return options
 
     @api.model
@@ -99,6 +91,9 @@ class QuoSendTextWizard(models.TransientModel):
 
         resp = Call._quo_post("messages", payload)
         data = resp.get("data") if isinstance(resp, dict) else None
+
+        if not self.from_number:
+            raise UserError(_("You do not have any Quo numbers assigned. Ask an administrator to assign one."))
 
         # Best-effort: create/update quo.text immediately
         if isinstance(data, dict) and data.get("id"):

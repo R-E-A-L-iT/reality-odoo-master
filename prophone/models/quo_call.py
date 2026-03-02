@@ -147,6 +147,44 @@ class QuoCall(models.Model):
 
             rec.name = f"{prefix} call from {from_label} to {to_label}".strip()
 
+    def _quo_sync_phone_numbers(self):
+        """Fetch Quo phone numbers and upsert into quo.phone.number."""
+        payload = self._quo_get("phone-numbers")
+        data = payload.get("data") if isinstance(payload, dict) else []
+        data = data if isinstance(data, list) else []
+
+        Phone = self.env["quo.phone.number"].sudo()
+        seen_ids = set()
+
+        for pn in data:
+            if not isinstance(pn, dict):
+                continue
+            quo_id = (pn.get("id") or "").strip()  # PNxxxx
+            if not quo_id:
+                continue
+
+            seen_ids.add(quo_id)
+
+            vals = {
+                "name": (pn.get("name") or "").strip() or False,
+                "formatted_number": (pn.get("formattedNumber") or pn.get("formatted_number") or "").strip() or False,
+                "raw_number": (pn.get("number") or "").strip() or False,
+                "active": True,
+            }
+
+            rec = Phone.search([("quo_id", "=", quo_id)], limit=1)
+            if rec:
+                rec.write(vals)
+            else:
+                vals["quo_id"] = quo_id
+                Phone.create(vals)
+
+        # Optional: mark numbers not returned anymore as inactive
+        if seen_ids:
+            Phone.search([("quo_id", "not in", list(seen_ids)), ("active", "=", True)]).write({"active": False})
+
+        return True
+
 
     # ---------- Utilities ----------
     @api.model
