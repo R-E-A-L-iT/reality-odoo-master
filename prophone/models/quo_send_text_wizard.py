@@ -25,11 +25,6 @@ class QuoSendTextWizard(models.TransientModel):
 
     @api.model
     def _selection_from_numbers(self):
-        """Fetch available Quo/OpenPhone numbers.
-
-        We return E.164 numbers as keys so they can be sent via the modern
-        'from' field on POST /v1/messages.
-        """
         Call = self.env["quo.call"].sudo()
         try:
             payload = Call._quo_get("phone-numbers")
@@ -46,12 +41,17 @@ class QuoSendTextWizard(models.TransientModel):
         for pn in data:
             if not isinstance(pn, dict):
                 continue
-            num = (pn.get("formattedNumber") or pn.get("number") or "").strip()
-            if not num:
+
+            pn_id = (pn.get("id") or "").strip()             # <-- PNxxxx
+            display = (pn.get("formattedNumber") or pn.get("number") or "").strip()
+            name = (pn.get("name") or "").strip()
+
+            if not pn_id:
                 continue
-            label_name = (pn.get("name") or "").strip()
-            label = f"{label_name} ({num})" if label_name else num
-            options.append((num, label))
+
+            # Label shows human-friendly number, value is PN id
+            label = f"{name} ({display})" if name and display else (display or name or pn_id)
+            options.append((pn_id, label))
 
         options.sort(key=lambda x: x[1])
         return options
