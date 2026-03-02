@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { patch } from "@web/core/utils/patch";
-import { Chatter } from "@mail/core/common/chatter";
+import { Chatter } from "@mail/core/web/chatter";
 import { useService } from "@web/core/utils/hooks";
 
 patch(Chatter.prototype, "prophone_chatter_send_text", {
