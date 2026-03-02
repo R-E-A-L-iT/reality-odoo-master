@@ -42,13 +42,10 @@ class CrmLead(models.Model):
     @api.depends("phone", "partner_id.phone", "partner_id.mobile")
     def _compute_quo_can_send_text(self):
         user = self.env.user
-        # Per your requirement: only show if user has MORE THAN ONE allowed number
-        allowed_count = len(user.allowed_quo_phone_number_ids)
+        allowed_ok = len(user.allowed_quo_phone_number_ids) >= 1
 
         for lead in self:
-            lead.quo_can_send_text = bool(
-                allowed_count >= 1 and lead._lead_destination_phone()
-            )
+            lead.quo_can_send_text = bool(allowed_ok and lead._lead_destination_phone())
 
     def action_send_quo_text(self):
         """Server-side action used by the chatter button."""
@@ -75,8 +72,4 @@ class CrmLead(models.Model):
 
     def quo_send_text_button_info(self):
         self.ensure_one()
-        can_send = bool(
-            len(self.env.user.allowed_quo_phone_number_ids) >= 1
-            and self._lead_destination_phone()
-        )
-        return {"can_send": can_send}
+        return {"can_send": bool(self.quo_can_send_text)}
