@@ -136,8 +136,9 @@ class ResPartner(models.Model):
             "type": "ir.actions.act_window",
             "name": "Send Text",
             "res_model": "quo.send.text.wizard",
-            "view_mode": "form",
             "target": "new",
+            "views": [(False, "form")],
+            "view_mode": "form",
             "context": {
                 "default_partner_id": self.id,
             },
