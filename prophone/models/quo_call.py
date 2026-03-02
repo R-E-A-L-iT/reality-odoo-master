@@ -1619,16 +1619,22 @@ class QuoText(models.Model):
             "raw_message_json": json.dumps(payload, ensure_ascii=False),
         }
 
+        created = False
+
         if rec:
             rec.write({k: v for k, v in vals.items() if v not in (None, False, "") or k in ("raw_message_json", "media_json")})
             txt = rec
         else:
             txt = Text.create(vals)
+            created = True
 
-        # Post chatter logs after upsert
-        try:
-            txt._post_to_related_documents_and_contacts()
-        except Exception:
-            _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+        # Post chatter logs ONLY on first creation to avoid duplicates from webhook status updates
+        if created:
+            try:
+                txt._post_to_related_documents_and_contacts()
+            except Exception:
+                _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+
+        return txt
 
         return txt
