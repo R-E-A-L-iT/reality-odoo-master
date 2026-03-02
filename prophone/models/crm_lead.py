@@ -53,7 +53,7 @@ class CrmLead(models.Model):
 
         # Enforce same rules server-side (never trust only JS/UI)
         if len(self.env.user.allowed_quo_phone_number_ids) < 1:
-            raise UserError(_("You do not have enough Quo numbers assigned to send texts (need at least 2)."))
+            raise UserError(_("You do not have enough Quo numbers assigned to send texts (need at least 1)."))
         to_num = self._lead_destination_phone()
         if not to_num:
             raise UserError(_("This opportunity does not have a valid phone number to text."))
@@ -62,11 +62,14 @@ class CrmLead(models.Model):
             "type": "ir.actions.act_window",
             "name": "Send Text",
             "res_model": "quo.send.text.wizard",
-            "view_mode": "form",
             "target": "new",
+
+            "views": [(False, "form")],
+            "view_mode": "form",
+
             "context": {
                 "default_lead_id": self.id,
-                "default_to_number": to_num,  # lets wizard skip guessing
+                "default_to_number": to_num,
             },
         }
 
