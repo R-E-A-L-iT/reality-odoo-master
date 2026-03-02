@@ -4,16 +4,19 @@ import { patch } from "@web/core/utils/patch";
 import { Chatter } from "@mail/core/web/chatter";
 import { useService } from "@web/core/utils/hooks";
 
-patch(Chatter.prototype, "prophone_chatter_send_text", {
+patch(Chatter.prototype, {
     setup() {
-        this._super(...arguments);
+        // Call parent
+        super.setup(...arguments);
+
+        // Services
         this.orm = useService("orm");
         this.action = useService("action");
 
-        // Our state flag (default false)
+        // State flag used by the XML template t-if
         this.state.prophoneCanSendText = false;
 
-        // Compute once when chatter is on crm.lead
+        // Initial refresh
         this._prophoneRefreshSendTextVisibility();
     },
 
@@ -23,12 +26,14 @@ patch(Chatter.prototype, "prophone_chatter_send_text", {
                 this.state.prophoneCanSendText = false;
                 return;
             }
+
             const res = await this.orm.call(
                 "crm.lead",
                 "quo_send_text_button_info",
                 [this.props.threadId],
                 {}
             );
+
             this.state.prophoneCanSendText = !!(res && res.can_send);
         } catch (e) {
             // fail closed
@@ -37,11 +42,11 @@ patch(Chatter.prototype, "prophone_chatter_send_text", {
     },
 
     async prophoneOpenSendTextWizard() {
-        // Server action does final validation and returns the wizard action dict
         const action = await this.orm.call(
             "crm.lead",
             "action_send_quo_text",
-            [this.props.threadId]
+            [this.props.threadId],
+            {}
         );
         await this.action.doAction(action);
     },
