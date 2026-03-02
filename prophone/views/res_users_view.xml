@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
 
             <!-- Put it somewhere reliable: after 'Groups' or in Preferences -->
-            <xpath expr="//field[@name='company_ids']]" position="after">
+            <xpath expr="//field[@name='company_id']" position="after">
                 <field name="allowed_quo_phone_number_ids" widget="many2many_tags" domain="[('active', '=', True)]"/>
             </xpath>
 
