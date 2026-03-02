@@ -6,13 +6,17 @@
         <field name="arch" type="xml">
             <form string="Send Text" create="false" edit="false">
                 <group>
-                    <field name="partner_id"/>
+                    <field name="sale_order_id" invisible="1"/>
+                    <field name="partner_id"
+                        string="Recipient"
+                        required="sale_order_id"
+                        domain="[('id', 'in', context.get('quo_sms_partner_domain_ids', []))]"/>
                     <field name="to_number"/>
                     <field name="from_number" required="1"/>
                 </group>
 
                 <group>
-                    <field name="message" placeholder="Write your message..." nolabel="1" colspan="2" style="min-height: 120px;"/>
+                    <field name="message" placeholder="Write your message..." nolabel="1" colspan="10" style="min-height: 120px;"/>
                 </group>
 
                 <footer>

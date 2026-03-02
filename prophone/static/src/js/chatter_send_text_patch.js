@@ -6,48 +6,53 @@ import { useService } from "@web/core/utils/hooks";
 
 patch(Chatter.prototype, {
     setup() {
-        // Call parent
         super.setup(...arguments);
 
-        // Services
         this.orm = useService("orm");
         this.action = useService("action");
 
-        // State flag used by the XML template t-if
-        this.state.prophoneCanSendText = false;
+        this.state.prophoneCanSendTextLead = false;
+        this.state.prophoneCanSendTextQuote = false;
 
-        // Initial refresh
         this._prophoneRefreshSendTextVisibility();
     },
 
     async _prophoneRefreshSendTextVisibility() {
         try {
-            if (this.state.thread?.model !== "crm.lead" || !this.props.threadId) {
-                this.state.prophoneCanSendText = false;
-                return;
+            const model = this.state.thread?.model;
+            const id = this.props.threadId;
+
+            this.state.prophoneCanSendTextLead = false;
+            this.state.prophoneCanSendTextQuote = false;
+
+            if (!id) return;
+
+            if (model === "crm.lead") {
+                const res = await this.orm.call("crm.lead", "quo_send_text_button_info", [id], {});
+                this.state.prophoneCanSendTextLead = !!(res && res.can_send);
+            } else if (model === "sale.order") {
+                const res = await this.orm.call("sale.order", "quo_send_text_button_info", [id], {});
+                this.state.prophoneCanSendTextQuote = !!(res && res.can_send);
             }
-
-            const res = await this.orm.call(
-                "crm.lead",
-                "quo_send_text_button_info",
-                [this.props.threadId],
-                {}
-            );
-
-            this.state.prophoneCanSendText = !!(res && res.can_send);
         } catch (e) {
-            // fail closed
-            this.state.prophoneCanSendText = false;
+            this.state.prophoneCanSendTextLead = false;
+            this.state.prophoneCanSendTextQuote = false;
         }
     },
 
     async prophoneOpenSendTextWizard() {
-        const action = await this.orm.call(
-            "crm.lead",
-            "action_send_quo_text",
-            [this.props.threadId],
-            {}
-        );
+        const model = this.state.thread?.model;
+        const id = this.props.threadId;
+        if (!id) return;
+
+        let action;
+        if (model === "crm.lead") {
+            action = await this.orm.call("crm.lead", "action_send_quo_text", [id], {});
+        } else if (model === "sale.order") {
+            action = await this.orm.call("sale.order", "action_send_quo_text", [id], {});
+        } else {
+            return;
+        }
         await this.action.doAction(action);
     },
 });

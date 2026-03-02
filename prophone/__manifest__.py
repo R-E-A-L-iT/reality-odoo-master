@@ -8,6 +8,7 @@
     "author": "Ézékiel deBlois",
     "depends": [
         "base",
+        "sale",
         "mail",
         "contacts",
         "crm",
