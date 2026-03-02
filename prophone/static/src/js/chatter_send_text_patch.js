@@ -26,7 +26,8 @@ patch(Chatter.prototype, "prophone_chatter_send_text", {
             const res = await this.orm.call(
                 "crm.lead",
                 "quo_send_text_button_info",
-                [this.props.threadId]
+                [this.props.threadId],
+                {}
             );
             this.state.prophoneCanSendText = !!(res && res.can_send);
         } catch (e) {

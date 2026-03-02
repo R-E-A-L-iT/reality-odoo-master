@@ -73,15 +73,10 @@ class CrmLead(models.Model):
             },
         }
 
-    @api.model
-    def quo_send_text_button_info(self, lead_id):
-        """Called by JS to decide whether button should be visible."""
-        lead = self.browse(int(lead_id))
-        if not lead.exists():
-            return {"can_send": False}
-
+    def quo_send_text_button_info(self):
+        self.ensure_one()
         can_send = bool(
             len(self.env.user.allowed_quo_phone_number_ids) >= 1
-            and lead._lead_destination_phone()
+            and self._lead_destination_phone()
         )
         return {"can_send": can_send}
