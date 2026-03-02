@@ -1592,6 +1592,14 @@ class QuoText(models.Model):
         created_at = payload.get("createdAt") or payload.get("created_at")
         dt_created = self.env["quo.call"].sudo()._parse_dt(created_at)
 
+        body = (
+            payload.get("body")
+            or payload.get("content")
+            or payload.get("text")
+            or payload.get("message")
+            or ""
+        )
+
         media = payload.get("media") or []
         vals = {
             "quo_message_id": message_id,
@@ -1606,7 +1614,7 @@ class QuoText(models.Model):
             "to_sanitized": to_s,
             "from_partner_id": p_from.id or False,
             "to_partner_id": p_to.id or False,
-            "body": payload.get("body") or "",
+            "body": body,
             "media_json": json.dumps(media, ensure_ascii=False),
             "raw_message_json": json.dumps(payload, ensure_ascii=False),
         }
