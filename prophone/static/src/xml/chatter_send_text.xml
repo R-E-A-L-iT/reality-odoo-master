@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
     <t t-name="prophone.chatter_send_text" t-inherit="mail.Chatter" t-inherit-mode="extension">
         <xpath expr="//button[@class='o-mail-Chatter-sendMessage btn text-nowrap me-1']" position="after">
-            <button t-if="props.hasMessageList and state.thread.model === 'crm.lead' and state.prophoneCanSendText"
+            <button t-if="props.hasMessageList and state.thread.model === 'crm.lead'"
                     class="btn text-nowrap me-1"
                     t-att-class="{
                         'btn-primary': true,
