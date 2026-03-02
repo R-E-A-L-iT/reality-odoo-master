@@ -109,6 +109,11 @@ class ResPartner(models.Model):
                 "search_default_group_by_direction": 0,
             },
         }
+    
+    def quo_send_text_button_info(self):
+        self.ensure_one()
+        # Use the same booleans you already had for the old button
+        return {"can_send": bool(getattr(self, "quo_has_valid_phone", False) and getattr(self, "quo_can_send_text", False))}
 
     def action_view_quo_texts(self):
         self.ensure_one()

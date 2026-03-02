@@ -13,6 +13,7 @@ patch(Chatter.prototype, {
 
         this.state.prophoneCanSendTextLead = false;
         this.state.prophoneCanSendTextQuote = false;
+        this.state.prophoneCanSendTextPartner = false;
 
         this._prophoneRefreshSendTextVisibility();
     },
@@ -24,6 +25,7 @@ patch(Chatter.prototype, {
 
             this.state.prophoneCanSendTextLead = false;
             this.state.prophoneCanSendTextQuote = false;
+            this.state.prophoneCanSendTextPartner = false;
 
             if (!id) return;
 
@@ -33,10 +35,14 @@ patch(Chatter.prototype, {
             } else if (model === "sale.order") {
                 const res = await this.orm.call("sale.order", "quo_send_text_button_info", [id], {});
                 this.state.prophoneCanSendTextQuote = !!(res && res.can_send);
+            } else if (model === "res.partner") {
+                const res = await this.orm.call("res.partner", "quo_send_text_button_info", [id], {});
+                this.state.prophoneCanSendTextPartner = !!(res && res.can_send);
             }
         } catch (e) {
             this.state.prophoneCanSendTextLead = false;
             this.state.prophoneCanSendTextQuote = false;
+            this.state.prophoneCanSendTextPartner = false;
         }
     },
 
@@ -50,6 +56,8 @@ patch(Chatter.prototype, {
             action = await this.orm.call("crm.lead", "action_send_quo_text", [id], {});
         } else if (model === "sale.order") {
             action = await this.orm.call("sale.order", "action_send_quo_text", [id], {});
+        } else if (model === "res.partner") {
+            action = await this.orm.call("res.partner", "action_send_quo_text", [id], {});
         } else {
             return;
         }
