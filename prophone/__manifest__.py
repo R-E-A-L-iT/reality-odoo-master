@@ -24,6 +24,12 @@
         "views/menus.xml",
         "data/ir_cron.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "prophone/static/src/js/chatter_send_text_patch.js",
+            "prophone/static/src/xml/chatter_send_text.xml",
+        ],
+    },
     "application": True,
     "installable": True,
 }

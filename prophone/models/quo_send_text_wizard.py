@@ -14,6 +14,7 @@ class QuoSendTextWizard(models.TransientModel):
 
     partner_id = fields.Many2one("res.partner", required=True, readonly=True)
     to_number = fields.Char(string="To", required=True, readonly=True)
+    lead_id = fields.Many2one("crm.lead", readonly=True)
 
     from_number = fields.Selection(
         selection="_selection_from_numbers",
@@ -50,19 +51,36 @@ class QuoSendTextWizard(models.TransientModel):
     def default_get(self, fields_list):
         vals = super().default_get(fields_list)
 
+        # 1) If lead is provided, use it
+        lead_id = self.env.context.get("default_lead_id")
+        if lead_id:
+            lead = self.env["crm.lead"].browse(int(lead_id))
+            if lead.exists():
+                # if context already provides to_number, use it
+                to_num = self.env.context.get("default_to_number")
+                if not to_num:
+                    # fallback (mirrors crm.lead helper)
+                    to_num = lead._lead_destination_phone()
+                if not to_num:
+                    raise UserError(_("This opportunity has no valid phone number."))
+                vals.update({
+                    "lead_id": lead.id,
+                    "to_number": to_num,
+                    "partner_id": lead.partner_id.id if lead.partner_id else False,
+                })
+                return vals
+
+        # 2) Otherwise fallback to partner flow (your existing behavior)
         partner_id = self.env.context.get("default_partner_id") or self.env.context.get("active_id")
         partner = self.env["res.partner"].browse(int(partner_id)) if partner_id else self.env["res.partner"]
-        if not partner or not partner.exists():
-            return vals
-
-        to_num = partner._sanitize_phone(partner.mobile) or partner._sanitize_phone(partner.phone)
-        if not to_num:
-            raise UserError(_("This contact has no valid phone number (phone/mobile)."))
-
-        vals.update({
-            "partner_id": partner.id,
-            "to_number": to_num,
-        })
+        if partner and partner.exists():
+            to_num = partner._sanitize_phone(partner.mobile) or partner._sanitize_phone(partner.phone)
+            if not to_num:
+                raise UserError(_("This contact has no valid phone number (phone/mobile)."))
+            vals.update({
+                "partner_id": partner.id,
+                "to_number": to_num,
+            })
         return vals
 
     def action_send(self):
