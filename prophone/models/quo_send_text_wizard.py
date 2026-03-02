@@ -36,10 +36,8 @@ class QuoSendTextWizard(models.TransientModel):
         allowed = user.allowed_quo_phone_number_ids
 
         # If admin and no restriction set, allow all active numbers
-        if user.has_group("base.group_system") and not allowed:
-            recs = Phone.search([("active", "=", True)])
-        else:
-            recs = allowed.filtered(lambda r: r.active)
+        allowed = user.allowed_quo_phone_number_ids.filtered(lambda r: r.active)
+        recs = allowed  # no fallback
 
         options = []
         for r in recs:
