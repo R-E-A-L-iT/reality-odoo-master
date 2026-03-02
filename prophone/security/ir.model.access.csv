@@ -11,3 +11,7 @@ access_quo_call_transcript_line_admin,access.quo.call.transcript.line.admin,mode
 access_quo_import_wizard_admin,access.quo.import.wizard.admin,model_quo_import_call_transcript_wizard,base.group_system,1,1,1,1
 
 access_quo_text_user,access.quo.text.user,model_quo_text,base.group_user,1,1,1,1
+access_quo_send_text_wizard,access_quo_send_text_wizard,model_quo_send_text_wizard,base.group_user,1,1,1,1
+
+access_quo_phone_number_user,access_quo_phone_number_user,model_quo_phone_number,base.group_user,1,0,0,0
+access_quo_phone_number_admin,access_quo_phone_number_admin,model_quo_phone_number,base.group_system,1,1,1,1

@@ -8,6 +8,7 @@
     "author": "Ézékiel deBlois",
     "depends": [
         "base",
+        "sale",
         "mail",
         "contacts",
         "crm",
@@ -19,9 +20,17 @@
         "wizards/import_call_transcript_wizard_views.xml",
         "views/quo_call_views.xml",
         "views/res_partner_views.xml",
+        "views/res_users_view.xml",
+        "views/quo_send_text_wizard_views.xml",
         "views/menus.xml",
         "data/ir_cron.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "prophone/static/src/js/chatter_send_text_patch.js",
+            "prophone/static/src/xml/chatter_send_text.xml",
+        ],
+    },
     "application": True,
     "installable": True,
 }

@@ -89,52 +89,23 @@ class QuoCall(models.Model):
     recording_duration_seconds = fields.Integer(string="Recording Duration (s)", readonly=True)
     raw_recording_json = fields.Text(string="Raw Recording (JSON)", readonly=True)
 
+    @api.model
     def _sanitize_phone(self, phone):
+        """Very tolerant phone sanitizer: keep digits, preserve leading + if present, else add + if looks like E.164."""
         if not phone:
             return False
-
         s = str(phone).strip()
-
-        # --- strip common extension patterns ---
-        # Examples handled:
-        #  "1-902-455-1537;226"
-        #  "+1 (902) 455-1537 x226"
-        #  "902-455-1537 ext 226"
-        #  "902-455-1537#226"
-        #  "902-455-1537,226"
-        s_lower = s.lower()
-
-        # split on explicit extension tokens
-        for token in [";"," ext "," ext."," extension "," x", " x ", "#", ","]:
-            if token in s_lower:
-                # for "x" we only want it when it appears like "... x226" or "...x226"
-                if token.strip() == "x":
-                    # handle "...x226" (no spaces) by splitting at last 'x' if digits follow
-                    m = re.search(r"(.*?)(?:\s*x\s*|\bx)(\d{1,6})\s*$", s_lower)
-                    if m:
-                        s = s[:m.start(2)-1]  # chop before the x/extension digits
-                        s_lower = s.lower()
-                    continue
-                s = s.split(token)[0].strip()
-                s_lower = s.lower()
-                break
-
-        # handle "ext226" / "x226" stuck together at end
-        s = re.sub(r"(?:ext\.?|extension|x)\s*\d{1,6}\s*$", "", s, flags=re.IGNORECASE).strip()
-
-        # --- digits only ---
+        has_plus = s.startswith("+")
         digits = re.sub(r"\D+", "", s)
         if not digits:
             return False
-
-        # If it already looks like it included a country code, keep it.
-        # Otherwise, if it’s >= 10 digits, standardize to +digits.
+        # keep the plus if it was present
+        if has_plus:
+            return "+" + digits
+        # if it looks like country+number length, normalize with +
         if len(digits) >= 10:
             return "+" + digits
-
-        # For short numbers (extensions), return just digits (or False if you want)
         return digits
-
 
     @api.model
     def _normalize_direction(self, raw):
@@ -175,6 +146,44 @@ class QuoCall(models.Model):
                 to_label = rec.to_number or ""
 
             rec.name = f"{prefix} call from {from_label} to {to_label}".strip()
+
+    def _quo_sync_phone_numbers(self):
+        """Fetch Quo phone numbers and upsert into quo.phone.number."""
+        payload = self._quo_get("phone-numbers")
+        data = payload.get("data") if isinstance(payload, dict) else []
+        data = data if isinstance(data, list) else []
+
+        Phone = self.env["quo.phone.number"].sudo()
+        seen_ids = set()
+
+        for pn in data:
+            if not isinstance(pn, dict):
+                continue
+            quo_id = (pn.get("id") or "").strip()  # PNxxxx
+            if not quo_id:
+                continue
+
+            seen_ids.add(quo_id)
+
+            vals = {
+                "name": (pn.get("name") or "").strip() or False,
+                "formatted_number": (pn.get("formattedNumber") or pn.get("formatted_number") or "").strip() or False,
+                "raw_number": (pn.get("number") or "").strip() or False,
+                "active": True,
+            }
+
+            rec = Phone.search([("quo_id", "=", quo_id)], limit=1)
+            if rec:
+                rec.write(vals)
+            else:
+                vals["quo_id"] = quo_id
+                Phone.create(vals)
+
+        # Optional: mark numbers not returned anymore as inactive
+        if seen_ids:
+            Phone.search([("quo_id", "not in", list(seen_ids)), ("active", "=", True)]).write({"active": False})
+
+        return True
 
 
     # ---------- Utilities ----------
@@ -1621,6 +1630,14 @@ class QuoText(models.Model):
         created_at = payload.get("createdAt") or payload.get("created_at")
         dt_created = self.env["quo.call"].sudo()._parse_dt(created_at)
 
+        body = (
+            payload.get("body")
+            or payload.get("content")
+            or payload.get("text")
+            or payload.get("message")
+            or ""
+        )
+
         media = payload.get("media") or []
         vals = {
             "quo_message_id": message_id,
@@ -1635,21 +1652,27 @@ class QuoText(models.Model):
             "to_sanitized": to_s,
             "from_partner_id": p_from.id or False,
             "to_partner_id": p_to.id or False,
-            "body": payload.get("body") or "",
+            "body": body,
             "media_json": json.dumps(media, ensure_ascii=False),
             "raw_message_json": json.dumps(payload, ensure_ascii=False),
         }
+
+        created = False
 
         if rec:
             rec.write({k: v for k, v in vals.items() if v not in (None, False, "") or k in ("raw_message_json", "media_json")})
             txt = rec
         else:
             txt = Text.create(vals)
+            created = True
 
-        # Post chatter logs after upsert
-        try:
-            txt._post_to_related_documents_and_contacts()
-        except Exception:
-            _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+        # Post chatter logs ONLY on first creation to avoid duplicates from webhook status updates
+        if created:
+            try:
+                txt._post_to_related_documents_and_contacts()
+            except Exception:
+                _logger.exception("Failed to post QUO text %s to related documents/contacts", txt.id)
+
+        return txt
 
         return txt

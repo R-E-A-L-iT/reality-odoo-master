@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="prophone.chatter_send_text" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//button[contains(@class, 'o-mail-Chatter-sendMessage')]" position="after">
+
+            <!-- Leads -->
+            <button t-if="props.hasMessageList and state.thread.model === 'crm.lead'"
+                    class="btn text-nowrap me-1 btn-primary"
+                    t-att-class="{'my-2': !props.compactHeight}"
+                    t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId"
+                    t-on-click="() => this.prophoneOpenSendTextWizard()">
+                Send Text
+            </button>
+
+            <!-- Quotes -->
+            <button t-if="props.hasMessageList and state.thread.model === 'sale.order'"
+                    class="btn text-nowrap me-1 btn-primary"
+                    t-att-class="{'my-2': !props.compactHeight}"
+                    t-on-click="() => this.prophoneOpenSendTextWizard()">
+                Send Text
+            </button>
+
+            <!-- Partners -->
+            <button t-if="props.hasMessageList and state.thread.model === 'res.partner'"
+                    class="btn text-nowrap me-1 btn-primary"
+                    t-att-class="{'my-2': !props.compactHeight}"
+                    t-on-click="() => this.prophoneOpenSendTextWizard()">
+                Send Text
+            </button>
+
+        </xpath>
+    </t>
+</templates>
