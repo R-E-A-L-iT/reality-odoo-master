@@ -56,6 +56,10 @@ class QuoteCustomerPortal(cPortal):
         except (AccessError, MissingError):
             return request.redirect("/my")
 
+        # Always save PO number regardless of order state
+        if self.validate(ponumber):
+            order_sudo.customer_po_number = ponumber
+
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")
             order_sudo._compute_tax_totals()
@@ -70,12 +74,12 @@ class QuoteCustomerPortal(cPortal):
             )
 
             return results
-        _logger.info("Unlocked Quote")
+        # _logger.info("Unlocked Quote")
 
-        if not self.validate(ponumber):
-            return
+        # if not self.validate(ponumber):
+        #     return
 
-        order_sudo.customer_po_number = ponumber
+        # order_sudo.customer_po_number = ponumber
 
         return
 

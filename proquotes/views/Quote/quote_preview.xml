@@ -213,6 +213,200 @@
         <!-- Quote Label -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
             <h1>Quotation</h1>
+
+            <!-- ===== RENTAL INFO SECTION (rental orders only) - 2026-03-03 - Brainecrew Apps ===== -->
+            
+            <div id="rental-info-section" style="padding: 16px 0 24px 0;">
+
+                    <!-- Row 1: PO Number | Rental Start | Rental End -->
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-2">
+                            <label for="portal-po-number" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">N° de bon de commande</t>
+                                <t t-else="">PO Number / Reference</t>
+                            </label>
+                            <input id="portal-po-number" class="poNumber form-control"
+                                   type="text"
+                                   t-attf-value="{{sale_order.customer_po_number or ''}}"/>
+                        </div>
+                        <div t-if="sale_order.is_rental == True" class="col-md-4 mb-2">
+                            <label for="rental-start" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">Début de la location</t>
+                                <t t-else="">Rental Start Date</t>
+                            </label>
+                            <input id="rental-start" type="date" class="form-control"
+                                   t-att-value="sale_order.rental_start and str(sale_order.rental_start) or ''"/>
+                        </div>
+                        <div t-if="sale_order.is_rental == True" class="col-md-4 mb-2">
+                            <label for="rental-end" class="form-label fw-bold">
+                                <t t-if="language == 'fr_CA'">Fin estimée de la location</t>
+                                <t t-else="">Rental End Date</t>
+                            </label>
+                            <input id="rental-end" type="date" class="form-control"
+                                   t-att-value="sale_order.rental_end and str(sale_order.rental_end) or ''"/>
+                        </div>
+                    </div>
+
+                    <!-- ================= ADDRESS SECTION ================= -->
+
+                    <div class="row">
+
+                        <!-- ================================================= -->
+                        <!-- ================= INVOICE ADDRESS =============== -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+                            <h5 class="fw-bold mb-3">Invoice Address</h5>
+
+                            <t t-set="inv" t-value="sale_order.partner_invoice_id"/>
+
+                            <!-- Name -->
+                            <label class="form-label">Name</label>
+                            <input id="invoice-name"
+                                   type="text"
+                                   class="form-control form-control-sm mb-2"
+                                   t-att-value="inv.name or ''"/>
+
+                            <!-- Street -->
+                            <label class="form-label">Street</label>
+                            <input id="invoice-street"
+                                   type="text"
+                                   class="form-control form-control-sm mb-2"
+                                   t-att-value="inv.street or ''"/>
+
+                            <!-- City | State | Country -->
+                            <div class="row g-2 mb-2">
+
+                                <!-- City -->
+                                <div class="col-4">
+                                    <label class="form-label">City</label>
+                                    <input id="invoice-city"
+                                           type="text"
+                                           class="form-control form-control-sm"
+                                           t-att-value="inv.city or ''"/>
+                                </div>
+
+                                <!-- State -->
+                                <div class="col-4">
+                                    <label class="form-label">State</label>
+                                    <select id="invoice-state-text"
+                                            class="form-select form-select-sm">
+                                        <option value="">Select</option>
+                                        <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
+                                            <option t-att-value="state.id"
+                                                    t-att-selected="state.id == inv.state_id.id">
+                                                <t t-esc="state.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+
+                                <!-- Country -->
+                                <div class="col-4">
+                                    <label class="form-label">Country</label>
+                                    <select id="invoice-country-text"
+                                            class="form-select form-select-sm">
+                                        <option value="">Select</option>
+                                        <t t-foreach="request.env['res.country'].sudo().search([])" t-as="country">
+                                            <option t-att-value="country.id"
+                                                    t-att-selected="country.id == inv.country_id.id">
+                                                <t t-esc="country.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <!-- Zip -->
+                            <label class="form-label">Zip</label>
+                            <input id="invoice-zip"
+                                   type="text"
+                                   class="form-control form-control-sm"
+                                   t-att-value="inv.zip or ''"/>
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- ================= DELIVERY ADDRESS ============== -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+                            <h5 class="fw-bold mb-3">Delivery Address</h5>
+
+                            <t t-set="dlv" t-value="sale_order.partner_shipping_id"/>
+
+                            <!-- Name -->
+                            <label class="form-label">Name</label>
+                            <input id="delivery-name"
+                                   type="text"
+                                   class="form-control form-control-sm mb-2"
+                                   t-att-value="dlv.name or ''"/>
+
+                            <!-- Street -->
+                            <label class="form-label">Street</label>
+                            <input id="delivery-street"
+                                   type="text"
+                                   class="form-control form-control-sm mb-2"
+                                   t-att-value="dlv.street or ''"/>
+
+                            <!-- City | State | Country -->
+                            <div class="row g-2 mb-2">
+
+                                <!-- City -->
+                                <div class="col-4">
+                                    <label class="form-label">City</label>
+                                    <input id="delivery-city"
+                                           type="text"
+                                           class="form-control form-control-sm"
+                                           t-att-value="dlv.city or ''"/>
+                                </div>
+
+                                <!-- State -->
+                                <div class="col-4">
+                                    <label class="form-label">State</label>
+                                    <select id="delivery-state-text"
+                                            class="form-select form-select-sm">
+                                        <option value="">Select</option>
+                                        <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
+                                            <option t-att-value="state.id"
+                                                    t-att-selected="state.id == dlv.state_id.id">
+                                                <t t-esc="state.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+
+                                <!-- Country -->
+                                <div class="col-4">
+                                    <label class="form-label">Country</label>
+                                    <select id="delivery-country-text"
+                                            class="form-select form-select-sm">
+                                        <option value="">Select</option>
+                                        <t t-foreach="request.env['res.country'].sudo().search([])" t-as="country">
+                                            <option t-att-value="country.id"
+                                                    t-att-selected="country.id == dlv.country_id.id">
+                                                <t t-esc="country.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <!-- Zip -->
+                            <label class="form-label">Zip</label>
+                            <input id="delivery-zip"
+                                   type="text"
+                                   class="form-control form-control-sm"
+                                   t-att-value="dlv.zip or ''"/>
+                        </div>
+
+                    </div>
+
+                </div>
+            <!-- ===== END RENTAL INFO SECTION ===== -->
+
             <!-- shipping/delivery info section -->
             <div class="delivery-section">
                 <t t-set="delivery_orders"
@@ -313,6 +507,7 @@
                     </t>
                 </div>
             </div>
+            
             <!-- <p>Language:
                 <t t-out="language"/>
             </p> -->
