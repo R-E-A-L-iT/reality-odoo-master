@@ -106,3 +106,32 @@ class RentalCustomerPortal(cPortal):
             order_sudo.partner_shipping_id = new_partner.id
 
         return {"success": True}
+
+
+    @http.route(
+        ["/my/orders/<int:order_id>/update_rental_dates"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def update_rental_dates(self, order_id, rental_start=None, rental_end=None, access_token=None, **post):
+
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return {"error": "Access Denied"}
+
+        values = {}
+
+        if rental_start:
+            values["rental_start_date"] = rental_start
+
+        if rental_end:
+            values["rental_return_date"] = rental_end
+
+        if values:
+            order_sudo.sudo().write(values)
+
+        return {"success": True}

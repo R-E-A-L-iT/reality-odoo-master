@@ -12,6 +12,8 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 publicWidget.registry.rental = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
+        "change #rental-start": "_saveRentalDates",
+        "change #rental-end": "_saveRentalDates",
         // Invoice address - auto-save on each field change
         "change #invoice-name": "_saveInvoiceAddress",
         "change #invoice-street": "_saveInvoiceAddress",
@@ -54,6 +56,17 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                 state: document.getElementById("delivery-state-text")?.value || "",
                 zip: document.getElementById("delivery-zip")?.value || "",
                 country: document.getElementById("delivery-country-text")?.value || "",
+            }
+        );
+    },
+
+    _saveRentalDates() {
+        return jsonrpc(
+            "/my/orders/" + this.orderDetail.orderId + "/update_rental_dates",
+            {
+                access_token: this.orderDetail.token,
+                rental_start_date: document.getElementById("rental-start")?.value || "",
+                rental_return_date: document.getElementById("rental-end")?.value || "",
             }
         );
     },
