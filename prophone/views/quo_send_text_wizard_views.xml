@@ -16,7 +16,7 @@
                 </group>
 
                 <group>
-                    <field name="message" placeholder="Write your message..." nolabel="1" colspan="3" style="min-height: 120px;"/>
+                    <field name="message" placeholder="Write your message..." nolabel="1" colspan="2" style="min-height: 120px;"/>
                 </group>
 
                 <footer>
