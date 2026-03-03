@@ -37,6 +37,7 @@ _logger = logging.getLogger(__name__)
 #         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(cPortal):
+    @staticmethod
     def validate(string):
         reg = "^[a-zA-Z0-9- ]*$"
         return not (re.search(reg, string) == None)
@@ -57,8 +58,7 @@ class QuoteCustomerPortal(cPortal):
             return request.redirect("/my")
 
         # Always save PO number regardless of order state
-        if self.validate(ponumber):
-            order_sudo.customer_po_number = ponumber
+        order_sudo.sudo().write({"customer_po_number": ponumber or ""})
 
         if str(order_sudo.state) == "sale":
             _logger.info("Locked Quote")

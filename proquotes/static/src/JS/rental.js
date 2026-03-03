@@ -2,8 +2,8 @@
 // 2026-02-25 - Brainecrew Apps
 
 //odoo.define("proquotes.rental", function (require) {
-//	"use strict";
-//	var publicWidget = require("web.public.widget");
+//  "use strict";
+//  var publicWidget = require("web.public.widget");
 //
 import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToFragment } from "@web/core/utils/render";
@@ -28,6 +28,11 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "change #delivery-state-text": "_saveDeliveryAddress",
         "change #delivery-country-text": "_saveDeliveryAddress",
         "change #delivery-zip": "_saveDeliveryAddress",
+    },
+
+    async start() {
+        await this._super(...arguments);
+        this.orderDetail = this.$el.find("table#sales_order_table").data();
     },
 
     _saveInvoiceAddress() {
@@ -65,8 +70,8 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             "/my/orders/" + this.orderDetail.orderId + "/update_rental_dates",
             {
                 access_token: this.orderDetail.token,
-                rental_start_date: document.getElementById("rental-start")?.value || "",
-                rental_return_date: document.getElementById("rental-end")?.value || "",
+                rental_start: document.getElementById("rental-start")?.value || "",
+                rental_end: document.getElementById("rental-end")?.value || "",
             }
         );
     },
