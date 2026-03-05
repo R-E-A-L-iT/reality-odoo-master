@@ -16,32 +16,32 @@
             <xpath expr="//sheet/group" position="before">
                 <group>
                     <field name="first_name" widget="CopyClipboardChar" string="First Name" readonly="1"/>
-                    <field name="last_name" widget="CopyClipboardChar" string="Last Name" eadonly="1"/>
+                    <field name="last_name" widget="CopyClipboardChar" string="Last Name" readonly="1"/>
                 </group>
             </xpath>
 
             <xpath expr="//field[@name='email']" position="replace">
-                <field name="email" widget="CopyClipboardChar" string="Email"/>
+                <field name="email" widget="CopyClipboardChar" string="Email" placeholder="example@email.com"/>
             </xpath>
 
             <xpath expr="//field[@name='phone']" position="replace">
-                <field name="phone" widget="CopyClipboardChar" string="Phone"/>
+                <field name="phone" widget="CopyClipboardChar" string="Phone" placeholder="+1 (000) 000-0000"/>
             </xpath>
 
             <xpath expr="//field[@name='zip']" position="replace">
-                <field name="zip" widget="CopyClipboardChar" string="ZIP Code"/>
+                <field name="zip" widget="CopyClipboardChar" string="ZIP Code" placeholder="00000"/>
             </xpath>
 
             <xpath expr="//field[@name='street']" position="replace">
-                <field name="street" widget="CopyClipboardChar" string="Street"/>
+                <field name="street" widget="CopyClipboardChar" string="Street" placeholder="123 Main Street"/>
             </xpath>
 
             <xpath expr="//field[@name='city']" position="replace">
-                <field name="city" widget="CopyClipboardChar" string="City"/>
+                <field name="city" widget="CopyClipboardChar" string="City" placeholder="City"/>
             </xpath>
 
             <xpath expr="//field[@name='website']" position="replace">
-                <field name="website" widget="CopyClipboardChar" string="Website"/>
+                <field name="website" widget="CopyClipboardChar" string="Website" placeholder="https://www.example.com"/>
             </xpath>
 
             <xpath expr="//sheet/notebook" position="inside">
