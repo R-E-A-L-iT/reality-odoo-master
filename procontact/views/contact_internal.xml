@@ -14,7 +14,7 @@
             </xpath>
 
             <xpath expr="//sheet/group" position="before">
-                <group>
+                <group t-if="not is_company">
                     <field name="first_name" widget="CopyClipboardChar" string="First Name" readonly="1"/>
                     <field name="last_name" widget="CopyClipboardChar" string="Last Name" readonly="1"/>
                 </group>
