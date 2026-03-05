@@ -21,7 +21,7 @@
             </xpath>
 
             <xpath expr="//field[@name='email']" position="replace">
-                <field name="email" widget="CopyClipboardChar" string="Email" placeholder="example@email.com"/>
+                <field name="email" widget="CopyClipboardChar" string="Email" options="{'placeholder': 'example@email.com'}"/>
             </xpath>
 
             <xpath expr="//field[@name='phone']" position="replace">
