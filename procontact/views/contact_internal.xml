@@ -33,7 +33,7 @@
             </xpath>
 
             <xpath expr="//field[@name='street']" position="replace">
-                <field name="street" widget="CopyClipboardChar" string="Street" placeholder="123 Main Street"/>
+                <field name="street" widget="CopyClipboardChar" placeholder="Street..." class="o_address_street" readonly="type == 'contact' and parent_id"/>
             </xpath>
 
             <xpath expr="//field[@name='city']" position="replace">
