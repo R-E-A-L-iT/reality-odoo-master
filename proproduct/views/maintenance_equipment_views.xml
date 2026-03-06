@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_maintenance_equipment_form_inherit_company_fw" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.inherit.company.firmware</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Owning Company right after Used By -->
+            <xpath expr="//field[@name='equipment_assign_to']" position="after">
+                <field name="owning_company_id"
+                       invisible="equipment_assign_to != 'company'"
+                       options="{'no_open': False}"/>
+            </xpath>
+
+            <!-- Add Firmware Version right after Warranty Expiration Date -->
+            <xpath expr="//field[@name='warranty_date']" position="after">
+                <field name="firmware_version"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
