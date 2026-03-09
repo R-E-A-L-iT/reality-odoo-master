@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- 1) Replace the whole followup header/filter template
+             with only a full-width logo -->
+        <template id="followup_filter_info_template_inherit_full_logo"
+                  inherit_id="account_followup.followup_filter_info_template">
+
+            <xpath expr="." position="replace">
+                <t t-name="account_followup.followup_filter_info_template">
+                    <div style="width: 100%; margin: 0 0 24px 0;">
+                        <img t-if="company.logo"
+                             t-att-src="image_data_uri(company.logo)"
+                             alt="Logo"
+                             style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0;"/>
+                    </div>
+                </t>
+            </xpath>
+
+        </template>
+
+
+        <!-- 2) Replace the table in the main report template
+             and remove the Communication column -->
+        <template id="template_followup_report_inherit_remove_communication"
+                  inherit_id="account_followup.template_followup_report">
+
+            <xpath expr="//table[contains(@class, 'o_account_reports_table')]" position="replace">
+                <table class="o_account_reports_table" t-att-width="'100%'" style="page-break-inside: avoid">
+
+                    <!-- Remove column index 4 = Communication -->
+                    <t t-set="followup_headers" t-value="report._get_followup_report_columns_name()"/>
+
+                    <t t-call="account_followup.table_header_template_followup_report">
+                        <t t-set="column_headers" t-value="[followup_headers[:4] + followup_headers[5:]]"/>
+                    </t>
+
+                    <t t-set="followup_lines" t-value="report._get_followup_report_lines(options)"/>
+                    <t t-set="filtered_lines"
+                       t-value="[dict(line, columns=(line.get('columns', [])[:4] + line.get('columns', [])[5:])) for line in followup_lines]"/>
+
+                    <t t-call="account_followup.line_template">
+                        <t t-set="lines" t-value="filtered_lines"/>
+                    </t>
+                </table>
+            </xpath>
+
+        </template>
+
+    </data>
+</odoo>
