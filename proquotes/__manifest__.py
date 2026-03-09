@@ -82,6 +82,7 @@
         "views/Invoice/invoice_report.xml",
         "views/Invoice/invoice_preview.xml",
         "views/Invoice/invoice_internal.xml",
+        "views/Invoice/follow_up_email.xml",
         # purchase
         "views/Purchase/purchase_report.xml",
         "views/Purchase/purchase_preview.xml",
