@@ -49,7 +49,8 @@
                             <field name="envio_external_id" string="ID" readonly="1"/>
                             <field name="status" readonly="1"/>
                             <field name="name" readonly="1"/>
-                            <field name="lot_id"/>
+                            <field name="lot_id" string="Contained unit"/>
+                            <field name="lock_code" string="Lock Code"/>
                         </group>
 
                         <group string="Live">

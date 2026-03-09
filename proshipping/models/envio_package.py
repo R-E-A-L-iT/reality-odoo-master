@@ -28,6 +28,7 @@ class EnvioPackage(models.Model):
     # Optional logistics fields (adjust mapping to match Envio)
     origin = fields.Char(string="Origin")
     destination = fields.Char(string="Destination")
+    lock_code = fields.Char(string="Lock Code")
 
     # Optional device/telemetry (adjust mapping to match Envio)
     device_id = fields.Char(string="Device ID", index=True)
