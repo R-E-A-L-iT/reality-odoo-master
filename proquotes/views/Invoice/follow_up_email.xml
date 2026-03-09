@@ -2,34 +2,22 @@
 <odoo>
     <data>
 
-        <!-- 1) Replace the whole followup header/filter template
-             with only a full-width logo -->
-        <template id="followup_filter_info_template_inherit_full_logo"
-                  inherit_id="account_followup.followup_filter_info_template">
-
-            <xpath expr="." position="replace">
-                <t t-name="account_followup.followup_filter_info_template">
-                    <div style="width: 100%; margin: 0 0 24px 0;">
-                        <img t-if="company.logo"
-                             t-att-src="image_data_uri(company.logo)"
-                             alt="Logo"
-                             style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0;"/>
-                    </div>
-                </t>
-            </xpath>
-
-        </template>
-
-
-        <!-- 2) Replace the table in the main report template
-             and remove the Communication column -->
-        <template id="template_followup_report_inherit_remove_communication"
+        <template id="template_followup_report_custom"
                   inherit_id="account_followup.template_followup_report">
 
+            <!-- Replace the top followup info block -->
+            <xpath expr="//t[@t-call='account_followup.followup_filter_info_template']" position="replace">
+                <div style="width: 100%; margin: 0 0 24px 0;">
+                    <img t-if="doc.company_id.logo"
+                         t-att-src="image_data_uri(doc.company_id.logo)"
+                         alt="Logo"
+                         style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0;"/>
+                </div>
+            </xpath>
+
+            <!-- Replace the table and remove Communication -->
             <xpath expr="//table[contains(@class, 'o_account_reports_table')]" position="replace">
                 <table class="o_account_reports_table" t-att-width="'100%'" style="page-break-inside: avoid">
-
-                    <!-- Remove column index 4 = Communication -->
                     <t t-set="followup_headers" t-value="report._get_followup_report_columns_name()"/>
 
                     <t t-call="account_followup.table_header_template_followup_report">
