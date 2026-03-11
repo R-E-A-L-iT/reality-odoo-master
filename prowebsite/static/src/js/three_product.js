@@ -46,6 +46,9 @@ whenReady(async () => {
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(host.clientWidth, host.clientHeight);
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.inset = "0";
+    renderer.domElement.style.zIndex = "2";
     host.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
@@ -77,35 +80,32 @@ whenReady(async () => {
                 }
             });
 
-            // First bounding box before scaling
             const initialBox = new THREE.Box3().setFromObject(obj);
             const initialSize = initialBox.getSize(new THREE.Vector3());
             const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
 
-            // Scale to predictable size
+            // About 50% of previous size
             if (maxAxis > 0) {
-                const scale = 2.2 / maxAxis;
+                const scale = 1.1 / maxAxis;
                 obj.scale.setScalar(scale);
             }
 
-            // Recompute bounds AFTER scaling, then center exactly
             const box = new THREE.Box3().setFromObject(obj);
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
 
             obj.position.set(-center.x, -center.y, -center.z);
 
-            // Slight fixed tilt
+            // Slight tilt
             obj.rotation.x = -0.25;
             obj.rotation.z = 0.12;
 
             model = obj;
             scene.add(model);
 
-            // Frame model nicely in canvas
             const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
             const fitWidthDistance = fitHeightDistance / camera.aspect;
-            const distance = 1.25 * Math.max(fitHeightDistance, fitWidthDistance, size.z);
+            const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
 
             camera.position.set(0, 0, distance || 4);
             camera.lookAt(0, 0, 0);
