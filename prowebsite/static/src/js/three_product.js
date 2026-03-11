@@ -13,6 +13,21 @@ whenReady(async () => {
         return;
     }
 
+    // text animation
+    const textEl = host.querySelector(".o_three_canvas_text");
+    if (textEl) {
+        const text = (textEl.textContent || "").trim();
+        textEl.textContent = "";
+
+        [...text].forEach((char, index) => {
+            const span = document.createElement("span");
+            span.className = "letter";
+            span.textContent = char === " " ? "\u00A0" : char;
+            span.style.animationDelay = `${index * 0.16}s`;
+            textEl.appendChild(span);
+        });
+    }
+
     let THREE;
     let OBJLoader;
 
