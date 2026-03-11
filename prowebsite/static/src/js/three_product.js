@@ -70,6 +70,19 @@ whenReady(async () => {
     let dropAnimationStart = null;
     const dropDuration = 1400;
 
+    // Mouse interaction state
+    let mouseTargetX = 0;
+    let mouseTargetY = 0;
+    let mouseCurrentX = 0;
+    let mouseCurrentY = 0;
+
+    // How far the model can be pushed from center
+    const maxOffsetX = 0.35;
+    const maxOffsetY = 0.22;
+
+    // How quickly it eases toward the target
+    const mouseEase = 0.06;
+
     const loader = new OBJLoader();
     loader.load(
         "/prowebsite/static/src/models/BLK2GO_Adapter.obj",
@@ -97,6 +110,7 @@ whenReady(async () => {
 
             obj.position.set(-center.x, -center.y, -center.z);
 
+            // Fixed tilt
             obj.rotation.x = -0.25;
             obj.rotation.z = 0.12;
 
@@ -114,7 +128,7 @@ whenReady(async () => {
             camera.lookAt(0, 0, 0);
 
             // Start above the viewport and settle into center
-            modelWrapper.position.set(0, 5, 0);
+            modelWrapper.position.set(0, 3.5, 0);
             dropAnimationStart = performance.now();
 
             console.log("OBJ loaded successfully", obj);
@@ -129,23 +143,69 @@ whenReady(async () => {
         return 1 - Math.pow(1 - t, 3);
     }
 
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function updateMouseTarget(clientX, clientY) {
+        const rect = host.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Normalize to roughly -1 to 1
+        const nx = (clientX - centerX) / (rect.width / 2);
+        const ny = (clientY - centerY) / (rect.height / 2);
+
+        // Push opposite the mouse direction, but only slightly
+        mouseTargetX = clamp(-nx, -1, 1) * maxOffsetX;
+        mouseTargetY = clamp(ny, -1, 1) * maxOffsetY;
+    }
+
+    host.addEventListener("mousemove", (event) => {
+        updateMouseTarget(event.clientX, event.clientY);
+    });
+
+    host.addEventListener("mouseleave", () => {
+        mouseTargetX = 0;
+        mouseTargetY = 0;
+    });
+
+    host.addEventListener("touchmove", (event) => {
+        if (event.touches && event.touches[0]) {
+            updateMouseTarget(event.touches[0].clientX, event.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    host.addEventListener("touchend", () => {
+        mouseTargetX = 0;
+        mouseTargetY = 0;
+    });
+
     function animate(now) {
         requestAnimationFrame(animate);
+
+        // Smooth mouse interaction
+        mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
+        mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
+
+        let baseY = 0;
 
         if (modelWrapper && dropAnimationStart !== null) {
             const elapsed = now - dropAnimationStart;
             const progress = Math.min(elapsed / dropDuration, 1);
             const eased = easeOutCubic(progress);
 
-            modelWrapper.position.y = 3.5 * (1 - eased);
+            baseY = 3.5 * (1 - eased);
 
             if (progress >= 1) {
                 dropAnimationStart = null;
-                modelWrapper.position.y = 0;
+                baseY = 0;
             }
         }
 
         if (modelWrapper) {
+            modelWrapper.position.x = mouseCurrentX;
+            modelWrapper.position.y = baseY + mouseCurrentY;
             modelWrapper.rotation.y += 0.01;
         }
 
