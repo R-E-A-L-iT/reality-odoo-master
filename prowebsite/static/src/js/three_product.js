@@ -169,23 +169,43 @@ whenReady(async () => {
                     const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
 
                     // lighting
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 2.8);
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 3.2);
                     scene.add(ambientLight);
 
-                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 2.0);
+                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x666666, 2.4);
                     hemiLight.position.set(0, 1, 0);
                     scene.add(hemiLight);
 
-                    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.8);
+                    // Main key light from front-right
+                    const dirLight1 = new THREE.DirectionalLight(0xffffff, 3.4);
                     dirLight1.position.set(5, 8, 6);
                     scene.add(dirLight1);
 
-                    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.5);
-                    dirLight2.position.set(-5, 3, -4);
+                    // Fill light from front-left
+                    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2.2);
+                    dirLight2.position.set(-5, 4, 5);
                     scene.add(dirLight2);
 
-                    camera.position.set(0, 0, distance || 4);
-                    camera.lookAt(0, 0, 0);
+                    // Strong frontal light from near the camera pointing at center
+                    const cameraLight = new THREE.DirectionalLight(0xffffff, 4.2);
+                    cameraLight.position.set(0, 0, 8);
+                    cameraLight.target.position.set(0, 0, 0);
+                    scene.add(cameraLight);
+                    scene.add(cameraLight.target);
+
+                    // Slight top light
+                    const topLight = new THREE.DirectionalLight(0xffffff, 1.6);
+                    topLight.position.set(0, 8, 2);
+                    topLight.target.position.set(0, 0, 0);
+                    scene.add(topLight);
+                    scene.add(topLight.target);
+
+                    // Soft back/rim light to separate model from background
+                    const rimLight = new THREE.DirectionalLight(0xffffff, 1.8);
+                    rimLight.position.set(0, 3, -6);
+                    rimLight.target.position.set(0, 0, 0);
+                    scene.add(rimLight);
+                    scene.add(rimLight.target);
 
                     // Start above the viewport and settle into center
                     modelWrapper.position.set(0, 3.5, 0);

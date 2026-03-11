@@ -58,7 +58,7 @@
     font-size: clamp(60px, 14vw, 220px);
     font-weight: 900;
     letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.32);
+    color: rgba(255, 255, 255, 0.62);
     text-transform: uppercase;
     user-select: none;
     white-space: nowrap;
