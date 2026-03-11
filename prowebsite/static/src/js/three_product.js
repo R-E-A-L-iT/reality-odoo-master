@@ -19,9 +19,9 @@ whenReady(async () => {
     let OBJLoader;
 
     try {
-        // Keep both imports on the exact same Three.js version
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
+
         console.log("Three.js loaded from CDN", THREE);
         console.log("OBJLoader loaded from CDN", OBJLoader);
     } catch (err) {
@@ -30,7 +30,7 @@ whenReady(async () => {
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf4f4f4);
+    scene.background = new THREE.Color(0x000000);
 
     const camera = new THREE.PerspectiveCamera(
         45,
@@ -48,18 +48,18 @@ whenReady(async () => {
     renderer.setSize(host.clientWidth, host.clientHeight);
     host.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
     scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1.8);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.6);
     hemiLight.position.set(0, 1, 0);
     scene.add(hemiLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
     dirLight1.position.set(5, 8, 6);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.5);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.2);
     dirLight2.position.set(-5, 3, -4);
     scene.add(dirLight2);
 
@@ -77,24 +77,37 @@ whenReady(async () => {
                 }
             });
 
-            const box = new THREE.Box3().setFromObject(obj);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
+            // First bounding box before scaling
+            const initialBox = new THREE.Box3().setFromObject(obj);
+            const initialSize = initialBox.getSize(new THREE.Vector3());
+            const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
 
-            obj.position.x -= center.x;
-            obj.position.y -= center.y;
-            obj.position.z -= center.z;
-
-            const maxAxis = Math.max(size.x, size.y, size.z);
+            // Scale to predictable size
             if (maxAxis > 0) {
                 const scale = 2.2 / maxAxis;
                 obj.scale.setScalar(scale);
             }
 
+            // Recompute bounds AFTER scaling, then center exactly
+            const box = new THREE.Box3().setFromObject(obj);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+
+            obj.position.set(-center.x, -center.y, -center.z);
+
+            // Slight fixed tilt
+            obj.rotation.x = -0.25;
+            obj.rotation.z = 0.12;
+
             model = obj;
             scene.add(model);
 
-            camera.position.set(0, 0.3, 4);
+            // Frame model nicely in canvas
+            const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
+            const fitWidthDistance = fitHeightDistance / camera.aspect;
+            const distance = 1.25 * Math.max(fitHeightDistance, fitWidthDistance, size.z);
+
+            camera.position.set(0, 0, distance || 4);
             camera.lookAt(0, 0, 0);
 
             console.log("OBJ loaded successfully", obj);
@@ -123,5 +136,9 @@ whenReady(async () => {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
+
+        if (model) {
+            camera.lookAt(0, 0, 0);
+        }
     });
 });
