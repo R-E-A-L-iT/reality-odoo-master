@@ -104,8 +104,8 @@ whenReady(async () => {
     const mouseEase = 0.06;
 
     const modelBasePath = "/prowebsite/static/src/models/";
-    const objFile = "BLK2GO_with_Adapter.obj";
-    const mtlFile = "BLK2GO_with_Adapter.mtl";
+    const objFile = "BLK2GO_Adapter.obj";
+    const mtlFile = "BLK2GO_Adapter.mtl";
 
     const mtlLoader = new MTLLoader();
     mtlLoader.setPath(modelBasePath);
@@ -167,6 +167,22 @@ whenReady(async () => {
                     const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
                     const fitWidthDistance = fitHeightDistance / camera.aspect;
                     const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
+
+                    // lighting
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 2.8);
+                    scene.add(ambientLight);
+
+                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 2.0);
+                    hemiLight.position.set(0, 1, 0);
+                    scene.add(hemiLight);
+
+                    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.8);
+                    dirLight1.position.set(5, 8, 6);
+                    scene.add(dirLight1);
+
+                    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.5);
+                    dirLight2.position.set(-5, 3, -4);
+                    scene.add(dirLight2);
 
                     camera.position.set(0, 0, distance || 4);
                     camera.lookAt(0, 0, 0);
