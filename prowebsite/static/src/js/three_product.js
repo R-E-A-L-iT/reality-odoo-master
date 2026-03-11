@@ -26,6 +26,8 @@ whenReady(async () => {
             span.style.animationDelay = `${index * 0.16}s`;
             textEl.appendChild(span);
         });
+
+        textEl.classList.add("is-ready");
     }
 
     let THREE;
