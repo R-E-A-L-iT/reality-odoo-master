@@ -114,7 +114,7 @@ whenReady(async () => {
             camera.lookAt(0, 0, 0);
 
             // Start above the viewport and settle into center
-            modelWrapper.position.set(0, 3.5, 0);
+            modelWrapper.position.set(0, 5, 0);
             dropAnimationStart = performance.now();
 
             console.log("OBJ loaded successfully", obj);
