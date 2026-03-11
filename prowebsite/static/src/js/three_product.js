@@ -13,7 +13,8 @@ whenReady(async () => {
         return;
     }
 
-    // text animation
+    const heroSection = host.closest(".o_three_hero");
+
     const textEl = host.querySelector(".o_three_canvas_text");
     if (textEl) {
         const text = (textEl.textContent || "").trim();
@@ -69,23 +70,44 @@ whenReady(async () => {
     renderer.domElement.style.background = "transparent";
     host.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 4.0);
     scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.6);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x666666, 3.0);
     hemiLight.position.set(0, 1, 0);
     scene.add(hemiLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 4.2);
     dirLight1.position.set(5, 8, 6);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight2.position.set(-5, 3, -4);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2.8);
+    dirLight2.position.set(-5, 4, 5);
     scene.add(dirLight2);
 
-    let model = null;
-    let modelWrapper = null;
+    const cameraLight = new THREE.DirectionalLight(0xffffff, 5.2);
+    cameraLight.position.set(0, 0, 8);
+    cameraLight.target.position.set(0, 0, 0);
+    scene.add(cameraLight);
+    scene.add(cameraLight.target);
+
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    topLight.position.set(0, 8, 2);
+    topLight.target.position.set(0, 0, 0);
+    scene.add(topLight);
+    scene.add(topLight.target);
+
+    const rimLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    rimLight.position.set(0, 3, -6);
+    rimLight.target.position.set(0, 0, 0);
+    scene.add(rimLight);
+    scene.add(rimLight.target);
+
+    let adapterModel = null;
+    let adapterWrapper = null;
+
+    let scannerModel = null;
+    let scannerWrapper = null;
 
     let dropAnimationStart = null;
     const dropDuration = 1400;
@@ -104,132 +126,16 @@ whenReady(async () => {
     const mouseEase = 0.06;
 
     const modelBasePath = "/prowebsite/static/src/models/";
-    const objFile = "BLK2GO_Adapter.obj";
-    const mtlFile = "BLK2GO_Adapter.mtl";
 
-    const mtlLoader = new MTLLoader();
-    mtlLoader.setPath(modelBasePath);
+    const adapterFiles = {
+        obj: "BLK2GO_with_Adapter.obj",
+        mtl: "BLK2GO_with_Adapter.mtl",
+    };
 
-    mtlLoader.load(
-        mtlFile,
-        function (materials) {
-            materials.preload();
-
-            const objLoader = new OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.setPath(modelBasePath);
-
-            objLoader.load(
-                objFile,
-                function (obj) {
-                    obj.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.castShadow = false;
-                            child.receiveShadow = false;
-
-                            if (child.material) {
-                                if (Array.isArray(child.material)) {
-                                    child.material.forEach((mat) => {
-                                        mat.side = THREE.DoubleSide;
-                                    });
-                                } else {
-                                    child.material.side = THREE.DoubleSide;
-                                }
-                            }
-                        }
-                    });
-
-                    const initialBox = new THREE.Box3().setFromObject(obj);
-                    const initialSize = initialBox.getSize(new THREE.Vector3());
-                    const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
-
-                    if (maxAxis > 0) {
-                        const scale = 1.1 / maxAxis;
-                        obj.scale.setScalar(scale);
-                    }
-
-                    const box = new THREE.Box3().setFromObject(obj);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-
-                    obj.position.set(-center.x, -center.y, -center.z);
-
-                    // Fixed tilt
-                    obj.rotation.x = -0.25;
-                    obj.rotation.z = 0.12;
-
-                    model = obj;
-
-                    modelWrapper = new THREE.Group();
-                    modelWrapper.add(model);
-                    scene.add(modelWrapper);
-
-                    const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
-                    const fitWidthDistance = fitHeightDistance / camera.aspect;
-                    const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
-
-                    // lighting
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 3.2);
-                    scene.add(ambientLight);
-
-                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x666666, 2.4);
-                    hemiLight.position.set(0, 1, 0);
-                    scene.add(hemiLight);
-
-                    // Main key light from front-right
-                    const dirLight1 = new THREE.DirectionalLight(0xffffff, 3.4);
-                    dirLight1.position.set(5, 8, 6);
-                    scene.add(dirLight1);
-
-                    // Fill light from front-left
-                    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2.2);
-                    dirLight2.position.set(-5, 4, 5);
-                    scene.add(dirLight2);
-
-                    // Strong frontal light from near the camera pointing at center
-                    const cameraLight = new THREE.DirectionalLight(0xffffff, 4.2);
-                    cameraLight.position.set(0, 0, 8);
-                    cameraLight.target.position.set(0, 0, 0);
-                    scene.add(cameraLight);
-                    scene.add(cameraLight.target);
-
-                    // Slight top light
-                    const topLight = new THREE.DirectionalLight(0xffffff, 1.6);
-                    topLight.position.set(0, 8, 2);
-                    topLight.target.position.set(0, 0, 0);
-                    scene.add(topLight);
-                    scene.add(topLight.target);
-
-                    // Soft back/rim light to separate model from background
-                    const rimLight = new THREE.DirectionalLight(0xffffff, 1.8);
-                    rimLight.position.set(0, 3, -6);
-                    rimLight.target.position.set(0, 0, 0);
-                    scene.add(rimLight);
-                    scene.add(rimLight.target);
-
-                    ambientLight.intensity = 3.8;
-                    hemiLight.intensity = 2.8;
-                    dirLight1.intensity = 4.0;
-                    dirLight2.intensity = 2.6;
-                    cameraLight.intensity = 5.0;
-
-                    // Start above the viewport and settle into center
-                    modelWrapper.position.set(0, 3.5, 0);
-                    dropAnimationStart = performance.now();
-
-                    console.log("OBJ + MTL loaded successfully", obj);
-                },
-                undefined,
-                function (error) {
-                    console.error("Error loading OBJ:", error);
-                }
-            );
-        },
-        undefined,
-        function (error) {
-            console.error("Error loading MTL:", error);
-        }
-    );
+    const scannerFiles = {
+        obj: "BLK2GO_Scanner.obj",
+        mtl: "BLK2GO_Scanner.mtl",
+    };
 
     function easeOutCubic(t) {
         return 1 - Math.pow(1 - t, 3);
@@ -239,20 +145,99 @@ whenReady(async () => {
         return Math.max(min, Math.min(max, value));
     }
 
+    function loadObjWithMtl(objFile, mtlFile) {
+        return new Promise((resolve, reject) => {
+            const mtlLoader = new MTLLoader();
+            mtlLoader.setPath(modelBasePath);
+
+            mtlLoader.load(
+                mtlFile,
+                function (materials) {
+                    materials.preload();
+
+                    const objLoader = new OBJLoader();
+                    objLoader.setMaterials(materials);
+                    objLoader.setPath(modelBasePath);
+
+                    objLoader.load(
+                        objFile,
+                        function (obj) {
+                            obj.traverse(function (child) {
+                                if (child.isMesh && child.material) {
+                                    if (Array.isArray(child.material)) {
+                                        child.material.forEach((mat) => {
+                                            mat.side = THREE.DoubleSide;
+                                        });
+                                    } else {
+                                        child.material.side = THREE.DoubleSide;
+                                    }
+                                }
+                            });
+                            resolve(obj);
+                        },
+                        undefined,
+                        function (error) {
+                            reject(error);
+                        }
+                    );
+                },
+                undefined,
+                function (error) {
+                    reject(error);
+                }
+            );
+        });
+    }
+
+    function normalizeAndCenterObject(obj, targetSize = 1.1) {
+        const initialBox = new THREE.Box3().setFromObject(obj);
+        const initialSize = initialBox.getSize(new THREE.Vector3());
+        const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
+
+        if (maxAxis > 0) {
+            const scale = targetSize / maxAxis;
+            obj.scale.setScalar(scale);
+        }
+
+        const box = new THREE.Box3().setFromObject(obj);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+
+        obj.position.set(-center.x, -center.y, -center.z);
+
+        return { box, center, size };
+    }
+
+    function getHeroScrollProgress() {
+        if (!heroSection) {
+            return 0;
+        }
+
+        const rect = heroSection.getBoundingClientRect();
+        const totalScrollable = heroSection.offsetHeight - window.innerHeight;
+
+        if (totalScrollable <= 0) {
+            return 0;
+        }
+
+        const progressed = -rect.top;
+        return clamp(progressed / totalScrollable, 0, 1);
+    }
+
     function updateMouseTarget(clientX, clientY) {
         const rect = host.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
-        // Normalize to roughly -1 to 1
         const nx = (clientX - centerX) / (rect.width / 2);
         const ny = (clientY - centerY) / (rect.height / 2);
 
-        // Push opposite the mouse direction, but only slightly
         mouseTargetX = clamp(-nx, -1, 1) * maxOffsetX;
         mouseTargetY = clamp(ny, -1, 1) * maxOffsetY;
     }
 
+    // Temporarily disabled mouse push effect
+    /*
     host.addEventListener("mousemove", (event) => {
         updateMouseTarget(event.clientX, event.clientY);
     });
@@ -272,17 +257,69 @@ whenReady(async () => {
         mouseTargetX = 0;
         mouseTargetY = 0;
     });
+    */
+
+    try {
+        const loadedAdapter = await loadObjWithMtl(adapterFiles.obj, adapterFiles.mtl);
+        const adapterInfo = normalizeAndCenterObject(loadedAdapter, 1.1);
+
+        // Fixed tilt temporarily disabled
+        /*
+        loadedAdapter.rotation.x = -0.25;
+        loadedAdapter.rotation.z = 0.12;
+        */
+
+        adapterModel = loadedAdapter;
+        adapterWrapper = new THREE.Group();
+        adapterWrapper.add(adapterModel);
+        scene.add(adapterWrapper);
+
+        const size = adapterInfo.size;
+        const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
+        const fitWidthDistance = fitHeightDistance / camera.aspect;
+        const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
+
+        camera.position.set(0, 0, distance || 4);
+        camera.lookAt(0, 0, 0);
+
+        cameraLight.position.copy(camera.position);
+        cameraLight.position.z += 2.5;
+        cameraLight.target.position.set(0, 0, 0);
+
+        adapterWrapper.position.set(0, 3.5, 0);
+        dropAnimationStart = performance.now();
+
+        console.log("Adapter model loaded successfully", loadedAdapter);
+    } catch (error) {
+        console.error("Error loading adapter model:", error);
+    }
+
+    try {
+        const loadedScanner = await loadObjWithMtl(scannerFiles.obj, scannerFiles.mtl);
+        normalizeAndCenterObject(loadedScanner, 1.0);
+
+        scannerModel = loadedScanner;
+        scannerWrapper = new THREE.Group();
+        scannerWrapper.add(scannerModel);
+        scene.add(scannerWrapper);
+
+        // Start out of view above
+        scannerWrapper.position.set(0, 3.8, 0);
+
+        console.log("Scanner model loaded successfully", loadedScanner);
+    } catch (error) {
+        console.error("Error loading scanner model:", error);
+    }
 
     function animate(now) {
         requestAnimationFrame(animate);
 
-        // Smooth mouse interaction
         mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
         mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
 
         let baseY = 0;
 
-        if (modelWrapper && dropAnimationStart !== null) {
+        if (adapterWrapper && dropAnimationStart !== null) {
             const elapsed = now - dropAnimationStart;
             const progress = Math.min(elapsed / dropDuration, 1);
             const eased = easeOutCubic(progress);
@@ -295,14 +332,37 @@ whenReady(async () => {
             }
         }
 
-        if (modelWrapper) {
-            modelWrapper.position.x = mouseCurrentX;
-            modelWrapper.position.y = baseY + mouseCurrentY;
-            modelWrapper.rotation.y += 0.01;
+        if (adapterWrapper) {
+            adapterWrapper.position.x = 0;
+            adapterWrapper.position.y = baseY;
+            adapterWrapper.rotation.y += 0.01;
+
+            // Temporarily disabled mouse push effect
+            /*
+            adapterWrapper.position.x = mouseCurrentX;
+            adapterWrapper.position.y = baseY + mouseCurrentY;
+            */
+        }
+
+        if (scannerWrapper) {
+            const heroProgress = getHeroScrollProgress();
+
+            // First part of the hero scroll drives the scanner downward.
+            // After that, the scanner stops and the rest of page scroll behaves normally.
+            const scannerDropProgress = clamp(heroProgress / 0.55, 0, 1);
+
+            const scannerStartY = 3.8;
+            const scannerEndY = 0.9; // guess for now, likely needs tuning
+            scannerWrapper.position.y =
+                scannerStartY + (scannerEndY - scannerStartY) * easeOutCubic(scannerDropProgress);
+
+            scannerWrapper.position.x = 0;
+            scannerWrapper.rotation.y += 0.01;
         }
 
         renderer.render(scene, camera);
     }
+
     animate(performance.now());
 
     window.addEventListener("resize", () => {
@@ -313,5 +373,9 @@ whenReady(async () => {
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
         camera.lookAt(0, 0, 0);
+
+        cameraLight.position.copy(camera.position);
+        cameraLight.position.z += 2.5;
+        cameraLight.target.position.set(0, 0, 0);
     });
 });
