@@ -32,12 +32,15 @@ whenReady(async () => {
 
     let THREE;
     let OBJLoader;
+    let MTLLoader;
 
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
+        ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
         console.log("Three.js loaded from CDN", THREE);
         console.log("OBJLoader loaded from CDN", OBJLoader);
+        console.log("MTLLoader loaded from CDN", MTLLoader);
     } catch (err) {
         console.error("Failed to load Three.js from CDN:", err);
         return;
@@ -100,59 +103,89 @@ whenReady(async () => {
     // How quickly it eases toward the target
     const mouseEase = 0.06;
 
-    const loader = new OBJLoader();
-    loader.load(
-        "/prowebsite/static/src/models/BLK2GO_Adapter.obj",
-        function (obj) {
-            obj.traverse(function (child) {
-                if (child.isMesh) {
-                    child.material = new THREE.MeshNormalMaterial({
-                        side: THREE.DoubleSide,
+    const modelBasePath = "/prowebsite/static/src/models/";
+    const objFile = "BLK2GO_with_Adapter.obj";
+    const mtlFile = "BLK2GO_with_Adapter.mtl";
+
+    const mtlLoader = new MTLLoader();
+    mtlLoader.setPath(modelBasePath);
+
+    mtlLoader.load(
+        mtlFile,
+        function (materials) {
+            materials.preload();
+
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath(modelBasePath);
+
+            objLoader.load(
+                objFile,
+                function (obj) {
+                    obj.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.castShadow = false;
+                            child.receiveShadow = false;
+
+                            if (child.material) {
+                                if (Array.isArray(child.material)) {
+                                    child.material.forEach((mat) => {
+                                        mat.side = THREE.DoubleSide;
+                                    });
+                                } else {
+                                    child.material.side = THREE.DoubleSide;
+                                }
+                            }
+                        }
                     });
+
+                    const initialBox = new THREE.Box3().setFromObject(obj);
+                    const initialSize = initialBox.getSize(new THREE.Vector3());
+                    const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
+
+                    if (maxAxis > 0) {
+                        const scale = 1.1 / maxAxis;
+                        obj.scale.setScalar(scale);
+                    }
+
+                    const box = new THREE.Box3().setFromObject(obj);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+
+                    obj.position.set(-center.x, -center.y, -center.z);
+
+                    // Fixed tilt
+                    obj.rotation.x = -0.25;
+                    obj.rotation.z = 0.12;
+
+                    model = obj;
+
+                    modelWrapper = new THREE.Group();
+                    modelWrapper.add(model);
+                    scene.add(modelWrapper);
+
+                    const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
+                    const fitWidthDistance = fitHeightDistance / camera.aspect;
+                    const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
+
+                    camera.position.set(0, 0, distance || 4);
+                    camera.lookAt(0, 0, 0);
+
+                    // Start above the viewport and settle into center
+                    modelWrapper.position.set(0, 3.5, 0);
+                    dropAnimationStart = performance.now();
+
+                    console.log("OBJ + MTL loaded successfully", obj);
+                },
+                undefined,
+                function (error) {
+                    console.error("Error loading OBJ:", error);
                 }
-            });
-
-            const initialBox = new THREE.Box3().setFromObject(obj);
-            const initialSize = initialBox.getSize(new THREE.Vector3());
-            const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
-
-            if (maxAxis > 0) {
-                const scale = 1.1 / maxAxis;
-                obj.scale.setScalar(scale);
-            }
-
-            const box = new THREE.Box3().setFromObject(obj);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
-
-            obj.position.set(-center.x, -center.y, -center.z);
-
-            // Fixed tilt
-            obj.rotation.x = -0.25;
-            obj.rotation.z = 0.12;
-
-            model = obj;
-
-            modelWrapper = new THREE.Group();
-            modelWrapper.add(model);
-            scene.add(modelWrapper);
-
-            const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
-            const fitWidthDistance = fitHeightDistance / camera.aspect;
-            const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
-
-            camera.position.set(0, 0, distance || 4);
-            camera.lookAt(0, 0, 0);
-
-            // Start above the viewport and settle into center
-            modelWrapper.position.set(0, 3.5, 0);
-            dropAnimationStart = performance.now();
-
-            console.log("OBJ loaded successfully", obj);
+            );
         },
         undefined,
         function (error) {
-            console.error("Error loading OBJ:", error);
+            console.error("Error loading MTL:", error);
         }
     );
 
