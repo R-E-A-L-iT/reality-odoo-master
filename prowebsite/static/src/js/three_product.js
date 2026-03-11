@@ -112,17 +112,30 @@ whenReady(async () => {
     let dropAnimationStart = null;
     const dropDuration = 1400;
 
-    // Mouse interaction state (disabled for now)
+    // Mouse interaction state
     let mouseTargetX = 0;
     let mouseTargetY = 0;
     let mouseCurrentX = 0;
     let mouseCurrentY = 0;
 
+    // How far the model can be pushed from center
     const maxOffsetX = 0.35;
     const maxOffsetY = 0.22;
+
+    // How quickly it eases toward the target
     const mouseEase = 0.06;
 
     const modelBasePath = "/prowebsite/static/src/models/";
+
+    const adapterFiles = {
+        obj: "BLK2GO_with_Adapter.obj",
+        mtl: "BLK2GO_with_Adapter.mtl",
+    };
+
+    const scannerFiles = {
+        obj: "BLK2GO_Scanner.obj",
+        mtl: "BLK2GO_Scanner.mtl",
+    };
 
     function easeOutCubic(t) {
         return 1 - Math.pow(1 - t, 3);
@@ -195,19 +208,20 @@ whenReady(async () => {
         return { box, center, size };
     }
 
-    function getScannerScrollProgress() {
+    function getHeroScrollProgress() {
         if (!heroSection) {
             return 0;
         }
 
         const rect = heroSection.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
+        const totalScrollable = heroSection.offsetHeight - window.innerHeight;
 
-        // 0 when hero just starts entering viewport bottom
-        // 1 when hero top reaches top of viewport
-        const raw = (vh - rect.top) / vh;
+        if (totalScrollable <= 0) {
+            return 0;
+        }
 
-        return clamp(raw, 0, 1);
+        const progressed = -rect.top;
+        return clamp(progressed / totalScrollable, 0, 1);
     }
 
     function updateMouseTarget(clientX, clientY) {
@@ -246,14 +260,10 @@ whenReady(async () => {
     */
 
     try {
-        const loadedAdapter = await loadObjWithMtl(
-            "BLK2GO_Adapter.obj",
-            "BLK2GO_Adapter.mtl"
-        );
-
+        const loadedAdapter = await loadObjWithMtl(adapterFiles.obj, adapterFiles.mtl);
         const adapterInfo = normalizeAndCenterObject(loadedAdapter, 1.1);
 
-        // Tilt disabled temporarily
+        // Fixed tilt temporarily disabled
         /*
         loadedAdapter.rotation.x = -0.25;
         loadedAdapter.rotation.z = 0.12;
@@ -276,7 +286,6 @@ whenReady(async () => {
         cameraLight.position.z += 2.5;
         cameraLight.target.position.set(0, 0, 0);
 
-        // Keep original nice drop-in animation
         adapterWrapper.position.set(0, 3.5, 0);
         dropAnimationStart = performance.now();
 
@@ -286,19 +295,15 @@ whenReady(async () => {
     }
 
     try {
-        const loadedScanner = await loadObjWithMtl(
-            "BLK2GO_Scanner.obj",
-            "BLK2GO_Scanner.mtl"
-        );
-
-        normalizeAndCenterObject(loadedScanner, 1.05);
+        const loadedScanner = await loadObjWithMtl(scannerFiles.obj, scannerFiles.mtl);
+        normalizeAndCenterObject(loadedScanner, 1.0);
 
         scannerModel = loadedScanner;
         scannerWrapper = new THREE.Group();
         scannerWrapper.add(scannerModel);
         scene.add(scannerWrapper);
 
-        // Start above the visible area
+        // Start out of view above
         scannerWrapper.position.set(0, 3.8, 0);
 
         console.log("Scanner model loaded successfully", loadedScanner);
@@ -312,46 +317,46 @@ whenReady(async () => {
         mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
         mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
 
-        let adapterBaseY = 0;
+        let baseY = 0;
 
         if (adapterWrapper && dropAnimationStart !== null) {
             const elapsed = now - dropAnimationStart;
             const progress = Math.min(elapsed / dropDuration, 1);
             const eased = easeOutCubic(progress);
 
-            adapterBaseY = 3.5 * (1 - eased);
+            baseY = 3.5 * (1 - eased);
 
             if (progress >= 1) {
                 dropAnimationStart = null;
-                adapterBaseY = 0;
+                baseY = 0;
             }
         }
 
         if (adapterWrapper) {
             adapterWrapper.position.x = 0;
-            adapterWrapper.position.y = adapterBaseY;
+            adapterWrapper.position.y = baseY;
             adapterWrapper.rotation.y += 0.01;
 
-            // Mouse repelling temporarily disabled
+            // Temporarily disabled mouse push effect
             /*
             adapterWrapper.position.x = mouseCurrentX;
-            adapterWrapper.position.y = adapterBaseY + mouseCurrentY;
+            adapterWrapper.position.y = baseY + mouseCurrentY;
             */
         }
 
         if (scannerWrapper) {
-            // Progress only while the hero is entering/occupying the viewport.
-            // Once it reaches the end, page scrolling continues normally.
-            const scrollProgress = getScannerScrollProgress();
+            const heroProgress = getHeroScrollProgress();
+
+            // First part of the hero scroll drives the scanner downward.
+            // After that, the scanner stops and the rest of page scroll behaves normally.
+            const scannerDropProgress = clamp(heroProgress / 0.55, 0, 1);
 
             const scannerStartY = 3.8;
-            const scannerEndY = 0.85; // tweak this after testing
-
-            const easedScroll = easeOutCubic(scrollProgress);
-            scannerWrapper.position.x = 0;
+            const scannerEndY = 0.9; // guess for now, likely needs tuning
             scannerWrapper.position.y =
-                scannerStartY + (scannerEndY - scannerStartY) * easedScroll;
+                scannerStartY + (scannerEndY - scannerStartY) * easeOutCubic(scannerDropProgress);
 
+            scannerWrapper.position.x = 0;
             scannerWrapper.rotation.y += 0.01;
         }
 
