@@ -4,24 +4,28 @@ import { whenReady } from "@odoo/owl";
 
 console.log("three_product.js file loaded");
 
-whenReady(() => {
+whenReady(async () => {
     console.log("three_product.js whenReady fired");
 
     const host = document.getElementById("three-product-canvas");
     console.log("host =", host);
-    console.log("window.THREE =", window.THREE);
-    console.log("THREE.OBJLoader =", window.THREE && THREE.OBJLoader);
 
     if (!host) {
         console.warn("No #three-product-canvas found");
         return;
     }
-    if (!window.THREE) {
-        console.warn("THREE is not available");
-        return;
-    }
-    if (!THREE.OBJLoader) {
-        console.warn("THREE.OBJLoader is not available");
+
+    let THREE;
+    let OBJLoader;
+
+    try {
+        // Keep both imports on the exact same Three.js version
+        THREE = await import("https://unpkg.com/three@0.161.0/build/three.module.js");
+        ({ OBJLoader } = await import("https://unpkg.com/three@0.161.0/examples/jsm/loaders/OBJLoader.js"));
+        console.log("Three.js loaded from CDN", THREE);
+        console.log("OBJLoader loaded from CDN", OBJLoader);
+    } catch (err) {
+        console.error("Failed to load Three.js from CDN:", err);
         return;
     }
 
@@ -61,7 +65,7 @@ whenReady(() => {
 
     let model = null;
 
-    const loader = new THREE.OBJLoader();
+    const loader = new OBJLoader();
     loader.load(
         "/prowebsite/static/src/models/BLK2GO_Adapter.obj",
         function (obj) {
