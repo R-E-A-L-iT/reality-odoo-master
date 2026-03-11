@@ -20,8 +20,8 @@ whenReady(async () => {
 
     try {
         // Keep both imports on the exact same Three.js version
-        THREE = await import("https://cdnjs.cloudflare.com/ajax/libs/three.js/0.180.0/three.module.js");
-        ({ OBJLoader } = await import("https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
+        THREE = await import("https://esm.sh/three@0.180.0");
+        ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
         console.log("Three.js loaded from CDN", THREE);
         console.log("OBJLoader loaded from CDN", OBJLoader);
     } catch (err) {
