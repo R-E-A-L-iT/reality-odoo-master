@@ -85,7 +85,7 @@ whenReady(async () => {
 
     const loader = new OBJLoader();
     loader.load(
-        "/prowebsite/static/src/models/BLK2GO_Adapter.obj",
+        "/prowebsite/static/src/models/BLK2GO_with_Adapter.obj",
         function (obj) {
             obj.traverse(function (child) {
                 if (child.isMesh) {
