@@ -1,8 +1,27 @@
 /** @odoo-module **/
 
-document.addEventListener("DOMContentLoaded", () => {
+import { whenReady } from "@odoo/owl";
+
+console.log("three_product.js file loaded");
+
+whenReady(() => {
+    console.log("three_product.js whenReady fired");
+
     const host = document.getElementById("three-product-canvas");
-    if (!host || !window.THREE || !THREE.OBJLoader) {
+    console.log("host =", host);
+    console.log("window.THREE =", window.THREE);
+    console.log("THREE.OBJLoader =", window.THREE && THREE.OBJLoader);
+
+    if (!host) {
+        console.warn("No #three-product-canvas found");
+        return;
+    }
+    if (!window.THREE) {
+        console.warn("THREE is not available");
+        return;
+    }
+    if (!THREE.OBJLoader) {
+        console.warn("THREE.OBJLoader is not available");
         return;
     }
 
@@ -25,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderer.setSize(host.clientWidth, host.clientHeight);
     host.appendChild(renderer.domElement);
 
-    // Strong basic lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 2.2);
     scene.add(ambientLight);
 
@@ -47,18 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loader.load(
         "/prowebsite/static/src/models/BLK2GO_Adapter.obj",
         function (obj) {
-            // Force a visible material so we can confirm geometry exists
             obj.traverse(function (child) {
                 if (child.isMesh) {
                     child.material = new THREE.MeshNormalMaterial({
                         side: THREE.DoubleSide,
                     });
-                    child.castShadow = false;
-                    child.receiveShadow = false;
                 }
             });
 
-            // Center model at origin
             const box = new THREE.Box3().setFromObject(obj);
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
@@ -67,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             obj.position.y -= center.y;
             obj.position.z -= center.z;
 
-            // Scale to a predictable size
             const maxAxis = Math.max(size.x, size.y, size.z);
             if (maxAxis > 0) {
                 const scale = 2.2 / maxAxis;
@@ -77,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
             model = obj;
             scene.add(model);
 
-            // Reposition camera after model size is known
             camera.position.set(0, 0.3, 4);
             camera.lookAt(0, 0, 0);
 
