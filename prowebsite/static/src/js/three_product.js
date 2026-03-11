@@ -8,8 +8,6 @@ whenReady(async () => {
     console.log("three_product.js whenReady fired");
 
     const host = document.getElementById("three-product-canvas");
-    console.log("host =", host);
-
     if (!host) {
         console.warn("No #three-product-canvas found");
         return;
@@ -21,7 +19,6 @@ whenReady(async () => {
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
-
         console.log("Three.js loaded from CDN", THREE);
         console.log("OBJLoader loaded from CDN", OBJLoader);
     } catch (err) {
@@ -30,7 +27,6 @@ whenReady(async () => {
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
 
     const camera = new THREE.PerspectiveCamera(
         45,
@@ -42,13 +38,15 @@ whenReady(async () => {
 
     const renderer = new THREE.WebGLRenderer({
         antialias: true,
-        alpha: false,
+        alpha: true,
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(host.clientWidth, host.clientHeight);
+    renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.position = "absolute";
     renderer.domElement.style.inset = "0";
     renderer.domElement.style.zIndex = "2";
+    renderer.domElement.style.background = "transparent";
     host.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
@@ -67,6 +65,10 @@ whenReady(async () => {
     scene.add(dirLight2);
 
     let model = null;
+    let modelWrapper = null;
+
+    let dropAnimationStart = null;
+    const dropDuration = 1400;
 
     const loader = new OBJLoader();
     loader.load(
@@ -84,7 +86,6 @@ whenReady(async () => {
             const initialSize = initialBox.getSize(new THREE.Vector3());
             const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
 
-            // About 50% of previous size
             if (maxAxis > 0) {
                 const scale = 1.1 / maxAxis;
                 obj.scale.setScalar(scale);
@@ -96,12 +97,14 @@ whenReady(async () => {
 
             obj.position.set(-center.x, -center.y, -center.z);
 
-            // Slight tilt
             obj.rotation.x = -0.25;
             obj.rotation.z = 0.12;
 
             model = obj;
-            scene.add(model);
+
+            modelWrapper = new THREE.Group();
+            modelWrapper.add(model);
+            scene.add(modelWrapper);
 
             const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
             const fitWidthDistance = fitHeightDistance / camera.aspect;
@@ -109,6 +112,10 @@ whenReady(async () => {
 
             camera.position.set(0, 0, distance || 4);
             camera.lookAt(0, 0, 0);
+
+            // Start above the viewport and settle into center
+            modelWrapper.position.set(0, 3.5, 0);
+            dropAnimationStart = performance.now();
 
             console.log("OBJ loaded successfully", obj);
         },
@@ -118,16 +125,33 @@ whenReady(async () => {
         }
     );
 
-    function animate() {
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function animate(now) {
         requestAnimationFrame(animate);
 
-        if (model) {
-            model.rotation.y += 0.01;
+        if (modelWrapper && dropAnimationStart !== null) {
+            const elapsed = now - dropAnimationStart;
+            const progress = Math.min(elapsed / dropDuration, 1);
+            const eased = easeOutCubic(progress);
+
+            modelWrapper.position.y = 3.5 * (1 - eased);
+
+            if (progress >= 1) {
+                dropAnimationStart = null;
+                modelWrapper.position.y = 0;
+            }
+        }
+
+        if (modelWrapper) {
+            modelWrapper.rotation.y += 0.01;
         }
 
         renderer.render(scene, camera);
     }
-    animate();
+    animate(performance.now());
 
     window.addEventListener("resize", () => {
         const width = host.clientWidth;
@@ -136,9 +160,6 @@ whenReady(async () => {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
-
-        if (model) {
-            camera.lookAt(0, 0, 0);
-        }
+        camera.lookAt(0, 0, 0);
     });
 });
