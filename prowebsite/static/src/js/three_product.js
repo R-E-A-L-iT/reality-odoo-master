@@ -207,6 +207,12 @@ whenReady(async () => {
                     scene.add(rimLight);
                     scene.add(rimLight.target);
 
+                    ambientLight.intensity = 3.8;
+                    hemiLight.intensity = 2.8;
+                    dirLight1.intensity = 4.0;
+                    dirLight2.intensity = 2.6;
+                    cameraLight.intensity = 5.0;
+
                     // Start above the viewport and settle into center
                     modelWrapper.position.set(0, 3.5, 0);
                     dropAnimationStart = performance.now();
