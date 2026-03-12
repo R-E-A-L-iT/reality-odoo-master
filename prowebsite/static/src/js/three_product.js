@@ -33,12 +33,15 @@ whenReady(async () => {
     let OBJLoader;
     let MTLLoader;
     let GLTFLoader;
+    let LoopPingPong;
 
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
         ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
         ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
+
+        LoopPingPong = THREE.LoopPingPong;
     } catch (err) {
         console.error("Failed to load Three.js:", err);
         return;
@@ -239,11 +242,6 @@ whenReady(async () => {
     let bottomMixer = null;
     let bottomClock = new THREE.Clock();
     let bottomAction = null;
-    let bottomClipDuration = 0;
-    let bottomAnimTime = 0;
-    let bottomAnimDirection = 1; // 1 forward, -1 backward
-    let bottomHoldTimer = 0;
-    const bottomHoldDuration = 1.1; // pause at each end in seconds
     const bottomAnimSpeed = 1.0;
 
     const gltfLoader = new GLTFLoader();
@@ -295,16 +293,19 @@ whenReady(async () => {
             bottomScene.add(bottomWrapper);
 
             if (gltf.animations && gltf.animations.length > 0) {
+                const clip = gltf.animations[0];
+
                 bottomMixer = new THREE.AnimationMixer(obj);
-                bottomAction = bottomMixer.clipAction(gltf.animations[0]);
+                bottomAction = bottomMixer.clipAction(clip);
+
+                bottomAction.setLoop(LoopPingPong, Infinity);
+                bottomAction.clampWhenFinished = false;
+                bottomAction.enabled = true;
+                bottomAction.timeScale = bottomAnimSpeed;
                 bottomAction.play();
 
-                bottomClipDuration = gltf.animations[0].duration || 0;
-                bottomAnimTime = 0;
-                bottomMixer.setTime(0);
-
-                console.log("Loaded bottom glTF animation clip:", gltf.animations[0].name || "(unnamed)");
-                console.log("Animation duration:", bottomClipDuration);
+                console.log("Loaded bottom glTF animation clip:", clip.name || "(unnamed)");
+                console.log("Animation duration:", clip.duration);
             } else {
                 console.warn("No animations found in scene.gltf");
             }
@@ -369,24 +370,8 @@ whenReady(async () => {
             bottomWrapper.rotation.y += 0.006;
         }
 
-        if (bottomMixer && bottomAction && bottomClipDuration > 0) {
-            if (bottomHoldTimer > 0) {
-                bottomHoldTimer -= delta;
-            } else {
-                bottomAnimTime += delta * bottomAnimSpeed * bottomAnimDirection;
-
-                if (bottomAnimTime >= bottomClipDuration) {
-                    bottomAnimTime = bottomClipDuration;
-                    bottomAnimDirection = -1;
-                    bottomHoldTimer = bottomHoldDuration;
-                } else if (bottomAnimTime <= 0) {
-                    bottomAnimTime = 0;
-                    bottomAnimDirection = 1;
-                    bottomHoldTimer = bottomHoldDuration;
-                }
-
-                bottomMixer.setTime(bottomAnimTime);
-            }
+        if (bottomMixer) {
+            bottomMixer.update(delta);
         }
 
         heroRenderer.render(heroScene, heroCamera);
