@@ -3,25 +3,17 @@
 import { whenReady } from "@odoo/owl";
 
 whenReady(async () => {
-    const host = document.getElementById("three-product-canvas");
-    if (!host) {
-        return;
-    }
+    const heroHost = document.getElementById("three-product-canvas");
+    const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
 
-    const overlayEl = document.getElementById("three-scroll-overlay");
-    const overlayModelHost = document.getElementById("three-product-canvas-overlay-model");
-    const sceneStage = host.querySelector(".o_three_scene_stage");
-    const section = host.closest(".o_three_scroll_section");
-
-    if (!section || !overlayEl || !overlayModelHost || !sceneStage) {
-        console.warn("Three scroll section structure is incomplete.");
+    if (!heroHost || !bottomModelHost) {
         return;
     }
 
     // ----------------------------
     // Text animation
     // ----------------------------
-    const textEl = host.querySelector(".o_three_canvas_text");
+    const textEl = heroHost.querySelector(".o_three_canvas_text");
     if (textEl) {
         const text = (textEl.textContent || "").trim();
         textEl.textContent = "";
@@ -148,27 +140,26 @@ whenReady(async () => {
     }
 
     // ----------------------------
-    // Main scene
+    // Top hero scene
     // ----------------------------
-    const mainScene = new THREE.Scene();
+    const heroScene = new THREE.Scene();
 
-    const mainCamera = new THREE.PerspectiveCamera(
+    const heroCamera = new THREE.PerspectiveCamera(
         45,
-        sceneStage.clientWidth / sceneStage.clientHeight,
+        heroHost.clientWidth / heroHost.clientHeight,
         0.1,
         1000
     );
-    mainCamera.position.set(0, 0, 5);
+    heroCamera.position.set(0, 0, 5);
 
-    const mainRenderer = createRenderer(sceneStage, "2");
-    addStandardLights(mainScene, "dark");
+    const heroRenderer = createRenderer(heroHost, "2");
+    addStandardLights(heroScene, "dark");
 
-    let mainModel = null;
-    let mainWrapper = null;
+    let heroModel = null;
+    let heroWrapper = null;
     let dropAnimationStart = null;
     const dropDuration = 1400;
 
-    // small mouse interaction
     let mouseTargetX = 0;
     let mouseTargetY = 0;
     let mouseCurrentX = 0;
@@ -197,34 +188,48 @@ whenReady(async () => {
             obj.rotation.x = -0.25;
             obj.rotation.z = 0.12;
 
-            mainModel = obj;
-            mainWrapper = new THREE.Group();
-            mainWrapper.add(mainModel);
-            mainWrapper.position.set(0, 3.5, 0);
-            mainScene.add(mainWrapper);
+            heroModel = obj;
+            heroWrapper = new THREE.Group();
+            heroWrapper.add(heroModel);
+            heroWrapper.position.set(0, 3.5, 0);
+            heroScene.add(heroWrapper);
 
             dropAnimationStart = performance.now();
         },
     });
 
-    // ----------------------------
-    // Overlay scene (left panel)
-    // ----------------------------
-    const overlayScene = new THREE.Scene();
+    heroHost.addEventListener("mousemove", (event) => {
+        const rect = heroHost.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
 
-    const overlayCamera = new THREE.PerspectiveCamera(
+        mouseTargetX = clamp(-x * maxOffsetX, -maxOffsetX, maxOffsetX);
+        mouseTargetY = clamp(-y * maxOffsetY, -maxOffsetY, maxOffsetY);
+    });
+
+    heroHost.addEventListener("mouseleave", () => {
+        mouseTargetX = 0;
+        mouseTargetY = 0;
+    });
+
+    // ----------------------------
+    // Bottom split-section left model
+    // ----------------------------
+    const bottomScene = new THREE.Scene();
+
+    const bottomCamera = new THREE.PerspectiveCamera(
         40,
-        overlayModelHost.clientWidth / overlayModelHost.clientHeight,
+        bottomModelHost.clientWidth / bottomModelHost.clientHeight,
         0.1,
         1000
     );
-    overlayCamera.position.set(0, 0, 5);
+    bottomCamera.position.set(0, 0, 5);
 
-    const overlayRenderer = createRenderer(overlayModelHost, "1");
-    addStandardLights(overlayScene, "light");
+    const bottomRenderer = createRenderer(bottomModelHost, "1");
+    addStandardLights(bottomScene, "light");
 
-    let overlayModel = null;
-    let overlayWrapper = null;
+    let bottomModel = null;
+    let bottomWrapper = null;
 
     loadObjWithMtl({
         objFile: "BLK2GO_with_Adapter.obj",
@@ -246,159 +251,28 @@ whenReady(async () => {
             obj.rotation.x = -0.12;
             obj.rotation.z = 0.06;
 
-            overlayModel = obj;
-            overlayWrapper = new THREE.Group();
-            overlayWrapper.add(overlayModel);
-            overlayWrapper.position.set(0, 0, 0);
-            overlayScene.add(overlayWrapper);
+            bottomModel = obj;
+            bottomWrapper = new THREE.Group();
+            bottomWrapper.add(bottomModel);
+            bottomWrapper.position.set(0, 0, 0);
+            bottomScene.add(bottomWrapper);
         },
-    });
-
-    // ----------------------------
-    // Manual internal scroll progress
-    // ----------------------------
-    let internalProgress = 0;
-    let renderedProgress = 0;
-    let touchStartY = null;
-
-    function sectionRect() {
-        return section.getBoundingClientRect();
-    }
-
-    function sectionCanCaptureScroll() {
-        const rect = sectionRect();
-        return rect.top <= 0 && rect.bottom >= window.innerHeight;
-    }
-
-    function shouldCaptureFromPointer(event) {
-        const rect = host.getBoundingClientRect();
-        const x = event.clientX;
-        const y = event.clientY;
-        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-    }
-
-    function updateInternalProgress(deltaY) {
-        const speed = 0.0016;
-        const nextProgress = clamp(internalProgress + deltaY * speed, 0, 1);
-
-        const canMoveInternally =
-            (deltaY > 0 && internalProgress < 1) ||
-            (deltaY < 0 && internalProgress > 0);
-
-        if (!canMoveInternally) {
-            return false;
-        }
-
-        internalProgress = nextProgress;
-        return true;
-    }
-
-    function onWheel(event) {
-        if (!sectionCanCaptureScroll()) {
-            return;
-        }
-
-        if (!shouldCaptureFromPointer(event)) {
-            return;
-        }
-
-        const didConsume = updateInternalProgress(event.deltaY);
-
-        if (didConsume) {
-            event.preventDefault();
-        }
-    }
-
-    function onTouchStart(event) {
-        if (!event.touches.length) {
-            return;
-        }
-        touchStartY = event.touches[0].clientY;
-    }
-
-    function onTouchMove(event) {
-        if (!event.touches.length || touchStartY === null) {
-            return;
-        }
-
-        if (!sectionCanCaptureScroll()) {
-            touchStartY = event.touches[0].clientY;
-            return;
-        }
-
-        const touch = event.touches[0];
-        const rect = host.getBoundingClientRect();
-        const inHost =
-            touch.clientX >= rect.left &&
-            touch.clientX <= rect.right &&
-            touch.clientY >= rect.top &&
-            touch.clientY <= rect.bottom;
-
-        if (!inHost) {
-            touchStartY = touch.clientY;
-            return;
-        }
-
-        const currentY = touch.clientY;
-        const deltaY = touchStartY - currentY;
-
-        const didConsume = updateInternalProgress(deltaY * 1.35);
-
-        if (didConsume) {
-            event.preventDefault();
-        }
-
-        touchStartY = currentY;
-    }
-
-    function onTouchEnd() {
-        touchStartY = null;
-    }
-
-    function animateOverlay() {
-        renderedProgress += (internalProgress - renderedProgress) * 0.12;
-        overlayEl.style.transform = `translateY(${(1 - renderedProgress) * 100}%)`;
-        requestAnimationFrame(animateOverlay);
-    }
-
-    animateOverlay();
-
-    // ----------------------------
-    // Mouse movement for main model
-    // ----------------------------
-    host.addEventListener("mousemove", (event) => {
-        const rect = host.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-
-        mouseTargetX = clamp(-x * maxOffsetX, -maxOffsetX, maxOffsetX);
-        mouseTargetY = clamp(-y * maxOffsetY, -maxOffsetY, maxOffsetY);
-    });
-
-    host.addEventListener("mouseleave", () => {
-        mouseTargetX = 0;
-        mouseTargetY = 0;
     });
 
     // ----------------------------
     // Resize
     // ----------------------------
     function onResize() {
-        mainCamera.aspect = sceneStage.clientWidth / sceneStage.clientHeight;
-        mainCamera.updateProjectionMatrix();
-        mainRenderer.setSize(sceneStage.clientWidth, sceneStage.clientHeight);
+        heroCamera.aspect = heroHost.clientWidth / heroHost.clientHeight;
+        heroCamera.updateProjectionMatrix();
+        heroRenderer.setSize(heroHost.clientWidth, heroHost.clientHeight);
 
-        overlayCamera.aspect = overlayModelHost.clientWidth / overlayModelHost.clientHeight;
-        overlayCamera.updateProjectionMatrix();
-        overlayRenderer.setSize(overlayModelHost.clientWidth, overlayModelHost.clientHeight);
+        bottomCamera.aspect = bottomModelHost.clientWidth / bottomModelHost.clientHeight;
+        bottomCamera.updateProjectionMatrix();
+        bottomRenderer.setSize(bottomModelHost.clientWidth, bottomModelHost.clientHeight);
     }
 
     window.addEventListener("resize", onResize);
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     // ----------------------------
     // Animation loop
@@ -406,38 +280,38 @@ whenReady(async () => {
     function animate(now) {
         requestAnimationFrame(animate);
 
-        if (mainWrapper) {
+        if (heroWrapper) {
             if (dropAnimationStart !== null) {
                 const elapsed = now - dropAnimationStart;
                 const t = clamp(elapsed / dropDuration, 0, 1);
                 const eased = easeOutCubic(t);
-                mainWrapper.position.y = 3.5 * (1 - eased);
+                heroWrapper.position.y = 3.5 * (1 - eased);
 
                 if (t >= 1) {
                     dropAnimationStart = null;
-                    mainWrapper.position.y = 0;
+                    heroWrapper.position.y = 0;
                 }
             }
 
             mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
             mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
 
-            mainWrapper.position.x = mouseCurrentX;
+            heroWrapper.position.x = mouseCurrentX;
             if (dropAnimationStart === null) {
-                mainWrapper.position.y = mouseCurrentY;
+                heroWrapper.position.y = mouseCurrentY;
             }
 
-            if (mainModel) {
-                mainModel.rotation.y += 0.01;
+            if (heroModel) {
+                heroModel.rotation.y += 0.01;
             }
         }
 
-        if (overlayWrapper && overlayModel) {
-            overlayModel.rotation.y += 0.008;
+        if (bottomWrapper && bottomModel) {
+            bottomModel.rotation.y += 0.008;
         }
 
-        mainRenderer.render(mainScene, mainCamera);
-        overlayRenderer.render(overlayScene, overlayCamera);
+        heroRenderer.render(heroScene, heroCamera);
+        bottomRenderer.render(bottomScene, bottomCamera);
     }
 
     requestAnimationFrame(animate);
