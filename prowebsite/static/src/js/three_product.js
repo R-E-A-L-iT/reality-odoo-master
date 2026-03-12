@@ -259,12 +259,19 @@ whenReady(async () => {
     let overlayProgress = 0;
 
     function updateScrollProgress() {
-        const rect = section.getBoundingClientRect();
-        const sectionScroll = clamp(-rect.top, 0, window.innerHeight);
-        overlayProgress = sectionScroll / window.innerHeight;
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const viewportHeight = window.innerHeight;
 
-        // 0 -> hidden below
-        // 1 -> fully covering hero
+        // total amount of page scroll while this sticky section is active
+        const maxScrollable = Math.max(sectionHeight - viewportHeight, 1);
+
+        // how far we have scrolled through this section
+        const scrolled = clamp(window.scrollY - sectionTop, 0, maxScrollable);
+
+        // normalized 0 -> 1
+        const overlayProgress = scrolled / maxScrollable;
+
         overlayEl.style.transform = `translateY(${(1 - overlayProgress) * 100}%)`;
     }
 
