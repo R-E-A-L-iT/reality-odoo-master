@@ -32,17 +32,20 @@ whenReady(async () => {
     let THREE;
     let OBJLoader;
     let MTLLoader;
+    let GLTFLoader;
 
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
         ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
+        ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
     } catch (err) {
         console.error("Failed to load Three.js:", err);
         return;
     }
 
     const modelBasePath = "/prowebsite/static/src/models/";
+    const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -152,7 +155,8 @@ whenReady(async () => {
     );
     heroCamera.position.set(0, 0, 5);
 
-    const heroRenderer = createRenderer(heroHost, "2");
+    // z-index higher than text so model sits in front
+    const heroRenderer = createRenderer(heroHost, "4");
     addStandardLights(heroScene, "dark");
 
     let heroModel = null;
@@ -231,16 +235,47 @@ whenReady(async () => {
     let bottomModel = null;
     let bottomWrapper = null;
 
-    loadObjWithMtl({
-        objFile: "BLK2GO_with_Adapter.obj",
-        mtlFile: "BLK2GO_with_Adapter.mtl",
-        onLoaded: (obj) => {
+    // glTF animation state
+    let bottomMixer = null;
+    let bottomClock = new THREE.Clock();
+    let bottomAction = null;
+    let bottomClipDuration = 0;
+    let bottomAnimTime = 0;
+    let bottomAnimDirection = 1; // 1 forward, -1 backward
+    let bottomHoldTimer = 0;
+    const bottomHoldDuration = 1.1; // pause at each end in seconds
+    const bottomAnimSpeed = 1.0;
+
+    const gltfLoader = new GLTFLoader();
+
+    gltfLoader.load(
+        animatedModelPath,
+        (gltf) => {
+            const obj = gltf.scene;
+
+            obj.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+
+                    if (child.material) {
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach((mat) => {
+                                mat.side = THREE.DoubleSide;
+                            });
+                        } else {
+                            child.material.side = THREE.DoubleSide;
+                        }
+                    }
+                }
+            });
+
             const initialBox = new THREE.Box3().setFromObject(obj);
             const initialSize = initialBox.getSize(new THREE.Vector3());
             const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
 
             if (maxAxis > 0) {
-                const scale = 1.6 / maxAxis;
+                const scale = 1.7 / maxAxis;
                 obj.scale.setScalar(scale);
             }
 
@@ -248,16 +283,37 @@ whenReady(async () => {
             const center = box.getCenter(new THREE.Vector3());
 
             obj.position.set(-center.x, -center.y, -center.z);
-            obj.rotation.x = -0.12;
-            obj.rotation.z = 0.06;
+
+            // upright: remove axis tilt
+            obj.rotation.x = 0;
+            obj.rotation.z = 0;
 
             bottomModel = obj;
             bottomWrapper = new THREE.Group();
             bottomWrapper.add(bottomModel);
             bottomWrapper.position.set(0, 0, 0);
             bottomScene.add(bottomWrapper);
+
+            if (gltf.animations && gltf.animations.length > 0) {
+                bottomMixer = new THREE.AnimationMixer(obj);
+                bottomAction = bottomMixer.clipAction(gltf.animations[0]);
+                bottomAction.play();
+
+                bottomClipDuration = gltf.animations[0].duration || 0;
+                bottomAnimTime = 0;
+                bottomMixer.setTime(0);
+
+                console.log("Loaded bottom glTF animation clip:", gltf.animations[0].name || "(unnamed)");
+                console.log("Animation duration:", bottomClipDuration);
+            } else {
+                console.warn("No animations found in scene.gltf");
+            }
         },
-    });
+        undefined,
+        (error) => {
+            console.error("Error loading animated GLTF:", error);
+        }
+    );
 
     // ----------------------------
     // Resize
@@ -279,6 +335,8 @@ whenReady(async () => {
     // ----------------------------
     function animate(now) {
         requestAnimationFrame(animate);
+
+        const delta = bottomClock.getDelta();
 
         if (heroWrapper) {
             if (dropAnimationStart !== null) {
@@ -306,8 +364,29 @@ whenReady(async () => {
             }
         }
 
-        if (bottomWrapper && bottomModel) {
-            bottomModel.rotation.y += 0.008;
+        if (bottomWrapper) {
+            // Keep gentle overall rotation for the scanner+adapter section
+            bottomWrapper.rotation.y += 0.006;
+        }
+
+        if (bottomMixer && bottomAction && bottomClipDuration > 0) {
+            if (bottomHoldTimer > 0) {
+                bottomHoldTimer -= delta;
+            } else {
+                bottomAnimTime += delta * bottomAnimSpeed * bottomAnimDirection;
+
+                if (bottomAnimTime >= bottomClipDuration) {
+                    bottomAnimTime = bottomClipDuration;
+                    bottomAnimDirection = -1;
+                    bottomHoldTimer = bottomHoldDuration;
+                } else if (bottomAnimTime <= 0) {
+                    bottomAnimTime = 0;
+                    bottomAnimDirection = 1;
+                    bottomHoldTimer = bottomHoldDuration;
+                }
+
+                bottomMixer.setTime(bottomAnimTime);
+            }
         }
 
         heroRenderer.render(heroScene, heroCamera);
