@@ -2,18 +2,24 @@
 
 import { whenReady } from "@odoo/owl";
 
-console.log("three_product.js file loaded");
-
 whenReady(async () => {
-    console.log("three_product.js whenReady fired");
-
     const host = document.getElementById("three-product-canvas");
     if (!host) {
-        console.warn("No #three-product-canvas found");
         return;
     }
 
-    // text animation
+    const overlayEl = document.getElementById("three-scroll-overlay");
+    const overlayModelHost = document.getElementById("three-product-canvas-overlay-model");
+    const section = host.closest(".o_three_scroll_section");
+
+    if (!section || !overlayEl || !overlayModelHost) {
+        console.warn("Three scroll section structure is incomplete.");
+        return;
+    }
+
+    // ----------------------------
+    // Text animation
+    // ----------------------------
     const textEl = host.querySelector(".o_three_canvas_text");
     if (textEl) {
         const text = (textEl.textContent || "").trim();
@@ -38,223 +44,242 @@ whenReady(async () => {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
         ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
-        console.log("Three.js loaded from CDN", THREE);
-        console.log("OBJLoader loaded from CDN", OBJLoader);
-        console.log("MTLLoader loaded from CDN", MTLLoader);
     } catch (err) {
-        console.error("Failed to load Three.js from CDN:", err);
+        console.error("Failed to load Three.js:", err);
         return;
     }
 
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(
-        45,
-        host.clientWidth / host.clientHeight,
-        0.1,
-        1000
-    );
-    camera.position.set(0, 0, 5);
-
-    const renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(host.clientWidth, host.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-    renderer.domElement.style.position = "absolute";
-    renderer.domElement.style.inset = "0";
-    renderer.domElement.style.zIndex = "2";
-    renderer.domElement.style.background = "transparent";
-    host.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
-    scene.add(ambientLight);
-
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.6);
-    hemiLight.position.set(0, 1, 0);
-    scene.add(hemiLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
-    dirLight1.position.set(5, 8, 6);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight2.position.set(-5, 3, -4);
-    scene.add(dirLight2);
-
-    let model = null;
-    let modelWrapper = null;
-
-    let dropAnimationStart = null;
-    const dropDuration = 1400;
-
-    // Mouse interaction state
-    let mouseTargetX = 0;
-    let mouseTargetY = 0;
-    let mouseCurrentX = 0;
-    let mouseCurrentY = 0;
-
-    // How far the model can be pushed from center
-    const maxOffsetX = 0.35;
-    const maxOffsetY = 0.22;
-
-    // How quickly it eases toward the target
-    const mouseEase = 0.06;
-
     const modelBasePath = "/prowebsite/static/src/models/";
-    const objFile = "BLK2GO_Adapter.obj";
-    const mtlFile = "BLK2GO_Adapter.mtl";
-
-    const mtlLoader = new MTLLoader();
-    mtlLoader.setPath(modelBasePath);
-
-    mtlLoader.load(
-        mtlFile,
-        function (materials) {
-            materials.preload();
-
-            const objLoader = new OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.setPath(modelBasePath);
-
-            objLoader.load(
-                objFile,
-                function (obj) {
-                    obj.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.castShadow = false;
-                            child.receiveShadow = false;
-
-                            if (child.material) {
-                                if (Array.isArray(child.material)) {
-                                    child.material.forEach((mat) => {
-                                        mat.side = THREE.DoubleSide;
-                                    });
-                                } else {
-                                    child.material.side = THREE.DoubleSide;
-                                }
-                            }
-                        }
-                    });
-
-                    const initialBox = new THREE.Box3().setFromObject(obj);
-                    const initialSize = initialBox.getSize(new THREE.Vector3());
-                    const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
-
-                    if (maxAxis > 0) {
-                        const scale = 1.1 / maxAxis;
-                        obj.scale.setScalar(scale);
-                    }
-
-                    const box = new THREE.Box3().setFromObject(obj);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-
-                    obj.position.set(-center.x, -center.y, -center.z);
-
-                    // Fixed tilt
-                    obj.rotation.x = -0.25;
-                    obj.rotation.z = 0.12;
-
-                    model = obj;
-
-                    modelWrapper = new THREE.Group();
-                    modelWrapper.add(model);
-                    scene.add(modelWrapper);
-
-                    const fitHeightDistance = size.y / (2 * Math.tan((Math.PI * camera.fov) / 360));
-                    const fitWidthDistance = fitHeightDistance / camera.aspect;
-                    const distance = 1.8 * Math.max(fitHeightDistance, fitWidthDistance, size.z, 2);
-
-                    // lighting
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 3.2);
-                    scene.add(ambientLight);
-
-                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x666666, 2.4);
-                    hemiLight.position.set(0, 1, 0);
-                    scene.add(hemiLight);
-
-                    // Main key light from front-right
-                    const dirLight1 = new THREE.DirectionalLight(0xffffff, 3.4);
-                    dirLight1.position.set(5, 8, 6);
-                    scene.add(dirLight1);
-
-                    // Fill light from front-left
-                    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2.2);
-                    dirLight2.position.set(-5, 4, 5);
-                    scene.add(dirLight2);
-
-                    // Strong frontal light from near the camera pointing at center
-                    const cameraLight = new THREE.DirectionalLight(0xffffff, 4.2);
-                    cameraLight.position.set(0, 0, 8);
-                    cameraLight.target.position.set(0, 0, 0);
-                    scene.add(cameraLight);
-                    scene.add(cameraLight.target);
-
-                    // Slight top light
-                    const topLight = new THREE.DirectionalLight(0xffffff, 1.6);
-                    topLight.position.set(0, 8, 2);
-                    topLight.target.position.set(0, 0, 0);
-                    scene.add(topLight);
-                    scene.add(topLight.target);
-
-                    // Soft back/rim light to separate model from background
-                    const rimLight = new THREE.DirectionalLight(0xffffff, 1.8);
-                    rimLight.position.set(0, 3, -6);
-                    rimLight.target.position.set(0, 0, 0);
-                    scene.add(rimLight);
-                    scene.add(rimLight.target);
-
-                    ambientLight.intensity = 3.8;
-                    hemiLight.intensity = 2.8;
-                    dirLight1.intensity = 4.0;
-                    dirLight2.intensity = 2.6;
-                    cameraLight.intensity = 5.0;
-
-                    // Start above the viewport and settle into center
-                    modelWrapper.position.set(0, 3.5, 0);
-                    dropAnimationStart = performance.now();
-
-                    console.log("OBJ + MTL loaded successfully", obj);
-                },
-                undefined,
-                function (error) {
-                    console.error("Error loading OBJ:", error);
-                }
-            );
-        },
-        undefined,
-        function (error) {
-            console.error("Error loading MTL:", error);
-        }
-    );
-
-    function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
-    }
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
     }
 
-    function updateMouseTarget(clientX, clientY) {
-        const rect = host.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        // Normalize to roughly -1 to 1
-        const nx = (clientX - centerX) / (rect.width / 2);
-        const ny = (clientY - centerY) / (rect.height / 2);
-
-        // Push opposite the mouse direction, but only slightly
-        mouseTargetX = clamp(-nx, -1, 1) * maxOffsetX;
-        mouseTargetY = clamp(ny, -1, 1) * maxOffsetY;
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
     }
 
+    function createRenderer(targetHost, zIndex = "2") {
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(targetHost.clientWidth, targetHost.clientHeight);
+        renderer.setClearColor(0x000000, 0);
+        renderer.domElement.style.position = "absolute";
+        renderer.domElement.style.inset = "0";
+        renderer.domElement.style.zIndex = zIndex;
+        renderer.domElement.style.background = "transparent";
+        targetHost.appendChild(renderer.domElement);
+        return renderer;
+    }
+
+    function addStandardLights(scene, variant = "dark") {
+        const ambient = new THREE.AmbientLight(0xffffff, variant === "dark" ? 2.0 : 2.6);
+        scene.add(ambient);
+
+        const hemi = new THREE.HemisphereLight(
+            0xffffff,
+            variant === "dark" ? 0x444444 : 0xbbbbbb,
+            variant === "dark" ? 1.6 : 2.1
+        );
+        hemi.position.set(0, 1, 0);
+        scene.add(hemi);
+
+        const dir1 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 2.4 : 3.2);
+        dir1.position.set(5, 8, 6);
+        scene.add(dir1);
+
+        const dir2 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 1.4 : 2.2);
+        dir2.position.set(-5, 4, 5);
+        scene.add(dir2);
+
+        const front = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 3.2 : 4.0);
+        front.position.set(0, 0, 8);
+        front.target.position.set(0, 0, 0);
+        scene.add(front);
+        scene.add(front.target);
+    }
+
+    function loadObjWithMtl({ objFile, mtlFile, onLoaded }) {
+        const mtlLoader = new MTLLoader();
+        mtlLoader.setPath(modelBasePath);
+
+        mtlLoader.load(
+            mtlFile,
+            (materials) => {
+                materials.preload();
+
+                const objLoader = new OBJLoader();
+                objLoader.setMaterials(materials);
+                objLoader.setPath(modelBasePath);
+
+                objLoader.load(
+                    objFile,
+                    (obj) => {
+                        obj.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = false;
+                                child.receiveShadow = false;
+
+                                if (child.material) {
+                                    if (Array.isArray(child.material)) {
+                                        child.material.forEach((mat) => {
+                                            mat.side = THREE.DoubleSide;
+                                        });
+                                    } else {
+                                        child.material.side = THREE.DoubleSide;
+                                    }
+                                }
+                            }
+                        });
+
+                        onLoaded(obj);
+                    },
+                    undefined,
+                    (error) => console.error(`Error loading OBJ ${objFile}:`, error)
+                );
+            },
+            undefined,
+            (error) => console.error(`Error loading MTL ${mtlFile}:`, error)
+        );
+    }
+
+    // ----------------------------
+    // Main scene
+    // ----------------------------
+    const mainScene = new THREE.Scene();
+
+    const mainCamera = new THREE.PerspectiveCamera(
+        45,
+        host.clientWidth / host.clientHeight,
+        0.1,
+        1000
+    );
+    mainCamera.position.set(0, 0, 5);
+
+    const mainRenderer = createRenderer(host, "2");
+    addStandardLights(mainScene, "dark");
+
+    let mainModel = null;
+    let mainWrapper = null;
+    let dropAnimationStart = null;
+    const dropDuration = 1400;
+
+    // small mouse interaction
+    let mouseTargetX = 0;
+    let mouseTargetY = 0;
+    let mouseCurrentX = 0;
+    let mouseCurrentY = 0;
+    const maxOffsetX = 0.35;
+    const maxOffsetY = 0.22;
+    const mouseEase = 0.06;
+
+    loadObjWithMtl({
+        objFile: "BLK2GO_Adapter.obj",
+        mtlFile: "BLK2GO_Adapter.mtl",
+        onLoaded: (obj) => {
+            const initialBox = new THREE.Box3().setFromObject(obj);
+            const initialSize = initialBox.getSize(new THREE.Vector3());
+            const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
+
+            if (maxAxis > 0) {
+                const scale = 1.1 / maxAxis;
+                obj.scale.setScalar(scale);
+            }
+
+            const box = new THREE.Box3().setFromObject(obj);
+            const center = box.getCenter(new THREE.Vector3());
+
+            obj.position.set(-center.x, -center.y, -center.z);
+            obj.rotation.x = -0.25;
+            obj.rotation.z = 0.12;
+
+            mainModel = obj;
+            mainWrapper = new THREE.Group();
+            mainWrapper.add(mainModel);
+            mainWrapper.position.set(0, 3.5, 0);
+            mainScene.add(mainWrapper);
+
+            dropAnimationStart = performance.now();
+        },
+    });
+
+    // ----------------------------
+    // Overlay scene (left panel)
+    // ----------------------------
+    const overlayScene = new THREE.Scene();
+
+    const overlayCamera = new THREE.PerspectiveCamera(
+        40,
+        overlayModelHost.clientWidth / overlayModelHost.clientHeight,
+        0.1,
+        1000
+    );
+    overlayCamera.position.set(0, 0, 5);
+
+    const overlayRenderer = createRenderer(overlayModelHost, "1");
+    addStandardLights(overlayScene, "light");
+
+    let overlayModel = null;
+    let overlayWrapper = null;
+
+    loadObjWithMtl({
+        objFile: "BLK2GO_with_Adapter.obj",
+        mtlFile: "BLK2GO_with_Adapter.mtl",
+        onLoaded: (obj) => {
+            const initialBox = new THREE.Box3().setFromObject(obj);
+            const initialSize = initialBox.getSize(new THREE.Vector3());
+            const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
+
+            if (maxAxis > 0) {
+                const scale = 1.6 / maxAxis;
+                obj.scale.setScalar(scale);
+            }
+
+            const box = new THREE.Box3().setFromObject(obj);
+            const center = box.getCenter(new THREE.Vector3());
+
+            obj.position.set(-center.x, -center.y, -center.z);
+            obj.rotation.x = -0.12;
+            obj.rotation.z = 0.06;
+
+            overlayModel = obj;
+            overlayWrapper = new THREE.Group();
+            overlayWrapper.add(overlayModel);
+            overlayWrapper.position.set(0, 0, 0);
+            overlayScene.add(overlayWrapper);
+        },
+    });
+
+    // ----------------------------
+    // Scroll progress for overlay rise
+    // ----------------------------
+    let overlayProgress = 0;
+
+    function updateScrollProgress() {
+        const rect = section.getBoundingClientRect();
+        const sectionScroll = clamp(-rect.top, 0, window.innerHeight);
+        overlayProgress = sectionScroll / window.innerHeight;
+
+        // 0 -> hidden below
+        // 1 -> fully covering hero
+        overlayEl.style.transform = `translateY(${(1 - overlayProgress) * 100}%)`;
+    }
+
+    updateScrollProgress();
+
+    // ----------------------------
+    // Mouse movement for main model
+    // ----------------------------
     host.addEventListener("mousemove", (event) => {
-        updateMouseTarget(event.clientX, event.clientY);
+        const rect = host.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+
+        mouseTargetX = clamp(-x * maxOffsetX, -maxOffsetX, maxOffsetX);
+        mouseTargetY = clamp(-y * maxOffsetY, -maxOffsetY, maxOffsetY);
     });
 
     host.addEventListener("mouseleave", () => {
@@ -262,56 +287,63 @@ whenReady(async () => {
         mouseTargetY = 0;
     });
 
-    host.addEventListener("touchmove", (event) => {
-        if (event.touches && event.touches[0]) {
-            updateMouseTarget(event.touches[0].clientX, event.touches[0].clientY);
-        }
-    }, { passive: true });
+    // ----------------------------
+    // Resize
+    // ----------------------------
+    function onResize() {
+        mainCamera.aspect = host.clientWidth / host.clientHeight;
+        mainCamera.updateProjectionMatrix();
+        mainRenderer.setSize(host.clientWidth, host.clientHeight);
 
-    host.addEventListener("touchend", () => {
-        mouseTargetX = 0;
-        mouseTargetY = 0;
-    });
+        overlayCamera.aspect = overlayModelHost.clientWidth / overlayModelHost.clientHeight;
+        overlayCamera.updateProjectionMatrix();
+        overlayRenderer.setSize(overlayModelHost.clientWidth, overlayModelHost.clientHeight);
 
+        updateScrollProgress();
+    }
+
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+
+    // ----------------------------
+    // Animation loop
+    // ----------------------------
     function animate(now) {
         requestAnimationFrame(animate);
 
-        // Smooth mouse interaction
-        mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
-        mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
+        if (mainWrapper) {
+            if (dropAnimationStart !== null) {
+                const elapsed = now - dropAnimationStart;
+                const t = clamp(elapsed / dropDuration, 0, 1);
+                const eased = easeOutCubic(t);
+                mainWrapper.position.y = 3.5 * (1 - eased);
 
-        let baseY = 0;
+                if (t >= 1) {
+                    dropAnimationStart = null;
+                    mainWrapper.position.y = 0;
+                }
+            }
 
-        if (modelWrapper && dropAnimationStart !== null) {
-            const elapsed = now - dropAnimationStart;
-            const progress = Math.min(elapsed / dropDuration, 1);
-            const eased = easeOutCubic(progress);
+            mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
+            mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
 
-            baseY = 3.5 * (1 - eased);
+            mainWrapper.position.x = mouseCurrentX;
+            if (dropAnimationStart === null) {
+                mainWrapper.position.y = mouseCurrentY;
+            }
 
-            if (progress >= 1) {
-                dropAnimationStart = null;
-                baseY = 0;
+            if (mainModel) {
+                mainModel.rotation.y += 0.01;
             }
         }
 
-        if (modelWrapper) {
-            modelWrapper.position.x = mouseCurrentX;
-            modelWrapper.position.y = baseY + mouseCurrentY;
-            modelWrapper.rotation.y += 0.01;
+        if (overlayWrapper && overlayModel) {
+            overlayModel.rotation.y += 0.008;
         }
 
-        renderer.render(scene, camera);
+        mainRenderer.render(mainScene, mainCamera);
+        overlayRenderer.render(overlayScene, overlayCamera);
     }
-    animate(performance.now());
 
-    window.addEventListener("resize", () => {
-        const width = host.clientWidth;
-        const height = host.clientHeight;
-
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-        camera.lookAt(0, 0, 0);
-    });
+    requestAnimationFrame(animate);
 });

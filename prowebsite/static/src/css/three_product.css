@@ -1,15 +1,22 @@
-.o_three_hero {
-    width: 100%;
-    min-height: 100vh;
+.o_three_scroll_section {
     position: relative;
-    overflow: hidden;
+    height: 200vh;
+    background: #000;
 }
 
 .o_three_canvas_host {
+    position: sticky;
+    top: 0;
     width: 100%;
     height: 100vh;
-    position: relative;
     overflow: hidden;
+    background: #000;
+}
+
+.o_three_scene_stage {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
     background: #000;
 }
 
@@ -18,31 +25,6 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
-    background: transparent;
-}
-
-.o_three_hero {
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-}
-
-.o_three_canvas_host {
-    width: 100%;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
-    background: #000;
-}
-
-.o_three_canvas_host canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
     background: transparent;
 }
 
@@ -85,4 +67,55 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Overlay that rises from below */
+.o_three_scroll_overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    transform: translateY(100%);
+    will-change: transform;
+    pointer-events: none;
+}
+
+.o_three_overlay_col {
+    height: 100%;
+    width: 50%;
+    position: relative;
+}
+
+.o_three_overlay_left {
+    background: #ececec;
+    overflow: hidden;
+}
+
+.o_three_overlay_right {
+    background: #ffffff;
+}
+
+.o_three_overlay_model_host {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.o_three_overlay_model_host canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+/* Optional subtle divider */
+.o_three_overlay_left::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.06);
 }
