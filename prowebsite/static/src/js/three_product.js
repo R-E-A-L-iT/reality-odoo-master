@@ -10,9 +10,10 @@ whenReady(async () => {
 
     const overlayEl = document.getElementById("three-scroll-overlay");
     const overlayModelHost = document.getElementById("three-product-canvas-overlay-model");
+    const sceneStage = host.querySelector(".o_three_scene_stage");
     const section = host.closest(".o_three_scroll_section");
 
-    if (!section || !overlayEl || !overlayModelHost) {
+    if (!section || !overlayEl || !overlayModelHost || !sceneStage) {
         console.warn("Three scroll section structure is incomplete.");
         return;
     }
@@ -153,13 +154,13 @@ whenReady(async () => {
 
     const mainCamera = new THREE.PerspectiveCamera(
         45,
-        host.clientWidth / host.clientHeight,
+        sceneStage.clientWidth / sceneStage.clientHeight,
         0.1,
         1000
     );
     mainCamera.position.set(0, 0, 5);
 
-    const mainRenderer = createRenderer(host, "2");
+    const mainRenderer = createRenderer(sceneStage, "2");
     addStandardLights(mainScene, "dark");
 
     let mainModel = null;
@@ -254,28 +255,113 @@ whenReady(async () => {
     });
 
     // ----------------------------
-    // Scroll progress for overlay rise
+    // Manual internal scroll progress
     // ----------------------------
-    let overlayProgress = 0;
+    let internalProgress = 0;
+    let renderedProgress = 0;
+    let touchStartY = null;
 
-    function updateScrollProgress() {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const viewportHeight = window.innerHeight;
-
-        // total amount of page scroll while this sticky section is active
-        const maxScrollable = Math.max(sectionHeight - viewportHeight, 1);
-
-        // how far we have scrolled through this section
-        const scrolled = clamp(window.scrollY - sectionTop, 0, maxScrollable);
-
-        // normalized 0 -> 1
-        const overlayProgress = scrolled / maxScrollable;
-
-        overlayEl.style.transform = `translateY(${(1 - overlayProgress) * 100}%)`;
+    function sectionRect() {
+        return section.getBoundingClientRect();
     }
 
-    updateScrollProgress();
+    function sectionCanCaptureScroll() {
+        const rect = sectionRect();
+        return rect.top <= 0 && rect.bottom >= window.innerHeight;
+    }
+
+    function shouldCaptureFromPointer(event) {
+        const rect = host.getBoundingClientRect();
+        const x = event.clientX;
+        const y = event.clientY;
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+
+    function updateInternalProgress(deltaY) {
+        const speed = 0.0016;
+        const nextProgress = clamp(internalProgress + deltaY * speed, 0, 1);
+
+        const canMoveInternally =
+            (deltaY > 0 && internalProgress < 1) ||
+            (deltaY < 0 && internalProgress > 0);
+
+        if (!canMoveInternally) {
+            return false;
+        }
+
+        internalProgress = nextProgress;
+        return true;
+    }
+
+    function onWheel(event) {
+        if (!sectionCanCaptureScroll()) {
+            return;
+        }
+
+        if (!shouldCaptureFromPointer(event)) {
+            return;
+        }
+
+        const didConsume = updateInternalProgress(event.deltaY);
+
+        if (didConsume) {
+            event.preventDefault();
+        }
+    }
+
+    function onTouchStart(event) {
+        if (!event.touches.length) {
+            return;
+        }
+        touchStartY = event.touches[0].clientY;
+    }
+
+    function onTouchMove(event) {
+        if (!event.touches.length || touchStartY === null) {
+            return;
+        }
+
+        if (!sectionCanCaptureScroll()) {
+            touchStartY = event.touches[0].clientY;
+            return;
+        }
+
+        const touch = event.touches[0];
+        const rect = host.getBoundingClientRect();
+        const inHost =
+            touch.clientX >= rect.left &&
+            touch.clientX <= rect.right &&
+            touch.clientY >= rect.top &&
+            touch.clientY <= rect.bottom;
+
+        if (!inHost) {
+            touchStartY = touch.clientY;
+            return;
+        }
+
+        const currentY = touch.clientY;
+        const deltaY = touchStartY - currentY;
+
+        const didConsume = updateInternalProgress(deltaY * 1.35);
+
+        if (didConsume) {
+            event.preventDefault();
+        }
+
+        touchStartY = currentY;
+    }
+
+    function onTouchEnd() {
+        touchStartY = null;
+    }
+
+    function animateOverlay() {
+        renderedProgress += (internalProgress - renderedProgress) * 0.12;
+        overlayEl.style.transform = `translateY(${(1 - renderedProgress) * 100}%)`;
+        requestAnimationFrame(animateOverlay);
+    }
+
+    animateOverlay();
 
     // ----------------------------
     // Mouse movement for main model
@@ -298,19 +384,21 @@ whenReady(async () => {
     // Resize
     // ----------------------------
     function onResize() {
-        mainCamera.aspect = host.clientWidth / host.clientHeight;
+        mainCamera.aspect = sceneStage.clientWidth / sceneStage.clientHeight;
         mainCamera.updateProjectionMatrix();
-        mainRenderer.setSize(host.clientWidth, host.clientHeight);
+        mainRenderer.setSize(sceneStage.clientWidth, sceneStage.clientHeight);
 
         overlayCamera.aspect = overlayModelHost.clientWidth / overlayModelHost.clientHeight;
         overlayCamera.updateProjectionMatrix();
         overlayRenderer.setSize(overlayModelHost.clientWidth, overlayModelHost.clientHeight);
-
-        updateScrollProgress();
     }
 
     window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     // ----------------------------
     // Animation loop
