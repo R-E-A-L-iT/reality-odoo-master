@@ -190,6 +190,11 @@
                 </section>
         </xpath>
 
+        <!-- Hide Total On Rental Quotes -->
+        <xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
+            <!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
+        </xpath>
+
         <!-- remove taxes column -->
         <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
         <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" /> -->
@@ -634,6 +639,7 @@
             </t>
             <!--  Keep for Backwards Compatibility-->
             <t t-if="line.name == '$rental_address'">
+                <t t-set="rental_estimate_display" t-value="False"/>
                 <tr style="padding: 0px !important;">
                     <td style="border-style: none; padding: 0px !important;" colspan="100">
                         <span>No longer supported</span>
@@ -642,6 +648,7 @@
             </t>
 
             <t t-if="line.name == '$rental_info'">
+                <t t-set="rental_estimate_display" t-value="True"/>
                 <tr style="padding: 0px !important;">
                     <td style="border-style: none; padding: 0px !important;" colspan="100">
                         <span>No longer supported</span>
@@ -691,7 +698,64 @@
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Amount</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Montant</span>
-                        <span t-elif="language == 'es_ES'" class="cHead">Cantidad</span>
+                    </td>
+                </tr>
+            </t>
+
+            <!-- Dynamic CCP Selection Block -->
+            <t t-if="line.name and line.name.startswith('#ccp_selection_')">
+                <!-- Get scanner configuration -->
+                <t t-set="ccp_scanner_config" t-value="request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(line.name)"/>
+
+                <!-- Section Header -->
+                <tr class="quoteLineRowSection bg-200 font-weight-bold o_line_section">
+                    <td colspan="100" style="padding: 20px !important;">
+                        <div style="width: 75%; float: left;">
+                            <!-- Dynamic Title from Config -->
+                            <t t-if="ccp_scanner_config">
+                                <t t-out="ccp_scanner_config.get_title(language)"/>
+                            </t>
+                            <!-- Fallback: Extract scanner name from section_name if no config -->
+                            <t t-else="">
+                                <t t-set="scanner_id" t-value="line.name[15:]"/>
+                                <t t-if="language == 'en_CA' or language == 'en_US'">
+                                    Select CCP Type for <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                </t>
+                                <t t-elif="language == 'fr_CA'">
+                                    Sélectionner le type CCP pour <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                </t>
+                            </t>
+                        </div>
+                        <div style="width: 25%; float: right; text-align: right;">
+                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
+                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
+                            <!-- Calculate CCP products subtotal -->
+                            <t t-set="ccp_subtotal" t-value="0"/>
+                            <t t-set="calculating" t-value="False"/>
+                            <t t-foreach="sale_order.order_line" t-as="ccp_line">
+                                <t t-if="ccp_line.id == line.id">
+                                    <t t-set="calculating" t-value="True"/>
+                                </t>
+                                <t t-elif="calculating">
+                                    <t t-if="ccp_line.display_type == 'line_section'">
+                                        <t t-set="calculating" t-value="False"/>
+                                    </t>
+                                    <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <span t-out="ccp_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                        </div>
+                    </td>
+                </tr>
+                <!-- CCP Form -->
+                <tr>
+                    <td style="border-style: none; padding: 0;" colspan="100">
+                        <t t-call="proquotes.ccp_selection_form">
+                            <t t-set="scanner_name" t-value="ccp_scanner_config.name if ccp_scanner_config else line.name[15:].upper().replace('_', ' ')"/>
+                            <t t-set="section_name" t-value="line.name"/>
+                        </t>
                     </td>
                 </tr>
             </t>
@@ -856,6 +920,32 @@
         <!--			<attribute name="class">subtotal-source</attribute>-->
         <!--		</xpath>-->
 
+
+        <!-- Rental Item Value -->
+      <!--   <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
+            <t t-if="sale_order.is_rental == True">
+                <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                    style="width: fit-content;">
+                    <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)"
+                          class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False  and language == 'fr_CA'"
+                          t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)"
+                          class="text-left itemValue test"/>
+                </td>
+                <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                    style="width: fit-content;">
+                    <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
+                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)"
+                          class="text-left itemValue test"/>
+                    <span t-if="line.product_id.is_software == False and language == 'fr_CA'"
+                          t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)"
+                          class="text-left itemValue test"/>
+                </td>
+            </t>
+            <td t-else=""/>
+        </xpath> -->
+
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
@@ -911,8 +1001,81 @@
             <t t-set="current_section_ended" t-value="false"/>
         </xpath>
 
+        <!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
+  <!--       <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+            <t t-if="line.selected == 'true' and not current_section_ended">
+                <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
+                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                </t>
+                <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
+                    <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
+                    <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
+                    <t t-set="rentalDays"
+                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+                    <t t-set="rentalMonths" t-value="rentalDays // 30"/>
+                    <t t-set="rentalDays" t-value="rentalDays % 30"/>
+                    <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
+                    <t t-set="rentalDays" t-value="rentalDays % 7"/>
+
+
+                    <t t-set="rentalRate" t-value="0"/>
+                    <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
+                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 4"/>
+                    <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
+                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 12"/>
+                    <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
+                    <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
+                    <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
+                </t>
+            </t>
+        </xpath> -->
+
+        <!-- Section Rental Estimate Given Rental Dates -->
+        <!-- <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+            <t t-set="current_total" t-value="0"/>
+            <t t-if="line.selected == 'true' and not current_section_ended">
+                <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
+                    <t t-set="current_total" t-value="current_total + line.price_subtotal"/>
+                </t>
+                <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
+                    <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
+                    <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
+                    <t t-set="rentalDays"
+                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+
+                    <t t-set="rentalMonths" t-value="rentalDays // 30"/>
+                    <t t-set="rentalDays" t-value="rentalDays % 30"/>
+                    <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
+                    <t t-set="rentalDays" t-value="rentalDays % 7"/>
+
+
+                    <t t-set="rentalRate" t-value="0"/>
+                    <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
+                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 4"/>
+                    <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
+                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
+                       t-value="line.price_subtotal * 12"/>
+                    <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
+                    <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
+                    <t t-set="current_total" t-value="current_total + rentalRate"/>
+                </t>
+            </t>
+        </xpath>
+ -->
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
+            <!-- <t t-if="language == 'en_CA' or language == 'en_US'" t-set="line_price"
+               t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
+            <t t-elif="language == 'fr_CA'" t-set="line_price"
+               t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
+            <span t-if="line.product_id.is_software == False"
+                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
+            <span t-elif="line.product_id.is_software == True"
+                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/> -->
+
             <t t-if="line.product_id.is_software == False">
                 <span class="proquotesLineTotal oe_order_line_price_subtotal"
                       t-field="line.price_subtotal"
@@ -1037,6 +1200,20 @@
                     </span>
                 </t>
             </div>
+           <!--  <t t-if="sale_order.is_rental == True">
+                <br/><br/>
+                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="rental-terms-checkbox">
+                    <h3>
+                        <strong class="white-text" id="terms_hidden">+</strong>
+                        <strong class="white-text" id="terms_open">×</strong>
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                        </strong>
+                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                    </h3>
+                </label>
+                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
+            </t>
             <t t-else="">
                 <br/><br/>
                 <h3>
@@ -1047,7 +1224,11 @@
                     <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
                     <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                 </h3>
-            </t>
+            </t> -->
+            <section class="quoteConfig" style="display: none !important;">
+                <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
+                <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
+            </section>
         </xpath>
         <xpath expr="//section[@id='signature']" position="replace">
             <section t-if="sale_order.signature" id="signature" name="Signature">

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template name="CCP Selection Form" id="ccp_selection_form">
+        <t t-if="sale_order != undefined" t-set="source" t-value="sale_order" />
+        <t t-elif="doc != undefined" t-set="source" t-value="doc" />
+        <t t-elif="o != undefined" t-set="source" t-value="o" />
+
+        <!-- Get scanner configuration -->
+        <t t-set="scanner_config" t-value="request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(section_name)"/>
+
+        <section class="ccp-selection-container" t-attf-data-scanner="{{scanner_name}}" t-attf-data-section="{{section_name}}" t-attf-data-order-id="{{source.id}}">
+
+            <!-- Step 1: CCP Type Selection -->
+            <div class="ccp-step ccp-step-1 active">
+                <div class="ccp-type-options">
+                    <!-- Dynamic CCP Type Cards -->
+                    <t t-if="scanner_config">
+                        <t t-foreach="scanner_config.type_ids.sorted(key=lambda t: t.sequence)" t-as="ccp_type_config">
+                            <div class="ccp-type-card" t-attf-data-ccp-type="{{ccp_type_config.name}}">
+                                <input type="radio" name="ccp_type" t-attf-id="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}" t-attf-value="{{ccp_type_config.name}}" class="ccp-radio"/>
+                                <label t-attf-for="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}">
+                                    <div class="ccp-card-content">
+                                        <div class="ccp-icon-placeholder" t-attf-style="color: {{ccp_type_config.color}};">
+                                            <i t-attf-class="fa {{ccp_type_config.icon}} fa-3x"></i>
+                                        </div>
+                                        <span class="ccp-type-name" t-out="ccp_type_config.display_name or ccp_type_config.name"></span>
+                                    </div>
+                                </label>
+                            </div>
+                        </t>
+                    </t>
+                    <!-- Fallback: If no scanner config found, show legacy hardcoded types -->
+                    <t t-else="">
+                        <t t-foreach="['BASIC', 'BLUE', 'BRONZE', 'SILVER', 'GOLD']" t-as="legacy_type">
+                            <div class="ccp-type-card" t-attf-data-ccp-type="{{legacy_type}}">
+                                <input type="radio" name="ccp_type" t-attf-id="ccp_{{legacy_type.lower()}}_{{section_name}}" t-attf-value="{{legacy_type}}" class="ccp-radio"/>
+                                <label t-attf-for="ccp_{{legacy_type.lower()}}_{{section_name}}">
+                                    <div class="ccp-card-content">
+                                        <div class="ccp-image-placeholder" t-attf-data-ccp-type="{{legacy_type}}">
+                                            <!-- Fallback placeholder -->
+                                        </div>
+                                        <span class="ccp-type-name" t-out="legacy_type"></span>
+                                    </div>
+                                </label>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-primary ccp-next-btn" disabled="disabled">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Next</span>
+                        <span t-elif="language == 'fr_CA'">Suivant</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Time Period Selection -->
+            <div class="ccp-step ccp-step-2">
+                <div class="ccp-period-options">
+                    <!-- Dynamic Period Cards -->
+                    <t t-if="scanner_config">
+                        <t t-foreach="scanner_config.period_ids.sorted(key=lambda p: p.sequence)" t-as="period_config">
+                            <div class="ccp-period-card" t-attf-data-period="{{period_config.name}}">
+                                <input type="radio" name="ccp_period" t-attf-id="ccp_period_{{period_config.name.replace(' ', '_')}}_{{section_name}}" t-attf-value="{{period_config.name}}" class="ccp-period-radio"/>
+                                <label t-attf-for="ccp_period_{{period_config.name.replace(' ', '_')}}_{{section_name}}">
+                                    <div class="ccp-period-card-content">
+                                        <div class="ccp-period-icon" t-attf-style="color: {{period_config.color}};">
+                                            <i t-attf-class="fa {{period_config.icon}} fa-3x"></i>
+                                        </div>
+                                        <div class="ccp-period-name">
+                                            <t t-if="language == 'fr_CA' and period_config.display_name_fr">
+                                                <t t-out="period_config.display_name_fr"/>
+                                            </t>
+                                            <t t-elif="period_config.display_name_en">
+                                                <t t-out="period_config.display_name_en"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-out="period_config.name"/>
+                                            </t>
+                                        </div>
+                                        <div class="ccp-period-code" t-out="period_config.name"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </t>
+                    </t>
+                    <!-- Fallback: Legacy period cards if no config -->
+                    <t t-else="">
+                        <t t-foreach="[('1 yr', '1 Year', 'fa-clock-o', '#3498DB'), ('2 yr', '2 Years', 'fa-calendar', '#2ECC71'), ('3 yr', '3 Years', 'fa-calendar-check-o', '#F39C12'), ('5 yr', '5 Years', 'fa-history', '#E74C3C')]" t-as="legacy_period">
+                            <div class="ccp-period-card" t-attf-data-period="{{legacy_period[0]}}">
+                                <input type="radio" name="ccp_period" t-attf-id="ccp_period_{{legacy_period[0].replace(' ', '_')}}_{{section_name}}" t-attf-value="{{legacy_period[0]}}" class="ccp-period-radio"/>
+                                <label t-attf-for="ccp_period_{{legacy_period[0].replace(' ', '_')}}_{{section_name}}">
+                                    <div class="ccp-period-card-content">
+                                        <div class="ccp-period-icon" t-attf-style="color: {{legacy_period[3]}};">
+                                            <i t-attf-class="fa {{legacy_period[2]}} fa-3x"></i>
+                                        </div>
+                                        <div class="ccp-period-name" t-out="legacy_period[1]"></div>
+                                        <div class="ccp-period-code" t-out="legacy_period[0]"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-secondary ccp-back-btn">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Back</span>
+                        <span t-elif="language == 'fr_CA'">Retour</span>
+                    </button>
+                    <button type="button" class="btn btn-primary ccp-next-btn" disabled="disabled">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Next</span>
+                        <span t-elif="language == 'fr_CA'">Suivant</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Confirmation -->
+            <div class="ccp-step ccp-step-3">
+                <div class="ccp-confirmation">
+                    <p class="ccp-confirmation-message">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">
+                            You have chosen the CCP <strong class="ccp-selected-type"></strong>.
+                        </t>
+                        <t t-elif="language == 'fr_CA'">
+                            Vous avez choisi le CCP <strong class="ccp-selected-type"></strong>.
+                        </t>
+                    </p>
+                    <p class="ccp-change-prompt">
+                        <t t-if="language == 'en_CA' or language == 'en_US'">
+                            Want to choose again?
+                        </t>
+                        <t t-elif="language == 'fr_CA'">
+                            Voulez-vous choisir à nouveau?
+                        </t>
+                    </p>
+                </div>
+
+                <div class="ccp-actions">
+                    <button type="button" class="btn btn-warning ccp-clear-btn">
+                        <span t-if="language == 'en_CA' or language == 'en_US'">Clear CCP Selection</span>
+                        <span t-elif="language == 'fr_CA'">Effacer la sélection CCP</span>
+                    </button>
+                </div>
+
+                <!-- Loading indicator -->
+                <div class="ccp-loading" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">
+                            <t t-if="language == 'en_CA' or language == 'en_US'">Loading...</t>
+                            <t t-elif="language == 'fr_CA'">Chargement...</t>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </template>
+</odoo>

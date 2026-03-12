@@ -74,12 +74,12 @@ class QuoteCustomerPortal(cPortal):
             )
 
             return results
-        # _logger.info("Unlocked Quote")
+        _logger.info("Unlocked Quote")
 
-        # if not self.validate(ponumber):
-        #     return
+        if not self.validate(ponumber):
+            return
 
-        # order_sudo.customer_po_number = ponumber
+        order_sudo.customer_po_number = ponumber
 
         return
 
@@ -360,6 +360,9 @@ class QuoteCustomerPortal(cPortal):
         if not kw.get('user_id'):
             request.env = request.env(context=dict(request.env.context, skip_default_quote_view_log=True))
             
+            # Manipulate session to prevent core Odoo's daily tracking
+            # Core Odoo checks if 'view_quote_<order_id>' session key exists with today's date
+            # By setting it here, we trick core Odoo into thinking the quote was already viewed today
             today = fields.Date.today().isoformat()
             request.session[f'view_quote_{order_id}'] = today
 
@@ -547,8 +550,229 @@ class QuotePortalFix(cPortal):
             'redirect_url': order_sudo.get_portal_url(query_string=query_string),
         }
 
+    @http.route(['/my/orders/<int:order_id>/add_ccp_line'], type='json', auth="public", website=True)
+    def add_ccp_line(self, order_id, access_token=None, scanner_name=None, ccp_type=None, period=None, section_name=None, **kw):
+        """
+        Add a CCP product line to the order based on scanner name, CCP type, and period.
+        Uses scanner configuration to generate search patterns dynamically.
+        """
+        # Access check
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return {'success': False, 'error': _('Invalid order or access denied.')}
+
+        # Validate inputs
+        if not scanner_name or not ccp_type or not period or not section_name:
+            return {'success': False, 'error': _('Missing required parameters.')}
+
+        # Check if order is locked (already confirmed)
+        if str(order_sudo.state) in ('sale', 'done', 'cancel'):
+            return {
+                'success': False,
+                'error': _('This order is confirmed and cannot be modified. CCP selection changes are not allowed for confirmed orders.'),
+                'order_locked': True
+            }
+
+        # Get scanner configuration from section name
+        scanner_config = request.env['ccp.scanner.config'].sudo().get_scanner_by_section_name(section_name)
+
+        if not scanner_config:
+            # Fallback to legacy hardcoded patterns if scanner config not found
+            search_patterns = [
+                f"{period} {scanner_name} Laser Scanner CCP {ccp_type}",
+                f"{period} {scanner_name} CCP {ccp_type}",
+                f"CCP {ccp_type} {scanner_name} {period}",
+            ]
+        else:
+            # Use configured search patterns
+            search_patterns = scanner_config.get_search_patterns(ccp_type, period)
+
+        # Search for the CCP product - OPTIMIZED: Single query with OR conditions
+        if not search_patterns:
+            return {'success': False, 'error': _('No search patterns configured.')}
+
+        # Build domain with OR conditions for all patterns
+        domain = []
+        for i, pattern in enumerate(search_patterns):
+            if i > 0:
+                domain.insert(0, '|')  # Add OR operator before each additional pattern
+            domain.append(('name', 'ilike', pattern))
+
+        product = request.env['product.product'].sudo().search(domain, limit=1)
+
+        if not product:
+            return {
+                'success': False,
+                'error': _('CCP product not found. Searched for patterns: %s') % ', '.join(search_patterns[:3])
+            }
+
+        # Find the section line to insert after - OPTIMIZED: Use ORM search instead of filtered
+        section_line = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('name', '=', section_name)
+        ], limit=1)
+
+        if not section_line:
+            return {'success': False, 'error': _('Section not found in order.')}
+
+        # Get the sequence of the section line
+        section_sequence = section_line.sequence
+
+        # Check if a CCP product already exists for this section - OPTIMIZED: Use ORM search
+        # Remove any existing CCP line for this section
+        existing_ccp_lines = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('product_id.name', 'ilike', 'CCP'),
+            ('product_id.name', 'ilike', scanner_name)
+        ])
+        if existing_ccp_lines:
+            existing_ccp_lines.unlink()
+
+        # Add the new CCP product line
+        line_data = {
+            'product_id': product.id,
+            'name': product.name,
+            'product_uom_qty': 1,
+            'product_uom': product.uom_id.id,
+            'price_unit': product.list_price,
+            'discount': 0,
+            'sequence': section_sequence + 1,
+            'selected': 'true',
+            'sectionSelected': 'true',
+            'optional': 'no',
+            'quantityLocked': 'yes',
+            'hiddenSection': 'no',
+            'special': 'regular',
+            'is_optional': False,
+            'is_selected': True,
+            'is_quantityLocked': True,
+        }
+
+        # Add the line using ORM Command
+        from odoo import Command
+        order_sudo.write({
+            'order_line': [Command.create(line_data)]
+        })
+
+        # Get the ID of the newly created line - OPTIMIZED: Use ORM search instead of filtered
+        new_line = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('product_id', '=', product.id),
+            ('sequence', '=', section_sequence + 1)
+        ], limit=1, order='id desc')  # Get most recent matching line
+
+        line_id = f"lineId{new_line.id}" if new_line else None
+
+        # OPTIMIZED: Tax computation will happen automatically during template rendering
+        # Removed explicit _compute_tax_totals() call to improve performance
+
+        # Prepare response with updated template
+        results = self._get_portal_order_details(order_sudo)
+        results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
+            "sale.sale_order_portal_content",
+            {
+                "sale_order": order_sudo,
+                "report_type": "html",
+            },
+        )
+        results['success'] = True
+        results['line_id'] = line_id
+        results['product_name'] = product.name
+
+        return results
+
+    @http.route(['/my/orders/<int:order_id>/remove_ccp_line'], type='json', auth="public", website=True)
+    def remove_ccp_line(self, order_id, access_token=None, line_id=None, section_name=None, **kw):
+        """
+        Remove a CCP product line from the order.
+        """
+        # Access check
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return {'success': False, 'error': _('Invalid order or access denied.')}
+
+        # Check if order is locked (already confirmed)
+        if str(order_sudo.state) in ('sale', 'done', 'cancel'):
+            return {
+                'success': False,
+                'error': _('This order is confirmed and cannot be modified. CCP selection changes are not allowed for confirmed orders.'),
+                'order_locked': True
+            }
+
+        # Extract numeric ID from line_id (format: "lineId123")
+        if line_id and line_id.startswith('lineId'):
+            numeric_id = int(line_id.replace('lineId', ''))
+        else:
+            return {'success': False, 'error': _('Invalid line ID format.')}
+
+        # Find and remove the line
+        line_to_remove = order_sudo.order_line.filtered(lambda l: l.id == numeric_id)
+        if line_to_remove:
+            line_to_remove.unlink()
+        else:
+            return {'success': False, 'error': _('Line not found.')}
+
+        # Recompute tax totals
+        order_sudo._compute_tax_totals()
+
+        # Prepare response with updated template
+        results = self._get_portal_order_details(order_sudo)
+        results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
+            "sale.sale_order_portal_content",
+            {
+                "sale_order": order_sudo,
+                "report_type": "html",
+            },
+        )
+        results['success'] = True
+
+        return results
+
 
 class WebsiteForm(form.WebsiteForm):
+
+
+    # def insert_record(self, request, model, values, custom, meta=None):
+    #     if model.model == 'sale.order':
+    #         _logger.info('Processing sale.order form submission: %s', values)
+            
+    #         # Get partner email from form
+    #         partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
+    #         partner_name = values.get('partner_name') or partner_email or 'Website Customer'
+            
+    #         if not partner_email:
+    #             raise UserError(_("Email is required for creating quotations."))
+            
+    #         # Find or create partner
+    #         partner = request.env['res.partner'].sudo().search([('email', '=', partner_email)], limit=1)
+    #         if not partner:
+    #             partner = request.env['res.partner'].sudo().create({
+    #                 'name': partner_name,
+    #                 'email': partner_email,
+    #                 'phone': values.get('phone'),
+    #                 'lang': request.context.get('lang', 'en_US'),
+    #                 'is_company': False,
+    #             })
+    #             _logger.info('Created new partner: %s', partner.id)
+            
+    #         # Update values with partner_id for the sale order creation
+    #         values['partner_id'] = partner.id
+    #         values['is_rental'] = True
+    #         values['is_rental_order'] = True
+    #         values['rental_start'] = values.get('rental_start')
+    #         values['rental_end'] = values.get('rental_end')
+            
+    #         # Add company_id if not present
+    #         if 'company_id' not in values:
+    #             values['company_id'] = request.website.company_id.id
+    #         _logger.info('Updated values for sale order: %s', values)
+        
+    #     # Call parent method to actually create the record
+    #     return super().insert_record(request, model, values, custom, meta=meta)
+
+
 
     def insert_record(self, request, model, values, custom, meta=None):
         if model.model == 'sale.order':
