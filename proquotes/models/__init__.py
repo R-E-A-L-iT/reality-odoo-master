@@ -29,3 +29,6 @@ from . import sale_renting
 from . import stock_lot
 from . import stock_picking
 from . import res_config_extend
+from . import ccp_period_config
+from . import ccp_scanner_config
+from . import ccp_type_config

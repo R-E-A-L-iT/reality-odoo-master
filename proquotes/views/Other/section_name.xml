@@ -81,6 +81,47 @@
 			</t>
 
 		</t>
+		<t t-elif="sname[:15] == 'ccp_selection_'">
+			<!-- CCP Selection Section Name Resolution -->
+			<t t-set="scanner_id" t-value="sname[15:]" />
+
+			<t t-if="scanner_id == 'blkarc'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK ARC</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK ARC</t>
+			</t>
+			<t t-elif="scanner_id == 'pegasustrk'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for PEGASUS TRK</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour PEGASUS TRK</t>
+			</t>
+			<t t-elif="scanner_id == 'blk2fly'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2FLY</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2FLY</t>
+			</t>
+			<t t-elif="scanner_id == 'blk2go'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO</t>
+			</t>
+			<t t-elif="scanner_id == 'blk2gopulse'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK2GO PULSE</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK2GO PULSE</t>
+			</t>
+			<t t-elif="scanner_id == 'rtc360'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for RTC360</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour RTC360</t>
+			</t>
+			<t t-elif="scanner_id == 'pseries'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for P-SERIES</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour P-SERIES</t>
+			</t>
+			<t t-elif="scanner_id == 'blk360'">
+				<t t-if="language == 'en_CA' or language == 'en_US'">Select CCP Type for BLK360</t>
+				<t t-elif="language == 'fr_CA'">Sélectionner le type CCP pour BLK360</t>
+			</t>
+			<t t-else="">
+				<!-- Fallback if scanner_id not recognized -->
+				<t t-out="sname" />
+			</t>
+		</t>
 		<t t-else="">
 			<t t-out="sname" />
 		</t>

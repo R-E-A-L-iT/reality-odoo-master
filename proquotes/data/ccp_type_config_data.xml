@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- BASIC Type -->
+        <record id="ccp_type_basic" model="ccp.type.config">
+            <field name="name">BASIC</field>
+            <field name="display_name">Basic</field>
+            <field name="icon">fa-star</field>
+            <field name="color">#95A5A6</field>
+            <field name="sequence">10</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- BLUE Type -->
+        <record id="ccp_type_blue" model="ccp.type.config">
+            <field name="name">BLUE</field>
+            <field name="display_name">Blue</field>
+            <field name="icon">fa-shield</field>
+            <field name="color">#3498DB</field>
+            <field name="sequence">20</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- BRONZE Type -->
+        <record id="ccp_type_bronze" model="ccp.type.config">
+            <field name="name">BRONZE</field>
+            <field name="display_name">Bronze</field>
+            <field name="icon">fa-medal</field>
+            <field name="color">#CD7F32</field>
+            <field name="sequence">30</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- SILVER Type -->
+        <record id="ccp_type_silver" model="ccp.type.config">
+            <field name="name">SILVER</field>
+            <field name="display_name">Silver</field>
+            <field name="icon">fa-certificate</field>
+            <field name="color">#C0C0C0</field>
+            <field name="sequence">40</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- GOLD Type -->
+        <record id="ccp_type_gold" model="ccp.type.config">
+            <field name="name">GOLD</field>
+            <field name="display_name">Gold</field>
+            <field name="icon">fa-crown</field>
+            <field name="color">#FFD700</field>
+            <field name="sequence">50</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>
