@@ -198,40 +198,6 @@ whenReady(async () => {
         });
     }
 
-    function fixGltfTextureMaterials(root, THREE) {
-        root.traverse((child) => {
-            if (!child.isMesh || !child.material) {
-                return;
-            }
-
-            const materials = Array.isArray(child.material) ? child.material : [child.material];
-
-            materials.forEach((mat) => {
-                mat.side = THREE.DoubleSide;
-
-                if (mat.map) {
-                    mat.map.colorSpace = THREE.SRGBColorSpace;
-                    mat.map.needsUpdate = true;
-                }
-
-                if (mat.emissiveMap) {
-                    mat.emissiveMap.colorSpace = THREE.SRGBColorSpace;
-                    mat.emissiveMap.needsUpdate = true;
-                }
-
-                if (mat.metalnessMap) {
-                    mat.metalnessMap.needsUpdate = true;
-                }
-
-                if (mat.roughnessMap) {
-                    mat.roughnessMap.needsUpdate = true;
-                }
-
-                mat.needsUpdate = true;
-            });
-        });
-    }
-
     // ----------------------------
     // Top hero scene
     // ----------------------------
@@ -333,9 +299,6 @@ whenReady(async () => {
     bottomControls.enablePan = false;
     bottomControls.enableRotate = true;
     bottomControls.enableZoom = true;
-    bottomControls.minDistance = 3.8;
-    bottomControls.maxDistance = 6.0;
-    bottomControls.target.set(0, 0, 0);
 
     // Limited zoom range
     bottomControls.minDistance = 3.8;
@@ -384,44 +347,7 @@ whenReady(async () => {
         return `${animatedModelFolder}${url}`;
     });
 
-    const loadingManager = new THREE.LoadingManager();
-
-    // Force relative texture/image references inside scene.gltf
-    // to resolve from the exact texture folder you showed.
-    loadingManager.setURLModifier((url) => {
-        if (!url) {
-            return url;
-        }
-
-        if (
-            url.startsWith("http://") ||
-            url.startsWith("https://") ||
-            url.startsWith("data:") ||
-            url.startsWith("/")
-        ) {
-            return url;
-        }
-
-        const cleanName = url.split("/").pop();
-        const lower = cleanName.toLowerCase();
-
-        if (lower.endsWith(".bin")) {
-            return `${animatedModelFolder}${cleanName}`;
-        }
-
-        if (
-            lower.endsWith(".jpg") ||
-            lower.endsWith(".jpeg") ||
-            lower.endsWith(".png") ||
-            lower.endsWith(".webp")
-        ) {
-            return `${animatedTextureFolder}${cleanName}`;
-        }
-
-        return `${animatedModelFolder}${cleanName}`;
-    });
-
-    const gltfLoader = new GLTFLoader(loadingManager);
+    const gltfLoader = new GLTFLoader(manager);
     gltfLoader.setPath(animatedModelFolder);
     gltfLoader.setResourcePath(animatedTextureFolder);
 
@@ -430,14 +356,14 @@ whenReady(async () => {
         (gltf) => {
             const obj = gltf.scene;
 
+            forceBottomModelMaterials(obj);
+
             obj.traverse((child) => {
                 if (child.isMesh) {
                     child.castShadow = false;
                     child.receiveShadow = false;
                 }
             });
-
-            fixGltfTextureMaterials(obj, THREE);
 
             const initialBox = new THREE.Box3().setFromObject(obj);
             const initialSize = initialBox.getSize(new THREE.Vector3());
@@ -463,16 +389,19 @@ whenReady(async () => {
 
             if (gltf.animations && gltf.animations.length > 0) {
                 bottomMixer = new THREE.AnimationMixer(obj);
-                bottomAction = bottomMixer.clipAction(gltf.animations[0]);
 
-                bottomAction.reset();
-                bottomAction.setLoop(THREE.LoopPingPong, Infinity);
-                bottomAction.clampWhenFinished = false;
-                bottomAction.enabled = true;
-                bottomAction.play();
+                const clip = gltf.animations[0];
+                const action = bottomMixer.clipAction(clip);
 
-                console.log("Loaded bottom glTF animation clip:", gltf.animations[0].name || "(unnamed)");
-                console.log("Animation duration:", gltf.animations[0].duration);
+                action.reset();
+                action.setLoop(THREE.LoopPingPong, Infinity);
+                action.clampWhenFinished = false;
+                action.timeScale = 1.0;
+                action.enabled = true;
+                action.play();
+
+                console.log("Loaded bottom glTF animation clip:", clip.name || "(unnamed)");
+                console.log("Animation duration:", clip.duration);
             } else {
                 console.warn("No animations found in scene.gltf");
             }
@@ -536,9 +465,7 @@ whenReady(async () => {
             bottomMixer.update(delta);
         }
 
-        if (bottomControls) {
-            bottomControls.update();
-        }
+        bottomControls.update();
 
         heroRenderer.render(heroScene, heroCamera);
         bottomRenderer.render(bottomScene, bottomCamera);
