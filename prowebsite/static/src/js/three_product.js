@@ -33,19 +33,23 @@ whenReady(async () => {
     let OBJLoader;
     let MTLLoader;
     let GLTFLoader;
+    let OrbitControls;
 
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
         ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
         ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
+        ({ OrbitControls } = await import("https://esm.sh/three@0.180.0/examples/jsm/controls/OrbitControls.js"));
     } catch (err) {
         console.error("Failed to load Three.js:", err);
         return;
     }
 
     const modelBasePath = "/prowebsite/static/src/models/";
-    const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
+    const animatedModelFolder = "/prowebsite/static/src/models/blk2go_with_adapter_anim/";
+    const animatedTextureFolder = "/prowebsite/static/src/models/blk2go_with_adapter_anim/BLK2GO_with_Adapter_Textures/";
+    const animatedModelPath = `${animatedModelFolder}scene.gltf`;
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -60,42 +64,68 @@ whenReady(async () => {
             antialias: true,
             alpha: true,
         });
+
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(targetHost.clientWidth, targetHost.clientHeight);
         renderer.setClearColor(0x000000, 0);
+
+        // Important for glTF / PBR textures
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+
         renderer.domElement.style.position = "absolute";
         renderer.domElement.style.inset = "0";
         renderer.domElement.style.zIndex = zIndex;
         renderer.domElement.style.background = "transparent";
+
         targetHost.appendChild(renderer.domElement);
         return renderer;
     }
 
     function addStandardLights(scene, variant = "dark") {
-        const ambient = new THREE.AmbientLight(0xffffff, variant === "dark" ? 2.0 : 2.6);
-        scene.add(ambient);
+        if (variant === "dark") {
+            const ambient = new THREE.AmbientLight(0xffffff, 1.5);
+            scene.add(ambient);
 
-        const hemi = new THREE.HemisphereLight(
-            0xffffff,
-            variant === "dark" ? 0x444444 : 0xbbbbbb,
-            variant === "dark" ? 1.6 : 2.1
-        );
-        hemi.position.set(0, 1, 0);
-        scene.add(hemi);
+            const hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 1.1);
+            hemi.position.set(0, 1, 0);
+            scene.add(hemi);
 
-        const dir1 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 2.4 : 3.2);
-        dir1.position.set(5, 8, 6);
-        scene.add(dir1);
+            const dir1 = new THREE.DirectionalLight(0xffffff, 1.8);
+            dir1.position.set(5, 8, 6);
+            scene.add(dir1);
 
-        const dir2 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 1.4 : 2.2);
-        dir2.position.set(-5, 4, 5);
-        scene.add(dir2);
+            const dir2 = new THREE.DirectionalLight(0xffffff, 1.0);
+            dir2.position.set(-5, 4, 5);
+            scene.add(dir2);
 
-        const front = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 3.2 : 4.0);
-        front.position.set(0, 0, 8);
-        front.target.position.set(0, 0, 0);
-        scene.add(front);
-        scene.add(front.target);
+            const front = new THREE.DirectionalLight(0xffffff, 1.4);
+            front.position.set(0, 0, 8);
+            front.target.position.set(0, 0, 0);
+            scene.add(front);
+            scene.add(front.target);
+        } else {
+            // Softer lighting so the model doesn't get blown out white
+            const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambient);
+
+            const hemi = new THREE.HemisphereLight(0xffffff, 0xbcbcbc, 1.0);
+            hemi.position.set(0, 1, 0);
+            scene.add(hemi);
+
+            const dir1 = new THREE.DirectionalLight(0xffffff, 1.4);
+            dir1.position.set(4, 6, 5);
+            scene.add(dir1);
+
+            const dir2 = new THREE.DirectionalLight(0xffffff, 0.75);
+            dir2.position.set(-4, 3, 4);
+            scene.add(dir2);
+
+            const rim = new THREE.DirectionalLight(0xffffff, 0.9);
+            rim.position.set(-2, 2, -5);
+            scene.add(rim);
+        }
     }
 
     function loadObjWithMtl({ objFile, mtlFile, onLoaded }) {
@@ -142,6 +172,32 @@ whenReady(async () => {
         );
     }
 
+    function forceBottomModelMaterials(obj) {
+        obj.traverse((child) => {
+            if (!child.isMesh || !child.material) {
+                return;
+            }
+
+            const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+            materials.forEach((mat) => {
+                mat.side = THREE.DoubleSide;
+
+                if (mat.map) {
+                    mat.map.colorSpace = THREE.SRGBColorSpace;
+                    mat.map.needsUpdate = true;
+                }
+
+                if (mat.emissiveMap) {
+                    mat.emissiveMap.colorSpace = THREE.SRGBColorSpace;
+                    mat.emissiveMap.needsUpdate = true;
+                }
+
+                mat.needsUpdate = true;
+            });
+        });
+    }
+
     // ----------------------------
     // Top hero scene
     // ----------------------------
@@ -155,7 +211,6 @@ whenReady(async () => {
     );
     heroCamera.position.set(0, 0, 5);
 
-    // z-index higher than text so model sits in front
     const heroRenderer = createRenderer(heroHost, "4");
     addStandardLights(heroScene, "dark");
 
@@ -227,46 +282,86 @@ whenReady(async () => {
         0.1,
         1000
     );
-    bottomCamera.position.set(0, 0, 5);
+    bottomCamera.position.set(0, 0.15, 5);
 
     const bottomRenderer = createRenderer(bottomModelHost, "1");
     addStandardLights(bottomScene, "light");
 
     let bottomModel = null;
     let bottomWrapper = null;
-
-    // glTF animation state
     let bottomMixer = null;
-    let bottomClock = new THREE.Clock();
-    let bottomAction = null;
-    let bottomClipDuration = 0;
-    let bottomAnimTime = 0;
-    let bottomAnimDirection = 1; // 1 forward, -1 backward
-    let bottomHoldTimer = 0;
-    const bottomHoldDuration = 1.1; // pause at each end in seconds
-    const bottomAnimSpeed = 1.0;
+    const bottomClock = new THREE.Clock();
 
-    const gltfLoader = new GLTFLoader();
+    // Orbit controls for mouse rotate + zoom
+    const bottomControls = new OrbitControls(bottomCamera, bottomRenderer.domElement);
+    bottomControls.enableDamping = true;
+    bottomControls.dampingFactor = 0.06;
+    bottomControls.enablePan = false;
+    bottomControls.enableRotate = true;
+    bottomControls.enableZoom = true;
+
+    // Limited zoom range
+    bottomControls.minDistance = 3.8;
+    bottomControls.maxDistance = 6.2;
+
+    // Keep gentle automatic Y rotation
+    bottomControls.autoRotate = true;
+    bottomControls.autoRotateSpeed = 1.2;
+
+    // Keep interaction centered nicely
+    bottomControls.target.set(0, 0, 0);
+
+    // Custom loading manager to force texture lookup into the texture folder
+    const manager = new THREE.LoadingManager();
+
+    manager.setURLModifier((url) => {
+        if (!url) {
+            return url;
+        }
+
+        // Already absolute or data URI
+        if (
+            url.startsWith("http://") ||
+            url.startsWith("https://") ||
+            url.startsWith("data:") ||
+            url.startsWith("/")
+        ) {
+            return url;
+        }
+
+        const lower = url.toLowerCase();
+
+        if (lower.endsWith(".bin")) {
+            return `${animatedModelFolder}${url.split("/").pop()}`;
+        }
+
+        if (
+            lower.endsWith(".jpg") ||
+            lower.endsWith(".jpeg") ||
+            lower.endsWith(".png") ||
+            lower.endsWith(".webp")
+        ) {
+            return `${animatedTextureFolder}${url.split("/").pop()}`;
+        }
+
+        return `${animatedModelFolder}${url}`;
+    });
+
+    const gltfLoader = new GLTFLoader(manager);
+    gltfLoader.setPath(animatedModelFolder);
+    gltfLoader.setResourcePath(animatedTextureFolder);
 
     gltfLoader.load(
-        animatedModelPath,
+        "scene.gltf",
         (gltf) => {
             const obj = gltf.scene;
+
+            forceBottomModelMaterials(obj);
 
             obj.traverse((child) => {
                 if (child.isMesh) {
                     child.castShadow = false;
                     child.receiveShadow = false;
-
-                    if (child.material) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach((mat) => {
-                                mat.side = THREE.DoubleSide;
-                            });
-                        } else {
-                            child.material.side = THREE.DoubleSide;
-                        }
-                    }
                 }
             });
 
@@ -283,8 +378,6 @@ whenReady(async () => {
             const center = box.getCenter(new THREE.Vector3());
 
             obj.position.set(-center.x, -center.y, -center.z);
-
-            // upright: remove axis tilt
             obj.rotation.x = 0;
             obj.rotation.z = 0;
 
@@ -296,15 +389,19 @@ whenReady(async () => {
 
             if (gltf.animations && gltf.animations.length > 0) {
                 bottomMixer = new THREE.AnimationMixer(obj);
-                bottomAction = bottomMixer.clipAction(gltf.animations[0]);
-                bottomAction.play();
 
-                bottomClipDuration = gltf.animations[0].duration || 0;
-                bottomAnimTime = 0;
-                bottomMixer.setTime(0);
+                const clip = gltf.animations[0];
+                const action = bottomMixer.clipAction(clip);
 
-                console.log("Loaded bottom glTF animation clip:", gltf.animations[0].name || "(unnamed)");
-                console.log("Animation duration:", bottomClipDuration);
+                action.reset();
+                action.setLoop(THREE.LoopPingPong, Infinity);
+                action.clampWhenFinished = false;
+                action.timeScale = 1.0;
+                action.enabled = true;
+                action.play();
+
+                console.log("Loaded bottom glTF animation clip:", clip.name || "(unnamed)");
+                console.log("Animation duration:", clip.duration);
             } else {
                 console.warn("No animations found in scene.gltf");
             }
@@ -364,30 +461,11 @@ whenReady(async () => {
             }
         }
 
-        if (bottomWrapper) {
-            // Keep gentle overall rotation for the scanner+adapter section
-            bottomWrapper.rotation.y += 0.006;
+        if (bottomMixer) {
+            bottomMixer.update(delta);
         }
 
-        if (bottomMixer && bottomAction && bottomClipDuration > 0) {
-            if (bottomHoldTimer > 0) {
-                bottomHoldTimer -= delta;
-            } else {
-                bottomAnimTime += delta * bottomAnimSpeed * bottomAnimDirection;
-
-                if (bottomAnimTime >= bottomClipDuration) {
-                    bottomAnimTime = bottomClipDuration;
-                    bottomAnimDirection = -1;
-                    bottomHoldTimer = bottomHoldDuration;
-                } else if (bottomAnimTime <= 0) {
-                    bottomAnimTime = 0;
-                    bottomAnimDirection = 1;
-                    bottomHoldTimer = bottomHoldDuration;
-                }
-
-                bottomMixer.setTime(bottomAnimTime);
-            }
-        }
+        bottomControls.update();
 
         heroRenderer.render(heroScene, heroCamera);
         bottomRenderer.render(bottomScene, bottomCamera);
