@@ -9,6 +9,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="display_name"/>
+                <field name="icon_image" widget="image" options="{'size': [40, 40]}"/>
                 <field name="icon"/>
                 <field name="color" widget="color"/>
                 <field name="active"/>
@@ -35,6 +36,8 @@
                             <field name="sequence"/>
                         </group>
                         <group>
+                            <field name="icon_image" widget="image" class="oe_avatar" options="{'max_width': 200, 'max_height': 200}"/>
+                            <field name="icon_image_filename" invisible="1"/>
                             <field name="icon"/>
                             <field name="color" widget="color"/>
                         </group>
