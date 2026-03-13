@@ -122,14 +122,19 @@ whenReady(async () => {
                                 child.castShadow = false;
                                 child.receiveShadow = false;
 
-                                const matteBlackMaterial = new THREE.MeshStandardMaterial({
-                                    color: 0x111111,
-                                    roughness: 0.92,
-                                    metalness: 0.04,
-                                    side: THREE.DoubleSide,
-                                });
-
-                                child.material = matteBlackMaterial;
+                                if (child.material) {
+                                    if (Array.isArray(child.material)) {
+                                        child.material.forEach((mat) => {
+                                            if (mat) {
+                                                mat.side = THREE.DoubleSide;
+                                                mat.needsUpdate = true;
+                                            }
+                                        });
+                                    } else {
+                                        child.material.side = THREE.DoubleSide;
+                                        child.material.needsUpdate = true;
+                                    }
+                                }
                             }
                         });
 
