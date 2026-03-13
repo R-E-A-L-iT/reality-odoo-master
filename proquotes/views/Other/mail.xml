@@ -107,10 +107,16 @@
                     <t t-if="message.author_id and message.author_id.user_ids">
                         <t t-set="email_user" t-value="message.author_id.user_ids[0]"/>
                     </t>
+                    <t t-if="email_user and company">
+                        <t t-set="email_footer" t-value="email_user.get_default_footer_for_company(company)"/>
+                    </t>
                     <t class="o_signature">
-                        <div t-if="email_user and company and company.country_id and company.country_id.code == 'US' and email_add_signature and not is_html_empty(email_user.signature_usa)" t-out="email_user.signature_usa" style="font-size: 13px;"/>
-                        <div t-elif="email_user and company and company.country_id and company.country_id.code == 'CA' and email_add_signature and not is_html_empty(email_user.signature_can)" t-out="email_user.signature_can" style="font-size: 13px;"/>
-                        <div t-else="email_add_signature and not is_html_empty(signature)" t-out="signature" style="font-size: 13px;"/>
+                        <div t-if="email_add_signature and email_footer and email_footer.url" style="font-size: 13px; margin-top: 16px;">
+                            <img t-att-src="email_footer.url"
+                                t-att-alt="email_footer.name"
+                                style="max-width: 700px; height: auto; display: block;"/>
+                        </div>
+                        <div t-elif="email_add_signature and not is_html_empty(signature)" t-out="signature" style="font-size: 13px;"/>
                     </t>
                     <!-- FOOTER -->
                     <div style="margin-top:32px;">

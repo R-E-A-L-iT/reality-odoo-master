@@ -28,8 +28,8 @@ class footer_header(models.Model):
     record_type = fields.Selection(
         [("Footer", "Footer"), ("Header", "Header")], required=True, default="Footer"
     )
-    url = fields.Char(string="Resourse URL", required=True)
-    default = fields.Boolean(string="Default", default=False)
+    url = fields.Char(string="Resource URL", required=True)
+    # default = fields.Boolean(string="Default", default=False)
     company_ids = fields.Many2many("res.company")
     active = fields.Boolean(string="Active", default=True)
     header_id = fields.Many2one('res.users')
