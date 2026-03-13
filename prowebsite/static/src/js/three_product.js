@@ -252,7 +252,7 @@ whenReady(async () => {
     const bottomResumeDelay = 3000;
 
     // Increased a lot so dragging feels responsive
-    const bottomDragSensitivity = 0.02;
+    const bottomDragSensitivity = 0.017;
 
     let isBottomDragging = false;
     let bottomLastPointerX = 0;
