@@ -75,26 +75,26 @@ whenReady(async () => {
     }
 
     function addStandardLights(scene, variant = "dark") {
-        const ambient = new THREE.AmbientLight(0xffffff, variant === "dark" ? 2.0 : 2.6);
+        const ambient = new THREE.AmbientLight(0xffffff, variant === "dark" ? 4.0 : 5.2);
         scene.add(ambient);
 
         const hemi = new THREE.HemisphereLight(
             0xffffff,
             variant === "dark" ? 0x444444 : 0xbbbbbb,
-            variant === "dark" ? 1.6 : 2.1
+            variant === "dark" ? 3.2 : 4.2
         );
         hemi.position.set(0, 1, 0);
         scene.add(hemi);
 
-        const dir1 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 2.4 : 3.2);
+        const dir1 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 4.8 : 6.4);
         dir1.position.set(5, 8, 6);
         scene.add(dir1);
 
-        const dir2 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 1.4 : 2.2);
+        const dir2 = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 2.8 : 4.4);
         dir2.position.set(-5, 4, 5);
         scene.add(dir2);
 
-        const front = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 3.2 : 4.0);
+        const front = new THREE.DirectionalLight(0xffffff, variant === "dark" ? 6.4 : 8.0);
         front.position.set(0, 0, 8);
         front.target.position.set(0, 0, 0);
         scene.add(front);
