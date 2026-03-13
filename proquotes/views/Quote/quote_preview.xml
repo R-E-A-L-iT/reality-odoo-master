@@ -13,200 +13,192 @@
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <xpath expr="//t[@t-if=&quot;product_documents&quot;]" position="replace">
-                <style>
-                    /* old styles from view (actually important ones) */
-                    .quoteConfig {
-                        display: none !important;
-                    }
-                                    
-                    #quotesDownloadButton {
-                        border-width: 2px !important;
-                        border-color: #dc3545;
-                    }
-                                            
-                    /* import */
-                                    
-                    @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
-                                            
-                    /*
-                        header - font-family: 'Bakbak One', system-ui;
-                        normal - font-family: 'Roboto', sans-serif;
-                        small  - font-family: 'Source Sans Pro', sans-serif;
-                    */
-                                                
-                    /* quote */
-                                        
-                    #informations {
-                        display: none;
-                    }
-                                                
-                    #introduction {
-                        display: none;
-                    }
-                                                        
-                    #portal_sale_content {
-                        border: none !important;
-                    }
-                                                
-                    #portalTotal > div > div.d-print-none.col-lg-3.col-xl-4 {
-                        position: absolute !important;
-                        display: none !important;
-                    }
-                                            
-                    #details > div.quote-address > video {
-                        width: 100vw !important;
-                    }
-                                            
-                    #details > div:nth-child(2) > span {
-                        display: none;
-                    }
-                                            
-                    .text-info {
-                        color: #db0d0d !important;;
-                    }
-                                            
-                    #wrap.o_portal_wrap > div.container {
-                        padding-right: 0px !important;
-                        padding-left: 0px !important;
-                        margin-right: 0px !important;
-                        margin-left: 0px !important;
-                    }
-                                            
-                    .quoteLineRow {
-                        color: black;
-                        width: 100% !important;
-                        background-color: white;
-                    }
-                                            
-                    #wrap > div {
-                        width: 100vw !important;
-                        max-width: 100vw !important;
-                    }
-                                            
-                    #quote_content {
-                        width: 100%
-                    }
-                                            
-                    #sales_order_table > tbody > tr.quoteLineRowSection > td {
-                        padding: 20px !important;
-                    }
-                                            
-                    .is-subtotal {
-                        display: none !important;
-                    }
-                                            
-                    .quoteLineRow > #product_name {
-                        padding: 20px !important;
-                        padding-top: 20px !important;
-                        padding-bottom: 20px !important;
-                    }
-                                            
-                    #footer-img {
-                        padding-bottom: 30px;
-                    }
+            <style>
+                /* old styles from view (actually important ones) */
+                .quoteConfig {
+                display: none !important;
+                }
 
-                </style>
+                #quotesDownloadButton {
+                border-width: 2px !important;
+                border-color: #dc3545;
+                }
 
-                <t t-set="company_name" t-value="sale_order.company_id.name"/>
+                /* import */
 
-                <!-- 
-                
-                important note: the langauge of the document can be set either to be
-                the language of the partner OR the language of the request (language of the website set by the actual user)
+                @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
 
-                request lang is better because then you can switch between freely. If it is the lang of the partner, it is stuck on that.
+                /*
+                header - font-family: 'Bakbak One', system-ui;
+                normal - font-family: 'Roboto', sans-serif;
+                small - font-family: 'Source Sans Pro', sans-serif;
+                */
 
-                Request lang is request.lang.code and other option is sale_order.partner_id.lang
+                /* quote */
 
-                however, using request lang does mean that you should have a system in place to email the link to the quote to the recipients with their native language code embedded, this is a wip
-                
-                
-                -->
+                #informations {
+                display: none;
+                }
+
+                #introduction {
+                display: none;
+                }
+
+                #portal_sale_content {
+                border: none !important;
+                }
+
+                #portalTotal > div > div.d-print-none.col-lg-3.col-xl-4 {
+                position: absolute !important;
+                display: none !important;
+                }
+
+                #details > div.quote-address > video {
+                width: 100vw !important;
+                }
+
+                #details > div:nth-child(2) > span {
+                display: none;
+                }
+
+                .text-info {
+                color: #db0d0d !important;;
+                }
+
+                #wrap.o_portal_wrap > div.container {
+                padding-right: 0px !important;
+                padding-left: 0px !important;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+                }
+
+                .quoteLineRow {
+                color: black;
+                width: 100% !important;
+                background-color: white;
+                }
+
+                #wrap > div {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                }
+
+                #quote_content {
+                width: 100%
+                }
+
+                #sales_order_table > tbody > tr.quoteLineRowSection > td {
+                padding: 20px !important;
+                }
+
+                .is-subtotal {
+                display: none !important;
+                }
+
+                .quoteLineRow > #product_name {
+                padding: 20px !important;
+                padding-top: 20px !important;
+                padding-bottom: 20px !important;
+                }
+
+                #footer-img {
+                padding-bottom: 30px;
+                }
+
+            </style>
+
+            <t t-set="company_name" t-value="sale_order.company_id.name"/>
+
+            <!--
+
+            important note: the langauge of the document can be set either to be
+            the language of the partner OR the language of the request (language of the website set by the actual user)
+
+            request lang is better because then you can switch between freely. If it is the lang of the partner, it is stuck on that.
+
+            Request lang is request.lang.code and other option is sale_order.partner_id.lang
+
+            however, using request lang does mean that you should have a system in place to email the link to the quote to the recipients with their native language code embedded, this is a wip
 
 
-                <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
-                <t t-set="language" t-value="request.lang.code" />
-                <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
-                <t t-set="partner" t-value="sale_order.partner_id"/>
-                <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
-                
-                <t t-set="addr_street"  t-value="partner.street or ''"/>
-                <t t-set="addr_street2" t-value="partner.street2 or ''"/>
-                <t t-set="addr_city"    t-value="partner.city or ''"/>
-                <t t-set="addr_state"   t-value="(partner.state_id and partner.state_id.code) or ''"/>
-                <t t-set="addr_country" t-value="(partner.country_id and partner.country_id.name) or ''"/>
+            -->
 
-                <t t-set="address"
-                t-value="(addr_street and (addr_street + ', ') or '')
+
+            <!-- <t t-set="sale_order" t-value="sale_order.with_context(lang=sale_order.partner_id.lang)"/> -->
+            <t t-set="language" t-value="request.lang.code"/>
+            <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
+            <t t-set="partner" t-value="sale_order.partner_id"/>
+            <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name"/>
+
+            <t t-set="addr_street" t-value="partner.street or ''"/>
+            <t t-set="addr_street2" t-value="partner.street2 or ''"/>
+            <t t-set="addr_city" t-value="partner.city or ''"/>
+            <t t-set="addr_state" t-value="(partner.state_id and partner.state_id.code) or ''"/>
+            <t t-set="addr_country" t-value="(partner.country_id and partner.country_id.name) or ''"/>
+
+            <t t-set="address"
+               t-value="(addr_street and (addr_street + ', ') or '')
                             + (addr_street2 and (addr_street2 + ', ') or '')
                             + (addr_city and (addr_city + ', ') or '')
                             + addr_state
                             + (addr_country and (', ' + addr_country) or '')"/>
-                
-                <section t-if="'vimeo' in sale_order.header_id.url" class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level o_background_video s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" style="background-image: url(&quot;/web/image/4527-redirect/blk2gocolored.png&quot;); min-height: 606.625px !important;" t-att-data-bg-video-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" data-oe-model="ir.ui.view" data-oe-id="8160" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/section[1]">
-                    <div class="o_bg_video_container">
-                        <!-- t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'"-->
-                        <!-- <iframe class="o_bg_video_iframe fade show"
+
+            <section t-if="'vimeo' in sale_order.header_id.url"
+                     class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center"
+                     style="position: relative; overflow: hidden; min-height: 606.625px !important;">
+
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden;">
+                    <iframe
+                            t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1&amp;background=1'"
                             frameborder="0"
-                            aria-label="Background video"
-                            id="o_bg_video_iframe_5"
                             allow="autoplay; fullscreen; picture-in-picture"
-                            allowfullscreen="1"></iframe> -->
-                    </div>  
-                    <div class="o_we_bg_filter bg-black-25"></div>
-                    <div class="container s_allow_columns">
-                        <div class="row o_grid_mode" data-row-count="6">
-                            <div class="o_colored_level o_grid_item g-height-5 g-col-lg-12 col-lg-12 o_anim_fade_in o_animate o_visible o_animated" style="z-index: 1; grid-row-start: 2; grid-column-start: 1; grid-row-end: 7; grid-column-end: 13; animation-name: o_anim_fade_in; animation-play-state: running; visibility: visible;">
-                                <h1 style="text-align: center;">
-                                    <span class="display-1-fs">
-                                        <strong>
-                                            <font class="text-o-color-5"><t t-out="title"/></font>
-                                        </strong>
-                                    </span>
-                                    <br/>
-                                </h1>
-                                <p class="lead" style="text-align: center;">
-                                    <span class="h3-fs">
-                                        <font class="text-o-color-5"><t t-out="address"/></font>
-                                    </span>
-                                </p>
-                                <br/>
-                                <!-- button, if needed later -->
-                                <!-- <p style="text-align: center;">
-                                    <a class="btn btn-primary btn-lg" href="/contact" data-bs-original-title="" title="">Contact us</a>
-                                </p> -->
-                            </div>
+                            allowfullscreen="1"
+                            style="position: absolute; top: 50%; left: 50%; width: 177.78vh; height: 100vh; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); pointer-events: none;">
+                    </iframe>
+                </div>
+
+                <div class="o_we_bg_filter bg-black-25" style="position: absolute; inset: 0; z-index: 1;"></div>
+                <div class="container s_allow_columns" style="position: relative; z-index: 2;">
+                    <div class="row o_grid_mode" data-row-count="6">
+                        <div class="o_colored_level o_grid_item g-height-5 g-col-lg-12 col-lg-12"
+                             style="z-index: 2; grid-row-start: 2; grid-column-start: 1; grid-row-end: 7; grid-column-end: 13;">
+                            <h1 style="text-align: center;">
+                                <span class="display-1-fs">
+                                    <strong>
+                                        <font class="text-o-color-5">
+                                            <t t-out="title"/>
+                                        </font>
+                                    </strong>
+                                </span>
+                            </h1>
+                            <p class="lead" style="text-align: center;">
+                                <span class="h3-fs">
+                                    <font class="text-o-color-5">
+                                        <t t-out="address"/>
+                                    </font>
+                                </span>
+                            </p>
                         </div>
                     </div>
-                </section>
-                <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + str(sale_order.header_id.url) + '); min-height: 606.625px !important;'">
-                    <div class="o_we_bg_filter bg-black-50"></div>
-                    <div class="container s_allow_columns">
-                        <h1 class="display-3" style="text-align: center; font-weight: bold;">
-                            <t t-out="title"/>
-                        </h1>
-                        <p class="lead" style="text-align: center;"><t t-out="address"/></p>
-                    </div>
-                </section>
+                </div>
+            </section>
+            <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + str(sale_order.header_id.url) + '); min-height: 606.625px !important;'">
+                <div class="o_we_bg_filter bg-black-50"></div>
+                <div class="container s_allow_columns">
+                    <h1 class="display-3" style="text-align: center; font-weight: bold;">
+                        <t t-out="title"/>
+                    </h1>
+                    <p class="lead" style="text-align: center;">
+                        <t t-out="address"/>
+                    </p>
+                </div>
+            </section>
         </xpath>
 
         <!-- Hide Total On Rental Quotes -->
         <xpath expr="//div[@id=&quot;total&quot;]" position="attributes">
             <!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
         </xpath>
-
-        <!-- remove taxes column -->
-        <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
-        <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" /> -->
-
-        <!--		commented due to the temporary-->
-        <!--		&lt;!&ndash; <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> &ndash;&gt;-->
-        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td"-->
-        <!--               position="attributes">-->
-        <!--            <attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name !=-->
-        <!--                '$subscription'-->
-        <!--            </attribute>-->
-        <!--        </xpath>-->
 
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
@@ -222,7 +214,7 @@
 
             <!-- ===== RENTAL INFO SECTION (rental orders only) - 2026-02-25 - Brainecrew Apps ===== -->
 
-            <div id="rental-info-section" style="padding: 16px 0 24px 0;">
+            <div id="rental-info-section" style="padding: 25px 25px 15px;">
 
                 <!-- Row 1: PO Number | Rental Start | Rental End -->
                 <div class="row mb-3">
@@ -308,6 +300,7 @@
                                     <option value="">Select</option>
                                     <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
                                         <option t-att-value="state.id"
+                                                t-att-data-country-id="state.country_id.id"
                                                 t-att-selected="state.id == inv.state_id.id">
                                             <t t-esc="state.name"/>
                                         </option>
@@ -384,6 +377,7 @@
                                     <option value="">Select</option>
                                     <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
                                         <option t-att-value="state.id"
+                                                t-att-data-country-id="state.country_id.id"
                                                 t-att-selected="state.id == dlv.state_id.id">
                                             <t t-esc="state.name"/>
                                         </option>
@@ -424,7 +418,7 @@
             <!-- shipping/delivery info section -->
             <div class="delivery-section">
                 <t t-set="delivery_orders"
-                    t-value="sale_order.picking_ids
+                   t-value="sale_order.picking_ids
                                 .filtered(lambda p: p.picking_type_id.code == 'outgoing')
                                 .filtered(lambda p: not (p.hide_on_portal or False))
                                 .sorted('date', reverse=True)[:3]"/>
@@ -441,7 +435,8 @@
                                     </a>
                                     <div t-if="picking.state == 'done'">
                                         <span class="small badge text-bg-success orders_label_text_align">
-                                            <i class="fa fa-fw fa-truck"/> Shipped
+                                            <i class="fa fa-fw fa-truck"/>
+                                            Shipped
                                         </span>
                                         <a class="badge text-bg-secondary orders_label_text_align" target="_blank" t-att-href="'/my/picking/return/pdf/%s?%s' % (picking.id, keep_query())">
                                             RETURN
@@ -462,7 +457,7 @@
                                             <a t-att-href="line[1]" target="_blank">
                                                 <span t-esc="line[0]"/>
                                             </a>
-                                            <span t-if="not line_last"> + </span>
+                                            <span t-if="not line_last">+</span>
                                         </t>
                                     </t>
                                     <t t-elif="picking.carrier_tracking_url">
@@ -471,7 +466,8 @@
                                         </a>
                                     </t>
                                     <t t-else="">
-                                        <span t-field="picking.carrier_id.name"/> <span t-field="picking.carrier_tracking_ref"/>
+                                        <span t-field="picking.carrier_id.name"/>
+                                        <span t-field="picking.carrier_tracking_ref"/>
                                     </t>
                                 </div>
                                 <div t-if="picking.carrier_id.get_return_label_from_portal and picking.return_label_ids">
@@ -489,7 +485,7 @@
                     </div>
                 </div>
                 <t t-set="returns"
-                    t-value="sale_order.picking_ids
+                   t-value="sale_order.picking_ids
                                 .filtered(lambda p: p.picking_type_id.code == 'incoming')
                                 .filtered(lambda p: not (p.hide_on_portal or False))"/>
                 <div t-if="returns" class="col-12 col-lg-6 mb-4">
@@ -503,13 +499,16 @@
                                     <span t-esc="picking.name"/>
                                 </a>
                                 <span t-if="picking.state == 'done'" class="small badge text-bg-success orders_label_text_align">
-                                    <i class="fa fa-fw fa-truck"/> Received
+                                    <i class="fa fa-fw fa-truck"/>
+                                    Received
                                 </span>
                                 <span t-elif="picking.state == 'cancel'" class="small badge text-bg-danger orders_label_text_align">
-                                    <i class="fa fa-fw fa-times"/> Cancelled
+                                    <i class="fa fa-fw fa-times"/>
+                                    Cancelled
                                 </span>
                                 <span t-elif="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge text-bg-info orders_label_text_align">
-                                    <i class="fa fa-fw fa-clock-o"/> Awaiting arrival
+                                    <i class="fa fa-fw fa-clock-o"/>
+                                    Awaiting arrival
                                 </span>
                             </div>
                             <div class="small d-lg-inline-block">
@@ -581,24 +580,34 @@
                         <p class="rental_price_explain" t-elif="language == 'es_ES'">
                             * El costo final de alquiler se calculará una vez que el equipo sea devuelto.
                             El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba).
-                            El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
+                            El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada
+                            (arriba).
                         </p>
                         <br/>
 
                         <t t-if="language == 'en_CA' or language == 'en_US'">
                             <span class="rental_price_estimate">Estimated rental cost of chosen hardware + accessories:
-                                <span style="color: red;">Due to system upgrades this system of calculating rental costs is no longer available. Please contact us for information regarding this order or request a new rental quote.</span>
+                                <span style="color: red;">Due to system upgrades this system of calculating rental costs
+                                    is no longer available. Please contact us for information regarding this order or
+                                    request a new rental quote.
+                                </span>
                             </span>
                         </t>
                         <t t-elif="language == 'fr_CA'">
                             <span class="rental_price_estimate">Coût estimé de la location de l'équipement et les
                                 accessoires:
-                                <span style="color: red;">En raison de mises à niveau du système, ce système de calcul des coûts de location n'est plus disponible. Veuillez nous contacter pour obtenir des informations concernant cette commande ou demander un nouveau devis de location.</span>
+                                <span style="color: red;">En raison de mises à niveau du système, ce système de calcul
+                                    des coûts de location n'est plus disponible. Veuillez nous contacter pour obtenir
+                                    des informations concernant cette commande ou demander un nouveau devis de location.
+                                </span>
                             </span>
                         </t>
                         <t t-elif="language == 'es_ES'">
                             <span class="rental_price_estimate">Costo estimado de alquiler del equipo y accesorios:
-                                <span style="color: red;">Debido a las actualizaciones del sistema, este sistema de cálculo de costos de alquiler ya no está disponible. Contáctenos para obtener información sobre este pedido o solicitar una nueva cotización de alquiler.</span>
+                                <span style="color: red;">Debido a las actualizaciones del sistema, este sistema de
+                                    cálculo de costos de alquiler ya no está disponible. Contáctenos para obtener
+                                    información sobre este pedido o solicitar una nueva cotización de alquiler.
+                                </span>
                             </span>
                         </t>
                         <br/>
@@ -614,7 +623,7 @@
                             <br/>
                         </div>
                         <div class="rental_product_value" t-if="language== 'fr_CA'">
-                            <span>Valeur locative totale: 
+                            <span>Valeur locative totale:
                                 <span>Plus disponible pour visualisation</span>
                             </span>
                             <br/>
@@ -625,7 +634,7 @@
                             <br/>
                         </div>
                         <div class="rental_product_value" t-if="language== 'es_ES'">
-                            <span>Valor total de alquiler: 
+                            <span>Valor total de alquiler:
                                 <span>Ya no está disponible para ver</span>
                             </span>
                             <br/>
@@ -668,12 +677,12 @@
                         <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
                         </span>
                     </td>
-                    <td t-if="line.name == '$block+'" class="text-left">
+                    <td t-if="sale_order.is_rental_order" class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
                         <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
                     </td>
-                    <td t-else=""/>
+                    <!-- <td t-else=""/> -->
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
@@ -719,16 +728,18 @@
                             <t t-else="">
                                 <t t-set="scanner_id" t-value="line.name[15:]"/>
                                 <t t-if="language == 'en_CA' or language == 'en_US'">
-                                    Select CCP Type for <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                    Select CCP Type for
+                                    <t t-out="scanner_id.upper().replace('_', ' ')"/>
                                 </t>
                                 <t t-elif="language == 'fr_CA'">
-                                    Sélectionner le type CCP pour <t t-out="scanner_id.upper().replace('_', ' ')"/>
+                                    Sélectionner le type CCP pour
+                                    <t t-out="scanner_id.upper().replace('_', ' ')"/>
                                 </t>
                             </t>
                         </div>
                         <div style="width: 25%; float: right; text-align: right;">
-                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal: </strong>
-                            <strong t-elif="language == 'fr_CA'">Sous-total: </strong>
+                            <strong t-if="language == 'en_CA' or language == 'en_US'">Subtotal:</strong>
+                            <strong t-elif="language == 'fr_CA'">Sous-total:</strong>
                             <!-- Calculate CCP products subtotal -->
                             <t t-set="ccp_subtotal" t-value="0"/>
                             <t t-set="calculating" t-value="False"/>
@@ -876,7 +887,8 @@
                        class="text-left"
                        t-att-data-section_id="line_section_id"
                        style="font-weight: 400 !important;">
-                       <t t-esc="request.env['ir.qweb.field.float'].value_to_html(section_subtotal, {'lang': language, 'precision': 2})"/>$
+                        <t t-esc="request.env['ir.qweb.field.float'].value_to_html(section_subtotal, {'lang': language, 'precision': 2})"/>
+                        $
                     </t>
                     <t t-elif="language == 'en_CA' or language == 'en_US'" class="text-left" style="font-weight: 400 !important;">
                         0.00$
@@ -902,74 +914,74 @@
             <span class="line_id" t-attf-id="{{line}}"/>
         </xpath>
 
-        <!--		commented due to the temporary issue-->
-        <!--		&lt;!&ndash;No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">-->
-        <!--			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>-->
-        <!--		</xpath>-->
-        <!--		&lt;!&ndash; Hide Default Subtotal&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
+        <!--        commented due to the temporary issue-->
+        <!--        &lt;!&ndash;No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">-->
+        <!--            <attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>-->
+        <!--        </xpath>-->
+        <!--        &lt;!&ndash; Hide Default Subtotal&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">-->
+        <!--            <attribute name="style">display: none;</attribute>-->
+        <!--        </xpath>-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">-->
+        <!--            <attribute name="style">display: none;</attribute>-->
+        <!--        </xpath>-->
 
-        <!--		&lt;!&ndash;Mark Original Subtotal locations&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">-->
-        <!--			<attribute name="class">subtotal-source</attribute>-->
-        <!--		</xpath>-->
+        <!--        &lt;!&ndash;Mark Original Subtotal locations&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">-->
+        <!--            <attribute name="class">subtotal-source</attribute>-->
+        <!--        </xpath>-->
 
 
         <!-- Rental Item Value -->
-      <!--   <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
-            <t t-if="sale_order.is_rental == True">
-                <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
-                    style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False  and language == 'fr_CA'"
-                          t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)"
-                          class="text-left itemValue test"/>
-                </td>
-                <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
-                    style="width: fit-content;">
-                    <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
-                          t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)"
-                          class="text-left itemValue test"/>
-                    <span t-if="line.product_id.is_software == False and language == 'fr_CA'"
-                          t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)"
-                          class="text-left itemValue test"/>
-                </td>
-            </t>
-            <td t-else=""/>
-        </xpath> -->
+        <!--   <xpath expr="//td[@id=&quot;product_name&quot;]" position="after">
+              <t t-if="sale_order.is_rental == True">
+                  <td t-if="'CAD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                      style="width: fit-content;">
+                      <span t-if="line.product_id.is_software == False  and (language == 'en_CA' or language == 'en_US')"
+                            t-esc="'$ {value:,.2f}'.format(value=line.product_id.cadVal)"
+                            class="text-left itemValue test"/>
+                      <span t-if="line.product_id.is_software == False  and language == 'fr_CA'"
+                            t-esc="'{value:,.2f} $'.format(value=line.product_id.cadVal)"
+                            class="text-left itemValue test"/>
+                  </td>
+                  <td t-elif="'USD' in sale_order.currency_id.name" class="text-left rental_value_cell"
+                      style="width: fit-content;">
+                      <span t-if="line.product_id.is_software == False and (language == 'en_CA' or language == 'en_US')"
+                            t-esc="'$ {value:,.2f}'.format(value=line.product_id.usdVal)"
+                            class="text-left itemValue test"/>
+                      <span t-if="line.product_id.is_software == False and language == 'fr_CA'"
+                            t-esc="'{value:,.2f} $'.format(value=line.product_id.usdVal)"
+                            class="text-left itemValue test"/>
+                  </td>
+              </t>
+              <td t-else=""/>
+          </xpath> -->
 
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
-                <t t-if="line.optional == 'yes'">
-                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                           class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-
                 <!--Line Id For User Selection-->
                 <div class="flex">
+                    <t t-if="line.optional == 'yes'">
+                        <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
+                    <t t-else="">
+                        <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
+                               class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
-                        <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
-                             <img class="zoomable-product-image"
-                                  t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
-                                  t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
-                                  alt="Product Image"
-                                  style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
-                        </t>
+                        <div width="10%" style="display: flex; align-items: center;">
+                            <t t-if="line.product_id.image_128">
+                                <img class="zoomable-product-image"
+                                     t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
+                                     t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
+                                     alt="Product Image"
+                                     style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                            </t>
                         </div>
                         <div width="90%">
                             <span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"/>
@@ -1002,35 +1014,35 @@
         </xpath>
 
         <!--Ensure Subtotal is only calculated if Item is selected and accounts for rental range-->
-  <!--       <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
-            <t t-if="line.selected == 'true' and not current_section_ended">
-                <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
-                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
-                </t>
-                <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
-                    <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
-                    <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
-                    <t t-set="rentalDays"
-                       t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
-                    <t t-set="rentalMonths" t-value="rentalDays // 30"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 30"/>
-                    <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
-                    <t t-set="rentalDays" t-value="rentalDays % 7"/>
+        <!--       <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
+                  <t t-if="line.selected == 'true' and not current_section_ended">
+                      <t t-if="sale_order.is_rental == False or line.product_id.is_software or sale_order.rental_start == False or sale_order.rental_end == False">
+                          <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                      </t>
+                      <t t-elif="sale_order.rental_start != False and sale_order.rental_end != False">
+                          <t t-set="sdate" t-value="str(sale_order.rental_start).split('-')"/>
+                          <t t-set="edate" t-value="str(sale_order.rental_end).split('-')"/>
+                          <t t-set="rentalDays"
+                             t-value="(datetime.date(int(edate[0]), int(edate[1]), int(edate[2])) - datetime.date(int(sdate[0]), int(sdate[1]), int(sdate[2]))).days"/>
+                          <t t-set="rentalMonths" t-value="rentalDays // 30"/>
+                          <t t-set="rentalDays" t-value="rentalDays % 30"/>
+                          <t t-set="rentalWeeks" t-value="rentalDays // 7"/>
+                          <t t-set="rentalDays" t-value="rentalDays % 7"/>
 
 
-                    <t t-set="rentalRate" t-value="0"/>
-                    <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
-                    <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 4"/>
-                    <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
-                    <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
-                       t-value="line.price_subtotal * 12"/>
-                    <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
-                    <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
-                    <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
-                </t>
-            </t>
-        </xpath> -->
+                          <t t-set="rentalRate" t-value="0"/>
+                          <t t-set="rentalDayRate" t-value="line.price_subtotal * rentalDays"/>
+                          <t t-if="(rentalDayRate&gt; line.price_subtotal * 4)" t-set="rentalDayRate"
+                             t-value="line.price_subtotal * 4"/>
+                          <t t-set="rentalWeekDayRate" t-value="4 * line.price_subtotal * rentalWeeks + rentalDayRate"/>
+                          <t t-if="(rentalWeekDayRate &gt; line.price_subtotal * 12)" t-set="rentalDayRate"
+                             t-value="line.price_subtotal * 12"/>
+                          <t t-set="rentalMonthRate" t-value="12 * line.price_subtotal * rentalMonths"/>
+                          <t t-set="rentalRate" t-value="rentalRate + rentalMonthRate + rentalWeekDayRate"/>
+                          <t t-set="current_subtotal" t-value="current_subtotal + rentalRate"/>
+                      </t>
+                  </t>
+              </xpath> -->
 
         <!-- Section Rental Estimate Given Rental Dates -->
         <!-- <xpath expr="//t[@t-foreach='lines_to_report']//t[@t-set=&quot;current_subtotal&quot;]" position="replace">
@@ -1109,10 +1121,10 @@
             </div>
         </xpath>
 
-        <!--			this will commented and deprecated due to price_total field have no more-->
-        <!--		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">-->
-        <!--			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>-->
-        <!--		</xpath>-->
+        <!--            this will commented and deprecated due to price_total field have no more-->
+        <!--        <xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">-->
+        <!--            <attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>-->
+        <!--        </xpath>-->
 
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
@@ -1128,7 +1140,22 @@
                        style="display: inline; width: 60px;"/>
             </t>
         </xpath>
-
+        <xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
+            <td t-if="sale_order.is_rental_order" class="text-right">
+                <t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
+                        ('pricelist_id', '=', line.order_id.pricelist_id.id),
+                        ('compute_price', '=', 'fixed'),
+                        '|',
+                            '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
+                            '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
+                    ])"/>
+                <span t-if="pricelist_item">
+                    <t t-esc="sale_order.currency_id.symbol"/>
+                    <t t-esc="'%.2f' % pricelist_item[0].fixed_price"/>
+                </span>
+                <span t-else="">—</span>
+            </td>
+        </xpath>
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
@@ -1172,11 +1199,18 @@
                 <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'CAD'"
                    t-value="'canadienses'"/>
                 <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
-                <span t-if="language == 'en_CA' or language == 'en_US'">All prices in <t t-out="currency_label"/> dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already showing). The quote is valid for 30 days after submittal date.
+                <span t-if="language == 'en_CA' or language == 'en_US'">All prices in
+                    <t t-out="currency_label"/>
+                    dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
+                    showing). The quote is valid for 30 days after submittal date.
                 </span>
-                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes
+                    de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
+                    affichés). Cette soumission est valide pour 30 jours après la date soumise.
                 </span>
-                <span t-elif="language == 'es_ES'">Todos los precios están en dólares <t t-out="currency_label"/>. Los impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
+                <span t-elif="language == 'es_ES'">Todos los precios están en dólares<t t-out="currency_label"/>. Los
+                    impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se
+                    muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
                 </span>
             </div>
             <div t-if="'abtech' in sale_order.company_id.name.lower()">
@@ -1194,41 +1228,43 @@
                     </span>
                 </t>
                 <t t-elif="language == 'es_ES'">
-                    <span class="white-text">R-E-A-L.iT trabaja con socios para el cumplimiento de ciertos productos y, por lo tanto,
+                    <span class="white-text">R-E-A-L.iT trabaja con socios para el cumplimiento de ciertos productos y,
+                        por lo tanto,
                         algunos o todos los productos cotizados pueden ser facturados y entregados por uno de nuestros
                         socios.
                     </span>
                 </t>
             </div>
-           <!--  <t t-if="sale_order.is_rental == True">
-                <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
+            <!--           &lt;!&ndash;  <t t-if="sale_order.is_rental == True">-->
+            <!--                <br/><br/>-->
+            <!--                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>-->
+            <!--                <label for="rental-terms-checkbox">-->
+            <!--                    <h3>-->
+            <!--                        <strong class="white-text" id="terms_hidden">+</strong>-->
+            <!--                        <strong class="white-text" id="terms_open">×</strong>-->
+            <!--                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions-->
+            <!--                        </strong>-->
+            <!--                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>-->
+            <!--                    </h3>-->
+            <!--                </label>-->
+            <!--                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>-->
+            <!--            </t>-->
+            <t t-else="">
+                <br/>
+                <br/>
+                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and
+                            Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
-                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
             </t>
-            <t t-else="">
-                <br/><br/>
-                <h3>
-                    <strong class="white-text" id="terms_hidden">+</strong>
-                    <strong class="white-text" id="terms_open">×</strong>
-                    <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
-                    </strong>
-                    <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
-                    <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
-                </h3>
-            </t> -->
-            <section class="quoteConfig" style="display: none !important;">
-                <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
-                <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
-            </section>
         </xpath>
         <xpath expr="//section[@id='signature']" position="replace">
             <section t-if="sale_order.signature" id="signature" name="Signature">
@@ -1244,37 +1280,38 @@
         </xpath>
 
 
-
         <!-- table align -->
 
+
         <!-- Value Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
 
-		<!-- Quantity Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <!-- Quantity Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
 
-		<!-- Price Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
-			<attribute name="t-attf-class">text-left</attribute>
-		</xpath>
+        <!-- Price Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
-			<attribute name="t-attf-class">text-left nowrap</attribute>
-		</xpath>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
+            <attribute name="t-attf-class">text-left nowrap</attribute>
+        </xpath>
 
-		<!-- Tax Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
-			<attribute name="t-attf-class">text-left</attribute>
-		</xpath>
+        <!-- Tax Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
 
-		<!-- Line_Total Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <!-- Line_Total Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
+
 
     </template>
 
@@ -1282,13 +1319,25 @@
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
         <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
-            
+
 
             <!-- approve financing section -->
             <div class="approve_section" t-if="sale_order.approve_financing">
                 <div class="approve_section_inner">
                     <!-- approve plugin install -->
-                    <script type="text/javascript" async=""> window.kwipped_approve = window.kwipped_approve || {}; window.kwipped_approve.url = "https://www.kwipped.com"; window.kwipped_approve.approve_id = "eyJpdiI6Ik5US0IxcDN5dnFNcW16amZXN28weWc9PSIsInZhbHVlIjoidGYxRzl2eml4MkNkTHIwbkE1OGdLZz09IiwibWFjIjoiZDVkMzEzODUzOTNmOTg0MTlmOWFmMmI3ZjRhODA2YjBmNzFiMzBhZGMwNTE0MjMwYTMwNzlmYjYzYWMwMGUyNiJ9"; function init_kwipped_approve_snippet() { var b = document.getElementsByTagName('body')[0]; var t = document.querySelector('approve-widget'); if (!t) { t = document.createElement('approve-widget'); t.setAttribute('autosubmission', 1); t.setAttribute('theme', 'custom'); t.setAttribute('themestyle', '{"bgcolor":"#DB0E0D","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#FFFFFF","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#000000","headertext_color":"#FFFFFF"}'); b.appendChild(t); } var s=document.createElement('script'); s.type= 'text/javascript'; s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php'; b.appendChild(s); } if(document.readyState != 'loading'){ init_kwipped_approve_snippet(); } else{ window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet); } </script>
+                    <script type="text/javascript" async="">window.kwipped_approve = window.kwipped_approve || {};
+                        window.kwipped_approve.url = "https://www.kwipped.com"; window.kwipped_approve.approve_id =
+                        "eyJpdiI6Ik5US0IxcDN5dnFNcW16amZXN28weWc9PSIsInZhbHVlIjoidGYxRzl2eml4MkNkTHIwbkE1OGdLZz09IiwibWFjIjoiZDVkMzEzODUzOTNmOTg0MTlmOWFmMmI3ZjRhODA2YjBmNzFiMzBhZGMwNTE0MjMwYTMwNzlmYjYzYWMwMGUyNiJ9";
+                        function init_kwipped_approve_snippet() { var b = document.getElementsByTagName('body')[0]; var
+                        t = document.querySelector('approve-widget'); if (!t) { t =
+                        document.createElement('approve-widget'); t.setAttribute('autosubmission', 1);
+                        t.setAttribute('theme', 'custom'); t.setAttribute('themestyle',
+                        '{"bgcolor":"#DB0E0D","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#FFFFFF","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#000000","headertext_color":"#FFFFFF"}');
+                        b.appendChild(t); } var s=document.createElement('script'); s.type= 'text/javascript'; s.src =
+                        'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php'; b.appendChild(s); }
+                        if(document.readyState != 'loading'){ init_kwipped_approve_snippet(); } else{
+                        window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet); }
+                    </script>
                     <span style="display:none;" id="approve_total_var" t-out="sale_order.amount_total"/>
                     <span style="display:none;" id="approve_order_id" t-att-data-order-id="sale_order.id" t-out="sale_order.id"/>
 
@@ -1301,17 +1350,19 @@
                     <div class="approve_teaser_block">
                         <div class="approve_teaser_header">Finance as low as</div>
                         <div class="approve_teaser_price">
-                            $<span id="approve_teaser_rate" approve-function="teaser_rate" t-att-approve-total="sale_order.amount_total"></span>
+                            $
+                            <span id="approve_teaser_rate" approve-function="teaser_rate" t-att-approve-total="sale_order.amount_total"></span>
                             <span class="approve_teaser_suffix">/mo</span>
                         </div>
                         <div class="approve_teaser_subtext">*60 months</div>
                         <div class="approve_teaser_pitch">
-                            Multiple Lenders. Competing Offers. <br />
+                            Multiple Lenders. Competing Offers.
+                            <br/>
                             Smart Equipment Financing!
                         </div>
                     </div>
 
-                    
+
                     <!-- approve section button -->
                     <div class="approve_button_section">
                         <button class="flash-button" t-att-data-order-id="sale_order.id" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-items="sale_order.get_approve_items_json()">
@@ -1324,25 +1375,25 @@
 
                     </div>
 
-                    <!-- 
+                    <!--
 
-                    SCRIPTS 
-                    
+                    SCRIPTS
+
                     -->
                     <!-- pass through json to button parameters -->
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            const approveBtn = document.querySelector('.flash-button');
+                        const approveBtn = document.querySelector('.flash-button');
 
-                            if (approveBtn) {
-                                approveBtn.addEventListener('click', function () {
+                        if (approveBtn) {
+                        approveBtn.addEventListener('click', function () {
 
-                                    // approveBtn.setAttribute('approve-action', 'open_app');
-                                    // console.log("approve-action updated to open_app");
+                        // approveBtn.setAttribute('approve-action', 'open_app');
+                        // console.log("approve-action updated to open_app");
 
-                                    window.kwipped_approve.embedded_app.app_reference.clear_items();
-                                });
-                            }
+                        window.kwipped_approve.embedded_app.app_reference.clear_items();
+                        });
+                        }
                         });
                     </script>
 
@@ -1355,7 +1406,7 @@
                                 window.kwipped_approve.embedded_app.app_reference.add_listener(function(message){
                                     if(message.action=="app_submitted"){
                                     console.log("This is a submitted application:",message.data);
-                                    
+
                                     const orderId = document.querySelector('#approve_order_id')?.getAttribute('data-order-id');
                                     if (!orderId) {
                                         console.error("Order ID not found for APPROVE submission.");
@@ -1381,20 +1432,26 @@
                 </div>
             </div>
 
-            <t t-set="language" t-value="request.lang.code" />
+            <t t-set="language" t-value="request.lang.code"/>
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
             <div t-if="language == 'fr_CA'" id="customer-acceptance">
                 <h1 class="white-text">Acceptation du client</h1>
-                <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
+                <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous
+                    confirmez que vous êtes autorisé à le faire.
+                </p>
             </div>
             <div t-elif="language == 'es_ES'" id="customer-acceptance">
                 <h1 class="white-text">Aceptación del cliente</h1>
-                <p>Con su firma, acepta nuestra oferta en nombre de su empresa como se indica arriba y confirma que está autorizado para hacerlo.</p>
+                <p>Con su firma, acepta nuestra oferta en nombre de su empresa como se indica arriba y confirma que está
+                    autorizado para hacerlo.
+                </p>
             </div>
             <div t-else="" id="customer-acceptance">
                 <h1 class="white-text">Customer Acceptance</h1>
-                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you
+                    are authorized to do so.
+                </p>
             </div>
 
             <!-- bottom actions with unified button appearance -->
@@ -1402,31 +1459,39 @@
 
                 <t t-if="sale_order._has_to_be_signed()">
                     <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
-                        <i class="fa fa-check me-1"/> Accept &amp; Sign
+                        <i class="fa fa-check me-1"/>
+                        Accept &amp; Sign
                     </a>
                     <a role="button" class="btn btn-primary" href="#discussion">
-                        <i class="fa fa-comment me-1"/> Feedback
+                        <i class="fa fa-comment me-1"/>
+                        Feedback
                     </a>
                     <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modaldecline" href="#">
-                        <i class="fa fa-times me-1"/> Reject
+                        <i class="fa fa-times me-1"/>
+                        Reject
                     </a>
                     <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
-                        <i class="fa fa-download me-1"/> Download
+                        <i class="fa fa-download me-1"/>
+                        Download
                     </a>
                 </t>
 
                 <t t-elif="sale_order._has_to_be_paid()">
                     <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
-                        <i class="fa fa-check me-1"/> <t t-if="not sale_order.signature">Accept &amp; Pay</t><t t-else="">Pay Now</t>
+                        <i class="fa fa-check me-1"/>
+                        <t t-if="not sale_order.signature">Accept &amp; Pay</t>
+                        <t t-else="">Pay Now</t>
                     </a>
                     <a role="button" class="btn btn-primary" href="#discussion">
-                        <i class="fa fa-comment me-1"/> Feedback
+                        <i class="fa fa-comment me-1"/>
+                        Feedback
                     </a>
                     <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
-                        <i class="fa fa-download me-1"/> Download
+                        <i class="fa fa-download me-1"/>
+                        Download
                     </a>
                 </t>
-                
+
             </div>
 
         </xpath>

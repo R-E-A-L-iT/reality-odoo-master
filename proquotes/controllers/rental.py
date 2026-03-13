@@ -134,4 +134,8 @@ class RentalCustomerPortal(cPortal):
         if values:
             order_sudo.sudo().write(values)
 
+            # Auto-update rental prices when dates change
+            if order_sudo.is_rental_order and order_sudo.has_rented_products:
+                order_sudo.sudo()._recompute_rental_prices()
+
         return {"success": True}

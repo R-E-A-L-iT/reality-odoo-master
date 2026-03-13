@@ -21,7 +21,15 @@
                                 <label t-attf-for="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}">
                                     <div class="ccp-card-content">
                                         <div class="ccp-icon-placeholder" t-attf-style="color: {{ccp_type_config.color}};">
-                                            <i t-attf-class="fa {{ccp_type_config.icon}} fa-3x"></i>
+                                            <!-- Show uploaded image if available, otherwise fallback to Font Awesome icon -->
+                                            <t t-if="ccp_type_config.icon_image">
+                                                <img t-attf-src="data:image/png;base64,{{ccp_type_config.icon_image.decode('utf-8')}}"
+                                                     alt="CCP Icon"
+                                                     class="ccp-uploaded-icon"/>
+                                            </t>
+                                            <t t-else="">
+                                                <i t-attf-class="fa {{ccp_type_config.icon}} fa-3x"></i>
+                                            </t>
                                         </div>
                                         <span class="ccp-type-name" t-out="ccp_type_config.display_name or ccp_type_config.name"></span>
                                     </div>
