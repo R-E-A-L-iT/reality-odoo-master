@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="proquotes_internal_user_backend" model="ir.ui.view">
+        <field name="name">res.users.form.company.default.footers</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="company_footer_line_ids" context="{'default_user_id': active_id}">
+                    <tree editable="bottom">
+                        <field name="company_id"/>
+                        <field name="footer_id" domain="[('active', '=', True), ('record_type', '=', 'Footer')]"/>
+                        <field name="active" optional="hide"/>
+                    </tree>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="proquotes_internal_user_profile_backend" model="ir.ui.view">
+        <field name="name">res.users.profile.company.default.footers</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="replace"/>
+        </field>
+    </record>
+</odoo>
