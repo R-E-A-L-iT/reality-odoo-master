@@ -4,7 +4,6 @@
         <field name="name">EMAIL - Canadian Default Footer</field>
         <field name="record_type">Footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_CANADA.png</field>
-        <field name="default">True</field>
         <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
     </record>
 
@@ -12,7 +11,6 @@
         <field name="name">EMAIL - American Default Footer</field>
         <field name="record_type">Footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_USA.png</field>
-        <field name="default">True</field>
         <field name="company_ids" eval="[(4, 3)]"/>
     </record>
 

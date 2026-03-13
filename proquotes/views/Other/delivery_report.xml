@@ -124,12 +124,12 @@
 				<br />
 				<br />
 				<br />
-				<div t-if="o.footer_id">
+				<!-- <div t-if="o.footer_id">
 					<t t-set="footer" t-value="o.footer_id.url" />
-				</div>
-				<div t-else="">
+				</div> -->
+				<!-- <div t-else="">
 					<span>No footer found</span>
-				</div>
+				</div> -->
 			</div>
 		</xpath>
 	</template>
