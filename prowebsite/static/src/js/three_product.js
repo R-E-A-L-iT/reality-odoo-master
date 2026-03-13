@@ -255,15 +255,14 @@ whenReady(async () => {
                     child.castShadow = false;
                     child.receiveShadow = false;
 
-                    if (child.material) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach((mat) => {
-                                mat.side = THREE.DoubleSide;
-                            });
-                        } else {
-                            child.material.side = THREE.DoubleSide;
-                        }
-                    }
+                    const matteBlackMaterial = new THREE.MeshStandardMaterial({
+                        color: 0x111111,
+                        roughness: 0.95,
+                        metalness: 0.02,
+                        side: THREE.DoubleSide,
+                    });
+
+                    child.material = matteBlackMaterial;
                 }
             });
 
