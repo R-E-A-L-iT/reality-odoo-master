@@ -59,6 +59,10 @@ whenReady(async () => {
         return 1 - Math.pow(1 - t, 3);
     }
 
+    function lerp(a, b, t) {
+        return a + (b - a) * t;
+    }
+
     function createRenderer(targetHost, zIndex = "2") {
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -270,7 +274,7 @@ whenReady(async () => {
 
     const bottomAutoRotateSpeed = 0.0018;
     const bottomResumeDelay = 3000;
-    const bottomDragSensitivity = 0.017;
+    const bottomDragSensitivity = 0.02;
 
     let isBottomDragging = false;
     let bottomLastPointerX = 0;
@@ -433,13 +437,10 @@ whenReady(async () => {
 
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
 
-    // 0 -> 1 animation progress controlled ONLY by wheel input
     let scrollAnimProgress = 0;
-
-    // Tune this. Smaller = more wheel distance required.
     const scrollPixelsForFullAnimation = 1400;
 
-    function isScrollSectionLocked() {
+    function isScrollSectionActive() {
         if (!scrollSection) {
             return false;
         }
@@ -447,28 +448,30 @@ whenReady(async () => {
         const rect = scrollSection.getBoundingClientRect();
         const viewportH = window.innerHeight || document.documentElement.clientHeight;
 
-        // Lock while the section is occupying the viewport area
         return rect.top <= 0 && rect.bottom >= viewportH;
     }
 
     function applyScrollSectionPose() {
-        if (!scrollModel) {
+        if (!scrollModel || !scrollWrapper) {
             return;
         }
 
-        // Exact deterministic pose from progress
-        // start: slight angle
-        // end: tilted to show top
-        const startX = -0.15;
-        const endX = -1.05;
+        const t = scrollAnimProgress;
 
-        scrollModel.rotation.x = startX + (endX - startX) * scrollAnimProgress;
+        // Start fully flat/upright from the front
+        // End with top face toward the camera
+        scrollModel.rotation.x = lerp(0, -Math.PI / 2, t);
         scrollModel.rotation.y = 0;
-        scrollModel.rotation.z = 0.08;
+        scrollModel.rotation.z = 0;
+
+        // Bring the model forward and slightly up as the scroll progresses
+        scrollWrapper.position.x = 0;
+        scrollWrapper.position.y = lerp(0, 0.25, t);
+        scrollWrapper.position.z = lerp(0, 1.35, t);
     }
 
     function onScrollSectionWheel(event) {
-        if (!scrollSection || !isScrollSectionLocked()) {
+        if (!scrollSection || !isScrollSectionActive()) {
             return;
         }
 
@@ -482,18 +485,20 @@ whenReady(async () => {
         const tryingToScrollPastStart = delta < 0 && scrollAnimProgress <= 0;
         const tryingToScrollPastEnd = delta > 0 && scrollAnimProgress >= 1;
 
-        // Allow normal page scrolling only when animation is already fully at an end
         if (tryingToScrollPastStart || tryingToScrollPastEnd) {
             return;
         }
 
         event.preventDefault();
+        event.stopPropagation();
 
         scrollAnimProgress = nextProgress;
         applyScrollSectionPose();
     }
 
-    window.addEventListener("wheel", onScrollSectionWheel, { passive: false });
+    if (scrollSection) {
+        scrollSection.addEventListener("wheel", onScrollSectionWheel, { passive: false });
+    }
 
     // ----------------------------
     // Shared adapter usage
