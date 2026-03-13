@@ -248,13 +248,21 @@ whenReady(async () => {
     const bottomAnimSpeed = 1.0;
 
     // bottom rotation interaction state
-    const bottomAutoRotateSpeed = 0.0018; // slower than before
-    const bottomResumeDelay = 3000; // 3 seconds
-    const bottomDragSensitivity = 0.012;
+    const bottomAutoRotateSpeed = 0.0018;
+    const bottomResumeDelay = 3000;
+
+    // Increased a lot so dragging feels responsive
+    const bottomDragSensitivity = 0.02;
 
     let isBottomDragging = false;
     let bottomLastPointerX = 0;
     let bottomLastInteractionTime = 0;
+
+    // zoom state
+    const bottomDefaultCameraZ = 5;
+    const bottomMinCameraZ = 3.2;
+    const bottomMaxCameraZ = 7.2;
+    const bottomZoomStep = 0.35;
 
     bottomModelHost.style.cursor = "grab";
     bottomModelHost.style.touchAction = "none";
@@ -286,7 +294,7 @@ whenReady(async () => {
         const deltaX = event.clientX - bottomLastPointerX;
         bottomLastPointerX = event.clientX;
 
-        bottomWrapper.rotation.y += deltaX * bottomDragSensitivity * 0.01;
+        bottomWrapper.rotation.y += deltaX * bottomDragSensitivity;
         markBottomInteraction();
     }
 
@@ -304,11 +312,22 @@ whenReady(async () => {
         }
     }
 
+    function onBottomWheel(event) {
+        event.preventDefault();
+
+        const direction = Math.sign(event.deltaY);
+        const nextZ = bottomCamera.position.z + direction * bottomZoomStep;
+
+        bottomCamera.position.z = clamp(nextZ, bottomMinCameraZ, bottomMaxCameraZ);
+        markBottomInteraction();
+    }
+
     bottomRenderer.domElement.addEventListener("pointerdown", onBottomPointerDown);
     bottomRenderer.domElement.addEventListener("pointermove", onBottomPointerMove);
     bottomRenderer.domElement.addEventListener("pointerup", onBottomPointerUp);
     bottomRenderer.domElement.addEventListener("pointerleave", onBottomPointerUp);
     bottomRenderer.domElement.addEventListener("pointercancel", onBottomPointerUp);
+    bottomRenderer.domElement.addEventListener("wheel", onBottomWheel, { passive: false });
 
     const gltfLoader = new GLTFLoader();
 
@@ -346,7 +365,6 @@ whenReady(async () => {
             const center = box.getCenter(new THREE.Vector3());
 
             obj.position.set(-center.x, -center.y, -center.z);
-
             obj.rotation.x = 0;
             obj.rotation.z = 0;
 
@@ -356,6 +374,7 @@ whenReady(async () => {
             bottomWrapper.position.set(0, 0, 0);
             bottomScene.add(bottomWrapper);
 
+            bottomCamera.position.z = bottomDefaultCameraZ;
             markBottomInteraction();
 
             if (gltf.animations && gltf.animations.length > 0) {
