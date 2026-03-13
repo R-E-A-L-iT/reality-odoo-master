@@ -106,41 +106,6 @@ class order(models.Model):
     ], )
     partner_name = fields.Char(string="Partner Name")
     rental_email = fields.Char(string="Email")
-    footer = fields.Selection(
-        [
-            ("ABtechFooter_Atlantic_Derek", "Abtech_Atlantic_Derek"),
-            ("ABtechFooter_Atlantic_Ryan", "Abtech_Atlantic_Ryan"),
-            ("ABtechFooter_Ontario_Derek", "Abtech_Ontario_Derek"),
-            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
-            ("ABtechFooter_Ontario_Phil", "Abtech_Ontario_Phil"),
-            ("ABtechFooter_Ontario_Justin", "Abtech_Ontario_Justin"),
-            ("ABtechFooter_Quebec_Alexandre", "Abtech_Quebec_Alexandre"),
-            ("ABtechFooter_Quebec_Benoit_Carl", "ABtechFooter_Quebec_Benoit_Carl"),
-            ("ABtechFooter_Quebec_Derek", "Abtech_Quebec_Derek"),
-            ("GeoplusFooterCanada", "Geoplus_Canada"),
-            ("GeoplusFooterUS", "Geoplus_America"),
-            ("Leica_Footer_Ali", "Leica Ali"),
-            ("REALiTFooter_Derek_US", "REALiTFooter_Derek_US"),
-            ("REALiTFooter_Martin", "REALiTFooter_Martin"),
-            ("REALiTSOLUTIONSLLCFooter_Derek_US", "R-E-A-L.iT Solutions Derek"),
-            ("REALiTFooter_Derek", "REALiTFooter_Derek"),
-            ("REALiTFooter_Derek_Transcanada", "REALiTFooter_Derek_Transcanada"),
-        ],
-        help="Footer selection field",
-        string="Footer OLD",
-    )
-
-    header = fields.Selection(
-        [
-            ("QH_REALiT+Abtech.mp4", "QH_REALiT+Abtech.mp4"),
-            ("ChurchXRAY.jpg", "ChurchXRAY.jpg"),
-            ("Architecture.jpg", "Architecture.jpg"),
-            ("Software.jpg", "Software.jpg"),
-        ],
-        string="Header OLD",
-        help="Header selection field",
-    )
-
 
 
 
@@ -346,7 +311,6 @@ class order(models.Model):
     def _onchange_sale_order_template_id_set_header_footer(self):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:
             self.header_id = self.sale_order_template_id.header_id
-            # self.footer_id = self.sale_order_template_id.footer_id
     
     # this function returns a json of the selected items on the quote for the approve plugin
     def get_approve_items_json(self):
@@ -633,12 +597,30 @@ class order(models.Model):
     def default_get(self, fields_list):
         defaults = super(order, self).default_get(fields_list)
 
-        # Search for the "Immediate Payment" payment term
-        immediate_payment_term = self.env['account.payment.term'].search([('name', '=', 'Immediate Payment')], limit=1)
-        
-        # If found, set it as the default payment term
+        immediate_payment_term = self.env['account.payment.term'].search(
+            [('name', '=', 'Immediate Payment')],
+            limit=1
+        )
         if immediate_payment_term:
             defaults['payment_term_id'] = immediate_payment_term.id
+
+        user_id = defaults.get("user_id") or self.env.uid
+        company_id = defaults.get("company_id") or self.env.company.id
+
+        user = self.env["res.users"].browse(user_id)
+        company = self.env["res.company"].browse(company_id)
+
+        footer = self._get_user_company_footer(user=user, company=company)
+        if not footer:
+            footer = self._get_company_default_footer(company=company)
+        if not footer:
+            footer = self._get_first_available_footer(company=company)
+        if footer:
+            defaults["footer_id"] = footer.id
+
+        header = self._get_first_available_header(company=company)
+        if header:
+            defaults["header_id"] = header.id
 
         return defaults
     
@@ -796,113 +778,131 @@ class order(models.Model):
         except Exception:
             return label
 
-    def _default_footer(self):
-        # Get Company
-        company = None
-        if self.company_id == False or self.company_id == None:
-            company = self.company_id
-        else:
-            company = self.env.company
+    def _get_available_footer_domain(self):
+        return [
+            ("active", "=", True),
+            ("record_type", "=", "Footer"),
+        ]
 
-        # Get User
-        user = None
-        if self.user_id == False or self.user_id == None:
-            user = self.user_id
-        else:
-            user = self.env.user
+    def _get_available_header_domain(self):
+        return [
+            ("active", "=", True),
+            ("record_type", "=", "Header"),
+        ]
 
-        # Get Prefered Footers
-        result_raw = user.prefered_quote_footers
+    @api.model
+    def _get_first_available_footer(self, company=False):
+        domain = self._get_available_footer_domain()
+        footers = self.env["header.footer"].search(domain, order="id asc")
+        if company:
+            company_specific = footers.filtered(
+                lambda f: not f.company_ids or company in f.company_ids
+            )
+            if company_specific:
+                return company_specific[0]
+        return footers[:1]
 
-        if result_raw != False:
-            result = []
-            for item in result_raw:
-                # Verify footers are applicable for company
-                if company in item.company_ids or len(item.company_ids) == 0:
-                    result.append(item)
-            if len(result) != 0:
-                return result[-1]
+    @api.model
+    def _get_first_available_header(self, company=False):
+        domain = self._get_available_header_domain()
+        headers = self.env["header.footer"].search(domain, order="id asc")
+        if company:
+            company_specific = headers.filtered(
+                lambda h: not h.company_ids or company in h.company_ids
+            )
+            if company_specific:
+                return company_specific[0]
+        return headers[:1]
 
-        # Check for default footer that matches company
-        defaults = self.env["header.footer"].search(
+    @api.model
+    def _get_user_company_footer(self, user=False, company=False):
+        user = user or self.env.user
+        company = company or self.env.company
+
+        if not user or not company:
+            return self.env["header.footer"]
+
+        # New per-company mapping model from the previous change
+        line = self.env["res.users.company.footer"].search(
             [
+                ("user_id", "=", user.id),
+                ("company_id", "=", company.id),
                 ("active", "=", True),
-                ("record_type", "=", "Footer"),
-                ("default", "=", True),
-                ("company_ids", "in", [company.id]),
-            ]
+            ],
+            limit=1,
         )
-        if len(defaults) != 0:
-            return defaults[-1]
 
-        defaults = self.env["header.footer"].search(
-            [
-                ("active", "=", True),
-                ("record_type", "=", "Footer"),
-                ("default", "=", True),
-                ("company_ids", "=", False),
-            ]
-        )
-        if len(defaults) != 0:
-            return defaults[-1]
-        else:
-            return False
-            raise UserError("No Default Footer Available")
+        if line and line.footer_id and line.footer_id.active and line.footer_id.record_type == "Footer":
+            return line.footer_id
 
-    def _default_header(self):
-        # Get Company
-        company = None
-        if self.company_id == False or self.company_id == None:
-            company = self.company_id
-        else:
-            company = self.env.company
+        return self.env["header.footer"]
 
-        # Get User
-        user = None
-        if self.user_id == False or self.user_id == None:
-            user = self.user_id
-        else:
-            user = self.env.user
+    @api.model
+    def _get_company_default_footer(self, company=False):
+        company = company or self.env.company
+        if (
+            company
+            and company.default_footer_id
+            and company.default_footer_id.active
+            and company.default_footer_id.record_type == "Footer"
+        ):
+            return company.default_footer_id
+        return self.env["header.footer"]
 
-        # Get Prefered Headers
-        result_raw = user.prefered_headers
+    @api.model
+    def _default_footer_id(self):
+        user = self.env.user
+        company = self.env.company
 
-        if result_raw != False:
-            result = []
-            for item in result_raw:
-                # Verify headers are applicable for company
-                if company in item.company_ids or len(item.company_ids) == 0:
-                    result.append(item)
-            if len(result) != 0:
-                return result[-1]
+        footer = self._get_user_company_footer(user=user, company=company)
+        if footer:
+            return footer.id
 
-        # Check for default footer that matches company
-        defaults = self.env["header.footer"].search(
-            [
-                ("active", "=", True),
-                ("record_type", "=", "Header"),
-                ("default", "=", True),
-                ("company_ids", "=", company.id),
-            ]
-        )
-        if len(defaults) != 0:
-            return defaults[-1]
-        defaults = self.env["header.footer"].search(
-            [
-                ("active", "=", True),
-                ("record_type", "=", "Header"),
-                ("default", "=", True),
-                ("company_ids", "=", False),
-            ]
-        )
-        if len(defaults) != 0:
-            return defaults[-1]
-        else:
-            return False
-            raise UserError("No Default Header Available")
+        footer = self._get_company_default_footer(company=company)
+        if footer:
+            return footer.id
 
-    header_id = fields.Many2one("header.footer", default=_default_header, required=True)
-    footer_id = fields.Many2one("header.footer", default=_default_footer, required=True)
+        footer = self._get_first_available_footer(company=company)
+        return footer.id if footer else False
+
+    @api.model
+    def _default_header_id(self):
+        company = self.env.company
+        header = self._get_first_available_header(company=company)
+        return header.id if header else False
+
+    header_id = fields.Many2one(
+        "header.footer",
+        string="Header",
+        required=True,
+        domain="[('active', '=', True), ('record_type', '=', 'Header')]",
+        default=_default_header_id,
+    )
+
+    footer_id = fields.Many2one(
+        "header.footer",
+        string="Footer",
+        required=True,
+        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+        default=_default_footer_id,
+    )
+
+    @api.onchange("user_id", "company_id")
+    def _onchange_user_or_company_set_footer_header(self):
+        for order in self:
+            company = order.company_id or self.env.company
+            user = order.user_id or self.env.user
+
+            footer = order._get_user_company_footer(user=user, company=company)
+            if not footer:
+                footer = order._get_company_default_footer(company=company)
+            if not footer:
+                footer = order._get_first_available_footer(company=company)
+            order.footer_id = footer.id if footer else False
+
+            header = order._get_first_available_header(company=company)
+            if header:
+                order.header_id = header.id
 
     is_renewal = fields.Boolean(string="Renewal Quote", default=False)
 

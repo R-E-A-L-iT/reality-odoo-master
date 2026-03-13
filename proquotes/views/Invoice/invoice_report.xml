@@ -347,8 +347,6 @@
                     </p>
                 </div>
             </t>
-            <!-- Footer Image -->
-            <t t-set="footer" t-value="o.footer_id.url"/>
         </xpath>
 
         <!-- Subtotal Lang -->

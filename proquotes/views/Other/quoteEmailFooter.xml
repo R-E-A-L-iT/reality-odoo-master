@@ -94,39 +94,6 @@
             </t>
         </xpath> -->
 
-        <!-- Replace footer section to exclude for CRM leads with simple_email_layout -->
-        <xpath expr="//div[@style='margin-top:32px;']" position="replace">
-            <div t-if="record._name != 'crm.lead' or not record.simple_email_layout" style="margin-top:32px;">
-                <hr width="100%"
-                    style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
-                <t t-if="record._name == 'sale.order' and record.footer_id and not subtype_internal">
-                    <!-- <div>
-                        <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
-                             alt="Footer Image"/>
-                    </div> -->
-                </t>
-                <t t-elif="record._name == 'helpdesk.ticket'">
-                    <div>
-                        <img t-att-src="record.footer_id.url" style="width: 100%; max-width: 900px; height: auto;"
-                             alt="Footer Image"/>
-                    </div>
-                </t>
-                <!-- <t t-else="">
-                    <b t-out="company.name" style="font-size:11px;"/>
-                    <br/>
-                    <p style="color: #999999; margin-top:2px; font-size:11px;">
-                        <t t-out="company.phone"/>
-                        <t t-if="company.email and company.phone">|</t>
-                        <a t-if="company.email" t-att-href="'mailto:%s' % company.email"
-                           style="text-decoration:none; color: #999999;" t-out="company.email"/>
-                        <t t-if="company.website and (company.phone or company.email)">|</t>
-                        <a t-if="company.website" t-att-href="'%s' % company.website"
-                           style="text-decoration:none; color: #999999;" t-out="company.website"/>
-                    </p>
-                </t> -->
-            </div>
-        </xpath>
-
         <!-- Remove powered by odoo for all cases -->
         <xpath expr="//div[@class='d-none']" position="replace" />
     </template>
