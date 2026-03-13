@@ -162,7 +162,6 @@ whenReady(async () => {
     );
     heroCamera.position.set(0, 0, 5);
 
-    // z-index higher than text so model sits in front
     const heroRenderer = createRenderer(heroHost, "4");
     addStandardLights(heroScene, "dark");
 
@@ -248,6 +247,69 @@ whenReady(async () => {
     let bottomAction = null;
     const bottomAnimSpeed = 1.0;
 
+    // bottom rotation interaction state
+    const bottomAutoRotateSpeed = 0.0018; // slower than before
+    const bottomResumeDelay = 3000; // 3 seconds
+    const bottomDragSensitivity = 0.012;
+
+    let isBottomDragging = false;
+    let bottomLastPointerX = 0;
+    let bottomLastInteractionTime = 0;
+
+    bottomModelHost.style.cursor = "grab";
+    bottomModelHost.style.touchAction = "none";
+
+    function markBottomInteraction() {
+        bottomLastInteractionTime = performance.now();
+    }
+
+    function bottomShouldAutoRotate(now) {
+        return !isBottomDragging && (now - bottomLastInteractionTime >= bottomResumeDelay);
+    }
+
+    function onBottomPointerDown(event) {
+        isBottomDragging = true;
+        bottomLastPointerX = event.clientX;
+        markBottomInteraction();
+        bottomModelHost.style.cursor = "grabbing";
+
+        if (bottomRenderer.domElement.setPointerCapture) {
+            bottomRenderer.domElement.setPointerCapture(event.pointerId);
+        }
+    }
+
+    function onBottomPointerMove(event) {
+        if (!isBottomDragging || !bottomWrapper) {
+            return;
+        }
+
+        const deltaX = event.clientX - bottomLastPointerX;
+        bottomLastPointerX = event.clientX;
+
+        bottomWrapper.rotation.y += deltaX * bottomDragSensitivity * 0.01;
+        markBottomInteraction();
+    }
+
+    function onBottomPointerUp(event) {
+        isBottomDragging = false;
+        markBottomInteraction();
+        bottomModelHost.style.cursor = "grab";
+
+        if (bottomRenderer.domElement.releasePointerCapture) {
+            try {
+                bottomRenderer.domElement.releasePointerCapture(event.pointerId);
+            } catch (_err) {
+                // ignore
+            }
+        }
+    }
+
+    bottomRenderer.domElement.addEventListener("pointerdown", onBottomPointerDown);
+    bottomRenderer.domElement.addEventListener("pointermove", onBottomPointerMove);
+    bottomRenderer.domElement.addEventListener("pointerup", onBottomPointerUp);
+    bottomRenderer.domElement.addEventListener("pointerleave", onBottomPointerUp);
+    bottomRenderer.domElement.addEventListener("pointercancel", onBottomPointerUp);
+
     const gltfLoader = new GLTFLoader();
 
     gltfLoader.load(
@@ -285,7 +347,6 @@ whenReady(async () => {
 
             obj.position.set(-center.x, -center.y, -center.z);
 
-            // upright: remove axis tilt
             obj.rotation.x = 0;
             obj.rotation.z = 0;
 
@@ -294,6 +355,8 @@ whenReady(async () => {
             bottomWrapper.add(bottomModel);
             bottomWrapper.position.set(0, 0, 0);
             bottomScene.add(bottomWrapper);
+
+            markBottomInteraction();
 
             if (gltf.animations && gltf.animations.length > 0) {
                 const clip = gltf.animations[0];
@@ -368,9 +431,8 @@ whenReady(async () => {
             }
         }
 
-        if (bottomWrapper) {
-            // Keep gentle overall rotation for the scanner+adapter section
-            bottomWrapper.rotation.y += 0.006;
+        if (bottomWrapper && bottomShouldAutoRotate(now)) {
+            bottomWrapper.rotation.y += bottomAutoRotateSpeed;
         }
 
         if (bottomMixer) {
