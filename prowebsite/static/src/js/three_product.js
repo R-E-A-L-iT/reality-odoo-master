@@ -49,7 +49,6 @@ whenReady(async () => {
 
     const modelBasePath = "/prowebsite/static/src/models/";
     const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
-    const heroBackgroundModelPath = "https://cdn.r-e-a-l.it/models/Test.glb";
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -149,26 +148,6 @@ whenReady(async () => {
             (error) => console.error(`Error loading MTL ${mtlFile}:`, error)
         );
     }
-    
-    // ----------------------------
-    // Top hero background scene
-    // ----------------------------
-    const heroBgScene = new THREE.Scene();
-
-    const heroBgCamera = new THREE.PerspectiveCamera(
-        45,
-        heroHost.clientWidth / heroHost.clientHeight,
-        0.1,
-        1000
-    );
-    heroBgCamera.position.set(0, 0, 8);
-
-    // lower z-index so it sits behind text and behind the adapter canvas
-    const heroBgRenderer = createRenderer(heroHost, "1");
-    addStandardLights(heroBgScene, "dark");
-
-    let heroBgModel = null;
-    let heroBgWrapper = null;
 
     // ----------------------------
     // Top hero scene
@@ -229,67 +208,6 @@ whenReady(async () => {
             dropAnimationStart = performance.now();
         },
     });
-
-    gltfLoader.load(
-        heroBackgroundModelPath,
-        (gltf) => {
-            const obj = gltf.scene;
-
-            obj.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = false;
-                    child.receiveShadow = false;
-
-                    if (child.material) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach((mat) => {
-                                if (mat) {
-                                    mat.side = THREE.DoubleSide;
-                                    mat.needsUpdate = true;
-                                }
-                            });
-                        } else {
-                            child.material.side = THREE.DoubleSide;
-                            child.material.needsUpdate = true;
-                        }
-                    }
-                }
-            });
-
-            const initialBox = new THREE.Box3().setFromObject(obj);
-            const initialSize = initialBox.getSize(new THREE.Vector3());
-            const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
-
-            // very rough first-pass scale so you can see it
-            if (maxAxis > 0) {
-                const scale = 4.0 / maxAxis;
-                obj.scale.setScalar(scale);
-            }
-
-            const box = new THREE.Box3().setFromObject(obj);
-            const center = box.getCenter(new THREE.Vector3());
-
-            obj.position.set(-center.x, -center.y, -center.z);
-            obj.rotation.x = 0;
-            obj.rotation.y = 0;
-            obj.rotation.z = 0;
-
-            heroBgModel = obj;
-            heroBgWrapper = new THREE.Group();
-            heroBgWrapper.add(heroBgModel);
-
-            // rough placement for first test pass
-            heroBgWrapper.position.set(0, 0, -2);
-
-            heroBgScene.add(heroBgWrapper);
-
-            console.log("Loaded hero background model: Test.glb");
-        },
-        undefined,
-        (error) => {
-            console.error("Error loading hero background GLB:", error);
-        }
-    );
 
     heroHost.addEventListener("mousemove", (event) => {
         const rect = heroHost.getBoundingClientRect();
@@ -405,10 +323,6 @@ whenReady(async () => {
     // Resize
     // ----------------------------
     function onResize() {
-        heroBgCamera.aspect = heroHost.clientWidth / heroHost.clientHeight;
-        heroBgCamera.updateProjectionMatrix();
-        heroBgRenderer.setSize(heroHost.clientWidth, heroHost.clientHeight);
-
         heroCamera.aspect = heroHost.clientWidth / heroHost.clientHeight;
         heroCamera.updateProjectionMatrix();
         heroRenderer.setSize(heroHost.clientWidth, heroHost.clientHeight);
