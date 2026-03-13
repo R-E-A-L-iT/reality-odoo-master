@@ -183,6 +183,8 @@ whenReady(async () => {
     );
     heroCamera.position.set(0, 0, 5);
 
+    const gltfLoader = new GLTFLoader();
+
     // z-index higher than text so model sits in front
     const heroRenderer = createRenderer(heroHost, "4");
     addStandardLights(heroScene, "dark");
@@ -329,8 +331,6 @@ whenReady(async () => {
     let bottomClock = new THREE.Clock();
     let bottomAction = null;
     const bottomAnimSpeed = 1.0;
-
-    const gltfLoader = new GLTFLoader();
 
     gltfLoader.load(
         animatedModelPath,
