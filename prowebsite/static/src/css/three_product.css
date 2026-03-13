@@ -178,3 +178,27 @@
         line-height: 1.7;
     }
 }
+
+.o_three_scroll_section {
+    position: relative;
+    width: 100%;
+    min-height: 160vh; /* extra height so there is room to scroll through the effect */
+    background: #111111;
+    overflow: hidden;
+}
+
+.o_three_scroll_model_host {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.o_three_scroll_model_host canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
