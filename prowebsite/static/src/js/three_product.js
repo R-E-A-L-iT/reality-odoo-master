@@ -270,7 +270,7 @@ whenReady(async () => {
 
     const bottomAutoRotateSpeed = 0.0018;
     const bottomResumeDelay = 3000;
-    const bottomDragSensitivity = 0.02;
+    const bottomDragSensitivity = 0.017;
 
     let isBottomDragging = false;
     let bottomLastPointerX = 0;
@@ -413,7 +413,7 @@ whenReady(async () => {
     );
 
     // ----------------------------
-    // Third scroll section
+    // Third scroll-scrubbed section
     // ----------------------------
     const scrollScene = new THREE.Scene();
 
@@ -430,22 +430,70 @@ whenReady(async () => {
 
     let scrollModel = null;
     let scrollWrapper = null;
-    let scrollTiltTarget = 0;
-
-    function getSectionScrollProgress(sectionEl) {
-        const rect = sectionEl.getBoundingClientRect();
-        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-        const total = rect.height - viewportHeight;
-
-        if (total <= 0) {
-            return 0;
-        }
-
-        const passed = -rect.top;
-        return clamp(passed / total, 0, 1);
-    }
 
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
+
+    // 0 -> 1 animation progress controlled ONLY by wheel input
+    let scrollAnimProgress = 0;
+
+    // Tune this. Smaller = more wheel distance required.
+    const scrollPixelsForFullAnimation = 1400;
+
+    function isScrollSectionLocked() {
+        if (!scrollSection) {
+            return false;
+        }
+
+        const rect = scrollSection.getBoundingClientRect();
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+
+        // Lock while the section is occupying the viewport area
+        return rect.top <= 0 && rect.bottom >= viewportH;
+    }
+
+    function applyScrollSectionPose() {
+        if (!scrollModel) {
+            return;
+        }
+
+        // Exact deterministic pose from progress
+        // start: slight angle
+        // end: tilted to show top
+        const startX = -0.15;
+        const endX = -1.05;
+
+        scrollModel.rotation.x = startX + (endX - startX) * scrollAnimProgress;
+        scrollModel.rotation.y = 0;
+        scrollModel.rotation.z = 0.08;
+    }
+
+    function onScrollSectionWheel(event) {
+        if (!scrollSection || !isScrollSectionLocked()) {
+            return;
+        }
+
+        const delta = event.deltaY;
+        const nextProgress = clamp(
+            scrollAnimProgress + delta / scrollPixelsForFullAnimation,
+            0,
+            1
+        );
+
+        const tryingToScrollPastStart = delta < 0 && scrollAnimProgress <= 0;
+        const tryingToScrollPastEnd = delta > 0 && scrollAnimProgress >= 1;
+
+        // Allow normal page scrolling only when animation is already fully at an end
+        if (tryingToScrollPastStart || tryingToScrollPastEnd) {
+            return;
+        }
+
+        event.preventDefault();
+
+        scrollAnimProgress = nextProgress;
+        applyScrollSectionPose();
+    }
+
+    window.addEventListener("wheel", onScrollSectionWheel, { passive: false });
 
     // ----------------------------
     // Shared adapter usage
@@ -470,14 +518,14 @@ whenReady(async () => {
     // Scroll section adapter clone
     {
         const obj = createAdapterClone();
-        obj.rotation.x = -0.15;
-        obj.rotation.z = 0.08;
 
         scrollModel = obj;
         scrollWrapper = new THREE.Group();
         scrollWrapper.add(scrollModel);
         scrollWrapper.position.set(0, 0, 0);
         scrollScene.add(scrollWrapper);
+
+        applyScrollSectionPose();
     }
 
     // ----------------------------
@@ -539,22 +587,6 @@ whenReady(async () => {
 
         if (bottomMixer) {
             bottomMixer.update(delta);
-        }
-
-        if (scrollWrapper && scrollModel && scrollSection) {
-            const progress = getSectionScrollProgress(scrollSection);
-
-            // 0 to about -1.0 radians as the user scrolls
-            scrollTiltTarget = -1.0 * progress;
-
-            // smooth easing
-            scrollModel.rotation.x += (scrollTiltTarget - scrollModel.rotation.x) * 0.08;
-
-            // keep a slight nice angle on Z
-            scrollModel.rotation.z = 0.08;
-
-            // gentle idle Y rotation so it still feels alive
-            scrollWrapper.rotation.y += 0.004;
         }
 
         heroRenderer.render(heroScene, heroCamera);
