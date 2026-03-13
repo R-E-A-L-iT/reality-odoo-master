@@ -107,6 +107,23 @@ class order(models.Model):
     partner_name = fields.Char(string="Partner Name")
     rental_email = fields.Char(string="Email")
 
+    def _get_quote_mail_template(self):
+        """Pick the template to preselect in the Send Quote wizard."""
+        self.ensure_one()
+
+        # If you want the priority exactly as you wrote:
+        # rental > renewal > general
+        if self.is_rental:
+            name = "Rental Contract"
+        elif self.is_renewal:
+            name = "Renewal"
+        else:
+            name = "General Sales"
+
+        tmpl = self.env["mail.template"].search([("name", "=", name)], limit=1)
+        if not tmpl:
+            _logger.warning("Quote email template not found by name: %s", name)
+        return tmpl
 
 
 
