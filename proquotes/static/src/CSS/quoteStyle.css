@@ -432,23 +432,24 @@ img.quoteFooterContactImage {
 }
 
 .priceChange {
-	display: inline;
-	float: left;
-	margin-right: 20px;
+	display: block;
+	margin: 0;
 }
 
-/* .flex {
+.flex {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
+
 .d-flex {
+	display: flex;
 	align-items: center;
 }
 
 td {
 	vertical-align: middle;
-} */
+}
 
 #rental-terms {
 	color: #fff;
