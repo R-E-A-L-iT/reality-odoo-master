@@ -949,18 +949,17 @@
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
-                <t t-if="line.optional == 'yes'">
-                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                           class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-
                 <!--Line Id For User Selection-->
                 <div class="flex">
+                    <t t-if="line.optional == 'yes'">
+                        <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
+                    <t t-else="">
+                        <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
+                               class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
                         <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
