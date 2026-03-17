@@ -949,39 +949,45 @@
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
-                <t t-if="line.optional == 'yes'">
-                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                           class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-
                 <!--Line Id For User Selection-->
-                <div class="flex">
-                    <span class="line_id" t-attf-id="{{line}}"/>
-                    <div class="d-flex">
-                        <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
-                             <img class="zoomable-product-image"
-                                  t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
-                                  t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
-                                  alt="Product Image"
-                                  style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
-                        </t>
-                        </div>
-                        <div width="90%">
-                            <span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"/>
+                <span class="line_id" t-attf-id="{{line}}"/>
 
-                            <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"></label>
-                            <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}"
-                                   class="product_foldI" type="checkbox" style="display: none;"/>
-                            <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI"
-                                   type="checkbox" style="display: none;"/>
-                            <div class="product_fold" style="width: 100%;">
-                                <span style="color: #777;" t-raw="line.product_id.description_sale"/>
-                            </div>
+                <div class="d-flex align-items-start">
+                    <!-- Checkbox/Radio Input -->
+                    <div style="flex-shrink: 0; margin-right: 10px; display: flex; align-items: center; height: 50px;">
+                        <t t-if="line.optional == 'yes'">
+                            <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                            <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        </t>
+                        <t t-else="">
+                            <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
+                                   class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                            <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        </t>
+                    </div>
+
+                    <!-- Product Image -->
+                    <div style="flex-shrink: 0; margin-right: 10px;">
+                        <t t-if="line.product_id.image_128">
+                            <img class="zoomable-product-image"
+                                 t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
+                                 t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
+                                 alt="Product Image"
+                                 style="width: 50px; height: 50px; object-fit: contain;"/>
+                        </t>
+                    </div>
+
+                    <!-- Product Name and Description -->
+                    <div style="flex-grow: 1;">
+                        <span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"/>
+
+                        <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"></label>
+                        <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}"
+                               class="product_foldI" type="checkbox" style="display: none;"/>
+                        <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI"
+                               type="checkbox" style="display: none;"/>
+                        <div class="product_fold" style="width: 100%;">
+                            <span style="color: #777;" t-raw="line.product_id.description_sale"/>
                         </div>
                     </div>
                 </div>
