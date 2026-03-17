@@ -1256,9 +1256,9 @@
 
         <!-- table align -->
 
-        <!-- Hide Value Column (td[2]) to match header structure -->
+        <!-- Value Alignment -->
 		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
-			<attribute name="style">display: none;</attribute>
+			<attribute name="class">text-left</attribute>
 		</xpath>
 
 		<!-- Quantity Alignment -->
