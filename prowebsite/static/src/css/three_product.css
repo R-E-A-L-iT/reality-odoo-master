@@ -1,14 +1,15 @@
 .o_three_hero {
-    width: 100%;
-    min-height: 100vh;
     position: relative;
+    width: 100%;
+    height: 100vh;
     overflow: hidden;
+    background: #000;
 }
 
 .o_three_canvas_host {
-    width: 100%;
-    height: 100vh;
     position: relative;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: #000;
 }
@@ -18,31 +19,6 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
-    background: transparent;
-}
-
-.o_three_hero {
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-}
-
-.o_three_canvas_host {
-    width: 100%;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
-    background: #000;
-}
-
-.o_three_canvas_host canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
     background: transparent;
 }
 
@@ -52,7 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
     font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(60px, 14vw, 220px);
@@ -85,4 +61,144 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Bottom section */
+.o_three_split_section {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.o_three_split_left,
+.o_three_split_right {
+    width: 50%;
+    min-height: 100vh;
+    position: relative;
+}
+
+.o_three_split_left {
+    background: #ececec;
+    overflow: hidden;
+}
+
+.o_three_split_right {
+    background: #ffffff;
+}
+
+.o_three_bottom_model_host {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.o_three_bottom_model_host canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+/* Optional: stack on mobile */
+@media (max-width: 991px) {
+    .o_three_split_section {
+        flex-direction: column;
+    }
+
+    .o_three_split_left,
+    .o_three_split_right {
+        width: 100%;
+        min-height: 70vh;
+    }
+}
+
+.o_three_split_right {
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 70px;
+}
+
+.o_three_split_content {
+    max-width: 560px;
+    width: 100%;
+}
+
+.o_three_split_title {
+    margin: 0;
+    color: #000000;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(32px, 4vw, 58px);
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: none;
+}
+
+.o_three_split_divider {
+    width: 200px;
+    height: 4px;
+    background: #c40000;
+    margin: 24px 0 28px 0;
+    border-radius: 999px;
+}
+
+.o_three_split_text {
+    margin: 0;
+    color: #000000;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(16px, 1.35vw, 20px);
+    line-height: 1.75;
+    font-weight: 400;
+    max-width: 540px;
+}
+
+@media (max-width: 991px) {
+    .o_three_split_right {
+        padding: 56px 28px;
+    }
+
+    .o_three_split_content {
+        max-width: 100%;
+    }
+
+    .o_three_split_divider {
+        width: 140px;
+        margin: 20px 0 24px 0;
+    }
+
+    .o_three_split_title {
+        font-size: clamp(28px, 8vw, 42px);
+    }
+
+    .o_three_split_text {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+}
+
+.o_three_scroll_section {
+    position: relative;
+    width: 100%;
+    min-height: 160vh; /* extra height so there is room to scroll through the effect */
+    background: #111111;
+    overflow: hidden;
+}
+
+.o_three_scroll_model_host {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.o_three_scroll_model_host canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
 }

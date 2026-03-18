@@ -437,18 +437,20 @@ img.quoteFooterContactImage {
 	margin-right: 20px;
 }
 
-/* .flex {
+.flex {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
+
 .d-flex {
+	display: flex;
 	align-items: center;
 }
 
 td {
 	vertical-align: middle;
-} */
+}
 
 #rental-terms {
 	color: #fff;
@@ -529,4 +531,40 @@ span.qtySpan {
 /* terms and conditions */
 #rental-terms > ol > li > p, #rental-terms > ol > li > ol > li > p {
 	color: rgba(255, 255, 255, 0.7) !important;;
+}
+
+/* Terms and conditions toggle functionality */
+#terms-checkbox {
+	display: none !important;
+}
+
+/* Make the label clickable with cursor pointer */
+label[for="terms-checkbox"] {
+	cursor: pointer;
+}
+
+/* When checkbox is checked (collapsed state) - hide terms content and show + icon */
+#terms-checkbox:checked ~ section#terms {
+	display: none !important;
+}
+
+#terms-checkbox:checked ~ label #terms_hidden {
+	display: inline !important;
+}
+
+#terms-checkbox:checked ~ label #terms_open {
+	display: none !important;
+}
+
+/* When checkbox is unchecked (expanded state) - show terms content and show × icon */
+#terms-checkbox:not(:checked) ~ section#terms {
+	display: block !important;
+}
+
+#terms-checkbox:not(:checked) ~ label #terms_hidden {
+	display: none !important;
+}
+
+#terms-checkbox:not(:checked) ~ label #terms_open {
+	display: inline !important;
 }

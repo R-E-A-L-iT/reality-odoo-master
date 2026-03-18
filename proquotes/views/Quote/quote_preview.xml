@@ -949,18 +949,17 @@
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@id=&quot;product_name&quot;]" position="replace">
             <td id="product_name">
-                <t t-if="line.optional == 'yes'">
-                    <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                           class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                </t>
-
                 <!--Line Id For User Selection-->
                 <div class="flex">
+                    <t t-if="line.optional == 'yes'">
+                        <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
+                    <t t-else="">
+                        <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
+                               class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                        <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    </t>
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
                         <div width="10%" style="display: flex; align-items: center;"><t t-if="line.product_id.image_128">
@@ -1200,31 +1199,34 @@
                     </span>
                 </t>
             </div>
-           <!--  <t t-if="sale_order.is_rental == True">
+<!--           &lt;!&ndash;  <t t-if="sale_order.is_rental == True">-->
+<!--                <br/><br/>-->
+<!--                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>-->
+<!--                <label for="rental-terms-checkbox">-->
+<!--                    <h3>-->
+<!--                        <strong class="white-text" id="terms_hidden">+</strong>-->
+<!--                        <strong class="white-text" id="terms_open">×</strong>-->
+<!--                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions-->
+<!--                        </strong>-->
+<!--                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>-->
+<!--                    </h3>-->
+<!--                </label>-->
+<!--                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>-->
+<!--            </t>-->
+            <t t-else="">
                 <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
+                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
                         <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
-                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>
             </t>
-            <t t-else="">
-                <br/><br/>
-                <h3>
-                    <strong class="white-text" id="terms_hidden">+</strong>
-                    <strong class="white-text" id="terms_open">×</strong>
-                    <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
-                    </strong>
-                    <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
-                    <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
-                </h3>
-            </t> -->
             <section class="quoteConfig" style="display: none !important;">
                 <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
                 <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
@@ -1247,34 +1249,36 @@
 
         <!-- table align -->
 
+        
         <!-- Value Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
 
-		<!-- Quantity Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <!-- Quantity Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
 
-		<!-- Price Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
-			<attribute name="t-attf-class">text-left</attribute>
-		</xpath>
+        <!-- Price Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
 
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
-			<attribute name="t-attf-class">text-left nowrap</attribute>
-		</xpath>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
+            <attribute name="t-attf-class">text-left nowrap</attribute>
+        </xpath>
 
-		<!-- Tax Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
-			<attribute name="t-attf-class">text-left</attribute>
-		</xpath>
+        <!-- Tax Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
 
-		<!-- Line_Total Alignment -->
-		<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
-			<attribute name="class">text-left</attribute>
-		</xpath>
+        <!-- Line_Total Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
+            <attribute name="class">text-left</attribute>
+        </xpath>
+
 
     </template>
 
