@@ -668,12 +668,12 @@
                         <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
                         </span>
                     </td>
-                    <td t-if="line.name == '$block+'" class="text-left">
+                    <!-- <td t-if="line.name == '$block+'" class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
                         <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
-                    </td>
-                    <td t-else=""/>
+                    </td> -->
+                    <!-- <td t-else=""/> -->
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
