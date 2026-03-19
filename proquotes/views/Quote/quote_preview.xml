@@ -195,19 +195,6 @@
             <!-- <attribute name="t-if">sale_order.is_rental != True</attribute> -->
         </xpath>
 
-        <!-- remove taxes column -->
-        <!-- <xpath expr="//th[@id=&quot;taxes_header&quot;]" position="replace" />
-        <xpath expr="//td[@id=&quot;taxes&quot;]" position="replace" /> -->
-
-        <!--		commented due to the temporary-->
-        <!--		&lt;!&ndash; <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td" position="after"> &ndash;&gt;-->
-        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]//td"-->
-        <!--               position="attributes">-->
-        <!--            <attribute name="t-if">line.name != '$hardware' and line.name != '$software' and line.name !=-->
-        <!--                '$subscription'-->
-        <!--            </attribute>-->
-        <!--        </xpath>-->
-
         <tr t-if="current_section and (line_last or lines_to_report[line_index+1].display_type == 'line_section') and not line.is_downpayment"
             position="attributes">
             <attribute name="t-if">current_section and (line_last or lines_to_report[line_index+1].display_type ==
