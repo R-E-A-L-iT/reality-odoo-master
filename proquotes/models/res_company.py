@@ -29,6 +29,12 @@ class company(models.Model):
 		required="True",
 	)
 
+	default_footer_id = fields.Many2one(
+        "header.footer",
+        string="Default Footer",
+        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+    )
+
 	def write(self, values):
 		if 'parent_id' in values:
 			parent_id_val = values.pop('parent_id')
