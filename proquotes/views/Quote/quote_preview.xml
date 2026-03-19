@@ -1227,10 +1227,6 @@
                     </h3>
                 </label>
             </t>
-            <!-- <section class="quoteConfig" style="display: none !important;">
-                <span id="QCheader" t-attf-class="{{sale_order.header}}">Header</span>
-                <span id="QCfooter" t-attf-class="{{sale_order.footer}}">Footer</span>
-            </section> -->
         </xpath>
         <xpath expr="//section[@id='signature']" position="replace">
             <section t-if="sale_order.signature" id="signature" name="Signature">
