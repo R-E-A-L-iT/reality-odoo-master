@@ -50,6 +50,7 @@ whenReady(async () => {
 
     const modelBasePath = "/prowebsite/static/src/models/";
     const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
+    const animatedTexturePath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/BLK2GO_with_Adapter_Textures/";
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -349,26 +350,110 @@ whenReady(async () => {
     bottomRenderer.domElement.addEventListener("wheel", onBottomWheel, { passive: false });
 
     const gltfLoader = new GLTFLoader();
+    const textureLoader = new THREE.TextureLoader();
+
+    function loadTexture(url, isColor = false) {
+        return new Promise((resolve, reject) => {
+            textureLoader.load(
+                url,
+                (texture) => {
+                    if (isColor) {
+                        texture.colorSpace = THREE.SRGBColorSpace;
+                    }
+                    texture.flipY = false;
+                    resolve(texture);
+                },
+                undefined,
+                reject
+            );
+        });
+    }
+
+    async function loadAnimatedModelTextures() {
+        const [
+            colorMap,
+            baseColorMap,
+            metallicMap,
+            roughnessMap,
+            metalnessMap,
+            roughnessAltMap,
+        ] = await Promise.all([
+            loadTexture(`${animatedTexturePath}BLK2GO_color.jpg`, true).catch(() => null),
+            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_BaseColor.png`, true).catch(() => null),
+            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_Metallic.png`, false).catch(() => null),
+            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_Roughness.png`, false).catch(() => null),
+            loadTexture(`${animatedTexturePath}BLK2GO_metalness.jpg`, false).catch(() => null),
+            loadTexture(`${animatedTexturePath}BLK2GO_roughness1.jpg`, false).catch(() => null),
+        ]);
+
+        return {
+            colorMap: baseColorMap || colorMap || null,
+            metallicMap: metallicMap || metalnessMap || null,
+            roughnessMap: roughnessMap || roughnessAltMap || null,
+        };
+    }
 
     gltfLoader.load(
         animatedModelPath,
-        (gltf) => {
+        async (gltf) => {
             const obj = gltf.scene;
 
-            obj.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = false;
-                    child.receiveShadow = false;
+            let textureSet = {
+                colorMap: null,
+                metallicMap: null,
+                roughnessMap: null,
+            };
 
-                    const matteBlackMaterial = new THREE.MeshStandardMaterial({
-                        color: 0x111111,
-                        roughness: 0.95,
-                        metalness: 0.02,
+            try {
+                textureSet = await loadAnimatedModelTextures();
+                console.log("Animated model textures loaded:", textureSet);
+            } catch (err) {
+                console.warn("Could not load one or more animated model textures:", err);
+            }
+
+            obj.traverse((child) => {
+                if (!child.isMesh) {
+                    return;
+                }
+
+                child.castShadow = false;
+                child.receiveShadow = false;
+
+                const existingMaterial = Array.isArray(child.material)
+                    ? child.material[0]
+                    : child.material;
+
+                let material;
+
+                if (existingMaterial && existingMaterial.isMeshStandardMaterial) {
+                    material = existingMaterial.clone();
+                } else {
+                    material = new THREE.MeshStandardMaterial({
+                        color: 0xffffff,
+                        metalness: 0.25,
+                        roughness: 0.65,
                         side: THREE.DoubleSide,
                     });
-
-                    child.material = matteBlackMaterial;
                 }
+
+                if (textureSet.colorMap) {
+                    material.map = textureSet.colorMap;
+                }
+
+                if (textureSet.metallicMap) {
+                    material.metalnessMap = textureSet.metallicMap;
+                    material.metalness = 1.0;
+                }
+
+                if (textureSet.roughnessMap) {
+                    material.roughnessMap = textureSet.roughnessMap;
+                    material.roughness = 1.0;
+                }
+
+                material.side = THREE.DoubleSide;
+                material.needsUpdate = true;
+
+                child.material = material;
             });
 
             const initialBox = new THREE.Box3().setFromObject(obj);
