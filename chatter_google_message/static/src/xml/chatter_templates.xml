@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="chatter_google_message.chatter" t-inherit="mail.Chatter" t-inherit-mode="extension">
-        <xpath expr="//button[@class='o-mail-Chatter-sendMessage btn text-nowrap me-1']" position="after">
+        <!-- Hide default Send message button for crm.lead -->
+        <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="attributes">
+            <attribute name="t-if">props.hasMessageList and state.thread.model !== 'crm.lead'</attribute>
+        </xpath>
+
+        <!-- Add custom Send Google Message button for crm.lead -->
+        <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="after">
             <button t-if="props.hasMessageList and state.thread.model === 'crm.lead'" class="o-mail-Chatter-sendGoogleMessage btn text-nowrap me-1" t-att-class="{
                 'btn-primary': state.composerType !== 'google_message',
                 'btn-secondary': state.composerType === 'google_message',
                 'active': state.composerType === 'google_message',
                 'my-2': !props.compactHeight
             }" t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId" data-hotkey="g" t-on-click="() => this.toggleGoogleComposer()">
-                Send Google Message
+                Send message
             </button>
         </xpath>
     </t>
