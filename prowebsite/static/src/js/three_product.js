@@ -69,6 +69,7 @@ whenReady(async () => {
             antialias: true,
             alpha: true,
         });
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(targetHost.clientWidth, targetHost.clientHeight);
         renderer.setClearColor(0x000000, 0);
@@ -121,13 +122,30 @@ whenReady(async () => {
 
                 if (child.material) {
                     if (Array.isArray(child.material)) {
-                        child.material.forEach((mat) => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
+                        child.material = child.material.map((mat) => {
+                            if (!mat) {
+                                return mat;
                             }
+
+                            const cloned = mat.clone();
+
+                            if (cloned.map) {
+                                cloned.map.colorSpace = THREE.SRGBColorSpace;
+                                cloned.map.needsUpdate = true;
+                            }
+
+                            cloned.side = THREE.DoubleSide;
+                            cloned.needsUpdate = true;
+                            return cloned;
                         });
                     } else {
+                        child.material = child.material.clone();
+
+                        if (child.material.map) {
+                            child.material.map.colorSpace = THREE.SRGBColorSpace;
+                            child.material.map.needsUpdate = true;
+                        }
+
                         child.material.side = THREE.DoubleSide;
                         child.material.needsUpdate = true;
                     }
@@ -159,11 +177,34 @@ whenReady(async () => {
         adapterPromise = new Promise((resolve, reject) => {
             const mtlLoader = new MTLLoader();
             mtlLoader.setPath(modelBasePath);
+            mtlLoader.setResourcePath(modelBasePath);
 
             mtlLoader.load(
                 "BLK2GO_Adapter.mtl",
                 (materials) => {
                     materials.preload();
+
+                    Object.values(materials.materials).forEach((mat) => {
+                        if (!mat) {
+                            return;
+                        }
+
+                        if (mat.map) {
+                            mat.map.colorSpace = THREE.SRGBColorSpace;
+                            mat.map.needsUpdate = true;
+                        }
+
+                        if (mat.specularMap) {
+                            mat.specularMap.needsUpdate = true;
+                        }
+
+                        if (mat.normalMap) {
+                            mat.normalMap.needsUpdate = true;
+                        }
+
+                        mat.side = THREE.DoubleSide;
+                        mat.needsUpdate = true;
+                    });
 
                     const objLoader = new OBJLoader();
                     objLoader.setMaterials(materials);
