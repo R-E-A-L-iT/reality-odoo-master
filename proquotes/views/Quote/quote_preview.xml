@@ -18,89 +18,89 @@
                     .quoteConfig {
                         display: none !important;
                     }
-                                    
+
                     #quotesDownloadButton {
                         border-width: 2px !important;
                         border-color: #dc3545;
                     }
-                                            
+
                     /* import */
-                                    
+
                     @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
-                                            
+
                     /*
                         header - font-family: 'Bakbak One', system-ui;
                         normal - font-family: 'Roboto', sans-serif;
                         small  - font-family: 'Source Sans Pro', sans-serif;
                     */
-                                                
+
                     /* quote */
-                                        
+
                     #informations {
                         display: none;
                     }
-                                                
+
                     #introduction {
                         display: none;
                     }
-                                                        
+
                     #portal_sale_content {
                         border: none !important;
                     }
-                                                
+
                     #portalTotal > div > div.d-print-none.col-lg-3.col-xl-4 {
                         position: absolute !important;
                         display: none !important;
                     }
-                                            
+
                     #details > div.quote-address > video {
                         width: 100vw !important;
                     }
-                                            
+
                     #details > div:nth-child(2) > span {
                         display: none;
                     }
-                                            
+
                     .text-info {
                         color: #db0d0d !important;;
                     }
-                                            
+
                     #wrap.o_portal_wrap > div.container {
                         padding-right: 0px !important;
                         padding-left: 0px !important;
                         margin-right: 0px !important;
                         margin-left: 0px !important;
                     }
-                                            
+
                     .quoteLineRow {
                         color: black;
                         width: 100% !important;
                         background-color: white;
                     }
-                                            
+
                     #wrap > div {
                         width: 100vw !important;
                         max-width: 100vw !important;
                     }
-                                            
+
                     #quote_content {
                         width: 100%
                     }
-                                            
+
                     #sales_order_table > tbody > tr.quoteLineRowSection > td {
                         padding: 20px !important;
                     }
-                                            
+
                     .is-subtotal {
                         display: none !important;
                     }
-                                            
+
                     .quoteLineRow > #product_name {
                         padding: 20px !important;
                         padding-top: 20px !important;
                         padding-bottom: 20px !important;
                     }
-                                            
+
                     #footer-img {
                         padding-bottom: 30px;
                     }
@@ -109,8 +109,8 @@
 
                 <t t-set="company_name" t-value="sale_order.company_id.name"/>
 
-                <!-- 
-                
+                <!--
+
                 important note: the langauge of the document can be set either to be
                 the language of the partner OR the language of the request (language of the website set by the actual user)
 
@@ -119,8 +119,8 @@
                 Request lang is request.lang.code and other option is sale_order.partner_id.lang
 
                 however, using request lang does mean that you should have a system in place to email the link to the quote to the recipients with their native language code embedded, this is a wip
-                
-                
+
+
                 -->
 
 
@@ -129,7 +129,7 @@
                 <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
                 <t t-set="partner" t-value="sale_order.partner_id"/>
                 <t t-set="title" t-value="partner.parent_id.name if partner.parent_id else partner.name" />
-                
+
                 <t t-set="addr_street"  t-value="partner.street or ''"/>
                 <t t-set="addr_street2" t-value="partner.street2 or ''"/>
                 <t t-set="addr_city"    t-value="partner.city or ''"/>
@@ -142,7 +142,7 @@
                             + (addr_city and (addr_city + ', ') or '')
                             + addr_state
                             + (addr_country and (', ' + addr_country) or '')"/>
-                
+
                 <section t-if="'vimeo' in sale_order.header_id.url" class="s_cover bg-black-50 pt96 pb96 o_cc o_cc5 o_colored_level o_background_video s_parallax_no_overflow_hidden o_full_screen_height oe_img_bg o_bg_img_center o_bg_img_origin_border_box" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" style="background-image: url(&quot;/web/image/4527-redirect/blk2gocolored.png&quot;); min-height: 606.625px !important;" t-att-data-bg-video-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'" data-oe-model="ir.ui.view" data-oe-id="8160" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/section[1]">
                     <div class="o_bg_video_container">
                         <!-- t-att-src="str(sale_order.header_id.url) + '?autoplay=1&amp;muted=1&amp;autopause=0&amp;controls=0&amp;loop=1'"-->
@@ -152,7 +152,7 @@
                             id="o_bg_video_iframe_5"
                             allow="autoplay; fullscreen; picture-in-picture"
                             allowfullscreen="1"></iframe> -->
-                    </div>  
+                    </div>
                     <div class="o_we_bg_filter bg-black-25"></div>
                     <div class="container s_allow_columns">
                         <div class="row o_grid_mode" data-row-count="6">
@@ -601,7 +601,7 @@
                             <br/>
                         </div>
                         <div class="rental_product_value" t-if="language== 'fr_CA'">
-                            <span>Valeur locative totale: 
+                            <span>Valeur locative totale:
                                 <span>Plus disponible pour visualisation</span>
                             </span>
                             <br/>
@@ -612,7 +612,7 @@
                             <br/>
                         </div>
                         <div class="rental_product_value" t-if="language== 'es_ES'">
-                            <span>Valor total de alquiler: 
+                            <span>Valor total de alquiler:
                                 <span>Ya no está disponible para ver</span>
                             </span>
                             <br/>
@@ -655,11 +655,11 @@
                         <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
                         </span>
                     </td>
-                    <!-- <td t-if="line.name == '$block+'" class="text-left">
+                    <td t-if="sale_order.is_rental_order" class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
                         <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
                         <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
-                    </td> -->
+                    </td>
                     <!-- <td t-else=""/> -->
                     <td class="text-left">
                         <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
@@ -1114,7 +1114,22 @@
                        style="display: inline; width: 60px;"/>
             </t>
         </xpath>
-
+		<xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
+			<td t-if="sale_order.is_rental_order" class="text-right">
+				<t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
+			            ('pricelist_id', '=', line.order_id.pricelist_id.id),
+			            ('compute_price', '=', 'fixed'),
+			            '|',
+			                '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
+			                '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
+			        ])"/>
+				<span t-if="pricelist_item">
+					<t t-esc="sale_order.currency_id.symbol"/>
+					<t t-esc="'%.2f' % pricelist_item[0].fixed_price"/>
+				</span>
+				<span t-else="">—</span>
+			</td>
+		</xpath>
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
@@ -1232,7 +1247,7 @@
 
         <!-- table align -->
 
-        
+
         <!-- Value Alignment -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[2]" position="attributes">
             <attribute name="class">text-left</attribute>
@@ -1269,7 +1284,7 @@
     <template id="ba_sale_order_portal_template" name="Sales Order Portal template" inherit_id="sale.sale_order_portal_template" priority="17">
 
         <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
-            
+
 
             <!-- approve financing section -->
             <div class="approve_section" t-if="sale_order.approve_financing">
@@ -1298,7 +1313,7 @@
                         </div>
                     </div>
 
-                    
+
                     <!-- approve section button -->
                     <div class="approve_button_section">
                         <button class="flash-button" t-att-data-order-id="sale_order.id" approve-function="embedded_app" approve-action="add_to_app" t-att-approve-items="sale_order.get_approve_items_json()">
@@ -1311,10 +1326,10 @@
 
                     </div>
 
-                    <!-- 
+                    <!--
 
-                    SCRIPTS 
-                    
+                    SCRIPTS
+
                     -->
                     <!-- pass through json to button parameters -->
                     <script>
@@ -1413,7 +1428,7 @@
                         <i class="fa fa-download me-1"/> Download
                     </a>
                 </t>
-                
+
             </div>
 
         </xpath>
