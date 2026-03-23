@@ -295,6 +295,7 @@
                                     <option value="">Select</option>
                                     <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
                                         <option t-att-value="state.id"
+                                                t-att-data-country-id="state.country_id.id"
                                                 t-att-selected="state.id == inv.state_id.id">
                                             <t t-esc="state.name"/>
                                         </option>
@@ -371,6 +372,7 @@
                                     <option value="">Select</option>
                                     <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
                                         <option t-att-value="state.id"
+                                                t-att-data-country-id="state.country_id.id"
                                                 t-att-selected="state.id == dlv.state_id.id">
                                             <t t-esc="state.name"/>
                                         </option>
@@ -889,23 +891,23 @@
             <span class="line_id" t-attf-id="{{line}}"/>
         </xpath>
 
-        <!--		commented due to the temporary issue-->
-        <!--		&lt;!&ndash;No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">-->
-        <!--			<attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>-->
-        <!--		</xpath>-->
-        <!--		&lt;!&ndash; Hide Default Subtotal&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">-->
-        <!--			<attribute name="style">display: none;</attribute>-->
-        <!--		</xpath>-->
+        <!--        commented due to the temporary issue-->
+        <!--        &lt;!&ndash;No Subtotal if Next Element is Block(and current item is a section) or Current Item is a Special Section&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr" position="attributes">-->
+        <!--            <attribute name="t-if">line.name[0] != '$' and ((not line_index+1 &lt; len(sale_order.order_line)) or (line.display_type != 'line_section' or sale_order.order_line[line_index+1].name[:6] != '$block'))</attribute>-->
+        <!--        </xpath>-->
+        <!--        &lt;!&ndash; Hide Default Subtotal&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//strong" position="attributes">-->
+        <!--            <attribute name="style">display: none;</attribute>-->
+        <!--        </xpath>-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr//span" position="attributes">-->
+        <!--            <attribute name="style">display: none;</attribute>-->
+        <!--        </xpath>-->
 
-        <!--		&lt;!&ndash;Mark Original Subtotal locations&ndash;&gt;-->
-        <!--		<xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">-->
-        <!--			<attribute name="class">subtotal-source</attribute>-->
-        <!--		</xpath>-->
+        <!--        &lt;!&ndash;Mark Original Subtotal locations&ndash;&gt;-->
+        <!--        <xpath expr="//t[@t-if=&quot;current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')&quot;]/tr/td/span" position="attributes">-->
+        <!--            <attribute name="class">subtotal-source</attribute>-->
+        <!--        </xpath>-->
 
 
         <!-- Rental Item Value -->
@@ -1095,10 +1097,10 @@
             </div>
         </xpath>
 
-        <!--			this will commented and deprecated due to price_total field have no more-->
-        <!--		<xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">-->
-        <!--			<attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>-->
-        <!--		</xpath>-->
+        <!--            this will commented and deprecated due to price_total field have no more-->
+        <!--        <xpath expr="//span[@t-field=&quot;line.price_total&quot;]" position="attributes">-->
+        <!--            <attribute name="class">proquotesLineTotal oe_order_line_price_total pr-0</attribute>-->
+        <!--        </xpath>-->
 
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
@@ -1114,22 +1116,22 @@
                        style="display: inline; width: 60px;"/>
             </t>
         </xpath>
-		<xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
-			<td t-if="sale_order.is_rental_order" class="text-right">
-				<t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
-			            ('pricelist_id', '=', line.order_id.pricelist_id.id),
-			            ('compute_price', '=', 'fixed'),
-			            '|',
-			                '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
-			                '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
-			        ])"/>
-				<span t-if="pricelist_item">
-					<t t-esc="sale_order.currency_id.symbol"/>
-					<t t-esc="'%.2f' % pricelist_item[0].fixed_price"/>
-				</span>
-				<span t-else="">—</span>
-			</td>
-		</xpath>
+        <xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
+            <td t-if="sale_order.is_rental_order" class="text-right">
+                <t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
+                        ('pricelist_id', '=', line.order_id.pricelist_id.id),
+                        ('compute_price', '=', 'fixed'),
+                        '|',
+                            '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
+                            '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
+                    ])"/>
+                <span t-if="pricelist_item">
+                    <t t-esc="sale_order.currency_id.symbol"/>
+                    <t t-esc="'%.2f' % pricelist_item[0].fixed_price"/>
+                </span>
+                <span t-else="">—</span>
+            </td>
+        </xpath>
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
