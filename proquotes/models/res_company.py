@@ -29,7 +29,7 @@ class company(models.Model):
 		required="True",
 	)
 
-    default_footer_id = fields.Many2one(
+	default_footer_id = fields.Many2one(
 		"header.footer",
         string="Default Footer",
         domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
