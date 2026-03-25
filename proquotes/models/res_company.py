@@ -57,8 +57,3 @@ class company(models.Model):
 	def _check_root_delegated_fields(self):
 		"""Allow multi-currency/multi-fiscal branches during hierarchy setup."""
 		return
-    default_footer_id = fields.Many2one(
-        "header.footer",
-        string="Default Footer",
-        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
-    )
