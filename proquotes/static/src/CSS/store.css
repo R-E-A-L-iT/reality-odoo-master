@@ -7,3 +7,8 @@
 .o_portal_icon > img {
     max-width: 68px;
 }
+
+#products_grid > div.o_wsale_products_grid_table_wrapper.pt-3.pt-lg-0 > table > tbody > tr > td > div > form > div.oe_product_image.position-relative.h-100.flex-grow-0.overflow-hidden > a > span.o_ribbon.o_not_editable.bg-success.o_ribbon_left {
+    color: #fff !important;
+    background-color: red !important;
+}
