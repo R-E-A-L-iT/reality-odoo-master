@@ -31,15 +31,11 @@ whenReady(async () => {
     }
 
     let THREE;
-    let OBJLoader;
-    let MTLLoader;
     let GLTFLoader;
     let LoopPingPong;
 
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
-        ({ OBJLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/OBJLoader.js"));
-        ({ MTLLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/MTLLoader.js"));
         ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
 
         LoopPingPong = THREE.LoopPingPong;
@@ -49,6 +45,7 @@ whenReady(async () => {
     }
 
     const modelBasePath = "/prowebsite/static/src/models/";
+    const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
     const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
     const animatedTexturePath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/BLK2GO_with_Adapter_Textures/";
 
@@ -109,7 +106,7 @@ whenReady(async () => {
     }
 
     // ----------------------------
-    // Shared adapter model cache
+    // Shared adapter model cache (GLB)
     // ----------------------------
     let adapterPrototype = null;
     let adapterPromise = null;
@@ -122,13 +119,17 @@ whenReady(async () => {
 
                 if (child.material) {
                     if (Array.isArray(child.material)) {
-                        child.material.forEach((mat) => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
+                        child.material = child.material.map((mat) => {
+                            if (!mat) {
+                                return mat;
                             }
+                            const cloned = mat.clone();
+                            cloned.side = THREE.DoubleSide;
+                            cloned.needsUpdate = true;
+                            return cloned;
                         });
                     } else {
+                        child.material = child.material.clone();
                         child.material.side = THREE.DoubleSide;
                         child.material.needsUpdate = true;
                     }
@@ -158,27 +159,13 @@ whenReady(async () => {
         }
 
         adapterPromise = new Promise((resolve, reject) => {
-            const mtlLoader = new MTLLoader();
-            mtlLoader.setPath(modelBasePath);
+            const adapterLoader = new GLTFLoader();
 
-            mtlLoader.load(
-                "BLK2GO_Adapter.mtl",
-                (materials) => {
-                    materials.preload();
-
-                    const objLoader = new OBJLoader();
-                    objLoader.setMaterials(materials);
-                    objLoader.setPath(modelBasePath);
-
-                    objLoader.load(
-                        "BLK2GO_Adapter.obj",
-                        (obj) => {
-                            adapterPrototype = prepareAdapterObject(obj);
-                            resolve(adapterPrototype);
-                        },
-                        undefined,
-                        reject
-                    );
+            adapterLoader.load(
+                adapterModelPath,
+                (gltf) => {
+                    adapterPrototype = prepareAdapterObject(gltf.scene);
+                    resolve(adapterPrototype);
                 },
                 undefined,
                 reject
