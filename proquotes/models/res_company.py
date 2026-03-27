@@ -28,12 +28,12 @@ class company(models.Model):
 		default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif",
 		required="True",
 	)
-
+	
 	default_footer_id = fields.Many2one(
 		"header.footer",
-        string="Default Footer",
-        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
-    )
+		string="Default Footer",
+		domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+	)
 
 	def write(self, values):
 		if 'parent_id' in values:

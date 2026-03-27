@@ -663,33 +663,26 @@ class order(models.Model):
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):
         self.ensure_one()
+
         action = super().action_quotation_send()
 
-        ctx = dict(action.get("context", {}) or {})
-
-        # --- keep your ecommerce behavior as top priority (if that's what you want) ---
         if self.website_id:
-            ecommerce_template = self.env["mail.template"].search(
-                [("name", "=", "eCommerce Quote Send")],
-                limit=1
-            )
-            if ecommerce_template:
-                ctx.update({
-                    "default_template_id": ecommerce_template.id,
-                    "default_use_template": True,
-                })
-                action["context"] = ctx
-                _logger.info("Applied eCommerce Quote Send template automatically for %s", self.name)
-                return action
+            ecommerce_template = self.env['mail.template'].search([
+                ('name', '=', 'eCommerce Quote Send')
+            ], limit=1)
 
-        # --- otherwise pick based on is_rental / is_renewal / default ---
-        tmpl = self._get_quote_mail_template()
-        if tmpl:
-            ctx.update({
-                "default_template_id": tmpl.id,
-                "default_use_template": True,
-            })
-            action["context"] = ctx
+            if ecommerce_template:
+                if action.get('context'):
+                    action['context'].update({
+                        'default_template_id': ecommerce_template.id,
+                        'default_use_template': bool(ecommerce_template.id),
+                    })
+                else:
+                    action['context'] = {
+                        'default_template_id': ecommerce_template.id,
+                        'default_use_template': bool(ecommerce_template.id),
+                    }
+                _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
 
         return action
             
