@@ -197,8 +197,8 @@
                                                     <p t-out="'End of the Rental: Due to an upgrade in our rental system this is deprecated and no longer visible.'" />
                                                 </t>
                                                 <t t-elif="language == 'fr_CA'">
-                                                    <p t-out="'Début de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.'" />
-                                                    <p t-out="'Fin estimée de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.'" />
+                                                    <p t-out="&quot;Début de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.&quot;"/>
+                                                    <p t-out="&quot;Fin estimée de la Location: Suite à une mise à jour de notre système de location, cette fonctionnalité est désuète et n'est plus visible.&quot;"/>
                                                 </t>
                                                 <t t-elif="language == 'es_ES'">
                                                     <p t-out="'Inicio del alquiler: Suite a una actualización de nuestro sistema de alquiler, esta funcionalidad está obsoleta y ya no es visible.'" />
@@ -251,7 +251,7 @@
                                                     </span>
                                                     <br />
                                                 </div>
-                                                <div class="rental_product_value" t-elif="language == 'fr_ca' or true">
+                                                <div class="rental_product_value" t-elif="language == 'fr_CA'">
                                                     <span>Valeur locative totale: &#160;N'est plus pris en charge</span>
                                                     <br />
                                                     <br />
