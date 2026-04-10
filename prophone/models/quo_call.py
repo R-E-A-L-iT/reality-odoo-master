@@ -613,16 +613,15 @@ class QuoCall(models.Model):
     def cron_two_way_contact_sync(self, quo_max_pages=500, odoo_batch=500):
         """
         Phase 1 (Quo -> Odoo):
-          - List all Quo contacts.
-          - For each phone on each Quo contact:
-              - If Odoo partner exists for phone: fill missing fields (don't overwrite populated ones),
-                except allow replacing name if it's 'Unknown Caller'.
-              - Else: create partner in Odoo with as much info as possible.
+        - List all Quo contacts.
+        - For each phone on each Quo contact:
+            - If Odoo partner exists for phone: fill missing fields only.
+            - Else: create partner in Odoo.
 
         Phase 2 (Odoo -> Quo):
-          - Scan Odoo partners with phone/mobile.
-          - If their phone isn't present in Quo, create a new Quo contact.
-          - Do NOT update existing Quo contacts.
+        - Scan Odoo partners with phone/mobile.
+        - For each valid phone not already present in Quo, create a new Quo contact.
+        - Do NOT update existing Quo contacts.
         """
         Partner = self.env["res.partner"].sudo()
 
@@ -650,11 +649,12 @@ class QuoCall(models.Model):
                 matches = self._find_partners_by_phone([sanitized])
                 if matches:
                     partner = matches.sorted(lambda p: p.id)[0]
-                    if self._update_partner_from_quo_if_empty(partner, display_name, email, company, role, sanitized):
+                    if self._update_partner_from_quo_if_empty(
+                        partner, display_name, email, company, role, sanitized
+                    ):
                         updated_odoo += 1
                     continue
 
-                # create in Odoo
                 vals = {
                     "name": display_name or "Unknown Caller",
                     "phone": sanitized,
@@ -673,52 +673,90 @@ class QuoCall(models.Model):
                 Partner.create(vals)
                 created_odoo += 1
 
-        _logger.info("Quo contact sync phase1 done: created_odoo=%s updated_odoo=%s quo_phones_indexed=%s",
-                     created_odoo, updated_odoo, len(quo_phone_keys))
+        _logger.info(
+            "Quo contact sync phase1 done: created_odoo=%s updated_odoo=%s quo_phones_indexed=%s",
+            created_odoo, updated_odoo, len(quo_phone_keys)
+        )
 
         # -------------------------
-        # Phase 2: Odoo -> Quo (create missing only)
+        # Phase 2: Odoo -> Quo
         # -------------------------
         created_quo = 0
-        checked = 0
+        checked_odoo = 0
+        skipped_invalid = 0
+        skipped_existing = 0
+        failed_quo = 0
 
-        # Find partners with a phone or mobile
-        domain = ["|", ("phone", "!=", False), ("mobile", "!=", False)]
-        for partner in Partner.search(domain, limit=int(odoo_batch or 500)):
-            # choose phone preference: phone then mobile
-            phone_value = partner.phone or partner.mobile
-            phone_value = self._sanitize_phone(phone_value)
-            if not self._is_valid_quo_phone(phone_value):
-                _logger.info("Quo contact sync: skipping partner %s due to invalid phone for Quo: %s", partner.id, phone_value)
-                continue
+        domain = [
+            "|", ("phone", "!=", False), ("mobile", "!=", False),
+            ("active", "=", True),
+        ]
 
+        # Stable ordering so repeated cron runs are predictable
+        partners = Partner.search(domain, limit=int(odoo_batch or 500), order="id asc")
 
-            checked += 1
-            key = self._phone_key(sanitized)
-            if key and key in quo_phone_keys:
-                continue
+        for partner in partners:
+            # Try both numbers, not just one
+            raw_numbers = [partner.phone, partner.mobile]
+            seen_this_partner = set()
 
-            payload = self._partner_to_quo_payload(partner, sanitized)
-            try:
-                self._quo_post("contacts", payload)
-                created_quo += 1
-                if key:
+            for raw_phone in raw_numbers:
+                phone_value = self._sanitize_phone(raw_phone)
+                if not phone_value:
+                    continue
+
+                key = self._phone_key(phone_value)
+                if not key or key in seen_this_partner:
+                    continue
+                seen_this_partner.add(key)
+
+                if not self._is_valid_quo_phone(phone_value):
+                    skipped_invalid += 1
+                    _logger.info(
+                        "Quo contact sync: skipping partner %s due to invalid phone for Quo: %s",
+                        partner.id, phone_value
+                    )
+                    continue
+
+                checked_odoo += 1
+
+                if key in quo_phone_keys:
+                    skipped_existing += 1
+                    continue
+
+                payload = self._partner_to_quo_payload(partner, phone_value)
+
+                try:
+                    resp = self._quo_post("contacts", payload)
+                    created_quo += 1
                     quo_phone_keys.add(key)
-            except Exception as e:
-                # swallow; will retry later
-                _logger.warning("Quo contact sync: failed creating contact for partner %s (%s): %s",
-                                partner.id, sanitized, e)
+                    _logger.info(
+                        "Quo contact sync: created Quo contact for partner %s phone %s response=%s",
+                        partner.id, phone_value, resp
+                    )
+                except Exception as e:
+                    failed_quo += 1
+                    _logger.warning(
+                        "Quo contact sync: failed creating contact for partner %s (%s): %s",
+                        partner.id, phone_value, e
+                    )
 
-        _logger.info("Quo contact sync phase2 done: checked_odoo=%s created_quo=%s",
-                     checked, created_quo)
+        _logger.info(
+            "Quo contact sync phase2 done: checked_odoo=%s created_quo=%s skipped_invalid=%s skipped_existing=%s failed_quo=%s",
+            checked_odoo, created_quo, skipped_invalid, skipped_existing, failed_quo
+        )
 
         return {
             "created_odoo": created_odoo,
             "updated_odoo": updated_odoo,
             "created_quo": created_quo,
-            "checked_odoo": checked,
+            "checked_odoo": checked_odoo,
+            "skipped_invalid": skipped_invalid,
+            "skipped_existing": skipped_existing,
+            "failed_quo": failed_quo,
             "quo_indexed": len(quo_phone_keys),
         }
+        
     def _get_internal_partner_ids(self):
         return set(self.env["res.users"].sudo().search([("share", "=", False)]).mapped("partner_id").ids)
 
