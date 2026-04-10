@@ -578,7 +578,7 @@ label[for="terms-checkbox"] {
 	border-top-right-radius: 25px;
 }
 
-#rental-info-section > div:nth-child(2) {
+#rental-address-section {
 	padding: 15px;
 	border-radius: 20px;
 	background-color: #d7d7d7;

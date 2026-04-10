@@ -358,7 +358,7 @@
 
                     </t>
                 </div>
-                <div class="row" t-if="sale_order.is_rental_order">
+                <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-12">
                         <p class="rental_dates_explain" t-if="language == 'en_CA' or language == 'en_US'">
                             * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the indicated daily rental rate (above). Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
@@ -377,7 +377,7 @@
 
                 <!-- ================= ADDRESS SECTION ================= -->
 
-                <div class="row">
+                <div class="row" id="rental-address-section">
 
                     <!-- ================================================= -->
                     <!-- ================= INVOICE ADDRESS =============== -->
