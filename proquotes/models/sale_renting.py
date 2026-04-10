@@ -8,12 +8,12 @@ class ProductTemplate(models.Model):
 
 	use_default_rental_price = fields.Boolean(
 		string="Default Odoo Rental Price",
-		default=True,
+		default=False,
 		help="Use the rental pricing periods/rates already defined on this product.",
 	)
 	use_custom_rental_price = fields.Boolean(
 		string="Custom Rental Price",
-		default=False,
+		default=True,
 		help="Apply the custom pricing formula (4 paid days per week, capped at 12 for the first 30 days, then linear).",
 	)
 
