@@ -51,7 +51,15 @@ class mrp_bom_line_sync:
         sheet_width = len(sheet_columns)
 
         # variables that will contain a list of any missing columns in the sheet
-        missing_columns = [header for header in required_fields if header not in sheet_columns]
+        normalized_sheet_columns = [
+            str(col).strip().lower() if col is not None else ''
+            for col in sheet_columns
+        ]
+
+        missing_columns = [
+            header for header in required_fields
+            if header not in normalized_sheet_columns
+        ]
 
         # verify that sheet format is as expected
         if missing_columns:
@@ -60,10 +68,15 @@ class mrp_bom_line_sync:
             self.error_items.append(
                 f'ProSync: {error_msg}<br/><br/>'
             )
+            return
 
         _logger.info("ProSync: Sheet format has been validated.")
 
-        column_indices = {col.strip().lower(): idx for idx, col in enumerate(sheet_columns)}
+        column_indices = {
+            str(col).strip().lower(): idx
+            for idx, col in enumerate(sheet_columns)
+            if col is not None
+        }
 
 
         # --------------------
