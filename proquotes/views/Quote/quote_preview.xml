@@ -1247,10 +1247,11 @@
                     </span>
                 </t>
             </div>
-            <t t-if="sale_order.is_rental_order == True">
-                <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
+            <t t-elif="sale_order.is_rental_order == True">
+                <br/>
+                <br/>
+                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
@@ -1263,9 +1264,10 @@
                 <div id="rentalTerms" t-if="sale_order.is_rental_order == True" t-call="proquotes.rental_terms"/>
             </t>
             <t t-else="">
-                <br/><br/>
-                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="rental-terms-checkbox">
+                <br/>
+                <br/>
+                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
