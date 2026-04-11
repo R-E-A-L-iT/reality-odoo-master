@@ -60,7 +60,6 @@ class mrp_bom_line_sync:
             self.error_items.append(
                 f'ProSync: {error_msg}<br/><br/>'
             )
-            return
 
         _logger.info("ProSync: Sheet format has been validated.")
 
