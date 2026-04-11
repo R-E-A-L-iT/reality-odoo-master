@@ -61,6 +61,17 @@ class mrp_bom_line_sync:
                 f'ProSync: {error_msg}<br/><br/>'
             )
 
+        _logger.error("ProSync DEBUG raw headers: %s", sheet_columns)
+        _logger.error("ProSync DEBUG repr headers: %s", [repr(c) for c in sheet_columns])
+        _logger.error(
+            "ProSync DEBUG normalized headers: %s",
+            [str(c).strip().lower() if c is not None else '' for c in sheet_columns]
+        )
+        _logger.error(
+            "ProSync DEBUG codepoints: %s",
+            [[ord(ch) for ch in str(c)] for c in sheet_columns if c is not None]
+        )
+
         _logger.info("ProSync: Sheet format has been validated.")
 
         column_indices = {
