@@ -361,15 +361,15 @@
                 <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-12">
                         <p class="rental_dates_explain" t-if="language == 'en_CA' or language == 'en_US'">
-                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the indicated daily rental rate (above). Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).
+                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the indicated daily rental rate (above). Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).<br/>
                             * Please upload your proof of insurance for the total amount in the comments below.
                         </p>
                         <p class="rental_dates_explain" t-elif="language == 'fr_CA'">
-                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier indiqué (ci-dessus). Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier indiqué (ci-dessus).
+                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier indiqué (ci-dessus). Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier indiqué (ci-dessus).<br/>
                             * Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
                         </p>
                         <p class="rental_dates_explain" t-elif="language == 'es_ES'">
-                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba). El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).
+                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba). El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).<br/>
                             * Por favor, cargue su prueba de seguro para el monto total en los comentarios de abajo.
                         </p>
                     </div>
@@ -493,7 +493,7 @@
 
                             <!-- State -->
                             <div class="col-4">
-                                <label class="form-label">State</label>
+                                <label class="form-label">State/Province</label>
                                 <select id="delivery-state-text"
                                         class="form-select form-select-sm">
                                     <option value="">Select</option>
@@ -525,7 +525,7 @@
                         </div>
 
                         <!-- Zip -->
-                        <label class="form-label">Zip</label>
+                        <label class="form-label">Zip/Postal Code</label>
                         <input id="delivery-zip"
                                type="text"
                                class="form-control form-control-sm"
@@ -1247,35 +1247,35 @@
                     </span>
                 </t>
             </div>
-            <!--           &lt;!&ndash;  <t t-if="sale_order.is_rental == True">-->
-            <!--                <br/><br/>-->
-            <!--                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>-->
-            <!--                <label for="rental-terms-checkbox">-->
-            <!--                    <h3>-->
-            <!--                        <strong class="white-text" id="terms_hidden">+</strong>-->
-            <!--                        <strong class="white-text" id="terms_open">×</strong>-->
-            <!--                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions-->
-            <!--                        </strong>-->
-            <!--                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>-->
-            <!--                    </h3>-->
-            <!--                </label>-->
-            <!--                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>-->
-            <!--            </t>-->
-            <t t-else="">
-                <br/>
-                <br/>
-                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
-                <label for="terms-checkbox">
+            <t t-if="sale_order.is_rental_order == True">
+                <br/><br/>
+                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="rental-terms-checkbox">
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and
-                            Conditions
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
                         <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
+                <div id="rentalTerms" t-if="sale_order.is_rental_order == True" t-call="proquotes.rental_terms"/>
+            </t>
+            <t t-else="">
+                <br/><br/>
+                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="rental-terms-checkbox">
+                    <h3>
+                        <strong class="white-text" id="terms_hidden">+</strong>
+                        <strong class="white-text" id="terms_open">×</strong>
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                        </strong>
+                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
+                    </h3>
+                </label>
+                <div id="rentalTerms" t-call="proquotes.normal_terms"/>
             </t>
         </xpath>
         <xpath expr="//section[@id='signature']" position="replace">

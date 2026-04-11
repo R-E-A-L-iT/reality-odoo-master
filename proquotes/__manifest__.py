@@ -106,7 +106,7 @@
         "views/Other/mail_templates.xml",
         "views/Other/stock_lot.xml",
         "views/Other/tax.xml",
-        # "views/Other/rentalTerms.xml",
+        "views/Other/rentalTerms.xml",
         "views/Other/normalTerms.xml",
         "views/Other/website_logo.xml",
         "views/Other/renewalText.xml",
