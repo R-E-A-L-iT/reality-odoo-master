@@ -49,18 +49,10 @@ class mrp_bom_line_sync:
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
         sheet_width = len(sheet_columns)
-
+        
         # variables that will contain a list of any missing columns in the sheet
-        normalized_sheet_columns = [
-            str(col).strip().lower() if col is not None else ''
-            for col in sheet_columns
-        ]
-
-        missing_columns = [
-            header for header in required_fields
-            if header not in normalized_sheet_columns
-        ]
-
+        missing_columns = [header for header in required_fields if header not in sheet_columns]
+        
         # verify that sheet format is as expected
         if missing_columns:
             error_msg = f"Sheet validation failed. Missing columns for fields: {missing_columns}."
