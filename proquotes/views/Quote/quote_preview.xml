@@ -361,15 +361,15 @@
                 <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-12">
                         <p class="rental_dates_explain" t-if="language == 'en_CA' or language == 'en_US'">
-                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the indicated daily rental rate (above). Monthly (30 days) rental cost is equivalent to 12x the indicated daily rental rate (above).<br/>
+                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the daily rental rate. Monthly (30 days) rental cost is equivalent to 12x the daily rental rate.<br/>
                             * Please upload your proof of insurance for the total amount in the comments below.
                         </p>
                         <p class="rental_dates_explain" t-elif="language == 'fr_CA'">
-                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier indiqué (ci-dessus). Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier indiqué (ci-dessus).<br/>
+                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier. Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier.<br/>
                             * Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
                         </p>
                         <p class="rental_dates_explain" t-elif="language == 'es_ES'">
-                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria indicada (arriba). El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria indicada (arriba).<br/>
+                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria. El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria.<br/>
                             * Por favor, cargue su prueba de seguro para el monto total en los comentarios de abajo.
                         </p>
                     </div>
