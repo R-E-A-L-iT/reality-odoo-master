@@ -369,6 +369,13 @@
                         </p>
                         <t t-set="company_name" t-value="doc.company_id.name"/>
 
+                        <t t-if="doc.is_rental_order == True">
+                            <h1 t-if="language == 'fr_CA'">Termes et conditions</h1>
+                            <h1 t-elif="language == 'es_ES'">Términos y condiciones</h1>
+                            <h1 t-else="">Terms and Conditions</h1>
+                            <div id="rentalTerms" t-call="proquotes.rental_terms"/>
+                        </t>
+
                         <t t-if="'abtech' in doc.company_id.name.lower()">
                             <br/>
                             <br/>
