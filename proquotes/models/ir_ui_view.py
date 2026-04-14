@@ -37,14 +37,14 @@ class CustomViewModifier(models.Model):
             # Remove the 'taxes_header' element if it exists
             if taxes_header_element:
                 parent = taxes_header_element[0].getparent()
-                if parent is not None:
-                    parent.remove(taxes_header_element[0])
+                # if parent is not None:
+                #     parent.remove(taxes_header_element[0])
 
             # Remove the 'taxes' element if it exists
             if taxes_element:
                 parent = taxes_element[0].getparent()
-                if parent is not None:
-                    parent.remove(taxes_element[0])
+                # if parent is not None:
+                #     parent.remove(taxes_element[0])
 
             # Update the view arch with the modified version
             view.write({'arch_db': etree.tostring(arch_tree, pretty_print=True).decode()})
