@@ -384,19 +384,25 @@
                     <!-- ================================================= -->
 
                     <div class="col-md-6 mb-3">
-                        <h5 class="fw-bold mb-3">Invoice Address</h5>
+                        <h5 class="fw-bold mb-3" t-if="language == 'en_CA' or language == 'en_US'">Invoice Address</h5>
+                        <h5 class="fw-bold mb-3" t-elif="language == 'fr_CA'">Adresse de facturation</h5>
+                        <h5 class="fw-bold mb-3" t-elif="language == 'es_ES'">Dirección de facturación</h5>
 
                         <t t-set="inv" t-value="sale_order.partner_invoice_id"/>
 
                         <!-- Name -->
-                        <label class="form-label">Name</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Nom</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Nombre</label>
+                        <label class="form-label" t-else="">Name</label>
                         <input id="invoice-name"
                                type="text"
                                class="form-control form-control-sm mb-2"
                                t-att-value="inv.name or ''"/>
 
                         <!-- Street -->
-                        <label class="form-label">Street</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Rue</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Calle</label>
+                        <label class="form-label" t-else="">Street</label>
                         <input id="invoice-street"
                                type="text"
                                class="form-control form-control-sm mb-2"
@@ -407,7 +413,9 @@
 
                             <!-- City -->
                             <div class="col-4">
-                                <label class="form-label">City</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">Ville</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">Ciudad</label>
+                                <label class="form-label" t-else="">City</label>
                                 <input id="invoice-city"
                                        type="text"
                                        class="form-control form-control-sm"
@@ -416,7 +424,9 @@
 
                             <!-- State -->
                             <div class="col-4">
-                                <label class="form-label">State</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">État/Province</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">Estado</label>
+                                <label class="form-label" t-else="">State/Province</label>
                                 <select id="invoice-state-text"
                                         class="form-select form-select-sm">
                                     <option value="">Select</option>
@@ -432,7 +442,9 @@
 
                             <!-- Country -->
                             <div class="col-4">
-                                <label class="form-label">Country</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">Pays</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">País</label>
+                                <label class="form-label" t-else="">Country</label>
                                 <select id="invoice-country-text"
                                         class="form-select form-select-sm">
                                     <option value="">Select</option>
@@ -448,7 +460,9 @@
                         </div>
 
                         <!-- Zip -->
-                        <label class="form-label">Zip</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Code postal</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Código postal</label>
+                        <label class="form-label" t-else="">Zip/Postal code</label>
                         <input id="invoice-zip"
                                type="text"
                                class="form-control form-control-sm"
@@ -461,19 +475,25 @@
                     <!-- ================================================= -->
 
                     <div class="col-md-6 mb-3">
-                        <h5 class="fw-bold mb-3">Delivery Address</h5>
+                        <h5 class="fw-bold mb-3" t-if="language == 'fr_CA'">Adresse de livraison</h5>
+                        <h5 class="fw-bold mb-3" t-elif="language == 'es_ES'">Dirección de entrega</h5>
+                        <h5 class="fw-bold mb-3" t-else="">Delivery Address</h5>
 
                         <t t-set="dlv" t-value="sale_order.partner_shipping_id"/>
 
                         <!-- Name -->
-                        <label class="form-label">Name</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Nom</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Nombre</label>
+                        <label class="form-label" t-else="">Name</label>
                         <input id="delivery-name"
                                type="text"
                                class="form-control form-control-sm mb-2"
                                t-att-value="dlv.name or ''"/>
 
                         <!-- Street -->
-                        <label class="form-label">Street</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Rue</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Calle</label>
+                        <label class="form-label" t-else="">Street</label>
                         <input id="delivery-street"
                                type="text"
                                class="form-control form-control-sm mb-2"
@@ -484,7 +504,9 @@
 
                             <!-- City -->
                             <div class="col-4">
-                                <label class="form-label">City</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">Ville</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">Ciudad</label>
+                                <label class="form-label" t-else="">City</label>
                                 <input id="delivery-city"
                                        type="text"
                                        class="form-control form-control-sm"
@@ -493,7 +515,9 @@
 
                             <!-- State -->
                             <div class="col-4">
-                                <label class="form-label">State/Province</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">État/Province</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">Estado/Provincia</label>
+                                <label class="form-label" t-else="">State/Province</label>
                                 <select id="delivery-state-text"
                                         class="form-select form-select-sm">
                                     <option value="">Select</option>
@@ -509,7 +533,9 @@
 
                             <!-- Country -->
                             <div class="col-4">
-                                <label class="form-label">Country</label>
+                                <label class="form-label" t-if="language == 'fr_CA'">Pays</label>
+                                <label class="form-label" t-elif="language == 'es_ES'">País</label>
+                                <label class="form-label" t-else="">Country</label>
                                 <select id="delivery-country-text"
                                         class="form-select form-select-sm">
                                     <option value="">Select</option>
@@ -525,7 +551,9 @@
                         </div>
 
                         <!-- Zip -->
-                        <label class="form-label">Zip/Postal Code</label>
+                        <label class="form-label" t-if="language == 'fr_CA'">Code postal</label>
+                        <label class="form-label" t-elif="language == 'es_ES'">Código postal</label>
+                        <label class="form-label" t-else="">Zip/Postal Code</label>
                         <input id="delivery-zip"
                                type="text"
                                class="form-control form-control-sm"
