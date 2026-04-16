@@ -23,7 +23,7 @@
             </xpath>
 
             <xpath expr="//field[@name='rental_start_date']" position="before">
-                <field name="pickup_date" invisible="not is_rental"/>
+                <field name="pickup_date" invisible="not is_rental_order"/>
             </xpath>
 
             <xpath expr="//group[@name=&quot;partner_details&quot;]" position="after">
