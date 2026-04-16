@@ -115,7 +115,7 @@ class order(models.Model):
     @api.onchange('rental_start_date')
     def _onchange_rental_start_date_set_pickup_date(self):
         for order in self:
-            if order.is_rental and order.rental_start_date and not order.pickup_date:
+            if order.is_rental_order and order.rental_start_date and not order.pickup_date:
                 order.pickup_date = order.rental_start_date
 
     def _get_quote_mail_template(self):
@@ -124,7 +124,7 @@ class order(models.Model):
 
         # If you want the priority exactly as you wrote:
         # rental > renewal > general
-        if self.is_rental:
+        if self.is_rental_order:
             name = "Rental Contract"
         elif self.is_renewal:
             name = "Renewal"
@@ -361,7 +361,7 @@ class order(models.Model):
         for order in self:
             if (
                 vals.get('rental_start_date')
-                and order.is_rental
+                and order.is_rental_order
                 and not vals.get('pickup_date')
                 and (
                     not order.pickup_date
@@ -596,7 +596,7 @@ class order(models.Model):
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
-        if vals.get('is_rental') and vals.get('rental_start_date') and not vals.get('pickup_date'):
+        if vals.get('is_rental_order') and vals.get('rental_start_date') and not vals.get('pickup_date'):
             vals['pickup_date'] = vals['rental_start_date']
 
         order = super().create(vals)
