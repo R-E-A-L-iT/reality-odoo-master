@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_ba_ai" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ba.ai.email.reply</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="AI Email Reply"
+                     string="AI Email Reply"
+                     name="ba_ai_email_reply"
+                     groups="base.group_system">
+                    <block title="OpenRouter Configuration">
+                        <setting string="OpenRouter API Key"
+                                 help="Get your API key from openrouter.ai/keys. Stored securely server-side — never sent to the browser.">
+                            <field name="ba_ai_api_key"
+                                   password="True"
+                                   placeholder="sk-or-v1-..."/>
+                        </setting>
+                        <setting string="Model"
+                                 help="OpenRouter model ID. Examples: openai/gpt-4o-mini, anthropic/claude-3-haiku, google/gemini-flash-1.5. Leave empty for default (openai/gpt-4o-mini).">
+                            <field name="ba_ai_model"
+                                   placeholder="openai/gpt-4o-mini"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
