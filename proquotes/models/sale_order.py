@@ -107,13 +107,24 @@ class order(models.Model):
     partner_name = fields.Char(string="Partner Name")
     rental_email = fields.Char(string="Email")
 
+    pickup_date = fields.Datetime(
+        string="Pickup Date",
+        copy=False,
+    )
+
+    @api.onchange('rental_start_date')
+    def _onchange_rental_start_date_set_pickup_date(self):
+        for order in self:
+            if order.is_rental_order and order.rental_start_date and not order.pickup_date:
+                order.pickup_date = order.rental_start_date
+
     def _get_quote_mail_template(self):
         """Pick the template to preselect in the Send Quote wizard."""
         self.ensure_one()
 
         # If you want the priority exactly as you wrote:
         # rental > renewal > general
-        if self.is_rental:
+        if self.is_rental_order:
             name = "Rental Contract"
         elif self.is_renewal:
             name = "Renewal"
@@ -347,6 +358,20 @@ class order(models.Model):
         return json.dumps(items)
 
     def write(self, vals):
+        for order in self:
+            if (
+                vals.get('rental_start_date')
+                and order.is_rental_order
+                and not vals.get('pickup_date')
+                and (
+                    not order.pickup_date
+                    or order.pickup_date == order.rental_start_date
+                )
+            ):
+                vals = dict(vals)
+                vals['pickup_date'] = vals['rental_start_date']
+                break
+
         # Normal write first
         res = super().write(vals)
 
@@ -355,13 +380,11 @@ class order(models.Model):
             return res
 
         for order in self:
-            # Only enforce this for website orders with a company
             if not order.website_id or not order.company_id:
                 continue
 
             company = order.company_id
 
-            # --- Fix warehouse if mismatched ---
             if order.warehouse_id and order.warehouse_id.company_id != company:
                 _logger.info(
                     ">>>>>>> Fixing warehouse company mismatch on %s: SO company=%s, warehouse=%s (%s)",
@@ -400,7 +423,6 @@ class order(models.Model):
                         order.name,
                     )
 
-            # --- Fix partner companies if mismatched ---
             partners = (order.partner_id | order.partner_invoice_id | order.partner_shipping_id)
             for partner in partners:
                 if not partner:
@@ -574,6 +596,9 @@ class order(models.Model):
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
+        if vals.get('is_rental_order') and vals.get('rental_start_date') and not vals.get('pickup_date'):
+            vals['pickup_date'] = vals['rental_start_date']
+
         order = super().create(vals)
 
         # Assign company based on visitor location for website orders
@@ -601,7 +626,6 @@ class order(models.Model):
         if target_email in follower_emails or target_email == salesperson_email:
             return order
 
-        # Add non-company partners to subscribers (automatic quotes from store)
         partner = order.partner_id
         if partner and not partner.is_company:
             if partner.id not in order.message_partner_ids.ids:
