@@ -3,6 +3,13 @@ from odoo import api, models
 class RentalOrderWizard(models.TransientModel):
     _inherit = "rental.order.wizard"   # replace with exact model name
 
+    def apply(self):
+        for wizard in self:
+            wizard.rental_wizard_line_ids = wizard.rental_wizard_line_ids.filtered(
+                lambda l: l.order_line_id.selected == 'true'
+            )
+        return super().apply()
+
     @api.model
     def default_get(self, fields_list):
         vals = super().default_get(fields_list)
