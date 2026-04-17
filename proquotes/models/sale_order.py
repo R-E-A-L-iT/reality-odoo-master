@@ -593,6 +593,26 @@ class order(models.Model):
                     order.name, str(e),
                 )
 
+    # when picking up rental order filter out unselected lines
+    def action_open_pickup(self):
+        self.ensure_one()
+
+        action = super().action_open_pickup()
+        ctx = dict(action.get("context", {}) or {})
+
+        selected_lines = self.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and l.selected == 'true'
+                and l.id in (ctx.get("order_line_ids") or [])
+            )
+        )
+
+        ctx["order_line_ids"] = selected_lines.ids
+        action["context"] = ctx
+
+        return action
+
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
