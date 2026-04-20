@@ -7,6 +7,7 @@ from email.policy import default
 import re
 from math import ceil
 
+from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -593,23 +594,144 @@ class order(models.Model):
                     order.name, str(e),
                 )
 
-    # when picking up rental order filter out unselected lines
+    # when picking up rental order:
+    # 1. include selected non-kit lines normally
+    # 2. for selected phantom kits, explode BOM components + quantities into context
+    # 3. exclude everything not selected
     def action_open_pickup(self):
         self.ensure_one()
 
-        action = super().action_open_pickup()
-        ctx = dict(action.get("context", {}) or {})
+        _logger.info("=== PICKUP DEBUG START for order %s (id=%s) ===", self.name, self.id)
 
-        selected_lines = self.order_line.filtered(
-            lambda l: (
-                not l.display_type
-                and l.selected == 'true'
-                and l.id in (ctx.get("order_line_ids") or [])
-            )
+        action = super().action_open_pickup()
+        _logger.info("PICKUP DEBUG raw super action: %s", action)
+
+        ctx = dict(action.get("context", {}) or {})
+        original_line_ids = set(ctx.get("order_line_ids") or [])
+
+        _logger.info("PICKUP DEBUG original ctx order_line_ids: %s", list(original_line_ids))
+        _logger.info(
+            "PICKUP DEBUG all order lines on SO: %s",
+            [
+                {
+                    "id": l.id,
+                    "name": l.name,
+                    "product": l.product_id.display_name,
+                    "display_type": l.display_type,
+                    "selected": l.selected,
+                    "qty": l.product_uom_qty,
+                }
+                for l in self.order_line.sorted(lambda x: (x.sequence, x.id))
+            ]
         )
 
-        ctx["order_line_ids"] = selected_lines.ids
+        normal_line_ids = []
+        exploded_pickup_lines = []
+
+        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
+            _logger.info(
+                "PICKUP DEBUG checking SO line id=%s name=%s product=%s display_type=%s selected=%s qty=%s in_original_ctx=%s",
+                line.id,
+                line.name,
+                line.product_id.display_name,
+                line.display_type,
+                line.selected,
+                line.product_uom_qty,
+                line.id in original_line_ids,
+            )
+
+            if line.display_type:
+                _logger.info("PICKUP DEBUG -> skip line %s because display_type=%s", line.id, line.display_type)
+                continue
+
+            if line.id not in original_line_ids:
+                _logger.info("PICKUP DEBUG -> skip line %s because not in original ctx order_line_ids", line.id)
+                continue
+
+            if line.selected != 'true':
+                _logger.info("PICKUP DEBUG -> skip line %s because selected=%s", line.id, line.selected)
+                continue
+
+            bom_domain = [
+                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                ('type', '=', 'phantom'),
+                '|', ('product_id', '=', False),
+                    ('product_id', '=', line.product_id.id),
+                '|', ('company_id', '=', False),
+                    ('company_id', '=', line.company_id.id),
+            ]
+
+            _logger.info("PICKUP DEBUG line %s bom search domain: %s", line.id, bom_domain)
+
+            bom = self.env["mrp.bom"].search(bom_domain, limit=1)
+
+            if bom:
+                _logger.info(
+                    "PICKUP DEBUG -> BOM FOUND for line %s: bom_id=%s bom_product_tmpl=%s bom_product=%s bom_type=%s bom_lines=%s",
+                    line.id,
+                    bom.id,
+                    bom.product_tmpl_id.display_name if bom.product_tmpl_id else False,
+                    bom.product_id.display_name if bom.product_id else False,
+                    bom.type,
+                    [
+                        {
+                            "bom_line_id": bl.id,
+                            "product": bl.product_id.display_name,
+                            "qty": bl.product_qty,
+                            "uom": bl.product_uom_id.display_name if bl.product_uom_id else False,
+                        }
+                        for bl in bom.bom_line_ids
+                    ]
+                )
+            else:
+                _logger.info("PICKUP DEBUG -> NO BOM found for line %s", line.id)
+
+            # selected + non-kit -> keep normal rental line
+            if not bom:
+                normal_line_ids.append(line.id)
+                _logger.info("PICKUP DEBUG -> appended normal SO line id %s", line.id)
+                continue
+
+            # selected + kit -> explode BOM components into custom context payload
+            factor = line.product_uom_qty or 0.0
+            _logger.info("PICKUP DEBUG -> exploding kit line %s with factor=%s", line.id, factor)
+
+            for bom_line in bom.bom_line_ids:
+                qty = bom_line.product_qty * factor
+                _logger.info(
+                    "PICKUP DEBUG --> bom_line id=%s product=%s base_qty=%s factor=%s final_qty=%s",
+                    bom_line.id,
+                    bom_line.product_id.display_name,
+                    bom_line.product_qty,
+                    factor,
+                    qty,
+                )
+
+                if qty <= 0:
+                    _logger.info("PICKUP DEBUG --> skip bom_line %s because final_qty <= 0", bom_line.id)
+                    continue
+
+                exploded_line = {
+                    'parent_sale_line_id': line.id,
+                    'parent_product_id': line.product_id.id,
+                    'parent_product_name': line.product_id.display_name,
+                    'product_id': bom_line.product_id.id,
+                    'product_name': bom_line.product_id.display_name,
+                    'qty': qty,
+                    'uom_id': bom_line.product_uom_id.id if bom_line.product_uom_id else bom_line.product_id.uom_id.id,
+                }
+                exploded_pickup_lines.append(exploded_line)
+                _logger.info("PICKUP DEBUG --> appended exploded line: %s", exploded_line)
+
+        _logger.info("PICKUP DEBUG final normal_line_ids: %s", normal_line_ids)
+        _logger.info("PICKUP DEBUG final exploded_pickup_lines: %s", exploded_pickup_lines)
+
+        ctx["order_line_ids"] = normal_line_ids
+        ctx["x_exploded_pickup_lines"] = exploded_pickup_lines
         action["context"] = ctx
+
+        _logger.info("PICKUP DEBUG final action context: %s", ctx)
+        _logger.info("=== PICKUP DEBUG END for order %s (id=%s) ===", self.name, self.id)
 
         return action
 
