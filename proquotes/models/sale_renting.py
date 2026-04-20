@@ -87,12 +87,16 @@ class SaleOrderLine(models.Model):
 		if days <= 0:
 			return 0
 
-		if days <= 30:
-			full_weeks = days // 7
-			remaining_days = days % 7
-			paid_days = 4 * full_weeks + min(remaining_days, 4)
-			paid_days = min(paid_days, 12)
-		else:
-			paid_days = 12 + (days - 30)
+		full_months = days // 30
+		remaining_days = days % 30
+
+		# Each full 30-day month costs at most 12 paid days
+		paid_days = full_months * 12
+
+		# Apply the normal weekly/daily logic to the leftover days
+		if remaining_days > 0:
+			full_weeks = remaining_days // 7
+			extra_days = remaining_days % 7
+			paid_days += 4 * full_weeks + min(extra_days, 4)
 
 		return daily_price * paid_days
