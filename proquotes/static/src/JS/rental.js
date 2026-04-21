@@ -128,34 +128,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                 rental_start: document.getElementById("rental-start")?.value || "",
                 rental_end: document.getElementById("rental-end")?.value || "",
             }
-        ).then(() => {
-            // After dates are saved, collect current line selection state and re-render
-            // so that the Multiplier column and Amount update to reflect the new dates.
-            const vpList = document.querySelectorAll(".priceChange");
-            const line_ids = [];
-            const targetsChecked = [];
-            vpList.forEach((el) => {
-                let p = el;
-                while (p.tagName !== "TR") p = p.parentNode;
-                targetsChecked.push(el.checked ? "true" : "false");
-                line_ids.push(p.querySelector(".line_id").id);
-            });
-            if (!line_ids.length) return;
-            return jsonrpc(
-                "/my/orders/" + this.orderDetail.orderId + "/select",
-                {
-                    access_token: this.orderDetail.token,
-                    line_ids: line_ids,
-                    selected: targetsChecked,
-                }
-            ).then((data) => {
-                if (data && data["sale_inner_template"]) {
-                    this.$("#portal_sale_content").html(
-                        $(data["sale_inner_template"])
-                    );
-                }
-            });
-        });
+        );
     },
 });
 //});
