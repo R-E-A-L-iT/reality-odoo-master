@@ -15,8 +15,8 @@ class CrmLead(models.Model):
 
     def action_generate_ai_reply(self):
         """
-        Collect last 10 chatter messages + workspace Knowledge articles,
-        call OpenRouter API (OpenAI-compatible), and return the generated reply text.
+        Collect last 10 chatter messages + the selected Knowledge article,
+        call OpenRouter API, and return the generated reply text.
 
         Called from JS via this.orm.call('crm.lead', 'action_generate_ai_reply', [[id]]).
         Returns: {'reply': str}
@@ -36,10 +36,11 @@ class CrmLead(models.Model):
         model_name = get('ba_ai_email_reply.model') or DEFAULT_MODEL
 
         # ── 2. Collect chatter messages ─────────────────────────────────────
+        # message_ids are ordered by -id (newest first); slice 10, then sort oldest→newest
         messages = self.message_ids.filtered(
             lambda m: m.message_type in ('email', 'comment') and m.body
         )[:10]
-        messages = messages.sorted('date')  # oldest → newest
+        messages = messages.sorted('date')
 
         if not messages:
             raise UserError(_("No messages found in this conversation yet."))
@@ -55,26 +56,22 @@ class CrmLead(models.Model):
             if body:
                 history_lines.append(f"{author}: {body}")
 
-        # ── 3. Fetch Knowledge articles (workspace, not trashed) ────────────
-        articles = self.env['knowledge.article'].search([
-            ('category', '=', 'workspace'),
-            ('is_template', '=', False),
-            ('to_delete', '=', False),
-            ('active', '=', True),
-        ], limit=20)
+        # ── 3. Fetch selected Knowledge article ─────────────────────────────
+        article_id_str = get('ba_ai_email_reply.knowledge_article_id')
+        knowledge_text = "No company knowledge document selected."
 
-        knowledge_parts = []
-        for article in articles:
-            title = article.name or ''
-            body = html2plaintext(article.body or '').strip()
-            if body:
-                knowledge_parts.append(f"### {title}\n{body}")
-
-        knowledge_text = (
-            '\n\n'.join(knowledge_parts)
-            if knowledge_parts
-            else "No company knowledge articles available."
-        )
+        if article_id_str:
+            try:
+                article = self.env['knowledge.article'].browse(int(article_id_str)).exists()
+                if article:
+                    body = html2plaintext(article.body or '').strip()
+                    knowledge_text = (
+                        f"### {article.name}\n{body}"
+                        if body
+                        else "Selected knowledge document has no content."
+                    )
+            except (ValueError, TypeError):
+                pass
 
         # ── 4. Build prompt ─────────────────────────────────────────────────
         system_prompt = (

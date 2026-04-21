@@ -22,6 +22,12 @@
                             <field name="ba_ai_model"
                                    placeholder="openai/gpt-4o-mini"/>
                         </setting>
+                        <setting string="Knowledge Document"
+                                 help="Select the Knowledge article the AI will read as company context when generating replies. If not set, no company knowledge is used.">
+                            <field name="ba_ai_knowledge_article_id"
+                                   options="{'no_create': True, 'no_open': True}"
+                                   domain="[('active', '=', True), ('to_delete', '=', False)]"/>
+                        </setting>
                     </block>
                 </app>
             </xpath>

@@ -20,3 +20,11 @@ class ResConfigSettings(models.TransientModel):
             'Leave empty to use the default: openai/gpt-4o-mini.'
         ),
     )
+
+    ba_ai_knowledge_article_id = fields.Many2one(
+        'knowledge.article',
+        string='Knowledge Document',
+        config_parameter='ba_ai_email_reply.knowledge_article_id',
+        help='Select the Knowledge article the AI will use as company context when generating replies.',
+        domain=[('active', '=', True), ('to_delete', '=', False)],
+    )
