@@ -693,6 +693,11 @@
                         <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
                         <span t-elif="language == 'es_ES'" class="cHead">Precio</span>
                     </td>
+                    <t t-if="sale_order.is_rental_order">
+                        <td class="text-left">
+                            <span class="cHead">Multiplier</span>
+                        </td>
+                    </t>
                     <t t-if="any(line.discount for line in sale_order.order_line)">
                         <td class="text-left">
                             <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
@@ -1174,6 +1179,17 @@
                 <span t-else="">—</span>
             </td>
         </xpath>
+        <!-- Multiplier Column (rental only) - shows number of rental days between Price and Amount -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
+            <t t-if="sale_order.is_rental_order">
+                <t t-set="rental_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <td class="text-left">
+                    <span t-if="rental_days &gt; 0">x<t t-esc="rental_days"/></span>
+                    <span t-else="">—</span>
+                </td>
+            </t>
+        </xpath>
+
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
