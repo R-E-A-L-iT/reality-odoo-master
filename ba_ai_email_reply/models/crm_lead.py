@@ -74,8 +74,13 @@ class CrmLead(models.Model):
                 pass
 
         # ── 4. Build prompt ─────────────────────────────────────────────────
+        company_name = self.env.company.name or 'our company'
+        company_user = self.env.user.name or 'Sales Team'
+
         system_prompt = (
-            "You are a professional sales assistant. "
+            f"You are {company_user}, a professional sales representative at {company_name}. "
+            "You are writing an email reply ON BEHALF OF THE COMPANY to the customer. "
+            "Always write in first person as a company representative — never as the customer. "
             "Use the provided company knowledge accurately. "
             "Keep replies polite, concise, and professional. "
             "Do not make up facts not present in the company knowledge."
@@ -84,13 +89,13 @@ class CrmLead(models.Model):
         history_section = '\n'.join(history_lines) if history_lines else 'None'
 
         user_prompt = (
-            f"Customer's latest message (from {latest_author}):\n"
+            f"The customer sent the following message:\n"
             f"{latest_body}\n\n"
             f"--- Previous conversation history ---\n"
             f"{history_section}\n\n"
             f"--- Company Knowledge ---\n"
             f"{knowledge_text}\n\n"
-            f"Please write a professional email reply to the customer's latest message."
+            f"Write a professional reply from {company_user} at {company_name} to the customer's message above."
         )
 
         # ── 5. Call OpenRouter (OpenAI-compatible endpoint) ─────────────────
