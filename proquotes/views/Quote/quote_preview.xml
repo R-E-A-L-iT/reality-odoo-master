@@ -1269,20 +1269,22 @@
                     </span>
                 </t>
             </div>
-            <!--           &lt;!&ndash;  <t t-if="sale_order.is_rental == True">-->
-            <!--                <br/><br/>-->
-            <!--                <input id="rental-terms-checkbox" type="checkbox" style="display:none" checked="true"/>-->
-            <!--                <label for="rental-terms-checkbox">-->
-            <!--                    <h3>-->
-            <!--                        <strong class="white-text" id="terms_hidden">+</strong>-->
-            <!--                        <strong class="white-text" id="terms_open">×</strong>-->
-            <!--                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions-->
-            <!--                        </strong>-->
-            <!--                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>-->
-            <!--                    </h3>-->
-            <!--                </label>-->
-            <!--                <div id="rentalTerms" t-if="sale_order.is_rental == True" t-call="proquotes.rental_terms"/>-->
-            <!--            </t>-->
+            <t t-elif="sale_order.is_rental_order == True">
+                <br/>
+                <br/>
+                <input id="terms-checkbox" type="checkbox" style="display:none" checked="true"/>
+                <label for="terms-checkbox">
+                    <h3>
+                        <strong class="white-text" id="terms_hidden">+</strong>
+                        <strong class="white-text" id="terms_open">×</strong>
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
+                        </strong>
+                        <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
+                        <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
+                    </h3>
+                </label>
+                <div id="rentalTerms" t-if="sale_order.is_rental_order == True" t-call="proquotes.rental_terms"/>
+            </t>
             <t t-else="">
                 <br/>
                 <br/>
@@ -1291,13 +1293,13 @@
                     <h3>
                         <strong class="white-text" id="terms_hidden">+</strong>
                         <strong class="white-text" id="terms_open">×</strong>
-                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and
-                            Conditions
+                        <strong class="white-text" t-if="language == 'en_CA' or language == 'en_US'">Terms and Conditions
                         </strong>
                         <strong class="white-text" t-if="language == 'fr_CA'">Termes et Conditions</strong>
                         <strong class="white-text" t-if="language == 'es_ES'">Términos y Condiciones</strong>
                     </h3>
                 </label>
+                <div id="rentalTerms" t-call="proquotes.normal_terms"/>
             </t>
         </xpath>
         <xpath expr="//section[@id='signature']" position="replace">
