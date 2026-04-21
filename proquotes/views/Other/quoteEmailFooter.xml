@@ -97,22 +97,5 @@
         <!-- Remove powered by odoo for all cases -->
         <xpath expr="//div[@class='d-none']" position="replace" />
 
-        <!-- View Lead/Opportunity button — internal users only, CRM leads only -->
-        <xpath expr="//t[@class='o_signature']" position="before">
-            <t t-if="record._name == 'crm.lead' and has_button_access">
-                <div style="margin: 16px 0px 8px 0px;">
-                    <table cellspacing="0" cellpadding="0" border="0">
-                        <tr>
-                            <td t-att-style="'border-radius: 3px; text-align: center; background: ' + (company.email_secondary_color or '#875A7B') + ';'">
-                                <a t-att-href="button_access['url']"
-                                   style="font-size: 12px; color: #FFFFFF; display: block; padding: 8px 16px 10px; text-decoration: none !important; font-weight: 400;">
-                                    View Lead/Opportunity
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </t>
-        </xpath>
     </template>
 </odoo>
