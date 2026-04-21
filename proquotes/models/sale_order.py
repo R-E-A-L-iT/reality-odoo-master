@@ -113,6 +113,23 @@ class order(models.Model):
         copy=False,
     )
 
+    quote_viewed = fields.Boolean(
+        string="Quote Viewed",
+        compute="_compute_quote_viewed",
+        store=True,
+    )
+
+    @api.depends('message_ids.body', 'message_ids.subtype_id')
+    def _compute_quote_viewed(self):
+        for order in self:
+            viewed = False
+            for msg in order.message_ids:
+                body = msg.body or ""
+                if "viewed by" in body.lower():
+                    viewed = True
+                    break
+            order.quote_viewed = viewed
+
     @api.onchange('rental_start_date')
     def _onchange_rental_start_date_set_pickup_date(self):
         for order in self:
@@ -322,6 +339,9 @@ class order(models.Model):
             _logger.info(f"BLOCKING DEFAULT NOTIFICATION: Quote {self.name} - no user_id in URL, skipping default 'viewed' message")
             return self.env['mail.message']
 
+        for order in self:
+            order._compute_quote_viewed()
+
         return super().message_post(**kwargs)
 
     def message_post_with_view(self, view, **kwargs):
@@ -334,6 +354,10 @@ class order(models.Model):
         if not has_user_id and self._is_viewed_post(kwargs):
             _logger.info(f"BLOCKING DEFAULT NOTIFICATION (with_view): Quote {self.name} - no user_id in URL, skipping default 'viewed' message")
             return self.env['mail.message']
+
+        for order in self:
+            order._compute_quote_viewed()
+
         return super().message_post_with_view(view, **kwargs)
 
     @api.onchange('sale_order_template_id')
