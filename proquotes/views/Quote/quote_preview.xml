@@ -1179,12 +1179,26 @@
                 <span t-else="">—</span>
             </td>
         </xpath>
-        <!-- Multiplier Column (rental only) - shows number of rental days between Price and Amount -->
+        <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
             <t t-if="sale_order.is_rental_order">
-                <t t-set="rental_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-set="cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-if="cal_days &gt; 0">
+                    <t t-if="cal_days &lt;= 30">
+                        <t t-set="full_weeks" t-value="cal_days // 7"/>
+                        <t t-set="rem_days"   t-value="cal_days % 7"/>
+                        <t t-set="paid_days"  t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
+                        <t t-set="paid_days"  t-value="paid_days if paid_days &lt;= 12 else 12"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="paid_days" t-value="12 + (cal_days - 30)"/>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-set="paid_days" t-value="0"/>
+                </t>
                 <td class="text-left">
-                    <span t-if="rental_days &gt; 0">x<t t-esc="rental_days"/></span>
+                    <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
                     <span t-else="">—</span>
                 </td>
             </t>
