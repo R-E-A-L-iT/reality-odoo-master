@@ -1332,8 +1332,30 @@
             <attribute name="t-attf-class">text-left</attribute>
         </xpath>
 
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
-            <attribute name="t-attf-class">text-left nowrap</attribute>
+        <!-- On rental orders, show the daily price in the Price column instead of the computed rental total -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="replace">
+            <t t-if="sale_order.is_rental_order">
+                <t t-set="daily_pricelist_item" t-value="env['product.pricelist.item'].search([
+                        ('pricelist_id', '=', line.order_id.pricelist_id.id),
+                        ('compute_price', '=', 'fixed'),
+                        '|',
+                            '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
+                            '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
+                    ], limit=1)"/>
+                <span class="text-left nowrap">
+                    <t t-if="daily_pricelist_item">
+                        <t t-esc="sale_order.currency_id.symbol"/>
+                        <t t-esc="'%.2f' % daily_pricelist_item.fixed_price"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="sale_order.currency_id.symbol"/>
+                        <t t-esc="'%.2f' % line.price_unit"/>
+                    </t>
+                </span>
+            </t>
+            <t t-else="">
+                <div t-field="line.price_unit" class="text-left nowrap"/>
+            </t>
         </xpath>
 
         <!-- Tax Alignment -->
