@@ -8,6 +8,7 @@
        <field name="arch" type="xml">
            <xpath expr="//field[@name='website_id']" position="after">
                 <field name="show_add_to_cart" string="Show Add to Cart Button"/>
+                <field name="rental_behaviour_on_store" string="Rental behaviour on store"/>
                 <field name="approve_financing" string="APPROVE Financing"/>
            </xpath>
        </field>

@@ -1,0 +1,27 @@
+<odoo>
+    <template id="rental_product_hide_unless_enabled"
+              inherit_id="website_sale_renting.rental_product"
+              name="Hide rental website elements unless enabled on product">
+
+        <!-- Rental period block -->
+        <xpath expr="//div[hasclass('js_main_product')]//t[@t-placeholder='select']/following-sibling::div[1]"
+               position="attributes">
+            <attribute name="t-if">
+                combination_info.get('is_rental')
+                and product.rental_behaviour_on_store
+                and (not website.prevent_zero_price_sale or combination_info['current_rental_price'])
+            </attribute>
+        </xpath>
+
+        <!-- Pricing table block -->
+        <xpath expr="//div[@id='product_documents']/preceding-sibling::t[1]"
+               position="attributes">
+            <attribute name="t-if">
+                combination_info.get('is_rental')
+                and product.rental_behaviour_on_store
+                and (not website.prevent_zero_price_sale or combination_info['current_rental_price'])
+            </attribute>
+        </xpath>
+
+    </template>
+</odoo>
