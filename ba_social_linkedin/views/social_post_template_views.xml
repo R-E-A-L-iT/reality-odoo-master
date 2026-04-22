@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_social_post_form_video_accept" model="ir.ui.view">
+        <field name="name">social.post.template.form.video.accept</field>
+        <field name="model">social.post</field>
+        <field name="inherit_id" ref="social.social_post_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='image_ids']" position="attributes">
+                <attribute name="options">{'accepted_file_extensions': 'image/*,video/*'}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
