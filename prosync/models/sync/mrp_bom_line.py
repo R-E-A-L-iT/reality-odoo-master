@@ -22,6 +22,7 @@ class mrp_bom_line_sync:
         self.warning_items = []
         self.error_items = []
         self.report_id = None
+        self.processed_lines = {}  # bom.id → set of product.product IDs seen in the sheet
 
     def sync_mrp_bom_line(self):
         _logger.info("ProSync: Starting MRP_BOM_LINE sync process.")
@@ -142,6 +143,26 @@ class mrp_bom_line_sync:
 
             # Process the BOM and BOM line
             self.process_bom_line(row_index, bom_barcode, line_product_barcode, product_qty)
+
+        # Remove BOM lines that exist in Odoo but were not present in the sheet
+        mrp_bom_line_model = self.database['mrp.bom.line']
+        for bom_id, seen_product_ids in self.processed_lines.items():
+            existing_lines = mrp_bom_line_model.search([('bom_id', '=', bom_id)])
+            for line in existing_lines:
+                if line.product_id.id not in seen_product_ids:
+                    try:
+                        product_name = line.product_id.display_name
+                        line.unlink()
+                        _logger.info(f"ProSync: Removed stale BOM line for product '{product_name}' from BOM ID {bom_id}")
+                        self.updated_items.append(
+                            f'<b>Removed stale BOM line</b><br/>'
+                            f'Product <u>{product_name}</u> removed from BOM (ID: {bom_id}) — not present in sheet.<br/><br/>'
+                        )
+                    except Exception as e:
+                        _logger.error(f"ProSync: Error removing stale BOM line (product ID {line.product_id.id}) from BOM {bom_id}: {str(e)}")
+                        self.error_items.append(
+                            f'Error removing stale BOM line for product ID {line.product_id.id} from BOM {bom_id}: {str(e)}<br/><br/>'
+                        )
 
         end_time = datetime.now()
 
@@ -272,3 +293,9 @@ class mrp_bom_line_sync:
                     )
             else:
                 _logger.info(f"ProSync: Row {row_index} — BOM line (ID: {bom_line.id}) quantity unchanged: {product_qty}")
+
+        # Track this product as seen for this BOM (used later to detect stale lines)
+        if bom and line_product:
+            if bom.id not in self.processed_lines:
+                self.processed_lines[bom.id] = set()
+            self.processed_lines[bom.id].add(line_product.id)
