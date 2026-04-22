@@ -24,5 +24,6 @@
         "views/website_address.xml",
         "views/maintenance_equipment_views.xml",
         "views/website_sale_product_renting.xml",
+        "views/website_cart.xml",
     ],
 }
