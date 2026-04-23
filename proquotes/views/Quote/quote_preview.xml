@@ -1057,7 +1057,25 @@
                             <input t-else="" checked="true" t-attf-id="productFold{{line}}{{line_index}}" class="product_foldI"
                                    type="checkbox" style="display: none;"/>
                             <div class="product_fold" style="width: 100%;">
-                                <span style="color: #777;" t-raw="line.product_id.description_sale"/>
+                                <t t-set="kit_bom" t-value="line.product_id.product_tmpl_id.bom_ids.filtered(lambda b: b.type == 'phantom')[:1]"/>
+                                <t t-if="kit_bom and kit_bom.bom_line_ids">
+                                    <ul style="color: #777; margin: 4px 0; padding-left: 18px;">
+                                        <t t-foreach="kit_bom.bom_line_ids" t-as="bom_line">
+                                            <li>
+                                                <t t-set="qty_int" t-value="int(bom_line.product_qty)"/>
+                                                <t t-set="qty_display" t-value="str(qty_int) if bom_line.product_qty == qty_int else str(bom_line.product_qty)"/>
+                                                <span t-out="qty_display"/>x
+                                                <t t-if="bom_line.product_id.product_tmpl_id.sku">
+                                                    <span t-out="bom_line.product_id.product_tmpl_id.sku"/> -
+                                                </t>
+                                                <span t-out="bom_line.product_id.name"/>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </t>
+                                <t t-else="">
+                                    <span style="color: #777;" t-raw="line.product_id.description_sale"/>
+                                </t>
                             </div>
                         </div>
                     </div>
