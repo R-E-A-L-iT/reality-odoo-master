@@ -23,10 +23,19 @@ class products(models.Model):
     _inherit = "product.product"
     
     def get_product_multiline_description_sale(self):
-        if(self.description_sale):
+        bom = self.env['mrp.bom'].search([
+            ('product_tmpl_id', '=', self.product_tmpl_id.id),
+            ('type', '=', 'phantom'),
+        ], limit=1)
+        if bom and bom.bom_line_ids:
+            lines = [
+                f"{int(line.product_qty) if line.product_qty == int(line.product_qty) else line.product_qty} \u00d7 {line.product_id.name}"
+                for line in bom.bom_line_ids
+            ]
+            return "<br/>".join(lines)
+        if self.description_sale:
             return self.description_sale
-        else:
-            return "<span></span>"
+        return "<span></span>"
 
 class ProductProduct(models.Model):
     _inherit = "product.product"

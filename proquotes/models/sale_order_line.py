@@ -183,10 +183,7 @@ class SaleOrderLine(models.Model):
                 rec.is_quantityLocked = False
 
     def get_sale_order_line_multiline_description_sale(self, product):
-        if product.description_sale:
-            return product.description_sale
-        else:
-            return "<span></span>"
+        return product.get_product_multiline_description_sale()
 
     @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
