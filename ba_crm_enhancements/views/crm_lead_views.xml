@@ -9,8 +9,7 @@
                 <group name="ba_email_subject_group" string="Email Settings" invisible="type != 'opportunity'">
                     <field name="ba_email_subject"
                            string="Email Subject"
-                           placeholder="Enter the email subject for outgoing emails..."
-                           required="type == 'opportunity'"/>
+                           placeholder="Enter the email subject for outgoing emails..."/>
                 </group>
                 <group name="ba_company_group" string="Company Info" invisible="type != 'opportunity'">
                     <field name="ba_company_name" placeholder="e.g. Acme Corp"/>
