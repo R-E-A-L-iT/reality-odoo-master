@@ -1205,32 +1205,19 @@
         </xpath>
         <xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
             <td t-if="sale_order.is_rental_order" class="text-right">
-                <!-- Value column: equipment value from CAD/USD flag pricelist rule -->
-
-                <t t-set="val_rules"
-                t-value="line.product_id.product_tmpl_id.product_pricing_ids"/>
-
-                <t t-if="sale_order.currency_id.name == 'CAD'">
-                    <t t-set="val_currency_rule"
-                    t-value="val_rules.filtered(lambda p: p.pricelist_id and '🇨🇦' in p.pricelist_id.name)"/>
-                </t>
-                <t t-elif="sale_order.currency_id.name == 'USD'">
-                    <t t-set="val_currency_rule"
-                    t-value="val_rules.filtered(lambda p: p.pricelist_id and '🇺🇸' in p.pricelist_id.name)"/>
-                </t>
-                <t t-else="">
-                    <t t-set="val_currency_rule" t-value="val_rules.browse()"/>
-                </t>
-
+                <!-- Value column: product value from CAD/USD rental pricing rule, selected by quote currency -->
+                <t t-set="currency_name" t-value="sale_order.currency_id.name"/>
+                <t t-set="target_pricelist_name" t-value="'🇨🇦' if currency_name == 'CAD' else '🇺🇸' if currency_name == 'USD' else ''"/>
+                <t t-set="val_daily_rules" t-value="line.product_id.product_tmpl_id.product_pricing_ids.filtered(lambda p: p.recurrence_id.unit == 'day' and p.recurrence_id.duration == 1)"/>
+                <t t-set="val_currency_rule" t-value="val_daily_rules.filtered(lambda p: p.pricelist_id and p.pricelist_id.name == target_pricelist_name)"/>
                 <t t-if="val_currency_rule">
-                    <t t-set="val_price" t-value="val_currency_rule[0].price"/>
+                    <t t-set="val_daily_price" t-value="val_currency_rule[0].price"/>
                 </t>
                 <t t-else="">
-                    <t t-set="val_price" t-value="0.0"/>
+                    <t t-set="val_daily_price" t-value="0.0"/>
                 </t>
-
                 <span style="white-space: nowrap;"
-                    t-out="val_price"
+                    t-out="val_daily_price"
                     t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: sale_order.currency_id}"/>
             </td>
         </xpath>
