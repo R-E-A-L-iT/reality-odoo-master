@@ -119,6 +119,12 @@ class order(models.Model):
         store=True,
     )
 
+    allowed_sale_order_template_ids = fields.Many2many(
+        "sale.order.template",
+        compute="_compute_allowed_sale_order_template_ids",
+        string="Allowed Quotation Templates",
+    )
+
     @api.depends('message_ids.body', 'message_ids.subtype_id')
     def _compute_quote_viewed(self):
         for order in self:
@@ -129,6 +135,19 @@ class order(models.Model):
                     viewed = True
                     break
             order.quote_viewed = viewed
+
+    @api.onchange("rental_start_date", "rental_return_date")
+    def _onchange_set_rental_blank_template(self):
+        for order in self:
+            if not order._is_rental_quote_for_template_domain():
+                continue
+
+            template = self.env["sale.order.template"].search([
+                ("name", "=", "Rental Blank"),
+            ], limit=1)
+
+            if template:
+                order.sale_order_template_id = template
 
     @api.onchange('rental_start_date')
     def _onchange_rental_start_date_set_pickup_date(self):
@@ -856,23 +875,43 @@ class order(models.Model):
 
         action = super().action_quotation_send()
 
+        template_name = False
+
+        # 1. Website/eCommerce quotes keep existing behavior
         if self.website_id:
-            ecommerce_template = self.env['mail.template'].search([
-                ('name', '=', 'eCommerce Quote Send')
+            template_name = "eCommerce Quote Send"
+
+        # 2. Rental quotes
+        elif any(getattr(line, "is_rental", False) for line in self.order_line):
+            template_name = "Rental Contract"
+
+        # 3. Renewal quotation template
+        elif self.sale_order_template_id and self.sale_order_template_id.name == "Renewal":
+            template_name = "Renewal"
+
+        # 4. Default sales quote template
+        else:
+            template_name = "General Sales"
+
+        if template_name:
+            template = self.env["mail.template"].search([
+                ("name", "=", template_name),
+                ("model", "=", "sale.order"),
             ], limit=1)
 
-            if ecommerce_template:
-                if action.get('context'):
-                    action['context'].update({
-                        'default_template_id': ecommerce_template.id,
-                        'default_use_template': bool(ecommerce_template.id),
-                    })
-                else:
-                    action['context'] = {
-                        'default_template_id': ecommerce_template.id,
-                        'default_use_template': bool(ecommerce_template.id),
-                    }
-                _logger.info(f"Applied eCommerce Quote Send template automatically for {self.name}")
+            if template:
+                context = dict(action.get("context") or {})
+                context.update({
+                    "default_template_id": template.id,
+                    "default_use_template": True,
+                })
+                action["context"] = context
+
+                _logger.info(
+                    "Applied %s template automatically for %s",
+                    template_name,
+                    self.name,
+                )
 
         return action
             
@@ -887,7 +926,46 @@ class order(models.Model):
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
 
+    def _is_rental_quote_for_template_domain(self):
+        self.ensure_one()
 
+        # Best case: Odoo Rental has an explicit rental flag/status field
+        if "is_rental_order" in self._fields and self.is_rental_order:
+            return True
+
+        if "rental_status" in self._fields and self.rental_status:
+            return True
+
+        # Fallback: detect rental lines
+        return any(
+            "is_rental" in line._fields and line.is_rental
+            for line in self.order_line
+        )
+
+    @api.depends(
+        "order_line",
+        "order_line.is_rental",
+        "rental_status",
+        "is_rental_order",
+    )
+    def _compute_allowed_sale_order_template_ids(self):
+        Template = self.env["sale.order.template"]
+
+        rental_templates = Template.search([
+            ("name", "ilike", "Rental"),
+        ])
+
+        sales_templates = Template.search([
+            "|",
+            ("name", "ilike", "Sale"),
+            ("name", "ilike", "Renewal"),
+        ])
+
+        for order in self:
+            if order._is_rental_quote_for_template_domain():
+                order.allowed_sale_order_template_ids = rental_templates
+            else:
+                order.allowed_sale_order_template_ids = sales_templates
 
     # this overrides the subscribe method to not allow the partner_id to be subscribed, since their company email is not where the quote should go
     # leaves an exception for non-company contacts, to allow quotes created by the store to be sent out

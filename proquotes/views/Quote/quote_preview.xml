@@ -326,8 +326,8 @@
                 <div class="row mb-3">
                     <div class="col-md-4 mb-2">
                         <label for="portal-po-number" class="form-label fw-bold">
-                            <t t-if="language == 'fr_CA'">N° de bon de commande</t>
-                            <t t-else="">PO Number / Reference</t>
+                            <t t-if="language == 'fr_CA'">N° de bon de commande (optionnel)</t>
+                            <t t-else="">PO Number / Reference (optional)</t>
                         </label>
                         <input id="portal-po-number" class="poNumber form-control"
                                type="text"
