@@ -47,7 +47,9 @@
                             <field name="scanner_ids" widget="many2many_tags"/>
                         </page>
                         <page string="Available Periods" name="periods">
-                            <field name="period_ids" widget="many2many_tags"/>
+                            <group>
+                                <field name="period_ids" widget="many2many_tags" string="Available Time Periods"/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
