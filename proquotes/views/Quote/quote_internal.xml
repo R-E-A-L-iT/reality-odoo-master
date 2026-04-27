@@ -14,7 +14,15 @@
             <!-- pricelist filter -->
             <xpath expr="//field[@name='pricelist_id']" position="attributes">
                 <!-- Default domain for regular orders -->
-                <attribute name="domain">[('name', 'ilike', '')]</attribute>
+                <attribute name="domain">[('name', 'ilike', '🇨🇦'), ('name', 'ilike', '🇺🇸')]</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='sale_order_template_id']" position="before">
+                <field name="allowed_sale_order_template_ids" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', allowed_sale_order_template_ids)]</attribute>
             </xpath>
 
             <!-- make update pricelist button permanent -->
