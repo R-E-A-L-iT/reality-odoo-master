@@ -120,6 +120,29 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
         const selectedRadio = step1.querySelector(".ccp-radio:checked");
         if (selectedRadio) {
             nextBtn.disabled = false;
+
+            // Filter period cards based on selected type's valid periods
+            const selectedCard = selectedRadio.closest(".ccp-type-card");
+            const validPeriodsAttr = selectedCard ? selectedCard.getAttribute("data-valid-periods") : "";
+            const validPeriods = validPeriodsAttr ? validPeriodsAttr.split(",") : [];
+
+            const periodCards = container.querySelectorAll(".ccp-period-card");
+            periodCards.forEach((card) => {
+                const period = card.getAttribute("data-period");
+                if (validPeriods.length === 0 || validPeriods.includes(period)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                    const radio = card.querySelector(".ccp-period-radio");
+                    if (radio) radio.checked = false;
+                }
+            });
+
+            // Reset Step 2 next button since visible period selection may have changed
+            const step2 = container.querySelector(".ccp-step-2");
+            const step2NextBtn = step2.querySelector(".ccp-next-btn");
+            const anyPeriodChecked = step2.querySelector(".ccp-period-radio:checked");
+            step2NextBtn.disabled = !anyPeriodChecked;
         }
     },
 

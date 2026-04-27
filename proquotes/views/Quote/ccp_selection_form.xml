@@ -16,7 +16,7 @@
                     <!-- Dynamic CCP Type Cards -->
                     <t t-if="scanner_config">
                         <t t-foreach="scanner_config.type_ids.sorted(key=lambda t: t.sequence)" t-as="ccp_type_config">
-                            <div class="ccp-type-card" t-attf-data-ccp-type="{{ccp_type_config.name}}">
+                            <div class="ccp-type-card" t-attf-data-ccp-type="{{ccp_type_config.name}}" t-attf-data-valid-periods="{{','.join(ccp_type_config.period_ids.mapped('name')) if ccp_type_config.period_ids else ''}}">
                                 <input type="radio" name="ccp_type" t-attf-id="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}" t-attf-value="{{ccp_type_config.name}}" class="ccp-radio"/>
                                 <label t-attf-for="ccp_{{ccp_type_config.name.lower()}}_{{section_name}}">
                                     <div class="ccp-card-content">
