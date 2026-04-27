@@ -62,6 +62,14 @@ class CcpTypeConfig(models.Model):
         'scanner_id',
         string='Scanners'
     )
+    period_ids = fields.Many2many(
+        'ccp.period.config',
+        'ccp_type_period_rel',
+        'type_id',
+        'period_id',
+        string='Available Time Periods',
+        help='Restrict this CCP type to specific time periods. If empty, all scanner periods are shown.'
+    )
 
     def name_get(self):
         """Display the display_name if set, otherwise fall back to name"""
