@@ -332,9 +332,98 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
         })
         _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
 
-# 
+#
+# Update a product's daily rental price via the product.pricing model (sale_renting)
+# Handles column formats like "rental_price[pricelist=CAD]" and "rental_price[pricelist=USD]"
+#
+def update_with_rental_price_context(product, column_name, value, env, row_index, col_index):
+    cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
+
+    match = re.match(r'^rental_price\[pricelist=(.+?)\]$', column_name.strip().lower())
+    if not match:
+        _logger.warning(f"ProSync: Invalid rental pricelist field format at cell {cell_ref}: {column_name}")
+        return
+
+    currency_code = match.group(1).upper()
+
+    rental_pricelist_name_map = {
+        "USD": "USD RENTAL",
+        "CAD": "CAD RENTAL",
+    }
+
+    company_map = {
+        "USD": "R-E-A-L.iT U.S. Inc.",
+        "CAD": "R-E-A-L.iT Solutions",
+    }
+
+    rental_pricelist_name = rental_pricelist_name_map.get(currency_code)
+    if not rental_pricelist_name:
+        _logger.warning(f"ProSync: Unsupported currency '{currency_code}' for rental price at cell {cell_ref}")
+        return
+
+    company_name = company_map.get(currency_code)
+    if not company_name:
+        _logger.warning(f"ProSync: No company mapping defined for currency '{currency_code}' at cell {cell_ref}")
+        return
+
+    rental_pricelist = env["product.pricelist"].search([
+        ("name", "=", rental_pricelist_name),
+        ("active", "=", True),
+    ], limit=1)
+
+    if not rental_pricelist:
+        _logger.warning(f"ProSync: Rental pricelist '{rental_pricelist_name}' not found in system (cell {cell_ref}). Please create it first.")
+        return
+
+    try:
+        new_price = normalize_float(value)
+    except (ValueError, TypeError):
+        _logger.warning(f"ProSync: Invalid rental price value '{value}' at cell {cell_ref}")
+        return
+
+    if new_price is None or new_price == 0.0:
+        _logger.info(f"ProSync: Skipping empty or zero rental price at cell {cell_ref}")
+        return
+
+    # Find or auto-create the daily recurrence (duration=1, unit='day')
+    daily_recurrence = env["sale.temporal.recurrence"].search([
+        ("duration", "=", 1),
+        ("unit", "=", "day"),
+    ], limit=1)
+
+    if not daily_recurrence:
+        daily_recurrence = env["sale.temporal.recurrence"].create({
+            "duration": 1,
+            "unit": "day",
+        })
+        _logger.info(f"ProSync: Auto-created daily recurrence (1 day) for rental pricing (cell {cell_ref})")
+
+    # Search for existing product.pricing record
+    existing_pricing = env["product.pricing"].search([
+        ("product_template_id", "=", product.id),
+        ("recurrence_id", "=", daily_recurrence.id),
+        ("pricelist_id", "=", rental_pricelist.id),
+    ], limit=1)
+
+    if existing_pricing:
+        old_price = existing_pricing.price
+        if old_price != new_price:
+            existing_pricing.write({"price": new_price})
+            _logger.info(f"ProSync: Updated rental price for product {product.name} [{currency_code}]: {old_price} → {new_price} (cell {cell_ref})")
+        else:
+            _logger.info(f"ProSync: Rental price unchanged for product {product.name} [{currency_code}]: {new_price} (cell {cell_ref})")
+    else:
+        env["product.pricing"].create({
+            "product_template_id": product.id,
+            "recurrence_id": daily_recurrence.id,
+            "pricelist_id": rental_pricelist.id,
+            "price": new_price,
+        })
+        _logger.info(f"ProSync: Created new rental pricing rule for product {product.name} [{currency_code}]: {new_price} (cell {cell_ref})")
+
+#
 # Update a many2one, many2many, or one2many field using a specified search
-# 
+#
 def update_with_related_context(record, column_name, raw_value, all_fields, database, row_index, col_idx):
     try:
         # Step 1: Parse field name and parameter
