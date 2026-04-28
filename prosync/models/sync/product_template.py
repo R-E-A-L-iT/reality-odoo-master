@@ -305,6 +305,7 @@ class product_template_sync:
                 )
                 self.updated_items.append(change_summary)
 
+
             except Exception as e:
                 col_letter = chr(65 + col_idx)  # A = 65
                 cell_id = f"{row_index}{col_letter}"
