@@ -237,7 +237,7 @@ class product_template_sync:
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
             elif field_name.startswith("rental_price[pricelist="):
-                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
+                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx, self.updated_items, self.warning_items)
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)

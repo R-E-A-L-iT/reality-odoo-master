@@ -336,12 +336,12 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
 # Update a product's daily rental price via the product.pricing model (sale_renting)
 # Handles column formats like "rental_price[pricelist=CAD]" and "rental_price[pricelist=USD]"
 #
-def update_with_rental_price_context(product, column_name, value, env, row_index, col_index):
-    cell_ref = f"{row_index + 1}{chr(col_index + 65)}"
+def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items):
+    cell_ref = f"{row_index}{chr(col_index + 65)}"
 
     match = re.match(r'^rental_price\[pricelist=(.+?)\]$', column_name.strip().lower())
     if not match:
-        _logger.warning(f"ProSync: Invalid rental pricelist field format at cell {cell_ref}: {column_name}")
+        warning_items.append(f"<b>{cell_ref}</b> Invalid rental pricelist field format: {column_name}<br/><br/>")
         return
 
     currency_code = match.group(1).upper()
@@ -355,12 +355,12 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
 
     pricelist_flag = currency_flag_map.get(currency_code)
     if not pricelist_flag:
-        _logger.warning(f"ProSync: Unsupported currency '{currency_code}' for rental price at cell {cell_ref}")
+        warning_items.append(f"<b>{cell_ref}</b> Unsupported currency '{currency_code}' for rental price.<br/><br/>")
         return
 
     currency = env["res.currency"].search([("name", "=", currency_code)], limit=1)
     if not currency:
-        _logger.warning(f"ProSync: Currency '{currency_code}' not found in system (cell {cell_ref})")
+        warning_items.append(f"<b>{cell_ref}</b> Currency '{currency_code}' not found in system.<br/><br/>")
         return
 
     rental_pricelist = env["product.pricelist"].search([
@@ -370,17 +370,12 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
     ], limit=1)
 
     if not rental_pricelist:
-        _logger.warning(f"ProSync: Pricelist '{pricelist_flag}' ({currency_code}) not found in system (cell {cell_ref}). Please create it first.")
+        warning_items.append(f"<b>{cell_ref}</b> Pricelist '{pricelist_flag}' ({currency_code}) not found. Please create it first.<br/><br/>")
         return
 
-    try:
-        new_price = normalize_float(value)
-    except (ValueError, TypeError):
-        _logger.warning(f"ProSync: Invalid rental price value '{value}' at cell {cell_ref}")
-        return
-
-    if new_price is None or new_price == 0.0:
-        _logger.info(f"ProSync: Skipping empty or zero rental price at cell {cell_ref}")
+    new_price = normalize_float(value)
+    if not value or str(value).strip() == '':
+        _logger.info(f"ProSync: Skipping empty rental price at cell {cell_ref}")
         return
 
     # Find or auto-create the daily recurrence (duration=1, unit='day')
@@ -407,6 +402,10 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
         old_price = existing_pricing.price
         if old_price != new_price:
             existing_pricing.write({"price": new_price})
+            updated_items.append(
+                f'<b>{cell_ref}</b>, {product.sku}<br/>'
+                f'Rental price <u>{currency_code}</u> updated: "{old_price}" <b>→</b> "{new_price}"<br/><br/>'
+            )
             _logger.info(f"ProSync: Updated rental price for product {product.name} [{currency_code}]: {old_price} → {new_price} (cell {cell_ref})")
         else:
             _logger.info(f"ProSync: Rental price unchanged for product {product.name} [{currency_code}]: {new_price} (cell {cell_ref})")
@@ -417,6 +416,10 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
             "pricelist_id": rental_pricelist.id,
             "price": new_price,
         })
+        updated_items.append(
+            f'<b>{cell_ref}</b>, {product.sku}<br/>'
+            f'Rental price <u>{currency_code}</u> created: "{new_price}"<br/><br/>'
+        )
         _logger.info(f"ProSync: Created new rental pricing rule for product {product.name} [{currency_code}]: {new_price} (cell {cell_ref})")
 
 #
