@@ -18,6 +18,7 @@ from ..utilities import (
     normalize_selection,
     update_with_lang_context,
     update_with_price_context,
+    update_with_rental_price_context,
     update_with_related_context,
     update_with_special_context,
 )
@@ -90,6 +91,11 @@ class product_template_sync:
             # Skip price fields like "price[pricelist=CAD]"
             if column_cleaned.startswith("price[pricelist="):
                 _logger.info(f"ProSync: Field '{column}' is a recognized pricelist field.")
+                continue
+
+            # Skip rental price fields like "rental_price[pricelist=CAD]"
+            if column_cleaned.startswith("rental_price[pricelist="):
+                _logger.info(f"ProSync: Field '{column}' is a recognized rental pricing field.")
                 continue
 
             # Strip any [bracketed] metadata (like [language=fr_CA])
@@ -229,6 +235,9 @@ class product_template_sync:
                 continue
             elif field_name.startswith("price[pricelist="):
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
+                continue
+            elif field_name.startswith("rental_price[pricelist="):
+                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
