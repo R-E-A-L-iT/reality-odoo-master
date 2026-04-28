@@ -346,33 +346,31 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
 
     currency_code = match.group(1).upper()
 
-    rental_pricelist_name_map = {
-        "USD": "USD RENTAL",
-        "CAD": "CAD RENTAL",
+    # Rental pricing uses the same main pricelists as sale pricing (identified by currency)
+    # The pricelist column on product.pricing shows the flag-named pricelist (e.g. "🇨🇦" / "🇺🇸")
+    currency_flag_map = {
+        "USD": "🇺🇸",
+        "CAD": "🇨🇦",
     }
 
-    company_map = {
-        "USD": "R-E-A-L.iT U.S. Inc.",
-        "CAD": "R-E-A-L.iT Solutions",
-    }
-
-    rental_pricelist_name = rental_pricelist_name_map.get(currency_code)
-    if not rental_pricelist_name:
+    pricelist_flag = currency_flag_map.get(currency_code)
+    if not pricelist_flag:
         _logger.warning(f"ProSync: Unsupported currency '{currency_code}' for rental price at cell {cell_ref}")
         return
 
-    company_name = company_map.get(currency_code)
-    if not company_name:
-        _logger.warning(f"ProSync: No company mapping defined for currency '{currency_code}' at cell {cell_ref}")
+    currency = env["res.currency"].search([("name", "=", currency_code)], limit=1)
+    if not currency:
+        _logger.warning(f"ProSync: Currency '{currency_code}' not found in system (cell {cell_ref})")
         return
 
     rental_pricelist = env["product.pricelist"].search([
-        ("name", "=", rental_pricelist_name),
+        ("name", "=", pricelist_flag),
+        ("currency_id", "=", currency.id),
         ("active", "=", True),
     ], limit=1)
 
     if not rental_pricelist:
-        _logger.warning(f"ProSync: Rental pricelist '{rental_pricelist_name}' not found in system (cell {cell_ref}). Please create it first.")
+        _logger.warning(f"ProSync: Pricelist '{pricelist_flag}' ({currency_code}) not found in system (cell {cell_ref}). Please create it first.")
         return
 
     try:
