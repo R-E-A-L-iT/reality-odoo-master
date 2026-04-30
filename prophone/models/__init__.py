@@ -7,3 +7,4 @@ from . import res_config_settings
 from . import quo_send_text_wizard
 from . import quo_phone_number
 from . import sale_order
+from . import helpdesk_ticket
