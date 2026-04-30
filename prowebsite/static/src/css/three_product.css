@@ -20,6 +20,23 @@
     width: 100%;
     height: 100%;
     background: transparent;
+    z-index: 2;
+}
+
+.o_three_hero_gif_bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(60vw, 900px);
+    height: min(60vh, 650px);
+    transform: translate(-50%, -50%);
+    background-image: url("https://cdn.r-e-a-l.it/images/header/FieryGIF.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.85;
 }
 
 .o_three_canvas_text {
