@@ -1205,22 +1205,17 @@
         </xpath>
         <xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
             <td t-if="sale_order.is_rental_order" class="text-right">
-                <!-- Value column: daily rental price from product_pricing_ids (rental tab) -->
-                <t t-set="val_daily_rules" t-value="line.product_id.product_tmpl_id.product_pricing_ids.filtered(lambda p: p.recurrence_id.unit == 'day' and p.recurrence_id.duration == 1)"/>
-                <t t-set="val_plist_matched" t-value="val_daily_rules.filtered(lambda p: p.pricelist_id == line.order_id.pricelist_id) if line.order_id.pricelist_id else val_daily_rules.browse()"/>
-                <t t-set="val_global_rule" t-value="val_daily_rules.filtered(lambda p: not p.pricelist_id)"/>
-                <t t-if="val_plist_matched">
-                    <t t-set="val_daily_price" t-value="val_plist_matched[0].price"/>
-                </t>
-                <t t-elif="val_global_rule">
-                    <t t-set="val_daily_price" t-value="val_global_rule[0].price"/>
-                </t>
-                <t t-else="">
-                    <t t-set="val_daily_price" t-value="line.product_id.lst_price"/>
-                </t>
-                <span style="white-space: nowrap;">
-                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % val_daily_price"/>
+                <t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
+                        ('pricelist_id', '=', line.order_id.pricelist_id.id),
+                        ('compute_price', '=', 'fixed'),
+                        '|',
+                            '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
+                            '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
+                    ])"/>
+                <span t-if="pricelist_item" style="white-space: nowrap;">
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % pricelist_item[0].fixed_price"/>
                 </span>
+                <span t-else="">—</span>
             </td>
         </xpath>
         <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
