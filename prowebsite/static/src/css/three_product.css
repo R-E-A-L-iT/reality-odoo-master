@@ -204,11 +204,11 @@
     overflow: hidden;
 }
 
-/* .o_three_scroll_section::before {
+.o_three_scroll_section::before {
     content: "";
     display: block;
-    height: 200vh;
-} */
+    height: 100vh;
+}
 
 .o_three_scroll_model_host {
     position: sticky;
