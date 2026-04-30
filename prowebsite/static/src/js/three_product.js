@@ -7,6 +7,11 @@ whenReady(async () => {
     const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
+    const omnigoScrollVideo = document.getElementById("omnigo-scroll-video");
+    const omnigoVideoSection = omnigoScrollVideo
+        ? omnigoScrollVideo.closest(".o_omnigo_video_scroll_section")
+        : null;
+
     if (!heroHost || !bottomModelHost || !scrollHost) {
         return;
     }
@@ -625,6 +630,29 @@ whenReady(async () => {
 
     window.addEventListener("resize", onResize);
 
+    // omnigo scroll video section
+    function updateOmnigoScrollVideo() {
+        if (!omnigoScrollVideo || !omnigoVideoSection || !omnigoScrollVideo.duration) {
+            return;
+        }
+
+        const rect = omnigoVideoSection.getBoundingClientRect();
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+
+        const totalScrollable = rect.height - viewportH;
+
+        if (totalScrollable <= 0) {
+            return;
+        }
+
+        const progress = clamp(-rect.top / totalScrollable, 0, 1);
+        const targetTime = progress * omnigoScrollVideo.duration;
+
+        if (Math.abs(omnigoScrollVideo.currentTime - targetTime) > 0.03) {
+            omnigoScrollVideo.currentTime = targetTime;
+        }
+    }
+
     // ----------------------------
     // Animation loop
     // ----------------------------
@@ -666,6 +694,8 @@ whenReady(async () => {
         if (bottomMixer) {
             bottomMixer.update(delta);
         }
+
+        updateOmnigoScrollVideo();
 
         heroRenderer.render(heroScene, heroCamera);
         bottomRenderer.render(bottomScene, bottomCamera);
