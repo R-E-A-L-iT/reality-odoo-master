@@ -199,7 +199,7 @@
 .o_three_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 100vh; /* extra height so there is room to scroll through the effect */
+    min-height: 0vh; /* extra height so there is room to scroll through the effect */
     background: #111111;
     overflow: hidden;
 }
@@ -207,7 +207,7 @@
 .o_three_scroll_section::before {
     content: "";
     display: block;
-    height: 0vh;
+    height: 100vh;
 }
 
 .o_three_scroll_model_host {
