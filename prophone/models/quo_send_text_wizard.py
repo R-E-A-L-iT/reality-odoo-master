@@ -16,6 +16,7 @@ class QuoSendTextWizard(models.TransientModel):
     to_number = fields.Char(string="To", readonly=True)
     lead_id = fields.Many2one("crm.lead", readonly=True)
     sale_order_id = fields.Many2one("sale.order", readonly=True)
+    ticket_id = fields.Many2one("helpdesk.ticket", readonly=True)
 
     from_number = fields.Selection(
         selection="_selection_from_numbers",
@@ -26,6 +27,10 @@ class QuoSendTextWizard(models.TransientModel):
     message = fields.Text(string="Message", required=True)
 
     def _get_quote_allowed_partner_ids(self):
+        ids = self.env.context.get("quo_sms_partner_domain_ids") or []
+        return set(ids)
+
+    def _get_allowed_partner_ids(self):
         ids = self.env.context.get("quo_sms_partner_domain_ids") or []
         return set(ids)
 
@@ -91,6 +96,21 @@ class QuoSendTextWizard(models.TransientModel):
 
                 return vals
 
+        ticket_id = self.env.context.get("default_ticket_id")
+        if ticket_id:
+            ticket = self.env["helpdesk.ticket"].browse(int(ticket_id))
+            if ticket.exists():
+                vals["ticket_id"] = ticket.id
+
+                partner_id = self.env.context.get("default_partner_id")
+                to_num = self.env.context.get("default_to_number")
+                if partner_id:
+                    vals["partner_id"] = int(partner_id)
+                if to_num:
+                    vals["to_number"] = to_num
+
+                return vals
+
         # 2) Otherwise fallback to partner flow (your existing behavior)
         partner_id = self.env.context.get("default_partner_id") or self.env.context.get("active_id")
         partner = self.env["res.partner"].browse(int(partner_id)) if partner_id else self.env["res.partner"]
@@ -135,10 +155,10 @@ class QuoSendTextWizard(models.TransientModel):
             raise UserError(_("Missing from/to numbers."))
 
         # If sending from a quote, enforce recipient is in allowed follower list
-        if self.sale_order_id:
-            allowed_ids = self._get_quote_allowed_partner_ids()
+        if self.sale_order_id or self.ticket_id:
+            allowed_ids = self._get_allowed_partner_ids()
             if not self.partner_id or self.partner_id.id not in allowed_ids:
-                raise UserError(_("Please select a valid recipient from the quote followers list."))
+                raise UserError(_("Please select a valid recipient from the followers list."))
 
         Call = self.env["quo.call"].sudo()
 

@@ -1030,6 +1030,7 @@ class QuoCall(models.Model):
             # to guarantee activities are created only once per call.
             best_opp = self.env["crm.lead"]
             best_quote = self.env["sale.order"]
+            best_ticket = self.env["helpdesk.ticket"]
 
             time_str = call._format_call_time() or ""
 
@@ -1126,6 +1127,29 @@ class QuoCall(models.Model):
                     if _is_newer(quotes[0], best_quote[0] if best_quote else False):
                         best_quote = quotes[0:1]
 
+                ticket_domain = [
+                    ("active", "=", True),
+                ]
+                if call_dt:
+                    ticket_domain.append(("create_date", "<", call_dt))
+                ticket_domain += [
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                tickets = self.env["helpdesk.ticket"].sudo().search(
+                    ticket_domain,
+                    order="create_date desc, id desc"
+                )
+
+                if tickets:
+                    _logger.info(
+                        "Posting Quo call %s to %d helpdesk tickets for partner %s: %s",
+                        call.id, len(tickets), partner.display_name, tickets.ids
+                    )
+                    if _is_newer(tickets[0], best_ticket[0] if best_ticket else False):
+                        best_ticket = tickets[0:1]
+
                 # Post to opportunities
                 for rec in opportunities:
                     rec.message_post(
@@ -1139,6 +1163,16 @@ class QuoCall(models.Model):
 
                 # Post to quotes
                 for rec in quotes:
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                    )
+
+                for rec in tickets:
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,
@@ -1165,6 +1199,8 @@ class QuoCall(models.Model):
                     target = best_opp[0]
                 elif best_quote:
                     target = best_quote[0]
+                elif best_ticket:
+                    target = best_ticket[0]
                 else:
                     target = external_partners[0]
 
@@ -1626,6 +1662,21 @@ class QuoText(models.Model):
                 ]
                 quotes = self.env["sale.order"].sudo().search(quote_domain, order="create_date desc, id desc")
 
+                ticket_domain = [
+                    ("active", "=", True),
+                ]
+                if msg_dt:
+                    ticket_domain.append(("create_date", "<", msg_dt))
+                ticket_domain += [
+                    "|",
+                        ("partner_id", "child_of", partner.commercial_partner_id.id),
+                        ("message_partner_ids", "in", partner.ids),
+                ]
+                tickets = self.env["helpdesk.ticket"].sudo().search(
+                    ticket_domain,
+                    order="create_date desc, id desc"
+                )
+
                 for rec in opportunities:
                     rec.message_post(
                         body=body_html,
@@ -1637,6 +1688,16 @@ class QuoText(models.Model):
                     )
 
                 for rec in quotes:
+                    rec.message_post(
+                        body=body_html,
+                        body_is_html=True,
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                        author_id=quo_author.id,
+                        attachments=attachments or None,
+                    )
+
+                for rec in tickets:
                     rec.message_post(
                         body=body_html,
                         body_is_html=True,

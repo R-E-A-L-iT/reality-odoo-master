@@ -7,9 +7,10 @@
             <form string="Send Text" create="false" edit="false">
                 <group>
                     <field name="sale_order_id" invisible="1"/>
+                    <field name="ticket_id" invisible="1"/>
                     <field name="partner_id"
                         string="Recipient"
-                        required="sale_order_id"
+                        required="sale_order_id or ticket_id"
                         domain="[('id', 'in', context.get('quo_sms_partner_domain_ids', []))]"/>
                     <field name="to_number"/>
                     <field name="from_number" required="1"/>
