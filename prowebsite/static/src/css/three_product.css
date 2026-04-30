@@ -231,7 +231,7 @@
 .o_omnigo_video_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 250vh;
+    min-height: 400vh;
     background: #ffffff;
 }
 
@@ -249,16 +249,30 @@
     padding: 64px 32px;
 }
 
-.o_omnigo_video_scroll_title {
-    margin: 0 0 32px 0;
+.o_omnigo_video_scroll_heading {
     max-width: 1050px;
+    margin: 0 0 32px 0;
+    text-align: center;
+}
+
+.o_omnigo_video_scroll_title {
+    margin: 0;
     color: #000000;
     font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(30px, 4.5vw, 64px);
-    line-height: 1.05;
+    font-size: clamp(34px, 5vw, 72px);
+    line-height: 1.02;
     font-weight: 900;
-    text-align: center;
     letter-spacing: -0.03em;
+}
+
+.o_omnigo_video_scroll_subtitle {
+    margin: 18px auto 0 auto;
+    max-width: 760px;
+    color: #222222;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(17px, 1.7vw, 24px);
+    line-height: 1.45;
+    font-weight: 400;
 }
 
 .o_omnigo_video_scroll_video_wrap {
