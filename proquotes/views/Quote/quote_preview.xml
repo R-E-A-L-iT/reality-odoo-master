@@ -1118,49 +1118,11 @@
             </t>
         </xpath>
  -->
-        <!-- Amount column: rental orders show daily_price × paid_days × qty; non-rental unchanged -->
+        <!-- Amount column: price_subtotal is already correct (price_unit × qty) for all order types -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <t t-if="sale_order.is_rental_order">
-                <!-- Step 1: compute paid_days from calendar days (mirrors _compute_custom_rental_price) -->
-                <t t-set="cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
-                <t t-if="cal_days &gt; 0">
-                    <t t-if="cal_days &lt;= 30">
-                        <t t-set="full_weeks" t-value="cal_days // 7"/>
-                        <t t-set="rem_days"   t-value="cal_days % 7"/>
-                        <t t-set="paid_days"  t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
-                        <t t-set="paid_days"  t-value="paid_days if paid_days &lt;= 12 else 12"/>
-                    </t>
-                    <t t-else="">
-                        <t t-set="paid_days" t-value="12 + (cal_days - 30)"/>
-                    </t>
-                </t>
-                <t t-else="">
-                    <t t-set="paid_days" t-value="0"/>
-                </t>
-                <!-- Step 2: resolve daily price (mirrors _get_custom_rental_daily_price priority) -->
-                <t t-set="daily_rules_amt" t-value="line.product_id.product_tmpl_id.product_pricing_ids.filtered(lambda p: p.recurrence_id.unit == 'day' and p.recurrence_id.duration == 1)"/>
-                <t t-set="plist_matched_amt" t-value="daily_rules_amt.filtered(lambda p: p.pricelist_id == line.order_id.pricelist_id) if line.order_id.pricelist_id else daily_rules_amt.browse()"/>
-                <t t-set="global_rule_amt"   t-value="daily_rules_amt.filtered(lambda p: not p.pricelist_id)"/>
-                <t t-if="plist_matched_amt">
-                    <t t-set="r_daily_price" t-value="plist_matched_amt[0].price"/>
-                </t>
-                <t t-elif="global_rule_amt">
-                    <t t-set="r_daily_price" t-value="global_rule_amt[0].price"/>
-                </t>
-                <t t-else="">
-                    <t t-set="r_daily_price" t-value="line.product_id.lst_price"/>
-                </t>
-                <!-- Step 3: Amount = daily_price × paid_days × qty -->
-                <t t-set="rental_line_total" t-value="r_daily_price * paid_days * line.product_uom_qty"/>
-                <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                      t-out="rental_line_total"
-                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
-            </t>
-            <t t-else="">
-                <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                      t-field="line.price_subtotal"
-                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
-            </t>
+            <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                  t-field="line.price_subtotal"
+                  t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
             <style>
                 #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td {
                 padding: 20px !important;
@@ -1385,21 +1347,27 @@
             <attribute name="t-attf-class">text-left</attribute>
         </xpath>
 
-        <!-- Price column: rental orders show daily price; non-rental unchanged -->
+        <!-- Price column: rental orders show daily price (price_unit / paid_days); non-rental unchanged -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="replace">
             <t t-if="sale_order.is_rental_order">
-                <t t-set="daily_rules" t-value="line.product_id.product_tmpl_id.product_pricing_ids.filtered(lambda p: p.recurrence_id.unit == 'day' and p.recurrence_id.duration == 1)"/>
-                <t t-set="plist_matched" t-value="daily_rules.filtered(lambda p: p.pricelist_id == line.order_id.pricelist_id) if line.order_id.pricelist_id else daily_rules.browse()"/>
-                <t t-set="global_rule" t-value="daily_rules.filtered(lambda p: not p.pricelist_id)"/>
-                <t t-if="plist_matched">
-                    <t t-set="rental_daily_price" t-value="plist_matched[0].price"/>
-                </t>
-                <t t-elif="global_rule">
-                    <t t-set="rental_daily_price" t-value="global_rule[0].price"/>
+                <!-- Resolve paid_days the same way as multiplier column -->
+                <t t-set="pc_cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-if="pc_cal_days &gt; 0">
+                    <t t-if="pc_cal_days &lt;= 30">
+                        <t t-set="pc_full_weeks" t-value="pc_cal_days // 7"/>
+                        <t t-set="pc_rem_days"   t-value="pc_cal_days % 7"/>
+                        <t t-set="pc_paid_days"  t-value="4 * pc_full_weeks + (pc_rem_days if pc_rem_days &lt;= 4 else 4)"/>
+                        <t t-set="pc_paid_days"  t-value="pc_paid_days if pc_paid_days &lt;= 12 else 12"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="pc_paid_days" t-value="12 + (pc_cal_days - 30)"/>
+                    </t>
                 </t>
                 <t t-else="">
-                    <t t-set="rental_daily_price" t-value="line.product_id.lst_price"/>
+                    <t t-set="pc_paid_days" t-value="1"/>
                 </t>
+                <!-- Daily price = price_unit / paid_days (price_unit is already total rental price) -->
+                <t t-set="rental_daily_price" t-value="line.price_unit / pc_paid_days if pc_paid_days else line.price_unit"/>
                 <span class="text-left nowrap" style="white-space: nowrap;">
                     <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % rental_daily_price"/>
                 </span>
