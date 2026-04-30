@@ -207,7 +207,7 @@
 .o_three_scroll_section::before {
     content: "";
     display: block;
-    height: 100vh;
+    height: 0vh;
 }
 
 .o_three_scroll_model_host {
