@@ -11,6 +11,11 @@
         "views/leadsBackend.xml",
         "views/crm_stage.xml",
     ],
+    'assets': {
+        'web.assets_backend': [
+            'proleads/static/src/js/composer_patch.js',
+        ],
+    },
     'installable': True,
     'application': True,
 }
