@@ -163,7 +163,12 @@
                                             </span>
                                         </td>
                                         <td name="td_priceunit" class="text-end">
-                                            <span t-field="line.price_unit">3</span>
+                                            <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
+                                                <span t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % line.rental_daily_price"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-field="line.price_unit">3</span>
+                                            </t>
                                         </td>
                                         <td t-if="display_discount" class="text-end">
                                             <span t-field="line.discount">-</span>

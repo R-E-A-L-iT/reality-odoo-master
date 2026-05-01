@@ -21,6 +21,17 @@ class ProductTemplate(models.Model):
 class SaleOrderLine(models.Model):
 	_inherit = 'sale.order.line'
 
+	rental_daily_price = fields.Float(
+		compute='_compute_rental_daily_price',
+		digits='Product Price',
+	)
+
+	@api.depends('order_id.is_rental_order', 'product_id', 'order_id.pricelist_id')
+	def _compute_rental_daily_price(self):
+		for line in self:
+			is_rental_line = line.order_id.is_rental_order and line.product_id.rent_ok
+			line.rental_daily_price = line._get_custom_rental_daily_price() if is_rental_line else 0.0
+
 	def _get_pricelist_price(self):
 		"""Override to apply custom rental pricing formula when enabled on the product."""
 		self.ensure_one()
