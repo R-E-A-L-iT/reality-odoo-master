@@ -334,7 +334,8 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
 
 #
 # Update a product's daily rental price via the product.pricing model (sale_renting)
-# Handles column formats like "rental_price[pricelist=CAD]" and "rental_price[pricelist=USD]"
+# Handles column formats like "rental_price[pricelist=USD RENTAL (USD)]", "rental_price[pricelist=CAD RENTAL (CAD)]",
+# and legacy formats like "rental_price[pricelist=USD]" / "rental_price[pricelist=CAD]"
 #
 def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items):
     cell_ref = f"{row_index}{chr(col_index + 65)}"
@@ -344,34 +345,34 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
         warning_items.append(f"<b>{cell_ref}</b> Invalid rental pricelist field format: {column_name}<br/><br/>")
         return
 
-    currency_code = match.group(1).upper()
+    pricelist_param = match.group(1).strip()
 
-    # Rental pricing uses the same main pricelists as sale pricing (identified by currency)
-    # The pricelist column on product.pricing shows the flag-named pricelist (e.g. "🇨🇦" / "🇺🇸")
-    currency_flag_map = {
-        "USD": "🇺🇸",
-        "CAD": "🇨🇦",
-    }
+    # First: try direct name match (case-insensitive) — supports full names like "USD RENTAL (USD)"
+    all_active = env["product.pricelist"].search([("active", "=", True)])
+    rental_pricelist = all_active.filtered(lambda p: p.name.lower() == pricelist_param)
+    rental_pricelist = rental_pricelist[:1] if rental_pricelist else env["product.pricelist"]
 
-    pricelist_flag = currency_flag_map.get(currency_code)
-    if not pricelist_flag:
-        warning_items.append(f"<b>{cell_ref}</b> Unsupported currency '{currency_code}' for rental price.<br/><br/>")
-        return
-
-    currency = env["res.currency"].search([("name", "=", currency_code)], limit=1)
-    if not currency:
-        warning_items.append(f"<b>{cell_ref}</b> Currency '{currency_code}' not found in system.<br/><br/>")
-        return
-
-    rental_pricelist = env["product.pricelist"].search([
-        ("name", "=", pricelist_flag),
-        ("currency_id", "=", currency.id),
-        ("active", "=", True),
-    ], limit=1)
+    # Fallback: legacy currency-code format like "usd" / "cad" mapped to flag-emoji pricelist
+    if not rental_pricelist:
+        currency_flag_map = {
+            "usd": "🇺🇸",
+            "cad": "🇨🇦",
+        }
+        pricelist_flag = currency_flag_map.get(pricelist_param)
+        if pricelist_flag:
+            currency_obj = env["res.currency"].search([("name", "=", pricelist_param.upper())], limit=1)
+            if currency_obj:
+                rental_pricelist = env["product.pricelist"].search([
+                    ("name", "=", pricelist_flag),
+                    ("currency_id", "=", currency_obj.id),
+                    ("active", "=", True),
+                ], limit=1)
 
     if not rental_pricelist:
-        warning_items.append(f"<b>{cell_ref}</b> Pricelist '{pricelist_flag}' ({currency_code}) not found. Please create it first.<br/><br/>")
+        warning_items.append(f"<b>{cell_ref}</b> Pricelist '{pricelist_param}' not found. Please create it first.<br/><br/>")
         return
+
+    currency_code = rental_pricelist.currency_id.name
 
     new_price = normalize_float(value)
     if not value or str(value).strip() == '':

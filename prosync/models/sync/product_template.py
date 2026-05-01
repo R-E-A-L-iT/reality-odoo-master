@@ -34,16 +34,19 @@ class product_template_sync:
         self.updated_items = []
         self.warning_items = []
         self.error_items = []
+        self.rental_updated_items = []
+        self.rental_warning_items = []
         self.report_id = None
 
     def sync_product_template(self):
         _logger.info("ProSync: Starting PRODUCT_TEMPLATE sync process.")
 
+        sync_start_time = datetime.now()
         self.report_id = self.database['prosync.report'].create({
             'name': f"Product Template Sync: {self.name}",
             'status': 'success',
             'sync_type': 'product_template',
-            'start_time': datetime.now(),
+            'start_time': sync_start_time,
         })
 
 
@@ -162,7 +165,7 @@ class product_template_sync:
                 self.create_product_template(row_index, row)
 
         end_time = datetime.now()
-        
+
         if not self.updated_items and not self.warning_items and not self.error_items:
             _logger.info("ProSync: No changes detected. Deleting sync report.")
             self.report_id.unlink()
@@ -174,6 +177,23 @@ class product_template_sync:
                 'error_text': "\n".join(self.error_items) or "No errors to display",
                 'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
             })
+
+        # Create a separate Rental Price report if rental changes occurred
+        if self.rental_updated_items or self.rental_warning_items:
+            rental_report = self.database['prosync.report'].create({
+                'name': f"Rental Price Sync: {self.name}",
+                'status': 'success',
+                'sync_type': 'rental_price',
+                'start_time': sync_start_time,
+            })
+            rental_report.write({
+                'end_time': end_time,
+                'report_text': "\n".join(self.rental_updated_items) or "No changes detected.",
+                'warning_text': "\n".join(self.rental_warning_items) or "No warnings to display",
+                'error_text': "No errors to display",
+                'status': 'warning' if self.rental_warning_items else 'success',
+            })
+            _logger.info(f"ProSync: Created rental price sync report with {len(self.rental_updated_items)} changes.")
         
 
 
@@ -237,7 +257,7 @@ class product_template_sync:
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
             elif field_name.startswith("rental_price[pricelist="):
-                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx, self.updated_items, self.warning_items)
+                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
