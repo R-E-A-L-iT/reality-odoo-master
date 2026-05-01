@@ -1072,9 +1072,9 @@
                                                 <t t-set="qty_int" t-value="int(bom_line.product_qty)"/>
                                                 <t t-set="qty_display" t-value="str(qty_int) if bom_line.product_qty == qty_int else str(bom_line.product_qty)"/>
                                                 <span t-out="qty_display"/>x
-                                                <t t-if="bom_line.product_id.product_tmpl_id.sku">
+                                                <!-- <t t-if="bom_line.product_id.product_tmpl_id.sku">
                                                     <span t-out="bom_line.product_id.product_tmpl_id.sku"/> -
-                                                </t>
+                                                </t> -->
                                                 <span t-out="bom_line.product_id.name"/>
                                             </li>
                                         </t>
