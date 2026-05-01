@@ -179,6 +179,7 @@ class product_template_sync:
             })
 
         # Create a separate Rental Price report if rental changes occurred
+        _logger.info(f"ProSync [RENTAL] End of sync — rental_updated={len(self.rental_updated_items)} rental_warnings={len(self.rental_warning_items)}")
         if self.rental_updated_items or self.rental_warning_items:
             rental_report = self.database['prosync.report'].create({
                 'name': f"Rental Price Sync: {self.name}",
@@ -257,6 +258,7 @@ class product_template_sync:
                 update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
                 continue
             elif field_name.startswith("rental_price[pricelist="):
+                _logger.info(f"ProSync [RENTAL] Row {row_index} — dispatching rental price column '{column_name}' with value '{row[col_idx]}'")
                 update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
                 continue
             elif "[special=" in column_name:
