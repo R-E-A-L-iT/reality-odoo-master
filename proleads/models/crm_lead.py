@@ -115,6 +115,17 @@ class CrmLead(models.Model):
     linkedin_link = fields.Char('LinkedIn Link')
     quotation_amount = fields.Float(compute="_compute_total_quotation_amount")
 
+    ba_email_subject = fields.Char(
+        string='Email Subject',
+        help='Custom subject used when sending emails from this opportunity.',
+    )
+
+    def _message_compute_subject(self):
+        self.ensure_one()
+        if self.ba_email_subject:
+            return self.ba_email_subject
+        return super()._message_compute_subject()
+
     @api.depends("country_id")
     def _compute_leica_sales_region(self):
         for lead in self:
