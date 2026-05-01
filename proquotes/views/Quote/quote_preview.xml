@@ -1193,15 +1193,8 @@
         </xpath>
         <xpath expr="//td[@id=&quot;quote_qty_td&quot;]" position="before">
             <td t-if="sale_order.is_rental_order" class="text-right">
-                <t t-set="pricelist_item" t-value="env['product.pricelist.item'].search([
-                        ('pricelist_id', '=', line.order_id.pricelist_id.id),
-                        ('compute_price', '=', 'fixed'),
-                        '|',
-                            '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
-                            '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
-                    ])"/>
-                <span t-if="pricelist_item" style="white-space: nowrap;">
-                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % pricelist_item[0].fixed_price"/>
+                <span t-if="line.product_id.rent_ok and line.rental_daily_price" style="white-space: nowrap;">
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % line.rental_daily_price"/>
                 </span>
                 <span t-else="">—</span>
             </td>
