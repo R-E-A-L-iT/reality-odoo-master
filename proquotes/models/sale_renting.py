@@ -43,6 +43,8 @@ class SaleOrderLine(models.Model):
 
 		if is_rental_line and self.product_id.product_tmpl_id.use_custom_rental_price:
 			daily_price = self._get_custom_rental_daily_price()
+			if not daily_price:
+				return super()._get_pricelist_price()
 			start_date = self.order_id.rental_start_date
 			return_date = self.order_id.rental_return_date
 
@@ -60,7 +62,7 @@ class SaleOrderLine(models.Model):
 		Priority:
 		  1. Daily rule (unit='day', duration=1) matching the order's pricelist.
 		  2. Daily rule (unit='day', duration=1) with no pricelist (global rule).
-		  3. product.template.list_price (fallback).
+		  3. 0.0 if no daily rule found (template falls back to Odoo's price_unit).
 		"""
 		self.ensure_one()
 		tmpl = self.product_id.product_tmpl_id
@@ -81,8 +83,9 @@ class SaleOrderLine(models.Model):
 		if global_rule:
 			return global_rule[0].price
 
-		# 3. Fallback to list_price.
-		return tmpl.list_price
+		# 3. No daily pricing rule found — return 0 so the template falls back to
+		#    Odoo's computed price_unit (the proper rental price, not the sale price).
+		return 0.0
 
 	@staticmethod
 	def _compute_custom_rental_price(daily_price, days):

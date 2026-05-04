@@ -1138,11 +1138,18 @@
                     <t t-set="am_paid_days" t-value="0"/>
                 </t>
                 <!-- daily price from computed field -->
-                <t t-set="am_daily" t-value="line.rental_daily_price if line.product_id.rent_ok and line.rental_daily_price else line.price_unit"/>
-                <t t-set="am_total" t-value="am_daily * am_paid_days * line.product_uom_qty"/>
-                <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                      t-out="am_total"
-                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+                <t t-set="am_daily" t-value="line.rental_daily_price if line.product_id.rent_ok and line.rental_daily_price else 0"/>
+                <t t-if="am_daily">
+                    <t t-set="am_total" t-value="am_daily * am_paid_days * line.product_uom_qty"/>
+                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                          t-out="am_total"
+                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+                </t>
+                <t t-else="">
+                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                          t-field="line.price_subtotal"
+                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+                </t>
             </t>
             <t t-else="">
                 <span class="proquotesLineTotal oe_order_line_price_subtotal"
