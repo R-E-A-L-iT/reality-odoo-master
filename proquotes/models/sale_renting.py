@@ -8,18 +8,29 @@ class ProductTemplate(models.Model):
 
 	use_default_rental_price = fields.Boolean(
 		string="Default Odoo Rental Price",
-		default=False,
+		default=True,
 		help="Use the rental pricing periods/rates already defined on this product.",
 	)
 	use_custom_rental_price = fields.Boolean(
 		string="Custom Rental Price",
-		default=True,
+		default=False,
 		help="Apply the custom pricing formula (4 paid days per week, capped at 12 for the first 30 days, then linear).",
 	)
 
 
 class SaleOrderLine(models.Model):
 	_inherit = 'sale.order.line'
+
+	rental_daily_price = fields.Float(
+		compute='_compute_rental_daily_price',
+		digits='Product Price',
+	)
+
+	@api.depends('order_id.is_rental_order', 'product_id', 'order_id.pricelist_id')
+	def _compute_rental_daily_price(self):
+		for line in self:
+			is_rental_line = line.order_id.is_rental_order and line.product_id.rent_ok
+			line.rental_daily_price = line._get_custom_rental_daily_price() if is_rental_line else 0.0
 
 	def _get_pricelist_price(self):
 		"""Override to apply custom rental pricing formula when enabled on the product."""
@@ -32,6 +43,8 @@ class SaleOrderLine(models.Model):
 
 		if is_rental_line and self.product_id.product_tmpl_id.use_custom_rental_price:
 			daily_price = self._get_custom_rental_daily_price()
+			if not daily_price:
+				return super()._get_pricelist_price()
 			start_date = self.order_id.rental_start_date
 			return_date = self.order_id.rental_return_date
 
@@ -49,7 +62,8 @@ class SaleOrderLine(models.Model):
 		Priority:
 		  1. Daily rule (unit='day', duration=1) matching the order's pricelist.
 		  2. Daily rule (unit='day', duration=1) with no pricelist (global rule).
-		  3. product.template.list_price (fallback).
+		  3. Daily rule whose pricelist has the same currency as the order pricelist.
+		  4. 0.0 if no daily rule found (template falls back to Odoo's price_unit).
 		"""
 		self.ensure_one()
 		tmpl = self.product_id.product_tmpl_id
@@ -70,8 +84,19 @@ class SaleOrderLine(models.Model):
 		if global_rule:
 			return global_rule[0].price
 
-		# 3. Fallback to list_price.
-		return tmpl.list_price
+		# 3. Daily rule whose pricelist shares the same currency as the order pricelist.
+		#    Handles the case where the order uses a general pricelist in the same currency
+		#    as a rental-specific pricelist (e.g. order uses "CAD" → matches "CAD RENTAL (CAD)").
+		if order_pricelist and daily_rules:
+			currency_match = daily_rules.filtered(
+				lambda p: p.pricelist_id and p.pricelist_id.currency_id == order_pricelist.currency_id
+			)
+			if currency_match:
+				return currency_match[0].price
+
+		# 4. No daily pricing rule found — return 0 so the template falls back to
+		#    Odoo's computed price_unit (the proper rental price, not the sale price).
+		return 0.0
 
 	@staticmethod
 	def _compute_custom_rental_price(daily_price, days):

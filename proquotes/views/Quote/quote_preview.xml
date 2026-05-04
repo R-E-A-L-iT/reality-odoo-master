@@ -790,6 +790,11 @@
                         <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
                         <span t-elif="language == 'es_ES'" class="cHead">Precio</span>
                     </td>
+                    <t t-if="sale_order.is_rental_order">
+                        <td class="text-left">
+                            <span class="cHead">Multiplier</span>
+                        </td>
+                    </t>
                     <t t-if="any(line.discount for line in sale_order.order_line)">
                         <td class="text-left">
                             <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
@@ -1105,21 +1110,38 @@
 
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <!-- <t t-if="language == 'en_CA' or language == 'en_US'" t-set="line_price"
-               t-value="'$ {value:,.2f}'.format(value= line.price_subtotal)"/>
-            <t t-elif="language == 'fr_CA'" t-set="line_price"
-               t-value="'{value:,.2f} $'.format(value= line.price_subtotal)"/>
-            <span t-if="line.product_id.is_software == False"
-                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0 rental_rate_calc" t-out="line_price"/>
-            <span t-elif="line.product_id.is_software == True"
-                  class="proquotesLineTotal oe_order_line_price_subtotal pr-0" t-out="line_price"/> -->
-
-            <t t-if="line.product_id.is_software == False">
-                <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                      t-field="line.price_subtotal"
-                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+            <t t-if="sale_order.is_rental_order">
+                <!-- paid_days -->
+                <t t-set="am_cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-if="am_cal_days &gt; 0">
+                    <t t-if="am_cal_days &lt;= 30">
+                        <t t-set="am_full_weeks" t-value="am_cal_days // 7"/>
+                        <t t-set="am_rem_days"   t-value="am_cal_days % 7"/>
+                        <t t-set="am_paid_days"  t-value="4 * am_full_weeks + (am_rem_days if am_rem_days &lt;= 4 else 4)"/>
+                        <t t-set="am_paid_days"  t-value="am_paid_days if am_paid_days &lt;= 12 else 12"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="am_paid_days" t-value="12 + (am_cal_days - 30)"/>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-set="am_paid_days" t-value="0"/>
+                </t>
+                <!-- daily price from computed field -->
+                <t t-set="am_daily" t-value="line.rental_daily_price if line.product_id.rent_ok and line.rental_daily_price else 0"/>
+                <t t-if="am_daily">
+                    <t t-set="am_total" t-value="am_daily * am_paid_days * line.product_uom_qty"/>
+                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                          t-out="am_total"
+                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+                </t>
+                <t t-else="">
+                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                          t-field="line.price_subtotal"
+                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
+                </t>
             </t>
-            <t t-elif="line.product_id.is_software == True">
+            <t t-else="">
                 <span class="proquotesLineTotal oe_order_line_price_subtotal"
                       t-field="line.price_subtotal"
                       t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
@@ -1170,13 +1192,37 @@
                             '&amp;', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id), ('applied_on', '=', '1_product'),
                             '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
                     ])"/>
-                <span t-if="pricelist_item">
-                    <t t-esc="sale_order.currency_id.symbol"/>
-                    <t t-esc="'%.2f' % pricelist_item[0].fixed_price"/>
+                <span t-if="pricelist_item" style="white-space: nowrap;">
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % pricelist_item[0].fixed_price"/>
                 </span>
                 <span t-else="">—</span>
             </td>
         </xpath>
+        <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
+            <t t-if="sale_order.is_rental_order">
+                <t t-set="cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-if="cal_days &gt; 0">
+                    <t t-if="cal_days &lt;= 30">
+                        <t t-set="full_weeks" t-value="cal_days // 7"/>
+                        <t t-set="rem_days"   t-value="cal_days % 7"/>
+                        <t t-set="paid_days"  t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
+                        <t t-set="paid_days"  t-value="paid_days if paid_days &lt;= 12 else 12"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="paid_days" t-value="12 + (cal_days - 30)"/>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-set="paid_days" t-value="0"/>
+                </t>
+                <td class="text-left">
+                    <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
+                    <span t-else="">—</span>
+                </td>
+            </t>
+        </xpath>
+
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
@@ -1321,8 +1367,16 @@
             <attribute name="t-attf-class">text-left</attribute>
         </xpath>
 
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="attributes">
-            <attribute name="t-attf-class">text-left nowrap</attribute>
+        <!-- Price column: rental lines → daily rate from pricelist; non-rental unchanged -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="replace">
+            <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
+                <span class="text-left nowrap" style="white-space: nowrap;">
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % line.rental_daily_price"/>
+                </span>
+            </t>
+            <t t-else="">
+                <div t-field="line.price_unit" class="text-left nowrap"/>
+            </t>
         </xpath>
 
         <!-- Tax Alignment -->
