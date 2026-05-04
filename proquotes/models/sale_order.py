@@ -97,10 +97,6 @@ class order(models.Model):
 
     approve_financing = fields.Boolean(string="APPROVE Financing")
 
-    def _rental_set_dates(self):
-        # Do not auto-populate rental start/return dates — the user sets them manually.
-        return
-
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
