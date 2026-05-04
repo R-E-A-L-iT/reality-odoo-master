@@ -62,7 +62,8 @@ class SaleOrderLine(models.Model):
 		Priority:
 		  1. Daily rule (unit='day', duration=1) matching the order's pricelist.
 		  2. Daily rule (unit='day', duration=1) with no pricelist (global rule).
-		  3. 0.0 if no daily rule found (template falls back to Odoo's price_unit).
+		  3. Daily rule whose pricelist has the same currency as the order pricelist.
+		  4. 0.0 if no daily rule found (template falls back to Odoo's price_unit).
 		"""
 		self.ensure_one()
 		tmpl = self.product_id.product_tmpl_id
@@ -83,7 +84,17 @@ class SaleOrderLine(models.Model):
 		if global_rule:
 			return global_rule[0].price
 
-		# 3. No daily pricing rule found — return 0 so the template falls back to
+		# 3. Daily rule whose pricelist shares the same currency as the order pricelist.
+		#    Handles the case where the order uses a general pricelist in the same currency
+		#    as a rental-specific pricelist (e.g. order uses "CAD" → matches "CAD RENTAL (CAD)").
+		if order_pricelist and daily_rules:
+			currency_match = daily_rules.filtered(
+				lambda p: p.pricelist_id and p.pricelist_id.currency_id == order_pricelist.currency_id
+			)
+			if currency_match:
+				return currency_match[0].price
+
+		# 4. No daily pricing rule found — return 0 so the template falls back to
 		#    Odoo's computed price_unit (the proper rental price, not the sale price).
 		return 0.0
 
