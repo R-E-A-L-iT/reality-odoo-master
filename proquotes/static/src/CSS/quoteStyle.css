@@ -583,3 +583,30 @@ label[for="terms-checkbox"] {
 	border-radius: 20px;
 	background-color: #d7d7d7;
 }
+
+
+
+/* Terms folding */
+#terms-checkbox:checked ~ #rentalTerms {
+    display: block;
+}
+
+#terms-checkbox:not(:checked) ~ #rentalTerms {
+    display: none;
+}
+
+#terms-checkbox:checked ~ label #terms_hidden {
+    display: none;
+}
+
+#terms-checkbox:checked ~ label #terms_open {
+    display: inline;
+}
+
+#terms-checkbox:not(:checked) ~ label #terms_hidden {
+    display: inline;
+}
+
+#terms-checkbox:not(:checked) ~ label #terms_open {
+    display: none;
+}
