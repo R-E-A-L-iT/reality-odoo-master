@@ -34,6 +34,14 @@ class CcpPeriodConfig(models.Model):
         default='fa-clock-o',
         help='Font Awesome icon to display for this time period'
     )
+    icon_image = fields.Binary(
+        string='Icon Image',
+        attachment=True,
+        help='Upload a custom icon image. If set, this will be displayed instead of the Font Awesome icon.'
+    )
+    icon_image_filename = fields.Char(
+        string='Icon Image Filename'
+    )
     color = fields.Char(
         string='Color',
         default='#3498DB',

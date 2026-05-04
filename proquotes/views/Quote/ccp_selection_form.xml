@@ -74,7 +74,14 @@
                                 <label t-attf-for="ccp_period_{{period_config.name.replace(' ', '_')}}_{{section_name}}">
                                     <div class="ccp-period-card-content">
                                         <div class="ccp-period-icon" t-attf-style="color: {{period_config.color}};">
-                                            <i t-attf-class="fa {{period_config.icon}} fa-3x"></i>
+                                            <t t-if="period_config.icon_image">
+                                                <img t-attf-src="data:image/png;base64,{{period_config.icon_image.decode('utf-8')}}"
+                                                     alt="Period Icon"
+                                                     class="ccp-uploaded-icon"/>
+                                            </t>
+                                            <t t-else="">
+                                                <i t-attf-class="fa {{period_config.icon}} fa-3x"></i>
+                                            </t>
                                         </div>
                                         <div class="ccp-period-name">
                                             <t t-if="language == 'fr_CA' and period_config.display_name_fr">
