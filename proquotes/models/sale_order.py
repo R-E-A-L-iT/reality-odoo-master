@@ -1466,29 +1466,15 @@ class PreconfigSaleOrder(models.Model):
 
     @api.onchange('preconfigured_section_ids')
     def _onchange_preconfigured_sections(self):
-        current_section_ids = set(self.preconfigured_section_ids.ids)
-
-        existing_section_ids = set(
-            line.preconfigured_section_id.id
-            for line in self.order_line
-            if line.preconfigured_section_id
-        )
-
-        sections_to_remove = existing_section_ids - current_section_ids
-        sections_to_add = current_section_ids - existing_section_ids
-
-        if not sections_to_remove and not sections_to_add:
-            return
-
         commands = []
 
+        # Delete all previously tracked section lines (handles both removal and re-add without duplicates)
         for line in self.order_line:
-            if line.preconfigured_section_id and line.preconfigured_section_id.id in sections_to_remove:
+            if line.preconfigured_section_id:
                 commands.append((2, line.id, 0))
 
+        # Re-add lines for all currently selected sections
         for section in self.preconfigured_section_ids:
-            if section.id not in sections_to_add:
-                continue
             commands.append((0, 0, {
                 'order_id': self.id,
                 'name': section.section_name,
