@@ -2,14 +2,8 @@
 
 /* Make product images clickable */
 .zoomable-product-image {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: zoom-in;
     border-radius: 4px;
-}
-
-.zoomable-product-image:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal Container */
@@ -234,8 +228,8 @@
         font-size: 14px;
     }
 
-    .zoomable-product-image:hover {
-        transform: scale(1.02);
+    .zoomable-product-image {
+        cursor: zoom-in;
     }
 }
 

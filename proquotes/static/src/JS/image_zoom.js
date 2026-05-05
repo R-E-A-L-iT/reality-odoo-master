@@ -5,8 +5,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar, .o_portal_html_view',
     events: {
-        'mouseenter .zoomable-product-image': '_onImageHover',
-        'mouseleave .zoomable-product-image': '_onImageLeave',
+        'click .zoomable-product-image': '_onImageClick',
     },
 
     /**
@@ -23,17 +22,14 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         this.startY = 0;
         this.translateX = 0;
         this.translateY = 0;
-        this.hoverTimeout = null;
         this.$currentTrigger = null;
-        this.hoverDelay = 300; // ms delay before opening modal on hover
         return this._super.apply(this, arguments);
     },
 
     /**
-     * Handle image hover to open zoom modal after delay
+     * Handle image click to open zoom modal
      */
-    _onImageHover: function (ev) {
-        // Prevent opening multiple modals
+    _onImageClick: function (ev) {
         if (this.$modal && this.$modal.length) {
             return;
         }
@@ -42,30 +38,8 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         const imgSrc = $target.data('zoom-src') || $target.attr('src');
         const altText = $target.attr('alt') || 'Product Image';
 
-        // Store the trigger element
         this.$currentTrigger = $target;
-
-        // Clear any existing timeout
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-        }
-
-        // Set timeout to open modal after delay
-        this.hoverTimeout = setTimeout(() => {
-            this._createModal(imgSrc, altText);
-        }, this.hoverDelay);
-    },
-
-    /**
-     * Handle mouse leave to cancel modal opening (but not close if already open)
-     */
-    _onImageLeave: function (ev) {
-        // Only cancel pending modal opening, don't close if already open
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-        // Note: Modal stays open for user interaction - closes via overlay click, X button, or ESC
+        this._createModal(imgSrc, altText);
     },
 
     /**
@@ -321,12 +295,6 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
             return;
         }
 
-        // Clear hover timeout if any
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-
         this.$modal.removeClass('active');
 
         // Remove after animation
@@ -365,12 +333,6 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
      * @override
      */
     destroy: function () {
-        // Clear hover timeout
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-
         if (this.$modal && this.$modal.length) {
             // Immediate cleanup without animation
             $(document).off('keydown.imageZoom');
