@@ -1466,20 +1466,23 @@ class PreconfigSaleOrder(models.Model):
 
     @api.onchange('preconfigured_section_ids')
     def _onchange_preconfigured_sections(self):
-        # Keep lines that are NOT from any preconfigured section
-        non_preconfigured = self.order_line.filtered(lambda l: not l.preconfigured_section_id)
+        commands = []
 
-        # Build new virtual records for all currently selected sections
-        new_lines = self.env['sale.order.line']
+        # Delete all previously tracked section lines (handles both removal and re-add without duplicates)
+        for line in self.order_line:
+            if line.preconfigured_section_id:
+                commands.append((2, line.id, 0))
+
+        # Re-add lines for all currently selected sections
         for section in self.preconfigured_section_ids:
-            new_lines |= self.env['sale.order.line'].new({
+            commands.append((0, 0, {
                 'order_id': self.id,
                 'name': section.section_name,
                 'display_type': 'line_section',
                 'preconfigured_section_id': section.id,
-            })
+            }))
             for pl in section.product_line_ids:
-                new_lines |= self.env['sale.order.line'].new({
+                commands.append((0, 0, {
                     'order_id': self.id,
                     'product_id': pl.product_id.id,
                     'name': pl.product_name,
@@ -1490,6 +1493,7 @@ class PreconfigSaleOrder(models.Model):
                     'discount': pl.discount,
                     'product_uom_qty': 1,
                     'preconfigured_section_id': section.id,
-                })
+                }))
 
-        self.order_line = non_preconfigured + new_lines
+        if commands:
+            self.order_line = commands
