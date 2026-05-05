@@ -84,6 +84,7 @@
                 <field name="is_quantityLocked" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="variant" invisible="1" optional="hide"/>
                 <field name="hiddenSection" invisible="1" optional="hide"/>
+                <field name="preconfigured_section_id" invisible="1"/>
             </xpath>
 
             <xpath expr="//create[3]" position="after">
