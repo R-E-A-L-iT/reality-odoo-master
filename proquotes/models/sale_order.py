@@ -74,6 +74,30 @@ def _code_from_state(state):
 class order(models.Model):
     _inherit = "sale.order"
 
+    # Allow same-datetime start/end so same-day rentals save without error.
+    # Replaces the base sale_renting CHECK(rental_start_date < rental_return_date).
+    _sql_constraints = [(
+        'rental_period_coherence',
+        "CHECK(rental_start_date IS NULL OR rental_return_date IS NULL OR rental_start_date <= rental_return_date)",
+        "The rental start date must be before or equal to the rental return date.",
+    )]
+
+    @api.onchange('is_rental_order')
+    def _onchange_is_rental_order(self):
+        # Do not auto-fill rental dates — the user sets them from the portal.
+        pass
+
+    @api.depends('rental_start_date', 'rental_return_date')
+    def _compute_duration(self):
+        # Minimum rental is 1 day; never display hours.
+        for order in self:
+            if order.rental_start_date and order.rental_return_date:
+                days = (order.rental_return_date.date() - order.rental_start_date.date()).days
+                order.duration_days = max(1, days)
+            else:
+                order.duration_days = 0
+            order.remaining_hours = 0
+
     partner_id = fields.Many2one(
         'res.partner', 
         string="Customer",

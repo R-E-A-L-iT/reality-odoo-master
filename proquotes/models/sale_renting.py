@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models
+from odoo.tools.misc import groupby as tools_groupby
 
 
 class ProductTemplate(models.Model):
@@ -49,7 +50,8 @@ class SaleOrderLine(models.Model):
 			return_date = self.order_id.rental_return_date
 
 			if start_date and return_date:
-				days = (return_date - start_date).days
+				# Minimum rental is 1 day; same-day counts as 1 day.
+				days = max(1, (return_date.date() - start_date.date()).days)
 				return self._compute_custom_rental_price(daily_price, days)
 
 			return daily_price
@@ -125,3 +127,22 @@ class SaleOrderLine(models.Model):
 			paid_days += 4 * full_weeks + min(extra_days, 4)
 
 		return daily_price * paid_days
+
+	def _partition_so_lines_by_rental_period(self):
+		"""Override to guard against False reservation_begin / return_date.
+
+		When rental dates are left empty (allowed by our proquotes customisation),
+		base Odoo tries max(False, now) which raises TypeError.  Fall back to
+		`now` for any missing date so the groupby still runs cleanly.
+		"""
+		now = fields.Datetime.now()
+		lines_grouping_key = {
+			line.id: (line.reservation_begin or now, line.return_date or now, line.order_id.warehouse_id.id)
+			for line in self
+		}
+		keyfunc = lambda line_id: (
+			max(lines_grouping_key[line_id][0], now),
+			lines_grouping_key[line_id][1],
+			lines_grouping_key[line_id][2],
+		)
+		return tools_groupby(self._ids, key=keyfunc)

@@ -1187,7 +1187,7 @@
         <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
             <t t-if="sale_order.is_rental_order">
-                <t t-set="cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
+                <t t-set="cal_days" t-value="max(1, (sale_order.rental_return_date.date() - sale_order.rental_start_date.date()).days) if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
                 <t t-if="cal_days &gt; 0">
                     <t t-if="cal_days &lt;= 30">
                         <t t-set="full_weeks" t-value="cal_days // 7"/>

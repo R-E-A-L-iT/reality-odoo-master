@@ -22,4 +22,38 @@
         </field>
     </record>
 
+    <!--
+        Override rental order form:
+        - Remove required constraint from rental dates (portal sets them, not the backend user).
+        - Remove "and X hours" from the duration display (minimum unit is 1 day).
+    -->
+    <record id="rental_order_form_proquotes_overrides" model="ir.ui.view">
+        <field name="name">sale.order.rental.proquotes.overrides</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_renting.rental_order_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Remove required from the hidden return date field -->
+            <xpath expr="//field[@name='rental_return_date'][@invisible='1']" position="attributes">
+                <attribute name="required">0</attribute>
+            </xpath>
+            <!-- Remove required from the rental start date (daterange widget) -->
+            <xpath expr="//field[@name='rental_start_date'][@widget='daterange']" position="attributes">
+                <attribute name="required">0</attribute>
+            </xpath>
+            <!-- Hide the "and X hours" part of the duration display -->
+            <xpath expr="//span[@invisible='duration_days == 0 or remaining_hours == 0']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='remaining_hours']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//span[@invisible='remaining_hours != 1']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//span[@invisible='remaining_hours in [0,1]']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
