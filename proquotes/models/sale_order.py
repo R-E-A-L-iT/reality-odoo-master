@@ -1466,25 +1466,23 @@ class PreconfigSaleOrder(models.Model):
 
     @api.onchange('preconfigured_section_ids')
     def _onchange_preconfigured_sections(self):
-        if self.preconfigured_section_ids:
-            new_lines = []
-            for section in self.preconfigured_section_ids:
+        new_lines = [(5, 0, 0)]
+        for section in self.preconfigured_section_ids:
+            new_lines.append((0, 0, {
+                'order_id': self.id,
+                'name': section.section_name,
+                'display_type': 'line_section',
+            }))
+            for line in section.product_line_ids:
                 new_lines.append((0, 0, {
                     'order_id': self.id,
-                    'name': section.section_name,
-                    'display_type': 'line_section',
+                    'product_id': line.product_id.id,
+                    'name': line.product_name,
+                    'optional': 'yes' if line.optional else 'no',
+                    'selected': 'true' if line.selected else 'false',
+                    'quantityLocked': 'yes' if line.quantity_locked else 'no',
+                    'price_unit': line.price_unit,
+                    'discount': line.discount,
+                    'product_uom_qty': 1,
                 }))
-                for line in section.product_line_ids:
-                    new_lines.append((0, 0, {
-                        'order_id': self.id,
-                        'product_id': line.product_id.id,
-                        'name': line.product_name,
-                        'optional': 'yes' if line.optional else 'no',
-                        'selected': 'true' if line.selected else 'false',
-                        'quantityLocked': 'yes' if line.quantity_locked else 'no',
-                        'price_unit': line.price_unit,
-                        'discount': line.discount,
-                        'product_uom_qty': 1,
-                    }))
-            if new_lines:
-                self.order_line = new_lines
+        self.order_line = new_lines
