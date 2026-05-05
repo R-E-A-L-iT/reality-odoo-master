@@ -63,8 +63,21 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         this.translateY = 0;
         this.galleryItems = galleryItems || [];
         this.activeGalleryIndex = -1;
+        this.mainImgSrc = imgSrc;
+        this.mainImgAlt = altText;
 
-        const thumbnailStripHtml = this.galleryItems.length ? `
+        const hasGallery = this.galleryItems.length > 0;
+
+        const navArrowsHtml = hasGallery ? `
+            <button class="zoom-nav-btn zoom-prev-btn" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <button class="zoom-nav-btn zoom-next-btn" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        ` : '';
+
+        const thumbnailStripHtml = hasGallery ? `
             <div class="zoom-thumbnail-strip" id="zoomThumbnailStrip">
                 ${this.galleryItems.map((item, i) => `
                     <div class="zoom-thumb-item${item.type === 'video' ? ' is-video' : ''}" data-gallery-index="${i}">
@@ -77,29 +90,30 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
 
         // Create modal HTML
         const modalHtml = `
-            <div class="image-zoom-modal${this.galleryItems.length ? ' has-gallery' : ''}" id="imageZoomModal">
+            <div class="image-zoom-modal${hasGallery ? ' has-gallery' : ''}" id="imageZoomModal">
                 <div class="image-zoom-overlay"></div>
                 <div class="image-zoom-container">
                     <button class="zoom-close-btn" aria-label="Close">
                         <i class="fa fa-times"></i>
                     </button>
-                    <div class="zoom-controls">
-                        <button class="zoom-in-btn" aria-label="Zoom In">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                        <button class="zoom-out-btn" aria-label="Zoom Out">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button class="zoom-reset-btn" aria-label="Reset Zoom">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                    </div>
                     <div class="zoom-image-wrapper">
                         <img src="${imgSrc}" alt="${altText}" class="zoom-image" id="zoomImage" draggable="false">
                         <div class="zoom-video-wrapper" id="zoomVideoWrapper" style="display:none;"></div>
-                    </div>
-                    <div class="zoom-loader">
-                        <i class="fa fa-spinner fa-spin"></i>
+                        <div class="zoom-loader">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-in-btn" aria-label="Zoom In">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            <button class="zoom-out-btn" aria-label="Zoom Out">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            <button class="zoom-reset-btn" aria-label="Reset Zoom">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                        ${navArrowsHtml}
                     </div>
                     ${thumbnailStripHtml}
                 </div>
@@ -166,12 +180,18 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
             this._activateGalleryItem(index);
         });
 
+        // Prev/Next arrow clicks
+        this.$modal.find('.zoom-prev-btn').on('click', () => this._navigatePrev());
+        this.$modal.find('.zoom-next-btn').on('click', () => this._navigateNext());
+
         // Keyboard events
         $(document).on('keydown.imageZoom', (e) => {
             if (e.key === 'Escape') this._closeModal();
             if (e.key === '+' || e.key === '=') this._zoomIn();
             if (e.key === '-' || e.key === '_') this._zoomOut();
             if (e.key === '0') this._resetZoom();
+            if (e.key === 'ArrowLeft') this._navigatePrev();
+            if (e.key === 'ArrowRight') this._navigateNext();
         });
 
         // Mouse wheel zoom
@@ -258,6 +278,41 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
                 this._updateImageTransform();
             }
         });
+    },
+
+    /**
+     * Restore the main product image
+     */
+    _showMainImage: function () {
+        this.activeGalleryIndex = -1;
+        this.$modal.find('.zoom-thumb-item').removeClass('active');
+        this.$modal.find('#zoomVideoWrapper').empty().hide();
+        this.$image.attr('src', this.mainImgSrc).show();
+        this.$modal.find('.zoom-controls').show();
+        this._resetZoom();
+    },
+
+    _navigateNext: function () {
+        const total = this.galleryItems.length;
+        if (!total) return;
+        const next = this.activeGalleryIndex + 1;
+        if (next >= total) {
+            this._showMainImage();
+        } else {
+            this._activateGalleryItem(next);
+        }
+    },
+
+    _navigatePrev: function () {
+        const total = this.galleryItems.length;
+        if (!total) return;
+        if (this.activeGalleryIndex === -1) {
+            this._activateGalleryItem(total - 1);
+        } else if (this.activeGalleryIndex === 0) {
+            this._showMainImage();
+        } else {
+            this._activateGalleryItem(this.activeGalleryIndex - 1);
+        }
     },
 
     /**
