@@ -41,13 +41,6 @@ class SaleOrderLine(models.Model):
 		# which is absent when lines are added via templates or other non-rental-app paths.
 		is_rental_line = self.order_id.is_rental_order and self.product_id.rent_ok
 
-		# Same-calendar-day (hourly) rental → no charge regardless of pricing mode.
-		if is_rental_line:
-			start = self.order_id.rental_start_date
-			end = self.order_id.rental_return_date
-			if start and end and start.date() == end.date():
-				return 0.0
-
 		if is_rental_line and self.product_id.product_tmpl_id.use_custom_rental_price:
 			daily_price = self._get_custom_rental_daily_price()
 			if not daily_price:
@@ -56,7 +49,8 @@ class SaleOrderLine(models.Model):
 			return_date = self.order_id.rental_return_date
 
 			if start_date and return_date:
-				days = (return_date - start_date).days
+				# Minimum rental is 1 day; same-day counts as 1 day.
+				days = max(1, (return_date.date() - start_date.date()).days)
 				return self._compute_custom_rental_price(daily_price, days)
 
 			return daily_price

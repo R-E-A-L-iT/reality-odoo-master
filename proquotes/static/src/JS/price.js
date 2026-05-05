@@ -238,8 +238,8 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			}
 
 			let milliInSeconds = 1000, secondsInMinute = 60, minuteInHour = 60, hourInDay = 24;
-			var rentalLength = (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay) + 1;
-			if (!Number.isFinite(rentalLength) || rentalLength < 0) rentalLength = 0;
+			var rentalLength = Math.max(1, (endDateDate.getTime() - startDateDate.getTime()) / (milliInSeconds * secondsInMinute * minuteInHour * hourInDay));
+			if (!Number.isFinite(rentalLength)) rentalLength = 1;
 
 			var months = 0, weeks = 0, days = 0;
 			while (rentalLength >= 30) { months += 1; rentalLength -= 30; }
