@@ -233,6 +233,82 @@
     }
 }
 
+/* Thumbnail strip for extra product images */
+.zoom-thumbnail-strip {
+    position: absolute;
+    bottom: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10002;
+    max-width: 90%;
+    overflow-x: auto;
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+.zoom-thumb-item {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.7;
+}
+
+.zoom-thumb-item:hover,
+.zoom-thumb-item.active {
+    border-color: #fff;
+    opacity: 1;
+}
+
+.zoom-thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.zoom-thumb-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+/* Video wrapper inside zoom modal */
+.zoom-video-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-video-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    max-height: 600px;
+    border: none;
+}
+
+/* Push zoom-controls up when gallery strip is present */
+.has-gallery .zoom-controls {
+    bottom: 160px;
+}
+
 /* Prevent body scroll when modal is open */
 body:has(.image-zoom-modal.active) {
     overflow: hidden;

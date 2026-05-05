@@ -39,21 +39,45 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         const altText = $target.attr('alt') || 'Product Image';
 
         this.$currentTrigger = $target;
-        this._createModal(imgSrc, altText);
+
+        const galleryItems = [];
+        $target.siblings('.product-gallery-data').find('.gallery-item').each(function () {
+            const $item = $(this);
+            if ($item.hasClass('gallery-video')) {
+                galleryItems.push({ type: 'video', embed: $item.data('embed') || '', thumb: $item.data('thumb') || '' });
+            } else {
+                galleryItems.push({ type: 'image', src: $item.data('src') || '', thumb: $item.data('thumb') || '' });
+            }
+        });
+
+        this._createModal(imgSrc, altText, galleryItems);
     },
 
     /**
      * Create and display the zoom modal
      */
-    _createModal: function (imgSrc, altText) {
+    _createModal: function (imgSrc, altText, galleryItems) {
         // Reset zoom and position
         this.zoomLevel = 1;
         this.translateX = 0;
         this.translateY = 0;
+        this.galleryItems = galleryItems || [];
+        this.activeGalleryIndex = -1;
+
+        const thumbnailStripHtml = this.galleryItems.length ? `
+            <div class="zoom-thumbnail-strip" id="zoomThumbnailStrip">
+                ${this.galleryItems.map((item, i) => `
+                    <div class="zoom-thumb-item${item.type === 'video' ? ' is-video' : ''}" data-gallery-index="${i}">
+                        <img src="${item.thumb}" alt="Image ${i + 1}" draggable="false">
+                        ${item.type === 'video' ? '<div class="zoom-thumb-play"><i class="fa fa-play"></i></div>' : ''}
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
 
         // Create modal HTML
         const modalHtml = `
-            <div class="image-zoom-modal" id="imageZoomModal">
+            <div class="image-zoom-modal${this.galleryItems.length ? ' has-gallery' : ''}" id="imageZoomModal">
                 <div class="image-zoom-overlay"></div>
                 <div class="image-zoom-container">
                     <button class="zoom-close-btn" aria-label="Close">
@@ -72,10 +96,12 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
                     </div>
                     <div class="zoom-image-wrapper">
                         <img src="${imgSrc}" alt="${altText}" class="zoom-image" id="zoomImage" draggable="false">
+                        <div class="zoom-video-wrapper" id="zoomVideoWrapper" style="display:none;"></div>
                     </div>
                     <div class="zoom-loader">
                         <i class="fa fa-spinner fa-spin"></i>
                     </div>
+                    ${thumbnailStripHtml}
                 </div>
             </div>
         `;
@@ -133,6 +159,12 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         this.$modal.find('.zoom-in-btn').on('click', () => this._zoomIn());
         this.$modal.find('.zoom-out-btn').on('click', () => this._zoomOut());
         this.$modal.find('.zoom-reset-btn').on('click', () => this._resetZoom());
+
+        // Thumbnail gallery clicks
+        this.$modal.find('.zoom-thumb-item').on('click', (e) => {
+            const index = parseInt($(e.currentTarget).data('gallery-index'));
+            this._activateGalleryItem(index);
+        });
 
         // Keyboard events
         $(document).on('keydown.imageZoom', (e) => {
@@ -226,6 +258,33 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
                 this._updateImageTransform();
             }
         });
+    },
+
+    /**
+     * Switch main view to a gallery item (image or video)
+     */
+    _activateGalleryItem: function (index) {
+        const item = this.galleryItems[index];
+        if (!item) return;
+
+        this.activeGalleryIndex = index;
+
+        this.$modal.find('.zoom-thumb-item').removeClass('active');
+        this.$modal.find(`.zoom-thumb-item[data-gallery-index="${index}"]`).addClass('active');
+
+        const $videoWrapper = this.$modal.find('#zoomVideoWrapper');
+        const $controls = this.$modal.find('.zoom-controls');
+
+        if (item.type === 'video') {
+            this.$image.hide();
+            $videoWrapper.html(item.embed).show();
+            $controls.hide();
+        } else {
+            $videoWrapper.empty().hide();
+            this.$image.attr('src', item.src).show();
+            $controls.show();
+            this._resetZoom();
+        }
     },
 
     /**
