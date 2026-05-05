@@ -1129,42 +1129,9 @@
 
         <!-- Format Price Dispaly -->
         <xpath expr="//span[@t-field=&quot;line.price_subtotal&quot;]" position="replace">
-            <t t-if="sale_order.is_rental_order">
-                <!-- paid_days -->
-                <t t-set="am_cal_days" t-value="(sale_order.rental_return_date - sale_order.rental_start_date).days if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
-                <t t-if="am_cal_days &gt; 0">
-                    <t t-if="am_cal_days &lt;= 30">
-                        <t t-set="am_full_weeks" t-value="am_cal_days // 7"/>
-                        <t t-set="am_rem_days"   t-value="am_cal_days % 7"/>
-                        <t t-set="am_paid_days"  t-value="4 * am_full_weeks + (am_rem_days if am_rem_days &lt;= 4 else 4)"/>
-                        <t t-set="am_paid_days"  t-value="am_paid_days if am_paid_days &lt;= 12 else 12"/>
-                    </t>
-                    <t t-else="">
-                        <t t-set="am_paid_days" t-value="12 + (am_cal_days - 30)"/>
-                    </t>
-                </t>
-                <t t-else="">
-                    <t t-set="am_paid_days" t-value="0"/>
-                </t>
-                <!-- daily price from computed field -->
-                <t t-set="am_daily" t-value="line.rental_daily_price if line.product_id.rent_ok and line.rental_daily_price else 0"/>
-                <t t-if="am_daily">
-                    <t t-set="am_total" t-value="am_daily * am_paid_days * line.product_uom_qty"/>
-                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                          t-out="am_total"
-                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
-                </t>
-                <t t-else="">
-                    <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                          t-field="line.price_subtotal"
-                          t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
-                </t>
-            </t>
-            <t t-else="">
-                <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                      t-field="line.price_subtotal"
-                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
-            </t>
+            <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                    t-field="line.price_subtotal"
+                    t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: line.order_id.currency_id}"/>
             <style>
                 #sales_order_table &gt; tbody &gt; tr.quoteLineRowSection &gt; td {
                 padding: 20px !important;
