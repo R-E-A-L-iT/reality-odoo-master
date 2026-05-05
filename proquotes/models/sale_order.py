@@ -1466,25 +1466,48 @@ class PreconfigSaleOrder(models.Model):
 
     @api.onchange('preconfigured_section_ids')
     def _onchange_preconfigured_sections(self):
-        if self.preconfigured_section_ids:
-            new_lines = []
-            for section in self.preconfigured_section_ids:
-                new_lines.append((0, 0, {
+        current_section_ids = set(self.preconfigured_section_ids.ids)
+
+        existing_section_ids = set(
+            line.preconfigured_section_id.id
+            for line in self.order_line
+            if line.preconfigured_section_id
+        )
+
+        sections_to_remove = existing_section_ids - current_section_ids
+        sections_to_add = current_section_ids - existing_section_ids
+
+        if not sections_to_remove and not sections_to_add:
+            return
+
+        commands = []
+
+        for line in self.order_line:
+            if line.preconfigured_section_id and line.preconfigured_section_id.id in sections_to_remove:
+                commands.append((2, line.id, 0))
+
+        for section in self.preconfigured_section_ids:
+            if section.id not in sections_to_add:
+                continue
+            commands.append((0, 0, {
+                'order_id': self.id,
+                'name': section.section_name,
+                'display_type': 'line_section',
+                'preconfigured_section_id': section.id,
+            }))
+            for pl in section.product_line_ids:
+                commands.append((0, 0, {
                     'order_id': self.id,
-                    'name': section.section_name,
-                    'display_type': 'line_section',
+                    'product_id': pl.product_id.id,
+                    'name': pl.product_name,
+                    'optional': 'yes' if pl.optional else 'no',
+                    'selected': 'true' if pl.selected else 'false',
+                    'quantityLocked': 'yes' if pl.quantity_locked else 'no',
+                    'price_unit': pl.price_unit,
+                    'discount': pl.discount,
+                    'product_uom_qty': 1,
+                    'preconfigured_section_id': section.id,
                 }))
-                for line in section.product_line_ids:
-                    new_lines.append((0, 0, {
-                        'order_id': self.id,
-                        'product_id': line.product_id.id,
-                        'name': line.product_name,
-                        'optional': 'yes' if line.optional else 'no',
-                        'selected': 'true' if line.selected else 'false',
-                        'quantityLocked': 'yes' if line.quantity_locked else 'no',
-                        'price_unit': line.price_unit,
-                        'discount': line.discount,
-                        'product_uom_qty': 1,
-                    }))
-            if new_lines:
-                self.order_line = new_lines
+
+        if commands:
+            self.order_line = commands
