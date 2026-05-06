@@ -60,7 +60,7 @@
                         <span t-if="language == 'en_CA' or language == 'en_US'">Next</span>
                         <span t-elif="language == 'fr_CA'">Suivant</span>
                     </button>
-                    <button type="button" class="btn btn-warning ccp-clear-btn">
+                    <button type="button" class="btn btn-dark ccp-clear-btn">
                         <span t-if="language == 'en_CA' or language == 'en_US'">Clear</span>
                         <span t-elif="language == 'fr_CA'">Effacer</span>
                     </button>

@@ -42,7 +42,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
             var y = x.nextElementSibling;
             while (y != null && y != undefined) {
-                if (y.className.includes("is-subtotal")) {
+                if (y.className.includes("is-subtotal") || y.className.includes("quoteLineRowSection")) {
                     break;
                 } else {
                     if (y.style != undefined && y.style != null) {
@@ -82,7 +82,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         x.querySelector('.quote-folding-arrow').innerHTML = expandHTML;
         var y = x.nextElementSibling;
         while (y != null && y != undefined) {
-            if (y.className.includes("is-subtotal")) {
+            if (y.className.includes("is-subtotal") || y.className.includes("quoteLineRowSection")) {
                 break;
             } else if (y.style != undefined && y.style != null) {
                 y.style.display = TRstyle;
