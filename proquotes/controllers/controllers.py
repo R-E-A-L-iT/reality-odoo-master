@@ -629,6 +629,14 @@ class QuotePortalFix(cPortal):
         if existing_ccp_lines:
             existing_ccp_lines.unlink()
 
+        # Shift sequences of all lines that come after the section to make room for the CCP product
+        lines_after_section = order_sudo.order_line.search([
+            ('order_id', '=', order_sudo.id),
+            ('sequence', '>', section_sequence),
+        ])
+        for line in lines_after_section:
+            line.sequence += 1
+
         # Add the new CCP product line
         line_data = {
             'product_id': product.id,
