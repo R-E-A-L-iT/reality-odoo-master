@@ -282,7 +282,7 @@ class product_template_sync:
                     self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
                 continue
             elif field_name in ("rentalusd", "rentalcad"):
-                pricelist_name = "USD RENTAL (USD)" if field_name == "rentalusd" else "CAD RENTAL (CAD)"
+                pricelist_name = "USD RENTAL" if field_name == "rentalusd" else "CAD RENTAL"
                 synthetic_col = f"rental_price[pricelist={pricelist_name}]"
                 _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
                 try:
