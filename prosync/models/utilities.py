@@ -455,6 +455,93 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
             warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
 
 #
+# Update a product's daily rental price via a dedicated rental_daily_price sheet type.
+# Handles column format: "daily_price[pricelist=<PRICELIST_NAME>]"
+#
+def update_with_daily_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items):
+    cell_ref = f"{row_index}{chr(col_index + 65)}"
+    _logger.info(f"ProSync [DAILY_PRICE] ── cell {cell_ref} | column='{column_name}' | value='{value}' | product='{getattr(product, 'sku', product.id)}'")
+
+    match = re.match(r'^daily_price\[pricelist=(.+?)\]$', column_name.strip().lower())
+    if not match:
+        msg = f"Invalid daily price column format: '{column_name}'"
+        _logger.warning(f"ProSync [DAILY_PRICE] {msg}")
+        warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
+        return
+
+    pricelist_param = match.group(1).strip()
+
+    # Locate pricelist by name (case-insensitive)
+    all_active = env["product.pricelist"].search([("active", "=", True)])
+    rental_pricelist = all_active.filtered(lambda p: p.name.lower() == pricelist_param)
+    rental_pricelist = rental_pricelist[:1] if rental_pricelist else env["product.pricelist"]
+
+    if not rental_pricelist:
+        all_names = [p.name for p in all_active]
+        msg = f"Pricelist '{pricelist_param}' not found. Available: {all_names}"
+        _logger.warning(f"ProSync [DAILY_PRICE] {msg}")
+        warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
+        return
+
+    currency_code = rental_pricelist.currency_id.name
+    _logger.info(f"ProSync [DAILY_PRICE] Using pricelist '{rental_pricelist.name}' (ID {rental_pricelist.id}) | currency={currency_code}")
+
+    if not value or str(value).strip() == '':
+        _logger.info(f"ProSync [DAILY_PRICE] Skipping empty value at cell {cell_ref}")
+        return
+
+    new_price = normalize_float(value)
+    _logger.info(f"ProSync [DAILY_PRICE] Normalized price: '{value}' → {new_price}")
+
+    # Find or auto-create daily recurrence (duration=1, unit='day')
+    daily_recurrence = env["sale.temporal.recurrence"].search([
+        ("duration", "=", 1),
+        ("unit", "=", "day"),
+    ], limit=1)
+    if not daily_recurrence:
+        _logger.info(f"ProSync [DAILY_PRICE] No daily recurrence found — auto-creating one")
+        daily_recurrence = env["sale.temporal.recurrence"].create({"duration": 1, "unit": "day"})
+        _logger.info(f"ProSync [DAILY_PRICE] Auto-created daily recurrence ID={daily_recurrence.id}")
+    else:
+        _logger.info(f"ProSync [DAILY_PRICE] Found daily recurrence: '{daily_recurrence.name}' (ID {daily_recurrence.id})")
+
+    existing_pricing = env["product.pricing"].search([
+        ("product_template_id", "=", product.id),
+        ("recurrence_id", "=", daily_recurrence.id),
+        ("pricelist_id", "=", rental_pricelist.id),
+    ], limit=1)
+    _logger.info(f"ProSync [DAILY_PRICE] Existing product.pricing: found={bool(existing_pricing)}")
+
+    if existing_pricing:
+        old_price = existing_pricing.price
+        if old_price != new_price:
+            existing_pricing.write({"price": new_price})
+            updated_items.append(
+                f'<b>{cell_ref}</b>, {product.sku}<br/>'
+                f'Daily rental price <u>{currency_code}</u>: "{old_price}" <b>→</b> "{new_price}"<br/><br/>'
+            )
+            _logger.info(f"ProSync [DAILY_PRICE] UPDATED '{product.sku}' [{currency_code}]: {old_price} → {new_price}")
+        else:
+            _logger.info(f"ProSync [DAILY_PRICE] No change for '{product.sku}' [{currency_code}]: already {new_price}")
+    else:
+        try:
+            env["product.pricing"].create({
+                "product_template_id": product.id,
+                "recurrence_id": daily_recurrence.id,
+                "pricelist_id": rental_pricelist.id,
+                "price": new_price,
+            })
+            updated_items.append(
+                f'<b>{cell_ref}</b>, {product.sku}<br/>'
+                f'Daily rental price <u>{currency_code}</u> created: "{new_price}"<br/><br/>'
+            )
+            _logger.info(f"ProSync [DAILY_PRICE] CREATED product.pricing for '{product.sku}' [{currency_code}]: {new_price}")
+        except Exception as e:
+            msg = f"Failed to create product.pricing for '{product.sku}' [{currency_code}]: {str(e)}"
+            _logger.error(f"ProSync [DAILY_PRICE] {msg}")
+            warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
+
+#
 # Update a many2one, many2many, or one2many field using a specified search
 #
 def update_with_related_context(record, column_name, raw_value, all_fields, database, row_index, col_idx):
