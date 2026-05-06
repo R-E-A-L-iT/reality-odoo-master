@@ -193,7 +193,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
     _onClearClick: function (ev) {
         ev.preventDefault();
         const container = ev.currentTarget.closest(".ccp-selection-container");
-        this._removeCcpProduct(container);
+        this._removeCcpProduct(container, ev.currentTarget);
     },
 
     /**
@@ -281,52 +281,54 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
     /**
      * Remove CCP product from the order
      */
-    _removeCcpProduct: function (container) {
+    _removeCcpProduct: function (container, clearBtn) {
         const self = this;
         const sectionName = container.getAttribute("data-section");
         const orderId = container.getAttribute("data-order-id");
         const lineId = sessionStorage.getItem(`ccp_line_${sectionName}`);
 
+        // Resolve button: use the one clicked, or fall back to step 3's clear button
+        const btn = clearBtn || container.querySelector(".ccp-step-3 .ccp-clear-btn");
+
         if (!lineId) {
-            console.error("No CCP line ID found in session storage");
-            // Reset to step 1 anyway
+            // No stored product — just reset the UI
             this._resetSelection(container);
             return;
         }
 
-        // Show loading
-        const step3 = container.querySelector(".ccp-step-3");
-        const clearBtn = step3.querySelector(".ccp-clear-btn");
-        clearBtn.disabled = true;
-        clearBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Clearing...';
+        // Show loading on the clicked button
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Clearing...';
+        }
 
-        // Remove the line by setting selected to false (using existing /select endpoint)
         jsonrpc(`/my/orders/${orderId}/remove_ccp_line`, {
             access_token: this.orderDetail.token,
             line_id: lineId,
             section_name: sectionName,
         }).then((data) => {
             if (data) {
-                // Clear session storage
                 sessionStorage.removeItem(`ccp_line_${sectionName}`);
 
-                // Reload the page content
                 if (data.sale_inner_template) {
                     self.$("#portal_sale_content").html($(data.sale_inner_template));
                 }
 
-                // Reset the selection
                 self._resetSelection(container);
             } else {
                 alert("Failed to remove CCP product. Please try again.");
-                clearBtn.disabled = false;
-                clearBtn.textContent = "Clear CCP Selection";
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = "Clear";
+                }
             }
         }).catch((error) => {
             console.error("Error removing CCP product:", error);
             alert("An error occurred. Please try again.");
-            clearBtn.disabled = false;
-            clearBtn.textContent = "Clear CCP Selection";
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = "Clear";
+            }
         });
     },
 

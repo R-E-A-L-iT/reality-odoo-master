@@ -672,8 +672,8 @@ class QuotePortalFix(cPortal):
 
         line_id = f"lineId{new_line.id}" if new_line else None
 
-        # OPTIMIZED: Tax computation will happen automatically during template rendering
-        # Removed explicit _compute_tax_totals() call to improve performance
+        # Invalidate ORM cache so the template renders with the freshly written sequences
+        order_sudo.invalidate_recordset()
 
         # Prepare response with updated template
         results = self._get_portal_order_details(order_sudo)
