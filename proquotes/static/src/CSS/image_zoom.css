@@ -2,14 +2,8 @@
 
 /* Make product images clickable */
 .zoomable-product-image {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: zoom-in;
     border-radius: 4px;
-}
-
-.zoomable-product-image:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal Container */
@@ -52,9 +46,11 @@
     max-width: 1200px;
     max-height: 900px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     z-index: 10000;
+    padding-top: 60px;
 }
 
 /* Close Button */
@@ -139,8 +135,9 @@
 
 /* Image Wrapper */
 .zoom-image-wrapper {
+    flex: 1;
+    min-height: 0;
     width: 100%;
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,9 +231,116 @@
         font-size: 14px;
     }
 
-    .zoomable-product-image:hover {
-        transform: scale(1.02);
+    .zoomable-product-image {
+        cursor: zoom-in;
     }
+}
+
+/* Thumbnail strip for extra product images */
+.zoom-thumbnail-strip {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10002;
+    width: 100%;
+    overflow-x: auto;
+    padding: 8px 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 0 0 8px 8px;
+}
+
+.zoom-thumb-item {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.7;
+}
+
+.zoom-thumb-item:hover,
+.zoom-thumb-item.active {
+    border-color: #fff;
+    opacity: 1;
+}
+
+.zoom-thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.zoom-thumb-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+/* Video wrapper inside zoom modal */
+.zoom-video-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-video-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    max-height: 600px;
+    border: none;
+}
+
+/* Prev/Next navigation arrows */
+.zoom-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.zoom-prev-btn {
+    left: 12px;
+}
+
+.zoom-next-btn {
+    right: 12px;
+}
+
+.zoom-nav-btn:hover {
+    background-color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.zoom-nav-btn:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
 /* Prevent body scroll when modal is open */

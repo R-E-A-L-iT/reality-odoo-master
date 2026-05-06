@@ -1047,10 +1047,24 @@
                         <div width="10%" style="display: flex; align-items: center;">
                             <t t-if="line.product_id.image_128">
                                 <img class="zoomable-product-image"
-                                    t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
-                                    t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
-                                    alt="Product Image"
-                                    style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                                     t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
+                                     t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
+                                     alt="Product Image"
+                                     style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                                <div class="product-gallery-data" style="display:none;">
+                                    <t t-foreach="line.product_id.product_tmpl_id.product_template_image_ids" t-as="extra_img">
+                                        <t t-if="extra_img.video_url">
+                                            <span class="gallery-item gallery-video"
+                                                  t-att-data-embed="extra_img.embed_code"
+                                                  t-att-data-thumb="'data:image/png;base64,' + extra_img.image_128.decode('utf-8') if extra_img.image_128 else ''"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="gallery-item gallery-image"
+                                                  t-att-data-src="'data:image/png;base64,' + (extra_img.image_1024 or extra_img.image_512 or extra_img.image_256 or extra_img.image_128 or b'').decode('utf-8') if (extra_img.image_1024 or extra_img.image_512 or extra_img.image_256 or extra_img.image_128) else ''"
+                                                  t-att-data-thumb="'data:image/png;base64,' + extra_img.image_128.decode('utf-8') if extra_img.image_128 else ''"/>
+                                        </t>
+                                    </t>
+                                </div>
                             </t>
                             <t t-else="">
                                 <img class="zoomable-product-image"

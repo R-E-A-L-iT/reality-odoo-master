@@ -5,8 +5,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar, .o_portal_html_view',
     events: {
-        'mouseenter .zoomable-product-image': '_onImageHover',
-        'mouseleave .zoomable-product-image': '_onImageLeave',
+        'click .zoomable-product-image': '_onImageClick',
     },
 
     /**
@@ -23,17 +22,14 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         this.startY = 0;
         this.translateX = 0;
         this.translateY = 0;
-        this.hoverTimeout = null;
         this.$currentTrigger = null;
-        this.hoverDelay = 300; // ms delay before opening modal on hover
         return this._super.apply(this, arguments);
     },
 
     /**
-     * Handle image hover to open zoom modal after delay
+     * Handle image click to open zoom modal
      */
-    _onImageHover: function (ev) {
-        // Prevent opening multiple modals
+    _onImageClick: function (ev) {
         if (this.$modal && this.$modal.length) {
             return;
         }
@@ -42,66 +38,84 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         const imgSrc = $target.data('zoom-src') || $target.attr('src');
         const altText = $target.attr('alt') || 'Product Image';
 
-        // Store the trigger element
         this.$currentTrigger = $target;
 
-        // Clear any existing timeout
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-        }
+        const galleryItems = [];
+        $target.siblings('.product-gallery-data').find('.gallery-item').each(function () {
+            const $item = $(this);
+            if ($item.hasClass('gallery-video')) {
+                galleryItems.push({ type: 'video', embed: $item.data('embed') || '', thumb: $item.data('thumb') || '' });
+            } else {
+                galleryItems.push({ type: 'image', src: $item.data('src') || '', thumb: $item.data('thumb') || '' });
+            }
+        });
 
-        // Set timeout to open modal after delay
-        this.hoverTimeout = setTimeout(() => {
-            this._createModal(imgSrc, altText);
-        }, this.hoverDelay);
-    },
-
-    /**
-     * Handle mouse leave to cancel modal opening (but not close if already open)
-     */
-    _onImageLeave: function (ev) {
-        // Only cancel pending modal opening, don't close if already open
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-        // Note: Modal stays open for user interaction - closes via overlay click, X button, or ESC
+        this._createModal(imgSrc, altText, galleryItems);
     },
 
     /**
      * Create and display the zoom modal
      */
-    _createModal: function (imgSrc, altText) {
+    _createModal: function (imgSrc, altText, galleryItems) {
         // Reset zoom and position
         this.zoomLevel = 1;
         this.translateX = 0;
         this.translateY = 0;
+        this.galleryItems = galleryItems || [];
+        this.activeGalleryIndex = -1;
+        this.mainImgSrc = imgSrc;
+        this.mainImgAlt = altText;
+
+        const hasGallery = this.galleryItems.length > 0;
+
+        const navArrowsHtml = hasGallery ? `
+            <button class="zoom-nav-btn zoom-prev-btn" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <button class="zoom-nav-btn zoom-next-btn" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        ` : '';
+
+        const thumbnailStripHtml = hasGallery ? `
+            <div class="zoom-thumbnail-strip" id="zoomThumbnailStrip">
+                ${this.galleryItems.map((item, i) => `
+                    <div class="zoom-thumb-item${item.type === 'video' ? ' is-video' : ''}" data-gallery-index="${i}">
+                        <img src="${item.thumb}" alt="Image ${i + 1}" draggable="false">
+                        ${item.type === 'video' ? '<div class="zoom-thumb-play"><i class="fa fa-play"></i></div>' : ''}
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
 
         // Create modal HTML
         const modalHtml = `
-            <div class="image-zoom-modal" id="imageZoomModal">
+            <div class="image-zoom-modal${hasGallery ? ' has-gallery' : ''}" id="imageZoomModal">
                 <div class="image-zoom-overlay"></div>
                 <div class="image-zoom-container">
                     <button class="zoom-close-btn" aria-label="Close">
                         <i class="fa fa-times"></i>
                     </button>
-                    <div class="zoom-controls">
-                        <button class="zoom-in-btn" aria-label="Zoom In">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                        <button class="zoom-out-btn" aria-label="Zoom Out">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button class="zoom-reset-btn" aria-label="Reset Zoom">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                    </div>
                     <div class="zoom-image-wrapper">
                         <img src="${imgSrc}" alt="${altText}" class="zoom-image" id="zoomImage" draggable="false">
+                        <div class="zoom-video-wrapper" id="zoomVideoWrapper" style="display:none;"></div>
+                        <div class="zoom-loader">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-in-btn" aria-label="Zoom In">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            <button class="zoom-out-btn" aria-label="Zoom Out">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            <button class="zoom-reset-btn" aria-label="Reset Zoom">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                        ${navArrowsHtml}
                     </div>
-                    <div class="zoom-loader">
-                        <i class="fa fa-spinner fa-spin"></i>
-                    </div>
+                    ${thumbnailStripHtml}
                 </div>
             </div>
         `;
@@ -160,12 +174,24 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
         this.$modal.find('.zoom-out-btn').on('click', () => this._zoomOut());
         this.$modal.find('.zoom-reset-btn').on('click', () => this._resetZoom());
 
+        // Thumbnail gallery clicks
+        this.$modal.find('.zoom-thumb-item').on('click', (e) => {
+            const index = parseInt($(e.currentTarget).data('gallery-index'));
+            this._activateGalleryItem(index);
+        });
+
+        // Prev/Next arrow clicks
+        this.$modal.find('.zoom-prev-btn').on('click', () => this._navigatePrev());
+        this.$modal.find('.zoom-next-btn').on('click', () => this._navigateNext());
+
         // Keyboard events
         $(document).on('keydown.imageZoom', (e) => {
             if (e.key === 'Escape') this._closeModal();
             if (e.key === '+' || e.key === '=') this._zoomIn();
             if (e.key === '-' || e.key === '_') this._zoomOut();
             if (e.key === '0') this._resetZoom();
+            if (e.key === 'ArrowLeft') this._navigatePrev();
+            if (e.key === 'ArrowRight') this._navigateNext();
         });
 
         // Mouse wheel zoom
@@ -255,6 +281,68 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
     },
 
     /**
+     * Restore the main product image
+     */
+    _showMainImage: function () {
+        this.activeGalleryIndex = -1;
+        this.$modal.find('.zoom-thumb-item').removeClass('active');
+        this.$modal.find('#zoomVideoWrapper').empty().hide();
+        this.$image.attr('src', this.mainImgSrc).show();
+        this.$modal.find('.zoom-controls').show();
+        this._resetZoom();
+    },
+
+    _navigateNext: function () {
+        const total = this.galleryItems.length;
+        if (!total) return;
+        const next = this.activeGalleryIndex + 1;
+        if (next >= total) {
+            this._showMainImage();
+        } else {
+            this._activateGalleryItem(next);
+        }
+    },
+
+    _navigatePrev: function () {
+        const total = this.galleryItems.length;
+        if (!total) return;
+        if (this.activeGalleryIndex === -1) {
+            this._activateGalleryItem(total - 1);
+        } else if (this.activeGalleryIndex === 0) {
+            this._showMainImage();
+        } else {
+            this._activateGalleryItem(this.activeGalleryIndex - 1);
+        }
+    },
+
+    /**
+     * Switch main view to a gallery item (image or video)
+     */
+    _activateGalleryItem: function (index) {
+        const item = this.galleryItems[index];
+        if (!item) return;
+
+        this.activeGalleryIndex = index;
+
+        this.$modal.find('.zoom-thumb-item').removeClass('active');
+        this.$modal.find(`.zoom-thumb-item[data-gallery-index="${index}"]`).addClass('active');
+
+        const $videoWrapper = this.$modal.find('#zoomVideoWrapper');
+        const $controls = this.$modal.find('.zoom-controls');
+
+        if (item.type === 'video') {
+            this.$image.hide();
+            $videoWrapper.html(item.embed).show();
+            $controls.hide();
+        } else {
+            $videoWrapper.empty().hide();
+            this.$image.attr('src', item.src).show();
+            $controls.show();
+            this._resetZoom();
+        }
+    },
+
+    /**
      * Zoom in
      */
     _zoomIn: function () {
@@ -321,12 +409,6 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
             return;
         }
 
-        // Clear hover timeout if any
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-
         this.$modal.removeClass('active');
 
         // Remove after animation
@@ -365,12 +447,6 @@ publicWidget.registry.ProductImageZoom = publicWidget.Widget.extend({
      * @override
      */
     destroy: function () {
-        // Clear hover timeout
-        if (this.hoverTimeout) {
-            clearTimeout(this.hoverTimeout);
-            this.hoverTimeout = null;
-        }
-
         if (this.$modal && this.$modal.length) {
             // Immediate cleanup without animation
             $(document).off('keydown.imageZoom');
