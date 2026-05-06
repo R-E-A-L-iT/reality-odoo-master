@@ -88,6 +88,8 @@ class SaleOrderLine(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+
     def _extract_move_ids_from_commands(self, cmds):
         ids = []
         if not cmds:
@@ -131,6 +133,8 @@ class SaleOrderLine(models.Model):
         created = self.browse()
         if allowed:
             created |= super(SaleOrderLine, self).create(allowed)
+
+        created._orders_to_retax()._apply_canadian_sales_taxes()
         return created
 
     @api.onchange('product_id')
@@ -305,20 +309,50 @@ class SaleOrderLine(models.Model):
 
         return values
 
-    preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+    # tax automation methods
+    def _orders_to_retax(self):
+        return self.mapped("order_id").filtered(lambda order: order.exists())
 
-    # tax applying code
-    @api.onchange("product_id", "product_uom_qty")
-    def _onchange_line_reapply_province_taxes(self):
-        # Delegate to the order to keep logic in one place
-        if self.order_id:
-            self.order_id._apply_canadian_province_taxes()
+
+    @api.onchange("product_id", "product_uom_qty", "price_unit", "discount")
+    def _onchange_apply_canadian_sales_taxes_from_line(self):
+        for line in self:
+            if line.order_id:
+                line.order_id._apply_canadian_sales_taxes()
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        lines._orders_to_retax()._apply_canadian_sales_taxes()
+        return lines
+
 
     def write(self, vals):
+        orders_before = self._orders_to_retax()
+
         res = super().write(vals)
-        # If product or qty changed, re-apply
-        if {"product_id", "product_uom_qty"} & set(vals.keys()):
-            for line in self:
-                if line.order_id:
-                    line.order_id._apply_canadian_province_taxes()
+
+        if self.env.context.get("skip_apply_canadian_sales_taxes"):
+            return res
+
+        trigger_fields = {
+            "product_id",
+            "product_uom_qty",
+            "price_unit",
+            "discount",
+            "display_type",
+            "order_id",
+        }
+
+        if trigger_fields & set(vals.keys()):
+            (orders_before | self._orders_to_retax())._apply_canadian_sales_taxes()
+
+        return res
+
+
+    def unlink(self):
+        orders = self._orders_to_retax()
+        res = super().unlink()
+        orders._apply_canadian_sales_taxes()
         return res

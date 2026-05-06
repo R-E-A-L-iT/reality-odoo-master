@@ -199,156 +199,118 @@ class order(models.Model):
 
 
 
-    # 
-    # 
-    # TAXES AUTOMATIONS
-    # 
-    # 
+    # BEGIN TAXES AUTOMATION
 
-    def _is_ca_company_scope(self):
-        """Limit to your Canadian company, same condition as your rule."""
-        # Keep your business rule as-is:
-        return self.company_id and self.company_id.name == "R-E-A-L.iT Solutions"
+    CANADIAN_COMPANY_NAME = "R-E-A-L.iT Solutions"
 
-    def _get_province_tax(self, province_code):
-        """Return the account.tax record for the province under the order's company."""
+    def _get_managed_canadian_tax_names(self):
+        return set(PROVINCE_TAX_BY_CODE.values())
+
+
+    def _is_canadian_tax_scope(self):
         self.ensure_one()
-        if not (province_code and self._is_ca_company_scope()):
+        return self.company_id and self.company_id.name == self.CANADIAN_COMPANY_NAME
+
+
+    def _get_shipping_province_code(self):
+        self.ensure_one()
+        partner = self.partner_shipping_id or self.partner_id
+        state = partner.state_id if partner else False
+        return _code_from_state(state)
+
+
+    def _get_canadian_sales_tax_for_order(self):
+        self.ensure_one()
+
+        if not self._is_canadian_tax_scope():
             return self.env["account.tax"]
+
+        province_code = self._get_shipping_province_code()
         tax_name = PROVINCE_TAX_BY_CODE.get(province_code)
+
         if not tax_name:
             return self.env["account.tax"]
-        # Search inside the order's company context
-        return (
-            self.env["account.tax"]
-            .with_company(self.company_id)
-            .search([("name", "=", tax_name)], limit=1)
-        )
 
-    def _apply_canadian_province_taxes(self):
-        """Clear and apply taxes to order lines based on shipping province."""
+        Tax = self.env["account.tax"].sudo().with_company(self.company_id)
+
+        tax = Tax.search([
+            ("name", "=", tax_name),
+            ("type_tax_use", "=", "sale"),
+            "|",
+                ("company_id", "=", self.company_id.id),
+                ("company_id", "=", False),
+        ], limit=1)
+
+        if not tax:
+            _logger.warning(
+                "Canadian sales tax not found for order %s. Province=%s, tax name=%s, company=%s",
+                self.name,
+                province_code,
+                tax_name,
+                self.company_id.display_name,
+            )
+
+        return tax
+
+
+    def _remove_managed_canadian_taxes_from_line(self, line):
+        managed_names = self._get_managed_canadian_tax_names()
+        remaining_taxes = line.tax_id.filtered(lambda tax: tax.name not in managed_names)
+        if set(line.tax_id.ids) != set(remaining_taxes.ids):
+            line.with_context(skip_apply_canadian_sales_taxes=True).tax_id = [Command.set(remaining_taxes.ids)]
+
+
+    def _apply_canadian_sales_taxes(self):
+        """
+        Single source of truth for Canadian sales tax.
+
+        Rules:
+        - Canadian company: force the correct provincial tax on every real product line.
+        - Missing/unknown province: remove only our managed Canadian taxes.
+        - US company / American sales tax: do nothing except remove stale managed Canadian taxes.
+        - Never touch section/note lines.
+        """
+        if self.env.context.get("skip_apply_canadian_sales_taxes"):
+            return
+
         for order in self:
-            # Only run for your Canadian company and when a shipping state exists
-            state = order.partner_shipping_id.state_id
-            if not order._is_ca_company_scope() or not state:
-                # Clear taxes if we’re not in scope (so you don't accidentally retain old taxes)
-                for line in order.order_line:
-                    if not line.display_type and line.product_id:
-                        line.tax_id = [Command.clear()]
+            if not order.order_line:
                 continue
 
-            province_code = _code_from_state(state)
-            province_tax = order._get_province_tax(province_code)
+            tax = order._get_canadian_sales_tax_for_order()
 
             for line in order.order_line:
-                # skip sections/notes and empty lines
-                if line.display_type or not line.product_id or line.product_uom_qty <= 0:
+                if line.display_type or not line.product_id:
                     continue
-                if province_tax:
-                    # Clear-and-set (ensures nothing else sticks)
-                    line.tax_id = [Command.set(province_tax.ids)]
-                else:
-                    # No match: clear taxes to avoid stale values
-                    line.tax_id = [Command.clear()]
 
-    # ---------- Triggers to (re)apply ----------
-    @api.onchange("partner_id", "partner_shipping_id", "company_id", "pricelist_id", "sale_order_template_id")
-    def _onchange_reapply_province_taxes(self):
-        self._apply_canadian_province_taxes()
-
-    def write(self, vals):
-        res = super().write(vals)
-        # If any of these change, recompute taxes
-        if {"partner_id", "partner_shipping_id", "company_id", "pricelist_id"} & set(vals.keys()):
-            self._apply_canadian_province_taxes()
-        return res
-
-
-    # 
-    # 
-    # 
-    # 
-    # 
-
-
-
-
-
-
-
-
-
-    # 
-    # 
-    # TAXES AUTOMATIONS
-    # 
-    # 
-
-    def _is_ca_company_scope(self):
-        """Limit to your Canadian company, same condition as your rule."""
-        # Keep your business rule as-is:
-        return self.company_id and self.company_id.name == "R-E-A-L.iT Solutions"
-
-    def _get_province_tax(self, province_code):
-        """Return the account.tax record for the province under the order's company."""
-        self.ensure_one()
-        if not (province_code and self._is_ca_company_scope()):
-            return self.env["account.tax"]
-        tax_name = PROVINCE_TAX_BY_CODE.get(province_code)
-        if not tax_name:
-            return self.env["account.tax"]
-        # Search inside the order's company context
-        return (
-            self.env["account.tax"]
-            .with_company(self.company_id)
-            .search([("name", "=", tax_name)], limit=1)
-        )
-
-    def _apply_canadian_province_taxes(self):
-        """Clear and apply taxes to order lines based on shipping province."""
-        for order in self:
-            # Only run for your Canadian company and when a shipping state exists
-            state = order.partner_shipping_id.state_id
-            if not order._is_ca_company_scope() or not state:
-                # Clear taxes if we’re not in scope (so you don't accidentally retain old taxes)
-                for line in order.order_line:
-                    if not line.display_type and line.product_id:
-                        line.tax_id = [Command.clear()]
-                continue
-
-            province_code = _code_from_state(state)
-            province_tax = order._get_province_tax(province_code)
-
-            for line in order.order_line:
-                # skip sections/notes and empty lines
-                if line.display_type or not line.product_id or line.product_uom_qty <= 0:
+                if not order._is_canadian_tax_scope():
+                    # American sales tax should do nothing.
+                    # But remove stale Canadian taxes if the order switched company/country.
+                    order._remove_managed_canadian_taxes_from_line(line)
                     continue
-                if province_tax:
-                    # Clear-and-set (ensures nothing else sticks)
-                    line.tax_id = [Command.set(province_tax.ids)]
+
+                if tax:
+                    if set(line.tax_id.ids) != set(tax.ids):
+                        line.with_context(skip_apply_canadian_sales_taxes=True).tax_id = [Command.set(tax.ids)]
                 else:
-                    # No match: clear taxes to avoid stale values
-                    line.tax_id = [Command.clear()]
-
-    # ---------- Triggers to (re)apply ----------
-    @api.onchange("partner_id", "partner_shipping_id", "company_id", "pricelist_id", "sale_order_template_id")
-    def _onchange_reapply_province_taxes(self):
-        self._apply_canadian_province_taxes()
-
-    def write(self, vals):
-        res = super().write(vals)
-        # If any of these change, recompute taxes
-        if {"partner_id", "partner_shipping_id", "company_id", "pricelist_id"} & set(vals.keys()):
-            self._apply_canadian_province_taxes()
-        return res
+                    order._remove_managed_canadian_taxes_from_line(line)
 
 
-    # 
-    # 
-    # 
-    # 
-    # 
+    @api.onchange(
+        "partner_id",
+        "partner_shipping_id",
+        "partner_invoice_id",
+        "company_id",
+        "pricelist_id",
+        "order_line",
+        "order_line.product_id",
+        "order_line.product_uom_qty",
+    )
+    def _onchange_apply_canadian_sales_taxes(self):
+        self._apply_canadian_sales_taxes()
 
+
+    # END TAXES AUTOMATION
 
 
     @api.model
@@ -506,6 +468,18 @@ class order(models.Model):
                     partner.sudo().with_context(
                         allowed_company_ids=[partner.company_id.id, company.id]
                     ).write({'company_id': company.id})
+
+        tax_trigger_fields = {
+            "partner_id",
+            "partner_shipping_id",
+            "partner_invoice_id",
+            "company_id",
+            "pricelist_id",
+            "order_line",
+        }
+
+        if tax_trigger_fields & set(vals.keys()):
+            self._apply_canadian_sales_taxes()
 
         return res
 
@@ -840,6 +814,8 @@ class order(models.Model):
             if partner.id not in order.message_partner_ids.ids:
                 order.message_subscribe(partner_ids=[partner.id])
 
+        order.with_context(skip_apply_canadian_sales_taxes=False)._apply_canadian_sales_taxes()
+
         return order
 
 
@@ -873,12 +849,6 @@ class order(models.Model):
             defaults["header_id"] = header.id
 
         return defaults
-    
-    @api.onchange('pricelist_id')
-    def _onchange_pricelist_id(self):
-        if self.pricelist_id:
-            for line in self.order_line:
-                line.tax_id = [(5, 0, 0)]
 
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
