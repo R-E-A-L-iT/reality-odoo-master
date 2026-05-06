@@ -616,10 +616,6 @@ class QuotePortalFix(cPortal):
         if not section_line:
             return {'success': False, 'error': _('Section not found in order.')}
 
-        # Get the sequence of the section line
-        section_sequence = section_line.sequence
-
-        # Check if a CCP product already exists for this section - OPTIMIZED: Use ORM search
         # Remove any existing CCP line for this section
         existing_ccp_lines = order_sudo.order_line.search([
             ('order_id', '=', order_sudo.id),
@@ -629,6 +625,18 @@ class QuotePortalFix(cPortal):
         if existing_ccp_lines:
             existing_ccp_lines.unlink()
 
+        # Sort remaining lines by (sequence, id) — the same order Odoo renders them.
+        # Then renumber with 10-step gaps so every line has a unique sequence.
+        # This handles the common case where all lines share the same default sequence
+        # value, which would otherwise cause the CCP product to land last.
+        remaining_lines = order_sudo.order_line.sorted(key=lambda l: (l.sequence, l.id))
+        section_ids = list(remaining_lines.ids)
+        section_idx = section_ids.index(section_line.id)
+        for i, line in enumerate(remaining_lines):
+            line.sequence = (i + 1) * 10
+        # Place CCP product midway between section (section_idx+1)*10 and the next line (section_idx+2)*10
+        ccp_sequence = (section_idx + 1) * 10 + 5
+
         # Add the new CCP product line
         line_data = {
             'product_id': product.id,
@@ -637,7 +645,7 @@ class QuotePortalFix(cPortal):
             'product_uom': product.uom_id.id,
             'price_unit': product.list_price,
             'discount': 0,
-            'sequence': section_sequence + 1,
+            'sequence': ccp_sequence,
             'selected': 'true',
             'sectionSelected': 'true',
             'optional': 'no',
@@ -655,17 +663,17 @@ class QuotePortalFix(cPortal):
             'order_line': [Command.create(line_data)]
         })
 
-        # Get the ID of the newly created line - OPTIMIZED: Use ORM search instead of filtered
+        # Get the ID of the newly created line
         new_line = order_sudo.order_line.search([
             ('order_id', '=', order_sudo.id),
             ('product_id', '=', product.id),
-            ('sequence', '=', section_sequence + 1)
-        ], limit=1, order='id desc')  # Get most recent matching line
+            ('sequence', '=', ccp_sequence)
+        ], limit=1, order='id desc')
 
         line_id = f"lineId{new_line.id}" if new_line else None
 
-        # OPTIMIZED: Tax computation will happen automatically during template rendering
-        # Removed explicit _compute_tax_totals() call to improve performance
+        # Invalidate ORM cache so the template renders with the freshly written sequences
+        order_sudo.invalidate_recordset()
 
         # Prepare response with updated template
         results = self._get_portal_order_details(order_sudo)
