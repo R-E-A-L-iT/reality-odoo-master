@@ -233,14 +233,23 @@ class product_template_sync:
         product_model = self.database['product.template']
         all_fields = product_model.fields_get()
 
-        for col_idx, column_name in enumerate(self.sheet[0]):
+        header = self.sheet[0]
+        _logger.info(f"ProSync [DEBUG] Row {row_index} — header cols={len(header)} | row cols={len(row)} | SKU={getattr(product, 'sku', product.id)}")
+
+        for col_idx, column_name in enumerate(header):
             field_name = column_name.strip().lower()
 
             # skip columns already processed
             if field_name in {'sku', 'valid', 'continue'}:
                 continue
 
-            raw_value = row[col_idx]
+            # Guard: row may be shorter than header (trailing empty cells stripped by gspread)
+            if col_idx >= len(row):
+                _logger.info(f"ProSync [DEBUG] Row {row_index} col {col_idx} ('{column_name}') — no cell value (row shorter than header), treating as empty")
+                raw_value = ''
+            else:
+                raw_value = row[col_idx]
+
             # deal with columns using parametres
             if "[language=" in column_name:
                 update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
@@ -255,11 +264,15 @@ class product_template_sync:
                     )
                 continue
             elif field_name.startswith("price[pricelist="):
-                update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
+                update_with_price_context(product, column_name, raw_value, self.database, row_index, col_idx)
                 continue
             elif field_name.startswith("rental_price[pricelist="):
-                _logger.info(f"ProSync [RENTAL] Row {row_index} — dispatching rental price column '{column_name}' with value '{row[col_idx]}'")
-                update_with_rental_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
+                _logger.info(f"ProSync [RENTAL] Row {row_index} col {col_idx} — detected rental price column '{column_name}' | raw value='{raw_value}'")
+                try:
+                    update_with_rental_price_context(product, column_name, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
+                except Exception as e:
+                    _logger.error(f"ProSync [RENTAL] Row {row_index} — UNHANDLED ERROR in update_with_rental_price_context for column '{column_name}': {str(e)}", exc_info=True)
+                    self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
@@ -275,7 +288,6 @@ class product_template_sync:
                 continue
 
             field_type = all_fields[base_field]['type']
-            raw_value = row[col_idx]
 
             try:
                 # Normalize value by field type

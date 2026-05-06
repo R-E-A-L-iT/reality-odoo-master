@@ -10,7 +10,6 @@ from .sync.stock_lot import stock_lot_sync
 from .sync.res_partner import res_partner_sync
 from .sync.mrp_bom import mrp_bom_sync
 from .sync.mrp_bom_line import mrp_bom_line_sync
-from .sync.rental_daily_price import rental_daily_price_sync
 
 from datetime import datetime
 
@@ -114,12 +113,6 @@ class ProsyncSync(models.Model):
                         sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
                         syncer = mrp_bom_line_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_mrp_bom_line()
-                    elif sheet_type == "rental_daily_price":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
-                        syncer = rental_daily_price_sync(name=sheet_name, sheet=sheet_data, database=self.env)
-                        syncer.sync_rental_daily_price()
                     else:
                         _logger.error(f"ProSync: Given sheet type is not supported by ProSync: {sheet_type}")
 
