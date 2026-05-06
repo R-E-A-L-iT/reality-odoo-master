@@ -66,7 +66,8 @@ class product_template_sync:
         sheet_width = len(sheet_columns)
         
         # variables that will contain a list of any missing columns in the sheet
-        missing_columns = [header for header in required_fields if header not in sheet_columns]
+        sheet_columns_lower = [c.strip().lower() for c in sheet_columns]
+        missing_columns = [header for header in required_fields if header not in sheet_columns_lower]
         
         # verify that sheet format is as expected
         if missing_columns:
@@ -129,12 +130,18 @@ class product_template_sync:
                 _logger.info(f"ProSync: Skipping empty row {row_index}")
                 continue
 
-            # Normalize 'valid' and 'continue' values
-            valid_raw = row[column_indices.get("valid", -1)] if "valid" in column_indices else ''
-            continue_raw = row[column_indices.get("continue", -1)] if "continue" in column_indices else ''
+            # Normalize 'valid' and 'continue' values — default True when columns absent
+            if "valid" in column_indices:
+                vidx = column_indices["valid"]
+                is_valid = normalize_bool(row[vidx] if vidx < len(row) else '')
+            else:
+                is_valid = True
 
-            is_valid = normalize_bool(valid_raw)
-            should_continue = normalize_bool(continue_raw)
+            if "continue" in column_indices:
+                cidx = column_indices["continue"]
+                should_continue = normalize_bool(row[cidx] if cidx < len(row) else '')
+            else:
+                should_continue = True
 
             if not is_valid:
                 if should_continue:
@@ -273,6 +280,17 @@ class product_template_sync:
                 except Exception as e:
                     _logger.error(f"ProSync [RENTAL] Row {row_index} — UNHANDLED ERROR in update_with_rental_price_context for column '{column_name}': {str(e)}", exc_info=True)
                     self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
+                continue
+            elif field_name in ("rentalusd", "rentalcad"):
+                pricelist_name = "USD RENTAL (USD)" if field_name == "rentalusd" else "CAD RENTAL (CAD)"
+                synthetic_col = f"rental_price[pricelist={pricelist_name}]"
+                _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
+                try:
+                    update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
+                except Exception as e:
+                    _logger.error(f"ProSync [RENTAL] Row {row_index} — error processing '{column_name}': {str(e)}", exc_info=True)
+                continue
+            elif field_name in ("rentalcadoverride", "rentausdoverride"):
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
