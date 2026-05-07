@@ -110,6 +110,7 @@
         "views/Other/normalTerms.xml",
         "views/Other/website_logo.xml",
         "views/Other/renewalText.xml",
+        "views/Other/rental_order_wizard_form.xml",
         # "views/Quote/quoteRentalAddress.xml",
         "views/Quote/ccp_selection_form.xml",
         "views/Other/mail.xml",

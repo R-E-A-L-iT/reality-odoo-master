@@ -728,6 +728,8 @@ class order(models.Model):
                     _logger.info("PICKUP DEBUG --> skip bom_line %s because final_qty <= 0", bom_line.id)
                     continue
 
+                allowed_lot_ids = self._get_available_serial_lot_ids_for_pickup(bom_line.product_id)
+
                 exploded_line = {
                     'parent_sale_line_id': line.id,
                     'parent_product_id': line.product_id.id,
@@ -736,6 +738,8 @@ class order(models.Model):
                     'product_name': bom_line.product_id.display_name,
                     'qty': qty,
                     'uom_id': bom_line.product_uom_id.id if bom_line.product_uom_id else bom_line.product_id.uom_id.id,
+                    'tracking': bom_line.product_id.tracking,
+                    'allowed_lot_ids': allowed_lot_ids,
                 }
                 exploded_pickup_lines.append(exploded_line)
                 _logger.info("PICKUP DEBUG --> appended exploded line: %s", exploded_line)
@@ -751,6 +755,34 @@ class order(models.Model):
         _logger.info("=== PICKUP DEBUG END for order %s (id=%s) ===", self.name, self.id)
 
         return action
+
+    def _get_available_serial_lot_ids_for_pickup(self, product):
+        """Return serial lots physically available for this component product,
+        even if your custom bundle/kit logic links them to another kit instance.
+        """
+        self.ensure_one()
+
+        if product.tracking != "serial":
+            return []
+
+        Quant = self.env["stock.quant"].sudo()
+
+        quants = Quant.search([
+            ("product_id", "=", product.id),
+            ("lot_id", "!=", False),
+            ("location_id.usage", "=", "internal"),
+            "|",
+                ("company_id", "=", False),
+                ("company_id", "=", self.company_id.id),
+        ])
+
+        available_lot_ids = []
+        for quant in quants:
+            available_qty = quant.quantity - quant.reserved_quantity
+            if available_qty > 0:
+                available_lot_ids.append(quant.lot_id.id)
+
+        return list(set(available_lot_ids))
 
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
