@@ -1228,8 +1228,7 @@
             </attribute>
         </xpath> -->
 
-        <!-- Remove original tax column because custom header does not show Taxes -->
-<xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[span[contains(@id, 'line_tax_ids')]]" position="replace"/>
+        <xpath expr="//span[contains(@id, 'line_tax_ids')]/.." position="replace"/>
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[3]" position="attributes">
