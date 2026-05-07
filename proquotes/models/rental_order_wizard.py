@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from odoo import api, models, Command
+from odoo import api, fields, models, Command
 
 _logger = logging.getLogger(__name__)
 
@@ -47,12 +47,29 @@ class RentalOrderWizard(models.TransientModel):
                 _logger.info("RENTAL WIZARD DEBUG skipping exploded line with qty <= 0: %s", exploded)
                 continue
 
+            allowed_lot_ids = exploded.get("allowed_lot_ids") or []
+
+            pickeable_lot_ids = self._get_pickeable_serial_lot_ids_for_product(
+                product,
+                parent_line.company_id,
+            )
+
             vals = {
                 "status": status,
                 "order_line_id": parent_line.id,
                 "product_id": product.id,
                 "qty_reserved": qty,
             }
+
+            if product.tracking == "serial":
+                vals["tracking"] = "serial"
+                vals["pickeable_lot_ids"] = [Command.set(pickeable_lot_ids)]
+                vals["qty_available"] = len(pickeable_lot_ids)
+            else:
+                vals["qty_available"] = qty
+
+            if allowed_lot_ids:
+                vals["allowed_lot_ids"] = [Command.set(allowed_lot_ids)]
 
             if status == "pickup":
                 vals["qty_delivered"] = qty
@@ -70,3 +87,33 @@ class RentalOrderWizard(models.TransientModel):
         _logger.info("=== RENTAL WIZARD DEBUG END ===")
 
         return res
+
+    def _get_pickeable_serial_lot_ids_for_product(self, product, company):
+        if product.tracking != "serial":
+            return []
+
+        quants = self.env["stock.quant"].sudo().search([
+            ("product_id", "=", product.id),
+            ("lot_id", "!=", False),
+            ("location_id.usage", "=", "internal"),
+            "|",
+                ("company_id", "=", False),
+                ("company_id", "=", company.id),
+        ])
+
+        lot_ids = []
+
+        for quant in quants:
+            available_qty = quant.quantity - quant.reserved_quantity
+            if available_qty > 0:
+                lot_ids.append(quant.lot_id.id)
+
+        return list(set(lot_ids))
+
+class RentalOrderWizardLine(models.TransientModel):
+    _inherit = "rental.order.wizard.line"
+
+    allowed_lot_ids = fields.Many2many(
+        "stock.lot",
+        string="Allowed Serial Numbers",
+    )
