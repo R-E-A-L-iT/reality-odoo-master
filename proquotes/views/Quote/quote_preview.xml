@@ -997,18 +997,22 @@
                         </t>
                     </t>
                     <!-- <t t-esc="section_subtotal"/> -->
-                    <span t-if="line.special != 'optional' or line.selected == 'true'"
-                        t-out="section_subtotal"
-                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
-                        class="text-left"
-                        t-att-data-section_id="line_section_id"
-                        style="font-weight: 400 !important;"/>
-
-                    <span t-else=""
-                        t-out="0.0"
-                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
-                        class="text-left"
-                        style="font-weight: 400 !important;"/>
+                    <t t-if="line.special != 'optional' or line.selected == 'true'"
+                       class="text-left"
+                       t-att-data-section_id="line_section_id"
+                       style="font-weight: 400 !important;">
+                        <t t-esc="request.env['ir.qweb.field.float'].value_to_html(section_subtotal, {'lang': language, 'precision': 2})"/>
+                        $
+                    </t>
+                    <t t-elif="language == 'en_CA' or language == 'en_US'" class="text-left" style="font-weight: 400 !important;">
+                        0.00$
+                    </t>
+                    <t t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">
+                        0,00$
+                    </t>
+                    <t t-elif="language == 'es_ES'" class="text-left" style="font-weight: 400 !important;">
+                        0,00$
+                    </t>
                 </label>
             </div>
         </xpath>
@@ -1189,21 +1193,21 @@
                             '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
                     ])"/>
                 <span t-if="pricelist_item" style="white-space: nowrap;">
-                    <span t-out="pricelist_item[0].fixed_price" t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % pricelist_item[0].fixed_price"/>
                 </span>
                 <span t-else="">—</span>
             </td>
         </xpath>
         <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="after">
-            <td t-if="sale_order.is_rental_order" class="text-left">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
+            <t t-if="sale_order.is_rental_order">
                 <t t-set="cal_days" t-value="max(1, (sale_order.rental_return_date.date() - sale_order.rental_start_date.date()).days) if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
                 <t t-if="cal_days &gt; 0">
                     <t t-if="cal_days &lt;= 30">
                         <t t-set="full_weeks" t-value="cal_days // 7"/>
-                        <t t-set="rem_days" t-value="cal_days % 7"/>
-                        <t t-set="paid_days" t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
-                        <t t-set="paid_days" t-value="paid_days if paid_days &lt;= 12 else 12"/>
+                        <t t-set="rem_days"   t-value="cal_days % 7"/>
+                        <t t-set="paid_days"  t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
+                        <t t-set="paid_days"  t-value="paid_days if paid_days &lt;= 12 else 12"/>
                     </t>
                     <t t-else="">
                         <t t-set="paid_days" t-value="12 + (cal_days - 30)"/>
@@ -1212,17 +1216,22 @@
                 <t t-else="">
                     <t t-set="paid_days" t-value="0"/>
                 </t>
-
-                <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
-                <span t-else="">—</span>
-            </td>
+                <td class="text-left">
+                    <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
+                    <span t-else="">—</span>
+                </td>
+            </t>
         </xpath>
 
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
-        <!-- remove tax column -->
-        <xpath expr="//td[@class='tax-column']" position="replace"/>
+        <!-- Add Attributes For Easier CSS -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[5]" position="attributes">
+            <attribute name="t-attf-class">tax-column text-left {{ 'd-md-table-cell' if report_type == 'html'
+                else '' }} table-column-none
+            </attribute>
+        </xpath>
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[3]" position="attributes">
@@ -1239,11 +1248,11 @@
         </xpath>
 
         <!-- Add Attributes For Easier CSS -->
-        <!-- <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[5]" position="attributes">
+        <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[5]" position="attributes">
             <attribute name="t-attf-class">text-left {{ 'd-md-table-cell' if report_type == 'html' else '' }}
                 table-column-none
             </attribute>
-        </xpath> -->
+        </xpath>
 
         <!-- Quote Info -->
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
@@ -1353,22 +1362,31 @@
             <attribute name="class">text-left</attribute>
         </xpath>
 
+        <!-- Price Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
+
         <!-- Price column: rental lines → daily rate from pricelist; non-rental unchanged -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="replace">
-            <td class="text-left">
-                <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
-                    <span class="nowrap"
-                        style="white-space: nowrap;"
-                        t-out="line.rental_daily_price"
-                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
-                </t>
-                <t t-else="">
-                    <span class="nowrap"
-                        style="white-space: nowrap;"
-                        t-out="line.price_unit"
-                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
-                </t>
-            </td>
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="replace">
+            <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
+                <span class="text-left nowrap" style="white-space: nowrap;">
+                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % line.rental_daily_price"/>
+                </span>
+            </t>
+            <t t-else="">
+                <div t-field="line.price_unit" class="text-left nowrap"/>
+            </t>
+        </xpath>
+
+        <!-- Tax Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
+            <attribute name="t-attf-class">text-left</attribute>
+        </xpath>
+
+        <!-- Line_Total Alignment -->
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
+            <attribute name="class">text-left</attribute>
         </xpath>
 
 
