@@ -997,22 +997,18 @@
                         </t>
                     </t>
                     <!-- <t t-esc="section_subtotal"/> -->
-                    <t t-if="line.special != 'optional' or line.selected == 'true'"
-                       class="text-left"
-                       t-att-data-section_id="line_section_id"
-                       style="font-weight: 400 !important;">
-                        <t t-esc="request.env['ir.qweb.field.float'].value_to_html(section_subtotal, {'lang': language, 'precision': 2})"/>
-                        $
-                    </t>
-                    <t t-elif="language == 'en_CA' or language == 'en_US'" class="text-left" style="font-weight: 400 !important;">
-                        0.00$
-                    </t>
-                    <t t-elif="language == 'fr_CA'" class="text-left" style="font-weight: 400 !important;">
-                        0,00$
-                    </t>
-                    <t t-elif="language == 'es_ES'" class="text-left" style="font-weight: 400 !important;">
-                        0,00$
-                    </t>
+                    <span t-if="line.special != 'optional' or line.selected == 'true'"
+                        t-out="section_subtotal"
+                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
+                        class="text-left"
+                        t-att-data-section_id="line_section_id"
+                        style="font-weight: 400 !important;"/>
+
+                    <span t-else=""
+                        t-out="0.0"
+                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
+                        class="text-left"
+                        style="font-weight: 400 !important;"/>
                 </label>
             </div>
         </xpath>
@@ -1193,7 +1189,7 @@
                             '&amp;', ('product_id', '=', line.product_id.id), ('applied_on', '=', '0_product_variant'),
                     ])"/>
                 <span t-if="pricelist_item" style="white-space: nowrap;">
-                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % pricelist_item[0].fixed_price"/>
+                    <span t-out="pricelist_item[0].fixed_price" t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
                 </span>
                 <span t-else="">—</span>
             </td>
@@ -1371,11 +1367,13 @@
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]" position="replace">
             <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
                 <span class="text-left nowrap" style="white-space: nowrap;">
-                    <t t-esc="sale_order.currency_id.symbol + ' ' + '%.2f' % line.rental_daily_price"/>
+                    <span t-out="line.rental_daily_price" t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
                 </span>
             </t>
             <t t-else="">
-                <div t-field="line.price_unit" class="text-left nowrap"/>
+                <span t-field="line.price_unit"
+                    t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
+                    class="text-left nowrap"/>
             </t>
         </xpath>
 
