@@ -102,29 +102,21 @@ class SaleOrderLine(models.Model):
 
 	@staticmethod
 	def _compute_custom_rental_price(daily_price, days):
-		"""Custom rental pricing formula.
-
-		Charges 4 days per week (up to 12 days max) for the first 30 days,
-		then linearly for each additional day beyond 30.
-
-		:param float daily_price: price per day
-		:param int days: total rental duration in days
-		:return float: total rental price
-		"""
 		if days <= 0:
 			return 0
+
+		def paid_days_for_partial_month(day_count):
+			full_weeks = day_count // 7
+			extra_days = day_count % 7
+			return min((full_weeks * 4) + min(extra_days, 4), 12)
 
 		full_months = days // 30
 		remaining_days = days % 30
 
-		# Each full 30-day month costs at most 12 paid days
 		paid_days = full_months * 12
 
-		# Apply the normal weekly/daily logic to the leftover days
-		if remaining_days > 0:
-			full_weeks = remaining_days // 7
-			extra_days = remaining_days % 7
-			paid_days += 4 * full_weeks + min(extra_days, 4)
+		if remaining_days:
+			paid_days += paid_days_for_partial_month(remaining_days)
 
 		return daily_price * paid_days
 
