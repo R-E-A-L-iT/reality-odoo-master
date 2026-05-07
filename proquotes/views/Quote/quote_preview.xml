@@ -1228,7 +1228,7 @@
             </attribute>
         </xpath> -->
 
-        <xpath expr="//span[contains(@id, 'line_tax_ids')]/.." position="replace"/>
+        <xpath expr="//td[contains(@class, 'tax-column')]" position="replace"/>
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[3]" position="attributes">
