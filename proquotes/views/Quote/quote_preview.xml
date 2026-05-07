@@ -1358,11 +1358,6 @@
             <attribute name="class">text-left</attribute>
         </xpath>
 
-        <!-- Price Alignment -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="attributes">
-            <attribute name="t-attf-class">text-left</attribute>
-        </xpath>
-
         <!-- Price column: rental lines → daily rate from pricelist; non-rental unchanged -->
         <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="replace">
             <td class="text-left">
