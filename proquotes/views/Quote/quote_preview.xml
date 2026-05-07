@@ -1195,15 +1195,15 @@
             </td>
         </xpath>
         <!-- Multiplier Column (rental only) - shows paid days per custom pricing formula -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]//div[@t-field=&quot;line.price_unit&quot;]/.." position="after">
-            <t t-if="sale_order.is_rental_order">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="after">
+            <td t-if="sale_order.is_rental_order" class="text-left">
                 <t t-set="cal_days" t-value="max(1, (sale_order.rental_return_date.date() - sale_order.rental_start_date.date()).days) if sale_order.rental_start_date and sale_order.rental_return_date else 0"/>
                 <t t-if="cal_days &gt; 0">
                     <t t-if="cal_days &lt;= 30">
                         <t t-set="full_weeks" t-value="cal_days // 7"/>
-                        <t t-set="rem_days"   t-value="cal_days % 7"/>
-                        <t t-set="paid_days"  t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
-                        <t t-set="paid_days"  t-value="paid_days if paid_days &lt;= 12 else 12"/>
+                        <t t-set="rem_days" t-value="cal_days % 7"/>
+                        <t t-set="paid_days" t-value="4 * full_weeks + (rem_days if rem_days &lt;= 4 else 4)"/>
+                        <t t-set="paid_days" t-value="paid_days if paid_days &lt;= 12 else 12"/>
                     </t>
                     <t t-else="">
                         <t t-set="paid_days" t-value="12 + (cal_days - 30)"/>
@@ -1212,11 +1212,10 @@
                 <t t-else="">
                     <t t-set="paid_days" t-value="0"/>
                 </t>
-                <td class="text-left">
-                    <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
-                    <span t-else="">—</span>
-                </td>
-            </t>
+
+                <span t-if="paid_days &gt; 0">x<t t-esc="paid_days"/></span>
+                <span t-else="">—</span>
+            </td>
         </xpath>
 
         <!-- Hide Uneeded Unit Column -->
@@ -1374,16 +1373,6 @@
                         t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
                 </t>
             </td>
-        </xpath>
-
-        <!-- Tax Alignment -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[6]" position="attributes">
-            <attribute name="t-attf-class">text-left</attribute>
-        </xpath>
-
-        <!-- Line_Total Alignment -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[7]" position="attributes">
-            <attribute name="class">text-left</attribute>
         </xpath>
 
 
