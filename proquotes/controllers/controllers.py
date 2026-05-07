@@ -836,7 +836,6 @@ class WebsiteForm(form.WebsiteForm):
     
             # Update values for the sale order
             values['partner_id'] = company_partner.id
-            values['is_rental'] = True
             values['is_rental_order'] = True
 
             for date_field in ('rental_start_date', 'rental_return_date'):
