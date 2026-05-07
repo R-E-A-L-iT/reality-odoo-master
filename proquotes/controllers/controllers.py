@@ -838,9 +838,16 @@ class WebsiteForm(form.WebsiteForm):
             values['partner_id'] = company_partner.id
             values['is_rental'] = True
             values['is_rental_order'] = True
-            # values['rental_start'] = values.get('rental_start')
-            # values['rental_end'] = values.get('rental_end')
-    
+
+            for date_field in ('rental_start_date', 'rental_return_date'):
+                raw = values.get(date_field)
+                if raw and isinstance(raw, str):
+                    try:
+                        from datetime import datetime
+                        values[date_field] = datetime.strptime(raw, '%Y-%m-%d')
+                    except ValueError:
+                        values.pop(date_field, None)
+
             if 'company_id' not in values:
                 values['company_id'] = request.website.company_id.id
     

@@ -22,7 +22,17 @@ FormEditorRegistry.add('create_rental_quote', {
         fillWith: 'rental_email',
         name: 'rental_email',
         string: _t('Email'),
-    },],
+    }, {
+        type: 'date',
+        required: true,
+        name: 'rental_start_date',
+        string: _t('Rental Start Date'),
+    }, {
+        type: 'date',
+        required: true,
+        name: 'rental_return_date',
+        string: _t('Rental End Date'),
+    }],
     fields: [{
         name: 'sale_order_template_id',
         type: 'many2one',
@@ -40,18 +50,4 @@ FormEditorRegistry.add('create_rental_quote', {
         relation: 'crm.team',
         string: _t('Sales Team'),
 }],
-// {
-//         type: 'date',
-//         modelRequired: true,
-//         name: 'rental_start',
-//         fillWith: 'rental_start',
-//         string: _t('Start of Rental period'),
-//     }, {
-//         type: 'date',
-//         required: true,
-//         fillWith: 'rental_end',
-//         name: 'rental_end',
-//         string: _t('End of Rental period'),
-//     }, 
-    // successPage: '/job-thank-you',
 });

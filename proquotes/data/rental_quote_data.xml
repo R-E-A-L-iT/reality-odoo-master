@@ -11,12 +11,11 @@
             'partner_name',
             'company_name',
             'rental_email',
+            'rental_start_date',
+            'rental_return_date',
             'sale_order_template_id',
             'user_id',
             'team_id'
         ]"/>
-        <!-- 
-            'rental_start',
-            'rental_end', -->
     </function>
 </odoo>

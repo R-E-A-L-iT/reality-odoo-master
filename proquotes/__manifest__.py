@@ -49,6 +49,7 @@
             "proquotes/static/src/JS/ccp_selection.js",
         ],
         'web.assets_frontend': [
+            "proquotes/static/src/JS/rental_duration_display.js",
             "proquotes/static/src/CSS/header.css",
             "proquotes/static/src/CSS/store.css",
             "proquotes/static/src/CSS/ccp_selection.css",
@@ -131,5 +132,6 @@
         "views/Quote/table_align.xml",
         "views/Other/crm_lead.xml",
         "data/thanks_for_payment.xml",
+        "data/rental_quote_data.xml",
     ],
 }
