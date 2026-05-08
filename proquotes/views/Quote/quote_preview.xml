@@ -1221,9 +1221,6 @@
         <!-- Hide Uneeded Unit Column -->
         <xpath expr="//span[@t-field=&quot;line.product_uom&quot;]" position="replace"/>
 
-        <!-- remove tax column -->
-        <xpath expr="//td[@class='tax-column']" position="replace"/>
-
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]//td[3]" position="attributes">
             <attribute name="t-attf-class">text-left {{ 'd-md-table-cell' if report_type == 'html' else '' }}
