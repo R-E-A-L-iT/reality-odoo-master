@@ -1350,7 +1350,7 @@
         </xpath>
 
         <!-- Price column: rental lines → daily rate from pricelist; non-rental unchanged -->
-        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[4]" position="replace">
+        <xpath expr="//t[@t-if=&quot;not line.display_type&quot;]/td[3]" position="replace">
             <td class="text-left">
                 <t t-if="sale_order.is_rental_order and line.product_id.rent_ok and line.rental_daily_price">
                     <span class="nowrap"
