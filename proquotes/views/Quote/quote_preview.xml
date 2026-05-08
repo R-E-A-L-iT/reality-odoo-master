@@ -1002,13 +1002,12 @@
                         t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
                         class="text-left"
                         t-att-data-section_id="line_section_id"
-                        style="font-weight: 400 !important;"/>
-
+                        style="font-weight: 400 !important;"></span>
                     <span t-else=""
                         t-out="0.0"
                         t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
                         class="text-left"
-                        style="font-weight: 400 !important;"/>
+                        style="font-weight: 400 !important;"></span>
                 </label>
             </div>
         </xpath>
