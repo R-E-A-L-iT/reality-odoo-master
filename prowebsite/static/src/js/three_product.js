@@ -110,6 +110,31 @@ whenReady(async () => {
         scene.add(front.target);
     }
 
+    function addSoftProductLights(scene) {
+        const ambient = new THREE.AmbientLight(0xffffff, 5.8);
+        scene.add(ambient);
+
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x555555, 4.2);
+        hemi.position.set(0, 1, 0);
+        scene.add(hemi);
+
+        const frontLeft = new THREE.DirectionalLight(0xffffff, 2.2);
+        frontLeft.position.set(-4, 3, 6);
+        scene.add(frontLeft);
+
+        const frontRight = new THREE.DirectionalLight(0xffffff, 2.0);
+        frontRight.position.set(4, 3, 6);
+        scene.add(frontRight);
+
+        const topLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        topLight.position.set(0, 7, 2);
+        scene.add(topLight);
+
+        const fillBack = new THREE.DirectionalLight(0xffffff, 1.4);
+        fillBack.position.set(0, 2, -6);
+        scene.add(fillBack);
+    }
+
     // ----------------------------
     // Shared adapter model cache (GLB)
     // ----------------------------
@@ -508,7 +533,7 @@ whenReady(async () => {
     scrollCamera.position.set(0, 0, 5);
 
     const scrollRenderer = createRenderer(scrollHost, "1");
-    addStandardLights(scrollScene, "dark");
+    addSoftProductLights(scrollScene);
 
     let scrollModel = null;
     let scrollWrapper = null;
