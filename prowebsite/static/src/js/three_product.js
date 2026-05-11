@@ -598,12 +598,9 @@ whenReady(async () => {
             lerp(0, Math.PI / 2, phase2Ease);
 
         /*
-        * Phase 2:
-        * Steamroller / wheel-coming-toward-you motion.
-        * Negative = top rolls away, bottom rolls toward camera.
-        * Flip this to positive if it rolls the wrong way visually.
+        * Phase 2.
         */
-        scrollWrapper.rotation.x = lerp(0, -Math.PI / 2, phase2Ease);
+        scrollWrapper.rotation.x = lerp(0, Math.PI / 2, phase2Ease);
 
         scrollWrapper.rotation.y = 0;
 
