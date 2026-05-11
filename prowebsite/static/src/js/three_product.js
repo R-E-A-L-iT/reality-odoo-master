@@ -111,28 +111,49 @@ whenReady(async () => {
     }
 
     function addSoftProductLights(scene) {
-        const ambient = new THREE.AmbientLight(0xffffff, 5.8);
+        // Strong base visibility
+        const ambient = new THREE.AmbientLight(0xffffff, 8.5);
         scene.add(ambient);
 
-        const hemi = new THREE.HemisphereLight(0xffffff, 0x555555, 4.2);
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x777777, 6.5);
         hemi.position.set(0, 1, 0);
         scene.add(hemi);
 
-        const frontLeft = new THREE.DirectionalLight(0xffffff, 2.2);
-        frontLeft.position.set(-4, 3, 6);
+        // Large even front fill
+        const frontCenter = new THREE.DirectionalLight(0xffffff, 5.5);
+        frontCenter.position.set(0, 2, 7);
+        scene.add(frontCenter);
+
+        const frontLeft = new THREE.DirectionalLight(0xffffff, 4.2);
+        frontLeft.position.set(-6, 3, 5);
         scene.add(frontLeft);
 
-        const frontRight = new THREE.DirectionalLight(0xffffff, 2.0);
-        frontRight.position.set(4, 3, 6);
+        const frontRight = new THREE.DirectionalLight(0xffffff, 4.2);
+        frontRight.position.set(6, 3, 5);
         scene.add(frontRight);
 
-        const topLight = new THREE.DirectionalLight(0xffffff, 1.8);
-        topLight.position.set(0, 7, 2);
+        // Top fill so upper faces do not disappear
+        const topLight = new THREE.DirectionalLight(0xffffff, 3.8);
+        topLight.position.set(0, 8, 2);
         scene.add(topLight);
 
-        const fillBack = new THREE.DirectionalLight(0xffffff, 1.4);
-        fillBack.position.set(0, 2, -6);
-        scene.add(fillBack);
+        // Lower fill so underside / red knob stays visible
+        const lowerFill = new THREE.DirectionalLight(0xffffff, 3.0);
+        lowerFill.position.set(0, -5, 4);
+        scene.add(lowerFill);
+
+        // Subtle brand-red rim/fill lights
+        const redLeft = new THREE.DirectionalLight(0xff1a1a, 2.4);
+        redLeft.position.set(-5, 1, 4);
+        scene.add(redLeft);
+
+        const redRight = new THREE.DirectionalLight(0xff2b2b, 2.0);
+        redRight.position.set(5, 1, 3);
+        scene.add(redRight);
+
+        const redBackGlow = new THREE.PointLight(0xff0000, 3.2, 10);
+        redBackGlow.position.set(0, 1.5, -3);
+        scene.add(redBackGlow);
     }
 
     // ----------------------------
