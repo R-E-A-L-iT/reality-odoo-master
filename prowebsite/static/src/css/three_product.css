@@ -200,8 +200,51 @@
     position: relative;
     width: 100%;
     min-height: 200vh;
-    background: #111111;
     overflow: visible;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 120, 120, 0.18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 30%,
+            rgba(255, 80, 80, 0.12),
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 50% 80%,
+            rgba(120, 0, 0, 0.22),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #2b0000 0%,
+            #4d0000 35%,
+            #7a0000 70%,
+            #520000 100%
+        );
+
+    background-blend-mode: screen, overlay, soft-light, normal;
+}
+
+.o_three_scroll_section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    z-index: 0;
+
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0.03) 0px,
+            rgba(255,255,255,0.03) 2px,
+            transparent 2px,
+            transparent 6px
+        );
 }
 
 .o_three_scroll_model_host {
@@ -371,15 +414,15 @@
 
 /* Hatch-specific placement */
 .o_three_feature_callout_hatch .o_three_feature_dot {
-    left: 0;
-    top: 88px;
+    left: -170px;
+    top: 98px;
 }
 
 .o_three_feature_callout_hatch .o_three_feature_line_diagonal {
-    left: 22px;
-    top: 98px;
-    width: 190px;
-    transform: rotate(-12deg);
+    left: -148px;
+    top: 108px;
+    width: 360px;
+    transform: rotate(-8deg);
 }
 
 .o_three_feature_callout_hatch .o_three_feature_line_under {
