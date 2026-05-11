@@ -514,6 +514,36 @@ whenReady(async () => {
     let scrollWrapper = null;
 
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
+    let scrollHotspotLayer = null;
+
+    function createScrollHotspots() {
+        if (!scrollHost) {
+            return;
+        }
+
+        scrollHotspotLayer = document.createElement("div");
+        scrollHotspotLayer.className = "o_three_scroll_hotspot_layer";
+
+        scrollHotspotLayer.innerHTML = `
+            <div class="o_three_feature_callout o_three_feature_callout_screw">
+                <div class="o_three_feature_line"></div>
+                <div class="o_three_feature_dot"></div>
+                <div class="o_three_feature_label">Multi-use screw attachment</div>
+            </div>
+        `;
+
+        scrollHost.appendChild(scrollHotspotLayer);
+    }
+
+    function updateScrollHotspots() {
+        if (!scrollHotspotLayer) {
+            return;
+        }
+
+        const showScrewCallout = scrollAnimProgress >= 0.96;
+
+        scrollHotspotLayer.classList.toggle("is-visible", showScrewCallout);
+    }
 
     let scrollAnimProgress = 0;
     const scrollPixelsForFullAnimation = 1400;
@@ -536,16 +566,18 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        // Start fully flat/upright from the front
-        // End with top face toward the camera
+        // Rotate bottom face toward camera
         scrollModel.rotation.x = lerp(0, -Math.PI / 2, t);
-        scrollModel.rotation.y = 0;
-        scrollModel.rotation.z = 0;
 
-        // Bring the model forward and slightly up as the scroll progresses
+        // Slight left/diamond rotation at the end
+        scrollModel.rotation.y = 0;
+        scrollModel.rotation.z = lerp(0, -Math.PI / 4, t);
+
         scrollWrapper.position.x = 0;
         scrollWrapper.position.y = lerp(0, 0.25, t);
         scrollWrapper.position.z = lerp(0, 1.35, t);
+
+        updateScrollHotspots();
     }
 
     function onScrollSectionWheel(event) {
@@ -608,6 +640,7 @@ whenReady(async () => {
         scrollWrapper.position.set(0, 0, 0);
         scrollScene.add(scrollWrapper);
 
+        createScrollHotspots();
         applyScrollSectionPose();
     }
 
