@@ -541,7 +541,7 @@ whenReady(async () => {
             return;
         }
 
-        const showScrewCallout = scrollAnimProgress >= 0.96;
+        const showScrewCallout = scrollAnimProgress >= 0.46 && scrollAnimProgress <= 0.58;
 
         scrollHotspotLayer.classList.toggle("is-visible", showScrewCallout);
     }
@@ -567,17 +567,33 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        // Existing flip: brings the bottom face toward the camera
-        scrollModel.rotation.x = lerp(0, -Math.PI / 2, t);
+        // Phase 1: your existing animation, 0% → 50%
+        const phase1 = clamp(t / 0.5, 0, 1);
+
+        // Phase 2: new extra animation, 50% → 100%
+        const phase2 = clamp((t - 0.5) / 0.5, 0, 1);
+
+        // Existing flip: bottom face comes toward camera
+        const baseX = lerp(0, -Math.PI / 2, phase1);
+
+        // New forward x-axis rotation after that
+        const extraX = lerp(0, Math.PI / 2, phase2);
+
+        scrollModel.rotation.x = baseX + extraX;
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        // Screen-facing counter-clockwise rotation, like turning the object into a diamond
-        scrollWrapper.rotation.z = lerp(0, Math.PI / 7, t);
+        // Existing screen-facing counter-clockwise diamond rotation
+        const baseZ = lerp(0, Math.PI / 7, phase1);
+
+        // New clockwise continuation of about 180 degrees
+        const extraZ = lerp(0, -Math.PI, phase2);
+
+        scrollWrapper.rotation.z = baseZ + extraZ;
 
         scrollWrapper.position.x = 0;
-        scrollWrapper.position.y = lerp(0, 0.25, t);
-        scrollWrapper.position.z = lerp(0, 1.35, t);
+        scrollWrapper.position.y = lerp(0, 0.25, phase1);
+        scrollWrapper.position.z = lerp(0, 1.35, phase1);
 
         updateScrollHotspots();
     }
