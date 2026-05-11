@@ -374,9 +374,9 @@
     top: 70px;
     width: 26px;
     height: 26px;
-    border: 4px solid #ffffff;
+    border: 1px solid #ffffff;
     border-radius: 50%;
-    background: #111111;
+    background: #11111100;
     box-sizing: border-box;
 }
 
@@ -385,7 +385,7 @@
     left: 22px;
     top: 80px;
     width: 250px;
-    height: 3px;
+    height: 1px;
     background: #ffffff;
     transform-origin: left center;
     transform: rotate(-27deg);
@@ -396,7 +396,7 @@
     left: 245px;
     top: -35px;
     width: 420px;
-    height: 3px;
+    height: 1px;
     background: #ffffff;
 }
 
