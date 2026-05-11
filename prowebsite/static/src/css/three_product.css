@@ -291,6 +291,7 @@
     object-fit: contain;
 }
 
+/* feature highlights */
 .o_three_scroll_hotspot_layer {
     position: absolute;
     inset: 0;
@@ -308,59 +309,67 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 360px;
-    height: 120px;
-    transform: translate(40px, -20px);
-}
-
-.o_three_feature_line {
-    position: absolute;
-    left: 0;
-    top: 56px;
-    width: 210px;
-    height: 2px;
-    background: #ffffff;
-    transform-origin: left center;
-    transform: rotate(-18deg);
+    width: 620px;
+    height: 170px;
+    transform: translate(-20px, 55px);
 }
 
 .o_three_feature_dot {
     position: absolute;
-    left: -8px;
-    top: 48px;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #ffffff;
+    left: 0;
+    top: 70px;
+    width: 26px;
+    height: 26px;
+    border: 4px solid #ffffff;
     border-radius: 50%;
     background: #111111;
+    box-sizing: border-box;
+}
+
+.o_three_feature_line_diagonal {
+    position: absolute;
+    left: 22px;
+    top: 80px;
+    width: 250px;
+    height: 3px;
+    background: #ffffff;
+    transform-origin: left center;
+    transform: rotate(-27deg);
+}
+
+.o_three_feature_line_under {
+    position: absolute;
+    left: 245px;
+    top: -35px;
+    width: 420px;
+    height: 3px;
+    background: #ffffff;
 }
 
 .o_three_feature_label {
     position: absolute;
-    left: 210px;
-    top: 18px;
+    left: 250px;
+    top: -78px;
     color: #ffffff;
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(16px, 1.4vw, 22px);
-    font-weight: 700;
+    font-size: clamp(18px, 1.7vw, 30px);
+    font-weight: 800;
     white-space: nowrap;
-    background: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px;
-    padding: 12px 18px;
-    backdrop-filter: blur(8px);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
 }
 
 @media (max-width: 768px) {
     .o_three_feature_callout {
-        left: 46%;
-        top: 52%;
-        transform: translate(20px, -20px) scale(0.82);
+        transform: translate(-30px, 45px) scale(0.72);
         transform-origin: left center;
     }
 
     .o_three_feature_label {
         white-space: normal;
-        width: 190px;
+        width: 260px;
+    }
+
+    .o_three_feature_line_under {
+        width: 300px;
     }
 }

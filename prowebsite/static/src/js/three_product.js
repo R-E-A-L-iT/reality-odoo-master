@@ -526,8 +526,9 @@ whenReady(async () => {
 
         scrollHotspotLayer.innerHTML = `
             <div class="o_three_feature_callout o_three_feature_callout_screw">
-                <div class="o_three_feature_line"></div>
                 <div class="o_three_feature_dot"></div>
+                <div class="o_three_feature_line_diagonal"></div>
+                <div class="o_three_feature_line_under"></div>
                 <div class="o_three_feature_label">Multi-use screw attachment</div>
             </div>
         `;
@@ -566,12 +567,13 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        // Rotate bottom face toward camera
+        // Existing flip: brings the bottom face toward the camera
         scrollModel.rotation.x = lerp(0, -Math.PI / 2, t);
-
-        // Slight left/diamond rotation at the end
         scrollModel.rotation.y = 0;
-        scrollModel.rotation.z = lerp(0, -Math.PI / 4, t);
+        scrollModel.rotation.z = 0;
+
+        // Screen-facing counter-clockwise rotation, like turning the object into a diamond
+        scrollWrapper.rotation.z = lerp(0, Math.PI / 7, t);
 
         scrollWrapper.position.x = 0;
         scrollWrapper.position.y = lerp(0, 0.25, t);
