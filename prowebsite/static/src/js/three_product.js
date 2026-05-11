@@ -567,29 +567,45 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        // Phase 1: your existing animation, 0% → 50%
+        // Phase 1: original animation, 0% → 50%
         const phase1 = clamp(t / 0.5, 0, 1);
 
-        // Phase 2: new extra animation, 50% → 100%
+        // Phase 2: new animation, 50% → 100%
         const phase2 = clamp((t - 0.5) / 0.5, 0, 1);
 
-        // Existing flip: bottom face comes toward camera
-        const baseX = lerp(0, -Math.PI / 2, phase1);
+        // Smooth the second phase a little
+        const phase2Ease = easeOutCubic(phase2);
 
-        // New forward x-axis rotation after that
-        const extraX = lerp(0, Math.PI / 2, phase2);
-
-        scrollModel.rotation.x = baseX + extraX;
+        /*
+        * Phase 1:
+        * Bottom face rotates toward camera.
+        */
+        scrollModel.rotation.x = lerp(0, -Math.PI / 2, phase1);
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        // Existing screen-facing counter-clockwise diamond rotation
-        const baseZ = lerp(0, Math.PI / 7, phase1);
+        /*
+        * Wrapper handles camera-facing rotations.
+        *
+        * Phase 1:
+        * Slight counter-clockwise diamond angle.
+        *
+        * Phase 2:
+        * Continue counter-clockwise another ~90 degrees from camera perspective.
+        */
+        scrollWrapper.rotation.z =
+            lerp(0, Math.PI / 7, phase1) +
+            lerp(0, Math.PI / 2, phase2Ease);
 
-        // New clockwise continuation of about 180 degrees
-        const extraZ = lerp(0, -Math.PI, phase2);
+        /*
+        * Phase 2:
+        * Steamroller / wheel-coming-toward-you motion.
+        * Negative = top rolls away, bottom rolls toward camera.
+        * Flip this to positive if it rolls the wrong way visually.
+        */
+        scrollWrapper.rotation.x = lerp(0, -Math.PI / 2, phase2Ease);
 
-        scrollWrapper.rotation.z = baseZ + extraZ;
+        scrollWrapper.rotation.y = 0;
 
         scrollWrapper.position.x = 0;
         scrollWrapper.position.y = lerp(0, 0.25, phase1);
