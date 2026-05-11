@@ -531,6 +531,13 @@ whenReady(async () => {
                 <div class="o_three_feature_line_under"></div>
                 <div class="o_three_feature_label">Multi-use screw attachment</div>
             </div>
+
+            <div class="o_three_feature_callout o_three_feature_callout_hatch">
+                <div class="o_three_feature_dot"></div>
+                <div class="o_three_feature_line_diagonal"></div>
+                <div class="o_three_feature_line_under"></div>
+                <div class="o_three_feature_label">Easily securable hatch</div>
+            </div>
         `;
 
         scrollHost.appendChild(scrollHotspotLayer);
@@ -541,9 +548,22 @@ whenReady(async () => {
             return;
         }
 
-        const showScrewCallout = scrollAnimProgress >= 0.46 && scrollAnimProgress <= 0.58;
+        const screwCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_screw");
+        const hatchCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_hatch");
 
-        scrollHotspotLayer.classList.toggle("is-visible", showScrewCallout);
+        if (screwCallout) {
+            screwCallout.classList.toggle(
+                "is-visible",
+                scrollAnimProgress >= 0.46 && scrollAnimProgress <= 0.58
+            );
+        }
+
+        if (hatchCallout) {
+            hatchCallout.classList.toggle(
+                "is-visible",
+                scrollAnimProgress >= 0.92
+            );
+        }
     }
 
     let scrollAnimProgress = 0;
@@ -595,7 +615,7 @@ whenReady(async () => {
         */
         scrollWrapper.rotation.z =
             lerp(0, Math.PI / 7, phase1) +
-            lerp(0, Math.PI / 2, phase2Ease);
+            lerp(0, -Math.PI * 0.62, phase2Ease);
 
         /*
         * Phase 2.
@@ -604,9 +624,10 @@ whenReady(async () => {
 
         scrollWrapper.rotation.y = 0;
 
-        scrollWrapper.position.x = 0;
-        scrollWrapper.position.y = lerp(0, 0.25, phase1);
-        scrollWrapper.position.z = lerp(0, 1.35, phase1);
+        // Re-center the model during phase 2 after the rolling motion
+        scrollWrapper.position.x = lerp(0, -0.55, phase2Ease);
+        scrollWrapper.position.y = lerp(0.25, -0.35, phase2Ease);
+        scrollWrapper.position.z = lerp(1.35, 1.2, phase2Ease);
 
         updateScrollHotspots();
     }

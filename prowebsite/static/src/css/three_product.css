@@ -297,21 +297,32 @@
     inset: 0;
     z-index: 3;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-}
-
-.o_three_scroll_hotspot_layer.is-visible {
-    opacity: 1;
 }
 
 .o_three_feature_callout {
     position: absolute;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+
+.o_three_feature_callout.is-visible {
+    opacity: 1;
+}
+
+.o_three_feature_callout_screw {
     left: 50%;
     top: 50%;
     width: 620px;
     height: 170px;
     transform: translate(-20px, 55px);
+}
+
+.o_three_feature_callout_hatch {
+    left: 50%;
+    top: 50%;
+    width: 560px;
+    height: 150px;
+    transform: translate(85px, -95px);
 }
 
 .o_three_feature_dot {
@@ -358,9 +369,38 @@
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
 }
 
+/* Hatch-specific placement */
+.o_three_feature_callout_hatch .o_three_feature_dot {
+    left: 0;
+    top: 88px;
+}
+
+.o_three_feature_callout_hatch .o_three_feature_line_diagonal {
+    left: 22px;
+    top: 98px;
+    width: 190px;
+    transform: rotate(-12deg);
+}
+
+.o_three_feature_callout_hatch .o_three_feature_line_under {
+    left: 205px;
+    top: 58px;
+    width: 350px;
+}
+
+.o_three_feature_callout_hatch .o_three_feature_label {
+    left: 210px;
+    top: 15px;
+}
+
 @media (max-width: 768px) {
-    .o_three_feature_callout {
+    .o_three_feature_callout_screw {
         transform: translate(-30px, 45px) scale(0.72);
+        transform-origin: left center;
+    }
+
+    .o_three_feature_callout_hatch {
+        transform: translate(30px, -80px) scale(0.72);
         transform-origin: left center;
     }
 
