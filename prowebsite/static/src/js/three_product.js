@@ -671,7 +671,7 @@ whenReady(async () => {
         if (hatchCallout) {
             hatchCallout.classList.toggle(
                 "is-visible",
-                scrollAnimProgress >= 0.92
+                scrollAnimProgress >= 0.72 && scrollAnimProgress <= 0.88
             );
         }
     }
@@ -711,45 +711,33 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        // Phase 1: original animation, 0% → 50%
         const phase1 = clamp(t / 0.5, 0, 1);
-
-        // Phase 2: second animation, 50% → 100%
         const phase2 = clamp((t - 0.5) / 0.5, 0, 1);
         const phase2Ease = easeOutCubic(phase2);
 
-        /*
-        * IMPORTANT:
-        * The model stays centered.
-        * Only rotation changes.
-        */
-        scrollWrapper.position.set(0, 0, 0);
+        // Start/end resting pose
+        const baseY = -Math.PI / 12; // Y-axis counter-clockwise tilt
+        const baseZ = Math.PI / 12;  // Z-axis counter-clockwise tilt
 
-        /*
-        * Phase 1:
-        * Bottom face rotates toward camera.
-        */
-        scrollModel.rotation.x = lerp(0, -Math.PI / 2, phase1);
+        scrollWrapper.position.set(0, 0, 0);
+        scrollWrapper.scale.setScalar(1.3);
+
+        // Phase 1: move from resting pose to feature pose
+        // Phase 2: return back to resting pose
+        scrollModel.rotation.x =
+            lerp(0, -Math.PI / 2, phase1) +
+            lerp(0, Math.PI / 2, phase2Ease);
+
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        /*
-        * Phase 1:
-        * Slight diamond angle.
-        *
-        * Phase 2:
-        * Mirror/tilt angle from your current final pose.
-        */
-        scrollWrapper.rotation.z =
-            lerp(0, Math.PI / 7, phase1) +
-            lerp(0, -Math.PI * 0.62, phase2Ease);
+        scrollWrapper.rotation.x = 0;
+        scrollWrapper.rotation.y = baseY;
 
-        /*
-        * Phase 2:
-        * Steamroller-style roll, but around the centered model.
-        */
-        scrollWrapper.rotation.x = lerp(0, Math.PI / 2, phase2Ease);
-        scrollWrapper.rotation.y = 0;
+        scrollWrapper.rotation.z =
+            baseZ +
+            lerp(0, Math.PI / 7, phase1) +
+            lerp(0, -Math.PI / 7, phase2Ease);
 
         updateScrollHotspots();
     }
