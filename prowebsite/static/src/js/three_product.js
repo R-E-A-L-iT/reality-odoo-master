@@ -677,17 +677,22 @@ whenReady(async () => {
     }
 
     let scrollAnimProgress = 0;
-    const scrollPixelsForFullAnimation = 1400;
 
-    function isScrollSectionActive() {
+    function updateScrollSectionProgress() {
         if (!scrollSection) {
-            return false;
+            return;
         }
 
         const rect = scrollSection.getBoundingClientRect();
         const viewportH = window.innerHeight || document.documentElement.clientHeight;
+        const scrollableDistance = rect.height - viewportH;
 
-        return rect.top <= 0 && rect.bottom >= viewportH;
+        if (scrollableDistance <= 0) {
+            scrollAnimProgress = 0;
+            return;
+        }
+
+        scrollAnimProgress = clamp(-rect.top / scrollableDistance, 0, 1);
     }
 
     function applyScrollSectionPose() {
@@ -700,11 +705,16 @@ whenReady(async () => {
         // Phase 1: original animation, 0% → 50%
         const phase1 = clamp(t / 0.5, 0, 1);
 
-        // Phase 2: new animation, 50% → 100%
+        // Phase 2: second animation, 50% → 100%
         const phase2 = clamp((t - 0.5) / 0.5, 0, 1);
-
-        // Smooth the second phase a little
         const phase2Ease = easeOutCubic(phase2);
+
+        /*
+        * IMPORTANT:
+        * The model stays centered.
+        * Only rotation changes.
+        */
+        scrollWrapper.position.set(0, 0, 0);
 
         /*
         * Phase 1:
@@ -715,61 +725,24 @@ whenReady(async () => {
         scrollModel.rotation.z = 0;
 
         /*
-        * Wrapper handles camera-facing rotations.
-        *
         * Phase 1:
-        * Slight counter-clockwise diamond angle.
+        * Slight diamond angle.
         *
         * Phase 2:
-        * Continue counter-clockwise another ~90 degrees from camera perspective.
+        * Mirror/tilt angle from your current final pose.
         */
         scrollWrapper.rotation.z =
             lerp(0, Math.PI / 7, phase1) +
             lerp(0, -Math.PI * 0.62, phase2Ease);
 
         /*
-        * Phase 2.
+        * Phase 2:
+        * Steamroller-style roll, but around the centered model.
         */
         scrollWrapper.rotation.x = lerp(0, Math.PI / 2, phase2Ease);
-
         scrollWrapper.rotation.y = 0;
 
-        // Re-center the model during phase 2 after the rolling motion
-        scrollWrapper.position.x = lerp(0, -0.55, phase2Ease);
-        scrollWrapper.position.y = lerp(0.25, -0.35, phase2Ease);
-        scrollWrapper.position.z = lerp(1.35, 1.2, phase2Ease);
-
         updateScrollHotspots();
-    }
-
-    function onScrollSectionWheel(event) {
-        if (!scrollSection || !isScrollSectionActive()) {
-            return;
-        }
-
-        const delta = event.deltaY;
-        const nextProgress = clamp(
-            scrollAnimProgress + delta / scrollPixelsForFullAnimation,
-            0,
-            1
-        );
-
-        const tryingToScrollPastStart = delta < 0 && scrollAnimProgress <= 0;
-        const tryingToScrollPastEnd = delta > 0 && scrollAnimProgress >= 1;
-
-        if (tryingToScrollPastStart || tryingToScrollPastEnd) {
-            return;
-        }
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        scrollAnimProgress = nextProgress;
-        applyScrollSectionPose();
-    }
-
-    if (scrollSection) {
-        scrollSection.addEventListener("wheel", onScrollSectionWheel, { passive: false });
     }
 
     // ----------------------------
@@ -906,6 +879,9 @@ whenReady(async () => {
         }
 
         updateOmnigoScrollVideo();
+
+        updateScrollSectionProgress();
+        applyScrollSectionPose();
 
         heroRenderer.render(heroScene, heroCamera);
         bottomRenderer.render(bottomScene, bottomCamera);
