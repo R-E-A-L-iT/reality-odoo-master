@@ -148,7 +148,7 @@ whenReady(async () => {
 
                     setTimeout(() => {
                         currentItem.classList.remove("is-off");
-                    }, 500);
+                    }, 150);
                 }
 
                 activeIndex = (activeIndex + 1) % heroLogoItems.length;
