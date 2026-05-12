@@ -57,6 +57,8 @@ whenReady(async () => {
             pageLoader.classList.add("is-hidden");
         }
 
+        startHeroLogoSequence();
+
         // Start hero drop animation only after Enter
         if (heroWrapper) {
             heroWrapper.position.y = 3.5;
@@ -76,6 +78,85 @@ whenReady(async () => {
     if (!heroHost || !bottomModelHost || !scrollHost) {
         return;
     }
+
+    // ----------------------------
+    // Hero logo stack background
+    // ----------------------------
+    const heroLogoStack = heroHost.querySelector(".o_three_hero_logo_stack");
+    const heroLogoUrl = "https://cdn.r-e-a-l.it/images/header/outline_red.png";
+
+    let heroLogoItems = [];
+    let heroLogoFlickerStarted = false;
+    let heroLogoFlickerTimer = null;
+
+    function buildHeroLogoStack() {
+        if (!heroLogoStack) {
+            return;
+        }
+
+        heroLogoStack.innerHTML = "";
+
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+        const estimatedLogoH = Math.max(70, Math.min(viewportH * 0.12, 130));
+        const count = Math.ceil(viewportH / estimatedLogoH) + 2;
+
+        heroLogoItems = [];
+
+        for (let i = 0; i < count; i++) {
+            const img = document.createElement("img");
+            img.className = "o_three_hero_logo_stack_item";
+            img.src = heroLogoUrl;
+            img.alt = "";
+            img.loading = "eager";
+            img.decoding = "async";
+
+            heroLogoStack.appendChild(img);
+            heroLogoItems.push(img);
+        }
+    }
+
+    function startHeroLogoSequence() {
+        if (!heroLogoItems.length || heroLogoFlickerStarted) {
+            return;
+        }
+
+        heroLogoFlickerStarted = true;
+
+        const revealDelay = 115;
+
+        heroLogoItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add("is-visible");
+            }, index * revealDelay);
+        });
+
+        const flickerStartDelay = heroLogoItems.length * revealDelay + 500;
+
+        setTimeout(() => {
+            let activeIndex = 0;
+
+            heroLogoFlickerTimer = setInterval(() => {
+                heroLogoItems.forEach((item) => {
+                    item.classList.remove("is-off");
+                    item.classList.add("is-visible");
+                });
+
+                const currentItem = heroLogoItems[activeIndex];
+
+                if (currentItem) {
+                    currentItem.classList.add("is-off");
+
+                    setTimeout(() => {
+                        currentItem.classList.remove("is-off");
+                    }, 500);
+                }
+
+                activeIndex = (activeIndex + 1) % heroLogoItems.length;
+            }, 500);
+        }, flickerStartDelay);
+    }
+
+    buildHeroLogoStack();
 
     // ----------------------------
     // Text animation
@@ -792,6 +873,10 @@ whenReady(async () => {
         scrollCamera.aspect = scrollHost.clientWidth / scrollHost.clientHeight;
         scrollCamera.updateProjectionMatrix();
         scrollRenderer.setSize(scrollHost.clientWidth, scrollHost.clientHeight);
+        
+        if (!heroLogoFlickerStarted) {
+            buildHeroLogoStack();
+        }
     }
 
     window.addEventListener("resize", onResize);

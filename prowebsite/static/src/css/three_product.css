@@ -106,20 +106,33 @@
     z-index: 2;
 }
 
-.o_three_hero_gif_bg {
+.o_three_hero_logo_stack {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: min(60vw, 900px);
-    height: min(60vh, 650px);
-    transform: translate(-50%, -50%);
-    background-image: url("https://cdn.r-e-a-l.it/images/header/FieryGIF.gif");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.85;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 1.4vh, 18px);
+}
+
+.o_three_hero_logo_stack_item {
+    width: min(72vw, 900px);
+    height: auto;
+    display: block;
+    opacity: 0;
+}
+
+.o_three_hero_logo_stack_item.is-visible {
+    opacity: 1;
+}
+
+.o_three_hero_logo_stack_item.is-off {
+    opacity: 0;
 }
 
 .o_three_canvas_text {
