@@ -131,28 +131,24 @@ whenReady(async () => {
         });
 
         const flickerStartDelay = heroLogoItems.length * revealDelay + 500;
+        const flickerStepDelay = 100;
+        const invisibleDuration = 100;
 
         setTimeout(() => {
-            let activeIndex = 0;
+            heroLogoItems.forEach((item, index) => {
+                setTimeout(() => {
+                    heroLogoItems.forEach((logo) => {
+                        logo.classList.remove("is-off");
+                        logo.classList.add("is-visible");
+                    });
 
-            heroLogoFlickerTimer = setInterval(() => {
-                heroLogoItems.forEach((item) => {
-                    item.classList.remove("is-off");
-                    item.classList.add("is-visible");
-                });
-
-                const currentItem = heroLogoItems[activeIndex];
-
-                if (currentItem) {
-                    currentItem.classList.add("is-off");
+                    item.classList.add("is-off");
 
                     setTimeout(() => {
-                        currentItem.classList.remove("is-off");
-                    }, 100);
-                }
-
-                activeIndex = (activeIndex + 1) % heroLogoItems.length;
-            }, 100);
+                        item.classList.remove("is-off");
+                    }, invisibleDuration);
+                }, index * flickerStepDelay);
+            });
         }, flickerStartDelay);
     }
 
