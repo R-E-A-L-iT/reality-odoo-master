@@ -640,7 +640,7 @@
 .o_review_waterfall_card {
     display: inline-block;
     width: 100%;
-    margin: 0 0 28px;
+    margin: 0 0 50px;
     break-inside: avoid;
     background: rgba(255,255,255,0.94);
     border: 1px solid rgba(255,255,255,0.35);
