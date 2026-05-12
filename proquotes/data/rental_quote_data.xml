@@ -13,6 +13,11 @@
             'rental_email',
             'rental_start_date',
             'rental_return_date',
+            'company_street',
+            'company_city',
+            'company_zip',
+            'company_state',
+            'company_country',
             'sale_order_template_id',
             'user_id',
             'team_id'
