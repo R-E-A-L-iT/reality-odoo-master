@@ -685,6 +685,15 @@ whenReady(async () => {
 
         const rect = scrollSection.getBoundingClientRect();
         const viewportH = window.innerHeight || document.documentElement.clientHeight;
+
+        const sectionActive = rect.top <= viewportH && rect.bottom >= 0;
+
+        scrollHost.classList.toggle("is-active", sectionActive);
+
+        if (!sectionActive) {
+            return;
+        }
+
         const scrollableDistance = rect.height - viewportH;
 
         if (scrollableDistance <= 0) {
