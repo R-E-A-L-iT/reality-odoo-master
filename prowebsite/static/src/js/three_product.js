@@ -833,5 +833,29 @@ whenReady(async () => {
         scrollRenderer.render(scrollScene, scrollCamera);
     }
 
+    const reviewCards = document.querySelectorAll(".o_review_waterfall_card");
+
+    if (reviewCards.length) {
+        const reviewObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        reviewObserver.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.18,
+                rootMargin: "0px 0px -8% 0px",
+            }
+        );
+
+        reviewCards.forEach((card, index) => {
+            card.style.transitionDelay = `${Math.min(index * 90, 450)}ms`;
+            reviewObserver.observe(card);
+        });
+    }
+
     requestAnimationFrame(animate);
 });
