@@ -555,22 +555,26 @@
 .o_review_waterfall_section {
     position: relative;
     z-index: auto;
-    background: transparent;
+    background: #ffffff;
     overflow: hidden;
-    padding: 120px clamp(20px, 4vw, 64px) 220px;
+    padding: 120px clamp(20px, 4vw, 64px) 260px;
 }
 
 .o_review_waterfall_section::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: 0 0 140px 0;
     z-index: 0;
     pointer-events: none;
-
     background:
         radial-gradient(circle at 15% 10%, rgba(255, 0, 0, 0.394), transparent 32%),
         radial-gradient(circle at 85% 30%, rgba(255, 80, 80, 0.475), transparent 36%),
-        linear-gradient(180deg, #1f1c1c 0%, #272626 45%, #ffffff 100%);
+        linear-gradient(
+            180deg,
+            #1f1c1c 0%,
+            #272626 45%,
+            #ffffff 100%
+        );
 }
 
 .o_review_waterfall_section::after {
@@ -578,14 +582,14 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -1px;
-    height: 180px;
+    bottom: 0;
+    height: 260px;
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(
         180deg,
         rgba(255,255,255,0) 0%,
-        #ffffff 72%,
+        #ffffff 55%,
         #ffffff 100%
     );
 }
@@ -597,26 +601,11 @@
     margin: 0 auto;
 }
 
-@media (max-width: 600px) {
-    .o_review_waterfall_section {
-        padding: 80px 20px 180px;
-    }
-
-    .o_review_waterfall_grid {
-        column-count: 1;
-    }
-}
-
 .o_review_waterfall_header {
     max-width: 820px;
     margin: 0 auto 72px;
     text-align: center;
     color: #ffffff;
-    z-index: 4;
-}
-
-.o_review_waterfall_header > p, .o_review_waterfall_header > h2 {
-    z-index: 4;
 }
 
 .o_review_waterfall_kicker {
@@ -715,7 +704,7 @@
 
 @media (max-width: 600px) {
     .o_review_waterfall_section {
-        padding: 80px 20px 100px;
+        padding: 80px 20px 220px;
     }
 
     .o_review_waterfall_grid {
