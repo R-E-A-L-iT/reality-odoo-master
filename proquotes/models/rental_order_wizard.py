@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from odoo import api, fields, models, Command
+from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -9,106 +9,141 @@ _logger = logging.getLogger(__name__)
 class RentalOrderWizard(models.TransientModel):
     _inherit = "rental.order.wizard"
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
+    def apply(self):
+        target_by_order = self._get_target_status_by_order_before_apply()
 
-        ctx = dict(self.env.context or {})
-        exploded_lines = ctx.get("x_exploded_pickup_lines") or []
-        status = ctx.get("default_status")
+        _logger.info("BEFORE super apply forced target map from order status: %s", target_by_order)
 
-        _logger.info("=== RENTAL WIZARD DEBUG START ===")
-        _logger.info("RENTAL WIZARD DEBUG context: %s", ctx)
-        _logger.info("RENTAL WIZARD DEBUG exploded_lines: %s", exploded_lines)
-        _logger.info("RENTAL WIZARD DEBUG status: %s", status)
-        _logger.info("RENTAL WIZARD DEBUG super default_get result: %s", res)
+        res = super().apply()
 
-        if not exploded_lines:
-            _logger.info("RENTAL WIZARD DEBUG no exploded lines found, keeping standard behavior")
-            _logger.info("=== RENTAL WIZARD DEBUG END ===")
-            return res
+        self._force_parent_kit_pickup_return_state(target_by_order)
 
-        line_commands = []
-
-        for exploded in exploded_lines:
-            product = self.env["product.product"].browse(exploded["product_id"])
-            parent_line = self.env["sale.order.line"].browse(exploded["parent_sale_line_id"])
-            qty = exploded.get("qty", 0.0) or 0.0
-
-            if not product.exists():
-                _logger.warning("RENTAL WIZARD DEBUG product not found for exploded line: %s", exploded)
-                continue
-
-            if not parent_line.exists():
-                _logger.warning("RENTAL WIZARD DEBUG parent sale line not found for exploded line: %s", exploded)
-                continue
-
-            if qty <= 0:
-                _logger.info("RENTAL WIZARD DEBUG skipping exploded line with qty <= 0: %s", exploded)
-                continue
-
-            allowed_lot_ids = exploded.get("allowed_lot_ids") or []
-
-            pickeable_lot_ids = self._get_pickeable_serial_lot_ids_for_product(
-                product,
-                parent_line.company_id,
-            )
-
-            vals = {
-                "status": status,
-                "order_line_id": parent_line.id,
-                "product_id": product.id,
-                "qty_reserved": qty,
-            }
-
-            if product.tracking == "serial":
-                vals["tracking"] = "serial"
-                vals["pickeable_lot_ids"] = [Command.set(pickeable_lot_ids)]
-                vals["qty_available"] = len(pickeable_lot_ids)
-            else:
-                vals["qty_available"] = qty
-
-            if allowed_lot_ids:
-                vals["allowed_lot_ids"] = [Command.set(allowed_lot_ids)]
-
-            if status == "pickup":
-                vals["qty_delivered"] = qty
-            elif status == "return":
-                vals["qty_returned"] = qty
-
-            line_commands.append(Command.create(vals))
-            _logger.info("RENTAL WIZARD DEBUG appended wizard line vals: %s", vals)
-
-        _logger.info("RENTAL WIZARD DEBUG final line_commands: %s", line_commands)
-
-        res["rental_wizard_line_ids"] = line_commands
-
-        _logger.info("RENTAL WIZARD DEBUG final default_get result: %s", res)
-        _logger.info("=== RENTAL WIZARD DEBUG END ===")
-
+        _logger.info(
+            "AFTER super apply wizard.status=%s forced targets=%s",
+            self.mapped("status"),
+            target_by_order,
+        )
         return res
 
-    def _get_pickeable_serial_lot_ids_for_product(self, product, company):
-        if product.tracking != "serial":
-            return []
 
-        quants = self.env["stock.quant"].sudo().search([
-            ("product_id", "=", product.id),
-            ("lot_id", "!=", False),
-            ("location_id.usage", "=", "internal"),
-            "|",
-                ("company_id", "=", False),
-                ("company_id", "=", company.id),
-        ])
+    def _get_target_status_by_order_before_apply(self):
+        target_by_order = {}
 
-        lot_ids = []
+        for wizard in self:
+            orders = wizard.rental_wizard_line_ids.mapped("order_line_id.order_id")
 
-        for quant in quants:
-            available_qty = quant.quantity - quant.reserved_quantity
-            if available_qty > 0:
-                lot_ids.append(quant.lot_id.id)
+            for order in orders:
+                current_status = order.rental_status
 
-        return list(set(lot_ids))
+                _logger.info(
+                    "Detecting rental wizard operation from ORDER status. order=%s current rental_status=%s wizard.status=%s context default_status=%s context status=%s",
+                    order.name,
+                    current_status,
+                    wizard.status,
+                    self.env.context.get("default_status"),
+                    self.env.context.get("status"),
+                )
+
+                # Source of truth:
+                # If the order is currently waiting for pickup, this wizard action is pickup.
+                # If the order is currently waiting for return, this wizard action is return.
+                if current_status == "pickup":
+                    target_by_order[order.id] = "return"
+
+                elif current_status == "return":
+                    target_by_order[order.id] = "returned"
+
+                else:
+                    # Fallback only for unusual cases where order status is not useful.
+                    operation = (
+                        self.env.context.get("default_status")
+                        or self.env.context.get("status")
+                        or wizard.status
+                    )
+
+                    if operation == "pickup":
+                        target_by_order[order.id] = "return"
+                    elif operation == "return":
+                        target_by_order[order.id] = "returned"
+
+        return target_by_order
+
+    def _force_order_rental_status_sql(self, order, target_status):
+        # Critical:
+        # Make Odoo finish all pending ORM writes/recomputes first.
+        # Otherwise a later flush can overwrite our SQL update.
+        self.env.flush_all()
+
+        self.env.cr.execute("""
+            UPDATE sale_order
+            SET rental_status = %s,
+                write_date = NOW(),
+                write_uid = %s
+            WHERE id = %s
+        """, [target_status, self.env.uid, order.id])
+
+        self.env.cr.execute("""
+            SELECT rental_status
+            FROM sale_order
+            WHERE id = %s
+        """, [order.id])
+
+        _logger.info(
+            "SQL check after FINAL force: order=%s rental_status=%s",
+            order.name,
+            self.env.cr.fetchone()[0],
+        )
+
+        order.invalidate_recordset(["rental_status"])
+
+    def _force_parent_kit_pickup_return_state(self, target_by_order):
+        SaleOrder = self.env["sale.order"].sudo()
+
+        for wizard in self:
+            component_sale_lines = wizard.rental_wizard_line_ids.mapped("order_line_id").filtered(
+                lambda line: line.x_is_rental_kit_component and line.x_parent_rental_kit_line_id
+            )
+
+            parent_kit_lines = component_sale_lines.mapped("x_parent_rental_kit_line_id")
+
+            for order_id, target_status in target_by_order.items():
+                order = SaleOrder.browse(order_id)
+                if not order.exists():
+                    continue
+
+                kit_lines_for_order = parent_kit_lines.filtered(
+                    lambda line: line.order_id.id == order.id
+                )
+
+                if target_status == "return":
+                    for kit_line in kit_lines_for_order:
+                        kit_line.with_context(
+                            bypass_sol_lock=True,
+                            skip_apply_canadian_sales_taxes=True,
+                            skip_company_consistency=True,
+                        ).write({
+                            "qty_delivered": kit_line.product_uom_qty,
+                        })
+
+                elif target_status == "returned":
+                    for kit_line in kit_lines_for_order:
+                        kit_line.with_context(
+                            bypass_sol_lock=True,
+                            skip_apply_canadian_sales_taxes=True,
+                            skip_company_consistency=True,
+                        ).write({
+                            "qty_delivered": kit_line.product_uom_qty,
+                            "qty_returned": kit_line.product_uom_qty,
+                        })
+
+                # This now flushes first, then forces SQL.
+                self._force_order_rental_status_sql(order, target_status)
+
+                _logger.info(
+                    "FORCED rental order %s to rental_status=%s",
+                    order.name,
+                    target_status,
+                )
 
 class RentalOrderWizardLine(models.TransientModel):
     _inherit = "rental.order.wizard.line"

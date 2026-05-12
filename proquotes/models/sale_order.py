@@ -611,6 +611,99 @@ class order(models.Model):
                     order.name, str(e),
                 )
 
+    def _get_phantom_bom_for_line(self, line):
+        self.ensure_one()
+
+        return self.env["mrp.bom"].sudo().search([
+            ("product_tmpl_id", "=", line.product_id.product_tmpl_id.id),
+            ("type", "=", "phantom"),
+            "|",
+                ("product_id", "=", False),
+                ("product_id", "=", line.product_id.id),
+            "|",
+                ("company_id", "=", False),
+                ("company_id", "=", line.company_id.id),
+        ], limit=1)
+
+
+    def _ensure_rental_kit_component_lines(self, kit_line, bom):
+        self.ensure_one()
+
+        SaleLine = self.env["sale.order.line"].sudo()
+        component_lines = self.env["sale.order.line"]
+
+        factor = kit_line.product_uom_qty or 0.0
+
+        for bom_line in bom.bom_line_ids:
+            product = bom_line.product_id
+            qty = bom_line.product_qty * factor
+
+            if not product or qty <= 0:
+                continue
+
+            component_line = SaleLine.search([
+                ("order_id", "=", self.id),
+                ("x_parent_rental_kit_line_id", "=", kit_line.id),
+                ("product_id", "=", product.id),
+                ("x_is_rental_kit_component", "=", True),
+            ], limit=1)
+
+            vals = {
+                "order_id": self.id,
+                "product_id": product.id,
+                "product_uom": bom_line.product_uom_id.id or product.uom_id.id,
+                "product_uom_qty": qty,
+                "name": "%s\nKit component of: %s" % (
+                    product.display_name,
+                    kit_line.product_id.display_name,
+                ),
+
+                # Component lines exist only so Rental/Stock can process real products.
+                # They should not affect the quote/customer total.
+                "price_unit": 0.0,
+                "discount": 0.0,
+                "tax_id": [Command.clear()],
+
+                # Your custom tracking fields.
+                "x_parent_rental_kit_line_id": kit_line.id,
+                "x_is_rental_kit_component": True,
+
+                # Important: keep the component line active for rental pickup,
+                # but hidden from your custom quote total/display logic.
+                "selected": "false",
+                "sectionSelected": "false",
+                "optional": "no",
+                "quantityLocked": "yes",
+            }
+
+            if component_line:
+                # Avoid touching quantity if it is already correct.
+                update_vals = {
+                    "name": vals["name"],
+                    "price_unit": 0.0,
+                    "discount": 0.0,
+                    "tax_id": [Command.clear()],
+                    "selected": "true",
+                    "sectionSelected": "true",
+                }
+
+                if component_line.product_uom_qty != qty:
+                    update_vals["product_uom_qty"] = qty
+
+                component_line.with_context(
+                    skip_apply_canadian_sales_taxes=True,
+                    skip_company_consistency=True,
+                ).write(update_vals)
+            else:
+                component_line = SaleLine.with_context(
+                    skip_apply_canadian_sales_taxes=True,
+                    skip_company_consistency=True,
+                ).create(vals)
+
+            component_lines |= component_line
+
+        return component_lines
+
     # when picking up rental order:
     # 1. include selected non-kit lines normally
     # 2. for selected phantom kits, explode BOM components + quantities into context
@@ -618,142 +711,75 @@ class order(models.Model):
     def action_open_pickup(self):
         self.ensure_one()
 
-        _logger.info("=== PICKUP DEBUG START for order %s (id=%s) ===", self.name, self.id)
-
         action = super().action_open_pickup()
-        _logger.info("PICKUP DEBUG raw super action: %s", action)
-
         ctx = dict(action.get("context", {}) or {})
         original_line_ids = set(ctx.get("order_line_ids") or [])
 
-        _logger.info("PICKUP DEBUG original ctx order_line_ids: %s", list(original_line_ids))
-        _logger.info(
-            "PICKUP DEBUG all order lines on SO: %s",
-            [
-                {
-                    "id": l.id,
-                    "name": l.name,
-                    "product": l.product_id.display_name,
-                    "display_type": l.display_type,
-                    "selected": l.selected,
-                    "qty": l.product_uom_qty,
-                }
-                for l in self.order_line.sorted(lambda x: (x.sequence, x.id))
-            ]
-        )
-
-        normal_line_ids = []
-        exploded_pickup_lines = []
+        pickup_line_ids = []
 
         for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
-            _logger.info(
-                "PICKUP DEBUG checking SO line id=%s name=%s product=%s display_type=%s selected=%s qty=%s in_original_ctx=%s",
-                line.id,
-                line.name,
-                line.product_id.display_name,
-                line.display_type,
-                line.selected,
-                line.product_uom_qty,
-                line.id in original_line_ids,
-            )
-
             if line.display_type:
-                _logger.info("PICKUP DEBUG -> skip line %s because display_type=%s", line.id, line.display_type)
                 continue
 
             if line.id not in original_line_ids:
-                _logger.info("PICKUP DEBUG -> skip line %s because not in original ctx order_line_ids", line.id)
                 continue
 
-            if line.selected != 'true':
-                _logger.info("PICKUP DEBUG -> skip line %s because selected=%s", line.id, line.selected)
+            if line.selected != "true":
                 continue
 
-            bom_domain = [
-                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
-                ('type', '=', 'phantom'),
-                '|', ('product_id', '=', False),
-                    ('product_id', '=', line.product_id.id),
-                '|', ('company_id', '=', False),
-                    ('company_id', '=', line.company_id.id),
-            ]
+            bom = self._get_phantom_bom_for_line(line)
 
-            _logger.info("PICKUP DEBUG line %s bom search domain: %s", line.id, bom_domain)
-
-            bom = self.env["mrp.bom"].search(bom_domain, limit=1)
-
-            if bom:
-                _logger.info(
-                    "PICKUP DEBUG -> BOM FOUND for line %s: bom_id=%s bom_product_tmpl=%s bom_product=%s bom_type=%s bom_lines=%s",
-                    line.id,
-                    bom.id,
-                    bom.product_tmpl_id.display_name if bom.product_tmpl_id else False,
-                    bom.product_id.display_name if bom.product_id else False,
-                    bom.type,
-                    [
-                        {
-                            "bom_line_id": bl.id,
-                            "product": bl.product_id.display_name,
-                            "qty": bl.product_qty,
-                            "uom": bl.product_uom_id.display_name if bl.product_uom_id else False,
-                        }
-                        for bl in bom.bom_line_ids
-                    ]
-                )
-            else:
-                _logger.info("PICKUP DEBUG -> NO BOM found for line %s", line.id)
-
-            # selected + non-kit -> keep normal rental line
+            # Normal non-kit rental line.
             if not bom:
-                normal_line_ids.append(line.id)
-                _logger.info("PICKUP DEBUG -> appended normal SO line id %s", line.id)
+                pickup_line_ids.append(line.id)
                 continue
 
-            # selected + kit -> explode BOM components into custom context payload
-            factor = line.product_uom_qty or 0.0
-            _logger.info("PICKUP DEBUG -> exploding kit line %s with factor=%s", line.id, factor)
+            # Kit rental line: create/find real component sale lines.
+            component_lines = self._ensure_rental_kit_component_lines(line, bom)
+            pickup_line_ids.extend(component_lines.ids)
 
-            for bom_line in bom.bom_line_ids:
-                qty = bom_line.product_qty * factor
-                _logger.info(
-                    "PICKUP DEBUG --> bom_line id=%s product=%s base_qty=%s factor=%s final_qty=%s",
-                    bom_line.id,
-                    bom_line.product_id.display_name,
-                    bom_line.product_qty,
-                    factor,
-                    qty,
-                )
+        ctx["order_line_ids"] = pickup_line_ids
 
-                if qty <= 0:
-                    _logger.info("PICKUP DEBUG --> skip bom_line %s because final_qty <= 0", bom_line.id)
-                    continue
+        # Important: stop using fake wizard payloads.
+        ctx.pop("x_exploded_pickup_lines", None)
 
-                allowed_lot_ids = self._get_available_serial_lot_ids_for_pickup(bom_line.product_id)
-
-                exploded_line = {
-                    'parent_sale_line_id': line.id,
-                    'parent_product_id': line.product_id.id,
-                    'parent_product_name': line.product_id.display_name,
-                    'product_id': bom_line.product_id.id,
-                    'product_name': bom_line.product_id.display_name,
-                    'qty': qty,
-                    'uom_id': bom_line.product_uom_id.id if bom_line.product_uom_id else bom_line.product_id.uom_id.id,
-                    'tracking': bom_line.product_id.tracking,
-                    'allowed_lot_ids': allowed_lot_ids,
-                }
-                exploded_pickup_lines.append(exploded_line)
-                _logger.info("PICKUP DEBUG --> appended exploded line: %s", exploded_line)
-
-        _logger.info("PICKUP DEBUG final normal_line_ids: %s", normal_line_ids)
-        _logger.info("PICKUP DEBUG final exploded_pickup_lines: %s", exploded_pickup_lines)
-
-        ctx["order_line_ids"] = normal_line_ids
-        ctx["x_exploded_pickup_lines"] = exploded_pickup_lines
         action["context"] = ctx
+        return action
 
-        _logger.info("PICKUP DEBUG final action context: %s", ctx)
-        _logger.info("=== PICKUP DEBUG END for order %s (id=%s) ===", self.name, self.id)
+    def action_open_return(self):
+        self.ensure_one()
 
+        action = super().action_open_return()
+        ctx = dict(action.get("context", {}) or {})
+
+        original_line_ids = set(ctx.get("order_line_ids") or [])
+        return_line_ids = []
+
+        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
+            if line.display_type:
+                continue
+
+            # Normal non-kit line.
+            if line.id in original_line_ids and not line.x_parent_rental_kit_line_id:
+                bom = self._get_phantom_bom_for_line(line)
+
+                # If this is the parent kit line, do NOT return it directly.
+                if bom:
+                    component_lines = self.order_line.filtered(
+                        lambda l:
+                            l.x_is_rental_kit_component
+                            and l.x_parent_rental_kit_line_id == line
+                    )
+                    return_line_ids.extend(component_lines.ids)
+                else:
+                    return_line_ids.append(line.id)
+
+            # Hidden component line already included by Odoo.
+            elif line.id in original_line_ids and line.x_is_rental_kit_component:
+                return_line_ids.append(line.id)
+
+        ctx["order_line_ids"] = list(set(return_line_ids))
+        action["context"] = ctx
         return action
 
     def _get_available_serial_lot_ids_for_pickup(self, product):

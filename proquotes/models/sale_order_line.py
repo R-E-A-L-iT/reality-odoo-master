@@ -15,7 +15,7 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
-from odoo import models, fields, api
+from odoo import models, fields, api, Command
 
 _logger = logging.getLogger(__name__)
 
@@ -87,6 +87,20 @@ class SaleOrderLine(models.Model):
     demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
+
+    x_parent_rental_kit_line_id = fields.Many2one(
+        "sale.order.line",
+        string="Parent Rental Kit Line",
+        copy=False,
+        index=True,
+    )
+
+    x_is_rental_kit_component = fields.Boolean(
+        string="Rental Kit Component Line",
+        default=False,
+        copy=False,
+        index=True,
+    )
 
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
 
