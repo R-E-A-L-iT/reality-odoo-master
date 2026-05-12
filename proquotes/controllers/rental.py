@@ -18,7 +18,16 @@ _logger = logging.getLogger(__name__)
 
 
 class RentalCustomerPortal(cPortal):
-    
+
+    @http.route('/rental/address_data', type='json', auth='public', website=True)
+    def get_address_data(self):
+        countries = request.env['res.country'].sudo().search([], order='name asc')
+        states = request.env['res.country.state'].sudo().search([], order='name asc')
+        return {
+            'countries': [{'id': c.id, 'name': c.name} for c in countries],
+            'states': [{'id': s.id, 'name': s.name, 'country_id': s.country_id.id} for s in states],
+        }
+
     @http.route(
         ["/my/orders/<int:order_id>/update_invoice_address"],
         type="json",

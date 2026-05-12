@@ -825,20 +825,28 @@ class WebsiteForm(form.WebsiteForm):
                 address_vals['city'] = values.get('company_city')
             if values.get('company_zip'):
                 address_vals['zip'] = values.get('company_zip')
-            state_name = values.get('company_state')
-            if state_name:
-                state = request.env['res.country.state'].sudo().search(
-                    [('name', 'ilike', state_name)], limit=1
-                )
-                if state:
-                    address_vals['state_id'] = state.id
-            country_name = values.get('company_country')
-            if country_name:
-                country = request.env['res.country'].sudo().search(
-                    [('name', 'ilike', country_name)], limit=1
-                )
-                if country:
-                    address_vals['country_id'] = country.id
+            state_val = values.get('company_state')
+            if state_val:
+                try:
+                    state = request.env['res.country.state'].sudo().browse(int(state_val))
+                    if state.exists():
+                        address_vals['state_id'] = state.id
+                except (ValueError, TypeError):
+                    state = request.env['res.country.state'].sudo().search(
+                        [('name', 'ilike', state_val)], limit=1)
+                    if state:
+                        address_vals['state_id'] = state.id
+            country_val = values.get('company_country')
+            if country_val:
+                try:
+                    country = request.env['res.country'].sudo().browse(int(country_val))
+                    if country.exists():
+                        address_vals['country_id'] = country.id
+                except (ValueError, TypeError):
+                    country = request.env['res.country'].sudo().search(
+                        [('name', 'ilike', country_val)], limit=1)
+                    if country:
+                        address_vals['country_id'] = country.id
             if address_vals:
                 company_partner.write(address_vals)
                 _logger.info('Updated company partner address: %s', address_vals)
