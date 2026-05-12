@@ -8,27 +8,23 @@
     position: fixed;
     left: 0;
     top: 0;
-    width: 46px;
-    height: 46px;
+    width: 28px;
+    height: 28px;
     z-index: 1000000;
     pointer-events: none;
     transform: translate3d(-100px, -100px, 0);
-    margin-left: -23px;
-    margin-top: -23px;
+    margin-left: -14px;
+    margin-top: -14px;
     opacity: 1;
     transition: opacity 0.15s ease;
-}
-
-.o_omnibase_cursor.is-hidden {
-    opacity: 0;
 }
 
 .o_omnibase_cursor_dot {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 11px;
-    height: 11px;
+    width: 6px;
+    height: 6px;
     background: #e00000;
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -36,52 +32,68 @@
 
 .o_omnibase_cursor_part {
     position: absolute;
-    width: 46px;
-    height: 46px;
-    border: 7px solid #e00000;
-    border-radius: 50%;
-    box-sizing: border-box;
-    transition: transform 0.13s ease;
+    width: 8px;
+    height: 8px;
+    background: #e00000;
+    border-radius: 999px;
+    transition: transform 0.12s ease;
 }
 
-/* Top arc */
+/* TOP */
 .o_omnibase_cursor_part_top {
-    clip-path: polygon(0 0, 100% 0, 100% 42%, 0 42%);
-    transform: translateY(-3px);
+    left: 50%;
+    top: 0;
+    width: 8px;
+    height: 4px;
+    transform: translateX(-50%);
+    border-radius: 999px 999px 0 0;
 }
 
-/* Right arc */
+/* RIGHT */
 .o_omnibase_cursor_part_right {
-    clip-path: polygon(58% 0, 100% 0, 100% 100%, 58% 100%);
-    transform: translateX(3px);
+    right: 0;
+    top: 50%;
+    width: 4px;
+    height: 8px;
+    transform: translateY(-50%);
+    border-radius: 0 999px 999px 0;
 }
 
-/* Bottom arc */
+/* BOTTOM */
 .o_omnibase_cursor_part_bottom {
-    clip-path: polygon(0 58%, 100% 58%, 100% 100%, 0 100%);
-    transform: translateY(3px);
+    left: 50%;
+    bottom: 0;
+    width: 8px;
+    height: 4px;
+    transform: translateX(-50%);
+    border-radius: 0 0 999px 999px;
 }
 
-/* Left arc */
+/* LEFT */
 .o_omnibase_cursor_part_left {
-    clip-path: polygon(0 0, 42% 0, 42% 100%, 0 100%);
-    transform: translateX(-3px);
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 8px;
+    transform: translateY(-50%);
+    border-radius: 999px 0 0 999px;
 }
 
+/* click compression */
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_top {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(4px);
 }
 
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_right {
-    transform: translateX(0);
+    transform: translateY(-50%) translateX(-4px);
 }
 
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_bottom {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(-4px);
 }
 
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_left {
-    transform: translateX(0);
+    transform: translateY(-50%) translateX(4px);
 }
 
 @media (hover: none), (pointer: coarse) {
