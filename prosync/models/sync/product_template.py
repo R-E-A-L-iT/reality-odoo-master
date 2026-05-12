@@ -242,6 +242,8 @@ class product_template_sync:
 
         header = self.sheet[0]
         _logger.info(f"ProSync [DEBUG] Row {row_index} — header cols={len(header)} | row cols={len(row)} | SKU={getattr(product, 'sku', product.id)}")
+        rental_cols_in_header = [(i, col) for i, col in enumerate(header) if col.strip().lower().startswith("rental_price[pricelist=")]
+        _logger.info(f"ProSync [RENTAL] Header scan: found {len(rental_cols_in_header)} rental price column(s): {rental_cols_in_header}")
 
         for col_idx, column_name in enumerate(header):
             field_name = column_name.strip().lower()
@@ -275,11 +277,16 @@ class product_template_sync:
                 continue
             elif field_name.startswith("rental_price[pricelist="):
                 _logger.info(f"ProSync [RENTAL] Row {row_index} col {col_idx} — detected rental price column '{column_name}' | raw value='{raw_value}'")
+                prev_updated = len(self.rental_updated_items)
+                prev_warnings = len(self.rental_warning_items)
                 try:
                     update_with_rental_price_context(product, column_name, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
                 except Exception as e:
                     _logger.error(f"ProSync [RENTAL] Row {row_index} — UNHANDLED ERROR in update_with_rental_price_context for column '{column_name}': {str(e)}", exc_info=True)
                     self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
+                updated_now = len(self.rental_updated_items) - prev_updated
+                warned_now = len(self.rental_warning_items) - prev_warnings
+                _logger.info(f"ProSync [RENTAL] Row {row_index} col '{column_name}' result: +{updated_now} updates, +{warned_now} warnings")
                 continue
             elif field_name in ("rentalusd", "rentalcad"):
                 pricelist_name = "USD RENTAL" if field_name == "rentalusd" else "CAD RENTAL"
