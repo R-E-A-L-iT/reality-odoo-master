@@ -20,21 +20,28 @@ whenReady(async () => {
     function updateLoadingProgress() {
         loadingDone += 1;
 
-        const percent = Math.min((loadingDone / loadingTotal) * 100, 100);
+        const rawPercent = Math.min((loadingDone / loadingTotal) * 100, 100);
 
-        if (loaderFill) {
-            loaderFill.style.width = `${percent}%`;
-        }
+        // Slight delay lets each step animate instead of snapping visually
+        requestAnimationFrame(() => {
+            if (loaderFill) {
+                loaderFill.style.width = `${rawPercent}%`;
+            }
+        });
 
         if (loadingDone >= loadingTotal) {
             pageAssetsReady = true;
 
             if (loaderFill) {
-                loaderFill.style.width = "100%";
+                setTimeout(() => {
+                    loaderFill.style.width = "100%";
+                }, 150);
             }
 
             if (loaderEnter) {
-                loaderEnter.classList.add("is-visible");
+                setTimeout(() => {
+                    loaderEnter.classList.add("is-visible");
+                }, 900);
             }
         }
     }

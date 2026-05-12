@@ -43,7 +43,7 @@
     width: 0%;
     height: 100%;
     background: #db0d0d;
-    transition: width 0.25s ease;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .o_omnigo_loader_enter {
@@ -61,7 +61,11 @@
     opacity: 0;
     transform: translateY(10px);
     pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s ease;
+    transition:
+        opacity 1s ease,
+        transform 1s ease,
+        background 0.25s ease,
+        color 0.25s ease;
 }
 
 .o_omnigo_loader_enter.is-visible {
@@ -71,8 +75,10 @@
 }
 
 .o_omnigo_loader_enter:hover {
-    background: rgba(219, 13, 13, 0.18);
+    background: rgba(255, 255, 255, 0.12);
 }
+
+/* hero scene */
 
 .o_three_hero {
     position: relative;
