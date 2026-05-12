@@ -7,6 +7,60 @@ whenReady(async () => {
     const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
+    const pageLoader = document.getElementById("omnigo-page-loader");
+    const loaderFill = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_bar_fill") : null;
+    const loaderEnter = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_enter") : null;
+
+    let pageAssetsReady = false;
+    let userEnteredPage = false;
+
+    let loadingTotal = 3; // adapter GLB, animated GLTF, scroll video metadata
+    let loadingDone = 0;
+
+    function updateLoadingProgress() {
+        loadingDone += 1;
+
+        const percent = Math.min((loadingDone / loadingTotal) * 100, 100);
+
+        if (loaderFill) {
+            loaderFill.style.width = `${percent}%`;
+        }
+
+        if (loadingDone >= loadingTotal) {
+            pageAssetsReady = true;
+
+            if (loaderFill) {
+                loaderFill.style.width = "100%";
+            }
+
+            if (loaderEnter) {
+                loaderEnter.classList.add("is-visible");
+            }
+        }
+    }
+
+    function enterOmnigoPage() {
+        if (!pageAssetsReady) {
+            return;
+        }
+
+        userEnteredPage = true;
+
+        if (pageLoader) {
+            pageLoader.classList.add("is-hidden");
+        }
+
+        // Start hero drop animation only after Enter
+        if (heroWrapper) {
+            heroWrapper.position.y = 3.5;
+            dropAnimationStart = performance.now();
+        }
+    }
+
+    if (loaderEnter) {
+        loaderEnter.addEventListener("click", enterOmnigoPage);
+    }
+
     const omnigoScrollVideo = document.getElementById("omnigo-scroll-video");
     const omnigoVideoSection = omnigoScrollVideo
         ? omnigoScrollVideo.closest(".o_omnigo_video_scroll_section")
@@ -216,6 +270,7 @@ whenReady(async () => {
                 adapterModelPath,
                 (gltf) => {
                     adapterPrototype = prepareAdapterObject(gltf.scene);
+                    updateLoadingProgress();
                     resolve(adapterPrototype);
                 },
                 undefined,
@@ -533,6 +588,8 @@ whenReady(async () => {
             } else {
                 console.warn("No animations found in scene.gltf");
             }
+
+            updateLoadingProgress();
         },
         undefined,
         (error) => {
@@ -725,7 +782,8 @@ whenReady(async () => {
         heroWrapper.position.set(0, 3.5, 0);
         heroScene.add(heroWrapper);
 
-        dropAnimationStart = performance.now();
+        dropAnimationStart = null;
+        heroWrapper.position.y = 3.5;
     }
 
     // Scroll section adapter clone
@@ -784,6 +842,20 @@ whenReady(async () => {
         }
     }
 
+    if (omnigoScrollVideo) {
+        if (omnigoScrollVideo.readyState >= 1) {
+            updateLoadingProgress();
+        } else {
+            omnigoScrollVideo.addEventListener(
+                "loadedmetadata",
+                () => updateLoadingProgress(),
+                { once: true }
+            );
+        }
+    } else {
+        updateLoadingProgress();
+    }
+
     // ----------------------------
     // Animation loop
     // ----------------------------
@@ -792,7 +864,7 @@ whenReady(async () => {
 
         const delta = bottomClock.getDelta();
 
-        if (heroWrapper) {
+        if (heroWrapper && userEnteredPage) {
             if (dropAnimationStart !== null) {
                 const elapsed = now - dropAnimationStart;
                 const t = clamp(elapsed / dropDuration, 0, 1);

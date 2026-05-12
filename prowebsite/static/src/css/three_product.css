@@ -1,3 +1,79 @@
+/* loading screen */
+.o_omnigo_loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.65s ease, visibility 0.65s ease;
+}
+
+.o_omnigo_loader.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.o_omnigo_loader_inner {
+    width: min(360px, 72vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.o_omnigo_loader_logo {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 28px;
+}
+
+.o_omnigo_loader_bar {
+    width: 100%;
+    height: 3px;
+    background: #252525;
+    overflow: hidden;
+}
+
+.o_omnigo_loader_bar_fill {
+    width: 0%;
+    height: 100%;
+    background: #db0d0d;
+    transition: width 0.25s ease;
+}
+
+.o_omnigo_loader_enter {
+    margin-top: 30px;
+    padding: 12px 42px;
+    border: 1px solid #db0d0d;
+    background: transparent;
+    color: #ffffff;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s ease;
+}
+
+.o_omnigo_loader_enter.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.o_omnigo_loader_enter:hover {
+    background: rgba(219, 13, 13, 0.18);
+}
+
 .o_three_hero {
     position: relative;
     width: 100%;
