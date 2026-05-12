@@ -646,20 +646,28 @@
 }
 
 .o_review_waterfall_grid {
-    column-count: 4;
-    column-gap: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+    align-items: stretch;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .o_review_waterfall_card {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    margin: 0 0 50px;
-    break-inside: avoid;
+    min-height: 520px;
+    margin: 0;
+    break-inside: auto;
+
     background: rgba(255,255,255,0.94);
     border: 1px solid rgba(255,255,255,0.35);
     border-radius: 28px;
-    padding: 30px;
-    box-shadow: 0 24px 20px rgba(0,0,0,0.22);
+    padding: clamp(28px, 3vw, 48px);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.22);
+
     opacity: 0;
     transform: translateY(45px);
     transition: opacity 0.7s ease, transform 0.7s ease;
@@ -679,22 +687,28 @@
 }
 
 .o_review_waterfall_quote {
-    margin: 0 0 28px;
-    color: #171717;
-    font-size: 17px;
-    line-height: 1.7;
+    margin: 0;
+    color: #111;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(17px, 1.2vw, 22px);
+    line-height: 1.65;
+    font-weight: 500;
+    flex: 1;
 }
 
 .o_review_waterfall_author {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding-top: 18px;
+    margin-top: 34px;
+    padding-top: 22px;
+    border-top: 4px solid #c40000;
+    color: #111;
 }
 
 .o_review_waterfall_author strong {
     display: block;
-    color: #000;
-    font-size: 16px;
-    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .o_review_waterfall_author span {
