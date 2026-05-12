@@ -572,6 +572,7 @@
     margin: 0 auto 72px;
     text-align: center;
     color: #ffffff;
+    z-index: 4;
 }
 
 .o_review_waterfall_kicker {
