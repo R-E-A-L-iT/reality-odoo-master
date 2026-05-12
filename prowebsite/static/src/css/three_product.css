@@ -557,6 +557,7 @@
     z-index: auto;
     background: transparent;
     overflow: hidden;
+    padding: 120px clamp(20px, 4vw, 64px) 220px;
 }
 
 .o_review_waterfall_section::before {
@@ -569,13 +570,41 @@
     background:
         radial-gradient(circle at 15% 10%, rgba(255, 0, 0, 0.394), transparent 32%),
         radial-gradient(circle at 85% 30%, rgba(255, 80, 80, 0.475), transparent 36%),
-        linear-gradient(180deg, #160000 0%, #080808 45%, #ffffff 100%);
+        linear-gradient(180deg, #1f1c1c 0%, #272626 45%, #ffffff 100%);
+}
+
+.o_review_waterfall_section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 180px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0) 0%,
+        #ffffff 72%,
+        #ffffff 100%
+    );
 }
 
 .o_review_waterfall_inner {
+    position: relative;
+    z-index: 5;
     max-width: 1280px;
     margin: 0 auto;
-    z-index: 4;
+}
+
+@media (max-width: 600px) {
+    .o_review_waterfall_section {
+        padding: 80px 20px 180px;
+    }
+
+    .o_review_waterfall_grid {
+        column-count: 1;
+    }
 }
 
 .o_review_waterfall_header {
