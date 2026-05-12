@@ -148,11 +148,11 @@ whenReady(async () => {
 
                     setTimeout(() => {
                         currentItem.classList.remove("is-off");
-                    }, 200);
+                    }, 100);
                 }
 
                 activeIndex = (activeIndex + 1) % heroLogoItems.length;
-            }, 200);
+            }, 100);
         }, flickerStartDelay);
     }
 
