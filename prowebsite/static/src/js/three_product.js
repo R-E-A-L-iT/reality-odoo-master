@@ -7,6 +7,58 @@ whenReady(async () => {
     const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
+    // ----------------------------
+    // Custom Omni cursor
+    // ----------------------------
+    const omniPage = document.querySelector(".o_three_hero")?.closest("#wrap");
+
+    let omniCursor = null;
+    let omniCursorReady = false;
+
+    function createOmniCursor() {
+        if (!omniPage || omniCursorReady) {
+            return;
+        }
+
+        omniCursorReady = true;
+
+        document.body.classList.add("o_omnibase_custom_cursor_enabled");
+
+        omniCursor = document.createElement("div");
+        omniCursor.className = "o_omnibase_cursor";
+        omniCursor.innerHTML = `
+            <div class="o_omnibase_cursor_part o_omnibase_cursor_part_top"></div>
+            <div class="o_omnibase_cursor_part o_omnibase_cursor_part_right"></div>
+            <div class="o_omnibase_cursor_part o_omnibase_cursor_part_bottom"></div>
+            <div class="o_omnibase_cursor_part o_omnibase_cursor_part_left"></div>
+            <div class="o_omnibase_cursor_dot"></div>
+        `;
+
+        document.body.appendChild(omniCursor);
+
+        window.addEventListener("mousemove", (event) => {
+            omniCursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+        });
+
+        window.addEventListener("mousedown", () => {
+            omniCursor.classList.add("is-clicking");
+        });
+
+        window.addEventListener("mouseup", () => {
+            omniCursor.classList.remove("is-clicking");
+        });
+
+        window.addEventListener("mouseleave", () => {
+            omniCursor.classList.add("is-hidden");
+        });
+
+        window.addEventListener("mouseenter", () => {
+            omniCursor.classList.remove("is-hidden");
+        });
+    }
+
+    createOmniCursor();
+
     const pageLoader = document.getElementById("omnigo-page-loader");
     const loaderFill = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_bar_fill") : null;
     const loaderEnter = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_enter") : null;
