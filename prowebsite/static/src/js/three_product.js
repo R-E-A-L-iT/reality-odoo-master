@@ -148,11 +148,11 @@ whenReady(async () => {
 
                     setTimeout(() => {
                         currentItem.classList.remove("is-off");
-                    }, 150);
+                    }, 200);
                 }
 
                 activeIndex = (activeIndex + 1) % heroLogoItems.length;
-            }, 500);
+            }, 200);
         }, flickerStartDelay);
     }
 
@@ -403,7 +403,7 @@ whenReady(async () => {
     heroCamera.position.set(0, 0, 5);
 
     const heroRenderer = createRenderer(heroHost, "4");
-    addStandardLights(heroScene, "dark");
+    addSoftProductLights(heroScene);
 
     let heroModel = null;
     let heroWrapper = null;
