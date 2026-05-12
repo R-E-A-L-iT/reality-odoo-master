@@ -131,6 +131,11 @@ class order(models.Model):
     ], )
     partner_name = fields.Char(string="Partner Name")
     rental_email = fields.Char(string="Email")
+    company_street  = fields.Char(string="Street")
+    company_city    = fields.Char(string="City")
+    company_zip     = fields.Char(string="ZIP / Postal Code")
+    company_state   = fields.Char(string="State / Province")
+    company_country = fields.Char(string="Country")
 
     pickup_date = fields.Datetime(
         string="Pickup Date",

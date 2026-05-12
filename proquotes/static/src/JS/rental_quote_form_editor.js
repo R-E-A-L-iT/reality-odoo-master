@@ -22,7 +22,42 @@ FormEditorRegistry.add('create_rental_quote', {
         fillWith: 'rental_email',
         name: 'rental_email',
         string: _t('Email'),
-    },],
+    }, {
+        type: 'date',
+        required: true,
+        name: 'rental_start_date',
+        string: _t('Rental Start Date'),
+    }, {
+        type: 'date',
+        required: true,
+        name: 'rental_return_date',
+        string: _t('Rental End Date'),
+    }, {
+        type: 'char',
+        required: false,
+        name: 'company_street',
+        string: _t('Street Address'),
+    }, {
+        type: 'char',
+        required: false,
+        name: 'company_city',
+        string: _t('City'),
+    }, {
+        type: 'char',
+        required: false,
+        name: 'company_zip',
+        string: _t('ZIP / Postal Code'),
+    }, {
+        type: 'char',
+        required: false,
+        name: 'company_state',
+        string: _t('State / Province'),
+    }, {
+        type: 'char',
+        required: false,
+        name: 'company_country',
+        string: _t('Country'),
+    }],
     fields: [{
         name: 'sale_order_template_id',
         type: 'many2one',

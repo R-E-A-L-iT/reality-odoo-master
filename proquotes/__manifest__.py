@@ -49,6 +49,8 @@
             "proquotes/static/src/JS/ccp_selection.js",
         ],
         'web.assets_frontend': [
+            "proquotes/static/src/JS/rental_duration_display.js",
+            "proquotes/static/src/JS/rental_form_dropdowns.js",
             "proquotes/static/src/CSS/header.css",
             "proquotes/static/src/CSS/store.css",
             "proquotes/static/src/CSS/ccp_selection.css",
