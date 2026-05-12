@@ -309,8 +309,8 @@ whenReady(async () => {
         // White rectangular strip light
         const whiteStrip = new THREE.RectAreaLight(
             0xffffff,
-            50,     // intensity
-            17.5,    // width
+            18,     // intensity
+            7.5,    // width
             0.35    // height
         );
         whiteStrip.position.set(-1.2, 1.4, 4.2);
@@ -321,8 +321,8 @@ whenReady(async () => {
         // Red rectangular strip light
         const redStrip = new THREE.RectAreaLight(
             0xff0000,
-            50,     // intensity
-            17.5,    // width
+            28,     // intensity
+            7.5,    // width
             0.35    // height
         );
         redStrip.position.set(1.2, -1.4, 4.0);
