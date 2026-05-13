@@ -157,7 +157,7 @@ whenReady(async () => {
         for (let i = 0; i < count; i++) {
             const img = document.createElement("img");
             img.className = "o_three_hero_logo_stack_item";
-            img.src = i === 1
+            img.src = i === 3
                 ? "https://cdn.r-e-a-l.it/images/header/omnigo_draft.png"
                 : heroLogoUrl;
             img.alt = "";
