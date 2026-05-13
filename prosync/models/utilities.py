@@ -337,7 +337,7 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
 # Handles column formats like "rental_price[pricelist=USD RENTAL (USD)]", "rental_price[pricelist=CAD RENTAL (CAD)]",
 # and legacy formats like "rental_price[pricelist=USD]" / "rental_price[pricelist=CAD]"
 #
-def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items):
+def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items, skipped_items):
     cell_ref = f"{row_index}{chr(col_index + 65)}"
     _logger.info(f"ProSync [RENTAL] ── cell {cell_ref} | column='{column_name}' | value='{value}' | product='{getattr(product, 'sku', product.id)}'")
 
@@ -396,6 +396,7 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
 
     if not value or str(value).strip() == '':
         _logger.info(f"ProSync [RENTAL] Skipping empty value at cell {cell_ref}")
+        skipped_items.append(f"Row {row_index} col '{column_name}': empty value")
         return
 
     new_price = normalize_float(value)
@@ -436,6 +437,7 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
             _logger.info(f"ProSync [RENTAL] UPDATED product '{product.sku}' [{currency_code}]: {old_price} → {new_price}")
         else:
             _logger.info(f"ProSync [RENTAL] No change for product '{product.sku}' [{currency_code}]: price is already {new_price}")
+            skipped_items.append(f"Row {row_index} '{product.sku}' [{currency_code}]: price unchanged ({new_price})")
     else:
         try:
             env["product.pricing"].create({

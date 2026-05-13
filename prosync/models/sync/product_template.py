@@ -36,6 +36,7 @@ class product_template_sync:
         self.error_items = []
         self.rental_updated_items = []
         self.rental_warning_items = []
+        self.rental_skipped_items = []
         self.report_id = None
 
     def sync_product_template(self):
@@ -186,7 +187,12 @@ class product_template_sync:
             })
 
         # Create a separate Rental Price report if rental changes occurred
-        _logger.info(f"ProSync [RENTAL] End of sync — rental_updated={len(self.rental_updated_items)} rental_warnings={len(self.rental_warning_items)}")
+        _logger.info(
+            f"ProSync [RENTAL] End of sync — "
+            f"rental_updated={len(self.rental_updated_items)} "
+            f"rental_skipped={len(self.rental_skipped_items)} "
+            f"rental_warnings={len(self.rental_warning_items)}"
+        )
         if self.rental_updated_items or self.rental_warning_items:
             rental_report = self.database['prosync.report'].create({
                 'name': f"Rental Price Sync: {self.name}",
@@ -280,7 +286,7 @@ class product_template_sync:
                 prev_updated = len(self.rental_updated_items)
                 prev_warnings = len(self.rental_warning_items)
                 try:
-                    update_with_rental_price_context(product, column_name, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
+                    update_with_rental_price_context(product, column_name, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
                 except Exception as e:
                     _logger.error(f"ProSync [RENTAL] Row {row_index} — UNHANDLED ERROR in update_with_rental_price_context for column '{column_name}': {str(e)}", exc_info=True)
                     self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
@@ -293,7 +299,7 @@ class product_template_sync:
                 synthetic_col = f"rental_price[pricelist={pricelist_name}]"
                 _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
                 try:
-                    update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items)
+                    update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
                 except Exception as e:
                     _logger.error(f"ProSync [RENTAL] Row {row_index} — error processing '{column_name}': {str(e)}", exc_info=True)
                 continue
