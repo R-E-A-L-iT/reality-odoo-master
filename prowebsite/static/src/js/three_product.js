@@ -157,7 +157,9 @@ whenReady(async () => {
         for (let i = 0; i < count; i++) {
             const img = document.createElement("img");
             img.className = "o_three_hero_logo_stack_item";
-            img.src = heroLogoUrl;
+            img.src = i === 1
+                ? "https://cdn.r-e-a-l.it/images/header/omnigo_draft.png"
+                : heroLogoUrl;
             img.alt = "";
             img.loading = "eager";
             img.decoding = "async";
@@ -181,27 +183,6 @@ whenReady(async () => {
                 item.classList.add("is-visible");
             }, index * revealDelay);
         });
-
-        const flickerStartDelay = heroLogoItems.length * revealDelay + 500;
-        const flickerStepDelay = 100;
-        const invisibleDuration = 100;
-
-        setTimeout(() => {
-            heroLogoItems.forEach((item, index) => {
-                setTimeout(() => {
-                    heroLogoItems.forEach((logo) => {
-                        logo.classList.remove("is-off");
-                        logo.classList.add("is-visible");
-                    });
-
-                    item.classList.add("is-off");
-
-                    setTimeout(() => {
-                        item.classList.remove("is-off");
-                    }, invisibleDuration);
-                }, index * flickerStepDelay);
-            });
-        }, flickerStartDelay);
     }
 
     buildHeroLogoStack();
@@ -983,7 +964,7 @@ whenReady(async () => {
 
                 if (t >= 1) {
                     dropAnimationStart = null;
-                    heroWrapper.position.y = 0;
+                    heroWrapper.position.y = -0.35;
                 }
             }
 
@@ -992,7 +973,7 @@ whenReady(async () => {
 
             heroWrapper.position.x = mouseCurrentX;
             if (dropAnimationStart === null) {
-                heroWrapper.position.y = mouseCurrentY;
+                heroWrapper.position.y = mouseCurrentY - 0.35;
             }
 
             if (heroModel) {
