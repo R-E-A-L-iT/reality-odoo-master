@@ -6,6 +6,7 @@
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="replace">
 
             <t t-call="web.external_layout">
+                <t t-set="footer_url" t-value="doc.footer_id.url if doc.footer_id else False"/>
                 <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
                 <t t-set="language" t-value="doc.partner_id.lang"/>
                 <t t-set="forced_vat" t-value="doc.fiscal_position_id.foreign_vat"/> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
@@ -380,6 +381,7 @@
                         </t> -->
                         <!-- <t t-set="currency_label" t-if="language == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/> -->
                         <t t-set="currency_label" t-value="doc.currency_id.name"/>
+                        <br/>
                         <p t-if="language == 'en_CA' or language == 'en_US'">All prices in
                             <t t-out="currency_label"/>
                             dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
@@ -396,6 +398,10 @@
                         <t t-set="company_name" t-value="doc.company_id.name"/>
 
                         <t t-if="doc.is_rental_order == True">
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
                             <h1 t-if="language == 'fr_CA'">Termes et conditions</h1>
                             <h1 t-elif="language == 'es_ES'">Términos y condiciones</h1>
                             <h1 t-else="">Terms and Conditions</h1>
@@ -473,8 +479,6 @@
                         <br/>
                         <br/>
                         <br/>
-                        <t t-set="footer" t-value="doc.footer_id.url"/>
-                        <!-- <img t-att-src="footer" style="width: 100%; height: 100px;"/> -->
 
                         <footer>
                             <t t-if="doc.company_id.id == 15">
