@@ -260,8 +260,18 @@ class product_template_sync:
 
             # Guard: row may be shorter than header (trailing empty cells stripped by gspread)
             if col_idx >= len(row):
-                _logger.info(f"ProSync [DEBUG] Row {row_index} col {col_idx} ('{column_name}') — no cell value (row shorter than header), treating as empty")
-                raw_value = ''
+                if field_name.startswith("rental_price[pricelist="):
+                    self.rental_skipped_items.append(
+                        f"Row {row_index} col '{column_name}': row shorter than header (no cell — gspread trim)"
+                    )
+                    _logger.info(
+                        f"ProSync [RENTAL] Row {row_index} col {col_idx} ('{column_name}') "
+                        f"— skipped: row shorter than header (gspread trim)"
+                    )
+                else:
+                    _logger.info(f"ProSync [DEBUG] Row {row_index} col {col_idx} ('{column_name}') — no cell value (row shorter than header), treating as empty")
+                    raw_value = ''
+                continue
             else:
                 raw_value = row[col_idx]
 

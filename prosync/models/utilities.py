@@ -394,7 +394,7 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
     currency_code = rental_pricelist.currency_id.name
     _logger.info(f"ProSync [RENTAL] Using pricelist '{rental_pricelist.name}' (ID {rental_pricelist.id}) | currency={currency_code}")
 
-    if not value or str(value).strip() == '':
+    if value is None or str(value).strip() == '':
         _logger.info(f"ProSync [RENTAL] Skipping empty value at cell {cell_ref}")
         skipped_items.append(f"Row {row_index} col '{column_name}': empty value")
         return
