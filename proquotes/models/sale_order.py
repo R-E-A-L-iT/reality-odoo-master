@@ -261,24 +261,53 @@ class order(models.Model):
     def _remove_managed_canadian_taxes_from_line(self, line):
         managed_names = self._get_managed_canadian_tax_names()
         remaining_taxes = line.tax_id.filtered(lambda tax: tax.name not in managed_names)
+
         if set(line.tax_id.ids) != set(remaining_taxes.ids):
-            line.with_context(skip_apply_canadian_sales_taxes=True).tax_id = [Command.set(remaining_taxes.ids)]
+            line.with_context(skip_apply_canadian_sales_taxes=True).write({
+                "tax_id": [Command.set(remaining_taxes.ids)]
+            })
+
+
+    def _can_apply_canadian_sales_taxes(self):
+        self.ensure_one()
+
+        if self.env.context.get("force_apply_canadian_sales_taxes"):
+            return True
+
+        if self.env.context.get("skip_apply_canadian_sales_taxes"):
+            return False
+
+        # Do not touch taxes after confirmation/locking.
+        # This prevents delivery/transfer validation from crashing.
+        if self.state not in ("draft", "sent"):
+            return False
+
+        # Extra safety for Odoo's lock flag if present.
+        if "locked" in self._fields and self.locked:
+            return False
+
+        return True
 
 
     def _apply_canadian_sales_taxes(self):
         """
         Single source of truth for Canadian sales tax.
 
-        Rules:
-        - Canadian company: force the correct provincial tax on every real product line.
-        - Missing/unknown province: remove only our managed Canadian taxes.
-        - US company / American sales tax: do nothing except remove stale managed Canadian taxes.
-        - Never touch section/note lines.
+        Safe rule:
+        - Auto-apply only while quote/order is still editable.
+        - Never auto-modify taxes on confirmed/locked orders during delivery,
+        invoice, stock, or procurement workflows.
         """
-        if self.env.context.get("skip_apply_canadian_sales_taxes"):
-            return
-
         for order in self:
+            if not order._can_apply_canadian_sales_taxes():
+                _logger.info(
+                    "Skipping Canadian tax automation for %s because order is state=%s locked=%s",
+                    order.name,
+                    order.state,
+                    getattr(order, "locked", False),
+                )
+                continue
+
             if not order.order_line:
                 continue
 
@@ -289,14 +318,14 @@ class order(models.Model):
                     continue
 
                 if not order._is_canadian_tax_scope():
-                    # American sales tax should do nothing.
-                    # But remove stale Canadian taxes if the order switched company/country.
                     order._remove_managed_canadian_taxes_from_line(line)
                     continue
 
                 if tax:
                     if set(line.tax_id.ids) != set(tax.ids):
-                        line.with_context(skip_apply_canadian_sales_taxes=True).tax_id = [Command.set(tax.ids)]
+                        line.with_context(skip_apply_canadian_sales_taxes=True).write({
+                            "tax_id": [Command.set(tax.ids)]
+                        })
                 else:
                     order._remove_managed_canadian_taxes_from_line(line)
 
