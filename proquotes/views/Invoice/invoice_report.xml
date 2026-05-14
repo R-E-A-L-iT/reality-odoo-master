@@ -3,6 +3,10 @@
 <odoo>
     <template id="invoice_pdf_content" name="Invoice PDF Content" inherit_id="account.report_invoice_document" priority="17">
 
+        <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="inside">
+            <t t-set="footer_url" t-value="o.footer_id.url if o.footer_id else False"/>
+        </xpath>
+        
         <!-- Setup Translations -->
         <xpath expr="//t[@t-call=&quot;web.external_layout&quot;]" position="before">
             <t t-set="lang" t-value="o.partner_id.lang"/>

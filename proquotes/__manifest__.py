@@ -105,6 +105,7 @@
         "views/Purchase/purchase_preview.xml",
         "views/Purchase/purchase_internal.xml",
         # other
+        "views/Other/report_footer.xml",
         "views/Other/mail_templates.xml",
         "views/Other/stock_lot.xml",
         "views/Other/tax.xml",
@@ -118,7 +119,6 @@
         "views/Other/mail.xml",
         "views/Other/delivery_report.xml",
         "views/Other/project_task.xml",
-        "views/Other/pdf_boxed.xml",
         "views/Other/section_name.xml",
         "views/Other/res_company.xml",
         "views/Other/res_user.xml",
