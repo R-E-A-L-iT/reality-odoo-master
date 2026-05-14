@@ -294,6 +294,7 @@
 
         <!-- Bank Info -->
         <xpath expr="//div[@id=&quot;qrcode&quot;]" position="after">
+            <t t-set="footer" t-value="doc.footer_id.url"/>
             <t t-if="o.company_id.id == 15">
                 <br/>
                 <div id="bank-info">
