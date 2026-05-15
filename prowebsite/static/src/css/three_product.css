@@ -201,7 +201,6 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: min(82vw, 950px) auto;
-    opacity: 1;
 }
 
 @media (max-width: 768px) {
