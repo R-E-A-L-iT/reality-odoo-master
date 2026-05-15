@@ -615,7 +615,31 @@
                                 justify-content: space-between;
                                 gap: 20px;
                             ">
-                                <div style="
+                                <div t-if="language == 'fr_CA'" style="
+                                    color: white;
+                                    font-size: 17px;
+                                    font-weight: 700;
+                                    line-height: 1.3;
+                                    flex: 1 1 auto;
+                                    text-align: left;
+                                    margin: 0;
+                                ">
+                                    Vous cherchez des licences de logiciels temporaires pour accompagner votre location?
+                                    Achetez-les directement sur notre boutique ici:
+                                </div>
+                                <div t-elif="language == 'es_ES'" style="
+                                    color: white;
+                                    font-size: 17px;
+                                    font-weight: 700;
+                                    line-height: 1.3;
+                                    flex: 1 1 auto;
+                                    text-align: left;
+                                    margin: 0;
+                                ">
+                                    ¿Buscando licencias de software temporales para acompañar su alquiler?
+                                    Comprenlas directamente en nuestra tienda aquí:
+                                </div>
+                                <div t-else="" style="
                                     color: white;
                                     font-size: 17px;
                                     font-weight: 700;
@@ -629,7 +653,41 @@
                                 </div>
 
                                 <div style="flex: 0 0 auto; margin: 0;">
-                                    <a href="https://www.r-e-a-l.it/shop?search=&amp;order=&amp;tags=4"
+                                    <a t-if="language == 'fr_CA'" href="https://www.r-e-a-l.it/shop?search=&amp;order=&amp;tags=4"
+                                    target="_blank"
+                                    style="
+                                        display: inline-block;
+                                        background: #ffffff;
+                                        color: #000000;
+                                        text-decoration: none;
+                                        font-weight: 700;
+                                        padding: 10px 22px;
+                                        border: none;
+                                        border-radius: 6px;
+                                        box-shadow: none;
+                                        -webkit-appearance: none;
+                                        appearance: none;
+                                    ">
+                                        Voir le magasin
+                                    </a>
+                                    <a t-elif="language == 'es_ES'" href="https://www.r-e-a-l.it/shop?search=&amp;order=&amp;tags=4"
+                                    target="_blank"
+                                    style="
+                                        display: inline-block;
+                                        background: #ffffff;
+                                        color: #000000;
+                                        text-decoration: none;
+                                        font-weight: 700;
+                                        padding: 10px 22px;
+                                        border: none;
+                                        border-radius: 6px;
+                                        box-shadow: none;
+                                        -webkit-appearance: none;
+                                        appearance: none;
+                                    ">
+                                        Ver la tienda
+                                    </a>
+                                    <a t-else="" href="https://www.r-e-a-l.it/shop?search=&amp;order=&amp;tags=4"
                                     target="_blank"
                                     style="
                                         display: inline-block;
