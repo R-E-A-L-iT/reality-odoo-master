@@ -17,10 +17,10 @@
     color: black !important;
 }
 
-/* a.oe_product_image_link {
+a.oe_product_image_link {
     min-height: 250px;
     min-width: 250px;
-} */
+}
 
 #o_payment_form_options {
     flex-direction: initial !important;
