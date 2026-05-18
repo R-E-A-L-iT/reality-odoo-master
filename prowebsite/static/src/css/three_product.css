@@ -200,7 +200,7 @@
     background-image: url("https://cdn.r-e-a-l.it/images/header/Omni_O_Logo_special.png");
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: min(82vw, 950px) auto;
+    background-size: min(62vw, 780px) auto;
 }
 
 @media (max-width: 768px) {
