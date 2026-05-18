@@ -11,4 +11,4 @@ class SaleReport(models.Model):
         base_where = super()._where_sale()
         return f"""
             {base_where}
-            AND l.is_selected = true"""
+            AND l.selected = 'true'"""
