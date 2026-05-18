@@ -175,6 +175,10 @@ whenReady(async () => {
         return 1 - Math.pow(1 - t, 3);
     }
 
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
     function lerp(a, b, t) {
         return a + (b - a) * t;
     }
@@ -687,18 +691,25 @@ whenReady(async () => {
         scrollHotspotLayer.className = "o_three_scroll_hotspot_layer";
 
         scrollHotspotLayer.innerHTML = `
-            <div class="o_three_feature_callout o_three_feature_callout_screw">
+            <div class="o_three_feature_callout o_three_feature_callout_attachment">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">Multi-use screw attachment</div>
+                <div class="o_three_feature_label">BLK2GO attachment interface</div>
             </div>
 
             <div class="o_three_feature_callout o_three_feature_callout_hatch">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">Easily securable hatch</div>
+                <div class="o_three_feature_label">Latch lock button</div>
+            </div>
+
+            <div class="o_three_feature_callout o_three_feature_callout_screw">
+                <div class="o_three_feature_dot"></div>
+                <div class="o_three_feature_line_diagonal"></div>
+                <div class="o_three_feature_line_under"></div>
+                <div class="o_three_feature_label">Multi-use screw attachment</div>
             </div>
         `;
 
@@ -710,20 +721,28 @@ whenReady(async () => {
             return;
         }
 
-        const screwCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_screw");
+        const attachmentCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_attachment");
         const hatchCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_hatch");
+        const screwCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_screw");
 
-        if (screwCallout) {
-            screwCallout.classList.toggle(
+        if (attachmentCallout) {
+            attachmentCallout.classList.toggle(
                 "is-visible",
-                scrollAnimProgress >= 0.46 && scrollAnimProgress <= 0.58
+                scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23
             );
         }
 
         if (hatchCallout) {
             hatchCallout.classList.toggle(
                 "is-visible",
-                scrollAnimProgress >= 0.72 && scrollAnimProgress <= 0.88
+                scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48
+            );
+        }
+
+        if (screwCallout) {
+            screwCallout.classList.toggle(
+                "is-visible",
+                scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73
             );
         }
     }
@@ -763,33 +782,69 @@ whenReady(async () => {
 
         const t = scrollAnimProgress;
 
-        const phase1 = clamp(t / 0.5, 0, 1);
-        const phase2 = clamp((t - 0.5) / 0.5, 0, 1);
-        const phase2Ease = easeOutCubic(phase2);
+        // Resting pose — must match exactly at t=0 and t=1
+        const baseY = -Math.PI / 12;
+        const baseZ = Math.PI / 12;
 
-        // Start/end resting pose
-        const baseY = -Math.PI / 12; // Y-axis counter-clockwise tilt
-        const baseZ = Math.PI / 12;  // Z-axis counter-clockwise tilt
+        // Pitch targets for each revealed face
+        const TOP_PITCH    = -Math.PI * 0.455; // ≈ -82°, top face tilted toward camera
+        const SIDE_PITCH   = -Math.PI * 0.056; // ≈ -10°, nearly upright for side view
+        const BOTTOM_PITCH =  Math.PI * 0.433; // ≈ +78°, bottom face tilted toward camera
 
+        // Per-phase eased progress (each phase spans 25% of scroll travel)
+        const p1 = easeInOutCubic(clamp(t / 0.25, 0, 1));
+        const p2 = easeInOutCubic(clamp((t - 0.25) / 0.25, 0, 1));
+        const p3 = easeInOutCubic(clamp((t - 0.50) / 0.25, 0, 1));
+        const p4 = easeOutCubic(clamp((t - 0.75) / 0.25, 0, 1));
+
+        // Scale: zoom in during phases 1–3, ease back on phase 4
+        const scale = t < 0.75 ? lerp(1.3, 1.55, p1) : lerp(1.55, 1.3, p4);
+        scrollWrapper.scale.setScalar(scale);
         scrollWrapper.position.set(0, 0, 0);
-        scrollWrapper.scale.setScalar(1.3);
 
-        // Phase 1: move from resting pose to feature pose
-        // Phase 2: return back to resting pose
-        scrollModel.rotation.x =
-            lerp(0, -Math.PI / 2, phase1) +
-            lerp(0, Math.PI / 2, phase2Ease);
-
+        // Model X (pitch):
+        //   Phase 1 — tilt back to show top face (attachment interface)
+        //   Phase 2 — bring upright while swinging Y to show side face (latch button)
+        //   Phase 3 — tip forward to show bottom face (screw) while swinging Y back
+        //   Phase 4 — return to rest
+        let modelX;
+        if (t < 0.25) {
+            modelX = lerp(0, TOP_PITCH, p1);
+        } else if (t < 0.50) {
+            modelX = lerp(TOP_PITCH, SIDE_PITCH, p2);
+        } else if (t < 0.75) {
+            modelX = lerp(SIDE_PITCH, BOTTOM_PITCH, p3);
+        } else {
+            modelX = lerp(BOTTOM_PITCH, 0, p4);
+        }
+        scrollModel.rotation.x = modelX;
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        scrollWrapper.rotation.x = 0;
-        scrollWrapper.rotation.y = baseY;
+        // Wrapper Y (yaw): swing 90° during phase 2 to expose side face, return during phase 3
+        let wrapperY;
+        if (t < 0.25) {
+            wrapperY = baseY;
+        } else if (t < 0.50) {
+            wrapperY = lerp(baseY, baseY + Math.PI * 0.5, p2);
+        } else if (t < 0.75) {
+            wrapperY = lerp(baseY + Math.PI * 0.5, baseY, p3);
+        } else {
+            wrapperY = baseY;
+        }
+        scrollWrapper.rotation.y = wrapperY;
 
-        scrollWrapper.rotation.z =
-            baseZ +
-            lerp(0, Math.PI / 7, phase1) +
-            lerp(0, -Math.PI / 7, phase2Ease);
+        // Wrapper Z (roll): flatten slightly during reveal phases for a cleaner view
+        let wrapperZ;
+        if (t < 0.25) {
+            wrapperZ = lerp(baseZ, baseZ * 0.4, p1);
+        } else if (t < 0.75) {
+            wrapperZ = baseZ * 0.4;
+        } else {
+            wrapperZ = lerp(baseZ * 0.4, baseZ, p4);
+        }
+        scrollWrapper.rotation.z = wrapperZ;
+        scrollWrapper.rotation.x = 0;
 
         updateScrollHotspots();
     }

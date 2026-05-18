@@ -618,6 +618,38 @@
     top: 15px;
 }
 
+/* Attachment callout (top face) — dot points at upper model face, label extends right */
+.o_three_feature_callout_attachment {
+    left: 50%;
+    top: 50%;
+    width: 580px;
+    height: 170px;
+    transform: translate(60px, -210px);
+}
+
+.o_three_feature_callout_attachment .o_three_feature_dot {
+    left: -80px;
+    top: 130px;
+}
+
+.o_three_feature_callout_attachment .o_three_feature_line_diagonal {
+    left: -62px;
+    top: 100px;
+    width: 220px;
+    transform: rotate(-22deg);
+}
+
+.o_three_feature_callout_attachment .o_three_feature_line_under {
+    left: 140px;
+    top: 16px;
+    width: 430px;
+}
+
+.o_three_feature_callout_attachment .o_three_feature_label {
+    left: 146px;
+    top: -27px;
+}
+
 @media (max-width: 768px) {
     .o_three_feature_callout_screw {
         transform: translate(-30px, 45px) scale(0.72);
@@ -626,6 +658,11 @@
 
     .o_three_feature_callout_hatch {
         transform: translate(30px, -80px) scale(0.72);
+        transform-origin: left center;
+    }
+
+    .o_three_feature_callout_attachment {
+        transform: translate(20px, -160px) scale(0.72);
         transform-origin: left center;
     }
 
