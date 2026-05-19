@@ -471,13 +471,16 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 64px 32px;
+    padding: 0;
 }
 
 .o_omnigo_video_scroll_heading {
     max-width: 1050px;
-    margin: 0 0 32px 0;
+    width: 100%;
+    margin: 0 0 28px 0;
+    padding: 52px 32px 0;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .o_omnigo_video_scroll_title {
@@ -501,19 +504,24 @@
 }
 
 .o_omnigo_video_scroll_video_wrap {
-    width: min(92vw, 1100px);
-    max-height: 62vh;
+    width: 100vw;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    background: #ffffff;
 }
 
 .o_omnigo_video_scroll_video {
     width: 100%;
-    height: auto;
-    max-height: 62vh;
+    height: 100%;
     display: block;
     object-fit: contain;
+    background: #ffffff;
+    border: none;
+    outline: none;
+    vertical-align: top;
 }
 
 /* feature highlights */
@@ -949,13 +957,13 @@
     }
 
     .o_omnigo_video_scroll_inner {
-        padding: 40px 20px;
-        justify-content: flex-start;
-        padding-top: 10vh;
+        padding: 0;
+        justify-content: center;
     }
 
     .o_omnigo_video_scroll_heading {
-        margin-bottom: 20px;
+        padding: 8vh 20px 0;
+        margin-bottom: 16px;
     }
 
     .o_omnigo_video_scroll_subtitle {
@@ -966,7 +974,6 @@
 
     .o_omnigo_video_scroll_video_wrap {
         width: 100vw;
-        max-height: 50vh;
     }
 }
 
@@ -1027,7 +1034,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 99999;
+    z-index: 1000;
     background: rgba(6, 4, 4, 0.18);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);

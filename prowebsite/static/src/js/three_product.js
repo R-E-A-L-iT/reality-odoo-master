@@ -1063,24 +1063,29 @@ whenReady(async () => {
     window.addEventListener("resize", onResize);
 
     // omnigo scroll video section
+    let videoSeeking = false;
+    if (omnigoScrollVideo) {
+        omnigoScrollVideo.pause();
+        omnigoScrollVideo.addEventListener("seeked", () => { videoSeeking = false; }, { passive: true });
+        omnigoScrollVideo.addEventListener("play", () => { omnigoScrollVideo.pause(); }, { passive: true });
+    }
+
     function updateOmnigoScrollVideo() {
-        if (!omnigoScrollVideo || !omnigoVideoSection || !omnigoScrollVideo.duration) {
-            return;
-        }
+        if (!omnigoScrollVideo || !omnigoVideoSection) return;
+        if (!omnigoScrollVideo.duration || omnigoScrollVideo.readyState < 2) return;
+        if (videoSeeking) return;
 
         const rect = omnigoVideoSection.getBoundingClientRect();
         const viewportH = window.innerHeight || document.documentElement.clientHeight;
-
         const totalScrollable = rect.height - viewportH;
 
-        if (totalScrollable <= 0) {
-            return;
-        }
+        if (totalScrollable <= 0) return;
 
         const progress = clamp(-rect.top / totalScrollable, 0, 1);
         const targetTime = progress * omnigoScrollVideo.duration;
 
-        if (Math.abs(omnigoScrollVideo.currentTime - targetTime) > 0.03) {
+        if (Math.abs(omnigoScrollVideo.currentTime - targetTime) > 0.05) {
+            videoSeeking = true;
             omnigoScrollVideo.currentTime = targetTime;
         }
     }
