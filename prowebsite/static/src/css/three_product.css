@@ -88,7 +88,7 @@
 .o_omnigo_loader {
     position: fixed;
     inset: 0;
-    z-index: 99999;
+    z-index: 100000;
     background: #000000;
     display: flex;
     align-items: center;
@@ -1032,7 +1032,14 @@
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    transition: background 0.35s ease, border-color 0.35s ease;
+    opacity: 0;
+    pointer-events: none;
+    transition: background 0.35s ease, border-color 0.35s ease, opacity 0.5s ease;
+}
+
+.o_omnigo_ch_header.is-visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .o_omnigo_ch_header.is-scrolled {

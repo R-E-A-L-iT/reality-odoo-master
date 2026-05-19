@@ -112,9 +112,10 @@ whenReady(async () => {
 
         document.body.prepend(header);
 
-        // Scroll shrink
-        window.addEventListener("scroll", () => {
-            header.classList.toggle("is-scrolled", window.scrollY > 50);
+        // Scroll shrink — Odoo scrolls #wrapwrap, not window
+        const scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
+        scrollRoot.addEventListener("scroll", () => {
+            header.classList.toggle("is-scrolled", scrollRoot.scrollTop > 50);
         }, { passive: true });
 
         // Hamburger toggle
@@ -190,6 +191,12 @@ whenReady(async () => {
 
         if (pageLoader) {
             pageLoader.classList.add("is-hidden");
+        }
+
+        // Reveal the custom header after the loading screen fades out
+        const ch = document.querySelector(".o_omnigo_ch_header");
+        if (ch) {
+            setTimeout(() => ch.classList.add("is-visible"), 400);
         }
 
         // Start hero drop animation only after Enter
