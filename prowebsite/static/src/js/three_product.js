@@ -473,7 +473,7 @@ whenReady(async () => {
         0.1,
         1000
     );
-    heroCamera.position.set(0, 0, 5);
+    heroCamera.position.set(0, 0, 4);
 
     const heroRenderer = createRenderer(heroHost, "4");
     addSoftProductLights(heroScene);
@@ -860,11 +860,11 @@ whenReady(async () => {
         }
 
         const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
-        // 5 phases × 0.20 each; feature windows sit in the settled middle of each reveal phase
-        const inAttachment = scrollAnimProgress >= 0.07 && scrollAnimProgress <= 0.17;
-        const inBack       = scrollAnimProgress >= 0.27 && scrollAnimProgress <= 0.37;
-        const inHatch      = scrollAnimProgress >= 0.47 && scrollAnimProgress <= 0.57;
-        const inScrew      = scrollAnimProgress >= 0.67 && scrollAnimProgress <= 0.77;
+        // 5 phases × 0.20 each; feature windows widened to 14% for comfortable reading
+        const inAttachment = scrollAnimProgress >= 0.04 && scrollAnimProgress <= 0.18;
+        const inBack       = scrollAnimProgress >= 0.24 && scrollAnimProgress <= 0.38;
+        const inHatch      = scrollAnimProgress >= 0.44 && scrollAnimProgress <= 0.58;
+        const inScrew      = scrollAnimProgress >= 0.64 && scrollAnimProgress <= 0.78;
 
         if (scrollDetailPanel) {
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);

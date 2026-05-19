@@ -17,7 +17,7 @@
     margin-top: -16px;
     opacity: 1;
     transition: opacity 0.15s ease;
-    filter: drop-shadow(0 0 0.6px rgba(50, 50, 50, 0.65));
+    filter: drop-shadow(0 0 1.4px rgba(40, 40, 40, 0.85));
 }
 
 .o_omnibase_cursor.is-hidden {
@@ -358,7 +358,7 @@
 .o_three_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 400vh;
+    min-height: 500vh;
     overflow: visible;
     z-index: 1;
 
@@ -957,7 +957,7 @@
 /* Video scroll: shorter scroll distance + tighter layout on small screens */
 @media (max-width: 768px) {
     .o_three_scroll_section {
-        min-height: 280vh;
+        min-height: 340vh;
     }
 
     .o_omnigo_video_scroll_section {
