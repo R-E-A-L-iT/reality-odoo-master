@@ -700,6 +700,11 @@ whenReady(async () => {
 
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
     let scrollHotspotLayer = null;
+    let scrollDetailPanel = null;
+
+    function isLargeScreen() {
+        return window.matchMedia("(min-width: 992px)").matches;
+    }
 
     function createScrollHotspots() {
         if (!scrollHost) {
@@ -733,6 +738,24 @@ whenReady(async () => {
         `;
 
         scrollHost.appendChild(scrollHotspotLayer);
+
+        scrollDetailPanel = document.createElement("div");
+        scrollDetailPanel.className = "o_three_scroll_detail_panel";
+        scrollDetailPanel.innerHTML = `
+            <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
+                <h3 class="o_three_scroll_feature_title">BLK2GO Attachment Interface</h3>
+                <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
+            </div>
+            <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
+                <h3 class="o_three_scroll_feature_title">Quick-Release Latch</h3>
+                <p class="o_three_scroll_feature_body">A single press of the side button disengages the spring-loaded latch, freeing the scanner in seconds. Re-attach with one hand — it clicks and locks automatically, no tools required.</p>
+            </div>
+            <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
+                <h3 class="o_three_scroll_feature_title">Universal Tripod Mount</h3>
+                <p class="o_three_scroll_feature_body">The bottom face carries a standard ¼″-20 thread, putting the BLK2GO on any tripod, monopod, survey pole, or camera arm — opening up hands-free and stationary scanning workflows.</p>
+            </div>
+        `;
+        scrollHost.appendChild(scrollDetailPanel);
     }
 
     function updateScrollHotspots() {
@@ -763,6 +786,13 @@ whenReady(async () => {
                 "is-visible",
                 scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73
             );
+        }
+
+        if (scrollDetailPanel) {
+            const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch"),      scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw"),      scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73);
         }
     }
 
@@ -816,10 +846,15 @@ whenReady(async () => {
         const p3 = easeInOutCubic(clamp((t - 0.50) / 0.25, 0, 1));
         const p4 = easeOutCubic(clamp((t - 0.75) / 0.25, 0, 1));
 
-        // Scale: zoom in during phases 1–3, ease back on phase 4
-        const scale = t < 0.75 ? lerp(1.3, 1.55, p1) : lerp(1.55, 1.3, p4);
+        // Responsive: on large screens shift left and zoom more to give room for detail panel
+        const desktop = isLargeScreen();
+        const modelX      = desktop ? -0.7 : 0;
+        const scaleStart  = desktop ? 1.50 : 1.30;
+        const scalePeak   = desktop ? 1.85 : 1.55;
+
+        const scale = t < 0.75 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p4);
         scrollWrapper.scale.setScalar(scale);
-        scrollWrapper.position.set(0, 0, 0);
+        scrollWrapper.position.set(modelX, 0, 0);
 
         // Model X (pitch):
         //   Phase 1 — tilt back to show top face (attachment interface)

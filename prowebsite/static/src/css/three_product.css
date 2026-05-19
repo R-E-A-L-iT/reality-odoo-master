@@ -854,3 +854,165 @@
         border-radius: 22px;
     }
 }
+
+/* ─── Scroll section feature detail panel (desktop only) ─── */
+
+.o_three_scroll_detail_panel {
+    position: absolute;
+    right: clamp(24px, 5vw, 72px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(240px, 26vw, 400px);
+    pointer-events: none;
+    z-index: 5;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .o_three_scroll_detail_panel {
+        display: block;
+    }
+}
+
+.o_three_scroll_feature_detail {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: rgba(8, 0, 0, 0.62);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 28px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.o_three_scroll_feature_detail.is-visible {
+    opacity: 1;
+}
+
+.o_three_scroll_feature_title {
+    margin: 0 0 14px;
+    color: #ffffff;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(17px, 1.55vw, 23px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.o_three_scroll_feature_body {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.74);
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(13px, 1.0vw, 15px);
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* ─── Mobile improvements ─── */
+
+/* Video scroll: shorter scroll distance + tighter layout on small screens */
+@media (max-width: 768px) {
+    .o_omnigo_video_scroll_section {
+        min-height: 260vh;
+    }
+
+    .o_omnigo_video_scroll_inner {
+        padding: 40px 20px;
+        justify-content: flex-start;
+        padding-top: 10vh;
+    }
+
+    .o_omnigo_video_scroll_heading {
+        margin-bottom: 20px;
+    }
+
+    .o_omnigo_video_scroll_subtitle {
+        font-size: 15px;
+        margin-top: 10px;
+        line-height: 1.5;
+    }
+
+    .o_omnigo_video_scroll_video_wrap {
+        width: 100vw;
+        max-height: 50vh;
+    }
+}
+
+/* Hero: tighten up on very small screens */
+@media (max-width: 480px) {
+    .o_three_hero {
+        height: 100svh;
+    }
+
+    .o_omnigo_loader_inner {
+        width: 80vw;
+    }
+}
+
+/* Scroll section: on mobile the hotspot callout labels can get cramped —
+   hide the line/label, keep just the dot as a minimal indicator */
+@media (max-width: 575px) {
+    .o_three_feature_line_diagonal,
+    .o_three_feature_line_under,
+    .o_three_feature_label {
+        display: none;
+    }
+
+    .o_three_feature_dot {
+        width: 12px;
+        height: 12px;
+    }
+
+    .o_three_feature_callout_screw {
+        transform: translate(-10px, 30px) scale(1);
+    }
+
+    .o_three_feature_callout_hatch {
+        transform: translate(10px, -60px) scale(1);
+    }
+
+    .o_three_feature_callout_attachment {
+        transform: translate(10px, -140px) scale(1);
+    }
+}
+
+/* Split section: reduce canvas height on very small mobile */
+@media (max-width: 480px) {
+    .o_three_split_left,
+    .o_three_split_right {
+        min-height: 55vh;
+    }
+
+    .o_three_split_right {
+        padding: 40px 20px;
+    }
+}
+
+/* Review waterfall: tighten vertical rhythm on mobile */
+@media (max-width: 768px) {
+    .o_review_waterfall_header {
+        margin-bottom: 40px;
+    }
+
+    .o_review_waterfall_header h2 {
+        font-size: clamp(28px, 8vw, 42px);
+    }
+
+    .o_review_waterfall_kicker {
+        margin-top: 20px;
+    }
+
+    .o_review_waterfall_card:nth-child(2n),
+    .o_review_waterfall_card:nth-child(3n) {
+        margin-top: 0;
+    }
+
+    .o_review_waterfall_quote {
+        font-size: 16px;
+    }
+}
