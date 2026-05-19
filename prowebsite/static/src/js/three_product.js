@@ -847,14 +847,14 @@ whenReady(async () => {
         const p4 = easeOutCubic(clamp((t - 0.75) / 0.25, 0, 1));
 
         // Responsive: on large screens shift left and zoom more to give room for detail panel
-        const desktop = isLargeScreen();
-        const modelX      = desktop ? -0.7 : 0;
-        const scaleStart  = desktop ? 1.50 : 1.30;
-        const scalePeak   = desktop ? 1.85 : 1.55;
+        const desktop    = isLargeScreen();
+        const targetX    = desktop ? -0.7 : 0;
+        const scaleStart = desktop ? 1.50 : 1.30;
+        const scalePeak  = desktop ? 1.85 : 1.55;
 
         const scale = t < 0.75 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p4);
         scrollWrapper.scale.setScalar(scale);
-        scrollWrapper.position.set(modelX, 0, 0);
+        scrollWrapper.position.set(targetX, 0, 0);
 
         // Model X (pitch):
         //   Phase 1 — tilt back to show top face (attachment interface)
