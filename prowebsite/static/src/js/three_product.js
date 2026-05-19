@@ -3,9 +3,17 @@
 import { whenReady } from "@odoo/owl";
 
 whenReady(async () => {
+    console.log("[loader] whenReady fired");
+
     const heroHost = document.getElementById("three-product-canvas");
     const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
     const scrollHost = document.getElementById("three-product-canvas-scroll");
+
+    console.log("[loader] host elements:", {
+        heroHost: !!heroHost,
+        bottomModelHost: !!bottomModelHost,
+        scrollHost: !!scrollHost,
+    });
 
     // ----------------------------
     // Custom Omni cursor
@@ -127,6 +135,7 @@ whenReady(async () => {
         : null;
 
     if (!heroHost || !bottomModelHost || !scrollHost) {
+        console.warn("[loader] early exit — missing host element(s), script will not run on this page");
         return;
     }
 
