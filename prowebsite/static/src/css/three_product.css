@@ -1028,9 +1028,9 @@
     left: 0;
     right: 0;
     z-index: 99999;
-    background: rgba(6, 4, 4, 0.72);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    background: rgba(6, 4, 4, 0.18);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     opacity: 0;
     pointer-events: none;
@@ -1043,7 +1043,7 @@
 }
 
 .o_omnigo_ch_header.is-scrolled {
-    background: rgba(6, 4, 4, 0.92);
+    background: rgba(6, 4, 4, 0.32);
     border-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -1127,6 +1127,11 @@
     margin-left: auto;
 }
 
+.o_omnigo_ch_nav_link,
+.o_omnigo_ch_mobile_link {
+    text-decoration: none !important;
+}
+
 .o_omnigo_ch_nav_link {
     color: rgba(255, 255, 255, 0.82);
     text-decoration: none;
@@ -1140,6 +1145,7 @@
 
 .o_omnigo_ch_nav_link:hover {
     color: #ffffff;
+    text-decoration: none;
 }
 
 .o_omnigo_ch_buy_btn {
