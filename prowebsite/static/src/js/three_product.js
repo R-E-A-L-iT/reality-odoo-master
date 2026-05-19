@@ -1188,4 +1188,78 @@ whenReady(async () => {
     }
 
     requestAnimationFrame(animate);
+
+    // ----------------------------
+    // OmniGO buy section
+    // ----------------------------
+    function initOmnigoBuySection() {
+        const buySection = document.querySelector(".o_omnigo_buy_section");
+        if (!buySection) return;
+
+        const productId = parseInt(buySection.dataset.productId, 10);
+        const qtyInput  = buySection.querySelector(".o_omnigo_buy_qty_input");
+        const decBtn    = buySection.querySelector(".o_omnigo_buy_qty_dec");
+        const incBtn    = buySection.querySelector(".o_omnigo_buy_qty_inc");
+        const cartBtn   = buySection.querySelector(".o_omnigo_buy_cart_btn");
+        const nowBtn    = buySection.querySelector(".o_omnigo_buy_now_btn");
+
+        if (!productId) return;
+
+        // Quantity stepper
+        decBtn?.addEventListener("click", () => {
+            const v = Math.max(1, parseInt(qtyInput.value, 10) - 1);
+            qtyInput.value = v;
+        });
+        incBtn?.addEventListener("click", () => {
+            qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
+        });
+
+        async function callCartUpdate(qty) {
+            const res = await fetch("/shop/cart/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    id: Date.now(),
+                    params: { product_id: productId, add_qty: qty },
+                }),
+            });
+            const json = await res.json();
+            if (json.error) throw new Error(json.error.data?.message || "Cart error");
+            return json.result;
+        }
+
+        function setBtnState(btn, state) {
+            btn.dataset.state = state;
+            btn.disabled = state === "loading";
+        }
+
+        cartBtn?.addEventListener("click", async () => {
+            const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+            setBtnState(cartBtn, "loading");
+            try {
+                await callCartUpdate(qty);
+                setBtnState(cartBtn, "added");
+                setTimeout(() => setBtnState(cartBtn, ""), 2200);
+            } catch {
+                setBtnState(cartBtn, "error");
+                setTimeout(() => setBtnState(cartBtn, ""), 2200);
+            }
+        });
+
+        nowBtn?.addEventListener("click", async () => {
+            const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+            setBtnState(nowBtn, "loading");
+            try {
+                await callCartUpdate(qty);
+                window.location.href = "/shop/checkout";
+            } catch {
+                setBtnState(nowBtn, "error");
+                setTimeout(() => setBtnState(nowBtn, ""), 2200);
+            }
+        });
+    }
+
+    initOmnigoBuySection();
 });
