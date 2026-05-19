@@ -473,7 +473,7 @@ whenReady(async () => {
         0.1,
         1000
     );
-    heroCamera.position.set(0, 0, 4);
+    heroCamera.position.set(0, 0, 3);
 
     const heroRenderer = createRenderer(heroHost, "4");
     addSoftProductLights(heroScene);

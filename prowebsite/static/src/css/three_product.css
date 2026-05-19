@@ -1067,13 +1067,13 @@
 .o_omnigo_ch_inner {
     display: flex;
     align-items: center;
-    height: 76px;
+    height: 92px;
     padding: 0 clamp(20px, 4vw, 60px);
     transition: height 0.35s ease;
 }
 
 .o_omnigo_ch_header.is-scrolled .o_omnigo_ch_inner {
-    height: 52px;
+    height: 64px;
 }
 
 /* Left group */
@@ -1282,12 +1282,12 @@
 
 /* Offset page content so it sits below the fixed header */
 .o_three_hero {
-    padding-top: 76px;
+    padding-top: 92px;
 }
 
 @media (max-width: 767px) {
     .o_three_hero {
-        padding-top: 76px;
+        padding-top: 92px;
     }
 }
 
