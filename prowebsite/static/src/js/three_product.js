@@ -828,6 +828,10 @@ whenReady(async () => {
                 <h3 class="o_three_scroll_feature_title">BLK2GO Attachment Interface</h3>
                 <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
             </div>
+            <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
+                <h3 class="o_three_scroll_feature_title">One-Touch Release Button</h3>
+                <p class="o_three_scroll_feature_body">The oversized rear button is designed to be operated with a single press — even in thick work gloves or high-pressure field conditions. One push cleanly ejects the OmniGO from any mount without fumbling.</p>
+            </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
                 <h3 class="o_three_scroll_feature_title">Quick-Release Latch</h3>
                 <p class="o_three_scroll_feature_body">A single press of the side button disengages the spring-loaded latch, freeing the scanner in seconds. Re-attach with one hand — it clicks and locks automatically, no tools required.</p>
@@ -843,6 +847,7 @@ whenReady(async () => {
         scrollMobileLabels.className = "o_three_scroll_mobile_labels";
         scrollMobileLabels.innerHTML = `
             <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">BLK2GO Attachment Interface</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">One-Touch Release Button</div>
             <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">Quick-Release Latch</div>
             <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">Universal Tripod Mount</div>
         `;
@@ -854,44 +859,23 @@ whenReady(async () => {
             return;
         }
 
-        const attachmentCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_attachment");
-        const hatchCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_hatch");
-        const screwCallout = scrollHotspotLayer.querySelector(".o_three_feature_callout_screw");
-
-        if (attachmentCallout) {
-            attachmentCallout.classList.toggle(
-                "is-visible",
-                scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23
-            );
-        }
-
-        if (hatchCallout) {
-            hatchCallout.classList.toggle(
-                "is-visible",
-                scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48
-            );
-        }
-
-        if (screwCallout) {
-            screwCallout.classList.toggle(
-                "is-visible",
-                scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73
-            );
-        }
-
         const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
-        const inAttachment = scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23;
-        const inHatch      = scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48;
-        const inScrew      = scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73;
+        // 5 phases × 0.20 each; feature windows sit in the settled middle of each reveal phase
+        const inAttachment = scrollAnimProgress >= 0.07 && scrollAnimProgress <= 0.17;
+        const inBack       = scrollAnimProgress >= 0.27 && scrollAnimProgress <= 0.37;
+        const inHatch      = scrollAnimProgress >= 0.47 && scrollAnimProgress <= 0.57;
+        const inScrew      = scrollAnimProgress >= 0.67 && scrollAnimProgress <= 0.77;
 
         if (scrollDetailPanel) {
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_back"),       inBack);
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch"),      inHatch);
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw"),      inScrew);
         }
 
         if (scrollMobileLabels) {
             show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_attachment"), inAttachment);
+            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_back"),       inBack);
             show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_hatch"),      inHatch);
             show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_screw"),      inScrew);
         }
@@ -941,53 +925,64 @@ whenReady(async () => {
         const SIDE_PITCH   = -Math.PI * 0.056; // ≈ -10°, nearly upright for side view
         const BOTTOM_PITCH =  Math.PI * 0.433; // ≈ +78°, bottom face tilted toward camera
 
-        // Per-phase eased progress (each phase spans 25% of scroll travel)
-        const p1 = easeInOutCubic(clamp(t / 0.25, 0, 1));
-        const p2 = easeInOutCubic(clamp((t - 0.25) / 0.25, 0, 1));
-        const p3 = easeInOutCubic(clamp((t - 0.50) / 0.25, 0, 1));
-        const p4 = easeOutCubic(clamp((t - 0.75) / 0.25, 0, 1));
+        // 5 phases × 0.20 each:
+        //   Phase 1 (0.00–0.20): tilt back → top face (attachment)
+        //   Phase 2 (0.20–0.40): come upright + yaw 180° → back face (release button)
+        //   Phase 3 (0.40–0.60): yaw back to 90° → side face (latch)
+        //   Phase 4 (0.60–0.80): yaw back to 0° + tip forward → bottom face (screw)
+        //   Phase 5 (0.80–1.00): return to resting pose
+        const p1 = easeInOutCubic(clamp(t / 0.20, 0, 1));
+        const p2 = easeInOutCubic(clamp((t - 0.20) / 0.20, 0, 1));
+        const p3 = easeInOutCubic(clamp((t - 0.40) / 0.20, 0, 1));
+        const p4 = easeInOutCubic(clamp((t - 0.60) / 0.20, 0, 1));
+        const p5 = easeOutCubic(clamp((t - 0.80) / 0.20, 0, 1));
 
         // Responsive: on large screens slide model left during animation, return to centre at rest
         const desktop    = isLargeScreen();
         const scaleStart = desktop ? 1.50 : 1.30;
         const scalePeak  = desktop ? 1.85 : 1.55;
 
-        const scale = t < 0.75 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p4);
+        const scale = t < 0.80 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p5);
         scrollWrapper.scale.setScalar(scale);
 
-        // X position: 0 at rest → -0.7 at peak (desktop only), eased with the same phase timings
+        // X position: 0 at rest → -0.7 at peak (desktop only)
         const targetX = desktop
-            ? (t < 0.75 ? lerp(0, -0.7, p1) : lerp(-0.7, 0, p4))
+            ? (t < 0.80 ? lerp(0, -0.7, p1) : lerp(-0.7, 0, p5))
             : 0;
         scrollWrapper.position.set(targetX, 0, 0);
 
-        // Model X (pitch):
-        //   Phase 1 — tilt back to show top face (attachment interface)
-        //   Phase 2 — bring upright while swinging Y to show side face (latch button)
-        //   Phase 3 — tip forward to show bottom face (screw) while swinging Y back
-        //   Phase 4 — return to rest
+        // Model X (pitch)
         let modelX;
-        if (t < 0.25) {
-            modelX = lerp(0, TOP_PITCH, p1);
-        } else if (t < 0.50) {
-            modelX = lerp(TOP_PITCH, SIDE_PITCH, p2);
-        } else if (t < 0.75) {
-            modelX = lerp(SIDE_PITCH, BOTTOM_PITCH, p3);
+        if (t < 0.20) {
+            modelX = lerp(0, TOP_PITCH, p1);           // tilt for top face
+        } else if (t < 0.40) {
+            modelX = lerp(TOP_PITCH, 0, p2);           // come upright for back face
+        } else if (t < 0.60) {
+            modelX = lerp(0, SIDE_PITCH, p3);          // slight tilt for side face
+        } else if (t < 0.80) {
+            modelX = lerp(SIDE_PITCH, BOTTOM_PITCH, p4); // tip forward for bottom face
         } else {
-            modelX = lerp(BOTTOM_PITCH, 0, p4);
+            modelX = lerp(BOTTOM_PITCH, 0, p5);        // return to rest
         }
         scrollModel.rotation.x = modelX;
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        // Wrapper Y (yaw): swing 90° during phase 2 to expose side face, return during phase 3
+        // Wrapper Y (yaw):
+        //   Phase 1: stay at baseY
+        //   Phase 2: swing +180° to show back face
+        //   Phase 3: swing back –90° to show side face (now at baseY + 90°)
+        //   Phase 4: swing back –90° to return toward front (now at baseY)
+        //   Phase 5: stay at baseY
         let wrapperY;
-        if (t < 0.25) {
+        if (t < 0.20) {
             wrapperY = baseY;
-        } else if (t < 0.50) {
-            wrapperY = lerp(baseY, baseY + Math.PI * 0.5, p2);
-        } else if (t < 0.75) {
-            wrapperY = lerp(baseY + Math.PI * 0.5, baseY, p3);
+        } else if (t < 0.40) {
+            wrapperY = lerp(baseY, baseY + Math.PI, p2);
+        } else if (t < 0.60) {
+            wrapperY = lerp(baseY + Math.PI, baseY + Math.PI * 0.5, p3);
+        } else if (t < 0.80) {
+            wrapperY = lerp(baseY + Math.PI * 0.5, baseY, p4);
         } else {
             wrapperY = baseY;
         }
@@ -995,12 +990,12 @@ whenReady(async () => {
 
         // Wrapper Z (roll): flatten slightly during reveal phases for a cleaner view
         let wrapperZ;
-        if (t < 0.25) {
+        if (t < 0.20) {
             wrapperZ = lerp(baseZ, baseZ * 0.4, p1);
-        } else if (t < 0.75) {
+        } else if (t < 0.80) {
             wrapperZ = baseZ * 0.4;
         } else {
-            wrapperZ = lerp(baseZ * 0.4, baseZ, p4);
+            wrapperZ = lerp(baseZ * 0.4, baseZ, p5);
         }
         scrollWrapper.rotation.z = wrapperZ;
         scrollWrapper.rotation.x = 0;
