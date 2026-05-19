@@ -67,6 +67,80 @@ whenReady(async () => {
 
     createOmniCursor();
 
+    // ----------------------------
+    // Custom OmniGO page header
+    // ----------------------------
+    function createOmnigoHeader() {
+        if (!omniPage) return;
+
+        // Hide standard Odoo navbar and any submenu block
+        const stdNav = document.getElementById("top");
+        if (stdNav) stdNav.style.setProperty("display", "none", "important");
+        const subMenu = document.querySelector(".s_submenu_block");
+        if (subMenu) subMenu.style.setProperty("display", "none", "important");
+
+        const header = document.createElement("header");
+        header.className = "o_omnigo_ch_header";
+        header.innerHTML = `
+            <div class="o_omnigo_ch_inner">
+                <div class="o_omnigo_ch_left">
+                    <a href="/" class="o_omnigo_ch_logo_r" aria-label="R-E-A-L homepage">
+                        <img src="https://cdn.r-e-a-l.it/images/header/r_circle.png" alt="R logo" class="o_omnigo_ch_r_img" />
+                    </a>
+                    <div class="o_omnigo_ch_divider"></div>
+                    <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="OmniGO">
+                        <img src="https://cdn.r-e-a-l.it/images/header/omnigo_draft.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
+                    </a>
+                </div>
+                <nav class="o_omnigo_ch_nav" aria-label="OmniGO navigation">
+                    <a href="#adapt" class="o_omnigo_ch_nav_link">Adapt</a>
+                    <a href="#expand" class="o_omnigo_ch_nav_link">Expand</a>
+                    <a href="#capture" class="o_omnigo_ch_nav_link">Capture</a>
+                    <a href="#buy" class="o_omnigo_ch_buy_btn">Buy Now&thinsp;|&thinsp;$299</a>
+                </nav>
+                <button class="o_omnigo_ch_hamburger" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+            <div class="o_omnigo_ch_mobile_nav" aria-hidden="true">
+                <a href="#adapt" class="o_omnigo_ch_mobile_link">Adapt</a>
+                <a href="#expand" class="o_omnigo_ch_mobile_link">Expand</a>
+                <a href="#capture" class="o_omnigo_ch_mobile_link">Capture</a>
+                <a href="#buy" class="o_omnigo_ch_buy_btn o_omnigo_ch_mobile_buy">Buy Now&thinsp;|&thinsp;$299</a>
+            </div>
+        `;
+
+        document.body.prepend(header);
+
+        // Scroll shrink
+        window.addEventListener("scroll", () => {
+            header.classList.toggle("is-scrolled", window.scrollY > 50);
+        }, { passive: true });
+
+        // Hamburger toggle
+        const burger = header.querySelector(".o_omnigo_ch_hamburger");
+        const mobileNav = header.querySelector(".o_omnigo_ch_mobile_nav");
+        burger.addEventListener("click", () => {
+            const open = burger.getAttribute("aria-expanded") === "true";
+            burger.setAttribute("aria-expanded", String(!open));
+            burger.classList.toggle("is-open", !open);
+            mobileNav.classList.toggle("is-open", !open);
+            mobileNav.setAttribute("aria-hidden", String(open));
+        });
+
+        // Close mobile nav on link click
+        mobileNav.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                burger.setAttribute("aria-expanded", "false");
+                burger.classList.remove("is-open");
+                mobileNav.classList.remove("is-open");
+                mobileNav.setAttribute("aria-hidden", "true");
+            });
+        });
+    }
+
+    createOmnigoHeader();
+
     const pageLoader = document.getElementById("omnigo-page-loader");
     const loaderFill = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_bar_fill") : null;
     const loaderEnter = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_enter") : null;
