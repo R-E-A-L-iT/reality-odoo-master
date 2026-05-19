@@ -1303,8 +1303,8 @@
 
 /* Image column */
 .o_omnigo_buy_image_col {
-    flex: 0 0 auto;
-    width: clamp(280px, 40%, 520px);
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1534,21 +1534,6 @@
 .o_omnigo_buy_cart_label { display: none; }
 .o_omnigo_buy_cart_label::after { display: inline; }
 
-.o_omnigo_buy_shop_link {
-    display: inline-block;
-    margin-top: 20px;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #666;
-    text-decoration: none !important;
-    letter-spacing: 0.03em;
-    transition: color 0.2s ease;
-}
-
-.o_omnigo_buy_shop_link:hover {
-    color: #0a0a0a;
-}
 
 /* Mobile */
 @media (max-width: 768px) {

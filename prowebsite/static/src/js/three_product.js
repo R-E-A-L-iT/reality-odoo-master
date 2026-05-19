@@ -1253,7 +1253,8 @@ whenReady(async () => {
             setBtnState(nowBtn, "loading");
             try {
                 await callCartUpdate(qty);
-                window.location.href = "/shop/checkout";
+                window.open("/shop/cart", "_blank");
+                setBtnState(nowBtn, "");
             } catch {
                 setBtnState(nowBtn, "error");
                 setTimeout(() => setBtnState(nowBtn, ""), 2200);
