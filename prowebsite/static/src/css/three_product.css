@@ -17,6 +17,7 @@
     margin-top: -16px;
     opacity: 1;
     transition: opacity 0.15s ease;
+    filter: drop-shadow(0 0 0.6px rgba(50, 50, 50, 0.65));
 }
 
 .o_omnibase_cursor.is-hidden {
@@ -171,7 +172,7 @@
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background: #111;
+    background: #eceef1;
     z-index: 4;
 }
 
@@ -180,7 +181,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #111;
+    background: #eceef1;
 }
 
 .o_three_canvas_host canvas {
@@ -193,21 +194,7 @@
 }
 
 .o_three_hero_bg_logo {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-image: url("https://cdn.r-e-a-l.it/images/header/Omni_O_Logo_special.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: min(62vw, 780px) auto;
-}
-
-@media (max-width: 768px) {
-    .o_three_hero_bg_logo {
-        background-size: 110vw auto;
-        opacity: 0.36;
-    }
+    display: none;
 }
 
 .o_three_canvas_text {
