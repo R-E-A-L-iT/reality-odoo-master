@@ -69,8 +69,9 @@ whenReady(async () => {
     let loadingTotal = 3; // adapter GLB, animated GLTF, scroll video metadata
     let loadingDone = 0;
 
-    function updateLoadingProgress() {
+    function updateLoadingProgress(label) {
         loadingDone += 1;
+        console.log(`[loader] step ${loadingDone}/${loadingTotal} — ${label}`);
 
         const rawPercent = Math.min((loadingDone / loadingTotal) * 100, 100);
 
@@ -152,13 +153,15 @@ whenReady(async () => {
     let GLTFLoader;
     let LoopPingPong;
 
+    console.log("[loader] fetching Three.js from CDN…");
     try {
         THREE = await import("https://esm.sh/three@0.180.0");
         ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
 
         LoopPingPong = THREE.LoopPingPong;
+        console.log("[loader] Three.js ready");
     } catch (err) {
-        console.error("Failed to load Three.js:", err);
+        console.error("[loader] Failed to load Three.js:", err);
         return;
     }
 
@@ -329,15 +332,20 @@ whenReady(async () => {
         adapterPromise = new Promise((resolve, reject) => {
             const adapterLoader = new GLTFLoader();
 
+            console.log("[loader] fetching adapter GLB:", adapterModelPath);
             adapterLoader.load(
                 adapterModelPath,
                 (gltf) => {
+                    console.log("[loader] adapter GLB loaded");
                     adapterPrototype = prepareAdapterObject(gltf.scene);
-                    updateLoadingProgress();
+                    updateLoadingProgress("adapter GLB");
                     resolve(adapterPrototype);
                 },
                 undefined,
-                reject
+                (err) => {
+                    console.error("[loader] adapter GLB failed:", err);
+                    reject(err);
+                }
             );
         });
 
@@ -550,9 +558,11 @@ whenReady(async () => {
         };
     }
 
+    console.log("[loader] fetching animated GLTF:", animatedModelPath);
     gltfLoader.load(
         animatedModelPath,
         async (gltf) => {
+            console.log("[loader] animated GLTF loaded");
             const obj = gltf.scene;
 
             let textureSet = {
@@ -652,11 +662,11 @@ whenReady(async () => {
                 console.warn("No animations found in scene.gltf");
             }
 
-            updateLoadingProgress();
+            updateLoadingProgress("animated GLTF");
         },
         undefined,
         (error) => {
-            console.error("Error loading animated GLTF:", error);
+            console.error("[loader] animated GLTF failed:", error);
         }
     );
 
@@ -927,17 +937,24 @@ whenReady(async () => {
     }
 
     if (omnigoScrollVideo) {
+        console.log("[loader] scroll video found, readyState:", omnigoScrollVideo.readyState, "src:", omnigoScrollVideo.currentSrc || "(not set yet)");
         if (omnigoScrollVideo.readyState >= 1) {
-            updateLoadingProgress();
+            console.log("[loader] scroll video metadata already ready");
+            updateLoadingProgress("scroll video (immediate)");
         } else {
+            console.log("[loader] waiting for scroll video loadedmetadata…");
             omnigoScrollVideo.addEventListener(
                 "loadedmetadata",
-                () => updateLoadingProgress(),
+                () => {
+                    console.log("[loader] scroll video metadata loaded");
+                    updateLoadingProgress("scroll video");
+                },
                 { once: true }
             );
         }
     } else {
-        updateLoadingProgress();
+        console.log("[loader] no scroll video element found, skipping");
+        updateLoadingProgress("scroll video (skipped)");
     }
 
     // ----------------------------
