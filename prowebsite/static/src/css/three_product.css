@@ -850,6 +850,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: clamp(240px, 26vw, 400px);
+    height: 70vh;
     pointer-events: none;
     z-index: 5;
     display: none;
@@ -863,9 +864,7 @@
 
 .o_three_scroll_feature_detail {
     position: absolute;
-    right: 0;
-    top: 0;
-    width: 100%;
+    inset: 0;
     opacity: 0;
     transition: opacity 0.45s ease;
     background: rgba(8, 0, 0, 0.68);
@@ -875,7 +874,6 @@
     padding: 40px 40px 44px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 0 24px 72px rgba(0, 0, 0, 0.55);
-    min-height: 240px;
     display: flex;
     flex-direction: column;
     justify-content: center;
