@@ -701,6 +701,7 @@ whenReady(async () => {
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
     let scrollHotspotLayer = null;
     let scrollDetailPanel = null;
+    let scrollMobileLabels = null;
 
     function isLargeScreen() {
         return window.matchMedia("(min-width: 992px)").matches;
@@ -756,6 +757,15 @@ whenReady(async () => {
             </div>
         `;
         scrollHost.appendChild(scrollDetailPanel);
+
+        scrollMobileLabels = document.createElement("div");
+        scrollMobileLabels.className = "o_three_scroll_mobile_labels";
+        scrollMobileLabels.innerHTML = `
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">BLK2GO Attachment Interface</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">Quick-Release Latch</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">Universal Tripod Mount</div>
+        `;
+        scrollHost.appendChild(scrollMobileLabels);
     }
 
     function updateScrollHotspots() {
@@ -788,11 +798,21 @@ whenReady(async () => {
             );
         }
 
+        const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
+        const inAttachment = scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23;
+        const inHatch      = scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48;
+        const inScrew      = scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73;
+
         if (scrollDetailPanel) {
-            const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), scrollAnimProgress >= 0.12 && scrollAnimProgress <= 0.23);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch"),      scrollAnimProgress >= 0.37 && scrollAnimProgress <= 0.48);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw"),      scrollAnimProgress >= 0.60 && scrollAnimProgress <= 0.73);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch"),      inHatch);
+            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw"),      inScrew);
+        }
+
+        if (scrollMobileLabels) {
+            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_attachment"), inAttachment);
+            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_hatch"),      inHatch);
+            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_screw"),      inScrew);
         }
     }
 
@@ -846,14 +866,18 @@ whenReady(async () => {
         const p3 = easeInOutCubic(clamp((t - 0.50) / 0.25, 0, 1));
         const p4 = easeOutCubic(clamp((t - 0.75) / 0.25, 0, 1));
 
-        // Responsive: on large screens shift left and zoom more to give room for detail panel
+        // Responsive: on large screens slide model left during animation, return to centre at rest
         const desktop    = isLargeScreen();
-        const targetX    = desktop ? -0.7 : 0;
         const scaleStart = desktop ? 1.50 : 1.30;
         const scalePeak  = desktop ? 1.85 : 1.55;
 
         const scale = t < 0.75 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p4);
         scrollWrapper.scale.setScalar(scale);
+
+        // X position: 0 at rest → -0.7 at peak (desktop only), eased with the same phase timings
+        const targetX = desktop
+            ? (t < 0.75 ? lerp(0, -0.7, p1) : lerp(-0.7, 0, p4))
+            : 0;
         scrollWrapper.position.set(targetX, 0, 0);
 
         // Model X (pitch):

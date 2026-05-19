@@ -518,20 +518,7 @@
 
 /* feature highlights */
 .o_three_scroll_hotspot_layer {
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-    pointer-events: none;
-}
-
-.o_three_feature_callout {
-    position: absolute;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-}
-
-.o_three_feature_callout.is-visible {
-    opacity: 1;
+    display: none;
 }
 
 .o_three_feature_callout_screw {
@@ -881,13 +868,17 @@
     width: 100%;
     opacity: 0;
     transition: opacity 0.45s ease;
-    background: rgba(8, 0, 0, 0.62);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 20px;
-    padding: 28px 32px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    background: rgba(8, 0, 0, 0.68);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px 40px 44px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.55);
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .o_three_scroll_feature_detail.is-visible {
@@ -895,22 +886,60 @@
 }
 
 .o_three_scroll_feature_title {
-    margin: 0 0 14px;
+    margin: 0 0 20px;
     color: #ffffff;
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(17px, 1.55vw, 23px);
+    font-size: clamp(19px, 1.7vw, 26px);
     font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 1.2;
+    line-height: 1.18;
 }
 
 .o_three_scroll_feature_body {
     margin: 0;
-    color: rgba(255, 255, 255, 0.74);
+    color: rgba(255, 255, 255, 0.76);
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(13px, 1.0vw, 15px);
-    line-height: 1.7;
+    font-size: clamp(13px, 1.05vw, 16px);
+    line-height: 1.75;
     font-weight: 400;
+}
+
+/* Mobile feature label — visible only below 992px */
+.o_three_scroll_mobile_labels {
+    position: absolute;
+    bottom: 14%;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.o_three_scroll_mobile_label {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    color: #ffffff;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(18px, 5vw, 26px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-align: center;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+    padding: 0 24px;
+}
+
+.o_three_scroll_mobile_label.is-visible {
+    opacity: 1;
+}
+
+@media (min-width: 992px) {
+    .o_three_scroll_mobile_labels {
+        display: none;
+    }
 }
 
 /* ─── Mobile improvements ─── */
@@ -954,32 +983,6 @@
     }
 }
 
-/* Scroll section: on mobile the hotspot callout labels can get cramped —
-   hide the line/label, keep just the dot as a minimal indicator */
-@media (max-width: 575px) {
-    .o_three_feature_line_diagonal,
-    .o_three_feature_line_under,
-    .o_three_feature_label {
-        display: none;
-    }
-
-    .o_three_feature_dot {
-        width: 12px;
-        height: 12px;
-    }
-
-    .o_three_feature_callout_screw {
-        transform: translate(-10px, 30px) scale(1);
-    }
-
-    .o_three_feature_callout_hatch {
-        transform: translate(10px, -60px) scale(1);
-    }
-
-    .o_three_feature_callout_attachment {
-        transform: translate(10px, -140px) scale(1);
-    }
-}
 
 /* Split section: reduce canvas height on very small mobile */
 @media (max-width: 480px) {
