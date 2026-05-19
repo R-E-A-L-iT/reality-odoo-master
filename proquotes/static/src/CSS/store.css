@@ -8,15 +8,42 @@
     max-width: 68px;
 }
 
-/* Fix: product image containers collapse to zero height in shop grid because
-   .oe_product_image_img_wrapper is position:absolute inside an unsized parent */
-.oe_product_image_link {
+/* Fix: self-sizing square image container — no parent height dependency */
+.oe_product_image {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
     aspect-ratio: 1 / 1;
-    width: 100%;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
 }
 
-@supports not (aspect-ratio: 1) {
-    .oe_product_image_link {
-        min-height: clamp(160px, 30vw, 300px);
-    }
+.oe_product_image_link {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+    overflow: hidden;
+}
+
+.oe_product_image_img_wrapper {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+.oe_product_image_img_wrapper img {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block !important;
 }
