@@ -7,3 +7,16 @@
 .o_portal_icon > img {
     max-width: 68px;
 }
+
+/* Fix: product image containers collapse to zero height in shop grid because
+   .oe_product_image_img_wrapper is position:absolute inside an unsized parent */
+.oe_product_image_link {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+}
+
+@supports not (aspect-ratio: 1) {
+    .oe_product_image_link {
+        min-height: clamp(160px, 30vw, 300px);
+    }
+}
