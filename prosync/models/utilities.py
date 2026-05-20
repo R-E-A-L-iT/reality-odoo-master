@@ -364,26 +364,20 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
     else:
         _logger.info(f"ProSync [RENTAL] No direct name match for '{pricelist_param}'. Trying legacy currency-code fallback...")
 
-    # Fallback: legacy currency-code format like "usd" / "cad" mapped to flag-emoji pricelist
+    # Fallback: currency-code shorthand like "usd"/"cad" → look for "<CURRENCY> RENTAL" pricelist
     if not rental_pricelist:
-        currency_flag_map = {
-            "usd": "🇺🇸",
-            "cad": "🇨🇦",
+        rental_fallback_map = {
+            "usd": "usd rental",
+            "cad": "cad rental",
         }
-        pricelist_flag = currency_flag_map.get(pricelist_param)
-        _logger.info(f"ProSync [RENTAL] Legacy flag lookup for '{pricelist_param}': flag='{pricelist_flag}'")
-        if pricelist_flag:
-            currency_obj = env["res.currency"].search([("name", "=", pricelist_param.upper())], limit=1)
-            _logger.info(f"ProSync [RENTAL] Currency lookup '{pricelist_param.upper()}': found={bool(currency_obj)}")
-            if currency_obj:
-                rental_pricelist = env["product.pricelist"].search([
-                    ("name", "=", pricelist_flag),
-                    ("currency_id", "=", currency_obj.id),
-                    ("active", "=", True),
-                ], limit=1)
-                _logger.info(f"ProSync [RENTAL] Legacy pricelist search result: found={bool(rental_pricelist)}")
+        fallback_name = rental_fallback_map.get(pricelist_param)
+        _logger.info(f"ProSync [RENTAL] Fallback lookup for '{pricelist_param}': target='{fallback_name}'")
+        if fallback_name:
+            rental_pricelist = all_active.filtered(lambda p: p.name.lower() == fallback_name)
+            rental_pricelist = rental_pricelist[:1] if rental_pricelist else env["product.pricelist"]
+            _logger.info(f"ProSync [RENTAL] Fallback pricelist search result: found={bool(rental_pricelist)}")
         else:
-            _logger.warning(f"ProSync [RENTAL] '{pricelist_param}' is not a recognized legacy currency code (usd/cad)")
+            _logger.warning(f"ProSync [RENTAL] '{pricelist_param}' is not a recognized currency code (usd/cad)")
 
     if not rental_pricelist:
         msg = f"Pricelist '{pricelist_param}' not found in Odoo. Available pricelists: {all_names}"

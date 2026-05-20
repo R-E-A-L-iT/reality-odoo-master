@@ -98,8 +98,8 @@ class product_template_sync:
                 _logger.info(f"ProSync: Field '{column}' is a recognized pricelist field.")
                 continue
 
-            # Skip rental price fields like "rental_price[pricelist=CAD]"
-            if column_cleaned.startswith("rental_price[pricelist="):
+            # Skip rental price fields like "rental_price[CAD]" or "rental_price[pricelist=...]"
+            if re.match(r'^rental_price\[', column_cleaned):
                 _logger.info(f"ProSync: Field '{column}' is a recognized rental pricing field.")
                 continue
 
@@ -248,7 +248,7 @@ class product_template_sync:
 
         header = self.sheet[0]
         _logger.info(f"ProSync [DEBUG] Row {row_index} — header cols={len(header)} | row cols={len(row)} | SKU={getattr(product, 'sku', product.id)}")
-        rental_cols_in_header = [(i, col) for i, col in enumerate(header) if col.strip().lower().startswith("rental_price[pricelist=")]
+        rental_cols_in_header = [(i, col) for i, col in enumerate(header) if re.match(r'^rental_price\[', col.strip().lower())]
         _logger.info(f"ProSync [RENTAL] Header scan: found {len(rental_cols_in_header)} rental price column(s): {rental_cols_in_header}")
 
         for col_idx, column_name in enumerate(header):
@@ -260,7 +260,7 @@ class product_template_sync:
 
             # Guard: row may be shorter than header (trailing empty cells stripped by gspread)
             if col_idx >= len(row):
-                if field_name.startswith("rental_price[pricelist="):
+                if re.match(r'^rental_price\[', field_name):
                     self.rental_skipped_items.append(
                         f"Row {row_index} col '{column_name}': row shorter than header (no cell — gspread trim)"
                     )
@@ -304,16 +304,22 @@ class product_template_sync:
                 warned_now = len(self.rental_warning_items) - prev_warnings
                 _logger.info(f"ProSync [RENTAL] Row {row_index} col '{column_name}' result: +{updated_now} updates, +{warned_now} warnings")
                 continue
-            elif field_name in ("rentalusd", "rentalcad"):
-                pricelist_name = "USD RENTAL" if field_name == "rentalusd" else "CAD RENTAL"
-                synthetic_col = f"rental_price[pricelist={pricelist_name}]"
-                _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
-                try:
-                    update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
-                except Exception as e:
-                    _logger.error(f"ProSync [RENTAL] Row {row_index} — error processing '{column_name}': {str(e)}", exc_info=True)
-                continue
-            elif field_name in ("rentalcadoverride", "rentausdoverride"):
+            elif re.match(r'^rental_price\[([a-z]+)\]$', field_name):
+                m = re.match(r'^rental_price\[([a-z]+)\]$', field_name)
+                currency_code = m.group(1).upper()
+                rental_pricelist_map = {"USD": "USD RENTAL", "CAD": "CAD RENTAL"}
+                pricelist_name = rental_pricelist_map.get(currency_code)
+                if pricelist_name:
+                    synthetic_col = f"rental_price[pricelist={pricelist_name}]"
+                    _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
+                    try:
+                        update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
+                    except Exception as e:
+                        _logger.error(f"ProSync [RENTAL] Row {row_index} — error processing '{column_name}': {str(e)}", exc_info=True)
+                        self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
+                else:
+                    _logger.warning(f"ProSync [RENTAL] Row {row_index} — unsupported currency code '{currency_code}' in column '{column_name}'. Expected CAD or USD.")
+                    self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unsupported currency '{currency_code}'.<br/><br/>")
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
