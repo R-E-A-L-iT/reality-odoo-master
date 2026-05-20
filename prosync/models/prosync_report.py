@@ -12,7 +12,6 @@ class ProsyncReport(models.Model):
     ], string="Status", required=True)
     sync_type = fields.Selection([
         ('product_template', 'Product Template'),
-        ('rental_price', 'Rental Price'),
         ('stock_lot', 'Stock/Lot'),
         ('res_partner', 'Contact'),
         ('mrp_bom', 'Bill of Materials'),

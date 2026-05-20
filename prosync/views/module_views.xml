@@ -6,7 +6,7 @@
             <field name="name">Sync Reports</field>
             <field name="res_model">prosync.report</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_group_by_type': 1}</field>
+            <!-- <field name="context">{'group_by': 'sync_date'}</field> -->
         </record>
 
         <!-- app dashboard menu -->
@@ -17,22 +17,6 @@
             web_icon="prosync,static/description/icon.png"
             action="action_sync_report_tree"
             groups="base.group_no_one" /> <!-- Visible in developer mode only -->
-
-        <!-- report search view -->
-        <record id="view_sync_report_search" model="ir.ui.view">
-            <field name="name">prosync.report.search</field>
-            <field name="model">prosync.report</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="name" string="Name"/>
-                    <filter name="filter_rental" string="Rental Price" domain="[('sync_type','=','rental_price')]"/>
-                    <filter name="filter_product_template" string="Product Template" domain="[('sync_type','=','product_template')]"/>
-                    <separator/>
-                    <filter name="group_by_type" string="Type" context="{'group_by': 'sync_type'}"/>
-                    <filter name="group_by_date" string="Date" context="{'group_by': 'sync_date'}"/>
-                </search>
-            </field>
-        </record>
 
         <!-- report list view -->
         <record id="view_sync_report_tree" model="ir.ui.view">
