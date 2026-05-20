@@ -3,7 +3,7 @@
     color: #fff !important;
 }
 
-.breadcrumb-item > a {
+.breadcrumb-item > a, .btn-link {
     color: #db0d0d !important;
 }
 
