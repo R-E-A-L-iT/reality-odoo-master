@@ -334,8 +334,12 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
 
 #
 # Update a product's daily rental price via the product.pricing model (sale_renting)
-# Handles column formats like "rental_price[pricelist=USD RENTAL (USD)]", "rental_price[pricelist=CAD RENTAL (CAD)]",
-# and legacy formats like "rental_price[pricelist=USD]" / "rental_price[pricelist=CAD]"
+# Supported column formats:
+#   rental_price[pricelist=CAD] / rental_price[pricelist=USD]
+#       → resolves to the flag-emoji pricelist (🇨🇦 / 🇺🇸) for that currency
+#   rental_price[pricelist=CAD RENTAL] / rental_price[pricelist=USD RENTAL]  (or any exact pricelist name)
+#       → resolves by direct case-insensitive name match
+# Called from product_template.py for both rental_price[pricelist=...] and rental_price[CAD/USD] columns.
 #
 def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items, skipped_items):
     cell_ref = f"{row_index}{chr(col_index + 65)}"
@@ -362,22 +366,29 @@ def update_with_rental_price_context(product, column_name, value, env, row_index
     if rental_pricelist:
         _logger.info(f"ProSync [RENTAL] Found pricelist by direct name match: '{rental_pricelist.name}' (ID {rental_pricelist.id})")
     else:
-        _logger.info(f"ProSync [RENTAL] No direct name match for '{pricelist_param}'. Trying legacy currency-code fallback...")
+        _logger.info(f"ProSync [RENTAL] No direct name match for '{pricelist_param}'. Trying currency-code lookup...")
 
-    # Fallback: currency-code shorthand like "usd"/"cad" → look for "<CURRENCY> RENTAL" pricelist
+    # Currency-code shorthand: "cad"/"usd" → find the flag-emoji pricelist (🇨🇦 / 🇺🇸) for that currency.
+    # This is the intended path for rental_price[pricelist=CAD] / rental_price[pricelist=USD].
     if not rental_pricelist:
-        rental_fallback_map = {
-            "usd": "usd rental",
-            "cad": "cad rental",
+        currency_flag_map = {
+            "usd": "🇺🇸",
+            "cad": "🇨🇦",
         }
-        fallback_name = rental_fallback_map.get(pricelist_param)
-        _logger.info(f"ProSync [RENTAL] Fallback lookup for '{pricelist_param}': target='{fallback_name}'")
-        if fallback_name:
-            rental_pricelist = all_active.filtered(lambda p: p.name.lower() == fallback_name)
-            rental_pricelist = rental_pricelist[:1] if rental_pricelist else env["product.pricelist"]
-            _logger.info(f"ProSync [RENTAL] Fallback pricelist search result: found={bool(rental_pricelist)}")
+        pricelist_flag = currency_flag_map.get(pricelist_param)
+        _logger.info(f"ProSync [RENTAL] Currency-code lookup for '{pricelist_param}': flag='{pricelist_flag}'")
+        if pricelist_flag:
+            currency_obj = env["res.currency"].search([("name", "=", pricelist_param.upper())], limit=1)
+            _logger.info(f"ProSync [RENTAL] Currency lookup '{pricelist_param.upper()}': found={bool(currency_obj)}")
+            if currency_obj:
+                rental_pricelist = env["product.pricelist"].search([
+                    ("name", "=", pricelist_flag),
+                    ("currency_id", "=", currency_obj.id),
+                    ("active", "=", True),
+                ], limit=1)
+                _logger.info(f"ProSync [RENTAL] Flag pricelist search result: found={bool(rental_pricelist)}")
         else:
-            _logger.warning(f"ProSync [RENTAL] '{pricelist_param}' is not a recognized currency code (usd/cad)")
+            _logger.warning(f"ProSync [RENTAL] '{pricelist_param}' is not a recognized currency code (usd/cad) and did not match any pricelist name")
 
     if not rental_pricelist:
         msg = f"Pricelist '{pricelist_param}' not found in Odoo. Available pricelists: {all_names}"
