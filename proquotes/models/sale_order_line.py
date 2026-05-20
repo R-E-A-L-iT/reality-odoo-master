@@ -88,6 +88,11 @@ class SaleOrderLine(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    ba_kit_description = fields.Text(
+        string='Kit Items',
+        help='Editable kit component list for this quote line. Auto-filled from BOM when a kit product is selected.',
+    )
+
     def _extract_move_ids_from_commands(self, cmds):
         ids = []
         if not cmds:
@@ -146,6 +151,7 @@ class SaleOrderLine(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
+                line.ba_kit_description = line.product_id.get_kit_description_text()
             if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
                 line.is_selected = True
             else:

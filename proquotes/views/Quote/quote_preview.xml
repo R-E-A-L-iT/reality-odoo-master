@@ -1030,7 +1030,18 @@
                                    type="checkbox" style="display: none;"/>
                             <div class="product_fold" style="width: 100%;">
                                 <t t-set="kit_bom" t-value="line.product_id.product_tmpl_id.bom_ids.filtered(lambda b: b.type == 'phantom')[:1]"/>
-                                <t t-if="kit_bom and kit_bom.bom_line_ids">
+                                <t t-if="line.ba_kit_description">
+                                    <!-- Custom per-quote kit quantities edited by backend user -->
+                                    <ul style="color: #777; margin: 4px 0; padding-left: 18px;">
+                                        <t t-foreach="line.ba_kit_description.split('\n')" t-as="kit_line">
+                                            <t t-if="kit_line.strip()">
+                                                <li><span t-out="kit_line.strip()"/></li>
+                                            </t>
+                                        </t>
+                                    </ul>
+                                </t>
+                                <t t-elif="kit_bom and kit_bom.bom_line_ids">
+                                    <!-- Fallback: render from live BOM -->
                                     <ul style="color: #777; margin: 4px 0; padding-left: 18px;">
                                         <t t-foreach="kit_bom.bom_line_ids" t-as="bom_line">
                                             <li>
