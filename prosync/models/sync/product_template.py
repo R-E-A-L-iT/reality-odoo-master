@@ -18,6 +18,7 @@ from ..utilities import (
     normalize_selection,
     update_with_lang_context,
     update_with_price_context,
+    update_with_rental_price_context,
     update_with_related_context,
     update_with_special_context,
 )
@@ -33,16 +34,20 @@ class product_template_sync:
         self.updated_items = []
         self.warning_items = []
         self.error_items = []
+        self.rental_updated_items = []
+        self.rental_warning_items = []
+        self.rental_skipped_items = []
         self.report_id = None
 
     def sync_product_template(self):
         _logger.info("ProSync: Starting PRODUCT_TEMPLATE sync process.")
 
+        sync_start_time = datetime.now()
         self.report_id = self.database['prosync.report'].create({
             'name': f"Product Template Sync: {self.name}",
             'status': 'success',
             'sync_type': 'product_template',
-            'start_time': datetime.now(),
+            'start_time': sync_start_time,
         })
 
 
@@ -62,7 +67,8 @@ class product_template_sync:
         sheet_width = len(sheet_columns)
         
         # variables that will contain a list of any missing columns in the sheet
-        missing_columns = [header for header in required_fields if header not in sheet_columns]
+        sheet_columns_lower = [c.strip().lower() for c in sheet_columns]
+        missing_columns = [header for header in required_fields if header not in sheet_columns_lower]
         
         # verify that sheet format is as expected
         if missing_columns:
@@ -90,6 +96,11 @@ class product_template_sync:
             # Skip price fields like "price[pricelist=CAD]"
             if column_cleaned.startswith("price[pricelist="):
                 _logger.info(f"ProSync: Field '{column}' is a recognized pricelist field.")
+                continue
+
+            # Skip rental price fields like "rental_price[pricelist=CAD]"
+            if column_cleaned.startswith("rental_price[pricelist="):
+                _logger.info(f"ProSync: Field '{column}' is a recognized rental pricing field.")
                 continue
 
             # Strip any [bracketed] metadata (like [language=fr_CA])
@@ -120,12 +131,18 @@ class product_template_sync:
                 _logger.info(f"ProSync: Skipping empty row {row_index}")
                 continue
 
-            # Normalize 'valid' and 'continue' values
-            valid_raw = row[column_indices.get("valid", -1)] if "valid" in column_indices else ''
-            continue_raw = row[column_indices.get("continue", -1)] if "continue" in column_indices else ''
+            # Normalize 'valid' and 'continue' values — default True when columns absent
+            if "valid" in column_indices:
+                vidx = column_indices["valid"]
+                is_valid = normalize_bool(row[vidx] if vidx < len(row) else '')
+            else:
+                is_valid = True
 
-            is_valid = normalize_bool(valid_raw)
-            should_continue = normalize_bool(continue_raw)
+            if "continue" in column_indices:
+                cidx = column_indices["continue"]
+                should_continue = normalize_bool(row[cidx] if cidx < len(row) else '')
+            else:
+                should_continue = True
 
             if not is_valid:
                 if should_continue:
@@ -156,7 +173,7 @@ class product_template_sync:
                 self.create_product_template(row_index, row)
 
         end_time = datetime.now()
-        
+
         if not self.updated_items and not self.warning_items and not self.error_items:
             _logger.info("ProSync: No changes detected. Deleting sync report.")
             self.report_id.unlink()
@@ -168,6 +185,29 @@ class product_template_sync:
                 'error_text': "\n".join(self.error_items) or "No errors to display",
                 'status': 'failure' if self.error_items else 'warning' if self.warning_items else 'success',
             })
+
+        # Create a separate Rental Price report if rental changes occurred
+        _logger.info(
+            f"ProSync [RENTAL] End of sync — "
+            f"rental_updated={len(self.rental_updated_items)} "
+            f"rental_skipped={len(self.rental_skipped_items)} "
+            f"rental_warnings={len(self.rental_warning_items)}"
+        )
+        if self.rental_updated_items or self.rental_warning_items:
+            rental_report = self.database['prosync.report'].create({
+                'name': f"Rental Price Sync: {self.name}",
+                'status': 'success',
+                'sync_type': 'rental_price',
+                'start_time': sync_start_time,
+            })
+            rental_report.write({
+                'end_time': end_time,
+                'report_text': "\n".join(self.rental_updated_items) or "No changes detected.",
+                'warning_text': "\n".join(self.rental_warning_items) or "No warnings to display",
+                'error_text': "No errors to display",
+                'status': 'warning' if self.rental_warning_items else 'success',
+            })
+            _logger.info(f"ProSync: Created rental price sync report with {len(self.rental_updated_items)} changes.")
         
 
 
@@ -206,14 +246,35 @@ class product_template_sync:
         product_model = self.database['product.template']
         all_fields = product_model.fields_get()
 
-        for col_idx, column_name in enumerate(self.sheet[0]):
+        header = self.sheet[0]
+        _logger.info(f"ProSync [DEBUG] Row {row_index} — header cols={len(header)} | row cols={len(row)} | SKU={getattr(product, 'sku', product.id)}")
+        rental_cols_in_header = [(i, col) for i, col in enumerate(header) if col.strip().lower().startswith("rental_price[pricelist=")]
+        _logger.info(f"ProSync [RENTAL] Header scan: found {len(rental_cols_in_header)} rental price column(s): {rental_cols_in_header}")
+
+        for col_idx, column_name in enumerate(header):
             field_name = column_name.strip().lower()
 
             # skip columns already processed
             if field_name in {'sku', 'valid', 'continue'}:
                 continue
 
-            raw_value = row[col_idx]
+            # Guard: row may be shorter than header (trailing empty cells stripped by gspread)
+            if col_idx >= len(row):
+                if field_name.startswith("rental_price[pricelist="):
+                    self.rental_skipped_items.append(
+                        f"Row {row_index} col '{column_name}': row shorter than header (no cell — gspread trim)"
+                    )
+                    _logger.info(
+                        f"ProSync [RENTAL] Row {row_index} col {col_idx} ('{column_name}') "
+                        f"— skipped: row shorter than header (gspread trim)"
+                    )
+                else:
+                    _logger.info(f"ProSync [DEBUG] Row {row_index} col {col_idx} ('{column_name}') — no cell value (row shorter than header), treating as empty")
+                    raw_value = ''
+                continue
+            else:
+                raw_value = row[col_idx]
+
             # deal with columns using parametres
             if "[language=" in column_name:
                 update_with_lang_context(product, column_name, raw_value, all_fields, self.database, row_index, col_idx)
@@ -228,7 +289,31 @@ class product_template_sync:
                     )
                 continue
             elif field_name.startswith("price[pricelist="):
-                update_with_price_context(product, column_name, row[col_idx], self.database, row_index, col_idx)
+                update_with_price_context(product, column_name, raw_value, self.database, row_index, col_idx)
+                continue
+            elif field_name.startswith("rental_price[pricelist="):
+                _logger.info(f"ProSync [RENTAL] Row {row_index} col {col_idx} — detected rental price column '{column_name}' | raw value='{raw_value}'")
+                prev_updated = len(self.rental_updated_items)
+                prev_warnings = len(self.rental_warning_items)
+                try:
+                    update_with_rental_price_context(product, column_name, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
+                except Exception as e:
+                    _logger.error(f"ProSync [RENTAL] Row {row_index} — UNHANDLED ERROR in update_with_rental_price_context for column '{column_name}': {str(e)}", exc_info=True)
+                    self.rental_warning_items.append(f"Row {row_index} col '{column_name}': Unexpected error: {str(e)}<br/><br/>")
+                updated_now = len(self.rental_updated_items) - prev_updated
+                warned_now = len(self.rental_warning_items) - prev_warnings
+                _logger.info(f"ProSync [RENTAL] Row {row_index} col '{column_name}' result: +{updated_now} updates, +{warned_now} warnings")
+                continue
+            elif field_name in ("rentalusd", "rentalcad"):
+                pricelist_name = "USD RENTAL" if field_name == "rentalusd" else "CAD RENTAL"
+                synthetic_col = f"rental_price[pricelist={pricelist_name}]"
+                _logger.info(f"ProSync [RENTAL] Row {row_index} — mapped '{column_name}' → '{synthetic_col}' | value='{raw_value}'")
+                try:
+                    update_with_rental_price_context(product, synthetic_col, raw_value, self.database, row_index, col_idx, self.rental_updated_items, self.rental_warning_items, self.rental_skipped_items)
+                except Exception as e:
+                    _logger.error(f"ProSync [RENTAL] Row {row_index} — error processing '{column_name}': {str(e)}", exc_info=True)
+                continue
+            elif field_name in ("rentalcadoverride", "rentausdoverride"):
                 continue
             elif "[special=" in column_name:
                 update_with_special_context(product, column_name, raw_value, self.database, row_index, col_idx, self.updated_items)
@@ -244,7 +329,6 @@ class product_template_sync:
                 continue
 
             field_type = all_fields[base_field]['type']
-            raw_value = row[col_idx]
 
             try:
                 # Normalize value by field type
@@ -295,6 +379,7 @@ class product_template_sync:
                     f'Field <u>{base_field}</u> updated: "{existing_value}" <b>→</b> "{value}"<br/><br/>'
                 )
                 self.updated_items.append(change_summary)
+
 
             except Exception as e:
                 col_letter = chr(65 + col_idx)  # A = 65
