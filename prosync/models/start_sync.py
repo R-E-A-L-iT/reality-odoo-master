@@ -40,14 +40,15 @@ class ProsyncSync(models.Model):
             return prod_id
 
     # - Retrieve API Key stored in system parametres and establish connection
-    def establish_sheets_connection(self, pw, sheet_id, sheet_num):
+    def establish_sheets_connection(self, pw, sheet_id, sheet_name):
         scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
         creds = sac.from_json_keyfile_dict(pw, scope)
         client = gspread.authorize(creds)
 
         doc = client.open_by_key(sheet_id)
-        return doc.get_worksheet(sheet_num).get_all_values()
+        worksheet = doc.worksheet(sheet_name)
+        return worksheet.get_all_values()
 
     # Step 2. Read ODOO_CONFIGURATION tab
     # - For each row, check first if valid
@@ -64,7 +65,7 @@ class ProsyncSync(models.Model):
             line_index = 1
             db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             template_id = self.get_master_database_template_id(db_name)
-            configuration_tab = self.establish_sheets_connection(pw, template_id, 0)
+            configuration_tab = self.establish_sheets_connection(pw, template_id, "ODOO_SYNC_DATA")
 
             # Loop throw configuration sheet rows
             while line_index < len(configuration_tab):
@@ -91,26 +92,26 @@ class ProsyncSync(models.Model):
                     if sheet_type == "product_template":
                         _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
                         
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        sheet_data = self.establish_sheets_connection(pw, template_id, sheet_name)
 
                         syncer = product_template_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_product_template()
                     elif sheet_type == "stock_lot":
                         _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
 
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        sheet_data = self.establish_sheets_connection(pw, template_id, sheet_name)
                         syncer = stock_lot_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_stock_lot()
                     elif sheet_type == "res_partner":
                         _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
 
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        sheet_data = self.establish_sheets_connection(pw, template_id, sheet_name)
                         syncer = res_partner_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_res_partner()
                     elif sheet_type == "mrp_bom_line":
                         _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
 
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        sheet_data = self.establish_sheets_connection(pw, template_id, sheet_name)
                         syncer = mrp_bom_line_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_mrp_bom_line()
                     else:
