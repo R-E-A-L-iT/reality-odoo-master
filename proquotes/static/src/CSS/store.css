@@ -7,6 +7,10 @@
     color: #db0d0d !important;
 }
 
+#o-carousel-product > div.o_carousel_product_outer.carousel-outer.position-relative.flex-grow-1.overflow-hidden > div > div > div > span {
+    background-color: #db0d0d !important;
+}
+
 /* portal icons */
 .o_portal_icon > img {
     max-width: 68px;
