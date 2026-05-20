@@ -3,6 +3,10 @@
     color: #fff !important;
 }
 
+.breadcrumb-item > a {
+    color: #db0d0d !important;
+}
+
 /* portal icons */
 .o_portal_icon > img {
     max-width: 68px;
