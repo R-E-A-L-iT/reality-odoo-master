@@ -109,6 +109,7 @@ export class EnvioMapAction extends Component {
         }).addTo(this._map);
 
         this._markersLayer = window.L.markerClusterGroup({
+            maxClusterRadius: 30,
             iconCreateFunction: (cluster) => window.L.divIcon({
                 html: `<div class="ps-cluster-inner">${cluster.getChildCount()}</div>`,
                 className: "ps-cluster",
