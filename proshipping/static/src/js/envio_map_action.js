@@ -41,30 +41,33 @@ export class EnvioMapAction extends Component {
     }
 
     async _ensureLeaflet() {
-        // If already loaded (navigation), skip
-        if (window.L && window.L.map) {
+        if (window.L && window.L.map && window.L.markerClusterGroup) {
             this._leafletLoaded = true;
             return;
         }
 
-        // Load Leaflet CSS
-        await new Promise((resolve, reject) => {
+        const loadLink = (href) => new Promise((resolve, reject) => {
             const link = document.createElement("link");
             link.rel = "stylesheet";
-            link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+            link.href = href;
             link.onload = resolve;
-            link.onerror = () => reject(new Error("Failed to load Leaflet CSS"));
+            link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`));
             document.head.appendChild(link);
         });
 
-        // Load Leaflet JS
-        await new Promise((resolve, reject) => {
+        const loadScript = (src) => new Promise((resolve, reject) => {
             const script = document.createElement("script");
-            script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+            script.src = src;
             script.onload = resolve;
-            script.onerror = () => reject(new Error("Failed to load Leaflet JS"));
+            script.onerror = () => reject(new Error(`Failed to load JS: ${src}`));
             document.head.appendChild(script);
         });
+
+        await loadLink("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+        await loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+        await loadLink("https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css");
+        await loadLink("https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css");
+        await loadScript("https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js");
 
         this._leafletLoaded = true;
     }
@@ -81,7 +84,7 @@ export class EnvioMapAction extends Component {
             attribution: "&copy; OpenStreetMap contributors",
         }).addTo(this._map);
 
-        this._markersLayer = window.L.layerGroup().addTo(this._map);
+        this._markersLayer = window.L.markerClusterGroup().addTo(this._map);
     }
 
     async _loadMarkers() {
