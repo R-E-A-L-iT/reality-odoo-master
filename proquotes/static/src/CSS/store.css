@@ -8,6 +8,46 @@
     max-width: 68px;
 }
 
+/* Fix: self-sizing square image container — no parent height dependency */
+.oe_product_image {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.oe_product_image_link {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+    overflow: hidden;
+}
+
+.oe_product_image_img_wrapper {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+.oe_product_image_img_wrapper img {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block !important;
+}
+
 #products_grid > div.o_wsale_products_grid_table_wrapper.pt-3.pt-lg-0 > table > tbody > tr > td > div > form > div.oe_product_image.position-relative.h-100.flex-grow-0.overflow-hidden > a > span.o_ribbon.o_not_editable.bg-success.o_ribbon_left {
     color: #fff !important;
     background-color: red !important;
@@ -15,11 +55,6 @@
 
 .accordion-button:not(.collapsed) {
     color: black !important;
-}
-
-a.oe_product_image_link {
-    min-height: 250px;
-    min-width: 250px;
 }
 
 #o_payment_form_options {
