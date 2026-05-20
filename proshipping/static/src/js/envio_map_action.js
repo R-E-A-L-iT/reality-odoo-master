@@ -72,11 +72,35 @@ export class EnvioMapAction extends Component {
         this._leafletLoaded = true;
     }
 
+    _injectClusterStyles() {
+        if (document.getElementById("ps-cluster-styles")) return;
+        const style = document.createElement("style");
+        style.id = "ps-cluster-styles";
+        style.textContent = `
+            .ps-cluster { background: transparent !important; border: none !important; }
+            .ps-cluster-inner {
+                width: 40px; height: 40px;
+                background-color: rgba(26, 105, 133, 0.75);
+                border: 3px solid rgba(26, 105, 133, 1);
+                border-radius: 50%;
+                color: #fff;
+                font-weight: 700;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     async _initMap() {
         const el = this.containerRef.el;
         if (!el) throw new Error("Map container not found");
 
-        // Default view: world
+        this._injectClusterStyles();
+
         this._map = window.L.map(el).setView([20, 0], 2);
 
         window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -84,7 +108,13 @@ export class EnvioMapAction extends Component {
             attribution: "&copy; OpenStreetMap contributors",
         }).addTo(this._map);
 
-        this._markersLayer = window.L.markerClusterGroup().addTo(this._map);
+        this._markersLayer = window.L.markerClusterGroup({
+            iconCreateFunction: (cluster) => window.L.divIcon({
+                html: `<div class="ps-cluster-inner">${cluster.getChildCount()}</div>`,
+                className: "ps-cluster",
+                iconSize: [40, 40],
+            }),
+        }).addTo(this._map);
     }
 
     async _loadMarkers() {
