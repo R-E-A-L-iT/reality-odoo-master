@@ -22,14 +22,14 @@
             </xpath>
 
             <!-- Force Rental Pickup / Return button visibility for exploded rental kits -->
-            <!-- <xpath expr="//button[@name='action_open_pickup']" position="attributes">
+            <xpath expr="//button[@name='action_open_pickup']" position="attributes">
                 <attribute name="invisible">rental_status != 'pickup'</attribute>
             </xpath>
 
             <xpath expr="//button[@name='action_open_return']" position="attributes">
                 <attribute name="invisible">rental_status != 'return'</attribute>
                 <attribute name="class">btn-primary</attribute>
-            </xpath> -->
+            </xpath>
 
             <!-- pricelist filter -->
             <xpath expr="//field[@name='pricelist_id']" position="attributes">

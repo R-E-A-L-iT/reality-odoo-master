@@ -751,11 +751,15 @@ class order(models.Model):
                 component_line.with_context(
                     skip_apply_canadian_sales_taxes=True,
                     skip_company_consistency=True,
+                    mail_notrack=True,
+                    tracking_disable=True,
                 ).write(update_vals)
             else:
                 component_line = SaleLine.with_context(
                     skip_apply_canadian_sales_taxes=True,
                     skip_company_consistency=True,
+                    mail_notrack=True,
+                    tracking_disable=True,
                 ).create(vals)
 
             component_lines |= component_line
