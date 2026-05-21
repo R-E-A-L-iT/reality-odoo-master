@@ -762,6 +762,7 @@ class order(models.Model):
                     mail_notrack=True,
                     tracking_disable=True,
                     suppress_extra_line_chatter=True,
+                    skip_procurement=True,
                 ).write(update_vals)
             else:
                 component_line = SaleLine.with_context(
@@ -770,6 +771,12 @@ class order(models.Model):
                     mail_notrack=True,
                     tracking_disable=True,
                     suppress_extra_line_chatter=True,
+                    # skip_procurement=True prevents sale_stock from calling
+                    # _action_launch_stock_rule on these component lines.
+                    # That call would create procurement-based stock moves without
+                    # sale_line_id set, which sale_renting then treats as "extra lines"
+                    # and retroactively adds back to the quote.
+                    skip_procurement=True,
                 ).create(vals)
 
             component_lines |= component_line

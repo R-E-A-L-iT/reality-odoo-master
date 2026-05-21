@@ -118,23 +118,18 @@ class StockPicking(models.Model):
         default=_default_footer_id,
     )
 
-    def _action_done(self):
-        # Capture rental references before super() clears transient state
-        rental_pickups = self.filtered(
-            lambda p: p.rental_sale_order_id and p.rental_operation == 'pickup'
-        )
-        rental_returns = self.filtered(
-            lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
-        )
+    def _ensure_moves_have_sale_line(self):
+        """For every unlinked move in a custom rental picking, assign sale_line_id
+        to the matching kit-component SOL (or any matching SOL as fallback).
 
-        # sale_renting._action_done (called inside super()) creates "Extra line" SOLs for
-        # any stock.move that has sale_line_id=False when the transfer is validated.
-        # Pre-assign sale_line_id on every unlinked move now so sale_renting finds nothing
-        # to add — preventing retroactive kit-component lines appearing on the quote.
-        for picking in (rental_pickups | rental_returns):
+        Called both at action_confirm time and _action_done time because sale_renting
+        scans for moves with sale_line_id=False at both points to create "extra" SOLs.
+        """
+        for picking in self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation in ('pickup', 'return')
+        ):
             order = picking.rental_sale_order_id
             for move in picking.move_ids.filtered(lambda m: not m.sale_line_id and m.product_id):
-                # Prefer kit-component lines; fall back to any matching product line.
                 kit_comp = order.order_line.filtered(
                     lambda l: l.product_id.id == move.product_id.id
                         and not l.display_type
@@ -146,10 +141,29 @@ class StockPicking(models.Model):
                 if matching:
                     move.sudo().write({'sale_line_id': matching[0].id})
                     _logger.info(
-                        "Pre-assigned sale_line_id=%s on move %s (product %s) "
-                        "to prevent sale_renting extra-line creation",
-                        matching[0].id, move.id, move.product_id.display_name,
+                        "Assigned sale_line_id=%s on move %s (product %s, picking %s)",
+                        matching[0].id, move.id,
+                        move.product_id.display_name, picking.name,
                     )
+
+    def action_confirm(self):
+        # Pre-assign sale_line_id before sale_renting's action_confirm hook fires.
+        # sale_renting scans for moves with sale_line_id=False at confirm time and
+        # creates "Extra line" SOLs for any it finds — pre-assigning here prevents that.
+        self._ensure_moves_have_sale_line()
+        return super().action_confirm()
+
+    def _action_done(self):
+        # Capture rental references before super() clears transient state
+        rental_pickups = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'pickup'
+        )
+        rental_returns = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
+        )
+
+        # Run a second pass in case action_confirm split or re-created any moves.
+        self._ensure_moves_have_sale_line()
 
         res = super()._action_done()
 
