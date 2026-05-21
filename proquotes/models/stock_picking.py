@@ -24,7 +24,22 @@ class StockPicking(models.Model):
 
     hide_on_portal = fields.Boolean(
         string="Hide on Portal",
-        default=False,)
+        default=False,
+    )
+
+    rental_sale_order_id = fields.Many2one(
+        'sale.order',
+        string='Rental Order',
+        index=True,
+        copy=False,
+        ondelete='set null',
+    )
+
+    rental_operation = fields.Selection(
+        [('pickup', 'Rental Pickup'), ('return', 'Rental Return')],
+        string='Rental Operation',
+        copy=False,
+    )
 
     def _get_available_footer_domain(self):
         return [
@@ -102,6 +117,124 @@ class StockPicking(models.Model):
         domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
         default=_default_footer_id,
     )
+
+    def _action_done(self):
+        # Capture rental references before super() clears transient state
+        rental_pickups = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'pickup'
+        )
+        rental_returns = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
+        )
+
+        res = super()._action_done()
+
+        for picking in rental_pickups:
+            if picking.state == 'done':
+                picking._process_rental_pickup_done()
+
+        for picking in rental_returns:
+            if picking.state == 'done':
+                picking._process_rental_return_done()
+
+        return res
+
+    def _process_rental_pickup_done(self):
+        order = self.rental_sale_order_id
+        if not order:
+            return
+
+        kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and l.selected == 'true'
+                and not l.x_is_rental_kit_component
+                and order._get_phantom_bom_for_line(l)
+            )
+        )
+        for kit_line in kit_lines:
+            kit_line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({'qty_delivered': kit_line.product_uom_qty})
+
+        non_kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and l.selected == 'true'
+                and not l.x_is_rental_kit_component
+                and not order._get_phantom_bom_for_line(l)
+                and l.product_id
+                and l.product_id.rent_ok
+            )
+        )
+        for line in non_kit_lines:
+            line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({'qty_delivered': line.product_uom_qty})
+
+        self._force_rental_status_sql(order, 'return')
+        _logger.info("Rental pickup transfer %s validated → order %s set to 'return'", self.name, order.name)
+
+    def _process_rental_return_done(self):
+        order = self.rental_sale_order_id
+        if not order:
+            return
+
+        kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and l.selected == 'true'
+                and not l.x_is_rental_kit_component
+                and order._get_phantom_bom_for_line(l)
+            )
+        )
+        for kit_line in kit_lines:
+            kit_line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({
+                'qty_delivered': kit_line.product_uom_qty,
+                'qty_returned': kit_line.product_uom_qty,
+            })
+
+        non_kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and l.selected == 'true'
+                and not l.x_is_rental_kit_component
+                and not order._get_phantom_bom_for_line(l)
+                and l.product_id
+                and l.product_id.rent_ok
+            )
+        )
+        for line in non_kit_lines:
+            line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({
+                'qty_delivered': line.product_uom_qty,
+                'qty_returned': line.product_uom_qty,
+            })
+
+        self._force_rental_status_sql(order, 'returned')
+        _logger.info("Rental return transfer %s validated → order %s set to 'returned'", self.name, order.name)
+
+    def _force_rental_status_sql(self, order, target_status):
+        self.env.flush_all()
+        self.env.cr.execute("""
+            UPDATE sale_order
+            SET rental_status = %s,
+                write_date = NOW(),
+                write_uid = %s
+            WHERE id = %s
+        """, [target_status, self.env.uid, order.id])
+        order.invalidate_recordset(["rental_status"])
 
     def button_validate(self):
         res = super(StockPicking, self).button_validate()

@@ -7,6 +7,16 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
 
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_rental_transfers"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        invisible="not is_rental_order or rental_transfer_count == 0">
+                    <field name="rental_transfer_count" widget="statinfo" string="Rental Transfers"/>
+                </button>
+            </xpath>
+
             <xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
                 <attribute name="string">Business</attribute>
             </xpath>
