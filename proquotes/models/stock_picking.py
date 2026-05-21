@@ -127,6 +127,30 @@ class StockPicking(models.Model):
             lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
         )
 
+        # sale_renting._action_done (called inside super()) creates "Extra line" SOLs for
+        # any stock.move that has sale_line_id=False when the transfer is validated.
+        # Pre-assign sale_line_id on every unlinked move now so sale_renting finds nothing
+        # to add — preventing retroactive kit-component lines appearing on the quote.
+        for picking in (rental_pickups | rental_returns):
+            order = picking.rental_sale_order_id
+            for move in picking.move_ids.filtered(lambda m: not m.sale_line_id and m.product_id):
+                # Prefer kit-component lines; fall back to any matching product line.
+                kit_comp = order.order_line.filtered(
+                    lambda l: l.product_id.id == move.product_id.id
+                        and not l.display_type
+                        and l.x_is_rental_kit_component
+                )
+                matching = kit_comp or order.order_line.filtered(
+                    lambda l: l.product_id.id == move.product_id.id and not l.display_type
+                )
+                if matching:
+                    move.sudo().write({'sale_line_id': matching[0].id})
+                    _logger.info(
+                        "Pre-assigned sale_line_id=%s on move %s (product %s) "
+                        "to prevent sale_renting extra-line creation",
+                        matching[0].id, move.id, move.product_id.display_name,
+                    )
+
         res = super()._action_done()
 
         for picking in rental_pickups:

@@ -304,33 +304,45 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         # When sale_renting._action_done adds retroactive lines after a transfer is validated,
-        # it passes skip_procurement=True.  We intercept here to redirect stock.move links
-        # to the existing kit-component SOL instead of creating a duplicate line on the quote.
+        # it passes skip_procurement=True.  We intercept here to block duplicate creation for
+        # any product that already has a kit-component line on the order.
+        #
+        # NOTE: move_ids may or may not be present in the vals — do NOT gate on its presence.
+        # The check is purely: does this product already have a line on the order?
         if self.env.context.get("skip_procurement"):
             allowed = []
             for vals in vals_list:
-                move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
-                if not move_ids:
-                    allowed.append(vals)
-                    continue
+                order_id = vals.get("order_id")
+                product_id = vals.get("product_id")
 
-                order = self.env["sale.order"].browse(vals.get("order_id"))
-                product = self.env["product.product"].browse(vals.get("product_id"))
-                moves = self.env["stock.move"].browse(move_ids)
+                if order_id and product_id:
+                    order = self.env["sale.order"].browse(order_id)
 
-                existing_kit_comp = order.order_line.filtered(
-                    lambda l: l.product_id.id == product.id and l.x_is_rental_kit_component
-                )
-                if existing_kit_comp:
-                    moves.write({"sale_line_id": existing_kit_comp[0].id})
-                    _logger.info(
-                        "Blocked retro SOL creation for %s (product %s, moves %s) — "
-                        "redirected to existing kit-component line %s",
-                        order.display_name, product.display_name,
-                        moves.ids, existing_kit_comp[0].id,
+                    # Prefer kit-component lines; also catch any matching product line.
+                    kit_comp = order.order_line.filtered(
+                        lambda l: l.product_id.id == product_id
+                            and not l.display_type
+                            and l.x_is_rental_kit_component
                     )
-                else:
-                    allowed.append(vals)
+                    existing = kit_comp or order.order_line.filtered(
+                        lambda l: l.product_id.id == product_id and not l.display_type
+                    )
+
+                    if existing:
+                        # Redirect any moves that came with this val to the existing line.
+                        move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
+                        if move_ids:
+                            self.env["stock.move"].browse(move_ids).write(
+                                {"sale_line_id": existing[0].id}
+                            )
+                        _logger.info(
+                            "Blocked retro SOL for order %s product_id=%s — "
+                            "redirected to existing line %s",
+                            order.display_name, product_id, existing[0].id,
+                        )
+                        continue  # skip — do not allow this line to be created
+
+                allowed.append(vals)
 
             created = self.browse()
             if allowed:
