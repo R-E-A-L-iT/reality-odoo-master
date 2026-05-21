@@ -6,7 +6,6 @@
     "author": "Ezekiel deBlois",
     "license": "LGPL-3",
     "category": "Sales",
-    "post_init_hook": "post_init_hook",
     "depends": [
         "sale_stock",
         "base",
