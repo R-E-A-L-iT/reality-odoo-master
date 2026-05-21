@@ -21,11 +21,7 @@
                 <attribute name="string">Business</attribute>
             </xpath>
 
-            <!-- Force Rental Pickup / Return button visibility for exploded rental kits -->
-            <xpath expr="//button[@name='action_open_pickup']" position="attributes">
-                <attribute name="invisible">rental_status != 'pickup'</attribute>
-            </xpath>
-
+            <!-- Return button: sale_renting already handles its own visibility -->
             <xpath expr="//button[@name='action_open_return']" position="attributes">
                 <attribute name="invisible">rental_status != 'return'</attribute>
                 <attribute name="class">btn-primary</attribute>

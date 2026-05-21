@@ -368,6 +368,14 @@ class order(models.Model):
     # Skip default quote viewed messages when user_id is NOT present in URL
     # This ensures only tracking URLs (with user_id) trigger notifications
     def message_post(self, **kwargs):
+        # Suppress "Extra line with [product]" log notes that sale_renting posts when
+        # lines are added to a confirmed rental order — these are kit component lines,
+        # not genuinely unexpected lines, so the chatter noise is unwanted.
+        if self.env.context.get('suppress_extra_line_chatter'):
+            body = str(kwargs.get('body') or '').lower()
+            if 'extra line' in body and not kwargs.get('subject') and not kwargs.get('partner_ids'):
+                return self.env['mail.message']
+
         try:
             has_user_id = bool(request and request.params.get('user_id'))
         except Exception:
@@ -753,6 +761,7 @@ class order(models.Model):
                     skip_company_consistency=True,
                     mail_notrack=True,
                     tracking_disable=True,
+                    suppress_extra_line_chatter=True,
                 ).write(update_vals)
             else:
                 component_line = SaleLine.with_context(
@@ -760,6 +769,7 @@ class order(models.Model):
                     skip_company_consistency=True,
                     mail_notrack=True,
                     tracking_disable=True,
+                    suppress_extra_line_chatter=True,
                 ).create(vals)
 
             component_lines |= component_line
