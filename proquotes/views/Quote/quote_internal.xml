@@ -7,19 +7,25 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
 
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_rental_transfers"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        invisible="not is_rental_order or rental_transfer_count == 0">
+                    <field name="rental_transfer_count" widget="statinfo" string="Rental Transfers"/>
+                </button>
+            </xpath>
+
             <xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
                 <attribute name="string">Business</attribute>
             </xpath>
 
-            <!-- Force Rental Pickup / Return button visibility for exploded rental kits -->
-            <!-- <xpath expr="//button[@name='action_open_pickup']" position="attributes">
-                <attribute name="invisible">rental_status != 'pickup'</attribute>
-            </xpath>
-
+            <!-- Return button: sale_renting already handles its own visibility -->
             <xpath expr="//button[@name='action_open_return']" position="attributes">
                 <attribute name="invisible">rental_status != 'return'</attribute>
                 <attribute name="class">btn-primary</attribute>
-            </xpath> -->
+            </xpath>
 
             <!-- pricelist filter -->
             <xpath expr="//field[@name='pricelist_id']" position="attributes">

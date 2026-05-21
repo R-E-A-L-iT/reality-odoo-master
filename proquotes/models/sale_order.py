@@ -368,6 +368,14 @@ class order(models.Model):
     # Skip default quote viewed messages when user_id is NOT present in URL
     # This ensures only tracking URLs (with user_id) trigger notifications
     def message_post(self, **kwargs):
+        # Suppress "Extra line with [product]" log notes that sale_renting posts when
+        # lines are added to a confirmed rental order — these are kit component lines,
+        # not genuinely unexpected lines, so the chatter noise is unwanted.
+        if self.env.context.get('suppress_extra_line_chatter'):
+            body = str(kwargs.get('body') or '').lower()
+            if 'extra line' in body and not kwargs.get('subject') and not kwargs.get('partner_ids'):
+                return self.env['mail.message']
+
         try:
             has_user_id = bool(request and request.params.get('user_id'))
         except Exception:
@@ -751,94 +759,226 @@ class order(models.Model):
                 component_line.with_context(
                     skip_apply_canadian_sales_taxes=True,
                     skip_company_consistency=True,
+                    mail_notrack=True,
+                    tracking_disable=True,
+                    suppress_extra_line_chatter=True,
+                    skip_procurement=True,
                 ).write(update_vals)
             else:
                 component_line = SaleLine.with_context(
                     skip_apply_canadian_sales_taxes=True,
                     skip_company_consistency=True,
+                    mail_notrack=True,
+                    tracking_disable=True,
+                    suppress_extra_line_chatter=True,
+                    # skip_procurement=True prevents sale_stock from calling
+                    # _action_launch_stock_rule on these component lines.
+                    # That call would create procurement-based stock moves without
+                    # sale_line_id set, which sale_renting then treats as "extra lines"
+                    # and retroactively adds back to the quote.
+                    skip_procurement=True,
                 ).create(vals)
 
             component_lines |= component_line
 
         return component_lines
 
-    # when picking up rental order:
-    # 1. include selected non-kit lines normally
-    # 2. for selected phantom kits, explode BOM components + quantities into context
-    # 3. exclude everything not selected
-    def action_open_pickup(self):
+    rental_transfer_count = fields.Integer(
+        compute='_compute_rental_transfer_count',
+        string='Rental Transfers',
+    )
+
+    @api.depends('name')
+    def _compute_rental_transfer_count(self):
+        for order in self:
+            order.rental_transfer_count = self.env['stock.picking'].search_count([
+                ('rental_sale_order_id', '=', order.id),
+            ])
+
+    def action_view_rental_transfers(self):
         self.ensure_one()
+        pickings = self.env['stock.picking'].search([
+            ('rental_sale_order_id', '=', self.id),
+        ])
+        if len(pickings) == 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'stock.picking',
+                'res_id': pickings.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Rental Transfers'),
+            'res_model': 'stock.picking',
+            'view_mode': 'list,form',
+            'domain': [('rental_sale_order_id', '=', self.id)],
+            'target': 'current',
+        }
 
-        action = super().action_open_pickup()
-        ctx = dict(action.get("context", {}) or {})
-        original_line_ids = set(ctx.get("order_line_ids") or [])
+    def _get_rental_picking_type(self, sequence_code):
+        """Return the picking type with the given sequence_code for this order's warehouse."""
+        warehouse = self.warehouse_id
+        if not warehouse:
+            raise UserError(_('No warehouse is set on this order.'))
+        picking_type = self.env['stock.picking.type'].sudo().search([
+            ('warehouse_id', '=', warehouse.id),
+            ('sequence_code', '=', sequence_code),
+        ], limit=1)
+        if not picking_type:
+            label = _('Rental Pick Up') if sequence_code == 'RENTALOUT' else _('Rental Return')
+            raise UserError(_(
+                'No "%s" operation type (sequence code "%s") was found for warehouse "%s". '
+                'Please configure it in Inventory → Configuration → Operation Types.'
+            ) % (label, sequence_code, warehouse.display_name))
+        if not picking_type.default_location_src_id or not picking_type.default_location_dest_id:
+            label = _('Rental Pick Up') if sequence_code == 'RENTALOUT' else _('Rental Return')
+            raise UserError(_(
+                'The "%s" operation type for warehouse "%s" is missing a default source or '
+                'destination location. Please configure them in Inventory → Configuration → Operation Types.'
+            ) % (label, warehouse.display_name))
+        return picking_type
 
-        pickup_line_ids = []
+    def _build_rental_move_vals(self, picking_type):
+        """Build stock.move value dicts for all selected lines, exploding kits into components."""
+        src = picking_type.default_location_src_id
+        dest = picking_type.default_location_dest_id
+        move_vals_list = []
 
         for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
-            if line.display_type:
+            if line.display_type or line.selected != 'true' or line.x_is_rental_kit_component:
                 continue
-
-            if line.id not in original_line_ids:
-                continue
-
-            if line.selected != "true":
+            if not line.product_id:
                 continue
 
             bom = self._get_phantom_bom_for_line(line)
+            if bom:
+                component_lines = self._ensure_rental_kit_component_lines(line, bom)
+                for comp in component_lines:
+                    if not comp.product_id:
+                        continue
+                    move_vals_list.append({
+                        'name': comp.product_id.display_name,
+                        'product_id': comp.product_id.id,
+                        'product_uom_qty': comp.product_uom_qty,
+                        'product_uom': (comp.product_uom.id or comp.product_id.uom_id.id),
+                        'location_id': src.id,
+                        'location_dest_id': dest.id,
+                        'sale_line_id': comp.id,
+                    })
+            else:
+                move_vals_list.append({
+                    'name': line.product_id.display_name,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': line.product_uom_qty,
+                    'product_uom': (line.product_uom.id or line.product_id.uom_id.id),
+                    'location_id': src.id,
+                    'location_dest_id': dest.id,
+                    'sale_line_id': line.id,
+                })
 
-            # Normal non-kit rental line.
-            if not bom:
-                pickup_line_ids.append(line.id)
+        return move_vals_list
+
+    def _build_rental_return_move_vals(self, picking_type):
+        """Build stock.move value dicts for the return transfer (mirrors pickup, reverse direction)."""
+        src = picking_type.default_location_src_id
+        dest = picking_type.default_location_dest_id
+        move_vals_list = []
+
+        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
+            if line.display_type or line.x_is_rental_kit_component:
+                continue
+            if line.selected != 'true' or not line.product_id:
                 continue
 
-            # Kit rental line: create/find real component sale lines.
-            component_lines = self._ensure_rental_kit_component_lines(line, bom)
-            pickup_line_ids.extend(component_lines.ids)
+            bom = self._get_phantom_bom_for_line(line)
+            if bom:
+                component_lines = self.order_line.filtered(
+                    lambda l: l.x_is_rental_kit_component and l.x_parent_rental_kit_line_id == line
+                )
+                for comp in component_lines:
+                    if not comp.product_id:
+                        continue
+                    move_vals_list.append({
+                        'name': comp.product_id.display_name,
+                        'product_id': comp.product_id.id,
+                        'product_uom_qty': comp.product_uom_qty,
+                        'product_uom': (comp.product_uom.id or comp.product_id.uom_id.id),
+                        'location_id': src.id,
+                        'location_dest_id': dest.id,
+                        'sale_line_id': comp.id,
+                    })
+            else:
+                move_vals_list.append({
+                    'name': line.product_id.display_name,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': line.product_uom_qty,
+                    'product_uom': (line.product_uom.id or line.product_id.uom_id.id),
+                    'location_id': src.id,
+                    'location_dest_id': dest.id,
+                    'sale_line_id': line.id,
+                })
 
-        ctx["order_line_ids"] = pickup_line_ids
+        return move_vals_list
 
-        # Important: stop using fake wizard payloads.
-        ctx.pop("x_exploded_pickup_lines", None)
+    def action_open_pickup(self):
+        self.ensure_one()
 
-        action["context"] = ctx
-        return action
+        picking_type = self._get_rental_picking_type('RENTALOUT')
+        move_vals_list = self._build_rental_move_vals(picking_type)
+
+        if not move_vals_list:
+            raise UserError(_('No products to pick up. Please select at least one product line.'))
+
+        picking = self.env['stock.picking'].create({
+            'picking_type_id': picking_type.id,
+            'partner_id': self.partner_id.id,
+            'origin': self.name,
+            'rental_sale_order_id': self.id,
+            'rental_operation': 'pickup',
+            'location_id': picking_type.default_location_src_id.id,
+            'location_dest_id': picking_type.default_location_dest_id.id,
+            'move_ids': [(0, 0, m) for m in move_vals_list],
+        })
+        picking.action_confirm()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'res_id': picking.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_open_return(self):
         self.ensure_one()
 
-        action = super().action_open_return()
-        ctx = dict(action.get("context", {}) or {})
+        picking_type = self._get_rental_picking_type('RENTALIN')
+        move_vals_list = self._build_rental_return_move_vals(picking_type)
 
-        original_line_ids = set(ctx.get("order_line_ids") or [])
-        return_line_ids = []
+        if not move_vals_list:
+            raise UserError(_('No products to return. Please ensure the order has selected delivered products.'))
 
-        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
-            if line.display_type:
-                continue
+        picking = self.env['stock.picking'].create({
+            'picking_type_id': picking_type.id,
+            'partner_id': self.partner_id.id,
+            'origin': self.name,
+            'rental_sale_order_id': self.id,
+            'rental_operation': 'return',
+            'location_id': picking_type.default_location_src_id.id,
+            'location_dest_id': picking_type.default_location_dest_id.id,
+            'move_ids': [(0, 0, m) for m in move_vals_list],
+        })
+        picking.action_confirm()
 
-            # Normal non-kit line.
-            if line.id in original_line_ids and not line.x_parent_rental_kit_line_id:
-                bom = self._get_phantom_bom_for_line(line)
-
-                # If this is the parent kit line, do NOT return it directly.
-                if bom:
-                    component_lines = self.order_line.filtered(
-                        lambda l:
-                            l.x_is_rental_kit_component
-                            and l.x_parent_rental_kit_line_id == line
-                    )
-                    return_line_ids.extend(component_lines.ids)
-                else:
-                    return_line_ids.append(line.id)
-
-            # Hidden component line already included by Odoo.
-            elif line.id in original_line_ids and line.x_is_rental_kit_component:
-                return_line_ids.append(line.id)
-
-        ctx["order_line_ids"] = list(set(return_line_ids))
-        action["context"] = ctx
-        return action
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'res_id': picking.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def _get_available_serial_lot_ids_for_pickup(self, product):
         """Return serial lots physically available for this component product,

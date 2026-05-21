@@ -6,6 +6,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="hide_on_portal" string="Hide On Portal"/>
+                <field name="rental_sale_order_id" string="Rental Order"
+                       invisible="not rental_sale_order_id"
+                       readonly="state == 'done'"/>
+                <field name="rental_operation" string="Rental Operation"
+                       invisible="not rental_operation"
+                       readonly="state == 'done'"/>
             </xpath>
         </field>
     </record>
