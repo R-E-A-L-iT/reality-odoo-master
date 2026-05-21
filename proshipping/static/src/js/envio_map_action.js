@@ -41,39 +41,66 @@ export class EnvioMapAction extends Component {
     }
 
     async _ensureLeaflet() {
-        // If already loaded (navigation), skip
-        if (window.L && window.L.map) {
+        if (window.L && window.L.map && window.L.markerClusterGroup) {
             this._leafletLoaded = true;
             return;
         }
 
-        // Load Leaflet CSS
-        await new Promise((resolve, reject) => {
+        const loadLink = (href) => new Promise((resolve, reject) => {
             const link = document.createElement("link");
             link.rel = "stylesheet";
-            link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+            link.href = href;
             link.onload = resolve;
-            link.onerror = () => reject(new Error("Failed to load Leaflet CSS"));
+            link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`));
             document.head.appendChild(link);
         });
 
-        // Load Leaflet JS
-        await new Promise((resolve, reject) => {
+        const loadScript = (src) => new Promise((resolve, reject) => {
             const script = document.createElement("script");
-            script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+            script.src = src;
             script.onload = resolve;
-            script.onerror = () => reject(new Error("Failed to load Leaflet JS"));
+            script.onerror = () => reject(new Error(`Failed to load JS: ${src}`));
             document.head.appendChild(script);
         });
 
+        await loadLink("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+        await loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+        await loadLink("https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css");
+        await loadLink("https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css");
+        await loadScript("https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js");
+
         this._leafletLoaded = true;
+    }
+
+    _injectClusterStyles() {
+        if (document.getElementById("ps-cluster-styles")) return;
+        const style = document.createElement("style");
+        style.id = "ps-cluster-styles";
+        style.textContent = `
+            .ps-cluster { background: transparent !important; border: none !important; }
+            .ps-cluster-inner {
+                width: 40px; height: 40px;
+                background-color: rgba(26, 105, 133, 0.75);
+                border: 3px solid rgba(26, 105, 133, 1);
+                border-radius: 50%;
+                color: #fff;
+                font-weight: 700;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     async _initMap() {
         const el = this.containerRef.el;
         if (!el) throw new Error("Map container not found");
 
-        // Default view: world
+        this._injectClusterStyles();
+
         this._map = window.L.map(el).setView([20, 0], 2);
 
         window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -81,7 +108,14 @@ export class EnvioMapAction extends Component {
             attribution: "&copy; OpenStreetMap contributors",
         }).addTo(this._map);
 
-        this._markersLayer = window.L.layerGroup().addTo(this._map);
+        this._markersLayer = window.L.markerClusterGroup({
+            maxClusterRadius: 30,
+            iconCreateFunction: (cluster) => window.L.divIcon({
+                html: `<div class="ps-cluster-inner">${cluster.getChildCount()}</div>`,
+                className: "ps-cluster",
+                iconSize: [40, 40],
+            }),
+        }).addTo(this._map);
     }
 
     async _loadMarkers() {
