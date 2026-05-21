@@ -116,40 +116,6 @@ class SaleOrderLine(models.Model):
         return ids
 
     # if line is being created retroactively by stock.picking (delivery), override creation
-    def create(self, vals_list):
-        
-        ctx = self.env.context
-        if not ctx.get("skip_procurement"):
-            return super().create(vals_list)
-
-        allowed = []
-        for vals in vals_list:
-            move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
-            if not move_ids:
-                allowed.append(vals)
-                continue
-
-            order = self.env["sale.order"].browse(vals.get("order_id"))
-            product = self.env["product.product"].browse(vals.get("product_id"))
-            moves = self.env["stock.move"].browse(move_ids)
-
-            existing = order.order_line.filtered(lambda l: l.product_id.id == product.id)
-            if existing:
-                moves.write({"sale_line_id": existing[0].id})
-            else:
-                moves.write({"sale_line_id": False})
-
-            _logger.info(
-                "Blocked retro SO line creation for %s (product %s) from moves %s",
-                order.display_name, product.display_name, moves.ids
-            )
-
-        created = self.browse()
-        if allowed:
-            created |= super(SaleOrderLine, self).create(allowed)
-
-        created._orders_to_retax()._apply_canadian_sales_taxes()
-        return created
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -337,6 +303,54 @@ class SaleOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # When sale_renting._action_done adds retroactive lines after a transfer is validated,
+        # it passes skip_procurement=True.  We intercept here to block duplicate creation for
+        # any product that already has a kit-component line on the order.
+        #
+        # NOTE: move_ids may or may not be present in the vals — do NOT gate on its presence.
+        # The check is purely: does this product already have a line on the order?
+        if self.env.context.get("skip_procurement"):
+            allowed = []
+            for vals in vals_list:
+                order_id = vals.get("order_id")
+                product_id = vals.get("product_id")
+
+                if order_id and product_id:
+                    order = self.env["sale.order"].browse(order_id)
+
+                    # Block only when a kit-component line for this product already exists.
+                    # This lets _ensure_rental_kit_component_lines create the line the
+                    # first time (kit_comp is empty then), while blocking any subsequent
+                    # attempt by sale_renting to add a duplicate "extra line" for the
+                    # same product once our component line is in place.
+                    kit_comp = order.order_line.filtered(
+                        lambda l: l.product_id.id == product_id
+                            and not l.display_type
+                            and l.x_is_rental_kit_component
+                    )
+
+                    if kit_comp:
+                        # Redirect any moves that came with this val to the existing line.
+                        move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
+                        if move_ids:
+                            self.env["stock.move"].browse(move_ids).write(
+                                {"sale_line_id": kit_comp[0].id}
+                            )
+                        _logger.info(
+                            "Blocked retro SOL for order %s product_id=%s — "
+                            "redirected to existing kit-component line %s",
+                            order.display_name, product_id, kit_comp[0].id,
+                        )
+                        continue  # skip — do not allow this line to be created
+
+                allowed.append(vals)
+
+            created = self.browse()
+            if allowed:
+                created |= super().create(allowed)
+            created._orders_to_retax()._apply_canadian_sales_taxes()
+            return created
+
         lines = super().create(vals_list)
         lines._orders_to_retax()._apply_canadian_sales_taxes()
         return lines

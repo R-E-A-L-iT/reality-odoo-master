@@ -53,6 +53,11 @@
             <xpath expr="//span[@invisible='remaining_hours in [0,1]']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+
+            <!-- Pickup button must hide once the order moves past pickup state -->
+            <xpath expr="//button[@name='action_open_pickup']" position="attributes">
+                <attribute name="invisible">rental_status != 'pickup'</attribute>
+            </xpath>
         </field>
     </record>
 
