@@ -3,6 +3,7 @@
 from odoo import api, fields, models
 from odoo.tools.misc import groupby as tools_groupby
 
+# add note to allow rebase
 
 class ProductTemplate(models.Model):
 	_inherit = 'product.template'
