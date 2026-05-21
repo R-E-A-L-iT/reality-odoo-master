@@ -50,10 +50,10 @@ class mrp_bom_line_sync:
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
         sheet_width = len(sheet_columns)
-        
+
         # variables that will contain a list of any missing columns in the sheet
         missing_columns = [header for header in required_fields if header not in sheet_columns]
-        
+
         # verify that sheet format is as expected
         if missing_columns:
             error_msg = f"Sheet validation failed. Missing columns for fields: {missing_columns}."
@@ -62,24 +62,9 @@ class mrp_bom_line_sync:
                 f'ProSync: {error_msg}<br/><br/>'
             )
 
-        _logger.error("ProSync DEBUG raw headers: %s", sheet_columns)
-        _logger.error("ProSync DEBUG repr headers: %s", [repr(c) for c in sheet_columns])
-        _logger.error(
-            "ProSync DEBUG normalized headers: %s",
-            [str(c).strip().lower() if c is not None else '' for c in sheet_columns]
-        )
-        _logger.error(
-            "ProSync DEBUG codepoints: %s",
-            [[ord(ch) for ch in str(c)] for c in sheet_columns if c is not None]
-        )
-
         _logger.info("ProSync: Sheet format has been validated.")
 
-        column_indices = {
-            str(col).strip().lower(): idx
-            for idx, col in enumerate(sheet_columns)
-            if col is not None
-        }
+        column_indices = {col.strip().lower(): idx for idx, col in enumerate(sheet_columns)}
 
 
         # --------------------
@@ -108,25 +93,25 @@ class mrp_bom_line_sync:
                     _logger.info(f"ProSync: Ending sheet sync at row {row_index} (VALID is False, CONTINUE is False)")
                     break
 
-            # VALID is true — get and normalize bom_id (parent product barcode)
+            # VALID is true — get and normalize bom_id (parent product sku)
             bom_id_raw = row[column_indices.get("bom_id", -1)] if "bom_id" in column_indices else ''
-            bom_barcode = normalize_char(bom_id_raw)
+            bom_sku = normalize_char(bom_id_raw)
 
-            if not bom_barcode:
-                _logger.warning(f"ProSync: Row {row_index} is missing a valid bom_id (parent product barcode). Skipping.")
+            if not bom_sku:
+                _logger.warning(f"ProSync: Row {row_index} is missing a valid bom_id (parent product sku). Skipping.")
                 self.warning_items.append(
-                    f"ProSync: Row {row_index} is missing a valid bom_id (parent product barcode). Skipping.<br/><br/>"
+                    f"ProSync: Row {row_index} is missing a valid bom_id (parent product sku). Skipping.<br/><br/>"
                 )
                 continue
 
-            # Get product_id (BOM line product barcode)
+            # Get product_id (BOM line product sku)
             product_id_raw = row[column_indices.get("product_id", -1)] if "product_id" in column_indices else ''
-            line_product_barcode = normalize_char(product_id_raw)
+            line_product_sku = normalize_char(product_id_raw)
 
-            if not line_product_barcode:
-                _logger.warning(f"ProSync: Row {row_index} is missing a valid product_id (BOM line product barcode). Skipping.")
+            if not line_product_sku:
+                _logger.warning(f"ProSync: Row {row_index} is missing a valid product_id (BOM line product sku). Skipping.")
                 self.warning_items.append(
-                    f"ProSync: Row {row_index} is missing a valid product_id (BOM line product barcode). Skipping.<br/><br/>"
+                    f"ProSync: Row {row_index} is missing a valid product_id (BOM line product sku). Skipping.<br/><br/>"
                 )
                 continue
 
@@ -142,7 +127,7 @@ class mrp_bom_line_sync:
                 continue
 
             # Process the BOM and BOM line
-            self.process_bom_line(row_index, bom_barcode, line_product_barcode, product_qty)
+            self.process_bom_line(row_index, bom_sku, line_product_sku, product_qty)
 
         # Remove BOM lines that exist in Odoo but were not present in the sheet
         mrp_bom_line_model = self.database['mrp.bom.line']
@@ -179,10 +164,10 @@ class mrp_bom_line_sync:
             })
 
 
-    def process_bom_line(self, row_index, bom_barcode, line_product_barcode, product_qty):
+    def process_bom_line(self, row_index, bom_sku, line_product_sku, product_qty):
         """
         Process a single BOM line:
-        1. Find or create the parent mrp.bom by product barcode
+        1. Find or create the parent mrp.bom by product sku
         2. Find or create the mrp.bom.line
         3. Update the quantity if changed
         """
@@ -191,14 +176,14 @@ class mrp_bom_line_sync:
         # FIND/CREATE PARENT BOM
         # --------------------
 
-        # Search for product.template by barcode
+        # Search for product.template by sku
         product_template_model = self.database['product.template']
-        parent_product = product_template_model.search([('barcode', '=', bom_barcode)], limit=1)
+        parent_product = product_template_model.search([('sku', '=', bom_sku)], limit=1)
 
         if not parent_product:
-            _logger.warning(f"ProSync: Row {row_index} — Parent product with barcode '{bom_barcode}' not found. Skipping.")
+            _logger.warning(f"ProSync: Row {row_index} — Parent product with sku '{bom_sku}' not found. Skipping.")
             self.warning_items.append(
-                f"ProSync: Row {row_index} — Parent product with barcode '{bom_barcode}' not found. Please create the product first.<br/><br/>"
+                f"ProSync: Row {row_index} — Parent product with sku '{bom_sku}' not found. Please create the product first.<br/><br/>"
             )
             return
 
@@ -213,10 +198,10 @@ class mrp_bom_line_sync:
                     'product_tmpl_id': parent_product.id,
                     'type': 'phantom',
                 })
-                _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom (ID: {bom.id}) for product '{parent_product.name}' (barcode: {bom_barcode})")
+                _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom (ID: {bom.id}) for product '{parent_product.name}' (sku: {bom_sku})")
                 self.updated_items.append(
                     f'<b>Row {row_index}</b><br/>'
-                    f'Created new BOM for product <u>{parent_product.name}</u> (barcode: {bom_barcode})<br/>'
+                    f'Created new BOM for product <u>{parent_product.name}</u> (sku: {bom_sku})<br/>'
                     f'BOM ID: {bom.id}, Type: phantom<br/><br/>'
                 )
             except Exception as e:
@@ -227,21 +212,21 @@ class mrp_bom_line_sync:
                 )
                 return
         else:
-            _logger.info(f"ProSync: Row {row_index} — Found existing mrp.bom (ID: {bom.id}) for product '{parent_product.name}' (barcode: {bom_barcode})")
+            _logger.info(f"ProSync: Row {row_index} — Found existing mrp.bom (ID: {bom.id}) for product '{parent_product.name}' (sku: {bom_sku})")
 
 
         # --------------------
         # FIND/CREATE BOM LINE
         # --------------------
 
-        # Search for the line product by barcode (could be product.product or product.template)
+        # Search for the line product by sku (could be product.product or product.template)
         product_product_model = self.database['product.product']
-        line_product = product_product_model.search([('barcode', '=', line_product_barcode)], limit=1)
+        line_product = product_product_model.search([('sku', '=', line_product_sku)], limit=1)
 
         if not line_product:
-            _logger.warning(f"ProSync: Row {row_index} — BOM line product with barcode '{line_product_barcode}' not found. Skipping.")
+            _logger.warning(f"ProSync: Row {row_index} — BOM line product with sku '{line_product_sku}' not found. Skipping.")
             self.warning_items.append(
-                f"ProSync: Row {row_index} — BOM line product with barcode '{line_product_barcode}' not found. Please create the product first.<br/><br/>"
+                f"ProSync: Row {row_index} — BOM line product with sku '{line_product_sku}' not found. Please create the product first.<br/><br/>"
             )
             return
 
@@ -260,10 +245,10 @@ class mrp_bom_line_sync:
                     'product_id': line_product.id,
                     'product_qty': product_qty,
                 })
-                _logger.info(f"ProSync: Row {row_index} — Created new BOM line (ID: {bom_line.id}) for product '{line_product.display_name}' (barcode: {line_product_barcode})")
+                _logger.info(f"ProSync: Row {row_index} — Created new BOM line (ID: {bom_line.id}) for product '{line_product.display_name}' (sku: {line_product_sku})")
                 self.updated_items.append(
                     f'<b>Row {row_index}</b><br/>'
-                    f'Created new BOM line for product <u>{line_product.display_name}</u> (barcode: {line_product_barcode})<br/>'
+                    f'Created new BOM line for product <u>{line_product.display_name}</u> (sku: {line_product_sku})<br/>'
                     f'Parent BOM: {parent_product.name}, Quantity: {product_qty}<br/><br/>'
                 )
             except Exception as e:
@@ -282,7 +267,7 @@ class mrp_bom_line_sync:
                     _logger.info(f"ProSync: Row {row_index} — Updated BOM line (ID: {bom_line.id}) quantity: {existing_qty} → {product_qty}")
                     self.updated_items.append(
                         f'<b>Row {row_index}</b><br/>'
-                        f'Updated BOM line for product <u>{line_product.display_name}</u> (barcode: {line_product_barcode})<br/>'
+                        f'Updated BOM line for product <u>{line_product.display_name}</u> (sku: {line_product_sku})<br/>'
                         f'Quantity updated: {existing_qty} <b>→</b> {product_qty}<br/><br/>'
                     )
                 except Exception as e:

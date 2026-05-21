@@ -332,9 +332,138 @@ def update_with_price_context(product, column_name, value, env, row_index, col_i
         })
         _logger.info(f"ProSync: Created new price rule in today's pricelist for product {product.name} (cell {cell_ref})")
 
-# 
+#
+# Update a product's daily rental price via the product.pricing model (sale_renting)
+# Supported column formats:
+#   rental_price[pricelist=CAD] / rental_price[pricelist=USD]
+#       → resolves to the flag-emoji pricelist (🇨🇦 / 🇺🇸) for that currency
+#   rental_price[pricelist=CAD RENTAL] / rental_price[pricelist=USD RENTAL]  (or any exact pricelist name)
+#       → resolves by direct case-insensitive name match
+# Called from product_template.py for both rental_price[pricelist=...] and rental_price[CAD/USD] columns.
+#
+def update_with_rental_price_context(product, column_name, value, env, row_index, col_index, updated_items, warning_items, skipped_items):
+    cell_ref = f"{row_index}{chr(col_index + 65)}"
+    _logger.info(f"ProSync [RENTAL] ── cell {cell_ref} | column='{column_name}' | value='{value}' | product='{getattr(product, 'sku', product.id)}'")
+
+    match = re.match(r'^rental_price\[pricelist=(.+?)\]$', column_name.strip().lower())
+    if not match:
+        msg = f"Invalid rental pricelist column format: '{column_name}'"
+        _logger.warning(f"ProSync [RENTAL] {msg}")
+        warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
+        return
+
+    pricelist_param = match.group(1).strip()
+    _logger.info(f"ProSync [RENTAL] Parsed pricelist param: '{pricelist_param}'")
+
+    # First: try direct name match (case-insensitive) — supports full names like "USD RENTAL (USD)"
+    all_active = env["product.pricelist"].search([("active", "=", True)])
+    all_names = [p.name for p in all_active]
+    _logger.info(f"ProSync [RENTAL] All active pricelists in Odoo: {all_names}")
+
+    rental_pricelist = all_active.filtered(lambda p: p.name.lower() == pricelist_param)
+    rental_pricelist = rental_pricelist[:1] if rental_pricelist else env["product.pricelist"]
+
+    if rental_pricelist:
+        _logger.info(f"ProSync [RENTAL] Found pricelist by direct name match: '{rental_pricelist.name}' (ID {rental_pricelist.id})")
+    else:
+        _logger.info(f"ProSync [RENTAL] No direct name match for '{pricelist_param}'. Trying currency-code lookup...")
+
+    # Currency-code shorthand: "cad"/"usd" → find the flag-emoji pricelist (🇨🇦 / 🇺🇸) for that currency.
+    # This is the intended path for rental_price[pricelist=CAD] / rental_price[pricelist=USD].
+    if not rental_pricelist:
+        currency_flag_map = {
+            "usd": "🇺🇸",
+            "cad": "🇨🇦",
+        }
+        pricelist_flag = currency_flag_map.get(pricelist_param)
+        _logger.info(f"ProSync [RENTAL] Currency-code lookup for '{pricelist_param}': flag='{pricelist_flag}'")
+        if pricelist_flag:
+            currency_obj = env["res.currency"].search([("name", "=", pricelist_param.upper())], limit=1)
+            _logger.info(f"ProSync [RENTAL] Currency lookup '{pricelist_param.upper()}': found={bool(currency_obj)}")
+            if currency_obj:
+                rental_pricelist = env["product.pricelist"].search([
+                    ("name", "=", pricelist_flag),
+                    ("currency_id", "=", currency_obj.id),
+                    ("active", "=", True),
+                ], limit=1)
+                _logger.info(f"ProSync [RENTAL] Flag pricelist search result: found={bool(rental_pricelist)}")
+        else:
+            _logger.warning(f"ProSync [RENTAL] '{pricelist_param}' is not a recognized currency code (usd/cad) and did not match any pricelist name")
+
+    if not rental_pricelist:
+        msg = f"Pricelist '{pricelist_param}' not found in Odoo. Available pricelists: {all_names}"
+        _logger.warning(f"ProSync [RENTAL] {msg}")
+        warning_items.append(f"<b>{cell_ref}</b> Pricelist '{pricelist_param}' not found. Please create it first.<br/><br/>")
+        return
+
+    currency_code = rental_pricelist.currency_id.name
+    _logger.info(f"ProSync [RENTAL] Using pricelist '{rental_pricelist.name}' (ID {rental_pricelist.id}) | currency={currency_code}")
+
+    if value is None or str(value).strip() == '':
+        _logger.info(f"ProSync [RENTAL] Skipping empty value at cell {cell_ref}")
+        skipped_items.append(f"Row {row_index} col '{column_name}': empty value")
+        return
+
+    new_price = normalize_float(value)
+    _logger.info(f"ProSync [RENTAL] Normalized price: '{value}' → {new_price}")
+
+    # Find or auto-create the daily recurrence (duration=1, unit='day')
+    daily_recurrence = env["sale.temporal.recurrence"].search([
+        ("duration", "=", 1),
+        ("unit", "=", "day"),
+    ], limit=1)
+
+    if not daily_recurrence:
+        _logger.info(f"ProSync [RENTAL] No daily recurrence found — auto-creating one")
+        daily_recurrence = env["sale.temporal.recurrence"].create({
+            "duration": 1,
+            "unit": "day",
+        })
+        _logger.info(f"ProSync [RENTAL] Auto-created daily recurrence ID={daily_recurrence.id}")
+    else:
+        _logger.info(f"ProSync [RENTAL] Found daily recurrence: '{daily_recurrence.name}' (ID {daily_recurrence.id})")
+
+    # Search for existing product.pricing record
+    existing_pricing = env["product.pricing"].search([
+        ("product_template_id", "=", product.id),
+        ("recurrence_id", "=", daily_recurrence.id),
+        ("pricelist_id", "=", rental_pricelist.id),
+    ], limit=1)
+    _logger.info(f"ProSync [RENTAL] Existing product.pricing record: found={bool(existing_pricing)} | product_id={product.id}")
+
+    if existing_pricing:
+        old_price = existing_pricing.price
+        if old_price != new_price:
+            existing_pricing.write({"price": new_price})
+            updated_items.append(
+                f'<b>{cell_ref}</b>, {product.sku}<br/>'
+                f'Rental price <u>{currency_code}</u> updated: "{old_price}" <b>→</b> "{new_price}"<br/><br/>'
+            )
+            _logger.info(f"ProSync [RENTAL] UPDATED product '{product.sku}' [{currency_code}]: {old_price} → {new_price}")
+        else:
+            _logger.info(f"ProSync [RENTAL] No change for product '{product.sku}' [{currency_code}]: price is already {new_price}")
+            skipped_items.append(f"Row {row_index} '{product.sku}' [{currency_code}]: price unchanged ({new_price})")
+    else:
+        try:
+            env["product.pricing"].create({
+                "product_template_id": product.id,
+                "recurrence_id": daily_recurrence.id,
+                "pricelist_id": rental_pricelist.id,
+                "price": new_price,
+            })
+            updated_items.append(
+                f'<b>{cell_ref}</b>, {product.sku}<br/>'
+                f'Rental price <u>{currency_code}</u> created: "{new_price}"<br/><br/>'
+            )
+            _logger.info(f"ProSync [RENTAL] CREATED product.pricing for '{product.sku}' [{currency_code}]: {new_price}")
+        except Exception as e:
+            msg = f"Failed to create product.pricing for '{product.sku}' [{currency_code}]: {str(e)}"
+            _logger.error(f"ProSync [RENTAL] {msg}")
+            warning_items.append(f"<b>{cell_ref}</b> {msg}<br/><br/>")
+
+#
 # Update a many2one, many2many, or one2many field using a specified search
-# 
+#
 def update_with_related_context(record, column_name, raw_value, all_fields, database, row_index, col_idx):
     try:
         # Step 1: Parse field name and parameter
