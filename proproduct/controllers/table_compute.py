@@ -1,15 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-from odoo.addons.website_sale.controllers import main
-from odoo.addons.http_routing.models.ir_http import slug
-from odoo.addons.website.models.ir_http import sitemap_qs2dom
-from odoo import fields, http, SUPERUSER_ID, tools, _
-from odoo.addons.website.controllers.main import QueryURL
-from odoo.http import request
-from werkzeug.exceptions import Forbidden, NotFound
-import requests
-from datetime import datetime
-from odoo.tools import lazy, str2bool
 
 import logging
 _logger = logging.getLogger(__name__)

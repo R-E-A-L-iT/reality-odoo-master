@@ -1,19 +1,10 @@
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from operator import itemgetter
 import logging
-from odoo import fields, http, SUPERUSER_ID, _
+from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
-from odoo.http import content_disposition, Controller, request, route
-from odoo.addons.payment.controllers import portal as payment_portal
+from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from odoo.addons.portal.controllers.mail import _message_post_helper
-from odoo.addons.portal.controllers import portal
-from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
-from collections import OrderedDict
-from odoo.osv.expression import OR, AND
-from markupsafe import Markup
-from odoo.tools import groupby as groupbyelem
 
 _logger = logging.getLogger(__name__)
 
@@ -30,11 +21,6 @@ class CustomerPortalReal(CustomerPortal):
             request.session[session_key] = today
             _logger.info(f"PROPORTAL: Detected custom tracking for order {order_id}, set session {session_key} = {today}")
         
-        # try:
-        #     order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        # except (AccessError, MissingError):
-        #     return request.redirect('/my')
-
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -56,8 +42,6 @@ class CustomerPortalReal(CustomerPortal):
             # Only create default log note if NOT from custom tracking (no user_id parameter)
             if not kw.get('user_id') and session_obj_date != now and request.env.user.share and access_token:
                 request.session['view_quote_%s' % order_sudo.id] = now
-                body = _('Quotation viewed by customer %s',
-                         order_sudo.partner_id.name if request.env.user._is_public() else request.env.user.partner_id.name)
                 
                 _logger.info(f"PROPORTAL: Creating default quote view log for order {order_sudo.id} - NOT from custom tracking")
                 

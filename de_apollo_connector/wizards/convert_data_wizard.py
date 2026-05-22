@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import requests
-import json
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
-import pprint
+from odoo import api, fields, models
 
-from urllib.parse import urlparse
 
 class ConvertDataWizard(models.TransientModel):
     _name = "apl.convert.data.wizard"

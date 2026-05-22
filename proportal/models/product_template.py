@@ -1,24 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import ast
 import base64
 import requests
-import re
 
-from datetime import datetime, timedelta
-from functools import partial
-from itertools import groupby
-from urllib import request
-from dateutil.relativedelta import relativedelta
-from datetime import date, datetime
-from odoo.tools import format_date
 import logging
 
-from odoo import api, fields, models, SUPERUSER_ID, _, tools
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression
-from odoo.tools import float_is_zero, float_compare
+from odoo import api, fields, models
 from odoo import models, fields, api
 from odoo.tools import html2plaintext
 

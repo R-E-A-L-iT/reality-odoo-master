@@ -2,7 +2,7 @@
 
 import logging
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -110,7 +110,7 @@ class ResConfigSettings(models.TransientModel):
         try:
             self._cr.execute(sql)
             self._cr.commit()
-        except Exception as e:
+        except Exception:
             pass
 
     def remove_app_data(self, o, s=[]):
@@ -372,7 +372,7 @@ class ResConfigSettings(models.TransientModel):
                 'property_stock_account_output_categ_id': None,
                 'property_stock_valuation_account_id': None,
             })
-        except Exception as e:
+        except Exception:
             pass
         try:
             rec = self.env['product.template'].with_context(active_test=False).search([])
@@ -380,7 +380,7 @@ class ResConfigSettings(models.TransientModel):
                 'property_account_income_id': None,
                 'property_account_expense_id': None,
             })
-        except Exception as e:
+        except Exception:
             pass
         try:
             rec = self.env['stock.location'].with_context(active_test=False).search([])
@@ -388,8 +388,8 @@ class ResConfigSettings(models.TransientModel):
                 'valuation_in_account_id': None,
                 'valuation_out_account_id': None,
             })
-        except Exception as e:
-            pass  # raise Warning(e)
+        except Exception:
+            pass
         
         seqs = []
         res = self.remove_app_data(to_removes, seqs)

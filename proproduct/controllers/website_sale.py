@@ -2,16 +2,14 @@
 import logging
 from datetime import datetime
 
-import requests  # still imported in case you want the geoIP logic later
-
-from odoo import fields, http, SUPERUSER_ID, tools, _
+from odoo import fields, http, tools
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.website.models.ir_http import sitemap_qs2dom
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.website_sale.controllers import main
 from odoo.http import request
-from werkzeug.exceptions import Forbidden, NotFound
-from odoo.tools import lazy, str2bool
+from werkzeug.exceptions import NotFound
+from odoo.tools import lazy
 
 from odoo.addons.proproduct.controllers.table_compute import TableCompute
 
@@ -107,34 +105,8 @@ class WebsiteSale(main.WebsiteSale):
         website = request.env['website'].get_current_website()
         website_domain = website.website_domain()
 
-        # GEOIP-BASED PRICE LIST AUTODETECTION (DISABLED)
-        # ------------------------------------------------
-        # All the CAD/USD auto-selection logic has been intentionally disabled
-        # to fall back to standard Odoo pricelist behavior.
-        #
-        # if not request.session.get('pricelist_region_initialized'):
-        #     try:
-        #         geo = requests.get("https://ipapi.co/json").json()
-        #         country_code = geo.get('country_code')
-        #
-        #         Pricelist = request.env['product.pricelist'].sudo()
-        #
-        #         if country_code == 'US':
-        #             us_pricelist = Pricelist.search([('currency_id.name', '=', 'USD')], limit=1)
-        #             if us_pricelist and website.is_pricelist_available(us_pricelist.id):
-        #                 request.session['website_sale_current_pl'] = us_pricelist.id
-        #                 request.website.sale_get_order(update_pricelist=True)
-        #                 _logger.info("[proproduct] Auto-set USD pricelist for US visitor")
-        #         elif country_code == 'CA':
-        #             ca_pricelist = Pricelist.search([('currency_id.name', '=', 'CAD')], limit=1)
-        #             if ca_pricelist and website.is_pricelist_available(ca_pricelist.id):
-        #                 request.session['website_sale_current_pl'] = ca_pricelist.id
-        #                 request.website.sale_get_order(update_pricelist=True)
-        #                 _logger.info("[proproduct] Auto-set CAD pricelist for CA visitor")
-        #     except Exception as e:
-        #         _logger.warning(f"[proproduct] GeoIP lookup failed: {e}")
-        #
-        #     request.session['pricelist_region_initialized'] = True
+        # GeoIP-based CAD/USD pricelist auto-detection was intentionally disabled
+        # in favour of standard Odoo pricelist behaviour.
 
         add_qty = int(post.get('add_qty', 1))
         try:
@@ -191,7 +163,6 @@ class WebsiteSale(main.WebsiteSale):
         # ------------------------------------------------------------------
         # PRICELIST & CONVERSION RATE  (FIXED)
         # ------------------------------------------------------------------
-        now = datetime.timestamp(datetime.now())
 
         # Run geo pricelist logic on first landing
         geo_pricelist = website.sale_get_pricelist()
@@ -215,14 +186,8 @@ class WebsiteSale(main.WebsiteSale):
                 fields.Date.today(),
             )
 
-        # Old custom caching logic for pricelist has been removed to avoid
-        # overriding Odoo's default behavior:
-        #
-        # pricelist = website.pricelist_id
-        # if 'website_sale_pricelist_time' in request.session:
-        #     ...
-        # else:
-        #     ...
+        # Old custom pricelist caching logic was removed to avoid overriding
+        # Odoo's default behaviour.
 
         url = '/shop'
         if search:
@@ -249,22 +214,7 @@ class WebsiteSale(main.WebsiteSale):
             attrib_set, options, post, search, website
         )
 
-        # CAD / USD PRODUCT VISIBILITY FILTERING REMOVED
-        # ------------------------------------------------
-        # If you ever want to re-enable region-specific visibility, this is
-        # where it used to happen:
-        #
-        # if pricelist.currency_id:
-        #     currency = pricelist.currency_id.name
-        #     if currency == 'USD':
-        #         search_product = search_product.filtered(lambda e: e.is_us)
-        #         product_count = len(search_product)
-        #     elif currency == 'CAD':
-        #         search_product = search_product.filtered(lambda e: e.is_ca)
-        #         product_count = len(search_product)
-        # else:
-        #     tst = requests.get("https://ipapi.co/json").json()
-        #     ...
+        # Region-specific (CAD/USD) product visibility filtering was removed.
 
         # Re-check price filter to compute min/max bounds using SQL
         filter_by_price_enabled = request.website.is_view_active('website_sale.filter_products_price')

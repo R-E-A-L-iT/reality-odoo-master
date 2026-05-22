@@ -1,14 +1,12 @@
 import gspread
 import logging
 
-from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo import models
 from oauth2client.service_account import ServiceAccountCredentials as sac
 
 from .sync.product_template import product_template_sync
 from .sync.stock_lot import stock_lot_sync
 from .sync.res_partner import res_partner_sync
-from .sync.mrp_bom import mrp_bom_sync
 from .sync.mrp_bom_line import mrp_bom_line_sync
 
 from datetime import datetime
@@ -30,7 +28,6 @@ class ProsyncSync(models.Model):
         prod_id = config.get_param('prosync.production_sheet_id')
         dev_id = config.get_param('prosync.development_sheet_id')
         
-        _db_name_prod = "https://www.r-e-a-l.it"
 
         if "dev" in _db_name:
             _logger.info("\n-----------------\nProSync\nStarting sync on development data\n-----------------")

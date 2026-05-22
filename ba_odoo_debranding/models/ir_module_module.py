@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, modules, tools, _
+from odoo import api, fields, models, modules
 
 import operator
 
@@ -11,8 +11,6 @@ class IrModule(models.Model):
     #   installed_version refers the latest version (the one on disk)
     #   latest_version refers the installed version (the one in database)
     #   published_version refers the version available on the repository
-    # installed_version = fields.Char('Latest Version', compute='_get_latest_version')
-    # latest_version = fields.Char('Installed Version', readonly=True)
 
     local_updatable = fields.Boolean('Local updatable', compute='_get_latest_version', compute_sudo=False, default=False, store=True)
 

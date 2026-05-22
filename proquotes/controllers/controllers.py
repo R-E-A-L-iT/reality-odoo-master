@@ -2,39 +2,20 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-import base64
 import binascii
 
 from odoo import fields, http, _
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
-from odoo.http import Response
 from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
-from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
-from odoo.osv import expression
 import re
 from werkzeug.utils import redirect
 
 _logger = logging.getLogger(__name__)
 
-
-# class CustomPortalSaleOrder(http.Controller):
-
-#     @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
-#     def update_requesT_lang(self, sale_order_id, **kwargs):
-#         sale_order = request.env['sale.order'].sudo().browse(sale_order_id)
-
-#         # Check if the partner's language is French and set the request language to French
-#         if sale_order.partner_id.lang.code == 'fr_CA':
-#             request.lang.code = 'fr_CA'
-#         else:
-#             request.lang = request.lang  # Keep the default website language
-
-#         # Call the default controller or return your own response
-#         return request.render("sale.sale_order_portal_content", {'sale_order': sale_order})
 
 class QuoteCustomerPortal(cPortal):
     @staticmethod
@@ -457,28 +438,6 @@ class QuoteCustomerPortal(cPortal):
             return redirect(redirect_url)
     
 class Website(WebsiteINH):
-    # @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
-    # def change_lang(self, lang, r='/', **kwargs):
-    #     """ :param lang: supposed to be value of `url_code` field """
-    #     _logger.info('**********************************',kwargs)
-    #     if lang == 'default':
-    #         lang = request.website.default_lang_id.url_code
-    #         r = '/%s%s' % (lang, r or '/')
-    #     lang_code = request.env['res.lang']._lang_get_code(lang)
-    #     # replace context with correct lang, to avoid that the url_for of request.redirect remove the
-    #     # default lang in case we switch from /fr -> /en with /en as default lang.
-    #     _logger.info('>>>>>>>lang_code>>>>>>>',lang_code)
-    #     request.update_context(lang=lang_code)
-    #     redirect = request.redirect(r or ('/%s' % lang))
-    #     redirect.set_cookie(key='frontend_lang', value=str(lang_code), path='/')
-        
-    #     request.session['lang'] = lang_code
-    #     request.env['res.lang']._activate_lang(lang_code)
-    #     _logger.info('>>>>>>>lang_code after>>>>>>>:%s',lang_code)
-    #     #
-    #     _logger.info('>>>>>>>123456789>>>>>>>')
-    #     return redirect
-
     @http.route('/website/lang/<lang>', type='http', auth="public", website=True, multilang=False)
     def change_lang(self, lang, r='/', **kwargs):
         """ :param lang: supposed to be value of `url_code` field """
@@ -525,7 +484,7 @@ class QuotePortalFix(cPortal):
                 'signature': signature,
             })
             request.env.cr.commit()
-        except (TypeError, binascii.Error) as e:
+        except (TypeError, binascii.Error):
             return {'error': _('Invalid signature data.')}
 
         if not order_sudo._has_to_be_paid():
@@ -740,46 +699,6 @@ class QuotePortalFix(cPortal):
 
 
 class WebsiteForm(form.WebsiteForm):
-
-
-    # def insert_record(self, request, model, values, custom, meta=None):
-    #     if model.model == 'sale.order':
-    #         _logger.info('Processing sale.order form submission: %s', values)
-            
-    #         # Get partner email from form
-    #         partner_email = values.get('rental_email') or values.get('email_from') or values.get('email')
-    #         partner_name = values.get('partner_name') or partner_email or 'Website Customer'
-            
-    #         if not partner_email:
-    #             raise UserError(_("Email is required for creating quotations."))
-            
-    #         # Find or create partner
-    #         partner = request.env['res.partner'].sudo().search([('email', '=', partner_email)], limit=1)
-    #         if not partner:
-    #             partner = request.env['res.partner'].sudo().create({
-    #                 'name': partner_name,
-    #                 'email': partner_email,
-    #                 'phone': values.get('phone'),
-    #                 'lang': request.context.get('lang', 'en_US'),
-    #                 'is_company': False,
-    #             })
-    #             _logger.info('Created new partner: %s', partner.id)
-            
-    #         # Update values with partner_id for the sale order creation
-    #         values['partner_id'] = partner.id
-    #         values['is_rental'] = True
-    #         values['is_rental_order'] = True
-    #         values['rental_start'] = values.get('rental_start')
-    #         values['rental_end'] = values.get('rental_end')
-            
-    #         # Add company_id if not present
-    #         if 'company_id' not in values:
-    #             values['company_id'] = request.website.company_id.id
-    #         _logger.info('Updated values for sale order: %s', values)
-        
-    #     # Call parent method to actually create the record
-    #     return super().insert_record(request, model, values, custom, meta=meta)
-
 
 
     def insert_record(self, request, model, values, custom, meta=None):

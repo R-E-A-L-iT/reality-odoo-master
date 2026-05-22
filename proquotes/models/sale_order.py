@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import ast
-import base64
 import json
-from email.policy import default
-import re
-from math import ceil
 
-from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import partial
-from itertools import groupby
 import logging
 
-from odoo import api, fields, models, SUPERUSER_ID, _, tools, Command
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression
-from odoo.http import request, route
-from odoo.tools import float_is_zero, float_compare
+from odoo import api, fields, models, _, Command
+from odoo.exceptions import UserError
+from odoo.tools.misc import formatLang
+from odoo.http import request
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
@@ -114,7 +105,6 @@ class order(models.Model):
 
     approve_financing = fields.Boolean(string="APPROVE Financing")
 
-    # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
     products = fields.One2many(related="partner_id.products", readonly=True)
@@ -1241,8 +1231,6 @@ class order(models.Model):
                 return label
             
             parts = label.split('+')
-            # if len(parts) != 4:
-            #     return label
             
             product_code = parts[2]
             expiry_date = parts[3]
@@ -1478,7 +1466,6 @@ class order(models.Model):
         return self.env["sale.order.line"].new(line_vals)
 
     def hardwareCCP(self, hardware_lines, product):
-        eid = product.name
 
         # Generate lines based on renewal_map entries specifing what to offer
         # Initilize Hardware Line Section if Needed
@@ -1707,7 +1694,6 @@ class order(models.Model):
 
         # Disable original groups to prevent duplicates by setting them inactive
         for group in groups:
-            group_name = group[0] 
             group_data = group[2]
             group_data['active'] = False  # Disable original groups
         
@@ -1895,10 +1881,6 @@ class SaleOrderTemplateHandler(models.Model):
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
         
-        # if not self.sale_order_template_id:
-        #     self.require_signature = self._get_default_require_signature()
-        #     self.require_payment = self._get_default_require_payment()
-        #     return
 
         template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
 

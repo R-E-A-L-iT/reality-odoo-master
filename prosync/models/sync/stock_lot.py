@@ -1,7 +1,6 @@
 
 # -*- coding: utf-8 -*-
 
-import re
 import logging
 
 from datetime import datetime

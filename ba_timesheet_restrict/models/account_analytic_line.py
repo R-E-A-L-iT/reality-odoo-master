@@ -33,7 +33,7 @@
 ##############################################################################
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 class AccountAnalyticLine(models.Model):
     _inherit = "account.analytic.line"

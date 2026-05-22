@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from odoo import api, fields, models
+from odoo import api, models
 from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class MailThread(models.AbstractModel):
         if not isinstance(self, self.env.registry['portal.mixin']):
             return groups
 
-        access_token = self._portal_ensure_token()
+        self._portal_ensure_token()
         access_link = self.get_portal_url()
 
         for group in groups:

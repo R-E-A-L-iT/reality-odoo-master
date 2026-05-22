@@ -41,7 +41,6 @@ class QuoSendTextWizard(models.TransientModel):
         # Ensure local phone number table is up-to-date
         Call._quo_sync_phone_numbers()
 
-        Phone = self.env["quo.phone.number"].sudo()
 
         user = self.env.user
         allowed = user.allowed_quo_phone_number_ids

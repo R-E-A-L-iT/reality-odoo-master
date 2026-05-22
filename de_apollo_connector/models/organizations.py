@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import base64
-from odoo import api, fields, Command, models, _
-from odoo.exceptions import UserError, AccessError
-from odoo.tools import html_escape as escape
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 import requests
-import json
 import logging
 
 _logger = logging.getLogger(__name__)

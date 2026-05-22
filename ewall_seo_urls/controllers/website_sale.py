@@ -2,7 +2,6 @@
 from odoo.http import request
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo import http
-from odoo import fields, http, SUPERUSER_ID, tools, _
 
 # Website Sale Cotroller
 class WebsiteSaleCategory(WebsiteSale):

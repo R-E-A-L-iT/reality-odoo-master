@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ResPartner(models.Model):

@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# -*- coding: utf-8 -*-
-
 import requests
-import json
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 import pprint
-from odoo.tools import html_escape as escape
 import base64
 from urllib.parse import urlparse
 
@@ -63,9 +59,6 @@ class ResPartner(models.Model):
     def _cron_send_to_apollo(self):
         assign_cron = self.env["ir.config_parameter"].sudo().get_param("apl.leads.auto")
         record_ids = self.env['res.partner'].search([('update_required_for_apollo','=',True)])
-        #apl_instance = self.env['apl.instance'].search([
-        #    ('company_id', '=', self.env.company.id),
-        #], limit=1)  # Limit to one record (if available)
         if assign_cron:
             for record in record_ids:
                 record._send_to_apollo(record.company_id.apl_instance_id)
@@ -104,55 +97,19 @@ class ResPartner(models.Model):
                     "linkedin_url": company_partner.linkedin_url,
                     "twitter_url": company_partner.twitter_url,
                     "facebook_url": company_partner.facebook_url,
-                    #"primary_phone": {
-                    #    "number": "+918602017706",
-                    #    "source": "Scraped",
-                    #    "country_code_added_from_hq": true
-                    #},
-                    #"languages": [],
-                    #"alexa_ranking": null,
                     "phone": "+918602017706",
-                    #"linkedin_uid": "13368669",
                     "founded_year": company_partner.founded_year,
-                    #"publicly_traded_symbol": null,
-                    #"publicly_traded_exchange": null,
-                    #"logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/63bfbeee7fb7aa0001605365/picture",
-                    #"crunchbase_url": null,
                     "primary_domain": domain,
                     "sanitized_phone": "+918602017706",
                     "domain": domain,
-                    #"team_id": "63f7d4e7c63f0300a3804ee9",
-                    #"organization_id": "5a9dd948a6da98d9a15ba541",
-                    #"organization_raw_address": "49 villiers street, london, greater london, united kingdom",
-                    #"organization_city": "London",
-                    #"organization_street_address": "49 Villiers Street",
-                    #"organization_state": "England",
-                    #"organization_country": "United Kingdom",
-                    #"organization_postal_code": "WC2N 6NE",
-                    #"account_stage_id": "63f7d4e7c63f0300a3804ef4",
                     "source": "deployment",
                     "original_source": "deployment",
-                    #"creator_id": null,
-                    #"owner_id": "63f7d4e8c63f0300a3804f65",
-                    #"created_at": "2023-04-08T11:23:17.428Z",
-                    #"phone_status": "no_status",
-                    #"hubspot_id": null,
-                    #"salesforce_id": null,
-                    #"crm_owner_id": null,
-                    #"parent_account_id": null,
-                    #"account_playbook_statuses": [],
-                    #"account_rule_config_statuses": [],
-                    #"existence_level": "full",
-                    #"label_ids": [],
-                    #"typed_custom_fields": {},
-                    #"modality": "account"
                 }
 
                 if not company_partner.apl_id:
                     data_acc = apl_instance_id._post_apollo_data('accounts', account_data)
                     account_apl_id = data_acc["account"]["id"]        
-                    #raise UserError(contact_values)    
-                    contact_id = company_partner.write({
+                    company_partner.write({
                         'apl_id': account_apl_id,
                     })
                 else:
@@ -174,16 +131,13 @@ class ResPartner(models.Model):
                 
                 label_names = [str(label_id.name) for label_id in partner.category_id]
                 
-                #raise UserError(label_names)
                 person_data = {
                     "first_name": first_name,
                     "last_name": last_name,
                     "name": partner.name,
                     "title": partner.function if partner.function else '',
                     "headline": partner.function,
-                    #"organization_name": "Dynexcel",
                     "email": partner.email if partner.email else '',
-                    #"sanitized_phone" : partner.phone if partner.phone else '',
                     "website_url": partner.website if partner.website else '',
                     "city": partner.city if partner.city else '',
                     "state": partner.state_id.name if partner.state_id else '',
@@ -213,23 +167,14 @@ class ResPartner(models.Model):
                 }
                 if company_partner:
                     person_data['account'] = account_data
-                    #person_data['organization_name'] = company_partner.name,
-                    #person_data['account_id'] = account_apl_id or company_partner.apl_id,
 
-                # Create a formatted string with the dictionary content
-                formatted_content = pprint.pformat(person_data)
 
-                # Raise a UserError with the formatted content
-                #raise UserError(f"Person Data:\n{formatted_content}")
 
                 if not partner.apl_id:
                     data_per = apl_instance_id._post_apollo_data('contacts', person_data)
-                    #raise UserError(data_per["contact"]["name"] )
                     if 'contact' in data_per:
                         person_apl_id = data_per['contact']['id']
-                    #person_apl_id = data_per["contact"]["id"]        
-                    #raise UserError(contact_values)    
-                    contact_id = partner.write({
+                    partner.write({
                         'apl_id': person_apl_id,
                     })
                     api_str = 'contacts' + '/' + partner.apl_id

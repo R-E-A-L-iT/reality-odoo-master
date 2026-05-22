@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, Command, models, _
-from odoo.exceptions import UserError, AccessError
-from odoo.tools import html_escape as escape
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 import base64
 import requests
-import json
 
 class ApolloPeople(models.Model):
     _name = 'apl.people'

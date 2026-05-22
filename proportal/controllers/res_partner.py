@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import models
 # (keep your existing imports)
 
 class ResPartner(models.Model):

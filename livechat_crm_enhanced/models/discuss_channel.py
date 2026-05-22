@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
-from odoo.tools import html2plaintext
-from odoo.exceptions import AccessError
+from odoo import models, fields, _
 
 
 class DiscussChannel(models.Model):
@@ -76,9 +74,6 @@ class DiscussChannel(models.Model):
             # Link the lead to this channel
             self.livechat_lead_id = lead.id
             
-            # Send success message
-            msg = _('Lead created successfully: %s', lead._get_html_link())
-            # self._send_transient_message(partner, msg)
             
             # Post chat history in lead's internal notes  
             chat_history = self._get_channel_history()
@@ -145,11 +140,6 @@ class DiscussChannel(models.Model):
                     subtype_xmlid='mail.mt_note'  # Internal note
                 )
                 
-                msg = _('Lead updated with new conversation: %s', self.livechat_lead_id._get_html_link())
-            else:
-                msg = _('No new messages to update in lead: %s', self.livechat_lead_id._get_html_link())
-                
-            # self._send_transient_message(partner, msg)
             return {
                 'success': True, 
                 'message': 'Lead updated successfully',

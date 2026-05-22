@@ -3,12 +3,9 @@ import re
 import json
 import base64
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from markupsafe import Markup, escape
 
-import os
-import mimetypes
-from urllib.parse import urlparse
 
 import requests
 

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
-import base64
 import logging
-import requests
 
 from datetime import datetime
 
@@ -17,7 +14,6 @@ from ..utilities import (
     normalize_binary,
     normalize_selection,
     update_with_lang_context,
-    update_with_price_context,
     update_with_related_context,
     update_with_special_context,
 )
@@ -59,7 +55,6 @@ class mrp_bom_sync:
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
-        sheet_width = len(sheet_columns)
         
         # variables that will contain a list of any missing columns in the sheet
         missing_columns = [header for header in required_fields if header not in sheet_columns]

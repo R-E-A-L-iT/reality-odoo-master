@@ -46,7 +46,6 @@ class CrmLead(models.Model):
             raise UserError(_("No messages found in this conversation yet."))
 
         latest_msg = messages[-1]
-        latest_author = latest_msg.author_id.name or _('Customer')
         latest_body = html2plaintext(latest_msg.body).strip()
 
         history_lines = []

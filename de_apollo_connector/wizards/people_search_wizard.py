@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import requests
-import json
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import fields, models, _
 
 class APLPeopleSearchWizard(models.TransientModel):
     _name = "apl.people.search.wizard"
@@ -53,7 +50,6 @@ class APLPeopleSearchWizard(models.TransientModel):
             if self.org_domains:
                 data['q_organization_domains'] = self.get_org_domains_as_array()
                 
-            #data = json.loads(response.text)
             data = self.apl_instance_id._post_apollo_data('mixed_people/search', data)
             # Check if data is a list, and if it is, assign it to people_data
             if isinstance(data, list):

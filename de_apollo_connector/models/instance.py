@@ -1,33 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, Command, models, _
-from odoo.exceptions import UserError, AccessError
-from odoo.tools import html_escape as escape
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 import requests
 import json
 
-from urllib.parse import urlparse
-
-
-READONLY_FIELD_STATES = {
-    state: [('readonly', True)]
-    for state in {'verified', 'active'}
-}
 
 class ApolloInstance(models.Model):
     _name = 'apl.instance'
     _description = 'Apollo Instance'
 
-    # name = fields.Char(string='Name', required=True, readonly=False, states=READONLY_FIELD_STATES)
-    # api_key = fields.Char(string='API Key', required=True, help='Secret API Key', readonly=False, states=READONLY_FIELD_STATES)
-    # url = fields.Char(string='URL', required=True, readonly=False, states=READONLY_FIELD_STATES)
     name = fields.Char(string='Name', required=True, readonly=False,)
     api_key = fields.Char(string='API Key', required=True, help='Secret API Key', readonly=False)
     url = fields.Char(string='URL', required=True, readonly=False,)
     url_sample = fields.Char(default='https://api.apollo.io/api/v1/')
 
-    # company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True, states=READONLY_FIELD_STATES, default=lambda self: self.env.company)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
 
@@ -101,9 +89,7 @@ class ApolloInstance(models.Model):
 
 
     def button_import_labels(self):
-        data = {
-            #'api_key': 'GbYvCle7WbRW0lFKYXlArw',
-        }
+        data = {}
         tags_data = self._get_apollo_data('labels', data)
         category_id = self.env['res.partner.category']
         crm_tag_id = self.env['crm.tag']
@@ -134,7 +120,6 @@ class ApolloInstance(models.Model):
     def button_import_stages(self):
         data = {}
         stages_data = self._get_apollo_data('opportunity_stages', data)
-        #raise UserError(stages_data.get('opportunity_stages', []))
         stage_id = self.env['crm.stage']
         for stage in stages_data.get('opportunity_stages', []):
             if isinstance(stage, dict):  # Check if 'tag' is a dictionary
@@ -169,10 +154,8 @@ class ApolloInstance(models.Model):
             'target': 'new',
             'context': context,
         }
-        #for partner in partners:
 
     def button_export(self):
-        #partners = self.env['res.partner'].search([('active', '=', True), '|', ('apl_id', '=', False), ('apl_date', '<', fields.Datetime.now())])
         if self._context.get('op_name') == 'contacts':
             partner_ids = self.env['res.partner'].search([('active', '=', True),('update_required_for_apollo', '=', True)])
             for partner in partner_ids:
@@ -187,9 +170,6 @@ class ApolloInstance(models.Model):
             self.write({
                 'apl_date_export_leads': self.env.cr.now(),
             })
-
-        #for partner in partners:
-
 
     # ---------------------------------------------------------
     # ---------------------- Operations for Apollo ------------
@@ -209,7 +189,6 @@ class ApolloInstance(models.Model):
         }
         try:
             url = self.url + api_name
-            #raise UserError(url)
             # Initialize data as an empty dictionary if it's None
             if api_data is None:
                 api_data = {}
@@ -217,10 +196,7 @@ class ApolloInstance(models.Model):
             # Add the api_key field to the data dictionary
             api_data['api_key'] = self.api_key
 
-            #raise UserError(api_data)
-
             response = requests.request("POST", url, headers=headers, json=api_data)
-            #raise UserError(response.text)
             json_data = json.loads(response.text)
             return json_data
 
@@ -248,7 +224,6 @@ class ApolloInstance(models.Model):
             api_data['api_key'] = self.api_key
 
             response = requests.request("GET", url, headers=headers, params=api_data)
-            #raise UserError(response.text)
             json_data = json.loads(response.text)
             return json_data
 
@@ -276,7 +251,6 @@ class ApolloInstance(models.Model):
             api_data['api_key'] = self.api_key
 
             response = requests.request("PUT", url, headers=headers, params=api_data)
-            #raise UserError(response.text)
             json_data = json.loads(response.text)
             return json_data
 

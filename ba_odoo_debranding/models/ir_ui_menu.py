@@ -2,7 +2,7 @@
 
 import re
 
-from odoo import api, fields, models, tools, _
+from odoo import models
 
 MENU_ITEM_SEPARATOR = "/"
 NUMBER_PARENS = re.compile(r"\(([0-9]+)\)")

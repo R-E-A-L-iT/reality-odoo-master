@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
-from odoo.addons.http_routing.models.ir_http import slug, unslug
+from odoo.addons.http_routing.models.ir_http import slug
 
 # Product Template Added SEO URL Field
 class ProductTemplate(models.Model):

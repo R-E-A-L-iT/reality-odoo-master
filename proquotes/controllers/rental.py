@@ -2,15 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 # 2026-02-25 - Brainecrew Apps
 
-import binascii
-from random import sample
 
-from odoo import http, _, registry
+from odoo import http
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
-import re
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
-import datetime
 
 import logging
 

@@ -70,7 +70,6 @@ class CrmLead(models.Model):
         help="Auto-derived from country (CA→Canada, US→United States)."
     )
 
-    # leica_expected_purchase_date = fields.Date(string="Expected Purchase Date")
     leica_quantity = fields.Integer(string="Quantity")
 
     leica_has_demo_request = fields.Boolean(string="Has the end-user requested a demonstration?")

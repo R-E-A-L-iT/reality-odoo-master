@@ -37,7 +37,6 @@
     'summary': 'Restrict timesheet entries to a configurable number of past days and disallow future dates.',
     'category': 'Human Resources',
     'author': "Braincrew Apps",
-    'license': "AGPL-3",
     'depends': ['hr_timesheet'],
     'data': [
         'views/res_config_settings_views.xml',

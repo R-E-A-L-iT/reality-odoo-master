@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import base64
 import logging
-import requests
 
 from datetime import datetime
 
@@ -64,7 +62,6 @@ class product_template_sync:
         ]
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
-        sheet_width = len(sheet_columns)
         
         # variables that will contain a list of any missing columns in the sheet
         sheet_columns_lower = [c.strip().lower() for c in sheet_columns]

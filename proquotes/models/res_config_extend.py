@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models, api, _
-from odoo.tools import float_round
-from odoo.exceptions import UserError
-import requests
+from odoo import fields, models
 
 class ResCompany(models.Model):
     _inherit = "res.company"

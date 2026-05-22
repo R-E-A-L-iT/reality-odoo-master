@@ -7,7 +7,7 @@ from odoo.addons.base.models.ir_http import RequestUID
 from odoo.addons.http_routing.models.ir_http import _UNSLUG_RE, slug as slug_super
 import re
 import unicodedata
-from odoo.addons.http_routing.models.ir_http import _UNSLUG_RE, slugify_one as slugify_one_super
+from odoo.addons.http_routing.models.ir_http import slugify_one as slugify_one_super
 # optional python-slugify import (https://github.com/un33k/python-slugify)
 try:
     import slugify as slugify_lib
@@ -15,10 +15,8 @@ except ImportError:
     slugify_lib = None
 from odoo.addons.website.models.ir_http import ModelConverter
 import werkzeug.exceptions
-from werkzeug.exceptions import HTTPException, NotFound
-from odoo.tools import config, ustr, pycompat
+from odoo.tools import ustr
 
-# _UNSLUG_RE = re.compile(r'(?:(\w{1,2}|\w[A-Za-z0-9-_]+?\w)-)?(-?\d+)(?=$|\/|#|\?)') # ORIGINAL 
 _MILTI_LANG_SLUG_RE = r"(?:(\w{1,2}|\w[A-Za-z0-9-_\u0600-\u06FF]+?))(?=$|\/|#|\?)"
 
 def slugify_one(s, max_length=0):

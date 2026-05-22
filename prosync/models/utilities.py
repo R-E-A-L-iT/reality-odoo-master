@@ -3,7 +3,6 @@ import re
 import json
 import base64
 import requests
-from datetime import datetime
 import dateutil.parser
 import unicodedata
 

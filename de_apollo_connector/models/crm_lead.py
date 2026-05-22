@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import requests
-import json
 
-from odoo import api, exceptions, fields, models, _
-from odoo.exceptions import UserError, ValidationError
-import pprint
+from odoo import api, fields, models, _
 
-from urllib.parse import urlparse
 
 class CRMTag(models.Model):
     _inherit = 'crm.tag'
@@ -64,9 +59,6 @@ class CRMLead(models.Model):
     def _cron_send_to_apollo(self):
         assign_cron = self.env["ir.config_parameter"].sudo().get_param("apl.contacts.auto")
         record_ids = self.env['crm.lead'].search([('update_required_for_apollo','=',True)])
-        #apl_instance = self.env['apl.instance'].search([
-        #    ('company_id', '=', self.env.company.id),
-        #], limit=1)  # Limit to one record (if available)
         if assign_cron:
             for record in record_ids:
                 record._send_to_apollo(record.company_id.apl_instance_id)
@@ -95,7 +87,7 @@ class CRMLead(models.Model):
             if not lead.apl_id:
                 lead_json = apl_instance_id._post_apollo_data('opportunities', lead_data)
                 apl_id = lead_json["opportunity"]["id"]        
-                lead_id = lead.write({
+                lead.write({
                     'apl_id': apl_id,
                 })
             else:

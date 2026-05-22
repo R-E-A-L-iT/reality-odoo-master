@@ -1,54 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import ast
-import base64
-from email.policy import default
-import re
-from math import ceil
 
-from datetime import date, datetime, timedelta
 import functools
-from functools import partial
-from itertools import groupby
-import logging
 
-from odoo import api, fields, models, SUPERUSER_ID, _, tools
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang, get_lang
-from odoo.osv import expression as exp
-from odoo.tools import float_is_zero, float_compare
+from odoo import api, fields, models
 from odoo import models, fields, api
-from odoo.models import BaseModel as BSM
-from collections import defaultdict
-from odoo.http import request
-from odoo.http import Response as Responseht
-from odoo.http import FutureResponse as FutureResponseht
 
-from odoo.tools import (
-    clean_context, config, CountingStream, date_utils, discardattr,
-    DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, frozendict,
-    get_lang, LastOrderedSet, lazy_classproperty, OrderedSet, ormcache,
-    partition, populate, Query, ReversedIterable, split_every, unique, SQL,
-)
-import werkzeug.datastructures
-import werkzeug.exceptions
-import werkzeug.local
-import werkzeug.routing
-import werkzeug.security
-import werkzeug.wrappers
-import werkzeug.wsgi
-from werkzeug.urls import URL, url_parse, url_encode, url_quote
-from werkzeug.exceptions import (HTTPException, BadRequest, Forbidden,
-                                 NotFound, InternalServerError)
 try:
     from werkzeug.middleware.proxy_fix import ProxyFix as ProxyFix_
     ProxyFix = functools.partial(ProxyFix_, x_for=1, x_proto=1, x_host=1)
 except ImportError:
-    from werkzeug.contrib.fixers import ProxyFix
+    pass
 try:
-    from werkzeug.utils import send_file as _send_file
+    pass
 except ImportError:
-    from .tools._vendor.send_file import send_file as _send_file
+    pass
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"
