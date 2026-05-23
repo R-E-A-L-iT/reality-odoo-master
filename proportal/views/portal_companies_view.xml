@@ -19,10 +19,6 @@
         </h3>
       </div>
 
-      <!-- <div class="alert alert-info mb-4">
-        These forms are for preview/UX only right now. Submissions are disabled and do not update data yet.
-      </div> -->
-
       <div class="row gy-4">
         <!-- 1) Invoice Address -->
         <div class="col-12">

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 from datetime import datetime
 import logging
-
 from odoo import api, fields, models, _
 from odoo import models, fields, api
+
 
 _logger = logging.getLogger(__name__)
 
@@ -337,7 +336,6 @@ class invoice(models.Model):
 
         return invoice_object
 
-class InvoiceMain(models.Model):
     _inherit = "account.move"
     pricelist_id = fields.Many2one("product.pricelist", string="Pricelist")
 

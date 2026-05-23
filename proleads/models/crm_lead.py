@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import re
 import json
 import logging
 import requests
 import hmac
 import hashlib
-
 from odoo import fields, models, api, _, tools
 from odoo.exceptions import UserError
+
 
 _logger = logging.getLogger(__name__)
 
@@ -19,6 +21,7 @@ LEICA_MARKET_SEGMENT_SEL = [
     ("rail", "Rail"),
     ("surveying_ground", "Surveying Ground"),
 ]
+
 LEICA_MARKET_SEGMENT_LABEL = dict(LEICA_MARKET_SEGMENT_SEL)
 
 LEICA_PRODUCT_INTEREST_SEL = [
@@ -26,6 +29,7 @@ LEICA_PRODUCT_INTEREST_SEL = [
     ("rtc_pxx_2go_2fly", "RTC/Pxx/2GO/2FLY"),
     ("trk_100_500_700", "TRK 100/500/700"),
 ]
+
 LEICA_PRODUCT_INTEREST_LABEL = dict(LEICA_PRODUCT_INTEREST_SEL)
 
 class CrmLead(models.Model):

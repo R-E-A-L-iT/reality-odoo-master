@@ -89,11 +89,10 @@
                         </table>
                     </div>
                     <!-- CONTENT -->
-                    <!-- <div t-out="message.body" style="font-size: 13px;"/> -->
                     <div style="font-size:13px;">
                         <t t-raw="message.body"/>
                         <style>
-                            div p:nth-of-type(2) a { display: none !important;padding-bottom:2px !important; } 
+                            div p:nth-of-type(2) a { display: none !important;padding-bottom:2px !important; }
                         </style>
                     </div>
                     <ul t-if="tracking_values">
@@ -122,17 +121,7 @@
                     <div style="margin-top:32px;">
                         <hr width="100%"
                             style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
-                        <!-- <b t-out="company.name" style="font-size:11px;"/>
-                        <br/>
-                        <p style="color: #999999; margin-top:2px; font-size:11px;">
-                            <t t-out="company.phone"/>
-                            <t t-if="company.email and company.phone">|</t>
-                            <a t-if="company.email" t-att-href="'mailto:%s' % company.email"
-                               style="text-decoration:none; color: #999999;" t-out="company.email"/>
-                            <t t-if="company.website and (company.phone or company.email)">|</t>
-                            <a t-if="company.website" t-att-href="'%s' % company.website"
-                               style="text-decoration:none; color: #999999;" t-out="company.website"/>
-                        </p> -->
+
                     </div>
                     <div class="d-none" style="color: #555555; font-size:11px;display: none !important;">
                         Powered by

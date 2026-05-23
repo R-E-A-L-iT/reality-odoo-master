@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from . import product_category_seo_url
+from . import product_template
+from . import product_public_category
+from . import product_product

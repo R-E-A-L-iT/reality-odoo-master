@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, date
-
 from odoo import api, fields, models
 from odoo import models, fields, api
-import logging
 
-_logger = logging.getLogger(__name__)
 
 class StockLot(models.Model):
     _inherit = "stock.lot"

@@ -2,11 +2,11 @@
 
 from odoo import api, fields, models
 import logging
-
 from odoo import api, fields, models, _
 from odoo.tools.translate import _
 from odoo import models, fields, api
-_logger = logging.getLogger(__name__)
+from odoo.tools.misc import groupby as tools_groupby
+
 
 class product(models.Model):
     _inherit = "product.template"
@@ -57,3 +57,16 @@ class product(models.Model):
                     
                     domain = [['id', 'in', product_ids]]
         return super().search_fetch(domain, field_names, offset, limit, order)
+
+    _inherit = 'product.template'
+
+    use_default_rental_price = fields.Boolean(
+        string="Default Odoo Rental Price",
+        default=False,
+        help="Use the rental pricing periods/rates already defined on this product.",
+    )
+    use_custom_rental_price = fields.Boolean(
+        string="Custom Rental Price",
+        default=True,
+        help="Apply the custom pricing formula (4 paid days per week, capped at 12 for the first 30 days, then linear).",
+    )

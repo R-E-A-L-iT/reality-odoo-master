@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+
 import logging
 import requests
 from werkzeug.urls import url_join
-
 from odoo import models, _
 from odoo.exceptions import UserError
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class SocialLivePostLinkedin(models.Model):
     _inherit = 'social.live.post'

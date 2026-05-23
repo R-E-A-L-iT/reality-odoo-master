@@ -1,4 +1,4 @@
-# Copyright 2017 ACSONE SA/NV
+# -*- coding: utf-8 -*-
 
 from odoo import api, models
 

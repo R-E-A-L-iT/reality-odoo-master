@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
 from . import quo_call
+from . import quo_call_transcript
+from . import quo_call_transcript_line
+from . import quo_text
 from . import crm_lead
 from . import res_users
 from . import res_partner

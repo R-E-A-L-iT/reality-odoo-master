@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import json
-
 from datetime import datetime
 from functools import partial
 import logging
-
 from odoo import api, fields, models, _, Command
 from odoo.exceptions import UserError
 from odoo.tools.misc import formatLang
 from odoo.http import request
 from odoo import models, fields, api
+
 
 _logger = logging.getLogger(__name__)
 
@@ -1864,7 +1863,6 @@ class order(models.Model):
 
         return invoices
 
-class SaleOrderTemplateHandler(models.Model):
     _inherit = "sale.order"
 
     def _compute_line_data_for_template_change(self, line):
@@ -1927,7 +1925,6 @@ class SaleOrderTemplateHandler(models.Model):
         self.order_line = order_lines
         self.order_line._compute_tax_id()
 
-class PreconfigSaleOrder(models.Model):
     _inherit = 'sale.order'
 
     preconfigured_section_ids = fields.Many2many('preconfigured.section', string='Preconfigured Sections')

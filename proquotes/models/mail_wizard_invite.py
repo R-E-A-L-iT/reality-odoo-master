@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
-import logging
-
 from odoo import api, models
 from odoo import models, api
 
-_logger = logging.getLogger(__name__)
 
 class MailWizardInvite(models.TransientModel):
     _inherit = 'mail.wizard.invite'

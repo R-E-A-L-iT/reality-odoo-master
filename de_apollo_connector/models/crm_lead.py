@@ -1,29 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
 from odoo import api, fields, models, _
 
 
-class CRMTag(models.Model):
-    _inherit = 'crm.tag'
-
-    apl_id = fields.Char(
-        string='Apollo ID',
-        help="The Apollo ID is used for tracking purposes."
-    )
-    apl_date_update = fields.Date('Last Update Date', help="he date of the most recent update of tags with Apollo.")
-
-
-class CRMStage(models.Model):
-    _inherit = 'crm.stage'
-
-    apl_id = fields.Char(
-        string='Apollo ID',
-        help="The Apollo ID is used for tracking purposes."
-    )
-    apl_date_update = fields.Date('Last Update Date', help="he date of the most recent update of stages with Apollo.")
-
-    
 class CRMLead(models.Model):
     _inherit = 'crm.lead'
 
@@ -62,14 +41,14 @@ class CRMLead(models.Model):
         if assign_cron:
             for record in record_ids:
                 record._send_to_apollo(record.company_id.apl_instance_id)
-            
+
     def _send_to_apollo(self, apl_instance_id):
         self.ensure_one()
-        
+
         lead_data = {}
         apl_id = ''
         lead_json = []
-        
+
         for lead in self:
             lead_data = {
                 "name": lead.name,
@@ -86,7 +65,7 @@ class CRMLead(models.Model):
             }
             if not lead.apl_id:
                 lead_json = apl_instance_id._post_apollo_data('opportunities', lead_data)
-                apl_id = lead_json["opportunity"]["id"]        
+                apl_id = lead_json["opportunity"]["id"]
                 lead.write({
                     'apl_id': apl_id,
                 })
@@ -107,7 +86,3 @@ class CRMLead(models.Model):
             # Check if any field in the lead record has changed
             any_field_changed = any(getattr(lead, field) != lead._origin[field] for field in lead._fields.keys())
             lead.update_required_for_apollo = any_field_changed
-
-
-    
-

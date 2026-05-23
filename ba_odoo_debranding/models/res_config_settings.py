@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
 from odoo import api, fields, models
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'

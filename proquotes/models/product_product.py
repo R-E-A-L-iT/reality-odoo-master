@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
-import logging
-
 from odoo import api, fields, models
 from odoo import models, fields, api
 
-_logger = logging.getLogger(__name__)
 
 class products(models.Model):
     _inherit = "product.product"
@@ -26,7 +22,6 @@ class products(models.Model):
             return self.description_sale
         return "<span></span>"
 
-class ProductProduct(models.Model):
     _inherit = "product.product"
 
     price = fields.Float(

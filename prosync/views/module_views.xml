@@ -38,7 +38,6 @@
         <record id="view_sync_report_tree" model="ir.ui.view">
             <field name="name">prosync.report.tree</field>
             <field name="model">prosync.report</field>
-            <!-- <field name="context">{'group_by': 'sync_date'}</field> -->
             <field name="arch" type="xml">
                 <tree decoration-success="status == 'success'" 
                     decoration-warning="status == 'warning'" 

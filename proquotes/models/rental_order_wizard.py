@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from odoo import fields, models
+from odoo import models
+
 
 _logger = logging.getLogger(__name__)
-
 
 class RentalOrderWizard(models.TransientModel):
     _inherit = "rental.order.wizard"
@@ -144,11 +144,3 @@ class RentalOrderWizard(models.TransientModel):
                     order.name,
                     target_status,
                 )
-
-class RentalOrderWizardLine(models.TransientModel):
-    _inherit = "rental.order.wizard.line"
-
-    allowed_lot_ids = fields.Many2many(
-        "stock.lot",
-        string="Allowed Serial Numbers",
-    )

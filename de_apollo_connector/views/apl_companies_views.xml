@@ -72,8 +72,5 @@
 
         </record>
 
-        <!--
-        <menuitem id="menu_companies_list" name="Comapnies" parent="menu_apollo_prospecting" action="action_apl_companies" sequence="20"/>
-        -->
     </data>
 </odoo>

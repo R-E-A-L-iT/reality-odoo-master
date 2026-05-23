@@ -1,20 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
-import functools
-
 from odoo import api, fields, models
 from odoo import models, fields, api
 
-try:
-    from werkzeug.middleware.proxy_fix import ProxyFix as ProxyFix_
-    ProxyFix = functools.partial(ProxyFix_, x_for=1, x_proto=1, x_host=1)
-except ImportError:
-    pass
-try:
-    pass
-except ImportError:
-    pass
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"

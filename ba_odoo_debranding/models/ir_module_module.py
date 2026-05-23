@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, modules
-
 import operator
+
 
 class IrModule(models.Model):
     _inherit = 'ir.module.module'
@@ -50,4 +50,3 @@ class IrModule(models.Model):
                 module.local_updatable = True
             else:
                 module.local_updatable = False
-

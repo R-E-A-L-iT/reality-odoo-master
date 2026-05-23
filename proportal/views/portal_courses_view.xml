@@ -5,18 +5,7 @@
             <t t-set="language" t-value="request.lang.code" />
         </xpath>
         <div id="portal_client_category" position="inside">
-            <!-- <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Courses.png'"/>
-                <t t-set="text" t-if="language == 'fr_CA'">Voir tous vos cours</t>
-                <t t-set="text" t-elif="language == 'es_ES'">Ver todos sus cursos</t>
-                <t t-set="text" t-else="">View all your courses</t>
-                <t t-set="title" t-if="language == 'fr_CA'">Cours</t>
-                <t t-set="title" t-elif="language == 'es_ES'">Cursos</t>
-                <t t-set="title" t-else="">Courses</t>
-                <t t-set="url" t-value="'/slides/'"/>
-                <t t-set="placeholder_count" t-value="'course_count'"/>
-                <t t-set="config_card" t-value="True"/>
-            </t> -->
+
         </div>
     </template>
 </odoo>

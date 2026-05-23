@@ -144,9 +144,6 @@
             </xpath>
 
             <!--			commented due to the undefine-->
-            <!--			<xpath expr="//button[@name='update_prices']" position="attributes">-->
-            <!--				<attribute name="attrs">{'invisible': [('state', 'in', ['done','cancel'])]}</attribute>-->
-            <!--			</xpath>-->
 
         </field>
     </record>

@@ -4,8 +4,8 @@ import logging
 from odoo import api, models
 from odoo.http import request
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class CalendarEvent(models.Model):
     _inherit = 'calendar.event'

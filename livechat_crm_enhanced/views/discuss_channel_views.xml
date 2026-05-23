@@ -35,16 +35,6 @@
         </record>
 
         <!-- Add LiveChat Channel List View -->
-<!--        <record id="discuss_channel_tree_livechat" model="ir.ui.view">-->
-<!--            <field name="name">discuss.channel.tree.livechat</field>-->
-<!--            <field name="model">discuss.channel</field>-->
-<!--            <field name="inherit_id" ref="mail.discuss_channel_view_tree"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <xpath expr="//field[@name='name']" position="after">-->
-<!--                    <field name="livechat_lead_id" -->
 <!--                           attrs="{'column_invisible': [('parent.channel_type', '!=', 'livechat')]}"/>-->
-<!--                </xpath>-->
-<!--            </field>-->
-<!--        </record>-->
     </data>
 </odoo>

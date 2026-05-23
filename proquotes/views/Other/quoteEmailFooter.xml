@@ -79,20 +79,10 @@
         </xpath>
 
         <!-- Replace signature section to exclude for CRM leads with simple_email_layout -->
-        <!-- <xpath expr="//t[@class='o_signature']" position="replace">
-            <t class="o_signature"> -->
+
                 <!-- Normal signature for non-Google messages -->
-                <!-- <div t-if="email_add_signature and not is_html_empty(signature) and not (record._name == 'crm.lead' and record.simple_email_layout)" 
-                     t-out="signature" style="font-size: 13px;"/> -->
-                
+
                 <!-- Mass signature for Google messages (CRM leads with simple_email_layout = True) -->
-                <!-- <div t-if="record._name == 'crm.lead' and record.simple_email_layout and message.author_id and message.author_id.user_ids">
-                    <t t-set="author_user" t-value="message.author_id.user_ids[0]"/>
-                    <div t-if="author_user.ba_mass_signature and not is_html_empty(author_user.ba_mass_signature)"
-                    t-out="author_user.ba_mass_signature" style="font-size: 13px;"/>
-                </div>
-            </t>
-        </xpath> -->
 
         <!-- Remove powered by odoo for all cases -->
         <xpath expr="//div[@class='d-none']" position="replace" />

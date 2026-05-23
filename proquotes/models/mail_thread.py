@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import logging
 
 from odoo import api, models
 from odoo.tools.translate import _
 
-_logger = logging.getLogger(__name__)
 
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'

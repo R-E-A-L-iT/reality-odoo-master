@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
+
 import json
 import logging
 from datetime import datetime
-
 import requests
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class EnvioPackage(models.Model):
     _name = "envio.package"
@@ -430,4 +429,3 @@ class EnvioPackage(models.Model):
                     rec.action_push_envio_update()
 
         return res
-

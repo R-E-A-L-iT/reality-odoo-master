@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-
 from datetime import datetime, timedelta
 import functools
 import logging
-
-from odoo import api, fields, models
+from odoo import api
 from odoo.osv import expression as exp
 from odoo.models import BaseModel as BSM
 from collections import defaultdict
 from odoo.http import request
 from odoo.http import FutureResponse as FutureResponseht
-
 from odoo.tools import (
     OrderedSet, SQL,
 )
@@ -26,8 +23,11 @@ import werkzeug.wsgi
 
 # Domain operators.
 NOT_OPERATOR = '!'
+
 OR_OPERATOR = '|'
+
 AND_OPERATOR = '&'
+
 DOMAIN_OPERATORS = (NOT_OPERATOR, OR_OPERATOR, AND_OPERATOR)
 
 # List of available term operators. It is also possible to use the '<>'
@@ -52,6 +52,7 @@ DOMAIN_OPERATORS_NEGATION = {
     AND_OPERATOR: OR_OPERATOR,
     OR_OPERATOR: AND_OPERATOR,
 }
+
 TERM_OPERATORS_NEGATION = {
     '<': '>=',
     '>': '<=',
@@ -68,12 +69,15 @@ TERM_OPERATORS_NEGATION = {
     'any': 'not any',
     'not any': 'any',
 }
+
 ANY_IN = {'any': 'in', 'not any': 'not in'}
 
 TRUE_LEAF = (1, '=', 1)
+
 FALSE_LEAF = (0, '=', 1)
 
 TRUE_DOMAIN = [TRUE_LEAF]
+
 FALSE_DOMAIN = [FALSE_LEAF]
 
 SQL_OPERATORS = {
@@ -95,15 +99,12 @@ SQL_OPERATORS = {
 
 _logger = logging.getLogger(__name__)
 
-
 def is_operator(element):
     """ Test whether an object is a valid domain operator. """
     return isinstance(element, str) and element in DOMAIN_OPERATORS
 
-
 def is_boolean(element):
     return element == TRUE_LEAF or element == FALSE_LEAF
-
 
 @api.model
 def _flush_search(self, domain, fields=None, order=None, seen=None):
@@ -200,13 +201,7 @@ def _flush_search(self, domain, fields=None, order=None, seen=None):
     for model_name, field_names in to_flush.items():
         self.env[model_name].flush_model(field_names)
 
-
 BSM._flush_search = _flush_search
-
-
-# --------------------------------------------------
-# Generic domain manipulation
-# --------------------------------------------------
 
 def _anyfy_leaves(domain, model):
     """ Return the domain where all conditions on field sequences have been
@@ -241,9 +236,7 @@ def _anyfy_leaves(domain, model):
 
     return result
 
-
 exp._anyfy_leaves = _anyfy_leaves
-
 
 @functools.wraps(werkzeug.Response.set_cookie)
 def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=None, secure=False, httponly=False, samesite=None, cookie_type='required'):
@@ -265,20 +258,5 @@ def set_cookie(self, key, value='', max_age=None, expires=-1, path='/', domain=N
     _logger.info('>>>>>>>>> session language 1: %s', request.httprequest.cookies.get('frontend_lang'))
     _logger.info('>>>>>>>>>>>> cookie_value 1: %s', value)
     werkzeug.Response.set_cookie(self, key, value=value, max_age=max_age, expires=expires, path=path, domain=domain, secure=secure, httponly=httponly, samesite=samesite)
-    
+
 FutureResponseht.set_cookie = set_cookie
-
-class CustomViewModifier(models.Model):
-    _inherit = 'ir.ui.view'
-
-
-class variant(models.Model):
-    _name = "proquotes.variant"
-    _description = "Model that Represents Variants for Customer Multi-Level Choices"
-
-    name = fields.Char(
-        string="Variant Group", required=True, copy=False, index=True, default="New"
-    )
-
-    rule = fields.Char(string="Variant Rule", required=True, default="None")
-

@@ -30,9 +30,3 @@ class CrmLead(models.Model):
         """
         if self.simple_email_layout != original_value:
             self.write({'simple_email_layout': original_value})
-
-
-class ResUsers(models.Model):
-    _inherit = 'res.users'
-
-    ba_mass_signature = fields.Html(string='Mass Signature')

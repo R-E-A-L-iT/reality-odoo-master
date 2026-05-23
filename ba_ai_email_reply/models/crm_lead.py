@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
+
 import logging
 from odoo import _, models
 from odoo.exceptions import UserError
 from odoo.tools.mail import html2plaintext
 
+
 _logger = logging.getLogger(__name__)
 
 OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
-DEFAULT_MODEL = 'openai/gpt-4o-mini'
 
+DEFAULT_MODEL = 'openai/gpt-4o-mini'
 
 class CrmLead(models.Model):
     _inherit = 'crm.lead'

@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-
-import logging
-
 from odoo import api, models
 from odoo import models, api
+from odoo import api, models
 
-_logger = logging.getLogger(__name__)
 
 class CustomViewModifier(models.Model):
     _inherit = 'ir.ui.view'
@@ -39,3 +36,5 @@ class CustomViewModifier(models.Model):
             view.write({'arch_db': etree.tostring(arch_tree, pretty_print=True).decode()})
 
         return True
+
+    _inherit = 'ir.ui.view'

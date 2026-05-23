@@ -106,10 +106,6 @@
                 <we-button data-select-style="solid">Solid</we-button>
                 <we-button data-select-style="dotted">Dotted</we-button>
                 <we-button data-select-style="dashed">Dashed</we-button>
-<!--                <we-button data-select-style="double">Double</we-button>-->
-<!--                <we-button data-select-style="groove">Groove</we-button>-->
-<!--                <we-button data-select-style="ridge">Ridge</we-button>-->
-<!--                <we-button data-select-style="none">None</we-button>-->
             </we-select>
 
             <we-separator/>

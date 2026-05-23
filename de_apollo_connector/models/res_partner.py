@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import requests
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-import pprint
 import base64
 from urllib.parse import urlparse
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -228,4 +227,3 @@ class ResPartner(models.Model):
             photo_image = image
             if photo_image:
                 record.image_1920 = photo_image
-

@@ -162,13 +162,9 @@
 
                                 <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else 'border_bottom'">
                                     <t t-if="not line.display_type and line.selected == 'true'">
-                                        <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
                                         <td name="td_name">
                                             <span t-raw="line.product_id.name" />
-                                            <!-- <span t-raw="line.name"/> -->
-                                            <!-- <span dangerouslySetInnerHTML={{ __html: line.name }} /> -->
                                             <br/>
-                                            <!-- <t t-set="description" t-value="line.name"/> -->
                                             <style>
                                                 description-root, .description-root *{
                                                     font-size: .75rem;
@@ -195,7 +191,6 @@
                                         <td t-if="display_discount" class="text-end">
                                             <span t-field="line.discount">-</span>
                                         </td>
-                                        <!--     <t t-set="taxes" t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_id])"/>-->
                                         <t t-if="language == 'fr_CA'">
                                             <t t-set="taxes"
                                                 t-value="', '.join([(tax.invoice_label or tax.name).replace('GST', 'TPS').replace('HST', 'TVH').replace('QST', 'TVQ') for tax in line.tax_id])"/>
@@ -372,14 +367,9 @@
                         </div>
                     </div>
 
-
                     <!-- custom footer stuff -->
                     <div id="quote_disclaimer">
-                        <!-- <t t-if="doc.partner_id.country">
-                            <t t-set="currency_label" t-if="language == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/>
-                            <t t-set="currency_label" t-elif="language == 'fr_CA' and (doc.partner_id.country == 'United States' or doc.partner_id.country == 'US')" t-value="'américains'"/>
-                        </t> -->
-                        <!-- <t t-set="currency_label" t-if="language == 'fr_CA' and (doc.partner_id.country == 'Canada' or doc.partner_id.country == 'CA')" t-value="'canadiens'"/> -->
+
                         <t t-set="currency_label" t-value="doc.currency_id.name"/>
                         <br/>
                         <p t-if="language == 'en_CA' or language == 'en_US'">All prices in

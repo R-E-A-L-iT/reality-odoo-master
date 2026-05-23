@@ -1,9 +1,10 @@
-import logging
+# -*- coding: utf-8 -*-
 
+import logging
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class PaymentProvider(models.Model):
     _inherit = 'payment.provider'

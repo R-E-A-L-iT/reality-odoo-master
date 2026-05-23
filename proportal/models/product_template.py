@@ -2,15 +2,13 @@
 
 import base64
 import requests
-
 import logging
-
 from odoo import api, fields, models
 from odoo import models, fields, api
 from odoo.tools import html2plaintext
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"

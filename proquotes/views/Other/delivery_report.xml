@@ -20,7 +20,7 @@
             </td>
         </xpath>
     </template>
-    
+
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 
 		<!-- Translate Info Labels -->
@@ -124,12 +124,7 @@
 				<br />
 				<br />
 				<br />
-				<!-- <div t-if="o.footer_id">
-					<t t-set="footer" t-value="o.footer_id.url" />
-				</div> -->
-				<!-- <div t-else="">
-					<span>No footer found</span>
-				</div> -->
+
 			</div>
 		</xpath>
 	</template>

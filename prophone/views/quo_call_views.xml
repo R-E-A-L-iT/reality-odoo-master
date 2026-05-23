@@ -23,11 +23,6 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <!-- <button name="%(action_quo_import_transcript_wizard)d"
-                        type="action"
-                        string="Import Transcript by Call ID"
-                        class="btn-primary"
-                        groups="base.group_system"/> -->
 
                 </header>
                 <sheet>
@@ -44,7 +39,7 @@
                             <field name="caller_to_partner_id" options="{'no_create': False}" class="oe_inline"/>
                         </div>
                     </div>
-                    
+
                     <br></br>
                     <group string="Call details" colspan="2">
                         <group>
@@ -54,11 +49,7 @@
                         </group>
 
                         <!-- Dev-only -->
-                        <!-- <group groups="base.group_system">
-                            <field name="quo_call_id"/>
-                            <field name="phone_number_id"/>
-                            <field name="duration_seconds"/>
-                        </group> -->
+
                     </group>
 
                     <notebook>
@@ -85,29 +76,16 @@
                                     placeholder="No next steps yet..."
                                     class="oe_full_width"/>
                             </div>
-                             <!-- <group string="Raw">
-                                <field name="raw_summary_json" nolabel="1"/>
-                            </group> -->
+
                         </page>
                         <page string="Recording">
                             <group>
                                 <field name="recording_url" widget="url"/>
-                                <!-- <field name="recording_mimetype"/>
-                                <field name="recording_duration_seconds"/> -->
+
                             </group>
-                            <!-- <group string="Raw">
-                                <field name="raw_recording_json" nolabel="1"/>
-                            </group> -->
+
                         </page>
-                        <!-- <page string="Raw JSON" groups="base.group_system">
-                            <group>
-                                <field name="participants_json" widget="text"/>
-                                <field name="contact_ids_json" widget="text"/>
-                                <field name="raw_call_json" widget="text"/>
-                                <field name="raw_summary_json" widget="text"/>
-                                <field name="raw_recording_json" widget="text"/>
-                            </group>
-                        </page> -->
+
                     </notebook>
                 </sheet>
             </form>
@@ -119,7 +97,6 @@
         <field name="res_model">quo.call</field>
         <field name="view_mode">tree,form</field>
     </record>
-
 
     <!-- TRANSCRIPTS -->
     <record id="view_quo_transcript_tree" model="ir.ui.view">
@@ -153,7 +130,6 @@
                             <field name="line_ids">
                                 <tree editable="false">
                                     <field name="partner_id"/>
-                                    <!-- <field name="sequence"/> -->
                                     <field name="speaker_label" string="Phone #"/>
                                     <field name="start_ms"/>
                                     <field name="end_ms"/>
@@ -162,9 +138,6 @@
                             </field>
                         </page>
 
-                        <!-- <page string="Raw JSON">
-                            <field name="raw_transcript_json" widget="text"/>
-                        </page> -->
                     </notebook>
                 </sheet>
             </form>

@@ -16,24 +16,6 @@
             <t t-set="o" t-value="o.with_context(lang=o.env.context.get('lang'))"/>
         </xpath>
 
-		<!-- <xpath expr="//div[@class='page']" position="before">
-			<style>
-				h2 span, strong, .text-danger {
-					color: #db0d0d !important;
-				}
-
-				/* .table.table-borderless tr:last-child td {
-					background-color: #db0d0d !important;
-					color: white !important;
-					font-weight: bold;
-				}
-
-				.table.table-borderless tr:last-child td:first-child {
-					color: white !important;
-				} */
-			</style>
-		</xpath> -->
-
 		<xpath expr="//t[@t-set='address']" position="replace"/>
 
 		<!-- this code will not work unless you deactivate the view purchase_stock.report_purchaseorder_document first -->
@@ -53,7 +35,7 @@
 								<span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
 								<span>
 									<span t-field="o.partner_id.city"/> -
-									<span t-field="o.partner_id.state_id"/> - 
+									<span t-field="o.partner_id.state_id"/> -
 									<span t-field="o.partner_id.zip"/>
 								</span><br/>
 								<span t-field="o.partner_id.country_id"/><br/>
@@ -74,15 +56,15 @@
 						<div t-if="o.company_id">
 							<span t-field="o.company_id.street"/><br/>
 							<span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
-							<span t-field="o.company_id.city"/> - 
+							<span t-field="o.company_id.city"/> -
 							<span t-field="o.company_id.state_id"/> -
 							<span t-field="o.company_id.zip"/><br/>
 							<span t-field="o.company_id.country_id"/>
-							<div t-field="o.company_id" 
-								t-options="{&quot;widget&quot;: &quot;contact&quot;, 
-											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], 
-											&quot;no_marker&quot;: True, 
-											&quot;phone_icons&quot;: True}" 
+							<div t-field="o.company_id"
+								t-options="{&quot;widget&quot;: &quot;contact&quot;,
+											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;],
+											&quot;no_marker&quot;: True,
+											&quot;phone_icons&quot;: True}"
 								name="purchase_billing_address"/>
 						</div>
 					</div>
@@ -92,10 +74,10 @@
 						<h4 t-elif="lang == 'fr_CA'">Adresse de livraison</h4>
 						<h4 t-elif="lang == 'es_ES'">Dirección de envío</h4>
 						<div t-if="o.picking_type_id">
-							<div t-field="o.picking_type_id.warehouse_id.partner_id" 
-								t-options="{&quot;widget&quot;: &quot;contact&quot;, 
-											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], 
-											&quot;no_marker&quot;: True}" 
+							<div t-field="o.picking_type_id.warehouse_id.partner_id"
+								t-options="{&quot;widget&quot;: &quot;contact&quot;,
+											&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;],
+											&quot;no_marker&quot;: True}"
 								name="purchase_shipping_address"/>
 						</div>
 					</div>

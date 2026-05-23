@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+
 
 class CrmStage(models.Model):
     _inherit = "crm.stage"

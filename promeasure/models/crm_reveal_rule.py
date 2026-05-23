@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from odoo import models
+
 
 class CrmRevealRule(models.Model):
     _inherit = 'crm.reveal.rule'

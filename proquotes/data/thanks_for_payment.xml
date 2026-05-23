@@ -4,7 +4,6 @@
       <field name="name">Invoice Payment Thank You</field>
       <field name="model_id" ref="account.model_account_move"/>
       <field name="subject">Thank you for your payment of ${object.amount_total} on Invoice ${object.name}</field>
-      <!-- <field name="email_to">${object.partner_id.email|safe}</field> -->
       <field name="body_html"><![CDATA[
         <p>Hi ${object.partner_id.name},</p>
         <p>Thank you for your payment of <strong>${object.amount_total}</strong> against Invoice <strong>${object.name}</strong>. We appreciate your business.</p>

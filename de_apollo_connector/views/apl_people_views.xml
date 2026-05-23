@@ -118,8 +118,5 @@
 
         </record>
 
-        <!--
-        <menuitem id="menu_people_list" name="People" parent="menu_apollo_prospecting" action="action_apl_people" sequence="20"/>
--->
     </data>
 </odoo>
