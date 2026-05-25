@@ -861,10 +861,10 @@ whenReady(async () => {
 
         const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
         // 5 phases × 0.20 each; feature windows widened to 14% for comfortable reading
-        const inAttachment = scrollAnimProgress >= 0.04 && scrollAnimProgress <= 0.18;
-        const inBack       = scrollAnimProgress >= 0.24 && scrollAnimProgress <= 0.38;
-        const inHatch      = scrollAnimProgress >= 0.44 && scrollAnimProgress <= 0.58;
-        const inScrew      = scrollAnimProgress >= 0.64 && scrollAnimProgress <= 0.78;
+        const inAttachment = scrollAnimProgress >= 0.03 && scrollAnimProgress <= 0.19;
+        const inBack       = scrollAnimProgress >= 0.23 && scrollAnimProgress <= 0.39;
+        const inHatch      = scrollAnimProgress >= 0.43 && scrollAnimProgress <= 0.59;
+        const inScrew      = scrollAnimProgress >= 0.63 && scrollAnimProgress <= 0.79;
 
         if (scrollDetailPanel) {
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);

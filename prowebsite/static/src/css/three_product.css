@@ -17,7 +17,7 @@
     margin-top: -16px;
     opacity: 1;
     transition: opacity 0.15s ease;
-    filter: drop-shadow(0 0 1.4px rgba(40, 40, 40, 0.85));
+    filter: drop-shadow(0 0 2.8px rgba(30, 30, 30, 0.95));
 }
 
 .o_omnibase_cursor.is-hidden {
@@ -44,17 +44,13 @@
     border-radius: 50%;
     box-sizing: border-box;
     background: transparent;
-    transition: transform 0.12s ease;
+    transition: transform 0.12s ease, border-width 0.15s ease;
 }
 
+/* top-left and bottom-right: thick solid arcs (unchanged) */
 .o_omnibase_cursor_part_top {
     clip-path: polygon(0 0, 47% 0, 47% 47%, 0 47%);
     transform: translate(-2px, -2px);
-}
-
-.o_omnibase_cursor_part_right {
-    clip-path: polygon(53% 0, 100% 0, 100% 47%, 53% 47%);
-    transform: translate(2px, -2px);
 }
 
 .o_omnibase_cursor_part_bottom {
@@ -62,16 +58,30 @@
     transform: translate(2px, 2px);
 }
 
-.o_omnibase_cursor_part_left {
-    clip-path: polygon(0 53%, 47% 53%, 47% 100%, 0 100%);
-    transform: translate(-2px, 2px);
+/* top-right and bottom-left: thin outer-edge arcs */
+.o_omnibase_cursor_part_right {
+    clip-path: polygon(53% 0, 100% 0, 100% 47%, 53% 47%);
+    transform: translate(3px, -3px);
+    border-width: 1.5px;
 }
 
+.o_omnibase_cursor_part_left {
+    clip-path: polygon(0 53%, 47% 53%, 47% 100%, 0 100%);
+    transform: translate(-3px, 3px);
+    border-width: 1.5px;
+}
+
+/* On click: all four converge; thin arcs thicken inward → become "lower" inner borders */
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_top,
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_right,
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_bottom,
 .o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_left {
     transform: translate(0, 0);
+}
+
+.o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_right,
+.o_omnibase_cursor.is-clicking .o_omnibase_cursor_part_left {
+    border-width: 6px;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -442,7 +452,7 @@
 .o_omnigo_video_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 400vh;
+    min-height: 520vh;
     z-index: 4;
     background: #ffffff;
 }
@@ -957,7 +967,7 @@
 /* Video scroll: shorter scroll distance + tighter layout on small screens */
 @media (max-width: 768px) {
     .o_three_scroll_section {
-        min-height: 340vh;
+        min-height: 420vh;
     }
 
     .o_omnigo_video_scroll_section {
