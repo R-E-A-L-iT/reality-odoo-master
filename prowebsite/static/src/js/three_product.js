@@ -573,6 +573,41 @@ whenReady(async () => {
     bottomRenderer.domElement.addEventListener("pointercancel", onBottomPointerUp);
     bottomRenderer.domElement.addEventListener("wheel", onBottomWheel, { passive: false });
 
+    // ── Drag-to-rotate hint overlay ──────────────────────────────────────────
+    // Two mirrored curved arrows that sway gently; disappears on first interaction.
+    const dragHint = document.createElement("div");
+    dragHint.className = "o_omnigo_drag_hint";
+    dragHint.innerHTML = `
+        <svg width="60" height="28" viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Left arc + arrowhead -->
+            <path d="M28 5 C19 5 11 9 8 14 C11 19 19 23 28 23"
+                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <path d="M28 1 L28 9 L21 5"
+                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- Right arc + arrowhead -->
+            <path d="M32 5 C41 5 49 9 52 14 C49 19 41 23 32 23"
+                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <path d="M32 1 L32 9 L39 5"
+                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="o_omnigo_drag_hint__label">Drag to rotate</span>
+    `;
+    bottomModelHost.appendChild(dragHint);
+
+    // Fade the hint out permanently on the user's first drag interaction.
+    let dragHintDismissed = false;
+    function dismissDragHint() {
+        if (dragHintDismissed) return;
+        dragHintDismissed = true;
+        dragHint.classList.add("is-hidden");
+        // Remove from DOM after the CSS transition completes.
+        dragHint.addEventListener("transitionend", () => dragHint.remove(), { once: true });
+    }
+    bottomRenderer.domElement.addEventListener("pointermove", (e) => {
+        if (isBottomDragging) dismissDragHint();
+    });
+    bottomRenderer.domElement.addEventListener("wheel", dismissDragHint, { once: true });
+
     const gltfLoader = new GLTFLoader();
     const textureLoader = new THREE.TextureLoader();
 
@@ -687,7 +722,7 @@ whenReady(async () => {
             const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
 
             if (maxAxis > 0) {
-                const scale = 1.7 / maxAxis;
+                const scale = 2.2 / maxAxis;
                 obj.scale.setScalar(scale);
             }
 

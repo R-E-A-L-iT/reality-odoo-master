@@ -312,6 +312,43 @@
     overflow: hidden;
 }
 
+/* ─── Bottom model — drag-to-rotate hint ──────────────────────────────────── */
+.o_omnigo_drag_hint {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    pointer-events: none;
+    z-index: 10;
+    color: #555555;
+    opacity: 0.75;
+    transition: opacity 0.7s ease;
+    animation: omnigo-drag-hint-sway 2.4s ease-in-out infinite;
+}
+
+.o_omnigo_drag_hint.is-hidden {
+    opacity: 0;
+}
+
+.o_omnigo_drag_hint__label {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: inherit;
+    white-space: nowrap;
+}
+
+@keyframes omnigo-drag-hint-sway {
+    0%, 100% { transform: translateX(calc(-50% - 5px)); }
+    50%       { transform: translateX(calc(-50% + 5px)); }
+}
+
 .o_three_bottom_model_host canvas {
     position: absolute;
     inset: 0;
