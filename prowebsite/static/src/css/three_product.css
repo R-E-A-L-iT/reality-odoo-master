@@ -50,12 +50,12 @@
 /* top-left and bottom-right: thick solid arcs */
 .o_omnibase_cursor_part_top {
     clip-path: polygon(0 0, 47% 0, 47% 47%, 0 47%);
-    transform: translate(-1.8px, -1.8px);
+    transform: translate(-1.7px, -1.7px);
 }
 
 .o_omnibase_cursor_part_bottom {
     clip-path: polygon(53% 53%, 100% 53%, 100% 100%, 53% 100%);
-    transform: translate(1.8px, 1.8px);
+    transform: translate(1.7px, 1.7px);
 }
 
 /* top-right and bottom-left: thin outer-edge arcs, pulled slightly inward */
