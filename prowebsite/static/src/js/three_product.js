@@ -172,7 +172,7 @@ whenReady(async () => {
     let pageAssetsReady = false;
     let userEnteredPage = false;
 
-    let loadingTotal = 3; // adapter GLB, animated GLTF, scroll video metadata
+    let loadingTotal = 3; // adapter GLB, split model GLB, scroll video metadata
     let loadingDone = 0;
 
     function updateLoadingProgress(label) {
@@ -267,10 +267,8 @@ whenReady(async () => {
         return;
     }
 
-    const modelBasePath = "/prowebsite/static/src/models/";
     const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
-    const animatedModelPath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/scene.gltf";
-    const animatedTexturePath = "/prowebsite/static/src/models/blk2go_with_adapter_anim/BLK2GO_with_Adapter_Textures/";
+    const splitModelPath   = "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb";
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -608,126 +606,35 @@ whenReady(async () => {
     bottomRenderer.domElement.addEventListener("wheel", hideDragHint, { passive: true });
 
     const gltfLoader = new GLTFLoader();
-    const textureLoader = new THREE.TextureLoader();
 
-    function loadTexture(url, isColor = false) {
-        return new Promise((resolve, reject) => {
-            textureLoader.load(
-                url,
-                (texture) => {
-                    if (isColor) {
-                        texture.colorSpace = THREE.SRGBColorSpace;
-                    }
-                    texture.flipY = false;
-                    resolve(texture);
-                },
-                undefined,
-                reject
-            );
-        });
-    }
-
-    async function loadAnimatedModelTextures() {
-        const [
-            colorMap,
-            baseColorMap,
-            metallicMap,
-            roughnessMap,
-            metalnessMap,
-            roughnessAltMap,
-        ] = await Promise.all([
-            loadTexture(`${animatedTexturePath}BLK2GO_color.jpg`, true).catch(() => null),
-            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_BaseColor.png`, true).catch(() => null),
-            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_Metallic.png`, false).catch(() => null),
-            loadTexture(`${animatedTexturePath}BLK2GO_low_poly_01_blinn1SG_Roughness.png`, false).catch(() => null),
-            loadTexture(`${animatedTexturePath}BLK2GO_metalness.jpg`, false).catch(() => null),
-            loadTexture(`${animatedTexturePath}BLK2GO_roughness1.jpg`, false).catch(() => null),
-        ]);
-
-        return {
-            colorMap: baseColorMap || colorMap || null,
-            metallicMap: metallicMap || metalnessMap || null,
-            roughnessMap: roughnessMap || roughnessAltMap || null,
-        };
-    }
-
-    console.log("[loader] fetching animated GLTF:", animatedModelPath);
+    // ----------------------------
+    // Bottom split-section model (self-contained GLB — materials/textures embedded)
+    // ----------------------------
+    console.log("[loader] fetching split model:", splitModelPath);
     gltfLoader.load(
-        animatedModelPath,
-        async (gltf) => {
-            console.log("[loader] animated GLTF loaded");
+        splitModelPath,
+        (gltf) => {
+            console.log("[loader] split model loaded");
             const obj = gltf.scene;
 
-            let textureSet = {
-                colorMap: null,
-                metallicMap: null,
-                roughnessMap: null,
-            };
-
-            try {
-                textureSet = await loadAnimatedModelTextures();
-                console.log("Animated model textures loaded:", textureSet);
-            } catch (err) {
-                console.warn("Could not load one or more animated model textures:", err);
-            }
-
+            // Disable shadows (not needed for this panel).
             obj.traverse((child) => {
-                if (!child.isMesh) {
-                    return;
-                }
-
+                if (!child.isMesh) return;
                 child.castShadow = false;
                 child.receiveShadow = false;
-
-                const existingMaterial = Array.isArray(child.material)
-                    ? child.material[0]
-                    : child.material;
-
-                let material;
-
-                if (existingMaterial && existingMaterial.isMeshStandardMaterial) {
-                    material = existingMaterial.clone();
-                } else {
-                    material = new THREE.MeshStandardMaterial({
-                        color: 0xffffff,
-                        metalness: 0.25,
-                        roughness: 0.65,
-                        side: THREE.DoubleSide,
-                    });
-                }
-
-                if (textureSet.colorMap) {
-                    material.map = textureSet.colorMap;
-                }
-
-                if (textureSet.metallicMap) {
-                    material.metalnessMap = textureSet.metallicMap;
-                    material.metalness = 1.0;
-                }
-
-                if (textureSet.roughnessMap) {
-                    material.roughnessMap = textureSet.roughnessMap;
-                    material.roughness = 1.0;
-                }
-
-                material.side = THREE.DoubleSide;
-                material.needsUpdate = true;
-
-                child.material = material;
             });
 
+            // Normalise size so the model fills the panel comfortably.
             const initialBox = new THREE.Box3().setFromObject(obj);
             const initialSize = initialBox.getSize(new THREE.Vector3());
             const maxAxis = Math.max(initialSize.x, initialSize.y, initialSize.z);
-
             if (maxAxis > 0) {
-                const scale = 2.2 / maxAxis;
-                obj.scale.setScalar(scale);
+                obj.scale.setScalar(2.2 / maxAxis);
             }
 
+            // Centre the model at the origin.
             const box = new THREE.Box3().setFromObject(obj);
             const center = box.getCenter(new THREE.Vector3());
-
             obj.position.set(-center.x, -center.y, -center.z);
             obj.rotation.x = 0;
             obj.rotation.z = 0;
@@ -740,26 +647,26 @@ whenReady(async () => {
             bottomCamera.position.z = bottomDefaultCameraZ;
             markBottomInteraction();
 
+            // Play embedded animation (ping-pong loop) if the GLB includes one.
             if (gltf.animations && gltf.animations.length > 0) {
                 const clip = gltf.animations[0];
-
                 bottomMixer = new THREE.AnimationMixer(obj);
                 bottomAction = bottomMixer.clipAction(clip);
-
                 bottomAction.setLoop(LoopPingPong, Infinity);
                 bottomAction.clampWhenFinished = false;
                 bottomAction.enabled = true;
                 bottomAction.timeScale = bottomAnimSpeed;
                 bottomAction.play();
             } else {
-                console.warn("No animations found in scene.gltf");
+                console.warn("[loader] split model has no animations — showing static.");
             }
 
-            updateLoadingProgress("animated GLTF");
+            updateLoadingProgress("split model GLB");
         },
         undefined,
         (error) => {
-            console.error("[loader] animated GLTF failed:", error);
+            console.error("[loader] split model failed:", error);
+            updateLoadingProgress("split model GLB (failed)");
         }
     );
 
