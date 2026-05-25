@@ -1257,15 +1257,40 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
+        // Sync the session pricelist once at section init time (not on every click).
+        // Our custom page displays the geo-IP-correct price via QWeb, but never writes
+        // og_pl.id to request.session['website_sale_current_pl']. A stale session value
+        // (e.g. from a previous Canadian visit) would make cart_update_json use the wrong
+        // pricelist. This call clears the stale override and lets Odoo recalculate.
+        const jq = window.$ || window.jQuery;
+        const pricelistSyncPromise = new Promise(resolve => {
+            jq.ajax({
+                url: "/omnigo/sync_pricelist",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ jsonrpc: "2.0", method: "call", id: 1, params: {} }),
+                success(resp) {
+                    const pl = resp?.result;
+                    console.log("[buy] pricelist synced →", pl?.pricelist_name, `(${pl?.currency})`);
+                    resolve(pl);
+                },
+                error(xhr) {
+                    console.warn("[buy] pricelist sync failed (cart will use session default):", xhr.status);
+                    resolve(null); // non-fatal — allow cart to proceed
+                },
+            });
+        });
+
         // /shop/cart/update_json is type='json', csrf=False — the proper AJAX cart endpoint.
         // No CSRF token needed. Returns JSON-RPC { result: { cart_quantity, ... } }.
         async function callCartUpdate(qty) {
+            // Ensure pricelist is synced before touching the cart.
+            await pricelistSyncPromise;
             console.log("[buy] callCartUpdate →", { productId, templateId, qty });
 
             const params = { product_id: productId, add_qty: qty, display: false };
             if (templateId) params.product_template_id = templateId;
 
-            const jq = window.$ || window.jQuery;
             return new Promise((resolve, reject) => {
                 jq.ajax({
                     url: "/shop/cart/update_json",

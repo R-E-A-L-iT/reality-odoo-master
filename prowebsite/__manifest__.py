@@ -13,6 +13,7 @@
     'application': True,
     "depends": [
         "base",
+        "website_sale",
     ],
     'assets': {
         'web.assets_frontend': [
