@@ -758,8 +758,8 @@ whenReady(async () => {
         scrollDetailPanel.className = "o_three_scroll_detail_panel";
         scrollDetailPanel.innerHTML = `
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
-                <h3 class="o_three_scroll_feature_title">BLK2GO Attachment Interface</h3>
-                <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
+                <h3 class="o_three_scroll_feature_title">Universal Tripod Mount</h3>
+                <p class="o_three_scroll_feature_body">The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
                 <h3 class="o_three_scroll_feature_title">One-Touch Quick Release Button.</h3>
@@ -770,8 +770,8 @@ whenReady(async () => {
                 <p class="o_three_scroll_feature_body">The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
-                <h3 class="o_three_scroll_feature_title">Universal Tripod Mount</h3>
-                <p class="o_three_scroll_feature_body">The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.</p>
+                <h3 class="o_three_scroll_feature_title">BLK2GO Attachment Interface</h3>
+                <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
             </div>
         `;
         scrollHost.appendChild(scrollDetailPanel);
