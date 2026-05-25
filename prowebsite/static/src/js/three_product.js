@@ -130,7 +130,6 @@ whenReady(async () => {
         });
 
         // Close mobile nav on link click; smooth-scroll #buy links
-        const scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
         mobileNav.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
                 burger.setAttribute("aria-expanded", "false");
