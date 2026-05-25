@@ -242,7 +242,7 @@ whenReady(async () => {
                 }
             }, 100);
 
-            setTimeout(enterOmnigoPage, 1800);
+            setTimeout(enterOmnigoPage, 1000);
         }
     }
 
