@@ -1511,6 +1511,8 @@
     border-radius: 8px;
     overflow: hidden;
     width: fit-content;
+    height: 54px; /* match Buy Now button height */
+    flex-shrink: 0;
 }
 
 .o_omnigo_buy_qty_btn {
@@ -1518,7 +1520,7 @@
     border: none;
     cursor: none;
     width: 40px;
-    height: 44px;
+    height: 54px;
     font-size: 18px;
     font-weight: 400;
     color: #333;
@@ -1535,7 +1537,7 @@
 
 .o_omnigo_buy_qty_input {
     width: 52px;
-    height: 44px;
+    height: 54px;
     border: none;
     border-left: 1.5px solid #d0d0d0;
     border-right: 1.5px solid #d0d0d0;

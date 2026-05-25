@@ -129,13 +129,25 @@ whenReady(async () => {
             mobileNav.setAttribute("aria-hidden", String(open));
         });
 
-        // Close mobile nav on link click
+        // Close mobile nav on link click; smooth-scroll #buy links
+        const scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
         mobileNav.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
                 burger.setAttribute("aria-expanded", "false");
                 burger.classList.remove("is-open");
                 mobileNav.classList.remove("is-open");
                 mobileNav.setAttribute("aria-hidden", "true");
+            });
+        });
+
+        // Smooth-scroll all header #buy links (desktop + mobile) instead of
+        // hard-jumping, since Odoo scrolls #wrapwrap not window.
+        header.querySelectorAll('a[href="#buy"]').forEach(btn => {
+            btn.addEventListener("click", e => {
+                const target = document.getElementById("buy");
+                if (!target) return;
+                e.preventDefault();
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
             });
         });
     }
@@ -1283,6 +1295,20 @@ whenReady(async () => {
                             badge.className = "o_omnigo_buy_currency";
                             badge.textContent = pl.currency;
                             priceEl.appendChild(badge);
+                        }
+
+                        // Update the header "Buy Now | $..." buttons with the
+                        // live price shown on the page (same element, badge stripped).
+                        const priceEl2 = buySection.querySelector(".o_omnigo_buy_price");
+                        if (priceEl2) {
+                            const clone = priceEl2.cloneNode(true);
+                            clone.querySelector(".o_omnigo_buy_currency")?.remove();
+                            // Typical QWeb output: "$ 2.00" — collapse whitespace
+                            const priceText = clone.textContent.replace(/\s+/g, " ").trim();
+                            const label = `Buy Now | ${priceText} ${pl.currency}`;
+                            document.querySelectorAll(".o_omnigo_ch_buy_btn").forEach(btn => {
+                                btn.textContent = label;
+                            });
                         }
                     }
 
