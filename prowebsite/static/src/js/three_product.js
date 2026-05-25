@@ -1011,46 +1011,122 @@ whenReady(async () => {
 
     window.addEventListener("resize", onResize);
 
-    // omnigo scroll video sections — scrub all of them independently
-    allVideoSections.forEach(entry => {
-        const { vid } = entry;
+    // ── Browser detection ────────────────────────────────────────────────────
+    // Safari is identified by the absence of "Chrome"/"CriOS"/"FxiOS" in the UA
+    // combined with the presence of "Safari". This catches desktop Safari and
+    // iOS Safari (which uses the same WebKit engine and has the same video limits).
+    const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+    console.log("[loader] isSafari:", isSafari);
 
-        vid.muted = true;
-        vid.setAttribute("playsinline", "");
-        vid.setAttribute("preload", "auto");
+    // ── Safari path: ping-pong autoplay, no scroll scrubbing ─────────────────
+    if (isSafari && allVideoSections.length > 0) {
+        allVideoSections.forEach(entry => {
+            const { sec, vid } = entry;
 
-        // Do NOT call play() / pause() for priming.
-        //
-        // Every previous attempt used a play→pause cycle to "unlock" Safari
-        // seeking. The root problem: play() + currentTime = 0 inside the
-        // playing/play handler issues two concurrent seek operations. Safari
-        // processes the first, ignores the second, and the scrub loop then
-        // fires a third — leaving the decoder deadlocked on the first seek
-        // forever ("frozen a few frames in").
-        //
-        // Modern Safari (15+) with muted + playsinline + preload=auto does NOT
-        // need play-priming to allow currentTime seeks. Gate on `canplay`
-        // instead — it fires once the browser has buffered the first frame and
-        // confirmed it can decode the stream, which is all we need.
-        entry.canSeek = vid.readyState >= 2; // already buffered (e.g. cached)
-        entry.lastSeekAt = 0;
+            vid.muted = true;
+            vid.setAttribute("playsinline", "");
+            vid.setAttribute("preload", "auto");
 
-        if (!entry.canSeek) {
-            vid.addEventListener("canplay", () => { entry.canSeek = true; }, { passive: true, once: true });
-        }
-    });
+            // Collapse the 520vh scroll-scrub section to a normal viewport height.
+            // The sticky inner becomes a simple full-viewport panel.
+            sec.style.minHeight = "100vh";
+            sec.style.height = "100vh";
+            const inner = sec.querySelector(".o_omnigo_video_scroll_inner");
+            if (inner) inner.style.position = "relative";
+
+            // Ping-pong state
+            entry.inView       = false;
+            entry.goingForward = true;
+            entry.rafId        = null;
+            entry.lastRafTime  = null;
+
+            // Backward playback: decrement currentTime each rAF frame until 0,
+            // then switch back to forward. This is reliable on Safari because
+            // seeks are tiny sequential steps (not arbitrary jumps like scrubbing).
+            function stepBackward(now) {
+                const dt = entry.lastRafTime !== null
+                    ? (now - entry.lastRafTime) / 1000
+                    : 1 / 60;
+                entry.lastRafTime = now;
+
+                const next = vid.currentTime - dt;
+                if (next <= 0) {
+                    // Reached the start — go forward again
+                    vid.currentTime = 0;
+                    entry.goingForward = true;
+                    entry.rafId = null;
+                    entry.lastRafTime = null;
+                    if (entry.inView) vid.play().catch(() => {});
+                } else {
+                    vid.currentTime = next;
+                    entry.rafId = requestAnimationFrame(stepBackward);
+                }
+            }
+
+            // When native forward playback ends, switch to backward rAF loop
+            vid.addEventListener("ended", () => {
+                entry.goingForward = false;
+                entry.lastRafTime  = null;
+                if (entry.inView) {
+                    entry.rafId = requestAnimationFrame(stepBackward);
+                }
+            }, { passive: true });
+
+            // IntersectionObserver drives play / pause based on visibility
+            const observer = new IntersectionObserver(([obs]) => {
+                entry.inView = obs.isIntersecting;
+                if (obs.isIntersecting) {
+                    if (entry.goingForward) {
+                        vid.play().catch(() => {});
+                    } else if (entry.rafId === null) {
+                        entry.lastRafTime = null;
+                        entry.rafId = requestAnimationFrame(stepBackward);
+                    }
+                } else {
+                    // Leaving viewport — pause everything
+                    vid.pause();
+                    if (entry.rafId !== null) {
+                        cancelAnimationFrame(entry.rafId);
+                        entry.rafId = null;
+                    }
+                }
+            }, { threshold: 0.15 });
+
+            observer.observe(sec);
+        });
+    }
+
+    // ── Non-Safari path: scroll-scrubbed playback ─────────────────────────────
+    if (!isSafari) {
+        allVideoSections.forEach(entry => {
+            const { vid } = entry;
+
+            vid.muted = true;
+            vid.setAttribute("playsinline", "");
+            vid.setAttribute("preload", "auto");
+
+            // Gate seeks on canplay — fires once the decoder has confirmed it can
+            // decode the stream. Avoids readyState races that caused stalls.
+            entry.canSeek = vid.readyState >= 2;
+            entry.lastSeekAt = 0;
+
+            if (!entry.canSeek) {
+                vid.addEventListener("canplay", () => { entry.canSeek = true; }, { passive: true, once: true });
+            }
+        });
+    }
 
     function updateOmnigoScrollVideo() {
+        // No-op on Safari — ping-pong autoplay is handled by IntersectionObserver above.
+        if (isSafari) return;
+
         const now = performance.now();
         allVideoSections.forEach(entry => {
             const { sec, vid } = entry;
 
-            // Wait until canplay fires — ensures we have duration and at least
-            // the first frame buffered before issuing any seek.
             if (!entry.canSeek || !vid.duration) return;
 
-            // Throttle to ~8 seeks/s. Safari is reliable in this range;
-            // faster than this risks overlapping seeks which cause freezes.
+            // Throttle to ~8 seeks/s.
             if (now - entry.lastSeekAt < 120) return;
 
             const rect = sec.getBoundingClientRect();
