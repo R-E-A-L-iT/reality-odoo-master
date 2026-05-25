@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { whenReady } from "@odoo/owl";
+import { rpc } from "@web/core/network/rpc";
 
 whenReady(async () => {
     console.log("[loader] whenReady fired");
@@ -1255,21 +1256,14 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
-        // JSON-RPC call — /shop/cart/update is type='json' (csrf=False) in Odoo 17
+        // Use Odoo's own rpc() — it handles JSON-RPC formatting, session cookies,
+        // and content-type headers exactly the way the server's dispatcher expects.
+        // It returns the result payload directly and throws on any JSON-RPC error.
         async function callCartUpdate(qty) {
-            const res = await fetch("/shop/cart/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    jsonrpc: "2.0",
-                    method: "call",
-                    id: Date.now(),
-                    params: { product_id: productId, add_qty: qty },
-                }),
+            return rpc("/shop/cart/update", {
+                product_id: productId,
+                add_qty: qty,
             });
-            const json = await res.json();
-            if (json.error) throw new Error(json.error.data?.message || "Cart error");
-            return json.result;
         }
 
         // Sync Odoo's header cart badge (.my_cart_quantity) with the updated quantity
