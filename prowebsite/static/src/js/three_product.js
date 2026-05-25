@@ -1,7 +1,6 @@
 /** @odoo-module **/
 
 import { whenReady } from "@odoo/owl";
-import { rpc } from "@web/core/network/rpc";
 
 whenReady(async () => {
     console.log("[loader] whenReady fired");
@@ -1256,13 +1255,36 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
-        // Use Odoo's own rpc() — it handles JSON-RPC formatting, session cookies,
-        // and content-type headers exactly the way the server's dispatcher expects.
-        // It returns the result payload directly and throws on any JSON-RPC error.
+        // jQuery.ajax is always available on Odoo website pages and — unlike raw
+        // fetch — automatically adds X-Requested-With: XMLHttpRequest, which Odoo's
+        // middleware requires to recognise the request as an AJAX/JSON-RPC call.
         async function callCartUpdate(qty) {
-            return rpc("/shop/cart/update", {
-                product_id: productId,
-                add_qty: qty,
+            const jq = window.$ || window.jQuery;
+            return new Promise((resolve, reject) => {
+                jq.ajax({
+                    url: "/shop/cart/update",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        jsonrpc: "2.0",
+                        method: "call",
+                        id: Math.floor(Math.random() * 1e9),
+                        params: { product_id: productId, add_qty: qty },
+                    }),
+                    success(data) {
+                        if (data.error) {
+                            const msg = data.error.data?.message || data.error.message || "Cart error";
+                            reject(new Error(msg));
+                        } else {
+                            resolve(data.result);
+                        }
+                    },
+                    error(xhr) {
+                        const preview = xhr.responseText?.slice(0, 300) || "";
+                        console.error("[buy] cart update HTTP error:", xhr.status, preview);
+                        reject(new Error(`Cart error (HTTP ${xhr.status})`));
+                    },
+                });
             });
         }
 
