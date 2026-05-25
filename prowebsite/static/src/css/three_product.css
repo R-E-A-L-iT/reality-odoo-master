@@ -156,57 +156,32 @@
     align-items: center;
 }
 
+/* Logo colour-reveal wrapper */
+.o_omnigo_loader_logo_wrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0;
+    line-height: 0; /* collapse whitespace between stacked images */
+}
+
+/* Greyscale base — always visible, sits underneath */
 .o_omnigo_loader_logo {
     width: 100%;
     height: auto;
     display: block;
-    margin-bottom: 28px;
+    filter: grayscale(1) brightness(0.55);
 }
 
-.o_omnigo_loader_bar {
+/* Full-colour clone clipped from the right; JS drives the clip-path */
+.o_omnigo_loader_logo_color {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: 3px;
-    background: #252525;
-    overflow: hidden;
-}
-
-.o_omnigo_loader_bar_fill {
-    width: 0%;
     height: 100%;
-    background: #db0d0d;
-    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.o_omnigo_loader_enter {
-    margin-top: 30px;
-    padding: 12px 42px;
-    border: 1px solid #db0d0d;
-    background: transparent;
-    color: #ffffff;
-    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(10px);
-    pointer-events: none;
-    transition:
-        opacity 1s ease,
-        transform 1s ease,
-        background 0.25s ease,
-        color 0.25s ease;
-}
-
-.o_omnigo_loader_enter.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-.o_omnigo_loader_enter:hover {
-    background: rgba(255, 255, 255, 0.12);
+    object-fit: contain;
+    /* start fully clipped (no colour showing) */
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* hero scene */

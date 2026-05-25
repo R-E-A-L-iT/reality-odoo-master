@@ -189,8 +189,29 @@ whenReady(async () => {
     });
 
     const pageLoader = document.getElementById("omnigo-page-loader");
-    const loaderFill = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_bar_fill") : null;
-    const loaderEnter = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_enter") : null;
+
+    // ── Loader logo colour-reveal setup ──────────────────────────────────────
+    // The grey base image is already in the HTML (.o_omnigo_loader_logo).
+    // We inject a full-colour clone on top and drive its clip-path left→right
+    // as each asset loads, then auto-dismiss after 500 ms when all are done.
+    let loaderLogoColor = null;
+
+    if (pageLoader) {
+        const loaderLogo = pageLoader.querySelector(".o_omnigo_loader_logo");
+        if (loaderLogo) {
+            // Wrap the existing logo so we can stack the colour clone on top.
+            const wrap = document.createElement("div");
+            wrap.className = "o_omnigo_loader_logo_wrap";
+            loaderLogo.parentNode.insertBefore(wrap, loaderLogo);
+            wrap.appendChild(loaderLogo);
+
+            // Clone → full-colour overlay, starts fully clipped (no colour visible).
+            loaderLogoColor = loaderLogo.cloneNode(true);
+            loaderLogoColor.className = "o_omnigo_loader_logo_color";
+            loaderLogoColor.removeAttribute("style");
+            wrap.appendChild(loaderLogoColor);
+        }
+    }
 
     let pageAssetsReady = false;
     let userEnteredPage = false;
@@ -202,55 +223,46 @@ whenReady(async () => {
         loadingDone += 1;
         console.log(`[loader] step ${loadingDone}/${loadingTotal} — ${label}`);
 
-        const rawPercent = Math.min((loadingDone / loadingTotal) * 100, 100);
+        const percent = Math.min((loadingDone / loadingTotal) * 100, 100);
 
-        // Slight delay lets each step animate instead of snapping visually
+        // Drive the colour reveal: clip from the right, shrinking toward 0.
         requestAnimationFrame(() => {
-            if (loaderFill) {
-                loaderFill.style.width = `${rawPercent}%`;
+            if (loaderLogoColor) {
+                loaderLogoColor.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
             }
         });
 
         if (loadingDone >= loadingTotal) {
             pageAssetsReady = true;
 
-            if (loaderFill) {
-                setTimeout(() => {
-                    loaderFill.style.width = "100%";
-                }, 150);
-            }
+            // Snap fully revealed, then wait 500 ms and auto-dismiss.
+            setTimeout(() => {
+                if (loaderLogoColor) {
+                    loaderLogoColor.style.clipPath = "inset(0 0% 0 0)";
+                }
+            }, 100);
 
-            if (loaderEnter) {
-                setTimeout(() => {
-                    loaderEnter.classList.add("is-visible");
-                }, 900);
-            }
+            setTimeout(enterOmnigoPage, 500);
         }
     }
 
     function enterOmnigoPage() {
-        if (!pageAssetsReady) {
-            return;
-        }
-
+        if (!pageAssetsReady || userEnteredPage) return;
         userEnteredPage = true;
 
         if (pageLoader) {
             pageLoader.classList.add("is-hidden");
         }
 
-        // Reveal the custom header after the loading screen fades out
+        // Reveal the custom header slightly into the loader fade-out.
         const ch = document.querySelector(".o_omnigo_ch_header");
         if (ch) {
             setTimeout(() => ch.classList.add("is-visible"), 400);
         }
-
     }
 
-    if (loaderEnter) {
-        loaderEnter.addEventListener("click", enterOmnigoPage);
-    } else {
-        // No loading screen — enter page immediately
+    if (!pageLoader) {
+        // No loading screen on this page — enter immediately.
         pageAssetsReady = true;
         userEnteredPage = true;
         const ch = document.querySelector(".o_omnigo_ch_header");
