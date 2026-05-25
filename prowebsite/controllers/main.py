@@ -17,52 +17,44 @@ class ProwebsiteController(http.Controller):
     )
     def sync_pricelist(self, **kw):
         """
-        Sync the website session to the geo-IP-correct pricelist and update any
-        existing cart order to match.
+        Sync the website session to the geo-IP-correct pricelist and immediately
+        update any existing cart order to match.
 
         Why this is needed:
-          - Our custom OmniGO page renders og_pl in QWeb for display only — it
-            never sets request.session['website_sale_current_pl'].
-          - proproduct's sale_get_pricelist() skips geo detection when
-            'pricelist_selected_manually' is in the session (set e.g. by the
-            shop's pricelist switcher), leaving a stale CAD pricelist in the cart.
-          - Standard _get_current_pricelist() does not use proproduct's geo logic.
+          Our custom OmniGO product page renders og_pl (and the displayed price)
+          via QWeb but never writes og_pl.id to the session. A stale session
+          pricelist (e.g. from a previous visit or from the /shop pricelist
+          switcher) would cause /shop/cart/update_json to use the wrong price.
 
-        Fix:
-          1. Clear both stale session flags so sale_get_pricelist() runs its
-             full geo-IP path (visitor_geoinfo → "USD Pricelist" / "CAD Pricelist").
-          2. Write the result back into the session.
-          3. Directly update the existing cart order's pricelist so the
-             immediately-following /shop/cart/update_json call uses it.
+        What we do:
+          1. Clear pricelist_selected_manually — the switcher on /shop must not
+             bleed into our dedicated product page.
+          2. Clear website_sale_current_pl — remove any stale session value.
+          3. Call sale_get_pricelist() — proproduct's geo-aware method, now fixed
+             to use request.geoip (real user IP) and search by currency instead
+             of by pricelist name.
+          4. Directly update the existing cart order's pricelist so that the
+             immediately-following /shop/cart/update_json call sees the right one.
         """
-        # 1. Clear stale overrides — manual selection on the /shop page must not
-        #    bleed into our dedicated product page.
         request.session.pop('pricelist_selected_manually', None)
         request.session.pop('website_sale_current_pl', None)
 
-        # 2. Resolve the geo-correct pricelist.
-        #    Prefer proproduct's sale_get_pricelist() which does visitor_geoinfo
-        #    + "USD Pricelist" / "CAD Pricelist" name lookup.
-        #    Fall back to Odoo's _get_current_pricelist() if that method is absent.
-        pricelist = None
-        if hasattr(request.website, 'sale_get_pricelist'):
-            try:
-                pricelist = request.website.sale_get_pricelist()
-            except Exception as e:
-                _logger.warning("[omnigo] sale_get_pricelist() failed: %s", e)
+        if not hasattr(request.website, 'sale_get_pricelist'):
+            _logger.warning("[omnigo] sale_get_pricelist() not available")
+            return {'pricelist_id': None}
 
-        if not pricelist and hasattr(request.website, '_get_current_pricelist'):
-            pricelist = request.website._get_current_pricelist()
-
-        if not pricelist:
-            _logger.warning("[omnigo] Could not resolve pricelist — returning early")
+        try:
+            pricelist = request.website.sale_get_pricelist()
+        except Exception as e:
+            _logger.error("[omnigo] sale_get_pricelist() raised: %s", e)
             return {'pricelist_id': None}
 
         # sale_get_pricelist() already writes the session, but be explicit.
         request.session['website_sale_current_pl'] = pricelist.id
 
-        # 3. Update the existing cart order immediately so cart_update_json
-        #    does not re-create it with the old pricelist.
+        # Update an existing cart order right now so there is no window between
+        # this call and the subsequent cart_update_json where the old pricelist
+        # could be used.
         try:
             order = request.website.sale_get_order(force_create=False)
             if order and order.pricelist_id.id != pricelist.id:
@@ -83,6 +75,6 @@ class ProwebsiteController(http.Controller):
         pl_sudo = pricelist.sudo()
         return {
             'pricelist_id': pricelist.id,
-            'pricelist_name': pl_sudo.name,
+            'pricelist_name': pl_sudo.display_name,
             'currency': pl_sudo.currency_id.name,
         }
