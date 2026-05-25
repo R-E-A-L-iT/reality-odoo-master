@@ -149,6 +149,29 @@ whenReady(async () => {
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
             });
         });
+
+        // Nav link targets resolved lazily so the DOM is fully ready.
+        // Adapt  → 1st video scroll section
+        // Expand → 2nd video scroll section
+        // Capture → Three.js scroll / feature-highlights section
+        function scrollTo(el) {
+            if (!el) return;
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        const navTargets = {
+            "#adapt":   () => document.querySelectorAll(".o_omnigo_video_scroll_section")[0],
+            "#expand":  () => document.querySelectorAll(".o_omnigo_video_scroll_section")[1],
+            "#capture": () => document.querySelector(".o_three_scroll_section"),
+        };
+
+        header.querySelectorAll('a[href="#adapt"], a[href="#expand"], a[href="#capture"]').forEach(link => {
+            link.addEventListener("click", e => {
+                e.preventDefault();
+                const getTarget = navTargets[link.getAttribute("href")];
+                if (getTarget) scrollTo(getTarget());
+            });
+        });
     }
 
     createOmnigoHeader();
@@ -980,27 +1003,30 @@ whenReady(async () => {
     allVideoSections.forEach(entry => {
         const { vid } = entry;
 
-        // Ensure the video attributes are set for cross-browser compatibility.
         vid.muted = true;
         vid.setAttribute("playsinline", "");
         vid.setAttribute("preload", "auto");
 
-        // Prime the video for seeking in Safari.
-        // Safari will not allow currentTime seeks on a video that has never
-        // been "played", even on muted/playsInline videos. A silent play→pause
-        // cycle unlocks seek access without showing any visible playback.
-        const primePlay = vid.play();
-        if (primePlay instanceof Promise) {
-            primePlay.then(() => vid.pause()).catch(() => {});
-        } else {
+        // Prime Safari for seeking.
+        //
+        // The critical detail: pause must happen on the `playing` event (first
+        // frame decoded), NOT the `play` event (just scheduled to play).
+        // Calling pause() synchronously inside `play` prevents Safari from
+        // finishing its decoder initialisation, leaving currentTime seeks
+        // permanently broken — which produced the "stuck after a few frames" bug.
+        // Using `playing` + { once: true } lets Safari fully decode one frame
+        // before we pause, which is the minimum needed to unlock scrubbing.
+        vid.addEventListener("playing", () => {
             vid.pause();
-        }
+            vid.currentTime = 0; // rewind so scrubbing always starts from 0
+        }, { once: true, passive: true });
 
-        // Keep the video paused if something else triggers play.
-        vid.addEventListener("play", () => { vid.pause(); }, { passive: true });
+        vid.play().catch(() => {
+            // Autoplay blocked (iOS without user gesture). Scrubbing may still
+            // work; proceed — the worst case is a static first frame.
+        });
 
-        // Per-entry seek throttle timestamp (replaces the fragile `seeking` flag).
-        // The old flag could get permanently stuck on Safari if `seeked` never fired.
+        // Per-entry seek throttle timestamp.
         entry.lastSeekAt = 0;
     });
 
@@ -1008,10 +1034,14 @@ whenReady(async () => {
         const now = performance.now();
         allVideoSections.forEach(entry => {
             const { sec, vid } = entry;
-            if (!vid.duration || vid.readyState < 2) return;
 
-            // Throttle seeks to ~10/s — Safari becomes unreliable with rapid seeks.
-            if (now - entry.lastSeekAt < 100) return;
+            // readyState >= 1 (HAVE_METADATA) is enough — we have duration and
+            // can queue seeks. Waiting for readyState 2 caused permanent stalls
+            // on Safari when the browser dropped back to readyState 1 mid-seek.
+            if (!vid.duration || vid.readyState < 1) return;
+
+            // Throttle: max ~8 seeks/s — Safari becomes unreliable above this.
+            if (now - entry.lastSeekAt < 120) return;
 
             const rect = sec.getBoundingClientRect();
             const viewportH = window.innerHeight || document.documentElement.clientHeight;
@@ -1021,7 +1051,7 @@ whenReady(async () => {
             const progress = clamp(-rect.top / totalScrollable, 0, 1);
             const targetTime = progress * vid.duration;
 
-            if (Math.abs(vid.currentTime - targetTime) > 0.05) {
+            if (Math.abs(vid.currentTime - targetTime) > 0.04) {
                 entry.lastSeekAt = now;
                 vid.currentTime = targetTime;
             }
