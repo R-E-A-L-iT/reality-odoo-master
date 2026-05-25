@@ -1272,6 +1272,20 @@ whenReady(async () => {
                 success(resp) {
                     const pl = resp?.result;
                     console.log("[buy] pricelist synced →", pl?.pricelist_name, `(${pl?.currency})`);
+
+                    // Inject currency label next to price if not already present.
+                    // Looks for .o_omnigo_buy_price_wrap > .o_omnigo_buy_price and
+                    // appends a small <span class="o_omnigo_buy_currency">USD</span>.
+                    if (pl?.currency) {
+                        const priceEl = buySection.querySelector(".o_omnigo_buy_price");
+                        if (priceEl && !priceEl.querySelector(".o_omnigo_buy_currency")) {
+                            const badge = document.createElement("span");
+                            badge.className = "o_omnigo_buy_currency";
+                            badge.textContent = pl.currency;
+                            priceEl.appendChild(badge);
+                        }
+                    }
+
                     resolve(pl);
                 },
                 error(xhr) {

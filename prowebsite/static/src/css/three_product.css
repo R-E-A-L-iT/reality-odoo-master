@@ -1452,6 +1452,19 @@
     letter-spacing: -0.02em;
 }
 
+/* Currency code badge shown beside the price (e.g. "USD" / "CAD") */
+.o_omnigo_buy_currency {
+    display: inline-block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #888;
+    vertical-align: super;
+    margin-left: 6px;
+    text-transform: uppercase;
+}
+
 /* Stock badge */
 .o_omnigo_buy_stock {
     display: inline-flex;
