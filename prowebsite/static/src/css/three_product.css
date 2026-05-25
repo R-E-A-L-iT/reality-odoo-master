@@ -47,15 +47,15 @@
     transition: transform 0.12s ease, border-width 0.15s ease;
 }
 
-/* top-left and bottom-right: thick solid arcs (unchanged) */
+/* top-left and bottom-right: thick solid arcs */
 .o_omnibase_cursor_part_top {
     clip-path: polygon(0 0, 47% 0, 47% 47%, 0 47%);
-    transform: translate(-2px, -2px);
+    transform: translate(-3px, -3px);
 }
 
 .o_omnibase_cursor_part_bottom {
     clip-path: polygon(53% 53%, 100% 53%, 100% 100%, 53% 100%);
-    transform: translate(2px, 2px);
+    transform: translate(3px, 3px);
 }
 
 /* top-right and bottom-left: thin outer-edge arcs, pulled slightly inward */
@@ -473,12 +473,7 @@
 }
 
 .o_omnigo_video_scroll_heading {
-    max-width: 1050px;
-    width: 100%;
-    margin: 0 0 28px 0;
-    padding: 52px 32px 0;
-    text-align: center;
-    flex-shrink: 0;
+    display: none;
 }
 
 .o_omnigo_video_scroll_title {
