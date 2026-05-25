@@ -3,17 +3,9 @@
 import { whenReady } from "@odoo/owl";
 
 whenReady(async () => {
-    console.log("[loader] whenReady fired");
-
     const heroHost = document.getElementById("three-product-canvas");
     const bottomModelHost = document.getElementById("three-product-canvas-bottom-model");
     const scrollHost = document.getElementById("three-product-canvas-scroll");
-
-    console.log("[loader] host elements:", {
-        heroHost: !!heroHost,
-        bottomModelHost: !!bottomModelHost,
-        scrollHost: !!scrollHost,
-    });
 
     // ----------------------------
     // Custom Omni cursor
@@ -44,9 +36,18 @@ whenReady(async () => {
 
         document.body.appendChild(omniCursor);
 
+        // Batch cursor position to one rAF update per frame instead of every mousemove.
+        let _cx = 0, _cy = 0, _cursorRaf = false;
         window.addEventListener("mousemove", (event) => {
-            omniCursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-        });
+            _cx = event.clientX; _cy = event.clientY;
+            if (!_cursorRaf) {
+                _cursorRaf = true;
+                requestAnimationFrame(() => {
+                    omniCursor.style.transform = `translate3d(${_cx}px, ${_cy}px, 0)`;
+                    _cursorRaf = false;
+                });
+            }
+        }, { passive: true });
 
         window.addEventListener("mousedown", () => {
             omniCursor.classList.add("is-clicking");
@@ -219,9 +220,8 @@ whenReady(async () => {
     let loadingTotal = 3; // adapter GLB, split model GLB, scroll video metadata
     let loadingDone = 0;
 
-    function updateLoadingProgress(label) {
+    function updateLoadingProgress(_label) {
         loadingDone += 1;
-        console.log(`[loader] step ${loadingDone}/${loadingTotal} — ${label}`);
 
         const percent = Math.min((loadingDone / loadingTotal) * 100, 100);
 
@@ -270,9 +270,6 @@ whenReady(async () => {
     }
 
     const omnigoScrollVideo = document.getElementById("omnigo-scroll-video");
-    const omnigoVideoSection = omnigoScrollVideo
-        ? omnigoScrollVideo.closest(".o_omnigo_video_scroll_section")
-        : null;
 
     // All video scroll sections — supports multiple on the same page
     const allVideoSections = [];
@@ -290,13 +287,15 @@ whenReady(async () => {
     let GLTFLoader;
     let LoopPingPong;
 
-    console.log("[loader] fetching Three.js from CDN…");
     try {
-        THREE = await import("https://esm.sh/three@0.180.0");
-        ({ GLTFLoader } = await import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"));
-
+        // Fetch Three.js core and GLTFLoader in parallel — saves one full CDN round-trip.
+        const [threeModule, gltfModule] = await Promise.all([
+            import("https://esm.sh/three@0.180.0"),
+            import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"),
+        ]);
+        THREE = threeModule;
+        ({ GLTFLoader } = gltfModule);
         LoopPingPong = THREE.LoopPingPong;
-        console.log("[loader] Three.js ready");
     } catch (err) {
         console.error("[loader] Failed to load Three.js:", err);
         return;
@@ -467,11 +466,9 @@ whenReady(async () => {
         adapterPromise = new Promise((resolve, reject) => {
             const adapterLoader = new GLTFLoader();
 
-            console.log("[loader] fetching adapter GLB:", adapterModelPath);
             adapterLoader.load(
                 adapterModelPath,
                 (gltf) => {
-                    console.log("[loader] adapter GLB loaded");
                     adapterPrototype = prepareAdapterObject(gltf.scene);
                     updateLoadingProgress("adapter GLB");
                     resolve(adapterPrototype);
@@ -645,11 +642,9 @@ whenReady(async () => {
     // ----------------------------
     // Bottom split-section model (self-contained GLB — materials/textures embedded)
     // ----------------------------
-    console.log("[loader] fetching split model:", splitModelPath);
     gltfLoader.load(
         splitModelPath,
         (gltf) => {
-            console.log("[loader] split model loaded");
             const obj = gltf.scene;
 
             // Disable shadows (not needed for this panel).
@@ -729,9 +724,16 @@ whenReady(async () => {
     let scrollDetailPanel = null;
     let scrollMobileLabels = null;
 
-    function isLargeScreen() {
-        return window.matchMedia("(min-width: 992px)").matches;
-    }
+    // Cached hotspot element references — populated once in createScrollHotspots,
+    // used every frame in updateScrollHotspots to avoid 8 querySelector calls/frame.
+    let _elDetachAttachment = null, _elDetailBack = null, _elDetailHatch = null, _elDetailScrew = null;
+    let _elMobileAttachment = null, _elMobileBack = null, _elMobileHatch = null, _elMobileScrew = null;
+
+    // Cache the breakpoint result and update only when it actually changes.
+    const _mqLarge = window.matchMedia("(min-width: 992px)");
+    let _isLargeScreen = _mqLarge.matches;
+    _mqLarge.addEventListener("change", e => { _isLargeScreen = e.matches; });
+    function isLargeScreen() { return _isLargeScreen; }
 
     function createScrollHotspots() {
         if (!scrollHost) {
@@ -797,6 +799,16 @@ whenReady(async () => {
             <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">Universal Tripod Mount</div>
         `;
         scrollHost.appendChild(scrollMobileLabels);
+
+        // Cache refs so updateScrollHotspots never calls querySelector at runtime.
+        _elDetachAttachment = scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment");
+        _elDetailBack       = scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_back");
+        _elDetailHatch      = scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch");
+        _elDetailScrew      = scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw");
+        _elMobileAttachment = scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_attachment");
+        _elMobileBack       = scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_back");
+        _elMobileHatch      = scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_hatch");
+        _elMobileScrew      = scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_screw");
     }
 
     // ─── Scroll animation timing constants ───────────────────────────────────────
@@ -810,33 +822,18 @@ whenReady(async () => {
     const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.17 per feature
 
     function updateScrollHotspots() {
-        if (!scrollHotspotLayer) {
-            return;
-        }
-
-        const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
+        if (!scrollHotspotLayer) return;
+        const show = (el, on) => el && el.classList.toggle("is-visible", on);
         const p = scrollAnimProgress;
         const T = SCROLL_TRANS, PH = SCROLL_PHASE;
-
-        // Each feature is visible only during its dwell window (model has finished moving)
-        const inAttachment = p >= T        && p <= PH;
-        const inBack       = p >= PH + T   && p <= PH * 2;
-        const inHatch      = p >= PH * 2 + T && p <= PH * 3;
-        const inScrew      = p >= PH * 3 + T && p <= PH * 4;
-
-        if (scrollDetailPanel) {
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_back"),       inBack);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_hatch"),      inHatch);
-            show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_screw"),      inScrew);
-        }
-
-        if (scrollMobileLabels) {
-            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_attachment"), inAttachment);
-            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_back"),       inBack);
-            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_hatch"),      inHatch);
-            show(scrollMobileLabels.querySelector(".o_three_scroll_mobile_label_screw"),      inScrew);
-        }
+        const inA = p >= T          && p <= PH;
+        const inB = p >= PH + T     && p <= PH * 2;
+        const inH = p >= PH * 2 + T && p <= PH * 3;
+        const inS = p >= PH * 3 + T && p <= PH * 4;
+        show(_elDetachAttachment, inA); show(_elDetailBack, inB);
+        show(_elDetailHatch,      inH); show(_elDetailScrew, inS);
+        show(_elMobileAttachment, inA); show(_elMobileBack,  inB);
+        show(_elMobileHatch,      inH); show(_elMobileScrew, inS);
     }
 
     let scrollAnimProgress = 0;
@@ -997,26 +994,48 @@ whenReady(async () => {
     }
 
     // ----------------------------
-    // Resize
+    // Resize (debounced — resize events can fire dozens of times per drag)
     // ----------------------------
+    let _resizeTimer = null;
     function onResize() {
-        bottomCamera.aspect = bottomModelHost.clientWidth / bottomModelHost.clientHeight;
-        bottomCamera.updateProjectionMatrix();
-        bottomRenderer.setSize(bottomModelHost.clientWidth, bottomModelHost.clientHeight);
-
-        scrollCamera.aspect = scrollHost.clientWidth / scrollHost.clientHeight;
-        scrollCamera.updateProjectionMatrix();
-        scrollRenderer.setSize(scrollHost.clientWidth, scrollHost.clientHeight);
+        clearTimeout(_resizeTimer);
+        _resizeTimer = setTimeout(() => {
+            bottomCamera.aspect = bottomModelHost.clientWidth / bottomModelHost.clientHeight;
+            bottomCamera.updateProjectionMatrix();
+            bottomRenderer.setSize(bottomModelHost.clientWidth, bottomModelHost.clientHeight);
+            scrollCamera.aspect = scrollHost.clientWidth / scrollHost.clientHeight;
+            scrollCamera.updateProjectionMatrix();
+            scrollRenderer.setSize(scrollHost.clientWidth, scrollHost.clientHeight);
+        }, 150);
     }
+    window.addEventListener("resize", onResize, { passive: true });
 
-    window.addEventListener("resize", onResize);
+    // ----------------------------
+    // Scroll dirty flag — avoids getBoundingClientRect() on every rAF frame.
+    // Both updateScrollSectionProgress and updateOmnigoScrollVideo are now
+    // driven by scroll events and only computed when the page actually scrolls.
+    // ----------------------------
+    const _scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
+    let _scrollDirty = true; // compute on first frame
+    _scrollRoot.addEventListener("scroll", () => { _scrollDirty = true; }, { passive: true });
+
+    // ----------------------------
+    // Skip rendering when panels are off-screen (IntersectionObserver)
+    // ----------------------------
+    let _bottomInView = true; // assume visible until observer fires
+    let _scrollSectionInView = false;
+    new IntersectionObserver(([e]) => { _bottomInView = e.isIntersecting; }, { threshold: 0 })
+        .observe(bottomModelHost);
+    if (scrollSection) {
+        new IntersectionObserver(([e]) => { _scrollSectionInView = e.isIntersecting; }, { threshold: 0 })
+            .observe(scrollSection);
+    }
 
     // ── Browser detection ────────────────────────────────────────────────────
     // Safari is identified by the absence of "Chrome"/"CriOS"/"FxiOS" in the UA
     // combined with the presence of "Safari". This catches desktop Safari and
     // iOS Safari (which uses the same WebKit engine and has the same video limits).
     const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
-    console.log("[loader] isSafari:", isSafari);
 
     // ── Safari path: ping-pong autoplay, no scroll scrubbing ─────────────────
     if (isSafari && allVideoSections.length > 0) {
@@ -1145,49 +1164,58 @@ whenReady(async () => {
     }
 
     if (omnigoScrollVideo) {
-        console.log("[loader] scroll video found, readyState:", omnigoScrollVideo.readyState, "src:", omnigoScrollVideo.currentSrc || "(not set yet)");
         if (omnigoScrollVideo.readyState >= 1) {
-            console.log("[loader] scroll video metadata already ready");
-            updateLoadingProgress("scroll video (immediate)");
+            updateLoadingProgress("scroll video");
         } else {
-            console.log("[loader] waiting for scroll video loadedmetadata…");
-            omnigoScrollVideo.addEventListener(
-                "loadedmetadata",
-                () => {
-                    console.log("[loader] scroll video metadata loaded");
-                    updateLoadingProgress("scroll video");
-                },
-                { once: true }
-            );
+            omnigoScrollVideo.addEventListener("loadedmetadata", () => {
+                updateLoadingProgress("scroll video");
+            }, { once: true });
         }
     } else {
-        console.log("[loader] no scroll video element found, skipping");
-        updateLoadingProgress("scroll video (skipped)");
+        updateLoadingProgress("scroll video");
     }
 
     // ----------------------------
     // Animation loop
     // ----------------------------
+    let _lastScrollProgress = -1;
+
     function animate(now) {
         requestAnimationFrame(animate);
 
-        const delta = bottomClock.getDelta();
+        // Process scroll-driven updates only when the page actually scrolled.
+        // This eliminates getBoundingClientRect() being called 60×/sec at rest.
+        if (_scrollDirty) {
+            _scrollDirty = false;
+            updateScrollSectionProgress();
+            updateOmnigoScrollVideo();
+        }
+
+        // Only run the expensive pose math when the progress value has changed.
+        if (scrollAnimProgress !== _lastScrollProgress) {
+            _lastScrollProgress = scrollAnimProgress;
+            applyScrollSectionPose();
+        }
+
+        // Three.js model animation (always runs so the split model keeps animating)
+        if (bottomMixer) {
+            bottomMixer.update(bottomClock.getDelta());
+        } else {
+            bottomClock.getDelta(); // keep clock in sync
+        }
 
         if (bottomWrapper && bottomShouldAutoRotate(now)) {
             bottomWrapper.rotation.y += bottomAutoRotateSpeed;
         }
 
-        if (bottomMixer) {
-            bottomMixer.update(delta);
+        // Skip GPU render calls when the panel is off-screen — biggest frame-rate
+        // saving when the user is far from either section.
+        if (_bottomInView) {
+            bottomRenderer.render(bottomScene, bottomCamera);
         }
-
-        updateOmnigoScrollVideo();
-
-        updateScrollSectionProgress();
-        applyScrollSectionPose();
-
-        bottomRenderer.render(bottomScene, bottomCamera);
-        scrollRenderer.render(scrollScene, scrollCamera);
+        if (_scrollSectionInView) {
+            scrollRenderer.render(scrollScene, scrollCamera);
+        }
     }
 
     const reviewCards = document.querySelectorAll(".o_review_waterfall_card");
