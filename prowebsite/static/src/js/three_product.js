@@ -806,8 +806,8 @@ whenReady(async () => {
     // 4 × PHASE = 0.88; remaining 0.12 = return-to-rest transition.
     // All four dwell windows are exactly DWELL wide → consistent pause per feature.
     const SCROLL_TRANS = 0.08;                    // 8 % per transition
-    const SCROLL_DWELL = 0.14;                    // 14 % per dwell
-    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.22 per feature
+    const SCROLL_DWELL = 0.09;                    // 9 % per dwell (was 14 %)
+    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.17 per feature
 
     function updateScrollHotspots() {
         if (!scrollHotspotLayer) {
