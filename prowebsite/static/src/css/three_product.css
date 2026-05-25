@@ -454,36 +454,41 @@
     width: 100%;
     min-height: 520vh;
     z-index: 4;
-    background: #000000;
-    /* strip any Odoo default section padding */
+    background: #ffffff;
     padding: 0 !important;
     margin: 0 !important;
 }
 
-/* Odoo wraps section content in a container — override it */
+/* Flatten every Odoo wrapper element inside the video section so nothing
+   constrains the sticky inner to a container max-width */
 .o_omnigo_video_scroll_section > .container,
 .o_omnigo_video_scroll_section > .container-fluid,
-.o_omnigo_video_scroll_section > .o_container_small {
+.o_omnigo_video_scroll_section > .o_container_small,
+.o_omnigo_video_scroll_section .row,
+.o_omnigo_video_scroll_section .col,
+.o_omnigo_video_scroll_section [class*="col-"] {
     max-width: 100% !important;
+    width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
+    flex: 0 0 100% !important;
 }
 
 .o_omnigo_video_scroll_inner {
     position: sticky;
     top: 0;
-    left: 0;
+    /* Viewport-escape: break out of any centered container */
     width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
     height: 100vh;
-    background: #000000;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: stretch;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     padding: 0 !important;
-    margin: 0 !important;
     transform: translateZ(0);
 }
 
@@ -512,26 +517,26 @@
 }
 
 .o_omnigo_video_scroll_video_wrap {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
     flex: 1 1 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: #000000;
+    background: #ffffff;
     position: relative;
 }
 
+/* Video fills the full width; height follows the natural aspect ratio and is
+   centred vertically by the flex wrap. Any remaining space is white (blends). */
 .o_omnigo_video_scroll_video {
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
-    margin: -1px;
+    width: 100%;
+    height: auto;
+    max-height: 100vh;
     display: block;
-    object-fit: contain;
-    background: #000000;
+    object-fit: unset;
+    background: #ffffff;
     border: none;
-    outline: 3px solid #000000;
     vertical-align: top;
 }
 
@@ -1025,13 +1030,18 @@
         padding: 0 !important;
         width: 100vw;
         height: 100vh;
-        align-items: stretch;
-        justify-content: stretch;
+        align-items: center;
+        justify-content: center;
     }
 
     .o_omnigo_video_scroll_video_wrap {
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+    }
+
+    .o_omnigo_video_scroll_video {
+        width: 100%;
+        height: auto;
+        max-height: 100vh;
     }
 }
 
