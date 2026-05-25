@@ -764,7 +764,7 @@
     z-index: auto;
     background: #ffffff;
     overflow: hidden;
-    padding: 120px clamp(20px, 4vw, 64px) 260px;
+    padding: 72px clamp(20px, 4vw, 64px) 260px;
 }
 
 .o_review_waterfall_section::before {
@@ -1428,7 +1428,7 @@
 
 .o_omnigo_buy_section {
     background: #ffffff;
-    padding: 100px clamp(24px, 6vw, 80px);
+    padding: 100px clamp(24px, 6vw, 80px) 52px;
 }
 
 .o_omnigo_buy_inner {

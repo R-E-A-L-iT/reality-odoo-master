@@ -574,39 +574,38 @@ whenReady(async () => {
     bottomRenderer.domElement.addEventListener("wheel", onBottomWheel, { passive: false });
 
     // ── Drag-to-rotate hint overlay ──────────────────────────────────────────
-    // Two mirrored curved arrows that sway gently; disappears on first interaction.
+    // Wide curved double-headed arrow; hides while dragging, reappears after idle.
     const dragHint = document.createElement("div");
     dragHint.className = "o_omnigo_drag_hint";
     dragHint.innerHTML = `
-        <svg width="60" height="28" viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <!-- Left arc + arrowhead -->
-            <path d="M28 5 C19 5 11 9 8 14 C11 19 19 23 28 23"
-                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-            <path d="M28 1 L28 9 L21 5"
-                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <!-- Right arc + arrowhead -->
-            <path d="M32 5 C41 5 49 9 52 14 C49 19 41 23 32 23"
-                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-            <path d="M32 1 L32 9 L39 5"
-                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <svg width="88" height="40" viewBox="0 0 88 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Left filled arrowhead -->
+            <polygon points="0,6 18,10 12,22" fill="currentColor"/>
+            <!-- Wide smile arc connecting the two arrowheads -->
+            <path d="M12 14 Q44 42 76 14"
+                  stroke="currentColor" stroke-width="4" stroke-linecap="butt" fill="none"/>
+            <!-- Right filled arrowhead -->
+            <polygon points="88,6 70,10 76,22" fill="currentColor"/>
         </svg>
         <span class="o_omnigo_drag_hint__label">Drag to rotate</span>
     `;
     bottomModelHost.appendChild(dragHint);
 
-    // Fade the hint out permanently on the user's first drag interaction.
-    let dragHintDismissed = false;
-    function dismissDragHint() {
-        if (dragHintDismissed) return;
-        dragHintDismissed = true;
+    // Hide while user is interacting; reappear 3 s after they stop.
+    let dragHintReappearTimer = null;
+
+    function hideDragHint() {
         dragHint.classList.add("is-hidden");
-        // Remove from DOM after the CSS transition completes.
-        dragHint.addEventListener("transitionend", () => dragHint.remove(), { once: true });
+        clearTimeout(dragHintReappearTimer);
+        dragHintReappearTimer = setTimeout(() => {
+            if (!isBottomDragging) dragHint.classList.remove("is-hidden");
+        }, 3000);
     }
-    bottomRenderer.domElement.addEventListener("pointermove", (e) => {
-        if (isBottomDragging) dismissDragHint();
+
+    bottomRenderer.domElement.addEventListener("pointermove", () => {
+        if (isBottomDragging) hideDragHint();
     });
-    bottomRenderer.domElement.addEventListener("wheel", dismissDragHint, { once: true });
+    bottomRenderer.domElement.addEventListener("wheel", hideDragHint, { passive: true });
 
     const gltfLoader = new GLTFLoader();
     const textureLoader = new THREE.TextureLoader();
@@ -1073,16 +1072,39 @@ whenReady(async () => {
     // omnigo scroll video sections — scrub all of them independently
     allVideoSections.forEach(entry => {
         const { vid } = entry;
-        vid.pause();
-        vid.addEventListener("seeked", () => { entry.seeking = false; }, { passive: true });
+
+        // Ensure the video attributes are set for cross-browser compatibility.
+        vid.muted = true;
+        vid.setAttribute("playsinline", "");
+        vid.setAttribute("preload", "auto");
+
+        // Prime the video for seeking in Safari.
+        // Safari will not allow currentTime seeks on a video that has never
+        // been "played", even on muted/playsInline videos. A silent play→pause
+        // cycle unlocks seek access without showing any visible playback.
+        const primePlay = vid.play();
+        if (primePlay instanceof Promise) {
+            primePlay.then(() => vid.pause()).catch(() => {});
+        } else {
+            vid.pause();
+        }
+
+        // Keep the video paused if something else triggers play.
         vid.addEventListener("play", () => { vid.pause(); }, { passive: true });
+
+        // Per-entry seek throttle timestamp (replaces the fragile `seeking` flag).
+        // The old flag could get permanently stuck on Safari if `seeked` never fired.
+        entry.lastSeekAt = 0;
     });
 
     function updateOmnigoScrollVideo() {
+        const now = performance.now();
         allVideoSections.forEach(entry => {
             const { sec, vid } = entry;
             if (!vid.duration || vid.readyState < 2) return;
-            if (entry.seeking) return;
+
+            // Throttle seeks to ~10/s — Safari becomes unreliable with rapid seeks.
+            if (now - entry.lastSeekAt < 100) return;
 
             const rect = sec.getBoundingClientRect();
             const viewportH = window.innerHeight || document.documentElement.clientHeight;
@@ -1093,7 +1115,7 @@ whenReady(async () => {
             const targetTime = progress * vid.duration;
 
             if (Math.abs(vid.currentTime - targetTime) > 0.05) {
-                entry.seeking = true;
+                entry.lastSeekAt = now;
                 vid.currentTime = targetTime;
             }
         });
