@@ -215,6 +215,13 @@ whenReady(async () => {
         ? omnigoScrollVideo.closest(".o_omnigo_video_scroll_section")
         : null;
 
+    // All video scroll sections — supports multiple on the same page
+    const allVideoSections = [];
+    document.querySelectorAll(".o_omnigo_video_scroll_section").forEach(sec => {
+        const vid = sec.querySelector(".o_omnigo_video_scroll_video");
+        if (vid) allVideoSections.push({ sec, vid, seeking: false });
+    });
+
     if (!heroHost || !bottomModelHost || !scrollHost) {
         console.warn("[loader] early exit — missing host element(s), script will not run on this page");
         return;
@@ -1057,32 +1064,33 @@ whenReady(async () => {
 
     window.addEventListener("resize", onResize);
 
-    // omnigo scroll video section
-    let videoSeeking = false;
-    if (omnigoScrollVideo) {
-        omnigoScrollVideo.pause();
-        omnigoScrollVideo.addEventListener("seeked", () => { videoSeeking = false; }, { passive: true });
-        omnigoScrollVideo.addEventListener("play", () => { omnigoScrollVideo.pause(); }, { passive: true });
-    }
+    // omnigo scroll video sections — scrub all of them independently
+    allVideoSections.forEach(entry => {
+        const { vid } = entry;
+        vid.pause();
+        vid.addEventListener("seeked", () => { entry.seeking = false; }, { passive: true });
+        vid.addEventListener("play", () => { vid.pause(); }, { passive: true });
+    });
 
     function updateOmnigoScrollVideo() {
-        if (!omnigoScrollVideo || !omnigoVideoSection) return;
-        if (!omnigoScrollVideo.duration || omnigoScrollVideo.readyState < 2) return;
-        if (videoSeeking) return;
+        allVideoSections.forEach(entry => {
+            const { sec, vid } = entry;
+            if (!vid.duration || vid.readyState < 2) return;
+            if (entry.seeking) return;
 
-        const rect = omnigoVideoSection.getBoundingClientRect();
-        const viewportH = window.innerHeight || document.documentElement.clientHeight;
-        const totalScrollable = rect.height - viewportH;
+            const rect = sec.getBoundingClientRect();
+            const viewportH = window.innerHeight || document.documentElement.clientHeight;
+            const totalScrollable = rect.height - viewportH;
+            if (totalScrollable <= 0) return;
 
-        if (totalScrollable <= 0) return;
+            const progress = clamp(-rect.top / totalScrollable, 0, 1);
+            const targetTime = progress * vid.duration;
 
-        const progress = clamp(-rect.top / totalScrollable, 0, 1);
-        const targetTime = progress * omnigoScrollVideo.duration;
-
-        if (Math.abs(omnigoScrollVideo.currentTime - targetTime) > 0.05) {
-            videoSeeking = true;
-            omnigoScrollVideo.currentTime = targetTime;
-        }
+            if (Math.abs(vid.currentTime - targetTime) > 0.05) {
+                entry.seeking = true;
+                vid.currentTime = targetTime;
+            }
+        });
     }
 
     if (omnigoScrollVideo) {
