@@ -1,3 +1,30 @@
+/* ─── Hero video section — bouncing scroll arrow ───────────────────────────── */
+.o_omnigo_scroll_arrow {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    animation: omnigo-arrow-bounce 2s ease-in-out infinite;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.o_omnigo_scroll_arrow:hover {
+    opacity: 1;
+    color: #ffffff;
+}
+
+@keyframes omnigo-arrow-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);    }
+    50%       { transform: translateX(-50%) translateY(10px); }
+}
+
 /* cursor */
 .o_omnibase_custom_cursor_enabled,
 .o_omnibase_custom_cursor_enabled * {

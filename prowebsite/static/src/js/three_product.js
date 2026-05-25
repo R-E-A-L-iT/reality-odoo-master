@@ -210,15 +210,16 @@ whenReady(async () => {
             setTimeout(() => ch.classList.add("is-visible"), 400);
         }
 
-        // Start hero drop animation only after Enter
-        if (heroWrapper) {
-            heroWrapper.position.y = 3.5;
-            dropAnimationStart = performance.now();
-        }
     }
 
     if (loaderEnter) {
         loaderEnter.addEventListener("click", enterOmnigoPage);
+    } else {
+        // No loading screen — enter page immediately
+        pageAssetsReady = true;
+        userEnteredPage = true;
+        const ch = document.querySelector(".o_omnigo_ch_header");
+        if (ch) ch.classList.add("is-visible");
     }
 
     const omnigoScrollVideo = document.getElementById("omnigo-scroll-video");
@@ -233,28 +234,9 @@ whenReady(async () => {
         if (vid) allVideoSections.push({ sec, vid, seeking: false });
     });
 
-    if (!heroHost || !bottomModelHost || !scrollHost) {
+    if (!bottomModelHost || !scrollHost) {
         console.warn("[loader] early exit — missing host element(s), script will not run on this page");
         return;
-    }
-
-    // ----------------------------
-    // Text animation
-    // ----------------------------
-    const textEl = heroHost.querySelector(".o_three_canvas_text");
-    if (textEl) {
-        const text = (textEl.textContent || "").trim();
-        textEl.textContent = "";
-
-        [...text].forEach((char, index) => {
-            const span = document.createElement("span");
-            span.className = "letter";
-            span.textContent = char === " " ? "\u00A0" : char;
-            span.style.animationDelay = `${index * 0.16}s`;
-            textEl.appendChild(span);
-        });
-
-        textEl.classList.add("is-ready");
     }
 
     let THREE;
@@ -479,49 +461,6 @@ whenReady(async () => {
 
         return clone;
     }
-
-    // ----------------------------
-    // Top hero scene
-    // ----------------------------
-    const heroScene = new THREE.Scene();
-
-    const heroCamera = new THREE.PerspectiveCamera(
-        45,
-        heroHost.clientWidth / heroHost.clientHeight,
-        0.1,
-        1000
-    );
-    heroCamera.position.set(0, 0, 3);
-
-    const heroRenderer = createRenderer(heroHost, "4");
-    addSoftProductLights(heroScene);
-
-    let heroModel = null;
-    let heroWrapper = null;
-    let dropAnimationStart = null;
-    const dropDuration = 1400;
-
-    let mouseTargetX = 0;
-    let mouseTargetY = 0;
-    let mouseCurrentX = 0;
-    let mouseCurrentY = 0;
-    const maxOffsetX = 0.35;
-    const maxOffsetY = 0.22;
-    const mouseEase = 0.06;
-
-    heroHost.addEventListener("mousemove", (event) => {
-        const rect = heroHost.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-
-        mouseTargetX = clamp(-x * maxOffsetX, -maxOffsetX, maxOffsetX);
-        mouseTargetY = clamp(-y * maxOffsetY, -maxOffsetY, maxOffsetY);
-    });
-
-    heroHost.addEventListener("mouseleave", () => {
-        mouseTargetX = 0;
-        mouseTargetY = 0;
-    });
 
     // ----------------------------
     // Bottom split-section left model
@@ -847,16 +786,16 @@ whenReady(async () => {
                 <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
-                <h3 class="o_three_scroll_feature_title">One-Touch Release Button</h3>
-                <p class="o_three_scroll_feature_body">The oversized rear button is designed to be operated with a single press — even in thick work gloves or high-pressure field conditions. One push cleanly ejects the OmniGO from any mount without fumbling.</p>
+                <h3 class="o_three_scroll_feature_title">One-Touch Quick Release Button.</h3>
+                <p class="o_three_scroll_feature_body">The red button is designed to be operated with a single press and hold for attaching and detaching from the standard Leica stub fitting to mount on survey poles.</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
-                <h3 class="o_three_scroll_feature_title">Quick-Release Latch</h3>
-                <p class="o_three_scroll_feature_body">A single press of the side button disengages the spring-loaded latch, freeing the scanner in seconds. Re-attach with one hand — it clicks and locks automatically, no tools required.</p>
+                <h3 class="o_three_scroll_feature_title">Quick-Release Latch.</h3>
+                <p class="o_three_scroll_feature_body">The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
                 <h3 class="o_three_scroll_feature_title">Universal Tripod Mount</h3>
-                <p class="o_three_scroll_feature_body">The bottom face carries a standard ¼″-20 thread, putting the BLK2GO on any tripod, monopod, survey pole, or camera arm — opening up hands-free and stationary scanning workflows.</p>
+                <p class="o_three_scroll_feature_body">The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.</p>
             </div>
         `;
         scrollHost.appendChild(scrollDetailPanel);
@@ -1055,22 +994,6 @@ whenReady(async () => {
     // ----------------------------
     await loadAdapterPrototype();
 
-    // Hero adapter clone
-    {
-        const obj = createAdapterClone();
-        obj.rotation.x = -0.25;
-        obj.rotation.z = 0.12;
-
-        heroModel = obj;
-        heroWrapper = new THREE.Group();
-        heroWrapper.add(heroModel);
-        heroWrapper.position.set(0, 3.5, 0);
-        heroScene.add(heroWrapper);
-
-        dropAnimationStart = null;
-        heroWrapper.position.y = 3.5;
-    }
-
     // Scroll section adapter clone
     {
         const obj = createAdapterClone();
@@ -1089,10 +1012,6 @@ whenReady(async () => {
     // Resize
     // ----------------------------
     function onResize() {
-        heroCamera.aspect = heroHost.clientWidth / heroHost.clientHeight;
-        heroCamera.updateProjectionMatrix();
-        heroRenderer.setSize(heroHost.clientWidth, heroHost.clientHeight);
-
         bottomCamera.aspect = bottomModelHost.clientWidth / bottomModelHost.clientHeight;
         bottomCamera.updateProjectionMatrix();
         bottomRenderer.setSize(bottomModelHost.clientWidth, bottomModelHost.clientHeight);
@@ -1162,32 +1081,6 @@ whenReady(async () => {
 
         const delta = bottomClock.getDelta();
 
-        if (heroWrapper && userEnteredPage) {
-            if (dropAnimationStart !== null) {
-                const elapsed = now - dropAnimationStart;
-                const t = clamp(elapsed / dropDuration, 0, 1);
-                const eased = easeOutCubic(t);
-                heroWrapper.position.y = 3.5 * (1 - eased);
-
-                if (t >= 1) {
-                    dropAnimationStart = null;
-                    heroWrapper.position.y = 0;
-                }
-            }
-
-            mouseCurrentX += (mouseTargetX - mouseCurrentX) * mouseEase;
-            mouseCurrentY += (mouseTargetY - mouseCurrentY) * mouseEase;
-
-            heroWrapper.position.x = mouseCurrentX;
-            if (dropAnimationStart === null) {
-                heroWrapper.position.y = mouseCurrentY;
-            }
-
-            if (heroModel) {
-                heroModel.rotation.y += 0.01;
-            }
-        }
-
         if (bottomWrapper && bottomShouldAutoRotate(now)) {
             bottomWrapper.rotation.y += bottomAutoRotateSpeed;
         }
@@ -1201,7 +1094,6 @@ whenReady(async () => {
         updateScrollSectionProgress();
         applyScrollSectionPose();
 
-        heroRenderer.render(heroScene, heroCamera);
         bottomRenderer.render(bottomScene, bottomCamera);
         scrollRenderer.render(scrollScene, scrollCamera);
     }
