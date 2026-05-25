@@ -1614,6 +1614,28 @@
 .o_omnigo_buy_cart_label { display: none; }
 .o_omnigo_buy_cart_label::after { display: inline; }
 
+/* Elements removed from the buy section UI (kept in DOM, hidden via CSS) */
+.o_omnigo_buy_cart_btn { display: none !important; }   /* only Buy Now is shown */
+.o_omnigo_buy_sku      { display: none !important; }
+.o_omnigo_buy_stock    { display: none !important; }
+
+/* "Purchasing from outside US/CA?" note below Buy Now */
+.o_omnigo_buy_intl_note {
+    margin-top: 14px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+}
+.o_omnigo_buy_intl_note a {
+    color: #e00000;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.o_omnigo_buy_intl_note a:hover {
+    color: #c20000;
+}
+
 
 /* Mobile */
 @media (max-width: 768px) {

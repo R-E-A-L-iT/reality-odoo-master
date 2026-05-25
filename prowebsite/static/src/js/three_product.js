@@ -1368,6 +1368,14 @@ whenReady(async () => {
             }
         });
 
+        // Inject "purchasing from outside US/CA?" note below the Buy Now button.
+        if (nowBtn && !buySection.querySelector(".o_omnigo_buy_intl_note")) {
+            const note = document.createElement("p");
+            note.className = "o_omnigo_buy_intl_note";
+            note.innerHTML = 'Are you purchasing from outside the U.S. or Canada? Contact us directly <a href="/contact">here</a> to place an order.';
+            nowBtn.insertAdjacentElement("afterend", note);
+        }
+
         nowBtn?.addEventListener("click", async () => {
             const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
             setBtnState(nowBtn, "loading");

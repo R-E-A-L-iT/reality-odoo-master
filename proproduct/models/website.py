@@ -22,9 +22,15 @@ def _get_country_code():
 
 
 def _pricelist_for_currency(env, website, currency_name):
-    """Return the first pricelist in *currency_name* available on *website*."""
+    """
+    Return the first non-rental pricelist in *currency_name* available on *website*.
+
+    Rental pricelists (e.g. "USD RENTAL") are intentionally excluded so that the
+    regular customer-facing pricelist is always selected over any rental variant.
+    """
     return env['product.pricelist'].sudo().search([
         ('currency_id.name', '=', currency_name),
+        ('name', 'not ilike', 'rent'),
         '|', ('website_id', '=', False), ('website_id', '=', website.id),
     ], limit=1)
 
