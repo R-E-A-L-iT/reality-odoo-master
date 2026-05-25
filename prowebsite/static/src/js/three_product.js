@@ -18,7 +18,7 @@ whenReady(async () => {
     // ----------------------------
     // Custom Omni cursor
     // ----------------------------
-    const omniPage = document.querySelector(".o_three_hero")?.closest("#wrap");
+    const omniPage = document.querySelector(".o_three_hero, .o_omnigo_buy_section, #omnigo-page-loader")?.closest("#wrap");
 
     let omniCursor = null;
     let omniCursorReady = false;

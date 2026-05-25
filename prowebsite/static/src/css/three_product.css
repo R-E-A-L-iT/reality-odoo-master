@@ -18,6 +18,7 @@
 .o_omnigo_scroll_arrow:hover {
     opacity: 1;
     color: #ffffff;
+    text-decoration: none;
 }
 
 @keyframes omnigo-arrow-bounce {
