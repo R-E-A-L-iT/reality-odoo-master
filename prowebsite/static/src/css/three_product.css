@@ -21,6 +21,12 @@
     text-decoration: none;
 }
 
+.o_omnigo_scroll_arrow:active {
+    opacity: 0.35;
+    color: #ffffff;
+    text-decoration: none;
+}
+
 @keyframes omnigo-arrow-bounce {
     0%, 100% { transform: translateX(-50%) translateY(0);    }
     50%       { transform: translateX(-50%) translateY(10px); }

@@ -153,6 +153,18 @@ whenReady(async () => {
 
     createOmnigoHeader();
 
+    // Wire the bouncing scroll arrow to smooth-scroll to the very next section.
+    document.querySelectorAll(".o_omnigo_scroll_arrow").forEach(arrow => {
+        arrow.addEventListener("click", e => {
+            e.preventDefault();
+            const heroSection = arrow.closest("section");
+            const nextSection = heroSection?.nextElementSibling;
+            if (nextSection) {
+                nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    });
+
     const pageLoader = document.getElementById("omnigo-page-loader");
     const loaderFill = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_bar_fill") : null;
     const loaderEnter = pageLoader ? pageLoader.querySelector(".o_omnigo_loader_enter") : null;
@@ -1195,8 +1207,9 @@ whenReady(async () => {
                             const clone = priceEl2.cloneNode(true);
                             clone.querySelector(".o_omnigo_buy_currency")?.remove();
                             // Typical QWeb output: "$ 2.00" — collapse whitespace
-                            const priceText = clone.textContent.replace(/\s+/g, " ").trim();
-                            const label = `Buy Now | ${priceText} ${pl.currency}`;
+                            const rawText = clone.textContent.replace(/\s+/g, " ").trim();
+                            const priceText = rawText.replace(/\.\d+/g, "");
+                            const label = `Buy Now | ${priceText}`;
                             document.querySelectorAll(".o_omnigo_ch_buy_btn").forEach(btn => {
                                 btn.textContent = label;
                             });
