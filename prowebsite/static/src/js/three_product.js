@@ -1242,32 +1242,6 @@ whenReady(async () => {
             return;
         }
 
-        // Try every possible source for the Odoo CSRF token, in order of reliability.
-        // Sources tried:
-        //   1. Explicit hidden input rendered by QWeb into the buy section (most reliable — add this to your template)
-        //   2. window.odoo.__session_info__.csrf_token  (set by ir.http on all Odoo pages)
-        //   3. window.odoo.session_info.csrf_token      (legacy key name)
-        //   4. window.odoo.csrf_token                   (set on backend pages, sometimes website)
-        //   5. <meta name="csrf-token">                 (present in some Odoo configurations)
-        //   6. Any existing <form> with a csrf_token input (e.g. search, newsletter forms)
-        function getCsrf() {
-            const fromInput = buyInner.querySelector(".o_omnigo_buy_csrf")?.value;
-            if (fromInput) return fromInput;
-
-            const o = window.odoo || {};
-            const fromSession = o.__session_info__?.csrf_token
-                             || o.session_info?.csrf_token
-                             || o.csrf_token;
-            if (fromSession) return fromSession;
-
-            const fromMeta = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
-            if (fromMeta) return fromMeta;
-
-            const fromForm = document.querySelector('form input[name="csrf_token"]')?.value;
-            if (fromForm) return fromForm;
-
-            return "";
-        }
 
         const qtyInput = buySection.querySelector(".o_omnigo_buy_qty_input");
         const decBtn   = buySection.querySelector(".o_omnigo_buy_qty_dec");
@@ -1283,35 +1257,33 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
-        // /shop/cart/update is a type='http' Odoo route — send standard form data
-        // with a CSRF token. jQuery adds X-Requested-With: XMLHttpRequest automatically,
-        // which tells Odoo to return compact JSON {cart_quantity: N} instead of a redirect.
+        // /shop/cart/update_json is type='json', csrf=False — the proper AJAX cart endpoint.
+        // No CSRF token needed. Returns JSON-RPC { result: { cart_quantity, ... } }.
         async function callCartUpdate(qty) {
-            const csrf = getCsrf();
-            console.log("[buy] callCartUpdate →", { productId, templateId, qty, csrf: csrf ? `${csrf.slice(0, 8)}…` : "(EMPTY)" });
-            if (!csrf) {
-                console.warn("[buy] CSRF token is empty — add: <input type='hidden' name='csrf_token' class='o_omnigo_buy_csrf' t-att-value=\"request.csrf_token()\"/> inside .o_omnigo_buy_inner in your XML template");
-            }
+            console.log("[buy] callCartUpdate →", { productId, templateId, qty });
 
-            const params = {
-                product_id: productId,
-                add_qty: qty,
-                csrf_token: csrf,
-            };
+            const params = { product_id: productId, add_qty: qty, display: false };
             if (templateId) params.product_template_id = templateId;
 
             const jq = window.$ || window.jQuery;
             return new Promise((resolve, reject) => {
                 jq.ajax({
-                    url: "/shop/cart/update",
+                    url: "/shop/cart/update_json",
                     method: "POST",
-                    data: params,
-                    success(data) {
-                        resolve(data);
+                    contentType: "application/json",
+                    data: JSON.stringify({ jsonrpc: "2.0", method: "call", id: 1, params }),
+                    success(resp) {
+                        if (resp?.error) {
+                            const msg = resp.error.data?.message || resp.error.message || "Cart RPC error";
+                            console.error("[buy] JSON-RPC error:", resp.error);
+                            reject(new Error(msg));
+                        } else {
+                            resolve(resp?.result ?? {});
+                        }
                     },
                     error(xhr) {
-                        const preview = xhr.responseText?.slice(0, 200) || "";
-                        console.error("[buy] cart update error:", xhr.status, preview);
+                        const preview = xhr.responseText?.slice(0, 300) || "";
+                        console.error("[buy] cart update_json HTTP error:", xhr.status, preview);
                         reject(new Error(`Cart error (HTTP ${xhr.status})`));
                     },
                 });
@@ -1319,7 +1291,7 @@ whenReady(async () => {
         }
 
         // Sync Odoo's header cart badge (.my_cart_quantity) with the updated quantity.
-        // type='http' AJAX response shape: { cart_quantity: N, ... }
+        // JSON-RPC response shape: { result: { cart_quantity: N, ... } } — already unwrapped to result here.
         function syncCartBadge(result) {
             const newQty = result?.cart_quantity;
             if (newQty === undefined) {
