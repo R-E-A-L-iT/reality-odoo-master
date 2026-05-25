@@ -861,17 +861,30 @@ whenReady(async () => {
         scrollHost.appendChild(scrollMobileLabels);
     }
 
+    // ─── Scroll animation timing constants ───────────────────────────────────────
+    // Each of the 4 features occupies one PHASE slot:
+    //   [0 … TRANS)      — model animates to the new pose
+    //   [TRANS … PHASE)  — model holds still; callout is visible   ← dwell
+    // 4 × PHASE = 0.88; remaining 0.12 = return-to-rest transition.
+    // All four dwell windows are exactly DWELL wide → consistent pause per feature.
+    const SCROLL_TRANS = 0.08;                    // 8 % per transition
+    const SCROLL_DWELL = 0.14;                    // 14 % per dwell
+    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.22 per feature
+
     function updateScrollHotspots() {
         if (!scrollHotspotLayer) {
             return;
         }
 
         const show = (el, condition) => el && el.classList.toggle("is-visible", condition);
-        // 5 phases × 0.20 each; feature windows widened to 14% for comfortable reading
-        const inAttachment = scrollAnimProgress >= 0.03 && scrollAnimProgress <= 0.19;
-        const inBack       = scrollAnimProgress >= 0.23 && scrollAnimProgress <= 0.39;
-        const inHatch      = scrollAnimProgress >= 0.43 && scrollAnimProgress <= 0.59;
-        const inScrew      = scrollAnimProgress >= 0.63 && scrollAnimProgress <= 0.79;
+        const p = scrollAnimProgress;
+        const T = SCROLL_TRANS, PH = SCROLL_PHASE;
+
+        // Each feature is visible only during its dwell window (model has finished moving)
+        const inAttachment = p >= T        && p <= PH;
+        const inBack       = p >= PH + T   && p <= PH * 2;
+        const inHatch      = p >= PH * 2 + T && p <= PH * 3;
+        const inScrew      = p >= PH * 3 + T && p <= PH * 4;
 
         if (scrollDetailPanel) {
             show(scrollDetailPanel.querySelector(".o_three_scroll_feature_detail_attachment"), inAttachment);
@@ -932,74 +945,90 @@ whenReady(async () => {
         const SIDE_PITCH   = -Math.PI * 0.056; // ≈ -10°, nearly upright for side view
         const BOTTOM_PITCH =  Math.PI * 0.433; // ≈ +78°, bottom face tilted toward camera
 
-        // 5 phases × 0.20 each:
-        //   Phase 1 (0.00–0.20): tilt back → top face (attachment)
-        //   Phase 2 (0.20–0.40): come upright + yaw 180° → back face (release button)
-        //   Phase 3 (0.40–0.60): yaw back to 90° → side face (latch)
-        //   Phase 4 (0.60–0.80): yaw back to 0° + tip forward → bottom face (screw)
-        //   Phase 5 (0.80–1.00): return to resting pose
-        const p1 = easeInOutCubic(clamp(t / 0.20, 0, 1));
-        const p2 = easeInOutCubic(clamp((t - 0.20) / 0.20, 0, 1));
-        const p3 = easeInOutCubic(clamp((t - 0.40) / 0.20, 0, 1));
-        const p4 = easeInOutCubic(clamp((t - 0.60) / 0.20, 0, 1));
-        const p5 = easeOutCubic(clamp((t - 0.80) / 0.20, 0, 1));
+        // Reuse the shared timing constants defined alongside updateScrollHotspots.
+        // Layout (t = 0 … 1):
+        //   Feature 1  [0.00 … 0.22]:  0.00–0.08 transition → top face;    0.08–0.22 dwell
+        //   Feature 2  [0.22 … 0.44]:  0.22–0.30 transition → back face;   0.30–0.44 dwell
+        //   Feature 3  [0.44 … 0.66]:  0.44–0.52 transition → side face;   0.52–0.66 dwell
+        //   Feature 4  [0.66 … 0.88]:  0.66–0.74 transition → bottom face; 0.74–0.88 dwell
+        //   Return     [0.88 … 1.00]:  return to resting pose
+        const T  = SCROLL_TRANS; // 0.08
+        const PH = SCROLL_PHASE; // 0.22
+        const RETURN_DUR = 1 - PH * 4; // 0.12
 
-        // Responsive: on large screens slide model left during animation, return to centre at rest
+        // Progress within each transition — clamp naturally holds at 1.0 during the dwell,
+        // so no special dwell-phase branching is needed for the pose values.
+        const p1 = easeInOutCubic(clamp(t / T, 0, 1));
+        const p2 = easeInOutCubic(clamp((t - PH)     / T, 0, 1));
+        const p3 = easeInOutCubic(clamp((t - PH * 2) / T, 0, 1));
+        const p4 = easeInOutCubic(clamp((t - PH * 3) / T, 0, 1));
+        const p5 = easeOutCubic(clamp((t - PH * 4) / RETURN_DUR, 0, 1));
+
         const desktop    = isLargeScreen();
         const scaleStart = desktop ? 1.50 : 1.30;
         const scalePeak  = desktop ? 1.85 : 1.55;
 
-        const scale = t < 0.80 ? lerp(scaleStart, scalePeak, p1) : lerp(scalePeak, scaleStart, p5);
+        // Scale: ramp up with first transition, hold at peak for all features, ramp down on return
+        let scale;
+        if (t < PH) {
+            scale = lerp(scaleStart, scalePeak, p1);
+        } else if (t < PH * 4) {
+            scale = scalePeak;
+        } else {
+            scale = lerp(scalePeak, scaleStart, p5);
+        }
         scrollWrapper.scale.setScalar(scale);
 
-        // X position: 0 at rest → -0.7 at peak (desktop only)
-        const targetX = desktop
-            ? (t < 0.80 ? lerp(0, -0.7, p1) : lerp(-0.7, 0, p5))
-            : 0;
+        // X offset: slide left on first transition (desktop only), hold, return
+        let targetX;
+        if (!desktop) {
+            targetX = 0;
+        } else if (t < PH) {
+            targetX = lerp(0, -0.7, p1);
+        } else if (t < PH * 4) {
+            targetX = -0.7;
+        } else {
+            targetX = lerp(-0.7, 0, p5);
+        }
         scrollWrapper.position.set(targetX, 0, 0);
 
-        // Model X (pitch)
+        // Model pitch (X rotation)
         let modelX;
-        if (t < 0.20) {
-            modelX = lerp(0, TOP_PITCH, p1);           // tilt for top face
-        } else if (t < 0.40) {
-            modelX = lerp(TOP_PITCH, 0, p2);           // come upright for back face
-        } else if (t < 0.60) {
-            modelX = lerp(0, SIDE_PITCH, p3);          // slight tilt for side face
-        } else if (t < 0.80) {
-            modelX = lerp(SIDE_PITCH, BOTTOM_PITCH, p4); // tip forward for bottom face
+        if (t < PH) {
+            modelX = lerp(0, TOP_PITCH, p1);              // tilt for top face
+        } else if (t < PH * 2) {
+            modelX = lerp(TOP_PITCH, 0, p2);              // come upright for back face
+        } else if (t < PH * 3) {
+            modelX = lerp(0, SIDE_PITCH, p3);             // slight tilt for side face
+        } else if (t < PH * 4) {
+            modelX = lerp(SIDE_PITCH, BOTTOM_PITCH, p4);  // tip forward for bottom face
         } else {
-            modelX = lerp(BOTTOM_PITCH, 0, p5);        // return to rest
+            modelX = lerp(BOTTOM_PITCH, 0, p5);           // return to rest
         }
         scrollModel.rotation.x = modelX;
         scrollModel.rotation.y = 0;
         scrollModel.rotation.z = 0;
 
-        // Wrapper Y (yaw):
-        //   Phase 1: stay at baseY
-        //   Phase 2: swing +180° to show back face
-        //   Phase 3: swing back –90° to show side face (now at baseY + 90°)
-        //   Phase 4: swing back –90° to return toward front (now at baseY)
-        //   Phase 5: stay at baseY
+        // Wrapper yaw (Y rotation)
         let wrapperY;
-        if (t < 0.20) {
+        if (t < PH) {
             wrapperY = baseY;
-        } else if (t < 0.40) {
+        } else if (t < PH * 2) {
             wrapperY = lerp(baseY, baseY + Math.PI, p2);
-        } else if (t < 0.60) {
+        } else if (t < PH * 3) {
             wrapperY = lerp(baseY + Math.PI, baseY + Math.PI * 0.5, p3);
-        } else if (t < 0.80) {
+        } else if (t < PH * 4) {
             wrapperY = lerp(baseY + Math.PI * 0.5, baseY, p4);
         } else {
             wrapperY = baseY;
         }
         scrollWrapper.rotation.y = wrapperY;
 
-        // Wrapper Z (roll): flatten slightly during reveal phases for a cleaner view
+        // Wrapper roll (Z rotation): flatten slightly during feature phases
         let wrapperZ;
-        if (t < 0.20) {
+        if (t < PH) {
             wrapperZ = lerp(baseZ, baseZ * 0.4, p1);
-        } else if (t < 0.80) {
+        } else if (t < PH * 4) {
             wrapperZ = baseZ * 0.4;
         } else {
             wrapperZ = lerp(baseZ * 0.4, baseZ, p5);
@@ -1199,24 +1228,34 @@ whenReady(async () => {
         const buySection = document.querySelector(".o_omnigo_buy_section");
         if (!buySection) return;
 
-        const productId = parseInt(buySection.dataset.productId, 10);
-        const qtyInput  = buySection.querySelector(".o_omnigo_buy_qty_input");
-        const decBtn    = buySection.querySelector(".o_omnigo_buy_qty_dec");
-        const incBtn    = buySection.querySelector(".o_omnigo_buy_qty_inc");
-        const cartBtn   = buySection.querySelector(".o_omnigo_buy_cart_btn");
-        const nowBtn    = buySection.querySelector(".o_omnigo_buy_now_btn");
+        // NOTE: QWeb cannot place t-att-* on the outer <section> when the t-set blocks
+        // that compute og_variant are children of that same element — the opening tag
+        // is emitted before child directives run. The product ID therefore lives on
+        // .o_omnigo_buy_inner, which is rendered *after* those t-set lines execute.
+        const buyInner  = buySection.querySelector(".o_omnigo_buy_inner");
+        if (!buyInner) return;
 
-        if (!productId) return;
+        const productId = parseInt(buyInner.dataset.productId, 10);
+        if (!productId) {
+            console.warn("[buy] data-product-id missing or zero on .o_omnigo_buy_inner");
+            return;
+        }
+
+        const qtyInput = buySection.querySelector(".o_omnigo_buy_qty_input");
+        const decBtn   = buySection.querySelector(".o_omnigo_buy_qty_dec");
+        const incBtn   = buySection.querySelector(".o_omnigo_buy_qty_inc");
+        const cartBtn  = buySection.querySelector(".o_omnigo_buy_cart_btn");
+        const nowBtn   = buySection.querySelector(".o_omnigo_buy_now_btn");
 
         // Quantity stepper
         decBtn?.addEventListener("click", () => {
-            const v = Math.max(1, parseInt(qtyInput.value, 10) - 1);
-            qtyInput.value = v;
+            qtyInput.value = Math.max(1, parseInt(qtyInput.value, 10) - 1);
         });
         incBtn?.addEventListener("click", () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
+        // JSON-RPC call — /shop/cart/update is type='json' (csrf=False) in Odoo 17
         async function callCartUpdate(qty) {
             const res = await fetch("/shop/cart/update", {
                 method: "POST",
@@ -1233,6 +1272,21 @@ whenReady(async () => {
             return json.result;
         }
 
+        // Sync Odoo's header cart badge (.my_cart_quantity) with the updated quantity
+        function syncCartBadge(result) {
+            const newQty = result?.cart_quantity;
+            if (newQty === undefined) return;
+            document.querySelectorAll(".my_cart_quantity").forEach(el => {
+                el.textContent = String(newQty);
+            });
+            // Show/hide the cart icon wrapper if Odoo hides it when empty
+            document.querySelectorAll(".o_cart_button, a.o_extra_menu_items").forEach(el => {
+                if (el.querySelector(".my_cart_quantity")) {
+                    el.classList.toggle("d-none", newQty === 0);
+                }
+            });
+        }
+
         function setBtnState(btn, state) {
             btn.dataset.state = state;
             btn.disabled = state === "loading";
@@ -1242,10 +1296,12 @@ whenReady(async () => {
             const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
             setBtnState(cartBtn, "loading");
             try {
-                await callCartUpdate(qty);
+                const result = await callCartUpdate(qty);
+                syncCartBadge(result);
                 setBtnState(cartBtn, "added");
                 setTimeout(() => setBtnState(cartBtn, ""), 2200);
-            } catch {
+            } catch (err) {
+                console.error("[buy] add-to-cart failed:", err);
                 setBtnState(cartBtn, "error");
                 setTimeout(() => setBtnState(cartBtn, ""), 2200);
             }
@@ -1255,10 +1311,12 @@ whenReady(async () => {
             const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
             setBtnState(nowBtn, "loading");
             try {
-                await callCartUpdate(qty);
+                const result = await callCartUpdate(qty);
+                syncCartBadge(result);
                 window.open("/shop/cart", "_blank");
                 setBtnState(nowBtn, "");
-            } catch {
+            } catch (err) {
+                console.error("[buy] buy-now failed:", err);
                 setBtnState(nowBtn, "error");
                 setTimeout(() => setBtnState(nowBtn, ""), 2200);
             }

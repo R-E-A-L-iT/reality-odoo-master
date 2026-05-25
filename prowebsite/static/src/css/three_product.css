@@ -368,7 +368,7 @@
 .o_three_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 500vh;
+    min-height: 700vh;
     overflow: visible;
     z-index: 1;
 
@@ -1019,7 +1019,7 @@
 /* Video scroll: shorter scroll distance + tighter layout on small screens */
 @media (max-width: 768px) {
     .o_three_scroll_section {
-        min-height: 420vh;
+        min-height: 560vh;
     }
 
     .o_omnigo_video_scroll_section {
