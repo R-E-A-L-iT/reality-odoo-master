@@ -1235,10 +1235,38 @@ whenReady(async () => {
         const buyInner  = buySection.querySelector(".o_omnigo_buy_inner");
         if (!buyInner) return;
 
-        const productId = parseInt(buyInner.dataset.productId, 10);
+        const productId  = parseInt(buyInner.dataset.productId,  10);
+        const templateId = parseInt(buyInner.dataset.templateId, 10) || null;
         if (!productId) {
             console.warn("[buy] data-product-id missing or zero on .o_omnigo_buy_inner");
             return;
+        }
+
+        // Try every possible source for the Odoo CSRF token, in order of reliability.
+        // Sources tried:
+        //   1. Explicit hidden input rendered by QWeb into the buy section (most reliable — add this to your template)
+        //   2. window.odoo.__session_info__.csrf_token  (set by ir.http on all Odoo pages)
+        //   3. window.odoo.session_info.csrf_token      (legacy key name)
+        //   4. window.odoo.csrf_token                   (set on backend pages, sometimes website)
+        //   5. <meta name="csrf-token">                 (present in some Odoo configurations)
+        //   6. Any existing <form> with a csrf_token input (e.g. search, newsletter forms)
+        function getCsrf() {
+            const fromInput = buyInner.querySelector(".o_omnigo_buy_csrf")?.value;
+            if (fromInput) return fromInput;
+
+            const o = window.odoo || {};
+            const fromSession = o.__session_info__?.csrf_token
+                             || o.session_info?.csrf_token
+                             || o.csrf_token;
+            if (fromSession) return fromSession;
+
+            const fromMeta = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+            if (fromMeta) return fromMeta;
+
+            const fromForm = document.querySelector('form input[name="csrf_token"]')?.value;
+            if (fromForm) return fromForm;
+
+            return "";
         }
 
         const qtyInput = buySection.querySelector(".o_omnigo_buy_qty_input");
@@ -1255,29 +1283,29 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
-        // /shop/cart/update is a type='http' Odoo route — it expects standard
-        // form-encoded data plus a CSRF token, not a JSON-RPC envelope.
-        // jQuery automatically adds X-Requested-With: XMLHttpRequest, which makes
-        // Odoo return a compact JSON object {cart_quantity: N} instead of a redirect.
-        function getCsrf() {
-            return window.odoo?.csrf_token
-                || document.querySelector('[name="csrf_token"]')?.value
-                || document.querySelector('meta[name="csrf-token"]')?.content
-                || "";
-        }
-
+        // /shop/cart/update is a type='http' Odoo route — send standard form data
+        // with a CSRF token. jQuery adds X-Requested-With: XMLHttpRequest automatically,
+        // which tells Odoo to return compact JSON {cart_quantity: N} instead of a redirect.
         async function callCartUpdate(qty) {
+            const csrf = getCsrf();
+            console.log("[buy] callCartUpdate →", { productId, templateId, qty, csrf: csrf ? `${csrf.slice(0, 8)}…` : "(EMPTY)" });
+            if (!csrf) {
+                console.warn("[buy] CSRF token is empty — add: <input type='hidden' name='csrf_token' class='o_omnigo_buy_csrf' t-att-value=\"request.csrf_token()\"/> inside .o_omnigo_buy_inner in your XML template");
+            }
+
+            const params = {
+                product_id: productId,
+                add_qty: qty,
+                csrf_token: csrf,
+            };
+            if (templateId) params.product_template_id = templateId;
+
             const jq = window.$ || window.jQuery;
             return new Promise((resolve, reject) => {
                 jq.ajax({
                     url: "/shop/cart/update",
                     method: "POST",
-                    // Default contentType → application/x-www-form-urlencoded
-                    data: {
-                        product_id: productId,
-                        add_qty: qty,
-                        csrf_token: getCsrf(),
-                    },
+                    data: params,
                     success(data) {
                         resolve(data);
                     },
