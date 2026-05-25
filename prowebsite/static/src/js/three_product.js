@@ -1255,43 +1255,49 @@ whenReady(async () => {
             qtyInput.value = Math.min(99, parseInt(qtyInput.value, 10) + 1);
         });
 
-        // jQuery.ajax is always available on Odoo website pages and — unlike raw
-        // fetch — automatically adds X-Requested-With: XMLHttpRequest, which Odoo's
-        // middleware requires to recognise the request as an AJAX/JSON-RPC call.
+        // /shop/cart/update is a type='http' Odoo route — it expects standard
+        // form-encoded data plus a CSRF token, not a JSON-RPC envelope.
+        // jQuery automatically adds X-Requested-With: XMLHttpRequest, which makes
+        // Odoo return a compact JSON object {cart_quantity: N} instead of a redirect.
+        function getCsrf() {
+            return window.odoo?.csrf_token
+                || document.querySelector('[name="csrf_token"]')?.value
+                || document.querySelector('meta[name="csrf-token"]')?.content
+                || "";
+        }
+
         async function callCartUpdate(qty) {
             const jq = window.$ || window.jQuery;
             return new Promise((resolve, reject) => {
                 jq.ajax({
                     url: "/shop/cart/update",
                     method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        jsonrpc: "2.0",
-                        method: "call",
-                        id: Math.floor(Math.random() * 1e9),
-                        params: { product_id: productId, add_qty: qty },
-                    }),
+                    // Default contentType → application/x-www-form-urlencoded
+                    data: {
+                        product_id: productId,
+                        add_qty: qty,
+                        csrf_token: getCsrf(),
+                    },
                     success(data) {
-                        if (data.error) {
-                            const msg = data.error.data?.message || data.error.message || "Cart error";
-                            reject(new Error(msg));
-                        } else {
-                            resolve(data.result);
-                        }
+                        resolve(data);
                     },
                     error(xhr) {
-                        const preview = xhr.responseText?.slice(0, 300) || "";
-                        console.error("[buy] cart update HTTP error:", xhr.status, preview);
+                        const preview = xhr.responseText?.slice(0, 200) || "";
+                        console.error("[buy] cart update error:", xhr.status, preview);
                         reject(new Error(`Cart error (HTTP ${xhr.status})`));
                     },
                 });
             });
         }
 
-        // Sync Odoo's header cart badge (.my_cart_quantity) with the updated quantity
+        // Sync Odoo's header cart badge (.my_cart_quantity) with the updated quantity.
+        // type='http' AJAX response shape: { cart_quantity: N, ... }
         function syncCartBadge(result) {
             const newQty = result?.cart_quantity;
-            if (newQty === undefined) return;
+            if (newQty === undefined) {
+                console.info("[buy] syncCartBadge: no cart_quantity in response", result);
+                return;
+            }
             document.querySelectorAll(".my_cart_quantity").forEach(el => {
                 el.textContent = String(newQty);
             });
