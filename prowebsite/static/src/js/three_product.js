@@ -1007,27 +1007,25 @@ whenReady(async () => {
         vid.setAttribute("playsinline", "");
         vid.setAttribute("preload", "auto");
 
-        // Prime Safari for seeking.
+        // Do NOT call play() / pause() for priming.
         //
-        // The critical detail: pause must happen on the `playing` event (first
-        // frame decoded), NOT the `play` event (just scheduled to play).
-        // Calling pause() synchronously inside `play` prevents Safari from
-        // finishing its decoder initialisation, leaving currentTime seeks
-        // permanently broken — which produced the "stuck after a few frames" bug.
-        // Using `playing` + { once: true } lets Safari fully decode one frame
-        // before we pause, which is the minimum needed to unlock scrubbing.
-        vid.addEventListener("playing", () => {
-            vid.pause();
-            vid.currentTime = 0; // rewind so scrubbing always starts from 0
-        }, { once: true, passive: true });
-
-        vid.play().catch(() => {
-            // Autoplay blocked (iOS without user gesture). Scrubbing may still
-            // work; proceed — the worst case is a static first frame.
-        });
-
-        // Per-entry seek throttle timestamp.
+        // Every previous attempt used a play→pause cycle to "unlock" Safari
+        // seeking. The root problem: play() + currentTime = 0 inside the
+        // playing/play handler issues two concurrent seek operations. Safari
+        // processes the first, ignores the second, and the scrub loop then
+        // fires a third — leaving the decoder deadlocked on the first seek
+        // forever ("frozen a few frames in").
+        //
+        // Modern Safari (15+) with muted + playsinline + preload=auto does NOT
+        // need play-priming to allow currentTime seeks. Gate on `canplay`
+        // instead — it fires once the browser has buffered the first frame and
+        // confirmed it can decode the stream, which is all we need.
+        entry.canSeek = vid.readyState >= 2; // already buffered (e.g. cached)
         entry.lastSeekAt = 0;
+
+        if (!entry.canSeek) {
+            vid.addEventListener("canplay", () => { entry.canSeek = true; }, { passive: true, once: true });
+        }
     });
 
     function updateOmnigoScrollVideo() {
@@ -1035,12 +1033,12 @@ whenReady(async () => {
         allVideoSections.forEach(entry => {
             const { sec, vid } = entry;
 
-            // readyState >= 1 (HAVE_METADATA) is enough — we have duration and
-            // can queue seeks. Waiting for readyState 2 caused permanent stalls
-            // on Safari when the browser dropped back to readyState 1 mid-seek.
-            if (!vid.duration || vid.readyState < 1) return;
+            // Wait until canplay fires — ensures we have duration and at least
+            // the first frame buffered before issuing any seek.
+            if (!entry.canSeek || !vid.duration) return;
 
-            // Throttle: max ~8 seeks/s — Safari becomes unreliable above this.
+            // Throttle to ~8 seeks/s. Safari is reliable in this range;
+            // faster than this risks overlapping seeks which cause freezes.
             if (now - entry.lastSeekAt < 120) return;
 
             const rect = sec.getBoundingClientRect();
