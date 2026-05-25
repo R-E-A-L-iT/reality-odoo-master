@@ -58,16 +58,16 @@
     transform: translate(2px, 2px);
 }
 
-/* top-right and bottom-left: thin outer-edge arcs */
+/* top-right and bottom-left: thin outer-edge arcs, pulled slightly inward */
 .o_omnibase_cursor_part_right {
     clip-path: polygon(53% 0, 100% 0, 100% 47%, 53% 47%);
-    transform: translate(3px, -3px);
+    transform: translate(1px, -1px);
     border-width: 1.5px;
 }
 
 .o_omnibase_cursor_part_left {
     clip-path: polygon(0 53%, 47% 53%, 47% 100%, 0 100%);
-    transform: translate(-3px, 3px);
+    transform: translate(-1px, 1px);
     border-width: 1.5px;
 }
 
@@ -769,15 +769,37 @@
     margin: 0;
     break-inside: auto;
 
-    background: rgba(255,255,255,0.94);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 28px;
-    padding: clamp(28px, 3vw, 48px);
-    box-shadow: 0 24px 70px rgba(0,0,0,0.22);
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: clamp(32px, 3vw, 52px);
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.08),
+        0 32px 64px rgba(0,0,0,0.12);
 
     opacity: 0;
     transform: translateY(45px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s ease;
+}
+
+.o_review_waterfall_card.is-visible:hover {
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.04),
+        0 12px 32px rgba(0,0,0,0.11),
+        0 40px 80px rgba(0,0,0,0.16);
+    transform: translateY(-3px);
+}
+
+.o_review_waterfall_card::before {
+    content: '\201C';
+    display: block;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 72px;
+    line-height: 0.75;
+    color: rgba(196, 0, 0, 0.18);
+    margin-bottom: 16px;
+    letter-spacing: -2px;
 }
 
 .o_review_waterfall_card.is-visible {
@@ -809,33 +831,47 @@
 
 .o_review_waterfall_quote {
     margin: 0;
-    color: #111;
+    color: #1a1a1a;
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(17px, 1.2vw, 22px);
-    line-height: 1.65;
-    font-weight: 500;
+    font-size: clamp(15px, 1.05vw, 18px);
+    line-height: 1.75;
+    font-weight: 400;
     flex: 1;
 }
 
 .o_review_waterfall_author {
-    margin-top: 34px;
-    padding-top: 22px;
-    border-top: 4px solid #c40000;
+    margin-top: 28px;
+    padding-top: 0;
     color: #111;
+}
+
+.o_review_waterfall_author::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: #c40000;
+    border-radius: 2px;
+    margin-bottom: 16px;
 }
 
 .o_review_waterfall_author strong {
     display: block;
-    font-size: 18px;
-    font-weight: 900;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.10em;
+    color: #0d0d0d;
 }
 
 .o_review_waterfall_author span {
     display: block;
-    color: #666;
-    font-size: 14px;
+    color: #888;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-top: 3px;
 }
 
 @media (max-width: 1100px) {
