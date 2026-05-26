@@ -1398,61 +1398,90 @@ whenReady(async () => {
     initOmnigoBuySection();
 
     // ----------------------------
-    // Video Gallery carousel
+    // Video Gallery carousel — infinite loop with peek
     // ----------------------------
     function initVideoGallery() {
-        const section = document.querySelector(".o_omnigo_vgallery_section");
+        const section  = document.querySelector(".o_omnigo_vgallery_section");
         if (!section) return;
 
         const track    = section.querySelector(".o_omnigo_vgallery_track");
-        const slides   = Array.from(section.querySelectorAll(".o_omnigo_vgallery_slide"));
+        const origSlides = Array.from(section.querySelectorAll(".o_omnigo_vgallery_slide"));
         const prevBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-prev");
         const nextBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-next");
         const dotsWrap = section.querySelector(".o_omnigo_vgallery_dots");
         const counter  = section.querySelector(".o_omnigo_vgallery_counter");
 
-        if (!track || slides.length === 0) return;
+        if (!track || origSlides.length === 0) return;
 
-        const total = slides.length;
-        let current = 0;
-        let isAnimating = false;
+        const total = origSlides.length;
 
-        // Build dot indicators
-        const dots = slides.map((_, i) => {
+        // px of adjacent slide visible on each side.
+        // visible = PEEK − GAP. With PEEK=80, GAP=16 → 64 px visible.
+        const PEEK = 80;
+        const GAP  = 16;
+
+        // ── Clone first / last slides for seamless infinite loop ───────────────
+        const firstClone = origSlides[0].cloneNode(true);
+        const lastClone  = origSlides[total - 1].cloneNode(true);
+        firstClone.setAttribute("aria-hidden", "true");
+        lastClone.setAttribute("aria-hidden",  "true");
+        track.appendChild(firstClone);
+        track.prepend(lastClone);
+        // DOM layout: [lastClone(0), slide0(1) … slideN-1(N), firstClone(N+1)]
+
+        const allSlides = Array.from(track.children);
+
+        let domIdx   = 1;    // DOM index of the currently visible slide
+        let realIdx  = 0;    // 0-based index into the original slides
+        let animating = false;
+
+        // ── Layout helpers ──────────────────────────────────────────────────────
+        function slideW() {
+            // trackWrap fills the stage via flex:1, so its width is the stage width.
+            return track.parentElement.offsetWidth - 2 * PEEK;
+        }
+
+        function setSlideWidths() {
+            const w = Math.max(slideW(), 100);
+            allSlides.forEach(s => { s.style.width = w + "px"; });
+            track.style.gap = GAP + "px";
+        }
+
+        function offsetFor(d) {
+            // translateX that places the left edge of slide d at x = PEEK
+            return PEEK - d * (slideW() + GAP);
+        }
+
+        function applyTranslate(px, animated) {
+            track.style.transition = animated
+                ? "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)"
+                : "none";
+            track.style.transform = `translateX(${px}px)`;
+        }
+
+        function markActive() {
+            allSlides.forEach((s, i) => s.classList.toggle("is-active", i === domIdx));
+        }
+
+        // ── Dots ────────────────────────────────────────────────────────────────
+        const dots = origSlides.map((_, i) => {
             const dot = document.createElement("button");
-            dot.className = "o_omnigo_vgallery_dot" + (i === 0 ? " is-active" : "");
+            dot.className = "o_omnigo_vgallery_dot";
             dot.setAttribute("aria-label", `Go to video ${i + 1}`);
-            dot.addEventListener("click", () => goTo(i));
+            dot.addEventListener("click", () => {
+                if (!animating) goTo(i + 1, i);
+            });
             dotsWrap?.appendChild(dot);
             return dot;
         });
 
-        // Clone mobile arrow buttons into the controls row so they appear
-        // below the video on small screens without duplicating HTML in the page.
-        const controlsRow = section.querySelector(".o_omnigo_vgallery_controls");
-        if (controlsRow) {
-            const makeMobileArrow = (direction) => {
-                const btn = document.createElement("button");
-                btn.className = `o_omnigo_vgallery_arrow_mobile is-${direction}`;
-                btn.setAttribute("aria-label", direction === "prev" ? "Previous video" : "Next video");
-                btn.innerHTML = direction === "prev"
-                    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`
-                    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
-                btn.addEventListener("click", () => goTo(direction === "prev" ? current - 1 : current + 1));
-                return btn;
-            };
-            const mobilePrev = makeMobileArrow("prev");
-            const mobileNext = makeMobileArrow("next");
-            controlsRow.prepend(mobilePrev);
-            controlsRow.appendChild(mobileNext);
-
-            // Keep mobile arrows in sync with disabled state
-            window._vgalleryMobilePrev = mobilePrev;
-            window._vgalleryMobileNext = mobileNext;
+        function updateUI() {
+            dots.forEach((d, i) => d.classList.toggle("is-active", i === realIdx));
+            if (counter) counter.textContent = `${realIdx + 1} / ${total}`;
+            markActive();
         }
 
-        // Pause a Vimeo iframe without reloading it.
-        // Uses the Vimeo Player postMessage API (no extra library needed).
+        // ── Pause Vimeo without reloading (postMessage API) ─────────────────────
         function pauseVimeo(slideEl) {
             const iframe = slideEl?.querySelector(".o_omnigo_vgallery_iframe");
             if (!iframe?.contentWindow) return;
@@ -1464,70 +1493,91 @@ whenReady(async () => {
             } catch (_) {}
         }
 
-        function updateUI() {
-            dots.forEach((d, i) => d.classList.toggle("is-active", i === current));
-            if (counter) counter.textContent = `${current + 1} / ${total}`;
-
-            const atStart = current === 0;
-            const atEnd   = current === total - 1;
-
-            if (prevBtn) prevBtn.disabled = atStart;
-            if (nextBtn) nextBtn.disabled = atEnd;
-            if (window._vgalleryMobilePrev) window._vgalleryMobilePrev.disabled = atStart;
-            if (window._vgalleryMobileNext) window._vgalleryMobileNext.disabled = atEnd;
-        }
-
-        function goTo(idx) {
-            if (isAnimating) return;
-            const clamped = Math.max(0, Math.min(total - 1, idx));
-            if (clamped === current) return;
-
-            pauseVimeo(slides[current]);
-
-            isAnimating = true;
-            current = clamped;
-
-            track.style.transform = `translateX(-${current * 100}%)`;
+        // ── Navigation ──────────────────────────────────────────────────────────
+        function goTo(targetDom, targetReal) {
+            if (animating) return;
+            pauseVimeo(allSlides[domIdx]);
+            animating = true;
+            domIdx   = targetDom;
+            realIdx  = targetReal;
+            applyTranslate(offsetFor(domIdx), true);
             updateUI();
-
-            // Lock input for the duration of the CSS transition (0.42 s)
-            setTimeout(() => { isAnimating = false; }, 440);
         }
 
-        // Enable CSS transition only after the first programmatic position is set,
-        // so the initial render doesn't animate from slide 0 position.
-        requestAnimationFrame(() => {
-            track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
+        function next() {
+            const nd = domIdx + 1;
+            const nr = nd <= total ? nd - 1 : 0;
+            goTo(nd, nr);
+        }
+
+        function prev() {
+            const nd = domIdx - 1;
+            const nr = nd >= 1 ? nd - 1 : total - 1;
+            goTo(nd, nr);
+        }
+
+        // ── Infinite-loop snap (silently jump clone → real slide) ───────────────
+        track.addEventListener("transitionend", e => {
+            if (e.propertyName !== "transform") return;
+            animating = false;
+
+            if (domIdx === 0) {
+                // Arrived at lastClone → snap to real last slide
+                domIdx  = total;
+                realIdx = total - 1;
+                applyTranslate(offsetFor(domIdx), false);
+                markActive();
+            } else if (domIdx === total + 1) {
+                // Arrived at firstClone → snap to real first slide
+                domIdx  = 1;
+                realIdx = 0;
+                applyTranslate(offsetFor(domIdx), false);
+                markActive();
+            }
         });
 
-        prevBtn?.addEventListener("click", () => goTo(current - 1));
-        nextBtn?.addEventListener("click", () => goTo(current + 1));
+        // ── Event wiring ────────────────────────────────────────────────────────
+        prevBtn?.addEventListener("click", prev);
+        nextBtn?.addEventListener("click", next);
 
-        // Keyboard arrow navigation when the gallery is focused
         section.addEventListener("keydown", e => {
-            if (e.key === "ArrowLeft")  { e.preventDefault(); goTo(current - 1); }
-            if (e.key === "ArrowRight") { e.preventDefault(); goTo(current + 1); }
+            if (e.key === "ArrowLeft")  { e.preventDefault(); prev(); }
+            if (e.key === "ArrowRight") { e.preventDefault(); next(); }
         });
 
-        // Touch / swipe support
+        let _tx = 0;
         const trackWrap = section.querySelector(".o_omnigo_vgallery_track_wrap");
-        let _touchX = 0;
-        trackWrap?.addEventListener("touchstart", e => {
-            _touchX = e.touches[0].clientX;
-        }, { passive: true });
+        trackWrap?.addEventListener("touchstart", e => { _tx = e.touches[0].clientX; }, { passive: true });
         trackWrap?.addEventListener("touchend", e => {
-            const delta = e.changedTouches[0].clientX - _touchX;
-            if (Math.abs(delta) > 44) goTo(delta < 0 ? current + 1 : current - 1);
+            const delta = e.changedTouches[0].clientX - _tx;
+            if (Math.abs(delta) > 44) { delta < 0 ? next() : prev(); }
         }, { passive: true });
 
-        // Hide arrows and counter when there's only one video
-        if (total <= 1) {
+        // Recompute on resize (debounced)
+        let _rt = null;
+        window.addEventListener("resize", () => {
+            clearTimeout(_rt);
+            _rt = setTimeout(() => {
+                setSlideWidths();
+                applyTranslate(offsetFor(domIdx), false);
+            }, 120);
+        }, { passive: true });
+
+        // ── Single-video mode — no carousel needed ──────────────────────────────
+        if (total === 1) {
             prevBtn?.setAttribute("data-hidden", "true");
             nextBtn?.setAttribute("data-hidden", "true");
-            if (counter) counter.style.display = "none";
             if (dotsWrap) dotsWrap.style.display = "none";
+            if (counter)  counter.style.display  = "none";
         }
 
+        // ── Init ─────────────────────────────────────────────────────────────────
+        setSlideWidths();
+        applyTranslate(offsetFor(domIdx), false);
+        // Defer enabling the CSS transition so the initial position never animates.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
+        }));
         updateUI();
     }
 
