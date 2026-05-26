@@ -562,19 +562,9 @@
     background: #ffffff;
     overflow: hidden;
     box-sizing: border-box;
-    /* Section 1 (row): heading is on the left, so the right edge faces the video */
-    border-right: 2px solid #d8d8d8;
 }
 
-/* Section 2 (row-reverse): heading is on the right, so the left edge faces the video */
 .o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_heading {
-    border-right: none;
-    border-left: 2px solid #d8d8d8;
-}
-
-/* Horizontal border between the two video sections */
-.o_omnigo_video_scroll_section + .o_omnigo_video_scroll_section {
-    border-top: 2px solid #d8d8d8;
 }
 
 .o_omnigo_video_scroll_title {
@@ -1172,15 +1162,9 @@
         padding: 24px 24px;
         order: 2;
         justify-content: center;
-        /* No side border when stacked vertically — use top border instead */
-        border-right: none;
-        border-left: none;
-        border-top: 2px solid #d8d8d8;
     }
 
     .o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_heading {
-        border-left: none;
-        border-top: 2px solid #d8d8d8;
     }
 
     .o_omnigo_video_scroll_title {
@@ -1999,8 +1983,6 @@
     background-color: #ffffff !important;
     color: #111111 !important;
     padding: 80px 0 64px !important;
-    border-top: 2px solid #d8d8d8;
-    border-bottom: 2px solid #d8d8d8;
     /* Clips the peeking slides at the section edges */
     overflow: hidden;
 }
