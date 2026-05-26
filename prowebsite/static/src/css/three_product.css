@@ -560,18 +560,18 @@
     overflow: hidden;
     box-sizing: border-box;
     /* Section 1 (row): heading is on the left, so the right edge faces the video */
-    border-right: 2px solid #c40000;
+    border-right: 1px solid #d8d8d8;
 }
 
 /* Section 2 (row-reverse): heading is on the right, so the left edge faces the video */
 .o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_heading {
     border-right: none;
-    border-left: 2px solid #c40000;
+    border-left: 1px solid #d8d8d8;
 }
 
-/* Red horizontal border between the two video sections */
+/* Horizontal border between the two video sections */
 .o_omnigo_video_scroll_section + .o_omnigo_video_scroll_section {
-    border-top: 2px solid #c40000;
+    border-top: 1px solid #d8d8d8;
 }
 
 .o_omnigo_video_scroll_title {
@@ -1166,12 +1166,12 @@
         /* No side border when stacked vertically — use top border instead */
         border-right: none;
         border-left: none;
-        border-top: 2px solid #c40000;
+        border-top: 1px solid #d8d8d8;
     }
 
     .o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_heading {
         border-left: none;
-        border-top: 2px solid #c40000;
+        border-top: 1px solid #d8d8d8;
     }
 
     .o_omnigo_video_scroll_title {
