@@ -1557,10 +1557,7 @@ whenReady(async () => {
         let _rt = null;
         window.addEventListener("resize", () => {
             clearTimeout(_rt);
-            _rt = setTimeout(() => {
-                setSlideWidths();
-                applyTranslate(offsetFor(domIdx), false);
-            }, 120);
+            _rt = setTimeout(() => { doLayout(); }, 120);
         }, { passive: true });
 
         // ── Single-video mode — no carousel needed ──────────────────────────────
@@ -1572,12 +1569,34 @@ whenReady(async () => {
         }
 
         // ── Init ─────────────────────────────────────────────────────────────────
-        setSlideWidths();
-        applyTranslate(offsetFor(domIdx), false);
-        // Defer enabling the CSS transition so the initial position never animates.
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
-        }));
+        // Use ResizeObserver so the slide widths are computed after the browser
+        // has actually laid out the stage — calling offsetWidth synchronously
+        // during script execution often returns 0 because layout hasn't run yet.
+        function doLayout() {
+            setSlideWidths();
+            applyTranslate(offsetFor(domIdx), false);
+        }
+
+        const stage = section.querySelector(".o_omnigo_vgallery_stage");
+        const ro = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                if (entry.contentRect.width > 0) {
+                    doLayout();
+                    // Enable CSS transition only after the first real paint so
+                    // the initial position doesn't animate in from 0.
+                    requestAnimationFrame(() => {
+                        track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
+                    });
+                    ro.disconnect();
+                }
+            }
+        });
+        ro.observe(stage || track.parentElement);
+
+        // Synchronous attempt in case the element already has a size
+        // (e.g. page was loaded from cache and layout is already done).
+        doLayout();
+
         updateUI();
     }
 
