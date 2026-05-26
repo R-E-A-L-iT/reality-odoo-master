@@ -1416,9 +1416,9 @@ whenReady(async () => {
         const total = origSlides.length;
 
         // Must match the CSS values:
-        //   .o_omnigo_vgallery_slide  { flex: 0 0 calc(100% - 160px) }  → PEEK = 80
+        //   .o_omnigo_vgallery_slide  { flex: 0 0 calc(100% - 220px) }  → PEEK = 110
         //   .o_omnigo_vgallery_track  { gap: 16px }                      → GAP  = 16
-        const PEEK = 80;
+        const PEEK = 110;
         const GAP  = 16;
 
         // ── Clone first / last slides for seamless infinite loop ───────────────

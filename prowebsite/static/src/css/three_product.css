@@ -1989,7 +1989,7 @@
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #111111 !important;
-    padding: 80px 0 88px !important;
+    padding: 80px 0 64px !important;
     border-top: 2px solid #d8d8d8;
     border-bottom: 2px solid #d8d8d8;
     /* Clips the peeking slides at the section edges */
@@ -2039,7 +2039,8 @@
 }
 
 /* Stage — the carousel viewport. Arrows absolutely positioned inside.
-   Explicit max-width so arrows + peek are always within the constrained band. */
+   Gradient pseudo-elements softly fade out peeking slides at both edges
+   instead of hard-clipping them. */
 .o_omnigo_vgallery_stage {
     position: relative;
     overflow: hidden;
@@ -2047,6 +2048,26 @@
     max-width: 960px;
     margin: 0 auto;
     width: 100%;
+}
+
+/* Soft white fade over the peek zones — hides hard clip, no need for overflow:visible */
+.o_omnigo_vgallery_stage::before,
+.o_omnigo_vgallery_stage::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 110px;
+    z-index: 5;
+    pointer-events: none;
+}
+.o_omnigo_vgallery_stage::before {
+    left: 0;
+    background: linear-gradient(to right, #ffffff 30%, rgba(255,255,255,0));
+}
+.o_omnigo_vgallery_stage::after {
+    right: 0;
+    background: linear-gradient(to left, #ffffff 30%, rgba(255,255,255,0));
 }
 
 /* Arrow buttons — overlaid on peek areas at each edge */
@@ -2110,21 +2131,25 @@
     will-change: transform;
 }
 
-/* Slides: CSS owns the width — calc(100% - 2*PEEK) where PEEK=80px.
-   This means the adjacent slide peeking amount is determined purely by CSS
-   so it's correct on first paint without waiting for JS. */
+/* Slides: CSS owns the width — calc(100% - 2*PEEK) where PEEK=110px → 220px total.
+   Non-active slides scale down slightly so they appear further behind the active one.
+   MUST match JS constants: PEEK=110, GAP=16. */
 .o_omnigo_vgallery_slide {
-    flex: 0 0 calc(100% - 160px);
+    flex: 0 0 calc(100% - 220px);
     min-width: 0;
     border-radius: 14px;
     overflow: hidden;
     border: 1.5px solid #e4e4e4;
-    opacity: 0.42;
-    transition: opacity 0.35s ease;
+    opacity: 0.4;
+    transform: scale(0.88);
+    transform-origin: center center;
+    transition: opacity 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .o_omnigo_vgallery_slide.is-active {
     opacity: 1;
+    transform: scale(1);
 }
 
 /* 16:9 embed — use aspect-ratio (reliable, no JS dependency) */
@@ -2156,8 +2181,8 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-top: 24px;
-    padding: 0 clamp(24px, 5vw, 64px);
+    margin-top: 0;
+    padding: 28px clamp(24px, 5vw, 64px) 32px;
 }
 
 .o_omnigo_vgallery_dots {
