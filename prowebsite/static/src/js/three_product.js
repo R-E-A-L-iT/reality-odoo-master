@@ -822,9 +822,11 @@ whenReady(async () => {
     //   [TRANS … PHASE)  — model holds still; callout is visible   ← dwell
     // 4 × PHASE = 0.88; remaining 0.12 = return-to-rest transition.
     // All four dwell windows are exactly DWELL wide → consistent pause per feature.
-    const SCROLL_TRANS = 0.08;                    // 8 % per transition
-    const SCROLL_DWELL = 0.14;                    // 14 % per dwell → 4 × 0.22 = 0.88; return = 0.12
-    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.22 per feature
+    const SCROLL_TRANS  = 0.08;   // 8 % of total scroll per feature transition
+    const SCROLL_DWELL  = 0.09;   // 9 % of total scroll per feature dwell
+    const SCROLL_PHASE  = SCROLL_TRANS + SCROLL_DWELL; // 0.17 per feature; 4 × 0.17 = 0.68 total
+    const SCROLL_RETURN = 0.10;   // return-to-rest animation completes in this fraction of scroll;
+                                  // model then sits at rest for the remaining ~0.22 of the section
 
     function updateScrollHotspots() {
         if (!scrollHotspotLayer) return;
@@ -893,8 +895,7 @@ whenReady(async () => {
         //   Feature 4  [0.66 … 0.88]:  0.66–0.74 transition → bottom face; 0.74–0.88 dwell
         //   Return     [0.88 … 1.00]:  return to resting pose
         const T  = SCROLL_TRANS; // 0.08
-        const PH = SCROLL_PHASE; // 0.22
-        const RETURN_DUR = 1 - PH * 4; // 0.12
+        const PH = SCROLL_PHASE; // 0.17
 
         // Progress within each transition — clamp naturally holds at 1.0 during the dwell,
         // so no special dwell-phase branching is needed for the pose values.
@@ -902,7 +903,7 @@ whenReady(async () => {
         const p2 = easeInOutCubic(clamp((t - PH)     / T, 0, 1));
         const p3 = easeInOutCubic(clamp((t - PH * 2) / T, 0, 1));
         const p4 = easeInOutCubic(clamp((t - PH * 3) / T, 0, 1));
-        const p5 = easeOutCubic(clamp((t - PH * 4) / RETURN_DUR, 0, 1));
+        const p5 = easeOutCubic(clamp((t - PH * 4) / SCROLL_RETURN, 0, 1));
 
         const desktop    = isLargeScreen();
         const scaleStart = desktop ? 1.50 : 1.30;
