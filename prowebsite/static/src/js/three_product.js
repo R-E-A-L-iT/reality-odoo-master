@@ -90,7 +90,7 @@ whenReady(async () => {
                     </a>
                     <div class="o_omnigo_ch_divider"></div>
                     <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="OmniGO">
-                        <img src="https://cdn.r-e-a-l.it/images/header/omnigo_draft.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
+                        <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
                     </a>
                 </div>
                 <nav class="o_omnigo_ch_nav" aria-label="OmniGO navigation">
