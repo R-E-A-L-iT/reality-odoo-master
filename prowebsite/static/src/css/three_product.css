@@ -2103,16 +2103,19 @@
     position: relative;
 }
 
-/* Track — slides laid out in a row; width + gap set by JS */
+/* Track — gap matches JS PEEK/GAP constants (PEEK=80, GAP=16) */
 .o_omnigo_vgallery_track {
     display: flex;
+    gap: 16px;
     will-change: transform;
 }
 
-/* Individual slides — each has its own rounded border; width set by JS.
-   Non-active slides dim slightly so the current one clearly pops. */
+/* Slides: CSS owns the width — calc(100% - 2*PEEK) where PEEK=80px.
+   This means the adjacent slide peeking amount is determined purely by CSS
+   so it's correct on first paint without waiting for JS. */
 .o_omnigo_vgallery_slide {
-    flex: 0 0 auto;
+    flex: 0 0 calc(100% - 160px);
+    min-width: 0;
     border-radius: 14px;
     overflow: hidden;
     border: 1.5px solid #e4e4e4;
@@ -2124,11 +2127,11 @@
     opacity: 1;
 }
 
-/* 16:9 Vimeo embed */
+/* 16:9 embed — use aspect-ratio (reliable, no JS dependency) */
 .o_omnigo_vgallery_embed_wrap {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%;
+    aspect-ratio: 16 / 9;
     background: #111;
     overflow: hidden;
 }

@@ -1415,8 +1415,9 @@ whenReady(async () => {
 
         const total = origSlides.length;
 
-        // px of adjacent slide visible on each side.
-        // visible = PEEK − GAP. With PEEK=80, GAP=16 → 64 px visible.
+        // Must match the CSS values:
+        //   .o_omnigo_vgallery_slide  { flex: 0 0 calc(100% - 160px) }  → PEEK = 80
+        //   .o_omnigo_vgallery_track  { gap: 16px }                      → GAP  = 16
         const PEEK = 80;
         const GAP  = 16;
 
@@ -1436,15 +1437,15 @@ whenReady(async () => {
         let animating = false;
 
         // ── Layout helpers ──────────────────────────────────────────────────────
+        // CSS owns the slide width (flex: 0 0 calc(100% - 160px)) and the gap
+        // (gap: 16px). JS just reads the rendered width — no risk of timing bugs.
         function slideW() {
-            // trackWrap fills the stage via flex:1, so its width is the stage width.
-            return track.parentElement.offsetWidth - 2 * PEEK;
+            // Read from the first real slide (domIndex 1); fall back to estimate.
+            return allSlides[1]?.offsetWidth || (track.parentElement.offsetWidth - 2 * PEEK);
         }
 
         function setSlideWidths() {
-            const w = Math.max(slideW(), 100);
-            allSlides.forEach(s => { s.style.width = w + "px"; });
-            track.style.gap = GAP + "px";
+            // Nothing to set — CSS handles it. Only the translateX needs updating.
         }
 
         function offsetFor(d) {
@@ -1553,11 +1554,12 @@ whenReady(async () => {
             if (Math.abs(delta) > 44) { delta < 0 ? next() : prev(); }
         }, { passive: true });
 
-        // Recompute on resize (debounced)
+        // Reposition on window resize (CSS re-computes slide width automatically;
+        // we just need to recalculate the translateX offset to match).
         let _rt = null;
         window.addEventListener("resize", () => {
             clearTimeout(_rt);
-            _rt = setTimeout(() => { doLayout(); }, 120);
+            _rt = setTimeout(doLayout, 120);
         }, { passive: true });
 
         // ── Single-video mode — no carousel needed ──────────────────────────────
@@ -1569,11 +1571,11 @@ whenReady(async () => {
         }
 
         // ── Init ─────────────────────────────────────────────────────────────────
-        // Use ResizeObserver so the slide widths are computed after the browser
-        // has actually laid out the stage — calling offsetWidth synchronously
-        // during script execution often returns 0 because layout hasn't run yet.
+        // CSS controls slide width and aspect ratio, so all we need to do is
+        // read the rendered slide width and apply the correct translateX.
+        // We use ResizeObserver on the stage so this fires after the browser
+        // has done a layout pass and allSlides[1].offsetWidth is non-zero.
         function doLayout() {
-            setSlideWidths();
             applyTranslate(offsetFor(domIdx), false);
         }
 
@@ -1582,8 +1584,8 @@ whenReady(async () => {
             for (const entry of entries) {
                 if (entry.contentRect.width > 0) {
                     doLayout();
-                    // Enable CSS transition only after the first real paint so
-                    // the initial position doesn't animate in from 0.
+                    // Enable CSS transition only after first real paint so the
+                    // initial snap doesn't animate in from position 0.
                     requestAnimationFrame(() => {
                         track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
                     });
@@ -1593,8 +1595,8 @@ whenReady(async () => {
         });
         ro.observe(stage || track.parentElement);
 
-        // Synchronous attempt in case the element already has a size
-        // (e.g. page was loaded from cache and layout is already done).
+        // Try synchronously too — works when page is served from cache and
+        // offsetWidth is already valid at script-execution time.
         doLayout();
 
         updateUI();
