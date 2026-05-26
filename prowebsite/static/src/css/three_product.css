@@ -2039,35 +2039,16 @@
 }
 
 /* Stage — the carousel viewport. Arrows absolutely positioned inside.
-   Gradient pseudo-elements softly fade out peeking slides at both edges
-   instead of hard-clipping them. */
+   overflow: visible lets adjacent slides extend beyond the stage boundary
+   and be seen fully. The parent section (overflow: hidden) clips them at
+   the viewport edges on narrow screens. */
 .o_omnigo_vgallery_stage {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     max-width: 960px;
     margin: 0 auto;
     width: 100%;
-}
-
-/* Soft white fade over the peek zones — hides hard clip, no need for overflow:visible */
-.o_omnigo_vgallery_stage::before,
-.o_omnigo_vgallery_stage::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 110px;
-    z-index: 5;
-    pointer-events: none;
-}
-.o_omnigo_vgallery_stage::before {
-    left: 0;
-    background: linear-gradient(to right, #ffffff 30%, rgba(255,255,255,0));
-}
-.o_omnigo_vgallery_stage::after {
-    right: 0;
-    background: linear-gradient(to left, #ffffff 30%, rgba(255,255,255,0));
 }
 
 /* Arrow buttons — overlaid on peek areas at each edge */
