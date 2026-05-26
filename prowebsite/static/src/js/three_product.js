@@ -541,7 +541,7 @@ whenReady(async () => {
     let bottomLastInteractionTime = 0;
 
     const bottomDefaultCameraZ = 5;
-    const bottomMinCameraZ = 3.2;
+    const bottomMinCameraZ = 4.2;  // raised — limits max zoom-in
     const bottomMaxCameraZ = 7.2;
     const bottomZoomStep = 0.35;
 
@@ -1275,9 +1275,13 @@ whenReady(async () => {
                         if (priceEl2) {
                             const clone = priceEl2.cloneNode(true);
                             clone.querySelector(".o_omnigo_buy_currency")?.remove();
-                            // Typical QWeb output: "$ 2.00" — collapse whitespace
+                            // Typical QWeb output: "$ 299.00" — collapse whitespace,
+                            // strip decimals, then remove any space between the
+                            // currency symbol and the number (e.g. "$ 299" — "$299").
                             const rawText = clone.textContent.replace(/\s+/g, " ").trim();
-                            const priceText = rawText.replace(/\.\d+/g, "");
+                            const priceText = rawText
+                                .replace(/\.\d+/g, "")
+                                .replace(/([^\d\s])\s+(\d)/g, "$1$2");
                             const label = `Buy Now | ${priceText}`;
                             document.querySelectorAll(".o_omnigo_ch_buy_btn").forEach(btn => {
                                 btn.textContent = label;
