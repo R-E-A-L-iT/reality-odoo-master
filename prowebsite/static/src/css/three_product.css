@@ -283,7 +283,10 @@
 
 .o_three_bottom_model_host {
     position: absolute;
-    inset: 0;
+    top: 92px;   /* clear the fixed header so the model renders in the visible area */
+    left: 0;
+    right: 0;
+    bottom: 0;
     overflow: hidden;
 }
 
@@ -527,12 +530,12 @@
    ─────────────────────────────────────────────────────────────────────── */
 .o_omnigo_video_scroll_inner {
     position: sticky;
-    top: 0;
+    top: 92px;   /* sit below the fixed header (92px expanded / 64px scrolled) */
     /* Viewport-escape: break out of any centered container */
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(50% - 50vw);
-    height: 100vh;
+    height: calc(100vh - 92px);
     background: #ffffff;
     display: flex;
     flex-direction: row;       /* side-by-side split */
@@ -631,6 +634,9 @@
     overflow: hidden;
     background: #000000;   /* letterbox colour when aspect ratio doesn't match */
     position: relative;
+    /* Safari: force compositing layer to suppress hairline border on video */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
 }
 
 /* Video fills the panel height; cover crops rather than letterboxing */
@@ -641,7 +647,10 @@
     object-fit: cover;
     background: #000000;
     border: none;
+    outline: none;
     vertical-align: top;
+    /* Safari: suppress the default webkit media border */
+    -webkit-appearance: none;
 }
 
 /* feature highlights */
@@ -1138,7 +1147,7 @@
         justify-content: flex-start;
         padding: 0 !important;
         width: 100vw;
-        height: 100vh;
+        height: calc(100vh - 92px);
     }
 
     /* Video on top, takes ~60 % of the height */
@@ -2120,7 +2129,9 @@
     min-width: 0;
     border-radius: 14px;
     overflow: hidden;
-    border: 1.5px solid #e4e4e4;
+    /* Safari: force compositing layer so border-radius actually clips the iframe */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
     opacity: 0.4;
     transform: scale(0.88);
     transform-origin: center center;
@@ -2148,7 +2159,10 @@
     width: 100%;
     height: 100%;
     border: none;
+    outline: none;
     display: block;
+    /* Safari: suppress webkit's default iframe border */
+    -webkit-appearance: none;
 }
 
 /* Caption — hidden; peek design removes the need for it */
