@@ -1055,10 +1055,11 @@ whenReady(async () => {
             vid.setAttribute("playsinline", "");
             vid.setAttribute("preload", "auto");
 
-            // Collapse the tall scroll-scrub section to a normal height.
-            // The sticky inner becomes a regular full-viewport panel.
-            sec.style.minHeight = "";
-            sec.style.height    = "auto";
+            // Collapse the tall scroll-scrub section to a normal viewport height.
+            // Setting minHeight to "0" via inline style overrides the CSS 520vh rule;
+            // leaving it as "" would remove the inline style and let 520vh reassert itself.
+            sec.style.minHeight = "0";
+            sec.style.height    = "100vh";
             const inner = sec.querySelector(".o_omnigo_video_scroll_inner");
             if (inner) inner.style.position = "relative";
 
