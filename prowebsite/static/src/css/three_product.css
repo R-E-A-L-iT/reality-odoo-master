@@ -1,14 +1,17 @@
 /* ─── Global: prevent horizontal scroll ────────────────────────────────────── */
 /* Carousel peek slides and 100vw viewport-escape sections both push past the
-   page boundary. Clipping on body stops the scrollbar from appearing without
-   touching position:sticky or fixed elements.                                  */
-html {
-    overflow-x: hidden;
-}
-
+   page boundary. #wrapwrap is Odoo's main content wrapper — clipping there
+   is more reliable than html/body which Odoo's own CSS can override.
+   position:fixed and position:sticky elements are unaffected by this.          */
+html,
 body {
     overflow-x: hidden;
     max-width: 100%;
+}
+
+#wrapwrap {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
 }
 
 /* ─── Hero video section — bouncing scroll arrow ───────────────────────────── */
@@ -1996,11 +1999,7 @@ body {
     background-color: #ffffff !important;
     color: #111111 !important;
     padding: 80px 0 64px !important;
-    /* Clips the peeking slides at the section edges.
-       overflow-x: clip (vs hidden) doesn't create a scroll container, so the
-       browser excludes the overflowing slides from page scroll-width. */
-    overflow-x: clip;
-    overflow-y: visible;
+    overflow: hidden !important;
 }
 
 /* Header has its own horizontal inset; stage bleeds wider */
