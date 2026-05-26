@@ -129,6 +129,7 @@
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",
         "views/Other/res_config_extend_view.xml",
+        "views/Other/kit_qty_wizard_view.xml",
         "views/Other/rental_pricing_mode.xml",
         "views/Quote/table_align.xml",
         "views/Other/crm_lead.xml",

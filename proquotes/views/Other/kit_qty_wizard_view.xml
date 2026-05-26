@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_proquotes_kit_qty_wizard_form" model="ir.ui.view">
+        <field name="name">proquotes.kit.qty.wizard.form</field>
+        <field name="model">proquotes.kit.qty.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Edit Kit Component Quantities">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="kit_product_name" string="Kit Product"/>
+                        <h3><field name="kit_product_name" readonly="1"/></h3>
+                    </div>
+                    <field name="sale_line_id" invisible="1"/>
+                    <field name="line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="product_id" readonly="1" string="Component"/>
+                            <field name="sku" readonly="1" optional="show"/>
+                            <field name="original_qty" readonly="1" string="BOM Default" optional="show"/>
+                            <field name="qty" string="Quote Qty"/>
+                        </tree>
+                    </field>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <strong>Note:</strong> Saving will update the quote description and adjust quantities on any pending (not yet validated) delivery.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_save" string="Save &amp; Sync to Delivery" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
