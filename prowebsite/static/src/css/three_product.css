@@ -1327,13 +1327,13 @@
 }
 
 .o_omnigo_ch_omnigo_img {
-    height: 28px;
+    height: 46px;
     object-fit: contain;
     transition: height 0.35s ease, opacity 0.2s ease;
 }
 
 .o_omnigo_ch_header.is-scrolled .o_omnigo_ch_omnigo_img {
-    height: 22px;
+    height: 36px;
 }
 
 /* Desktop nav */

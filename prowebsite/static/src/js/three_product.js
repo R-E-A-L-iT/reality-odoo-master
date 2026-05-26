@@ -541,9 +541,6 @@ whenReady(async () => {
     let bottomLastInteractionTime = 0;
 
     const bottomDefaultCameraZ = 5;
-    const bottomMinCameraZ = 4.2;  // raised — limits max zoom-in
-    const bottomMaxCameraZ = 7.2;
-    const bottomZoomStep = 0.35;
 
     bottomModelHost.style.cursor = "grab";
     bottomModelHost.style.touchAction = "none";
@@ -591,22 +588,11 @@ whenReady(async () => {
         }
     }
 
-    function onBottomWheel(event) {
-        event.preventDefault();
-
-        const direction = Math.sign(event.deltaY);
-        const nextZ = bottomCamera.position.z + direction * bottomZoomStep;
-
-        bottomCamera.position.z = clamp(nextZ, bottomMinCameraZ, bottomMaxCameraZ);
-        markBottomInteraction();
-    }
-
     bottomRenderer.domElement.addEventListener("pointerdown", onBottomPointerDown);
     bottomRenderer.domElement.addEventListener("pointermove", onBottomPointerMove);
     bottomRenderer.domElement.addEventListener("pointerup", onBottomPointerUp);
     bottomRenderer.domElement.addEventListener("pointerleave", onBottomPointerUp);
     bottomRenderer.domElement.addEventListener("pointercancel", onBottomPointerUp);
-    bottomRenderer.domElement.addEventListener("wheel", onBottomWheel, { passive: false });
 
     // ── Drag-to-rotate hint overlay ──────────────────────────────────────────
     // Wide curved double-headed arrow; hides while dragging, reappears after idle.
@@ -667,15 +653,27 @@ whenReady(async () => {
                 obj.scale.setScalar(2.2 / maxAxis);
             }
 
-            // Centre the model at the origin.
-            const box = new THREE.Box3().setFromObject(obj);
-            const center = box.getCenter(new THREE.Vector3());
-            obj.position.set(-center.x, -center.y, -center.z);
-            obj.rotation.x = 0;
-            obj.rotation.z = 0;
+            // Compute the true geometric centre from mesh geometry only.
+            // A mesh-only box ignores any lights or cameras embedded in the GLB
+            // that would inflate setFromObject() and shift the apparent pivot.
+            const meshBox = new THREE.Box3();
+            obj.traverse(child => {
+                if (child.isMesh) meshBox.expandByObject(child);
+            });
+            const center = meshBox.isEmpty()
+                ? new THREE.Vector3()
+                : meshBox.getCenter(new THREE.Vector3());
+
+            // Use a pivot group to carry the centering offset independently of obj.
+            // If the GLB animation has position tracks on the scene root they target
+            // obj, not pivot — so the rotation axis stays locked to the model centre
+            // even while the animation is playing.
+            const pivot = new THREE.Group();
+            pivot.position.set(-center.x, -center.y, -center.z);
+            pivot.add(obj);
 
             bottomWrapper = new THREE.Group();
-            bottomWrapper.add(obj);
+            bottomWrapper.add(pivot);
             bottomWrapper.position.set(0, 0, 0);
             bottomScene.add(bottomWrapper);
 
