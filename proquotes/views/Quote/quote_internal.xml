@@ -63,7 +63,13 @@
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
                    position="before">
                 <field name="applied_name" invisible="0" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
-                <field name="ba_kit_description" optional="show" widget="text" string="Kit Items" readonly="state in ('sale', 'done', 'cancel')"/>
+                <field name="is_kit_product" column_invisible="1"/>
+                <field name="ba_kit_description" optional="show" string="Kit Items" readonly="1"/>
+                <button name="action_open_kit_qty_wizard" string="Edit Kit Qty" type="object"
+                        optional="show"
+                        invisible="not is_kit_product or state in ('sale', 'done', 'cancel')"
+                        icon="fa-sliders"
+                        title="Edit kit component quantities for this quote line"/>
             </xpath>
 
             <!-- Make quantity readonly when order is confirmed -->

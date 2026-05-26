@@ -13,3 +13,5 @@ proquotes.access_ccp_scanner_config_user,access_ccp_scanner_config_user,proquote
 proquotes.access_ccp_scanner_config_manager,access_ccp_scanner_config_manager,proquotes.model_ccp_scanner_config,sales_team.group_sale_manager,1,1,1,1
 access_res_users_company_footer_user,res.users.company.footer.user,model_res_users_company_footer,base.group_user,1,1,1,1
 access_res_users_company_footer_user,res.users.company.footer.user,model_res_users_company_footer,base.group_user,1,1,1,1
+proquotes.access_kit_qty_wizard,access_kit_qty_wizard,proquotes.model_proquotes_kit_qty_wizard,base.group_user,1,1,1,1
+proquotes.access_kit_qty_wizard_line,access_kit_qty_wizard_line,proquotes.model_proquotes_kit_qty_wizard_line,base.group_user,1,1,1,1
