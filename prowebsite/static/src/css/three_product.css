@@ -1979,3 +1979,253 @@
     }
 }
 }
+
+/* ── Video Gallery Section ───────────────────────────────────────────────── */
+.o_omnigo_vgallery_section {
+    background: #f4f4f4;
+    padding: 88px 0 96px;
+    border-top: 2px solid #d8d8d8;
+}
+
+.o_omnigo_vgallery_inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 80px);
+}
+
+/* Header */
+.o_omnigo_vgallery_header {
+    text-align: center;
+    margin-bottom: 52px;
+}
+
+.o_omnigo_vgallery_kicker {
+    display: block;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c40000;
+    margin-bottom: 14px;
+}
+
+.o_omnigo_vgallery_title {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+    line-height: 1.15;
+}
+
+.o_omnigo_vgallery_title::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 4px;
+    background: #c40000;
+    border-radius: 999px;
+    margin: 20px auto 0;
+}
+
+/* Stage — arrow · track · arrow */
+.o_omnigo_vgallery_stage {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Arrow buttons */
+.o_omnigo_vgallery_arrow {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid #d8d8d8;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333;
+    transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+    padding: 0;
+    outline: none;
+}
+
+.o_omnigo_vgallery_arrow:hover {
+    border-color: #c40000;
+    color: #c40000;
+    transform: scale(1.07);
+}
+
+.o_omnigo_vgallery_arrow:focus-visible {
+    outline: 2px solid #c40000;
+    outline-offset: 2px;
+}
+
+.o_omnigo_vgallery_arrow:disabled,
+.o_omnigo_vgallery_arrow[data-hidden="true"] {
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.o_omnigo_vgallery_arrow svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Track — clipping window */
+.o_omnigo_vgallery_track_wrap {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    /* Box shadow to lift the card off the grey background */
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10), 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+.o_omnigo_vgallery_track {
+    display: flex;
+    /* transition set in JS after first paint to avoid initial animation */
+}
+
+/* Individual slide */
+.o_omnigo_vgallery_slide {
+    flex: 0 0 100%;
+    width: 100%;
+    background: #000;
+}
+
+/* 16 : 9 responsive Vimeo embed */
+.o_omnigo_vgallery_embed_wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background: #000;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.o_omnigo_vgallery_iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Caption below each video */
+.o_omnigo_vgallery_caption {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    color: #777;
+    text-align: center;
+    margin: 0;
+    padding: 14px 20px 18px;
+    background: #fff;
+    letter-spacing: 0.01em;
+    border-radius: 0 0 18px 18px;
+}
+
+/* Dots + counter row */
+.o_omnigo_vgallery_controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.o_omnigo_vgallery_dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.o_omnigo_vgallery_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    outline: none;
+}
+
+.o_omnigo_vgallery_dot:focus-visible {
+    outline: 2px solid #c40000;
+    outline-offset: 2px;
+}
+
+.o_omnigo_vgallery_dot.is-active {
+    background: #c40000;
+    transform: scale(1.45);
+}
+
+.o_omnigo_vgallery_counter {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 0.06em;
+    user-select: none;
+    min-width: 44px;
+    text-align: center;
+}
+
+/* Mobile — stack arrows under the video */
+@media (max-width: 680px) {
+    .o_omnigo_vgallery_section {
+        padding: 60px 0 72px;
+    }
+
+    .o_omnigo_vgallery_stage {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .o_omnigo_vgallery_arrow {
+        display: none; /* arrows moved to controls row on mobile */
+    }
+
+    .o_omnigo_vgallery_controls {
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    /* Show mobile-only arrow siblings inside the controls row */
+    .o_omnigo_vgallery_arrow_mobile {
+        display: flex !important;
+    }
+}
+
+.o_omnigo_vgallery_arrow_mobile {
+    display: none;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #d8d8d8;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    padding: 0;
+    outline: none;
+}
+
+.o_omnigo_vgallery_arrow_mobile:hover {
+    border-color: #c40000;
+    color: #c40000;
+}
+
+.o_omnigo_vgallery_arrow_mobile:disabled {
+    opacity: 0.25;
+    pointer-events: none;
+}

@@ -1398,6 +1398,142 @@ whenReady(async () => {
     initOmnigoBuySection();
 
     // ----------------------------
+    // Video Gallery carousel
+    // ----------------------------
+    function initVideoGallery() {
+        const section = document.querySelector(".o_omnigo_vgallery_section");
+        if (!section) return;
+
+        const track    = section.querySelector(".o_omnigo_vgallery_track");
+        const slides   = Array.from(section.querySelectorAll(".o_omnigo_vgallery_slide"));
+        const prevBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-prev");
+        const nextBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-next");
+        const dotsWrap = section.querySelector(".o_omnigo_vgallery_dots");
+        const counter  = section.querySelector(".o_omnigo_vgallery_counter");
+
+        if (!track || slides.length === 0) return;
+
+        const total = slides.length;
+        let current = 0;
+        let isAnimating = false;
+
+        // Build dot indicators
+        const dots = slides.map((_, i) => {
+            const dot = document.createElement("button");
+            dot.className = "o_omnigo_vgallery_dot" + (i === 0 ? " is-active" : "");
+            dot.setAttribute("aria-label", `Go to video ${i + 1}`);
+            dot.addEventListener("click", () => goTo(i));
+            dotsWrap?.appendChild(dot);
+            return dot;
+        });
+
+        // Clone mobile arrow buttons into the controls row so they appear
+        // below the video on small screens without duplicating HTML in the page.
+        const controlsRow = section.querySelector(".o_omnigo_vgallery_controls");
+        if (controlsRow) {
+            const makeMobileArrow = (direction) => {
+                const btn = document.createElement("button");
+                btn.className = `o_omnigo_vgallery_arrow_mobile is-${direction}`;
+                btn.setAttribute("aria-label", direction === "prev" ? "Previous video" : "Next video");
+                btn.innerHTML = direction === "prev"
+                    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`
+                    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+                btn.addEventListener("click", () => goTo(direction === "prev" ? current - 1 : current + 1));
+                return btn;
+            };
+            const mobilePrev = makeMobileArrow("prev");
+            const mobileNext = makeMobileArrow("next");
+            controlsRow.prepend(mobilePrev);
+            controlsRow.appendChild(mobileNext);
+
+            // Keep mobile arrows in sync with disabled state
+            window._vgalleryMobilePrev = mobilePrev;
+            window._vgalleryMobileNext = mobileNext;
+        }
+
+        // Pause a Vimeo iframe without reloading it.
+        // Uses the Vimeo Player postMessage API (no extra library needed).
+        function pauseVimeo(slideEl) {
+            const iframe = slideEl?.querySelector(".o_omnigo_vgallery_iframe");
+            if (!iframe?.contentWindow) return;
+            try {
+                iframe.contentWindow.postMessage(
+                    JSON.stringify({ method: "pause" }),
+                    "https://player.vimeo.com"
+                );
+            } catch (_) {}
+        }
+
+        function updateUI() {
+            dots.forEach((d, i) => d.classList.toggle("is-active", i === current));
+            if (counter) counter.textContent = `${current + 1} / ${total}`;
+
+            const atStart = current === 0;
+            const atEnd   = current === total - 1;
+
+            if (prevBtn) prevBtn.disabled = atStart;
+            if (nextBtn) nextBtn.disabled = atEnd;
+            if (window._vgalleryMobilePrev) window._vgalleryMobilePrev.disabled = atStart;
+            if (window._vgalleryMobileNext) window._vgalleryMobileNext.disabled = atEnd;
+        }
+
+        function goTo(idx) {
+            if (isAnimating) return;
+            const clamped = Math.max(0, Math.min(total - 1, idx));
+            if (clamped === current) return;
+
+            pauseVimeo(slides[current]);
+
+            isAnimating = true;
+            current = clamped;
+
+            track.style.transform = `translateX(-${current * 100}%)`;
+            updateUI();
+
+            // Lock input for the duration of the CSS transition (0.42 s)
+            setTimeout(() => { isAnimating = false; }, 440);
+        }
+
+        // Enable CSS transition only after the first programmatic position is set,
+        // so the initial render doesn't animate from slide 0 position.
+        requestAnimationFrame(() => {
+            track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
+        });
+
+        prevBtn?.addEventListener("click", () => goTo(current - 1));
+        nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+        // Keyboard arrow navigation when the gallery is focused
+        section.addEventListener("keydown", e => {
+            if (e.key === "ArrowLeft")  { e.preventDefault(); goTo(current - 1); }
+            if (e.key === "ArrowRight") { e.preventDefault(); goTo(current + 1); }
+        });
+
+        // Touch / swipe support
+        const trackWrap = section.querySelector(".o_omnigo_vgallery_track_wrap");
+        let _touchX = 0;
+        trackWrap?.addEventListener("touchstart", e => {
+            _touchX = e.touches[0].clientX;
+        }, { passive: true });
+        trackWrap?.addEventListener("touchend", e => {
+            const delta = e.changedTouches[0].clientX - _touchX;
+            if (Math.abs(delta) > 44) goTo(delta < 0 ? current + 1 : current - 1);
+        }, { passive: true });
+
+        // Hide arrows and counter when there's only one video
+        if (total <= 1) {
+            prevBtn?.setAttribute("data-hidden", "true");
+            nextBtn?.setAttribute("data-hidden", "true");
+            if (counter) counter.style.display = "none";
+            if (dotsWrap) dotsWrap.style.display = "none";
+        }
+
+        updateUI();
+    }
+
+    initVideoGallery();
+
+    // ----------------------------
     // FAQ accordion
     // ----------------------------
     // Single event listener on the list — no per-item listeners needed.
