@@ -9,11 +9,11 @@ class KitQtyWizardLine(models.TransientModel):
     _description = 'Kit Quantity Wizard Line'
     _order = 'id asc'
 
-    wizard_id    = fields.Many2one('proquotes.kit.qty.wizard', ondelete='cascade', required=True)
+    wizard_id    = fields.Many2one('proquotes.kit.qty.wizard', ondelete='cascade')
     bom_line_id  = fields.Many2one('mrp.bom.line')
-    product_id   = fields.Many2one('product.product', string='Component', required=True, readonly=True)
-    sku          = fields.Char(related='product_id.product_tmpl_id.sku', readonly=True)
-    product_name = fields.Char(related='product_id.name', readonly=True, string='Component Name')
+    product_id   = fields.Many2one('product.product', string='Component')
+    sku          = fields.Char(string='SKU')
+    product_name = fields.Char(string='Component Name')
     original_qty = fields.Float(string='BOM Default', readonly=True)
     qty          = fields.Float(string='Quote Qty', digits='Product Unit of Measure')
 
@@ -61,11 +61,13 @@ class KitQtyWizard(models.TransientModel):
         wizard_lines = []
         for bom_line in bom.bom_line_ids:
             product = bom_line.product_id
-            sku = product.product_tmpl_id.sku
+            sku = product.product_tmpl_id.sku or ''
             qty = current_qtys.get(sku) or current_qtys.get(product.name) or bom_line.product_qty
             wizard_lines.append((0, 0, {
                 'bom_line_id': bom_line.id,
                 'product_id': product.id,
+                'sku': sku,
+                'product_name': product.name,
                 'original_qty': bom_line.product_qty,
                 'qty': qty,
             }))
@@ -83,8 +85,8 @@ class KitQtyWizard(models.TransientModel):
         parts = []
         for wl in self.line_ids:
             qty = int(wl.qty) if wl.qty == int(wl.qty) else wl.qty
-            sku = wl.product_id.product_tmpl_id.sku
-            name = wl.product_id.name
+            sku = wl.sku
+            name = wl.product_name or (wl.product_id.name if wl.product_id else '')
             part = f"{qty}x {sku} - {name}" if sku else f"{qty}x {name}"
             parts.append(part)
         line.write({'ba_kit_description': '\n'.join(parts)})
