@@ -822,7 +822,7 @@ whenReady(async () => {
     // the same on every screen. setScrollSectionHeight() derives the section's
     // min-height from these so that 4×PHASE + RETURN = 1.0 exactly — the section
     // ends the moment the return animation finishes, with no idle scrolling left.
-    const TRANS_VH        = 0.35;  // each transition:    35 % of viewport height
+    const TRANS_VH        = 0.55;  // each transition:    55 % of viewport height
     const DWELL_VH        = 0.50;  // each feature dwell: 50 % of viewport height
     const RETURN_VH       = 0.55;  // return-to-rest:     55 % of viewport height
     const TOTAL_SCROLL_VH = 4 * (TRANS_VH + DWELL_VH) + RETURN_VH; // ≈ 3.95
