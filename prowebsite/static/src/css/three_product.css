@@ -1,3 +1,16 @@
+/* ─── Global: prevent horizontal scroll ────────────────────────────────────── */
+/* Carousel peek slides and 100vw viewport-escape sections both push past the
+   page boundary. Clipping on body stops the scrollbar from appearing without
+   touching position:sticky or fixed elements.                                  */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 /* ─── Hero video section — bouncing scroll arrow ───────────────────────────── */
 .o_omnigo_scroll_arrow {
     position: absolute;
@@ -1983,8 +1996,11 @@
     background-color: #ffffff !important;
     color: #111111 !important;
     padding: 80px 0 64px !important;
-    /* Clips the peeking slides at the section edges */
-    overflow: hidden;
+    /* Clips the peeking slides at the section edges.
+       overflow-x: clip (vs hidden) doesn't create a scroll container, so the
+       browser excludes the overflowing slides from page scroll-width. */
+    overflow-x: clip;
+    overflow-y: visible;
 }
 
 /* Header has its own horizontal inset; stage bleeds wider */
