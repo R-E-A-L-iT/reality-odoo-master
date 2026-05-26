@@ -12,6 +12,85 @@ whenReady(async () => {
     // ----------------------------
     const omniPage = document.querySelector(".o_three_hero, .o_omnigo_buy_section, #omnigo-page-loader")?.closest("#wrap");
 
+    // ----------------------------
+    // i18n — JS-injected strings
+    // ----------------------------
+    // Read the active language from the <html lang="..."> attribute that Odoo sets.
+    // Normalise BCP-47 hyphens to underscores so both "fr-CA" and "fr_CA" match.
+    const pageLang = (document.documentElement.lang || 'en_US').replace('-', '_');
+
+    const _i18n = {
+        fr_CA: {
+            navAdapt:          'Adapter',
+            navExpand:         'Étendre',
+            navCapture:        'Capturer',
+            buyNow:            'Acheter maintenant',
+            ariaHome:          'Accueil R-E-A-L',
+            ariaOpenMenu:      'Ouvrir le menu',
+            ariaNav:           'Navigation OmniGO',
+            buyNowPrice:       (price) => `Acheter maintenant | ${price}`,
+            dragToRotate:      'Faites glisser pour faire pivoter',
+            calloutAttachment: 'Interface d\'attache BLK2GO',
+            calloutLatch:      'Bouton de verrouillage',
+            calloutScrew:      'Fixation à vis multi-usage',
+            detailAttachTitle: 'Montage universel pour trépied',
+            detailAttachBody:  'La face inférieure est équipée d\'un filetage standard 5/8″-11 compatible avec les trépieds et poteaux d\'arpentage, pour une utilisation dans des applications axées sur le levé.',
+            detailBackTitle:   'Bouton de dégagement en un geste.',
+            detailBackBody:    'Le bouton rouge est conçu pour fonctionner d\'une simple pression pour fixer et détacher l\'adaptateur du raccord stub Leica standard afin de le monter sur des poteaux d\'arpentage.',
+            detailHatchTitle:  'Loquet à dégagement rapide.',
+            detailHatchBody:   'L\'adaptateur peut également se fixer à un GAD52 (adaptateur BLK360) pour une utilisation sur monopode ou trépied, offrant une autre option d\'attache et de détache rapide du BLK2GO.',
+            detailScrewTitle:  'Interface d\'attache BLK2GO',
+            detailScrewBody:   'La face supérieure est usinée avec précision pour saisir solidement la poignée du BLK2GO, répartissant la charge uniformément sur la surface de serrage pour éliminer les vibrations pendant le déplacement.',
+            mobileAttachment:  'Interface d\'attache BLK2GO',
+            mobileBack:        'Bouton de dégagement',
+            mobileHatch:       'Loquet à dégagement rapide',
+            mobileScrew:       'Montage universel pour trépied',
+            intlNote:          'Vous achetez depuis l\'extérieur des États-Unis ou du Canada ? Contactez-nous directement <a href="/contact">ici</a> pour passer une commande.',
+            goToVideo:         (n) => `Aller à la vidéo ${n}`,
+        },
+        es_ES: {
+            navAdapt:          'Adaptar',
+            navExpand:         'Expandir',
+            navCapture:        'Capturar',
+            buyNow:            'Comprar ahora',
+            ariaHome:          'Inicio R-E-A-L',
+            ariaOpenMenu:      'Abrir menú',
+            ariaNav:           'Navegación OmniGO',
+            buyNowPrice:       (price) => `Comprar ahora | ${price}`,
+            dragToRotate:      'Arrastra para rotar',
+            calloutAttachment: 'Interfaz de fijación BLK2GO',
+            calloutLatch:      'Botón de cierre',
+            calloutScrew:      'Fijación de tornillo multiuso',
+            detailAttachTitle: 'Montaje universal para trípode',
+            detailAttachBody:  'La cara inferior lleva una rosca estándar 5/8″-11 común en trípodes y postes de topografía, para usos en aplicaciones centradas en levantamientos.',
+            detailBackTitle:   'Botón de liberación rápida con un toque.',
+            detailBackBody:    'El botón rojo está diseñado para operarse con una sola presión para fijar y desmontar del accesorio stub Leica estándar para montar en postes de topografía.',
+            detailHatchTitle:  'Pestillo de liberación rápida.',
+            detailHatchBody:   'El adaptador también se puede fijar a un GAD52 (adaptador BLK360) para su uso en un monopodo o trípode, con otra opción para fijar y desmontar rápidamente el BLK2GO.',
+            detailScrewTitle:  'Interfaz de fijación BLK2GO',
+            detailScrewBody:   'La cara superior está mecanizada con precisión para sujetar firmemente el mango del BLK2GO, distribuyendo la carga uniformemente sobre la superficie de la abrazadera para eliminar vibraciones durante el movimiento.',
+            mobileAttachment:  'Interfaz de fijación BLK2GO',
+            mobileBack:        'Botón de liberación rápida',
+            mobileHatch:       'Pestillo de liberación rápida',
+            mobileScrew:       'Montaje universal para trípode',
+            intlNote:          '¿Está comprando desde fuera de EE.UU. o Canadá? Contáctenos directamente <a href="/contact">aquí</a> para realizar un pedido.',
+            goToVideo:         (n) => `Ir al video ${n}`,
+        },
+    };
+
+    /**
+     * Return the translated string for `key` in the active page language,
+     * falling back to `fallback` (the original English value) when no
+     * translation exists. Pass extra args for function-valued translations.
+     */
+    function _t(key, fallback, ...args) {
+        const dict = _i18n[pageLang];
+        if (!dict) return typeof fallback === 'function' ? fallback(...args) : fallback;
+        const val = dict[key];
+        if (val === undefined) return typeof fallback === 'function' ? fallback(...args) : fallback;
+        return typeof val === 'function' ? val(...args) : val;
+    }
+
     let omniCursor = null;
     let omniCursorReady = false;
 
@@ -85,7 +164,7 @@ whenReady(async () => {
         header.innerHTML = `
             <div class="o_omnigo_ch_inner">
                 <div class="o_omnigo_ch_left">
-                    <a href="/" class="o_omnigo_ch_logo_r" aria-label="R-E-A-L homepage">
+                    <a href="/" class="o_omnigo_ch_logo_r" aria-label="${_t('ariaHome', 'R-E-A-L homepage')}">
                         <img src="https://cdn.r-e-a-l.it/images/header/r_circle.png" alt="R logo" class="o_omnigo_ch_r_img" />
                     </a>
                     <div class="o_omnigo_ch_divider"></div>
@@ -93,21 +172,21 @@ whenReady(async () => {
                         <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
                     </a>
                 </div>
-                <nav class="o_omnigo_ch_nav" aria-label="OmniGO navigation">
-                    <a href="#adapt" class="o_omnigo_ch_nav_link">Adapt</a>
-                    <a href="#expand" class="o_omnigo_ch_nav_link">Expand</a>
-                    <a href="#capture" class="o_omnigo_ch_nav_link">Capture</a>
-                    <a href="#buy" class="o_omnigo_ch_buy_btn">Buy Now&thinsp;|&thinsp;$299</a>
+                <nav class="o_omnigo_ch_nav" aria-label="${_t('ariaNav', 'OmniGO navigation')}">
+                    <a href="#adapt" class="o_omnigo_ch_nav_link">${_t('navAdapt', 'Adapt')}</a>
+                    <a href="#expand" class="o_omnigo_ch_nav_link">${_t('navExpand', 'Expand')}</a>
+                    <a href="#capture" class="o_omnigo_ch_nav_link">${_t('navCapture', 'Capture')}</a>
+                    <a href="#buy" class="o_omnigo_ch_buy_btn">${_t('buyNow', 'Buy Now')}&thinsp;|&thinsp;$299</a>
                 </nav>
-                <button class="o_omnigo_ch_hamburger" aria-label="Open menu" aria-expanded="false">
+                <button class="o_omnigo_ch_hamburger" aria-label="${_t('ariaOpenMenu', 'Open menu')}" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
             </div>
             <div class="o_omnigo_ch_mobile_nav" aria-hidden="true">
-                <a href="#adapt" class="o_omnigo_ch_mobile_link">Adapt</a>
-                <a href="#expand" class="o_omnigo_ch_mobile_link">Expand</a>
-                <a href="#capture" class="o_omnigo_ch_mobile_link">Capture</a>
-                <a href="#buy" class="o_omnigo_ch_buy_btn o_omnigo_ch_mobile_buy">Buy Now&thinsp;|&thinsp;$299</a>
+                <a href="#adapt" class="o_omnigo_ch_mobile_link">${_t('navAdapt', 'Adapt')}</a>
+                <a href="#expand" class="o_omnigo_ch_mobile_link">${_t('navExpand', 'Expand')}</a>
+                <a href="#capture" class="o_omnigo_ch_mobile_link">${_t('navCapture', 'Capture')}</a>
+                <a href="#buy" class="o_omnigo_ch_buy_btn o_omnigo_ch_mobile_buy">${_t('buyNow', 'Buy Now')}&thinsp;|&thinsp;$299</a>
             </div>
         `;
 
@@ -608,7 +687,7 @@ whenReady(async () => {
             <!-- Right filled arrowhead -->
             <polygon points="88,6 70,10 76,22" fill="currentColor"/>
         </svg>
-        <span class="o_omnigo_drag_hint__label">Drag to rotate</span>
+        <span class="o_omnigo_drag_hint__label">${_t('dragToRotate', 'Drag to rotate')}</span>
     `;
     bottomModelHost.appendChild(dragHint);
 
@@ -753,21 +832,21 @@ whenReady(async () => {
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">BLK2GO attachment interface</div>
+                <div class="o_three_feature_label">${_t('calloutAttachment', 'BLK2GO attachment interface')}</div>
             </div>
 
             <div class="o_three_feature_callout o_three_feature_callout_hatch">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">Latch lock button</div>
+                <div class="o_three_feature_label">${_t('calloutLatch', 'Latch lock button')}</div>
             </div>
 
             <div class="o_three_feature_callout o_three_feature_callout_screw">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">Multi-use screw attachment</div>
+                <div class="o_three_feature_label">${_t('calloutScrew', 'Multi-use screw attachment')}</div>
             </div>
         `;
 
@@ -777,20 +856,20 @@ whenReady(async () => {
         scrollDetailPanel.className = "o_three_scroll_detail_panel";
         scrollDetailPanel.innerHTML = `
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
-                <h3 class="o_three_scroll_feature_title">Universal Tripod Mount</h3>
-                <p class="o_three_scroll_feature_body">The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.</p>
+                <h3 class="o_three_scroll_feature_title">${_t('detailAttachTitle', 'Universal Tripod Mount')}</h3>
+                <p class="o_three_scroll_feature_body">${_t('detailAttachBody', 'The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
-                <h3 class="o_three_scroll_feature_title">One-Touch Quick Release Button.</h3>
-                <p class="o_three_scroll_feature_body">The red button is designed to be operated with a single press and hold for attaching and detaching from the standard Leica stub fitting to mount on survey poles.</p>
+                <h3 class="o_three_scroll_feature_title">${_t('detailBackTitle', 'One-Touch Quick Release Button.')}</h3>
+                <p class="o_three_scroll_feature_body">${_t('detailBackBody', 'The red button is designed to be operated with a single press and hold for attaching and detaching from the standard Leica stub fitting to mount on survey poles.')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
-                <h3 class="o_three_scroll_feature_title">Quick-Release Latch.</h3>
-                <p class="o_three_scroll_feature_body">The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.</p>
+                <h3 class="o_three_scroll_feature_title">${_t('detailHatchTitle', 'Quick-Release Latch.')}</h3>
+                <p class="o_three_scroll_feature_body">${_t('detailHatchBody', 'The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
-                <h3 class="o_three_scroll_feature_title">BLK2GO Attachment Interface</h3>
-                <p class="o_three_scroll_feature_body">The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.</p>
+                <h3 class="o_three_scroll_feature_title">${_t('detailScrewTitle', 'BLK2GO Attachment Interface')}</h3>
+                <p class="o_three_scroll_feature_body">${_t('detailScrewBody', 'The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.')}</p>
             </div>
         `;
         scrollHost.appendChild(scrollDetailPanel);
@@ -798,10 +877,10 @@ whenReady(async () => {
         scrollMobileLabels = document.createElement("div");
         scrollMobileLabels.className = "o_three_scroll_mobile_labels";
         scrollMobileLabels.innerHTML = `
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">BLK2GO Attachment Interface</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">One-Touch Release Button</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">Quick-Release Latch</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">Universal Tripod Mount</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">${_t('mobileAttachment', 'BLK2GO Attachment Interface')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">${_t('mobileBack', 'One-Touch Release Button')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">${_t('mobileHatch', 'Quick-Release Latch')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">${_t('mobileScrew', 'Universal Tripod Mount')}</div>
         `;
         scrollHost.appendChild(scrollMobileLabels);
 
@@ -1297,7 +1376,7 @@ whenReady(async () => {
                             const priceText = rawText
                                 .replace(/\.\d+/g, "")
                                 .replace(/([^\d\s])\s+(\d)/g, "$1$2");
-                            const label = `Buy Now | ${priceText}`;
+                            const label = _t('buyNowPrice', (p) => `Buy Now | ${p}`, priceText);
                             document.querySelectorAll(".o_omnigo_ch_buy_btn").forEach(btn => {
                                 btn.textContent = label;
                             });
@@ -1390,7 +1469,7 @@ whenReady(async () => {
         if (nowBtn && !buySection.querySelector(".o_omnigo_buy_intl_note")) {
             const note = document.createElement("p");
             note.className = "o_omnigo_buy_intl_note";
-            note.innerHTML = 'Are you purchasing from outside the U.S. or Canada? Contact us directly <a href="/contact">here</a> to place an order.';
+            note.innerHTML = _t('intlNote', 'Are you purchasing from outside the U.S. or Canada? Contact us directly <a href="/contact">here</a> to place an order.');
             nowBtn.insertAdjacentElement("afterend", note);
         }
 
@@ -1483,7 +1562,7 @@ whenReady(async () => {
         const dots = origSlides.map((_, i) => {
             const dot = document.createElement("button");
             dot.className = "o_omnigo_vgallery_dot";
-            dot.setAttribute("aria-label", `Go to video ${i + 1}`);
+            dot.setAttribute("aria-label", _t("goToVideo", (n) => `Go to video ${n}`, i + 1));
             dot.addEventListener("click", () => {
                 if (!animating) goTo(i + 1, i);
             });
