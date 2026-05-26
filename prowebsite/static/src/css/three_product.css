@@ -1789,3 +1789,171 @@
         max-width: 100%;
     }
 }
+
+/* ============================================================
+   OmniGO FAQ Section
+   ============================================================ */
+
+.o_omnigo_faq_section {
+    background: #f7f7f7;
+    padding: 100px clamp(24px, 6vw, 80px) 100px;
+}
+
+.o_omnigo_faq_inner {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.o_omnigo_faq_header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.o_omnigo_faq_kicker {
+    margin: 0 0 14px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e00000;
+}
+
+.o_omnigo_faq_title {
+    margin: 0 0 16px;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #0a0a0a;
+}
+
+.o_omnigo_faq_subtitle {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: clamp(15px, 1.2vw, 18px);
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Accordion list */
+.o_omnigo_faq_list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.o_omnigo_faq_item {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Question button */
+.o_omnigo_faq_q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: none;
+    border: none;
+    padding: 26px 0;
+    text-align: left;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(15px, 1.15vw, 18px);
+    font-weight: 700;
+    color: #0a0a0a;
+    cursor: none;
+    transition: color 0.2s ease;
+}
+
+.o_omnigo_faq_q:hover {
+    color: #e00000;
+}
+
+/* Animated +/× icon */
+.o_omnigo_faq_icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #d0d0d0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.35s ease;
+    position: relative;
+}
+
+/* Horizontal bar of + */
+.o_omnigo_faq_icon::before,
+.o_omnigo_faq_icon::after {
+    content: "";
+    position: absolute;
+    background: #555;
+    border-radius: 2px;
+    transition: background 0.2s ease, transform 0.35s ease, opacity 0.25s ease;
+}
+
+.o_omnigo_faq_icon::before {
+    width: 12px;
+    height: 2px;
+}
+
+/* Vertical bar of + */
+.o_omnigo_faq_icon::after {
+    width: 2px;
+    height: 12px;
+}
+
+/* Open state: rotate vertical bar to 0° (both become horizontal → × shape via rotation) */
+.o_omnigo_faq_item.is-open .o_omnigo_faq_icon {
+    border-color: #e00000;
+    background: #e00000;
+    transform: rotate(45deg);
+}
+
+.o_omnigo_faq_item.is-open .o_omnigo_faq_icon::before,
+.o_omnigo_faq_item.is-open .o_omnigo_faq_icon::after {
+    background: #ffffff;
+}
+
+.o_omnigo_faq_item.is-open .o_omnigo_faq_q {
+    color: #e00000;
+}
+
+/* Answer panel — max-height animation */
+.o_omnigo_faq_a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.o_omnigo_faq_item.is-open .o_omnigo_faq_a {
+    max-height: 600px;
+}
+
+.o_omnigo_faq_a_inner {
+    padding: 0 0 28px;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.8;
+    color: #444;
+}
+
+@media (max-width: 768px) {
+    .o_omnigo_faq_section {
+        padding: 72px 20px 80px;
+    }
+
+    .o_omnigo_faq_header {
+        margin-bottom: 44px;
+    }
+
+    .o_omnigo_faq_q {
+        padding: 22px 0;
+        font-size: 15px;
+    }
+}
+}
