@@ -653,6 +653,11 @@ whenReady(async () => {
                 obj.scale.setScalar(2.2 / maxAxis);
             }
 
+            // Force world matrices to update now — obj isn't in the scene yet so
+            // children's matrixWorld is stale. Without this, expandByObject reads
+            // pre-scale transforms and produces an incorrect centre.
+            obj.updateMatrixWorld(true);
+
             // Compute the true geometric centre from mesh geometry only.
             // A mesh-only box ignores any lights or cameras embedded in the GLB
             // that would inflate setFromObject() and shift the apparent pivot.
