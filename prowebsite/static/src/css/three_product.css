@@ -433,7 +433,7 @@ body {
 .o_three_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 600vh;   /* 4 × 0.17 features (0.68) + SCROLL_RETURN (0.10) + rest (0.22) */
+    min-height: 500vh;   /* JS fallback — setScrollSectionHeight() overrides this at runtime */
     overflow: visible;
     z-index: 1;
 

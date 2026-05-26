@@ -817,16 +817,28 @@ whenReady(async () => {
     }
 
     // ─── Scroll animation timing constants ───────────────────────────────────────
-    // Each of the 4 features occupies one PHASE slot:
-    //   [0 … TRANS)      — model animates to the new pose
-    //   [TRANS … PHASE)  — model holds still; callout is visible   ← dwell
-    // 4 × PHASE = 0.88; remaining 0.12 = return-to-rest transition.
-    // All four dwell windows are exactly DWELL wide → consistent pause per feature.
-    const SCROLL_TRANS  = 0.08;   // 8 % of total scroll per feature transition
-    const SCROLL_DWELL  = 0.09;   // 9 % of total scroll per feature dwell
-    const SCROLL_PHASE  = SCROLL_TRANS + SCROLL_DWELL; // 0.17 per feature; 4 × 0.17 = 0.68 total
-    const SCROLL_RETURN = 0.10;   // return-to-rest animation completes in this fraction of scroll;
-                                  // model then sits at rest for the remaining ~0.22 of the section
+    // ─── Scroll animation timing ─────────────────────────────────────────────────
+    // Defined as multiples of viewport height so physical scroll distances feel
+    // the same on every screen. setScrollSectionHeight() derives the section's
+    // min-height from these so that 4×PHASE + RETURN = 1.0 exactly — the section
+    // ends the moment the return animation finishes, with no idle scrolling left.
+    const TRANS_VH        = 0.35;  // each transition:    35 % of viewport height
+    const DWELL_VH        = 0.50;  // each feature dwell: 50 % of viewport height
+    const RETURN_VH       = 0.55;  // return-to-rest:     55 % of viewport height
+    const TOTAL_SCROLL_VH = 4 * (TRANS_VH + DWELL_VH) + RETURN_VH; // ≈ 3.95
+
+    // Proportional constants derived from the VH values above.
+    // Because section height is set from the same values, 4×PHASE + RETURN = 1.0.
+    const SCROLL_TRANS  = TRANS_VH  / TOTAL_SCROLL_VH;  // ≈ 0.089
+    const SCROLL_DWELL  = DWELL_VH  / TOTAL_SCROLL_VH;  // ≈ 0.127
+    const SCROLL_PHASE  = SCROLL_TRANS + SCROLL_DWELL;   // ≈ 0.215 per feature
+    const SCROLL_RETURN = RETURN_VH  / TOTAL_SCROLL_VH;  // ≈ 0.139
+
+    function setScrollSectionHeight() {
+        if (!scrollSection) return;
+        const scrollablePx = TOTAL_SCROLL_VH * window.innerHeight;
+        scrollSection.style.minHeight = `${Math.round(scrollablePx + window.innerHeight)}px`;
+    }
 
     function updateScrollHotspots() {
         if (!scrollHotspotLayer) return;
@@ -996,6 +1008,7 @@ whenReady(async () => {
         scrollScene.add(scrollWrapper);
 
         createScrollHotspots();
+        setScrollSectionHeight();
         applyScrollSectionPose();
     }
 
@@ -1006,6 +1019,7 @@ whenReady(async () => {
     function onResize() {
         clearTimeout(_resizeTimer);
         _resizeTimer = setTimeout(() => {
+            setScrollSectionHeight();
             bottomCamera.aspect = bottomModelHost.clientWidth / bottomModelHost.clientHeight;
             bottomCamera.updateProjectionMatrix();
             bottomRenderer.setSize(bottomModelHost.clientWidth, bottomModelHost.clientHeight);
