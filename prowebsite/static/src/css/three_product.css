@@ -433,7 +433,7 @@ body {
 .o_three_scroll_section {
     position: relative;
     width: 100%;
-    min-height: 700vh;
+    min-height: 640vh;   /* 4 × 0.22 features + 0.12 return = 0.88 + 0.12 = 1.0 */
     overflow: visible;
     z-index: 1;
 
@@ -645,12 +645,14 @@ body {
     mask-image: radial-gradient(white, black);
 }
 
-/* Video fills the panel height; cover crops rather than letterboxing */
+/* Video: always show full width, shrink height to fit if needed (no horizontal crop).
+   The panel background is #000 so letterbox bars above/below are a clean black. */
 .o_omnigo_video_scroll_video {
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center center;
     background: #000000;
     border: none;
     outline: none;
@@ -1138,7 +1140,7 @@ body {
 /* Video scroll: stack vertically on mobile — video above, text below */
 @media (max-width: 768px) {
     .o_three_scroll_section {
-        min-height: 560vh;
+        min-height: 520vh;
     }
 
     .o_omnigo_video_scroll_section {

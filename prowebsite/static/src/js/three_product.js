@@ -676,7 +676,7 @@ whenReady(async () => {
 
             bottomWrapper = new THREE.Group();
             bottomWrapper.add(obj);
-            bottomWrapper.position.set(0, 0, 0);
+            bottomWrapper.position.set(0, 0.3, 0); // shift model up so it sits higher in the panel
             bottomScene.add(bottomWrapper);
 
             bottomCamera.position.z = bottomDefaultCameraZ;
@@ -823,8 +823,8 @@ whenReady(async () => {
     // 4 × PHASE = 0.88; remaining 0.12 = return-to-rest transition.
     // All four dwell windows are exactly DWELL wide → consistent pause per feature.
     const SCROLL_TRANS = 0.08;                    // 8 % per transition
-    const SCROLL_DWELL = 0.09;                    // 9 % per dwell (was 14 %)
-    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.17 per feature
+    const SCROLL_DWELL = 0.14;                    // 14 % per dwell → 4 × 0.22 = 0.88; return = 0.12
+    const SCROLL_PHASE = SCROLL_TRANS + SCROLL_DWELL; // 0.22 per feature
 
     function updateScrollHotspots() {
         if (!scrollHotspotLayer) return;
